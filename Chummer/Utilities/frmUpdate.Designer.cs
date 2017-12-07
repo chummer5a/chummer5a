@@ -31,9 +31,10 @@ namespace Chummer
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
             this.pgbOverallProgress = new System.Windows.Forms.ProgressBar();
-            this.cmdRestart = new System.Windows.Forms.Button();
+            this.cmdCleanReinstall = new System.Windows.Forms.Button();
             this.lblUpdaterStatusLabel = new System.Windows.Forms.Label();
             this.lblUpdaterStatus = new System.Windows.Forms.Label();
+            this.cmdRestart = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // webNotes
@@ -69,23 +70,23 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pgbOverallProgress.Location = new System.Drawing.Point(123, 514);
             this.pgbOverallProgress.Name = "pgbOverallProgress";
-            this.pgbOverallProgress.Size = new System.Drawing.Size(599, 31);
+            this.pgbOverallProgress.Size = new System.Drawing.Size(488, 31);
             this.pgbOverallProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pgbOverallProgress.TabIndex = 2;
             // 
-            // cmdRestart
+            // cmdCleanReinstall
             // 
-            this.cmdRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmdCleanReinstall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRestart.Enabled = false;
-            this.cmdRestart.Location = new System.Drawing.Point(728, 514);
-            this.cmdRestart.Name = "cmdRestart";
-            this.cmdRestart.Size = new System.Drawing.Size(105, 31);
-            this.cmdRestart.TabIndex = 3;
-            this.cmdRestart.Tag = "Button_Install_Restart";
-            this.cmdRestart.Text = "Install and Restart";
-            this.cmdRestart.UseVisualStyleBackColor = true;
-            this.cmdRestart.Click += new System.EventHandler(this.cmdRestart_Click);
+            this.cmdCleanReinstall.Enabled = false;
+            this.cmdCleanReinstall.Location = new System.Drawing.Point(728, 514);
+            this.cmdCleanReinstall.Name = "cmdCleanReinstall";
+            this.cmdCleanReinstall.Size = new System.Drawing.Size(105, 31);
+            this.cmdCleanReinstall.TabIndex = 4;
+            this.cmdCleanReinstall.Tag = "Button_Clean_Reinstall";
+            this.cmdCleanReinstall.Text = "Clean Reinstall";
+            this.cmdCleanReinstall.UseVisualStyleBackColor = true;
+            this.cmdCleanReinstall.Click += new System.EventHandler(this.cmdCleanReinstall_Click);
             // 
             // lblUpdaterStatusLabel
             // 
@@ -110,14 +111,29 @@ namespace Chummer
             this.lblUpdaterStatus.Tag = "String_Checking_For_Update";
             this.lblUpdaterStatus.Text = "Checking for Updates...";
             // 
+            // cmdRestart
+            // 
+            this.cmdRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdRestart.Enabled = false;
+            this.cmdRestart.Location = new System.Drawing.Point(617, 514);
+            this.cmdRestart.Name = "cmdRestart";
+            this.cmdRestart.Size = new System.Drawing.Size(105, 31);
+            this.cmdRestart.TabIndex = 3;
+            this.cmdRestart.Tag = "Button_Install_Restart";
+            this.cmdRestart.Text = "Install and Restart";
+            this.cmdRestart.UseVisualStyleBackColor = true;
+            this.cmdRestart.Click += new System.EventHandler(this.cmdRestart_Click);
+            // 
             // frmUpdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(845, 557);
+            this.Controls.Add(this.cmdRestart);
             this.Controls.Add(this.lblUpdaterStatus);
             this.Controls.Add(this.lblUpdaterStatusLabel);
-            this.Controls.Add(this.cmdRestart);
+            this.Controls.Add(this.cmdCleanReinstall);
             this.Controls.Add(this.pgbOverallProgress);
             this.Controls.Add(this.cmdUpdate);
             this.Controls.Add(this.webNotes);
@@ -135,8 +151,9 @@ namespace Chummer
         private System.Windows.Forms.WebBrowser webNotes;
         private System.Windows.Forms.Button cmdUpdate;
         private System.Windows.Forms.ProgressBar pgbOverallProgress;
-        private System.Windows.Forms.Button cmdRestart;
+        private System.Windows.Forms.Button cmdCleanReinstall;
         private System.Windows.Forms.Label lblUpdaterStatusLabel;
         private System.Windows.Forms.Label lblUpdaterStatus;
+        private System.Windows.Forms.Button cmdRestart;
     }
 }

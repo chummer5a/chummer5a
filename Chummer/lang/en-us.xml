@@ -8199,6 +8199,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Button_Install_Restart</key>
       <text>Install and Restart</text>
     </string>
+    <string>
+      <key>Button_Clean_Reinstall</key>
+      <text>Clean Reinstall</text>
+    </string>
+    <string>
+      <key>MessageTitle_Updater_CleanReinstallPrompt</key>
+      <text>Clean Reinstall?</text>
+    </string>
+    <string>
+      <key>Message_Updater_CleanReinstallPrompt</key>
+      <text>Performing a clean reinstall will delete all files in the Chummer5a directory that are not part of the main download. This includes custom data files, autosaves, custom sheet files, custom localizations, and any settings different from the default.\n\nAre you sure you wish to perform a clean reinstall?</text>
+    </string>
 	<string>
 	  <key>Label_Updater_Status</key>
 	  <text>Updater Status:</text>

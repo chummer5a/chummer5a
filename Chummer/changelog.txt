@@ -308,6 +308,7 @@ Application Changes:
 - Fixed a bug where having the Adapsin version of a grade for a piece of 'ware would cause it to not load the proper amount of Matrix Condition Monitor boxes.
 - Fixed a bug where characters with Gammaware and/or the Adapsin versions of Betaware, Deltaware, and Gammaware would pass the character validity check for Career mode.
 - Unhardcoded the device rating values of 'ware grades. They can now be modified with custom data files.
+- Added the ability to perform a clean reinstall from within the updater.
 
 Data Changes:
 
@@ -556,6 +557,9 @@ New Strings:
 - Menu_Sort
 - Menu_ToggleFavourite
 - Checkbox_Options_PrintFreeExpenses
+- Button_Clean_Reinstall
+- MessageTitle_Updater_CleanReinstallPrompt
+- Message_Updater_CleanReinstallPrompt
 
 Changed Strings:
 - Message_PositiveQualityLimit
