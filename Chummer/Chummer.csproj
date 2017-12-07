@@ -226,6 +226,9 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\ElasticComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="helpers\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>

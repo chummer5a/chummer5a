@@ -8124,6 +8124,25 @@
         </vehicledetails>
       </required>
     </mod>
+    <mod>
+      <id>cec8abb4-15a0-4c74-b9f9-350969a0fce3</id>
+      <name>Ruhrmetall Wolf II Troop Transport Module</name>
+      <page>77</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <bonus>
+        <seats>+16</seats>
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name operation="contains">Ruhrmetall Wolf II</name>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
