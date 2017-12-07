@@ -62,6 +62,7 @@ namespace Chummer
             this.tsToggleFav = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSort = new System.Windows.Forms.ToolStripMenuItem();
             this.tsDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsCloseOpenCharacter = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -383,9 +384,10 @@ namespace Chummer
             this.cmsRoster.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsToggleFav,
             this.tsSort,
-            this.tsDelete});
+            this.tsDelete,
+            this.tsCloseOpenCharacter});
             this.cmsRoster.Name = "cmsRoster";
-            this.cmsRoster.Size = new System.Drawing.Size(174, 92);
+            this.cmsRoster.Size = new System.Drawing.Size(178, 114);
             // 
             // tsToggleFav
             // 
@@ -393,7 +395,7 @@ namespace Chummer
             this.tsToggleFav.Name = "tsToggleFav";
             this.tsToggleFav.Size = new System.Drawing.Size(173, 22);
             this.tsToggleFav.Tag = "Menu_ToggleFavorite";
-            this.tsToggleFav.Text = "&Toggle Favourite";
+            this.tsToggleFav.Text = "&Toggle Favorite";
             this.tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
             // 
             // tsSort
@@ -410,10 +412,18 @@ namespace Chummer
             // 
             this.tsDelete.Image = global::Chummer.Properties.Resources.delete;
             this.tsDelete.Name = "tsDelete";
-            this.tsDelete.Size = new System.Drawing.Size(173, 22);
+            this.tsDelete.Size = new System.Drawing.Size(176, 22);
             this.tsDelete.Tag = "Menu_Delete";
-            this.tsDelete.Text = "&Delete";
+            this.tsDelete.Text = "&Delete from this list";
             this.tsDelete.Click += new System.EventHandler(this.tsDelete_Click);
+            // 
+            // tsCloseOpenCharacter
+            // 
+            this.tsCloseOpenCharacter.Image = global::Chummer.Properties.Resources.door_out;
+            this.tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
+            this.tsCloseOpenCharacter.Size = new System.Drawing.Size(177, 22);
+            this.tsCloseOpenCharacter.Text = "&Close this character";
+            this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
             // frmCharacterRoster
             // 
@@ -493,5 +503,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsToggleFav;
         private System.Windows.Forms.ToolStripMenuItem tsSort;
         private System.Windows.Forms.ToolStripMenuItem tsDelete;
+        private System.Windows.Forms.ToolStripMenuItem tsCloseOpenCharacter;
     }
 }

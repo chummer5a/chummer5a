@@ -1179,15 +1179,19 @@
     </string>
     <string>
       <key>Menu_Delete</key>
-      <text>&amp;Delete</text>
+      <text>&amp;Delete from this list</text>
     </string>
     <string>
       <key>Menu_Sort</key>
-      <text>&amp;Sort Alphabetically</text>
+      <text>&amp;Sort this list Alphabetically</text>
     </string>
     <string>
-      <key>Menu_ToggleFavourite</key>
+      <key>Menu_ToggleFavorite</key>
       <text>&amp;Toggle Favorite</text>
+    </string>
+    <string>
+      <key>Menu_Close</key>
+      <text>&amp;Close this character</text>
     </string>
     <!-- End Region -->
     <!-- Region Create/Career Window -->

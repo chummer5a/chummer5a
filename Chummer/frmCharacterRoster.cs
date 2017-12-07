@@ -29,6 +29,24 @@ namespace Chummer
             treCharacterList.DragOver += treCharacterList_DragOver;
             LoadCharacters();
             MoveControls();
+            ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
+            {
+                cmsRoster
+            };
+
+            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            {
+                if (objCMS != null)
+                {
+                    foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
+                    {
+                        if (objItem.Tag != null)
+                        {
+                            objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+                        }
+                    }
+                }
+            }
         }
 
         public void PopulateCharacterList()
@@ -245,6 +263,7 @@ namespace Chummer
             objNode.ContextMenuStrip = cmsRoster;
             objNode.Text = CalculatedName(objCache);
             objNode.ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
+            
             lock (_lstCharacterCacheLock)
             {
                 _lstCharacterCache.Add(objCache);
@@ -413,6 +432,7 @@ namespace Chummer
                         {
                             objOpenCharacter = frmMain.LoadCharacter(strFile);
                             GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                            objSelectedNode.Text = CalculatedName(_lstCharacterCache[intIndex]);
                         }
                         Cursor = Cursors.Default;
                     }
@@ -627,6 +647,26 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
+        {
+            var objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode == null || objSelectedNode.Level <= 0) return;
+            var intIndex = Convert.ToInt32(objSelectedNode.Tag);
+            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count) return;
+            var strFile = _lstCharacterCache[intIndex]?.FilePath;
+            if (string.IsNullOrEmpty(strFile)) return;
+            var objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            Cursor = Cursors.WaitCursor;
+            if (objOpenCharacter != null)
+            {
+                GlobalOptions.MainForm.OpenCharacters.Remove(objOpenCharacter);
+                GlobalOptions.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                GlobalOptions.MainForm.CharacterRoster.PopulateCharacterList();
+                objOpenCharacter.Dispose();
+            }
+            Cursor = Cursors.Default;
         }
     }
 }
