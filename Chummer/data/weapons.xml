@@ -8638,9 +8638,15 @@
         <mount>Under</mount>
       </accessorymounts>
       <accessories>
-        <accessory>Smartgun System, Internal</accessory>
-        <accessory>Folding Stock</accessory>
-        <accessory>Gas-Vent II</accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+        </accessory>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
+        <accessory>
+          <name>Gas-Vent II</name>
+        </accessory>
       </accessories>
       <useskill>Automatics</useskill>
       <range>Submachine Guns</range>
