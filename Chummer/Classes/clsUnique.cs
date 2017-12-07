@@ -2086,27 +2086,6 @@ namespace Chummer
                 strReturn = strReturn.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"));
                 strReturn = strReturn.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
 
-                //if (_blnExtended)
-                //{
-                //    // Add +2 to the DV value if Extended is selected.
-                //    int intPos = strReturn.IndexOf(')') + 1;
-                //    string strAfter = strReturn.Substring(intPos, strReturn.Length - intPos);
-                //    strReturn = strReturn.Remove(intPos, strReturn.Length - intPos);
-                //    if (string.IsNullOrEmpty(strAfter))
-                //        strAfter = "+2";
-                //    else
-                //    {
-                //        int intValue = Convert.ToInt32(strAfter) + 2;
-                //        if (intValue == 0)
-                //            strAfter = string.Empty;
-                //        else if (intValue > 0)
-                //            strAfter = "+" + intValue.ToString();
-                //        else
-                //            strAfter = intValue.ToString();
-                //    }
-                //    strReturn += strAfter;
-                //}
-
                 return strReturn;
             }
         }
@@ -2119,7 +2098,7 @@ namespace Chummer
             get
             {
                 string strTip = LanguageManager.GetString("Tip_SpellDrainBase");
-                int intMAG = 0;
+                int intMAG = _objCharacter.MAG.TotalValue;
 
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
                 {
@@ -2154,12 +2133,12 @@ namespace Chummer
                         break;
                     }
                 }
-                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category)))
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
                 {
                     strTip += $"\n {LanguageManager.GetString("Label_Bonus")}";
                     strTip = _objCharacter.Improvements
-                        .Where(o => o.ImproveType == Improvement.ImprovementType.DrainValue && (o.UniqueName == string.Empty || o.UniqueName == Category))
-                        .Aggregate(strTip, (current, imp) => current + $"\n {imp.ImprovedName} ({imp.Value:+0;-0;0})");
+                        .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category))
+                        .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp)} ({imp.Value:0;-0;0})");
                 }
 
                 return strTip;
@@ -2273,7 +2252,7 @@ namespace Chummer
             {
                 string strReturn = _strDV;
                 bool force = _strDV.StartsWith('F');
-                if (_objCharacter.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.DrainValue))
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
                 {
                     string dv = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
@@ -2293,10 +2272,10 @@ namespace Chummer
                         Improvement imp in
                         _objCharacter.Improvements.Where(
                             i =>
-                                i.ImproveType == Improvement.ImprovementType.DrainValue &&
-                                (i.UniqueName == string.Empty || i.UniqueName == Category) && i.Enabled))
+                                (i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
+                                (i.ImprovedName == string.Empty || i.ImprovedName == Category) && i.Enabled))
                     {
-                        dv += $" + {imp.Value:+0;-0;0}";
+                        dv += $" + {imp.Value:0;-0;0}";
                     }
 
                     object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'));

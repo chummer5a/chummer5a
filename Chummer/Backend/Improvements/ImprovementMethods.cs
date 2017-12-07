@@ -385,6 +385,10 @@ namespace Chummer
                     return objImprovementAdder.freespells;
                 case "SPELLCATEGORY":
                     return objImprovementAdder.spellcategory;
+                case "SPELLCATEGORYDAMAGE":
+                    return objImprovementAdder.spellcategorydamage;
+                case "SPELLCATEGORYDRAIN":
+                    return objImprovementAdder.spellcategorydrain;
                 case "THROWRANGE":
                     return objImprovementAdder.throwrange;
                 case "THROWSTR":

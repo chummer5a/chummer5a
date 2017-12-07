@@ -4018,13 +4018,31 @@ namespace Chummer.Classes
             Log.Info("spellcategory");
             Log.Info("spellcategory = " + bonusNode.OuterXml);
 
-            string strUseUnique = _strUnique;
-            if (bonusNode["name"].Attributes["precedence"] != null)
-                strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
-
             Log.Info("Calling CreateImprovement");
             CreateImprovement(bonusNode["name"].InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategory, strUseUnique, ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+                Improvement.ImprovementType.SpellCategory, _strUnique, ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+        }
+
+        // Check for Spell Category Drain bonuses.
+        public void spellcategorydrain(XmlNode bonusNode)
+        {
+            Log.Info("spellcategorydrain");
+            Log.Info("spellcategorydrain = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellCategoryDrain, _strUnique, ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
+        }
+
+        // Check for Spell Category Damage bonuses.
+        public void spellcategorydamage(XmlNode bonusNode)
+        {
+            Log.Info("spellcategorydamage");
+            Log.Info("spellcategorydamage = " + bonusNode.OuterXml);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellCategoryDamage, _strUnique, ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
         }
 
         // Check for Throwing Range bonuses.
