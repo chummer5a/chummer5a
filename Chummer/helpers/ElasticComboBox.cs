@@ -23,7 +23,9 @@ namespace Chummer.helpers
             }
         }
 
-        public ElasticComboBox(ToolTip objToolTip = null) : base()
+        public ElasticComboBox() : this(null) { }
+
+        public ElasticComboBox(ToolTip objToolTip) : base()
         {
             _tt = objToolTip;
             if (_tt == null)

@@ -1178,6 +1178,10 @@
       <text>Watch Folder</text>
     </string>
     <string>
+      <key>Treenode_Roster_FavouriteCharacters</key>
+      <text>Favourite Characters</text>
+    </string>
+    <string>
       <key>Menu_Delete</key>
       <text>&amp;Delete from this list</text>
     </string>
@@ -6545,6 +6549,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Checkbox_Options_PrintExpenses</key>
       <text>Print Karma and Nuyen Expenses</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_PrintFreeExpenses</key>
+      <text>Print Free Karma and Nuyen Expenses</text>
     </string>
     <string>
       <key>Label_Options_BPAttribute</key>

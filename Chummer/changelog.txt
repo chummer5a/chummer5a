@@ -304,6 +304,10 @@ Application Changes:
 - Contacts, Pets, and Spirits linked to character files will automatically load those files in the background and fill in and update appropriate fields based on values in their linked file.
 - Fixed a bug where pet metatypes/species labels in the Relationships tab were not translated properly.
 - Added a proof-of-concept helper combobox that has a variable-width dropdown and tooltip functionality to assist with long text, such as sheet names in the options.
+- Sheets printing free expenses is now something that can be toggled off in the options menu. Fixes #1800.
+- Fixed a bug where having the Adapsin version of a grade for a piece of 'ware would cause it to not load the proper amount of Matrix Condition Monitor boxes.
+- Fixed a bug where characters with Gammaware and/or the Adapsin versions of Betaware, Deltaware, and Gammaware would pass the character validity check for Career mode.
+- Unhardcoded the device rating values of 'ware grades. They can now be modified with custom data files.
 
 Data Changes:
 
@@ -551,6 +555,8 @@ New Strings:
 - Menu_Delete
 - Menu_Sort
 - Menu_ToggleFavourite
+- Checkbox_Options_PrintFreeExpenses
+
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf

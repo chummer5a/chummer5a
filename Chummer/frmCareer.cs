@@ -4358,7 +4358,7 @@ namespace Chummer
                 objHole = new Cyberware(_objCharacter);
                 TreeNode treNode = new TreeNode();
 
-                objHole.Create(xmlEssHole, _objCharacter, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options).FirstOrDefault(x => x.Name == "Standard"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
+                objHole.Create(xmlEssHole, _objCharacter, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, _objCharacter.Options).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
                 treCyberware.Nodes.Add(treNode);
                 _objCharacter.Cyberware.Add(objHole);
             }

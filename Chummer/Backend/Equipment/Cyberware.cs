@@ -1678,30 +1678,15 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intGrade = 0;
-
-                switch (_objGrade.Name)
+                int intBonusBoxes = 0;
+                foreach (Gear objGear in Gear)
                 {
-                    case "Standard":
-                    case "Standard (Burnout's Way)":
-                    case "Used":
-                    case "Omegaware":
-                        intGrade = 2;
-                        break;
-                    case "Alphaware":
-                        intGrade = 3;
-                        break;
-                    case "Betaware":
-                        intGrade = 4;
-                        break;
-                    case "Deltaware":
-                        intGrade = 5;
-                        break;
-                    case "Gammaware":
-                        intGrade = 6;
-                        break;
+                    if (objGear.Equipped)
+                    {
+                        intBonusBoxes += objGear.TotalBonusMatrixBoxes;
+                    }
                 }
-                return BaseMatrixBoxes + (intGrade + 1) / 2;
+                return BaseMatrixBoxes + (_objGrade.DeviceRating + 1) / 2 + intBonusBoxes;
             }
         }
 

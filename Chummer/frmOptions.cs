@@ -137,6 +137,7 @@ namespace Chummer
             _characterOptions.NoSingleArmorEncumbrance = chkNoSingleArmorEncumbrance.Checked;
             _characterOptions.NuyenPerBP = decimal.ToInt32(nudKarmaNuyenPer.Value);
             _characterOptions.PrintExpenses = chkPrintExpenses.Checked;
+            _characterOptions.PrintFreeExpenses = chkPrintFreeExpenses.Checked;
             _characterOptions.PrintNotes = chkPrintNotes.Checked;
             _characterOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
             _characterOptions.RestrictRecoil = chkRestrictRecoil.Checked;
@@ -767,6 +768,8 @@ namespace Chummer
             chkMoreLethalGameplay.Checked = _characterOptions.MoreLethalGameplay;
             chkNoSingleArmorEncumbrance.Checked = _characterOptions.NoSingleArmorEncumbrance;
             chkPrintExpenses.Checked = _characterOptions.PrintExpenses;
+            chkPrintFreeExpenses.Checked = _characterOptions.PrintFreeExpenses;
+            chkPrintFreeExpenses.Enabled = chkPrintExpenses.Checked;
             chkPrintNotes.Checked = _characterOptions.PrintNotes;
             chkPrintSkillsWithZeroRating.Checked = _characterOptions.PrintSkillsWithZeroRating;
             chkRestrictRecoil.Checked = _characterOptions.RestrictRecoil;
@@ -1594,6 +1597,14 @@ namespace Chummer
         {
             if (nudNuyenDecimalsMaximum.Value < nudNuyenDecimalsMinimum.Value)
                 nudNuyenDecimalsMaximum.Value = nudNuyenDecimalsMinimum.Value;
+            OptionsChanged(sender, e);
+        }
+
+        private void chkPrintFreeExpenses_CheckedChanged(object sender, EventArgs e)
+        {
+            chkPrintFreeExpenses.Enabled = chkPrintExpenses.Checked;
+            if (!chkPrintFreeExpenses.Enabled)
+                chkPrintFreeExpenses.Checked = true;
             OptionsChanged(sender, e);
         }
     }

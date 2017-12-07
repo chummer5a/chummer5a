@@ -17605,7 +17605,9 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.ParentID)))
             {
-                if (objCyberware.Grade.Name == "Deltaware" || objCyberware.Grade.Name == "Betaware")
+                if (objCyberware.Grade.Name.Contains("Betaware") ||
+                    objCyberware.Grade.Name.Contains("Deltaware") ||
+                    objCyberware.Grade.Name.Contains("Gammaware"))
                 {
                     strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort;
                 }

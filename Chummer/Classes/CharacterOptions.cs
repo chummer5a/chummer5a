@@ -76,6 +76,7 @@ namespace Chummer
         private bool _blnNoSingleArmorEncumbrance;
         private bool _blnPrintArcanaAlternates;
         private bool _blnPrintExpenses;
+        private bool _blnPrintFreeExpenses = true;
         private bool _blnPrintLeadershipAlternates;
         private bool _blnPrintNotes;
         private bool _blnPrintSkillsWithZeroRating = true;
@@ -274,6 +275,8 @@ namespace Chummer
             objWriter.WriteElementString("capskillrating", _blnCapSkillRating.ToString());
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
+            // <printfreeexpenses />
+            objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString());
             // <nuyenperbp />
             objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <hideitemsoveravaillimit />
@@ -671,6 +674,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("capskillrating", ref _blnCapSkillRating);
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
+            // Print Free Expenses.
+            objXmlNode.TryGetBoolFieldQuickly("printfreeexpenses", ref _blnPrintFreeExpenses);
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
@@ -1022,6 +1027,9 @@ namespace Chummer
             // Print Expenses.
             LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
 
+            // Print Free Expenses.
+            LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses");
+
             // Nuyen per Build Point
             LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
 
@@ -1342,7 +1350,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
+        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public bool PrintExpenses
         {
@@ -1353,6 +1361,21 @@ namespace Chummer
             set
             {
                 _blnPrintExpenses = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public bool PrintFreeExpenses
+        {
+            get
+            {
+                return _blnPrintFreeExpenses;
+            }
+            set
+            {
+                _blnPrintFreeExpenses = value;
             }
         }
 

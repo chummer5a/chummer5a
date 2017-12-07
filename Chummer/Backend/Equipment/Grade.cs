@@ -14,6 +14,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost = 1.0m;
         private int _intAvail = 0;
         private string _strSource = "SR5";
+        private int _intDeviceRating = 2;
 
         #region Constructor and Load Methods
         public Grade()
@@ -32,6 +33,19 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            {
+                if (Name.Contains("Alphaware"))
+                    _intDeviceRating = 3;
+                else if (Name.Contains("Betaware"))
+                    _intDeviceRating = 4;
+                else if (Name.Contains("Deltaware"))
+                    _intDeviceRating = 5;
+                else if (Name.Contains("Gammaware"))
+                    _intDeviceRating = 6;
+                else
+                    _intDeviceRating = 2;
+            }
         }
         #endregion
 
@@ -73,6 +87,17 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _decEss;
+            }
+        }
+
+        /// <summary>
+        /// Device rating of the grade.
+        /// </summary>
+        public int DeviceRating
+        {
+            get
+            {
+                return _intDeviceRating;
             }
         }
 

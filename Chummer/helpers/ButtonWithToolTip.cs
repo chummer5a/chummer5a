@@ -25,7 +25,9 @@ namespace Chummer
             }
         }
 
-        public ButtonWithToolTip(ToolTip objToolTip = null) : base()
+        public ButtonWithToolTip() : this(null) { }
+
+        public ButtonWithToolTip(ToolTip objToolTip) : base()
         {
             _tt = objToolTip;
             if (_tt == null)

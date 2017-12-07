@@ -133,6 +133,7 @@ namespace Chummer
             this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
             this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chkPrintFreeExpenses = new System.Windows.Forms.CheckBox();
             this.chkDontRoundEssenceInternally = new System.Windows.Forms.CheckBox();
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
             this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
@@ -952,7 +953,7 @@ namespace Chummer
             // lblNuyenPerBP
             // 
             this.lblNuyenPerBP.AutoSize = true;
-            this.lblNuyenPerBP.Location = new System.Drawing.Point(4, 391);
+            this.lblNuyenPerBP.Location = new System.Drawing.Point(4, 414);
             this.lblNuyenPerBP.Name = "lblNuyenPerBP";
             this.lblNuyenPerBP.Size = new System.Drawing.Size(112, 13);
             this.lblNuyenPerBP.TabIndex = 2;
@@ -962,7 +963,7 @@ namespace Chummer
             // 
             // nudNuyenPerBP
             // 
-            this.nudNuyenPerBP.Location = new System.Drawing.Point(133, 389);
+            this.nudNuyenPerBP.Location = new System.Drawing.Point(133, 412);
             this.nudNuyenPerBP.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -1173,7 +1174,7 @@ namespace Chummer
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
             this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(5, 295);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
-            this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(248, 13);
+            this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
             this.lblNuyenDecimalsMinimumLabel.TabIndex = 29;
             this.lblNuyenDecimalsMinimumLabel.Tag = "Label_Options_NuyenDecimalsMinimum";
             this.lblNuyenDecimalsMinimumLabel.Text = "Minimum number of Nuyen decimal places to display:";
@@ -1279,6 +1280,7 @@ namespace Chummer
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(248, 21);
             this.cboPDFParameters.TabIndex = 26;
+            this.cboPDFParameters.TooltipText = "";
             this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkPreferNightlyBuilds
@@ -1397,6 +1399,7 @@ namespace Chummer
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(266, 21);
             this.cboXSLT.TabIndex = 8;
+            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblLanguage
@@ -1417,6 +1420,7 @@ namespace Chummer
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(162, 21);
             this.cboLanguage.TabIndex = 1;
+            this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // cmdVerify
@@ -1468,6 +1472,7 @@ namespace Chummer
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.chkPrintFreeExpenses);
             this.tabPage2.Controls.Add(this.chkDontRoundEssenceInternally);
             this.tabPage2.Controls.Add(this.cmdCharacterRoster);
             this.tabPage2.Controls.Add(this.txtCharacterRosterPath);
@@ -1497,13 +1502,25 @@ namespace Chummer
             this.tabPage2.Tag = "Tab_Options_Character";
             this.tabPage2.Text = "Character and Printing";
             // 
+            // chkPrintFreeExpenses
+            // 
+            this.chkPrintFreeExpenses.AutoSize = true;
+            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(20, 282);
+            this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
+            this.chkPrintFreeExpenses.Size = new System.Drawing.Size(208, 17);
+            this.chkPrintFreeExpenses.TabIndex = 13;
+            this.chkPrintFreeExpenses.Tag = "Checkbox_Options_PrintFreeExpenses";
+            this.chkPrintFreeExpenses.Text = "Print Free Karma and Nuyen Expenses";
+            this.chkPrintFreeExpenses.UseVisualStyleBackColor = true;
+            this.chkPrintFreeExpenses.CheckedChanged += new System.EventHandler(this.chkPrintFreeExpenses_CheckedChanged);
+            // 
             // chkDontRoundEssenceInternally
             // 
             this.chkDontRoundEssenceInternally.AutoSize = true;
-            this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(8, 368);
+            this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(8, 391);
             this.chkDontRoundEssenceInternally.Name = "chkDontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(349, 17);
-            this.chkDontRoundEssenceInternally.TabIndex = 24;
+            this.chkDontRoundEssenceInternally.TabIndex = 18;
             this.chkDontRoundEssenceInternally.Tag = "Checkbox_Option_DontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Text = "Only round Essence for display purposes, not for internal calculations";
             this.chkDontRoundEssenceInternally.UseVisualStyleBackColor = true;
@@ -1552,10 +1569,10 @@ namespace Chummer
             // chkPrintToFileFirst
             // 
             this.chkPrintToFileFirst.AutoSize = true;
-            this.chkPrintToFileFirst.Location = new System.Drawing.Point(7, 305);
+            this.chkPrintToFileFirst.Location = new System.Drawing.Point(7, 328);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
             this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
-            this.chkPrintToFileFirst.TabIndex = 18;
+            this.chkPrintToFileFirst.TabIndex = 15;
             this.chkPrintToFileFirst.Tag = "Checkbox_Option_PrintToFileFirst";
             this.chkPrintToFileFirst.Text = "Apply Linux printing fix";
             this.chkPrintToFileFirst.UseVisualStyleBackColor = true;
@@ -1563,7 +1580,7 @@ namespace Chummer
             // 
             // nudEssenceDecimals
             // 
-            this.nudEssenceDecimals.Location = new System.Drawing.Point(241, 342);
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(241, 365);
             this.nudEssenceDecimals.Minimum = new decimal(new int[] {
             1,
             0,
@@ -1582,7 +1599,7 @@ namespace Chummer
             // lblEssenceDecimals
             // 
             this.lblEssenceDecimals.AutoSize = true;
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(5, 344);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(5, 367);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
             this.lblEssenceDecimals.TabIndex = 16;
@@ -1592,10 +1609,10 @@ namespace Chummer
             // chkPrintNotes
             // 
             this.chkPrintNotes.AutoSize = true;
-            this.chkPrintNotes.Location = new System.Drawing.Point(7, 282);
+            this.chkPrintNotes.Location = new System.Drawing.Point(7, 305);
             this.chkPrintNotes.Name = "chkPrintNotes";
             this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
-            this.chkPrintNotes.TabIndex = 15;
+            this.chkPrintNotes.TabIndex = 14;
             this.chkPrintNotes.Tag = "Checkbox_Option_PrintNotes";
             this.chkPrintNotes.Text = "Print Notes";
             this.chkPrintNotes.UseVisualStyleBackColor = true;
@@ -1659,6 +1676,7 @@ namespace Chummer
             this.cboBuildMethod.Name = "cboBuildMethod";
             this.cboBuildMethod.Size = new System.Drawing.Size(89, 21);
             this.cboBuildMethod.TabIndex = 5;
+            this.cboBuildMethod.TooltipText = "";
             this.cboBuildMethod.SelectedIndexChanged += new System.EventHandler(this.cboBuildMethod_SelectedIndexChanged);
             // 
             // lblMaxAvail
@@ -1692,6 +1710,7 @@ namespace Chummer
             this.cboLimbCount.Name = "cboLimbCount";
             this.cboLimbCount.Size = new System.Drawing.Size(210, 21);
             this.cboLimbCount.TabIndex = 1;
+            this.cboLimbCount.TooltipText = "";
             // 
             // tabPage1
             // 
@@ -3357,6 +3376,7 @@ namespace Chummer
             this.cboSetting.Name = "cboSetting";
             this.cboSetting.Size = new System.Drawing.Size(176, 21);
             this.cboSetting.TabIndex = 1;
+            this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
             // 
             // lblSetting
@@ -3760,5 +3780,6 @@ namespace Chummer
         private System.Windows.Forms.NumericUpDown nudKarmaInitiationFlat;
         private System.Windows.Forms.CheckBox chkLiveUpdateCleanCharacterFiles;
         private System.Windows.Forms.CheckBox chkCompensateSkillGroupKarmaDifference;
+        private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
     }
 }
