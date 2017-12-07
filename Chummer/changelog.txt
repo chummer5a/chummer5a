@@ -465,6 +465,7 @@ Data Changes:
 - Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons.
 - Fixed incorrect concealability for the Altmayr SPX.
 - Added bonuses for the Death Dealer mentor.
+- Added an amend file to allow converting Heightened Concentration to have levels, per the German version of Shadow Spells.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
