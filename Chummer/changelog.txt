@@ -460,8 +460,9 @@ Data Changes:
 - Added missing entries for Magecuff and Magemask from Street Grimoire.
 - Added missing damage resistance bonus to the Bear mentor spirit.
 - Added missing social limit penalty to the Move-By-Wire System.
-- Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons
-- Fixed incorrect concealability for the Altmayr SPX
+- Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons.
+- Fixed incorrect concealability for the Altmayr SPX.
+- Added bonuses for the Death Dealer mentor.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
