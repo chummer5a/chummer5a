@@ -29,12 +29,16 @@ namespace Chummer
         {
             _tt = objToolTip;
             if (_tt == null)
-                _tt = new ToolTip();
-            _tt.AutoPopDelay = 1500;
-            _tt.InitialDelay = 400;
-            _tt.UseAnimation = true;
-            _tt.UseFading = true;
-            _tt.Active = true;
+            {
+                _tt = new ToolTip
+                {
+                    AutoPopDelay = 1500,
+                    InitialDelay = 400,
+                    UseAnimation = true,
+                    UseFading = true,
+                    Active = true
+                };
+            }
             this.MouseEnter += this.Label_MouseEnter;
             this.MouseLeave += this.Label_MouseLeave;
         }

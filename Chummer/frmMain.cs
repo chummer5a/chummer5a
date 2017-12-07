@@ -256,8 +256,10 @@ namespace Chummer
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             frmOptions frmOptions = new frmOptions();
             frmOptions.ShowDialog(this);
+            Cursor = Cursors.Default;
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -335,8 +337,10 @@ namespace Chummer
 
             if (settingsFiles.Length > 1)
             {
+                Cursor = Cursors.WaitCursor;
                 frmSelectSetting frmPickSetting = new frmSelectSetting();
                 frmPickSetting.ShowDialog(this);
+                Cursor = Cursors.Default;
 
                 if (frmPickSetting.DialogResult == DialogResult.Cancel)
                     return;
@@ -349,6 +353,8 @@ namespace Chummer
                 objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
             }
 
+            Cursor = Cursors.WaitCursor;
+
             // Override the defaults for the setting.
             objCharacter.IgnoreRules = true;
             objCharacter.IsCritter = true;
@@ -360,6 +366,7 @@ namespace Chummer
             frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
             frmSelectMetatype.XmlFile = "critters.xml";
             frmSelectMetatype.ShowDialog();
+            Cursor = Cursors.Default;
 
             if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 return;
@@ -694,10 +701,13 @@ namespace Chummer
             {
                 if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
+                    Cursor = Cursors.WaitCursor;
                     frmOptions frmOptions = new frmOptions();
                     frmOptions.ShowDialog();
+                    Cursor = Cursors.Default;
                 }
             }
+            Cursor = Cursors.WaitCursor;
             Character objCharacter = new Character();
             string settingsPath = Path.Combine(Application.StartupPath, "settings");
             string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
@@ -721,13 +731,16 @@ namespace Chummer
             // Show the BP selection window.
             frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter);
             frmBP.ShowDialog();
+            Cursor = Cursors.Default;
 
             if (frmBP.DialogResult == DialogResult.Cancel)
                 return;
             if (objCharacter.BuildMethod == CharacterBuildMethod.Karma || objCharacter.BuildMethod == CharacterBuildMethod.LifeModule)
             {
+                Cursor = Cursors.WaitCursor;
                 frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
+                Cursor = Cursors.Default;
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }
@@ -735,8 +748,10 @@ namespace Chummer
             // Show the Metatype selection window.
             else if (objCharacter.BuildMethod == CharacterBuildMethod.Priority || objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
+                Cursor = Cursors.WaitCursor;
                 frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter);
                 frmSelectMetatype.ShowDialog();
+                Cursor = Cursors.Default;
 
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                 { return; }

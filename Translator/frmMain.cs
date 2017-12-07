@@ -34,6 +34,7 @@ namespace Translator
                 MessageBox.Show("You must provide a five character language abbreviation.");
                 return;
             }
+            Cursor = Cursors.WaitCursor;
             string lower = txtLanguageCode.Text.ToLower();
             string str = string.Concat(ToTitle(txtLanguageName.Text), " (", lower.ToUpper(), ")");
             _objDataDoc = new XmlDocument();
@@ -100,6 +101,7 @@ namespace Translator
             {
                 frmTranslate.Language = str;
                 frmTranslate.ShowDialog(this);
+                Cursor = Cursors.Default;
             }
         }
 
@@ -107,8 +109,10 @@ namespace Translator
         {
             if (cboLanguages.SelectedIndex == -1)
                 return;
+            Cursor = Cursors.WaitCursor;
             var frmTranslate = new FrmTranslate {Language = cboLanguages.Text};
             frmTranslate.ShowDialog();
+            Cursor = Cursors.Default;
         }
 
         private void frmMain_Load(object sender, EventArgs e)

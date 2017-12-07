@@ -260,6 +260,7 @@ namespace Chummer
 
             if (!blnLoading)
             {
+                Cursor = Cursors.WaitCursor;
                 string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
                 // Strip away the language prefix
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
@@ -282,6 +283,7 @@ namespace Chummer
                         cboXSLT.SelectedIndex = 0;
                     }
                 }
+                Cursor = Cursors.Default;
             }
 
             OptionsChanged(sender,e);

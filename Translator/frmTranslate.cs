@@ -37,6 +37,7 @@ namespace Translator
         }
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             if (dgvSection.Visible)
             {
                 int rowCount = dgvSection.RowCount;
@@ -53,6 +54,7 @@ namespace Translator
                             dgvSection.Rows[i].Cells[j].Selected = true;
                             dgvSection.FirstDisplayedScrollingRowIndex = i;
                             dgvSection.Select();
+                            Cursor = Cursors.Default;
                             return;
                         }
                 for (int k = 0; k < rowIndex; k++)
@@ -65,8 +67,10 @@ namespace Translator
                             dgvSection.Rows[k].Cells[l].Selected = true;
                             dgvSection.FirstDisplayedScrollingRowIndex = k;
                             dgvSection.Select();
+                            Cursor = Cursors.Default;
                             return;
                         }
+                Cursor = Cursors.Default;
                 MessageBox.Show("Search text was not found.");
                 return;
             }
@@ -84,6 +88,7 @@ namespace Translator
                         dgvTranslate.Rows[m].Cells[n].Selected = true;
                         dgvTranslate.FirstDisplayedScrollingRowIndex = m;
                         dgvTranslate.Select();
+                        Cursor = Cursors.Default;
                         return;
                     }
             for (int o = 0; o < rowIndex1; o++)
@@ -96,8 +101,10 @@ namespace Translator
                         dgvTranslate.Rows[o].Cells[p].Selected = true;
                         dgvTranslate.FirstDisplayedScrollingRowIndex = o;
                         dgvTranslate.Select();
+                        Cursor = Cursors.Default;
                         return;
                     }
+            Cursor = Cursors.Default;
             MessageBox.Show("Search text was not found.");
         }
 
@@ -335,6 +342,7 @@ namespace Translator
         {
             if (cboSection.SelectedIndex < 0)
                 return;
+            Cursor = Cursors.WaitCursor;
             dgvTranslate.Visible = false;
             dgvSection.Visible = true;
             var dataTable = new DataTable("strings");
@@ -397,6 +405,7 @@ namespace Translator
             {
                 TranslatedIndicator(row);
             }
+            Cursor = Cursors.Default;
         }
 
         private void LoadSections()
@@ -416,6 +425,7 @@ namespace Translator
 
         private void LoadStrings()
         {
+            Cursor = Cursors.WaitCursor;
             dgvTranslate.Visible = true;
             dgvSection.Visible = false;
             var xmlDocument = new XmlDocument();
@@ -461,6 +471,7 @@ namespace Translator
                 TranslatedIndicator(row);
             }
             cboSection.Visible = false;
+            Cursor = Cursors.Default;
         }
 
         private void SetPath()

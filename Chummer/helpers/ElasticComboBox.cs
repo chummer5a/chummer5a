@@ -8,6 +8,7 @@ namespace Chummer.helpers
     internal class ElasticComboBox : ComboBox
     {
         private readonly ToolTip _tt;
+        private readonly Graphics _objGraphics;
 
         private string _strToolTipText = string.Empty;
         public string TooltipText
@@ -22,20 +23,25 @@ namespace Chummer.helpers
             }
         }
 
-        public ElasticComboBox() : base()
+        public ElasticComboBox(ToolTip objToolTip = null) : base()
         {
-            MouseDown += ResizeDropdown;
-            _tt = new ToolTip
+            _tt = objToolTip;
+            if (_tt == null)
             {
-                AutoPopDelay = 1500,
-                InitialDelay = 400,
-                UseAnimation = true,
-                UseFading = true,
-                Active = true
-            };
+                _tt = new ToolTip
+                {
+                    AutoPopDelay = 1500,
+                    InitialDelay = 400,
+                    UseAnimation = true,
+                    UseFading = true,
+                    Active = true
+                };
+            }
             
             MouseEnter += Label_MouseEnter;
             MouseLeave += Label_MouseLeave;
+
+            _objGraphics = CreateGraphics();
         }
 
         private void Label_MouseEnter(object sender, EventArgs ea)
@@ -48,16 +54,32 @@ namespace Chummer.helpers
             _tt.Hide(this);
         }
 
-        private void ResizeDropdown(object sender, MouseEventArgs e)
+        public new object DataSource
         {
-            ComboBox senderComboBox = (ComboBox)sender;
-            if (senderComboBox == null) return;
-            int width = senderComboBox.DropDownWidth;
-            Graphics g = senderComboBox.CreateGraphics();
-            Font font = senderComboBox.Font;
+            get { return base.DataSource; }
+            set { base.DataSource = value; ResizeDropDown(); }
+        }
+        public new string DisplayMember
+        {
+            get { return base.DisplayMember; }
+            set { base.DisplayMember = value; ResizeDropDown(); }
+        }
+        public new string ValueMember
+        {
+            get { return base.ValueMember; }
+            set { base.ValueMember = value; ResizeDropDown(); }
+        }
 
-            width = (from ListItem l in ((ComboBox) sender).Items select (int) g.MeasureString(l.Name, font).Width).Concat(new[] {width}).Max();
-            senderComboBox.DropDownWidth = width;
+        private void ResizeDropDown()
+        {
+            float fltMaxItemWidth = Width;
+            foreach (ListItem objItem in Items)
+            {
+                float fltLoopItemWidth = _objGraphics.MeasureString(objItem.Name, Font).Width;
+                if (fltLoopItemWidth > fltMaxItemWidth)
+                    fltMaxItemWidth = fltLoopItemWidth;
+            }
+            DropDownWidth = Convert.ToInt32(Math.Ceiling(fltMaxItemWidth));
         }
     }
 }
