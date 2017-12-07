@@ -5333,6 +5333,14 @@ namespace Chummer.Classes
                 Improvement.ImprovementType.FreeWare,
                 _strUnique);
         }
+
+        public void weaponaccuracy(XmlNode bonusNode)
+        {
+            Log.Info("weaponaccuracy");
+            Log.Info("weaponaccuracy = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, ValueToInt(_objCharacter, bonusNode["value"].InnerText, _intRating));
+        }
         #endregion
     }
 

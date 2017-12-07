@@ -296,6 +296,7 @@ namespace Chummer
             BurnoutsWay,
             ContactForceLoyalty,
             FreeWare,
+            WeaponAccuracy,
             NumImprovementTypes // <- This one should always be the last defined enum
         }
 

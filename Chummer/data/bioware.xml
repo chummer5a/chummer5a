@@ -1596,7 +1596,12 @@
       <capacity>0</capacity>
       <avail>8R</avail>
       <cost>2000</cost>
-      <addweapon></addweapon>
+      <bonus>
+        <weaponaccuracy>
+          <name>[contains]Fangs</name>
+          <value>2</value>
+        </weaponaccuracy>
+      </bonus>
       <source>CF</source>
       <page>121</page>
     </bioware>

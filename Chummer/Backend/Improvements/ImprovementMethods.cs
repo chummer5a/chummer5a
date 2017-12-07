@@ -535,6 +535,8 @@ namespace Chummer
                     return objImprovementAdder.burnoutsway;
                 case "ADDWARE":
                     return objImprovementAdder.addware;
+                case "WEAPONACCURACY":
+                    return objImprovementAdder.weaponaccuracy;
                 // No method matches, return a null pointer
                 default:
                     return null;

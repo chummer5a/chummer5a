@@ -2587,6 +2587,10 @@ namespace Chummer.Backend.Equipment
                     else
                         intAccuracy += wa.Accuracy;
                 }
+                string s = Name.ToLower();
+                intAccuracy += _objCharacter.Improvements
+                    .Where(i => i.ImproveType == Improvement.ImprovementType.WeaponAccuracy && (i.ImprovedName == string.Empty || i.ImprovedName == Name || i.ImprovedName.Contains("[contains]") && s.Contains(i.ImprovedName.Replace("[contains]",string.Empty).ToLower())))
+                    .Sum(objImprovement => objImprovement.Value);
 
                 // Look for Powers that increase accuracy
                 foreach (Power objPower in _objCharacter.Powers)
