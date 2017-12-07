@@ -79,9 +79,9 @@ namespace Chummer
             }
 
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            foreach (Character objCharacter in GlobalOptions.MainForm.OpenCharacters)
+            foreach (CharacterShared objCharacterForm in GlobalOptions.MainForm.OpenCharacterForms)
             {
-                string strFile = objCharacter.FileName;
+                string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (lstFavorites.Contains(strFile) || lstRecents.Contains(strFile) || lstWatch.Contains(strFile))
                     continue;
@@ -244,7 +244,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             objNode.ContextMenuStrip = cmsRoster;
             objNode.Text = CalculatedName(objCache);
-            objNode.ToolTipText = objCache.FilePath;
+            objNode.ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
             lock (_lstCharacterCacheLock)
             {
                 _lstCharacterCache.Add(objCache);
@@ -272,7 +272,7 @@ namespace Chummer
                 strBuildMethod = "Unknown build method";
             string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
-            if (GlobalOptions.MainForm.OpenCharacters.Any(x => x.FileName == objCache.FilePath))
+            if (GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
                 strReturn = "* " + strReturn;
             return strReturn;
         }
@@ -297,7 +297,7 @@ namespace Chummer
                 lblCharacterAlias.Text = objCache.CharacterAlias;
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
-                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath);
+                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">"));
                 picMugshot.Image = objCache.Mugshot;
             }
             else
@@ -407,15 +407,14 @@ namespace Chummer
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
                     if (!string.IsNullOrEmpty(strFile))
                     {
-                        Character objOpenCharacters = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                        if (objOpenCharacters == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacters))
+                        Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        Cursor = Cursors.WaitCursor;
+                        if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                         {
-                            Cursor = Cursors.WaitCursor;
-                            objSelectedNode.Text = "* " + objSelectedNode.Text;
-                            Character objOpenCharacter = frmMain.LoadCharacter(strFile);
-                            Cursor = Cursors.Default;
+                            objOpenCharacter = frmMain.LoadCharacter(strFile);
                             GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                         }
+                        Cursor = Cursors.Default;
                     }
                 }
             }

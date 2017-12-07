@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class PetControl
     {
@@ -63,7 +63,6 @@
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(172, 20);
             this.txtContactName.TabIndex = 11;
-            this.txtContactName.TextChanged += new System.EventHandler(this.txtName_TextChanged);
             // 
             // cmdDelete
             // 

@@ -50,7 +50,6 @@ namespace Chummer
         private bool _blnLoading = false;
         private bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements = false;
-        private bool _blnRequestCharacterUpdate = false;
         private int _intDragLevel = 0;
         private MouseButtons _objDragButton = new MouseButtons();
         private bool _blnDraggingGear = false;
@@ -92,7 +91,6 @@ namespace Chummer
             tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
 
             GlobalOptions.MRUChanged += DoNothing;
-            GlobalOptions.MainForm.OpenCharacters.Add(_objCharacter);
             GlobalOptions.MainForm.OpenCharacterForms.Add(this);
             LanguageManager.Load(GlobalOptions.Language, this);
 
@@ -296,12 +294,7 @@ namespace Chummer
             {
                 nudMugshotIndex.Minimum = 1;
                 nudMugshotIndex.Maximum = _objCharacter.Mugshots.Count;
-                decimal value = Math.Max(_objCharacter.MainMugshotIndex, 0) + 1;
-                if (value > nudMugshotIndex.Maximum)
-                {
-                    value = nudMugshotIndex.Maximum;
-                }
-                nudMugshotIndex.Value = value;
+                nudMugshotIndex.Value = Math.Max(_objCharacter.MainMugshotIndex, 0) + 1;
             }
             else
             {
@@ -555,7 +548,7 @@ namespace Chummer
                 if (objContact.EntityType == ContactType.Contact)
                 {
                     intContact++;
-                    ContactControl objContactControl = new ContactControl(_objCharacter);
+                    ContactControl objContactControl = new ContactControl(objContact);
                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
                     objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
                     objContactControl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
@@ -565,8 +558,6 @@ namespace Chummer
                     objContactControl.MouseDown += panContactControl_MouseDown;
                     objContactControl.FamilyChanged += objContact_OtherCostChanged;
                     objContactControl.BlackmailChanged += objContact_OtherCostChanged;
-                    
-                    objContactControl.ContactObject = objContact;
 
                     objContactControl.Top = intContact * objContactControl.Height;
                     panContacts.Controls.Add(objContactControl);
@@ -574,29 +565,23 @@ namespace Chummer
                 if (objContact.EntityType == ContactType.Enemy)
                 {
                     intEnemy++;
-                    ContactControl objContactControl = new ContactControl(_objCharacter);
+                    ContactControl objContactControl = new ContactControl(objContact);
                     // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
                     objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
                     objContactControl.LoyaltyRatingChanged += objEnemy_LoyaltyRatingChanged;
                     objContactControl.DeleteContact += objEnemy_DeleteContact;
                     objContactControl.FileNameChanged += objEnemy_FileNameChanged;
                     objContactControl.FreeRatingChanged += objEnemy_FreeStatusChanged;
-                    
-                    objContactControl.ContactObject = objContact;
 
                     objContactControl.Top = intEnemy * objContactControl.Height;
                     panEnemies.Controls.Add(objContactControl);
                 }
                 if (objContact.EntityType == ContactType.Pet)
                 {
-                    PetControl objContactControl = new PetControl();
+                    PetControl objContactControl = new PetControl(objContact);
                     // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
                     objContactControl.DeleteContact += objPet_DeleteContact;
                     objContactControl.FileNameChanged += objPet_FileNameChanged;
-
-                    objContactControl.ContactObject = objContact;
-                    objContactControl.ContactName = objContact.Name;
-                    objContactControl.BackColor = objContact.Colour;
 
                     panPets.Controls.Add(objContactControl);
                 }
@@ -692,8 +677,7 @@ namespace Chummer
                 if (objSpirit.EntityType == SpiritType.Spirit)
                 {
                     i++;
-                    SpiritControl objSpiritControl = new SpiritControl(true);
-                    objSpiritControl.SpiritObject = objSpirit;
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
                     objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
@@ -702,18 +686,13 @@ namespace Chummer
                     objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
-
-                    objSpiritControl.SpiritName = objSpirit.Name;
-                    objSpiritControl.ServicesOwed = objSpirit.ServicesOwed;
+                    
                     int intMAG = 0;
                     if (_objOptions.SpiritForceBasedOnTotalMAG)
                         intMAG = _objCharacter.MAG.TotalValue;
                     else
                         intMAG = _objCharacter.MAG.Value;
                     objSpiritControl.ForceMaximum = intMAG * 2;
-                    objSpiritControl.CritterName = objSpirit.CritterName;
-                    objSpiritControl.Force = objSpirit.Force;
-                    objSpiritControl.Bound = objSpirit.Bound;
                     objSpiritControl.RebuildSpiritList(_objCharacter.MagicTradition);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -729,8 +708,7 @@ namespace Chummer
                 if (objSpirit.EntityType == SpiritType.Sprite)
                 {
                     i++;
-                    SpiritControl objSpiritControl = new SpiritControl(true);
-                    objSpiritControl.SpiritObject = objSpirit;
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
                     objSpiritControl.EntityType = SpiritType.Sprite;
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -739,13 +717,8 @@ namespace Chummer
                     objSpiritControl.BoundChanged += objSprite_BoundChanged;
                     objSpiritControl.DeleteSpirit += objSprite_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSprite_FileNameChanged;
-
-                    objSpiritControl.SpiritName = objSpirit.Name;
-                    objSpiritControl.ServicesOwed = objSpirit.ServicesOwed;
+                    
                     objSpiritControl.ForceMaximum = _objCharacter.RES.TotalValue * 2;
-                    objSpiritControl.CritterName = objSpirit.CritterName;
-                    objSpiritControl.Force = objSpirit.Force;
-                    objSpiritControl.Bound = objSpirit.Bound;
                     objSpiritControl.RebuildSpiritList(_objCharacter.TechnomancerStream);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -1131,9 +1104,7 @@ namespace Chummer
             // If there are unsaved changes to the character, as the user if they would like to save their changes.
             if (_blnIsDirty)
             {
-                string strCharacterName = _objCharacter.Alias;
-                if (string.IsNullOrWhiteSpace(strCharacterName))
-                    strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
+                string strCharacterName = _objCharacter.CharacterName;
                 DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (objResult == DialogResult.Yes)
                 {
@@ -1154,7 +1125,6 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
-                GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
                 GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
                 GlobalOptions.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
@@ -1243,7 +1213,11 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                _objCharacter.Dispose();
+                if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objCharacter) && x != _objCharacter))
+                {
+                    GlobalOptions.MainForm.OpenCharacters.Remove(_objCharacter);
+                    _objCharacter.Dispose();
+                }
                 Dispose(true);
             }
         }
@@ -2518,7 +2492,7 @@ namespace Chummer
                 objMerge.FileName = _objCharacter.FileName;
                 objMerge.Load();
                 objMerge.Possessed = true;
-                objMerge.Alias = objVessel.Alias + " (" + LanguageManager.GetString("String_Possessed") + ")";
+                objMerge.Alias = objVessel.CharacterName + " (" + LanguageManager.GetString("String_Possessed") + ")";
 
                 // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                 bool blnHasImmunity = false;
@@ -2607,7 +2581,7 @@ namespace Chummer
                 string strShowFileName = Path.GetFileName(_objCharacter.FileName);
 
                 if (string.IsNullOrEmpty(strShowFileName))
-                    strShowFileName = _objCharacter.Alias;
+                    strShowFileName = _objCharacter.CharacterName;
                 strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
                 strShowFileName += " (" + LanguageManager.GetString("String_Possessed") + ")";
@@ -2810,7 +2784,7 @@ namespace Chummer
             strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
             strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
             strShowFileName += " (" + LanguageManager.GetString("String_Possessed") + ")";
@@ -4007,8 +3981,7 @@ namespace Chummer
             _objCharacter.Contacts.Add(objContact);
 
             int i = panContacts.Controls.Count;
-            ContactControl objContactControl = new ContactControl(_objCharacter);
-            objContactControl.ContactObject = objContact;
+            ContactControl objContactControl = new ContactControl(objContact);
             objContactControl.EntityType = ContactType.Contact;
 
             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
@@ -4035,8 +4008,7 @@ namespace Chummer
             _objCharacter.Contacts.Add(objContact);
 
             int i = panEnemies.Controls.Count;
-            ContactControl objContactControl = new ContactControl(_objCharacter);
-            objContactControl.ContactObject = objContact;
+            ContactControl objContactControl = new ContactControl(objContact);
             objContactControl.EntityType = ContactType.Enemy;
 
             // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
@@ -4199,8 +4171,7 @@ namespace Chummer
             Spirit objSpirit = new Spirit(_objCharacter);
             _objCharacter.Spirits.Add(objSpirit);
 
-            SpiritControl objSpiritControl = new SpiritControl(true);
-            objSpiritControl.SpiritObject = objSpirit;
+            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
             objSpiritControl.EntityType = SpiritType.Spirit;
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -4241,8 +4212,7 @@ namespace Chummer
             Spirit objSprite = new Spirit(_objCharacter);
             _objCharacter.Spirits.Add(objSprite);
 
-            SpiritControl objSpriteControl = new SpiritControl(true);
-            objSpriteControl.SpiritObject = objSprite;
+            SpiritControl objSpriteControl = new SpiritControl(objSprite);
             objSpriteControl.EntityType = SpiritType.Sprite;
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
@@ -5423,9 +5393,9 @@ namespace Chummer
                     UpdateMugshot(picMugshot, decimal.ToInt32(nudMugshotIndex.Value) - 1);
                 }
 
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
         }
 
 
@@ -8124,8 +8094,7 @@ namespace Chummer
             objContact.EntityType = ContactType.Pet;
             _objCharacter.Contacts.Add(objContact);
 
-            PetControl objContactControl = new PetControl();
-            objContactControl.ContactObject = objContact;
+            PetControl objContactControl = new PetControl(objContact);
 
             // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
             objContactControl.DeleteContact += objPet_DeleteContact;
@@ -18428,23 +18397,6 @@ namespace Chummer
         }
 #endregion
 
-#region Properties
-        /// <summary>
-        /// Character's name to use when loading them in a new tab.
-        /// </summary>
-        public string CharacterName
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(_objCharacter.Alias))
-                    return _objCharacter.Alias;
-                if (!string.IsNullOrWhiteSpace(_objCharacter.Name))
-                    return _objCharacter.Name;
-                return LanguageManager.GetString("String_UnnamedCharacter");
-            }
-        }
-#endregion
-
 #region Sourcebook Label Events
         private void lblMetatypeSource_Click(object sender, EventArgs e)
         {
@@ -18554,8 +18506,7 @@ namespace Chummer
 
             foreach (Contact contact in newcontacts)
             {
-                ContactControl ctrl = new ContactControl(_objCharacter);
-                ctrl.ContactObject = contact;
+                ContactControl ctrl = new ContactControl(contact);
 
                 ctrl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
                 ctrl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
@@ -18577,11 +18528,6 @@ namespace Chummer
                     ContactControl contactControl = (ContactControl)contact;
                 }
             }
-        }
-
-        public void ScheduleCharacterUpdate()
-        {
-            _blnRequestCharacterUpdate = true;
         }
 
         public void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
@@ -19302,6 +19248,21 @@ namespace Chummer
             RefreshLimitModifiers();
             RefreshImprovements();
             UpdateReputation();
+
+            txtCharacterName.Text = _objCharacter.Name;
+            txtSex.Text = _objCharacter.Sex;
+            txtAge.Text = _objCharacter.Age;
+            txtEyes.Text = _objCharacter.Eyes;
+            txtHeight.Text = _objCharacter.Height;
+            txtWeight.Text = _objCharacter.Weight;
+            txtSkin.Text = _objCharacter.Skin;
+            txtHair.Text = _objCharacter.Hair;
+            txtDescription.Text = _objCharacter.Description;
+            txtBackground.Text = _objCharacter.Background;
+            txtConcept.Text = _objCharacter.Concept;
+            txtNotes.Text = _objCharacter.Notes;
+            txtAlias.Text = _objCharacter.Alias;
+            txtPlayerName.Text = _objCharacter.PlayerName;
 
             if (Autosave_StopWatch.Elapsed.Minutes >= 5 && _blnIsDirty)
             {

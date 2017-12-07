@@ -235,6 +235,7 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\IHasMugshots.cs" />
     <Compile Include="Interfaces\INamedItemWithGuid.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>

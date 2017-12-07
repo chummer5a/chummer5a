@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class SpiritControl
     {
@@ -143,7 +143,6 @@
             this.cboSpiritName.Size = new System.Drawing.Size(148, 21);
             this.cboSpiritName.TabIndex = 7;
             this.cboSpiritName.SelectedIndexChanged += new System.EventHandler(this.cboSpiritName_SelectedIndexChanged);
-            this.cboSpiritName.TextChanged += new System.EventHandler(this.cboSpiritName_TextChanged);
             // 
             // imgLink
             // 

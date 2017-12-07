@@ -443,11 +443,11 @@ namespace Chummer
 
                     if (ActiveMdiChild.GetType() == typeof(frmCareer))
                     {
-                        tp.Text = ((frmCareer)ActiveMdiChild).CharacterName;
+                        tp.Text = ((frmCareer)ActiveMdiChild).CharacterObject.CharacterName;
                     }
                     else if (ActiveMdiChild.GetType() == typeof(frmCreate))
                     {
-                        tp.Text = ((frmCreate)ActiveMdiChild).CharacterName;
+                        tp.Text = ((frmCreate)ActiveMdiChild).CharacterObject.CharacterName;
                     }
                     else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
                     {
@@ -488,7 +488,7 @@ namespace Chummer
                 (tabForms.SelectedTab.Tag as Form)?.Select();
         }
 
-        public bool SwitchToOpenCharacter(Character objCharacter)
+        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMRU)
         {
             if (objCharacter != null)
             {
@@ -504,6 +504,11 @@ namespace Chummer
                         }
                     }
                 }
+                if (OpenCharacters.Contains(objCharacter))
+                {
+                    OpenCharacter(objCharacter, blnIncludeInMRU);
+                    return true;
+                }
             }
             return false;
         }
@@ -516,15 +521,7 @@ namespace Chummer
                 Character objCharacter = sender as Character;
                 if (objCharacter != null)
                 {
-                    string strTitle = objCharacter.Name;
-                    if (!string.IsNullOrWhiteSpace(objCharacter.Alias))
-                    {
-                        strTitle = objCharacter.Alias.Trim();
-                    }
-                    else if (string.IsNullOrWhiteSpace(strTitle))
-                    {
-                        strTitle = LanguageManager.GetString("String_UnnamedCharacter");
-                    }
+                    string strTitle = objCharacter.CharacterName.Trim();
 
                     tabForms.SelectedTab.Text = strTitle;
                 }
@@ -861,7 +858,7 @@ namespace Chummer
         /// <param name="blnIncludeInMRU">Whether or not the file should appear in the MRU list.</param>
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false)
+        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
         {
             Character objCharacter = null;
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
@@ -881,7 +878,8 @@ namespace Chummer
                     }
                     catch (XmlException ex)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        if (blnShowErrors)
+                            MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return null;
                     }
                 }
@@ -908,11 +906,14 @@ namespace Chummer
                     }
                 }
 
+                GlobalOptions.MainForm.OpenCharacters.Add(objCharacter);
                 Timekeeper.Start("load_file");
                 blnLoaded = objCharacter.Load();
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
+                    objCharacter.Dispose();
+                    GlobalOptions.MainForm.OpenCharacters.Remove(objCharacter);
                     return null;
                 }
 
@@ -923,7 +924,7 @@ namespace Chummer
                 if (blnClearFileName)
                     objCharacter.FileName = string.Empty;
             }
-            else
+            else if (blnShowErrors)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

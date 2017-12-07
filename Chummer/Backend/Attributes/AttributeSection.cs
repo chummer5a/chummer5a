@@ -46,7 +46,7 @@ namespace Chummer.Backend.Attributes
 			}
 		}
 
-		public void Load(XmlDocument xmlDoc)
+		public void Load(XmlNode xmlSavedCharacterNode)
 		{
 			Timekeeper.Start("load_char_attrib");
 			AttributeList.Clear();
@@ -62,7 +62,7 @@ namespace Chummer.Backend.Attributes
             }
             foreach (string s in AttributeStrings)
             {
-                XmlNodeList attNodeList = xmlDoc.SelectNodes("/character/attributes/attribute[name = \"" + s + "\"]");
+                XmlNodeList attNodeList = xmlSavedCharacterNode.SelectNodes("attributes/attribute[name = \"" + s + "\"]");
                 // Couldn't find the appopriate attribute in the loaded file, so regenerate it from scratch. 
                 if (attNodeList.Count == 0)
                 {

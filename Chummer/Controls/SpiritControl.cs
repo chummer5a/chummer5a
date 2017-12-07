@@ -31,8 +31,7 @@ namespace Chummer
 {
     public partial class SpiritControl : UserControl
     {
-        private Spirit _objSpirit;
-        private readonly bool _blnCareer = false;
+        private readonly Spirit _objSpirit;
 
         // Events.
         public Action<object> ServicesOwedChanged;
@@ -43,12 +42,11 @@ namespace Chummer
         public Action<object> FileNameChanged;
 
         #region Control Events
-        public SpiritControl(bool blnCareer = false)
+        public SpiritControl(Spirit objSpirit)
         {
+            _objSpirit = objSpirit;
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            _blnCareer = blnCareer;
-            chkBound.Enabled = blnCareer;
         }
 
         private void nudServices_ValueChanged(object sender, EventArgs e)
@@ -107,14 +105,25 @@ namespace Chummer
         private void SpiritControl_Load(object sender, EventArgs e)
         {
             DoubleBuffered = true;
-            if (_blnCareer)
-                nudForce.Enabled = true;
+            nudForce.DataBindings.Add("Enabled", _objSpirit.CharacterObject, nameof(Character.Created), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkBound.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Bound), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkBound.DataBindings.Add("Enabled", _objSpirit.CharacterObject, nameof(Character.Created), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            cboSpiritName.DataBindings.Add("Text", _objSpirit, nameof(_objSpirit.Name), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtCritterName.DataBindings.Add("Text", _objSpirit, nameof(_objSpirit.CritterName), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudServices.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.ServicesOwed), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
-        }
-
-        private void cboSpiritName_TextChanged(object sender, EventArgs e)
-        {
-            _objSpirit.Name = cboSpiritName.Text;
         }
 
         private void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
@@ -126,63 +135,46 @@ namespace Chummer
 
         private void txtCritterName_TextChanged(object sender, EventArgs e)
         {
-            _objSpirit.CritterName = txtCritterName.Text;
             ForceChanged(this);
         }
 
         private void tsContactOpen_Click(object sender, EventArgs e)
         {
-            bool blnError = false;
-            bool blnUseRelative = false;
-
-            // Make sure the file still exists before attempting to load it.
-            if (!File.Exists(_objSpirit.FileName))
+            if (_objSpirit.LinkedCharacter != null)
             {
-                // If the file doesn't exist, use the relative path if one is available.
-                if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
-                    blnError = true;
-                else
+                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
+                Cursor = Cursors.WaitCursor;
+                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    MessageBox.Show(Path.GetFullPath(_objSpirit.RelativeFileName));
-                    if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
-                        blnError = true;
-                    else
-                        blnUseRelative = true;
+                    objOpenCharacter = frmMain.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                 }
-
-                if (blnError)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            if (Path.GetExtension(_objSpirit.FileName) == "chum5")
-            {
-                if (!blnUseRelative)
-                {
-                    Cursor = Cursors.WaitCursor;
-                    Character objOpenCharacter = frmMain.LoadCharacter(_objSpirit.FileName);
-                    Cursor = Cursors.Default;
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
-                }
-                else
-                {
-                    string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
-                    Cursor = Cursors.WaitCursor;
-                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
-                    Cursor = Cursors.Default;
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
-                }
+                Cursor = Cursors.Default;
             }
             else
             {
-                if (!blnUseRelative)
-                    System.Diagnostics.Process.Start(_objSpirit.FileName);
-                else
+                bool blnUseRelative = false;
+
+                // Make sure the file still exists before attempting to load it.
+                if (!File.Exists(_objSpirit.FileName))
                 {
-                    string strFile = Path.GetFullPath(_objSpirit.RelativeFileName);
-                    System.Diagnostics.Process.Start(strFile);
+                    bool blnError = false;
+                    // If the file doesn't exist, use the relative path if one is available.
+                    if (string.IsNullOrEmpty(_objSpirit.RelativeFileName))
+                        blnError = true;
+                    else if (!File.Exists(Path.GetFullPath(_objSpirit.RelativeFileName)))
+                        blnError = true;
+                    else
+                        blnUseRelative = true;
+
+                    if (blnError)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objSpirit.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
+                string strFile = blnUseRelative ? Path.GetFullPath(_objSpirit.RelativeFileName) : _objSpirit.FileName;
+                System.Diagnostics.Process.Start(strFile);
             }
         }
 
@@ -301,10 +293,6 @@ namespace Chummer
             {
                 return _objSpirit;
             }
-            set
-            {
-                _objSpirit = value;
-            }
         }
 
         /// <summary>
@@ -316,11 +304,6 @@ namespace Chummer
             {
                 return _objSpirit.Name;
             }
-            set
-            {
-                cboSpiritName.Text = value;
-                _objSpirit.Name = value;
-            }
         }
 
         /// <summary>
@@ -331,11 +314,6 @@ namespace Chummer
             get
             {
                 return _objSpirit.CritterName;
-            }
-            set
-            {
-                txtCritterName.Text = value;
-                _objSpirit.CritterName = value;
             }
         }
 
@@ -393,7 +371,6 @@ namespace Chummer
             }
             set
             {
-                nudServices.Value = value;
                 _objSpirit.ServicesOwed = value;
             }
         }
@@ -409,7 +386,6 @@ namespace Chummer
             }
             set
             {
-                nudForce.Value = value;
                 _objSpirit.Force = value;
             }
         }
@@ -440,7 +416,6 @@ namespace Chummer
             }
             set
             {
-                chkBound.Checked = value;
                 _objSpirit.Bound = value;
             }
         }
@@ -456,7 +431,6 @@ namespace Chummer
             }
             set
             {
-                chkFettered.Checked = value;
                 _objSpirit.Fettered = value;
             }
         }

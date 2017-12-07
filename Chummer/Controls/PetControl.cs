@@ -20,21 +20,23 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class PetControl : UserControl
     {
-        private Contact _objContact;
+        private readonly Contact _objContact;
 
         // Events.
         public Action<object> DeleteContact;
         public Action<object> FileNameChanged;
 
         #region Control Events
-        public PetControl()
+        public PetControl(Contact objContact)
         {
+            _objContact = objContact;
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
@@ -43,22 +45,14 @@ namespace Chummer
         private void PetControl_Load(object sender, EventArgs e)
         {
             Width = cmdDelete.Left + cmdDelete.Width;
-            lblMetatype.Text = string.Empty;
-
-            if (!string.IsNullOrEmpty(_objContact.FileName))
-            {
-                Cursor = Cursors.WaitCursor;
-                // Load the character to get their Metatype.
-                Character objPet = new Character();
-                objPet.FileName = _objContact.FileName;
-                objPet.Load();
-                lblMetatype.Text = objPet.Metatype;
-                if (!string.IsNullOrEmpty(objPet.Metavariant))
-                    lblMetatype.Text += " (" + objPet.Metavariant + ")";
-                objPet.Dispose();
-                objPet = null;
-                Cursor = Cursors.Default;
-            }
+            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.Metatype), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+                DataSourceUpdateMode.OnPropertyChanged);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -66,11 +60,6 @@ namespace Chummer
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
             DeleteContact(this);
-        }
-
-        private void txtName_TextChanged(object sender, EventArgs e)
-        {
-            _objContact.Name = txtContactName.Text;
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -93,57 +82,41 @@ namespace Chummer
 
         private void tsContactOpen_Click(object sender, EventArgs e)
         {
-            bool blnError = false;
-            bool blnUseRelative = false;
-
-            // Make sure the file still exists before attempting to load it.
-            if (!File.Exists(_objContact.FileName))
+            if (_objContact.LinkedCharacter != null)
             {
-                // If the file doesn't exist, use the relative path if one is available.
-                if (string.IsNullOrEmpty(_objContact.RelativeFileName))
-                    blnError = true;
-                else
+                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Cursor = Cursors.WaitCursor;
+                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    MessageBox.Show(Path.GetFullPath(_objContact.RelativeFileName));
-                    if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
-                        blnError = true;
-                    else
-                        blnUseRelative = true;
+                    objOpenCharacter = frmMain.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
                 }
-
-                if (blnError)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            if (Path.GetExtension(_objContact.FileName) == "chum5")
-            {
-                if (!blnUseRelative)
-                {
-                    Cursor = Cursors.WaitCursor;
-                    Character objOpenCharacter = frmMain.LoadCharacter(_objContact.FileName);
-                    Cursor = Cursors.Default;
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
-                }
-                else
-                {
-                    string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                    Cursor = Cursors.WaitCursor;
-                    Character objOpenCharacter = frmMain.LoadCharacter(strFile);
-                    Cursor = Cursors.Default;
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter, false);
-                }
+                Cursor = Cursors.Default;
             }
             else
             {
-                if (!blnUseRelative)
-                    System.Diagnostics.Process.Start(_objContact.FileName);
-                else
+                bool blnUseRelative = false;
+
+                // Make sure the file still exists before attempting to load it.
+                if (!File.Exists(_objContact.FileName))
                 {
-                    string strFile = Path.GetFullPath(_objContact.RelativeFileName);
-                    System.Diagnostics.Process.Start(strFile);
+                    bool blnError = false;
+                    // If the file doesn't exist, use the relative path if one is available.
+                    if (string.IsNullOrEmpty(_objContact.RelativeFileName))
+                        blnError = true;
+                    else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
+                        blnError = true;
+                    else
+                        blnUseRelative = true;
+
+                    if (blnError)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                 }
+                string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
+                System.Diagnostics.Process.Start(strFile);
             }
         }
 
@@ -162,16 +135,6 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 _objContact.FileName = openFileDialog.FileName;
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_OpenFile"));
-
-                // Load the character to get their Metatype.
-                Character objPet = new Character();
-                objPet.FileName = _objContact.FileName;
-                objPet.Load();
-                lblMetatype.Text = objPet.Metatype;
-                if (!string.IsNullOrEmpty(objPet.Metavariant))
-                    lblMetatype.Text += " (" + objPet.Metavariant + ")";
-                objPet.Dispose();
-                objPet = null;
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(@Application.StartupPath);
@@ -206,8 +169,7 @@ namespace Chummer
             if (frmContactNotes.DialogResult == DialogResult.OK)
                 _objContact.Notes = frmContactNotes.Notes;
 
-            string strTooltip = string.Empty;
-            strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
@@ -244,10 +206,6 @@ namespace Chummer
             {
                 return _objContact;
             }
-            set
-            {
-                _objContact = value;
-            }
         }
 
         /// <summary>
@@ -261,7 +219,6 @@ namespace Chummer
             }
             set
             {
-                txtContactName.Text = value;
                 _objContact.Name = value;
             }
         }

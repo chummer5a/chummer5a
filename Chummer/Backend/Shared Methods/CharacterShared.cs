@@ -45,6 +45,7 @@ namespace Chummer
         protected readonly Character _objCharacter;
         protected readonly CharacterOptions _objOptions;
         protected bool _blnIsDirty = false;
+        protected bool _blnRequestCharacterUpdate = false;
 
         public CharacterShared(Character objCharacter)
         {
@@ -104,7 +105,7 @@ namespace Chummer
             string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
             Cursor = Cursors.Default;
@@ -588,6 +589,15 @@ namespace Chummer
             {
                 return _blnIsDirty;
             }
+            set
+            {
+                _blnIsDirty = value;
+            }
+        }
+
+        public void ScheduleCharacterUpdate()
+        {
+            _blnRequestCharacterUpdate = true;
         }
 
         public Character CharacterObject
@@ -684,7 +694,7 @@ namespace Chummer
             strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
 
             saveFileDialog.FileName = strShowFileName;
 

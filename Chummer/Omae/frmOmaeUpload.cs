@@ -144,8 +144,8 @@ namespace Chummer
             }
 
             // Make sure the character is named.
-            _strCharacterName = _objCharacter.Alias;
-            if (string.IsNullOrWhiteSpace(_strCharacterName) || _strCharacterName == "Unnamed Character")
+            _strCharacterName = _objCharacter.CharacterName;
+            if (string.IsNullOrWhiteSpace(_strCharacterName) || _strCharacterName == LanguageManager.GetString("String_UnnamedCharacter"))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UnnamedCharacter"), LanguageManager.GetString("MessageTitle_OmaeUpload_UnnamedCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

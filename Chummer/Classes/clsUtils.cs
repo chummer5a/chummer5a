@@ -183,9 +183,7 @@ namespace Chummer
                 CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
-                    string strCharacterName = objOpenCharacterForm.CharacterObject.Alias;
-                    if (string.IsNullOrWhiteSpace(strCharacterName))
-                        strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
+                    string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
                     DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (objResult == DialogResult.Yes)
                     {
@@ -208,9 +206,9 @@ namespace Chummer
             GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            foreach (Character objOpenCharacter in GlobalOptions.MainForm.OpenCharacters)
+            foreach (CharacterShared objOpenCharacterForm in GlobalOptions.MainForm.OpenCharacterForms)
             {
-                arguments += "\"" + objOpenCharacter.FileName + "\" ";
+                arguments += "\"" + objOpenCharacterForm.CharacterObject.FileName + "\" ";
             }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
