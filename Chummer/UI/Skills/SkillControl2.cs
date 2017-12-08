@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 using Chummer.Skills;
 using Chummer.Backend.Attributes;
-using Chummer.helpers;
 
 namespace Chummer.UI.Skills
 {

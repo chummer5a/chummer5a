@@ -3641,7 +3641,7 @@ namespace Chummer
             internal set { _blnSearchInCategoryOnly = value; }
         }
 
-        public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

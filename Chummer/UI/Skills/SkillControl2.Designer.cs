@@ -38,8 +38,8 @@ namespace Chummer.UI.Skills
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsSkillLabelNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.lblAttribute = new System.Windows.Forms.Label();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
-            this.nudSkill = new Chummer.helpers.NumericUpDownEx();
+            this.nudKarma = new NumericUpDownEx();
+            this.nudSkill = new NumericUpDownEx();
             this.lblModifiedRating = new System.Windows.Forms.Label();
             this.cboSpec = new System.Windows.Forms.ComboBox();
             this.chkKarma = new System.Windows.Forms.CheckBox();
@@ -95,7 +95,7 @@ namespace Chummer.UI.Skills
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(210, 2);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
@@ -108,7 +108,7 @@ namespace Chummer.UI.Skills
             // 
             // nudSkill
             // 
-            this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudSkill.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(168, 2);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
@@ -278,8 +278,8 @@ namespace Chummer.UI.Skills
 
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblAttribute;
-        private Chummer.helpers.NumericUpDownEx nudKarma;
-        private Chummer.helpers.NumericUpDownEx nudSkill;
+        private NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudSkill;
         private System.Windows.Forms.Label lblModifiedRating;
         private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;

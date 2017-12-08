@@ -1,4 +1,3 @@
-using Chummer.helpers;
 using System;
 using Chummer.UI.Powers;
 using Chummer.UI.Attributes;

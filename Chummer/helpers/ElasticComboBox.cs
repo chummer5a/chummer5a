@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Chummer.helpers
+namespace Chummer
 {
     internal class ElasticComboBox : ComboBox
     {
@@ -16,10 +16,12 @@ namespace Chummer.helpers
             get => _strToolTipText;
             set
             {
-                if (_strToolTipText == value) return;
-                _strToolTipText = value;
-                if (!string.IsNullOrEmpty(value))
-                    _tt.SetToolTip(this, value);
+                if (_strToolTipText != value)
+                {
+                    _strToolTipText = value;
+                    if (!string.IsNullOrEmpty(value))
+                        _tt.SetToolTip(this, value);
+                }
             }
         }
 
@@ -48,8 +50,10 @@ namespace Chummer.helpers
 
         private void Label_MouseEnter(object sender, EventArgs ea)
         {
-            TooltipText = Text;
-            _tt.Show(TooltipText, Parent);
+            if (!string.IsNullOrEmpty(TooltipText))
+            {
+                _tt.Show(TooltipText, Parent);
+            }
         }
         private void Label_MouseLeave(object sender, EventArgs ea)
         {
@@ -59,25 +63,47 @@ namespace Chummer.helpers
         public new object DataSource
         {
             get { return base.DataSource; }
-            set { base.DataSource = value; ResizeDropDown(); }
+            set
+            {
+                if (base.DataSource != value)
+                {
+                    base.DataSource = value;
+                    ResizeDropDown();
+                }
+            }
         }
         public new string DisplayMember
         {
             get { return base.DisplayMember; }
-            set { base.DisplayMember = value; ResizeDropDown(); }
+            set
+            {
+                if (base.DisplayMember != value)
+                {
+                    base.DisplayMember = value;
+                    ResizeDropDown();
+                }
+            }
         }
         public new string ValueMember
         {
             get { return base.ValueMember; }
-            set { base.ValueMember = value; ResizeDropDown(); }
+            set
+            {
+                if (base.ValueMember != value)
+                {
+                    base.ValueMember = value;
+                    ResizeDropDown();
+                }
+            }
         }
 
         private void ResizeDropDown()
         {
             float fltMaxItemWidth = Width;
-            foreach (ListItem objItem in Items)
+            foreach (var objItem in Items)
             {
-                float fltLoopItemWidth = _objGraphics.MeasureString(objItem.Name, Font).Width;
+                string strItemText = (objItem as ListItem)?.Name ?? GetItemText(objItem);
+                float fltLoopItemWidth = _objGraphics.MeasureString(strItemText, Font).Width;
                 if (fltLoopItemWidth > fltMaxItemWidth)
                     fltMaxItemWidth = fltLoopItemWidth;
             }

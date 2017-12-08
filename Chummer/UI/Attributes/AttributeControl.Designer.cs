@@ -33,8 +33,8 @@ namespace Chummer.UI.Attributes
             this.lblName = new LabelWithToolTip();
             this.lblLimits = new LabelWithToolTip();
             this.cmdBurnEdge = new ButtonWithToolTip();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
-            this.nudBase = new Chummer.helpers.NumericUpDownEx();
+            this.nudKarma = new NumericUpDownEx();
+            this.nudBase = new NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
             this.SuspendLayout();
@@ -96,7 +96,7 @@ namespace Chummer.UI.Attributes
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(165, 1);
             this.nudKarma.Name = "nudKarma";
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
@@ -106,7 +106,7 @@ namespace Chummer.UI.Attributes
             // 
             // nudBase
             // 
-            this.nudBase.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudBase.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudBase.Location = new System.Drawing.Point(119, 1);
             this.nudBase.Name = "nudBase";
             this.nudBase.Size = new System.Drawing.Size(40, 20);
@@ -142,11 +142,11 @@ namespace Chummer.UI.Attributes
         #endregion
 
         private ButtonWithToolTip cmdImproveATT;
-        internal LabelWithToolTip lblValue;
-        internal LabelWithToolTip lblName;
-        internal LabelWithToolTip lblLimits;
-        internal Chummer.helpers.NumericUpDownEx nudKarma;
-        internal Chummer.helpers.NumericUpDownEx nudBase;
+        private LabelWithToolTip lblValue;
+        private LabelWithToolTip lblName;
+        private LabelWithToolTip lblLimits;
+        private NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudBase;
         private ButtonWithToolTip cmdBurnEdge;
     }
 }

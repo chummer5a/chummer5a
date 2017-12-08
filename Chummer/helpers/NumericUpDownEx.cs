@@ -17,7 +17,7 @@ using System.Windows.Input;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
-namespace Chummer.helpers
+namespace Chummer
 {
     public class NumericUpDownEx : NumericUpDown
     {

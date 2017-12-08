@@ -273,7 +273,7 @@ namespace Chummer
                 else
                     cboXSLT.SelectedValue = Path.Combine(strNewLanguage, strOldSelected);
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-                if (cboXSLT.SelectedIndex == -1)
+                if (cboXSLT.SelectedIndex == -1 && cboXSLT.Items.Count > 0)
                 {
                     if (strNewLanguage == GlobalOptions.DefaultLanguage)
                         cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
@@ -1245,13 +1245,14 @@ namespace Chummer
 
         private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
-            var names = new List<string>();
+            List<string> names = new List<string>();
 
             if (Directory.Exists(path))
             {
-                names = Directory.GetFiles(path)
-                    .Where(s => s.EndsWith(".xsl"))
-                    .Select(Path.GetFileNameWithoutExtension).ToList();
+                foreach (string strName in Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories))
+                {
+                    names.Add(Path.GetFileNameWithoutExtension(strName));
+                }
             }
 
             return names;
@@ -1303,9 +1304,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = new List<ListItem>();
-
-            lstFiles.AddRange(GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage));
+            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -1341,7 +1340,7 @@ namespace Chummer
                 GlobalOptions.DefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
 
             cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheet;
-            if (cboXSLT.SelectedValue == null)
+            if (cboXSLT.SelectedValue == null && cboXSLT.Items.Count > 0)
             {
                 int intNameIndex = -1;
                 string strLanguage = cboLanguage.SelectedValue.ToString();

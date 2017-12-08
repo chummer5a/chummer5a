@@ -41,15 +41,16 @@ namespace Chummer
                     Active = true
                 };
             }
-            this.MouseEnter += this.Label_MouseEnter;
-            this.MouseLeave += this.Label_MouseLeave;
+
+            MouseEnter += Label_MouseEnter;
+            MouseLeave += Label_MouseLeave;
         }
 
         private void Label_MouseEnter(object sender, EventArgs ea)
         {
-            if (!string.IsNullOrEmpty(this.TooltipText))
+            if (!string.IsNullOrEmpty(TooltipText))
             {
-                _tt.Show(this.TooltipText, this.Parent);
+                _tt.Show(TooltipText, Parent);
             }
         }
         private void Label_MouseLeave(object sender, EventArgs ea)

@@ -119,7 +119,7 @@ namespace Chummer
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
-                else
+                else if (cboXSLT.Items.Count > 0)
                 {
                     if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
                         _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
@@ -525,9 +525,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = new List<ListItem>();
-
-            lstFiles.AddRange(GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue.ToString()));
+            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -681,7 +679,7 @@ namespace Chummer
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
-                else
+                else if (cboXSLT.Items.Count > 0)
                 {
                     if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
                         _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;

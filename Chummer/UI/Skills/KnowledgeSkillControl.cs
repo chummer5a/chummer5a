@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.helpers;
 using Chummer.Skills;
 
 namespace Chummer.UI.Skills
