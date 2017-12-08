@@ -4141,6 +4141,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
+        private int _intKarmaCost = 7;
         private int _intRating = 1;
         private Guid _guiID;
         private List<MartialArtAdvantage> _lstAdvantages = new List<MartialArtAdvantage>();
@@ -4164,6 +4165,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
@@ -4188,6 +4190,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("cost", _intKarmaCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("isquality", _blnIsQuality.ToString());
             objWriter.WriteStartElement("martialartadvantages");
             foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
@@ -4213,6 +4216,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+            objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
             if (objNode.InnerXml.Contains("martialartadvantages"))
@@ -4241,6 +4245,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
+            objWriter.WriteElementString("cost", _intKarmaCost.ToString(objCulture));
             objWriter.WriteStartElement("martialartadvantages");
             foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
             {
@@ -4337,6 +4342,15 @@ namespace Chummer
         {
             get => _intRating;
             set => _intRating = value;
+        }
+
+        /// <summary>
+        /// Karma Cost (usually 7).
+        /// </summary>
+        public int Cost
+        {
+            get => _intKarmaCost;
+            set => _intKarmaCost = value;
         }
 
         /// <summary>

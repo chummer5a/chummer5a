@@ -309,6 +309,7 @@ Application Changes:
 - Fixed a bug where characters with Gammaware and/or the Adapsin versions of Betaware, Deltaware, and Gammaware would pass the character validity check for Career mode.
 - Unhardcoded the device rating values of 'ware grades. They can now be modified with custom data files.
 - Added the ability to perform a clean reinstall from within the updater.
+- Added the ability to have Martial Arts with karma costs different from the default of 7.
 
 Data Changes:
 
@@ -474,6 +475,7 @@ Data Changes:
 - Added an amend file to allow converting Heightened Concentration to have levels, per the German version of Shadow Spells.
 - Added the missing troop transport module for the Ruhrmetall Wolf II. Other modules require errata clarification.
 - Added a bonus for the Muzzle bioware to increase Accuracy for any weapon with 'fangs' in the name.
+- Fixed being able to get Way of Unified Mana (Hapsum-Do) without being an Adept or Mystic Adept. Fixed Way of Unified Mana (Hapsum-Do) costing 7 karma instead of 15.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
