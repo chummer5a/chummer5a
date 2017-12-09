@@ -313,6 +313,7 @@ Application Changes:
 - When warning about duplicate GUIDs in data files, Chummer5a will now display the names of the items to which those duplicate IDs belong.
 - In addition to checking for duplicate GUIDs, Chummer5a will now also check for ID fields that do not contain GUIDs, and if it finds any, it will warn users in a manner similar to the warning for duplicate GUIDs.
 - Fixed a bug where items that both consumed capacity and had capacity did not cause selection forms to enforce their maximum capacity remaining. Fixes #1806.
+- The Shadowrun 5 character sheet set will now print the various resistance dicepools that the character has. Fixes #1935.
 
 Data Changes:
 

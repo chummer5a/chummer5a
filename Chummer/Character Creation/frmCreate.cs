@@ -2319,7 +2319,7 @@ namespace Chummer
                         if (objArmor.Equipped)
                         {
                             ImprovementManager.ForcedValue = objArmor.Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, 1, objArmor.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort);
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objArmor.Extra = ImprovementManager.SelectedValue;
@@ -2351,7 +2351,7 @@ namespace Chummer
                             if (objMod.Equipped)
                             {
                                 ImprovementManager.ForcedValue = objMod.Extra;
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, 1, objMod.DisplayNameShort);
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objMod.Extra = ImprovementManager.SelectedValue;

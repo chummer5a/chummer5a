@@ -2328,7 +2328,7 @@ namespace Chummer
                         if (objArmor.Equipped)
                         {
                             ImprovementManager.ForcedValue = objArmor.Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, 1, objArmor.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort);
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objArmor.Extra = ImprovementManager.SelectedValue;
@@ -2360,7 +2360,7 @@ namespace Chummer
                             if (objMod.Equipped)
                             {
                                 ImprovementManager.ForcedValue = objMod.Extra;
-                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, 1, objMod.DisplayNameShort);
+                                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objMod.Extra = ImprovementManager.SelectedValue;
@@ -3402,68 +3402,68 @@ namespace Chummer
                               $"{LanguageManager.GetString("Tip_Armor")} ({intTotalArmor}) + {_objCharacter.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]})";
             tipTooltip.SetToolTip(lblSpellDefenceIndirectSoak, strSpellTooltip);
             //Direct Soak - Mana
-            lblSpellDefenceDirectSoakMana.Text = (dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            lblSpellDefenceDirectSoakMana.Text = (dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakMana, strSpellTooltip);
             //Direct Soak - Physical
-            lblSpellDefenceDirectSoakPhysical.Text = (dicAttributeTotalValues["BOD"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+            lblSpellDefenceDirectSoakPhysical.Text = (dicAttributeTotalValues["BOD"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDirectSoakPhysical, strSpellTooltip);
             //Detection Spells
             lblSpellDefenceDetection.Text =
-                (dicAttributeTotalValues["LOG"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["LOG"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: " +
                               $"{_objCharacter.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]}) + {_objCharacter.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) " +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance}) + {strModifiers} ({ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DetectionSpellResist)})";
             tipTooltip.SetToolTip(lblSpellDefenceDetection, strSpellTooltip);
             //Decrease Attribute - BOD
             lblSpellDefenceDecAttBOD.Text =
-                (dicAttributeTotalValues["BOD"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["BOD"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttBOD, strSpellTooltip);
             //Decrease Attribute - AGI
             lblSpellDefenceDecAttAGI.Text =
-                (dicAttributeTotalValues["AGI"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["AGI"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.AGI.DisplayAbbrev} ({dicAttributeTotalValues["AGI"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttAGI, strSpellTooltip);
             //Decrease Attribute - REA
             lblSpellDefenceDecAttREA.Text =
-                (dicAttributeTotalValues["REA"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["REA"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.REA.DisplayAbbrev} ({dicAttributeTotalValues["REA"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttREA, strSpellTooltip);
             //Decrease Attribute - STR
             lblSpellDefenceDecAttSTR.Text =
-                (dicAttributeTotalValues["STR"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["STR"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.STR.DisplayAbbrev} ({dicAttributeTotalValues["STR"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttSTR, strSpellTooltip);
             //Decrease Attribute - CHA
             lblSpellDefenceDecAttCHA.Text =
-                (dicAttributeTotalValues["CHA"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["CHA"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttCHA, strSpellTooltip);
             //Decrease Attribute - INT
             lblSpellDefenceDecAttINT.Text =
-                (dicAttributeTotalValues["INT"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["INT"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttINT, strSpellTooltip);
             //Decrease Attribute - LOG
             lblSpellDefenceDecAttLOG.Text =
-                (dicAttributeTotalValues["LOG"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["LOG"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttLOG, strSpellTooltip);
             //Decrease Attribute - WIL
             lblSpellDefenceDecAttWIL.Text =
-                (dicAttributeTotalValues["WIL"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value).ToString(GlobalOptions.CultureInfo);
+                (dicAttributeTotalValues["WIL"] + dicAttributeTotalValues["WIL"] + nudCounterspellingDice.Value + _objCharacter.SpellResistance).ToString(GlobalOptions.CultureInfo);
             strSpellTooltip = $"{strModifiers}: {_objCharacter.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) +{_objCharacter.WIL.DisplayAbbrev} +({dicAttributeTotalValues["WIL"]})" +
                               $" + {strCounterSpelling} ({nudCounterspellingDice.Value}) + {strSpellResistance} ({_objCharacter.SpellResistance})";
             tipTooltip.SetToolTip(lblSpellDefenceDecAttWIL, strSpellTooltip);
