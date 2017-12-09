@@ -51,13 +51,13 @@ namespace Chummer
         private List<VehicleMod> _lstMods;
 
         #region Control Events
-        public frmSelectVehicleMod(Character objCharacter, bool blnCareer = false)
+        public frmSelectVehicleMod(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Vehicle information.

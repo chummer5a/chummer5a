@@ -42,13 +42,13 @@ namespace Chummer
         private bool _blnExcludeGeneralCategory = false;
 
         #region Control Events
-        public frmSelectArmorMod(Character objCharacter, bool blnCareer = false)
+        public frmSelectArmorMod(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Armor information.

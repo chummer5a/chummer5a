@@ -42,13 +42,13 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
-        public frmSelectVehicle(Character objCharacter, bool blnCareer = false)
+        public frmSelectVehicle(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Vehicle information.

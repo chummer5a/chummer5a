@@ -7434,7 +7434,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objSelectedVehicle.MyXmlNode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objSelectedVehicle.MyXmlNode);
             //frmPickGear.ShowPositiveCapacityOnly = true;
             frmPickGear.ShowDialog(this);
 
@@ -7567,7 +7567,7 @@ namespace Chummer
 
             XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear != null)
@@ -8801,7 +8801,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, Improvement.ImprovementSource.Cyberware, true, objCyberwareParent?.MyXmlNode ?? objMod.MyXmlNode);
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, Improvement.ImprovementSource.Cyberware, objCyberwareParent?.MyXmlNode ?? objMod.MyXmlNode);
             if (objCyberwareParent == null)
             {
                 frmPickCyberware.SetGrade = "Standard";
@@ -8840,7 +8840,7 @@ namespace Chummer
             {
                 frmPickCyberware.SetGrade = objCyberwareParent.Grade.Name;
                 // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
-                if (!objCyberwareParent.Capacity.Contains('['))
+                if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
                 {
                     frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
                     frmPickCyberware.MaximumCapacity = objCyberwareParent.CapacityRemaining;
@@ -9233,7 +9233,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objCyberware.MyXmlNode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objCyberware.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -9345,7 +9345,7 @@ namespace Chummer
 
             XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9463,7 +9463,7 @@ namespace Chummer
 
             XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9576,7 +9576,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objAccessory.MyXmlNode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objAccessory.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -9677,7 +9677,7 @@ namespace Chummer
 
             XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9880,7 +9880,7 @@ namespace Chummer
 
             XmlNode objXmlGear = objSensor.MyXmlNode;
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objXmlGear);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlGear);
             //frmPickGear.ShowNegativeCapacityOnly = true;
 
             if (objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -9987,7 +9987,7 @@ namespace Chummer
                 return;
             }
 
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, false, 0, 1, objAccessory.MyXmlNode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objAccessory.MyXmlNode);
             string strCategories = string.Empty;
             foreach (XmlNode objXmlCategory in objAccessory.AllowGear)
                 strCategories += objXmlCategory.InnerText + ",";
@@ -15432,7 +15432,7 @@ namespace Chummer
             if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
                 objSelectedCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware);
 
-            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, objSource, false, objSelectedCyberware?.MyXmlNode);
+            frmSelectCyberware frmPickCyberware = new frmSelectCyberware(_objCharacter, objSource, objSelectedCyberware?.MyXmlNode);
             decimal decMultiplier = 1.0m;
             // Apply the character's Cyberware Essence cost multiplier if applicable.
             if (objSource == Improvement.ImprovementSource.Cyberware)
@@ -15715,11 +15715,8 @@ namespace Chummer
 
             // Open the Gear XML file and locate the selected Gear.
             XmlNode objXmlGear = blnNullParent ? null : objSelectedGear.MyXmlNode;
-
-            bool blnFakeCareerMode = false;
-            if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
-                blnFakeCareerMode = true;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
+            
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
             if (n != null && n.Level > 0)
             {
                 if (objXmlGear != null && objXmlGear.InnerXml.Contains("<addoncategory>"))
@@ -15874,15 +15871,12 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XmlNode objXmlGear = objSelectedGear?.MyXmlNode;
 
-            bool blnFakeCareerMode = false;
-            if (_objCharacter.Metatype.Contains("A.I.") || _objCharacter.MetatypeCategory == "Protosapients")
-                blnFakeCareerMode = true;
             XmlNode objXmlParentNode = objXmlGear;
             if (objXmlParentNode == null && objSelectedMod != null)
                 objXmlParentNode = objSelectedMod.MyXmlNode;
             if (objXmlParentNode == null)
                 objXmlParentNode = objSelectedArmor.MyXmlNode;
-            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, blnFakeCareerMode, 0, 1, objXmlParentNode);
+            frmSelectGear frmPickGear = new frmSelectGear(_objCharacter, 0, 1, objXmlParentNode);
             frmPickGear.ShowArmorCapacityOnly = blnShowArmorCapacityOnly;
             if (objSelectedMod != null)
                 frmPickGear.CapacityDisplayStyle = CapacityStyle.Standard;

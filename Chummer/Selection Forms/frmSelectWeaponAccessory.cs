@@ -45,13 +45,13 @@ namespace Chummer
         private List<WeaponAccessory> _lstAccessories;
 
         #region Control Events
-        public frmSelectWeaponAccessory(Character objCharacter, bool blnCareer = false)
+        public frmSelectWeaponAccessory(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Weapon information.

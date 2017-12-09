@@ -55,13 +55,13 @@ namespace Chummer
         private List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
-        public frmSelectGear(Character objCharacter, bool blnCareer = false, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
+        public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _intAvailModifier = intAvailModifier;
             _intCostMultiplier = intCostMultiplier;
             _objCharacter = objCharacter;
@@ -1048,7 +1048,7 @@ namespace Chummer
                 // Cost.
                 if (chkFreeItem.Checked)
                 {
-                    lblCost.Text = "0.00¥";
+                    lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     decItemCost = 0;
                 }
                 else

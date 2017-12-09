@@ -36,7 +36,6 @@ namespace Chummer
         private decimal _decCostMultiplier = 1.0m;
         private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
-        private readonly bool _blnCareer;
 
         private string _strSetGrade = string.Empty;
         private string _strSubsystems = string.Empty;
@@ -66,15 +65,13 @@ namespace Chummer
         }
 
         #region Control Events
-        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, bool blnCareer = false, XmlNode objParentNode = null)
+        public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, XmlNode objParentNode = null)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
-            chkFree.Visible = blnCareer;
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
-            _blnCareer = blnCareer;
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             _objParentNode = objParentNode;
             MoveControls();
@@ -242,17 +239,6 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(lstCyberware.Text))
                 return;
-
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0m || _blnCareer)
-                chkFree.Visible = true;
-            else
-            {
-                chkFree.Visible = false;
-                chkFree.Checked = false;
-            }
-            if (chkTransgenic.Checked)
-                chkFree.Visible = true;
 
             // Retireve the information for the selected piece of Cyberware.
             XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[name = \"" + lstCyberware.SelectedValue + "\"]");
@@ -511,16 +497,6 @@ namespace Chummer
             }
             else
                 cboGrade.Enabled = true;
-
-            if (cboCategory.SelectedValue.ToString().Contains("Genetech:") && TransgenicsBiowareCostMultiplier != 1.0m || _blnCareer)
-                chkFree.Visible = true;
-            else
-            {
-                chkFree.Visible = false;
-                chkFree.Checked = false;
-            }
-            if (chkTransgenic.Checked)
-                chkFree.Visible = true;
 
             UpdateCyberwareInfo();
         }

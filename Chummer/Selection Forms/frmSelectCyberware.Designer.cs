@@ -311,7 +311,6 @@
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
             this.chkFree.UseVisualStyleBackColor = true;
-            this.chkFree.Visible = false;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
             // nudESSDiscount
