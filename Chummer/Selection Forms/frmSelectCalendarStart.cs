@@ -25,7 +25,7 @@ namespace Chummer
     {
         private int _intSelectedYear = 2072;
         private int _intSelectedWeek = 1;
-        CalendarWeek objDefaultWeek = new CalendarWeek();
+        CalendarObject objDefaultWeek = new CalendarObject();
 
         #region Control Events
         public frmSelectCalendarStart()
@@ -35,15 +35,15 @@ namespace Chummer
             MoveControls();
         }
 
-        public frmSelectCalendarStart(CalendarWeek objWeek)
+        public frmSelectCalendarStart(CalendarObject objWeek)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
             MoveControls();
 
-            nudYear.Value = objWeek.Year;
-            nudMonth.Value = objWeek.Month;
-            nudWeek.Value = objWeek.MonthWeek;
+            //nudYear.Value = objWeek.Year;
+            //nudMonth.Value = objWeek.Month;
+            //nudWeek.Value = objWeek.MonthWeek;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

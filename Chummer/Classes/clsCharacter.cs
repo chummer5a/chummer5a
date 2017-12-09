@@ -240,7 +240,7 @@ namespace Chummer
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
-        private List<CalendarWeek> _lstCalendar = new List<CalendarWeek>();
+        private List<CalendarObject> _lstCalendar = new List<CalendarObject>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
         private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
@@ -890,7 +890,7 @@ namespace Chummer
 
             // <calendar>
             objWriter.WriteStartElement("calendar");
-            foreach (CalendarWeek objWeek in _lstCalendar)
+            foreach (CalendarObject objWeek in _lstCalendar)
             {
                 objWeek.Save(objWriter);
             }
@@ -1838,7 +1838,7 @@ namespace Chummer
             XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
             foreach (XmlNode objXmlWeek in objXmlWeekList)
             {
-                CalendarWeek objWeek = new CalendarWeek();
+                CalendarObject objWeek = new CalendarObject();
                 objWeek.Load(objXmlWeek);
                 _lstCalendar.Add(objWeek);
             }
@@ -2766,7 +2766,7 @@ namespace Chummer
             // <calendar>
             objWriter.WriteStartElement("calendar");
             //_lstCalendar.Sort();
-            foreach (CalendarWeek objWeek in _lstCalendar)
+            foreach (CalendarObject objWeek in _lstCalendar)
                 objWeek.Print(objWriter, objCulture, Options.PrintNotes);
             // </expenses>
             objWriter.WriteEndElement();
@@ -2901,7 +2901,7 @@ namespace Chummer
             _lstInitiationGrades = new List<InitiationGrade>();
             _lstQualities = new List<Quality>();
             _lstOldQualities = new List<string>();
-            _lstCalendar = new List<CalendarWeek>();
+            _lstCalendar = new List<CalendarObject>();
 
             SkillsSection.Reset();
             _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
@@ -6020,7 +6020,7 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public List<CalendarWeek> Calendar
+        public List<CalendarObject> Calendar
         {
             get
             {

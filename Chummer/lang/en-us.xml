@@ -1768,7 +1768,7 @@
       <text>Are you sure you want to delete this Stacked Focus?</text>
     </string>
     <string>
-      <key>Message_DeleteCalendarWeek</key>
+      <key>Message_DeleteCalendarObject</key>
       <text>Are you sure you want to delete this Calendar Entry?</text>
     </string>
     <string>

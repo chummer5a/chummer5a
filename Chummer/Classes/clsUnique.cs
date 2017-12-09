@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
+ using WindowsFormsCalendar;
 
 namespace Chummer
 {
@@ -6510,26 +6511,20 @@ namespace Chummer
         #endregion
     }
 
-    public class CalendarWeek : IItemWithGuid
+    public class CalendarObject : IItemWithGuid
     {
         private Guid _guiID;
-        private int _intYear = 2072;
-        private int _intWeek = 1;
+        private DateTime _icDateStart = DateTime.Parse("1/1/2079");
+        private DateTime _icDateFinish = DateTime.Parse("1/1/2079");
+        private DateTime _oocDateStart = DateTime.Today;
+        private DateTime _oocDateFinish = DateTime.Today;
         private string _strNotes = string.Empty;
 
         #region Constructor, Save, Load, and Print Methods
-        public CalendarWeek()
+        public CalendarObject()
         {
-            // Create the GUID for the new CalendarWeek.
+            // Create the GUID for the new CalendarObject.
             _guiID = Guid.NewGuid();
-        }
-
-        public CalendarWeek(int intYear, int intWeek)
-        {
-            // Create the GUID for the new CalendarWeek.
-            _guiID = Guid.NewGuid();
-            _intYear = intYear;
-            _intWeek = intWeek;
         }
 
         /// <summary>
@@ -6540,8 +6535,10 @@ namespace Chummer
         {
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("year", _intYear.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("week", _intWeek.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("icdatestart", _icDateStart.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("icdateend", _icDateFinish.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("oocdatestart", _oocDateStart.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("oocdateend", _oocDateFinish.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -6553,8 +6550,95 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _intYear = Convert.ToInt32(objNode["year"].InnerText);
-            _intWeek = Convert.ToInt32(objNode["week"].InnerText);
+            if (objNode["icdatestart"] != null)
+            {
+                _icDateStart = DateTime.Parse(objNode["icdatestart"].InnerText);
+                _oocDateStart = DateTime.Parse(objNode["oocdatestart"].InnerText);
+                _icDateFinish = DateTime.Parse(objNode["icdateend"].InnerText);
+                _oocDateFinish = DateTime.Parse(objNode["oocdateend"].InnerText);
+            }
+            else
+            {
+                int i = 0;
+                switch (Convert.ToInt32(objNode["week"].InnerText))
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        i = 1;
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        i = 2;
+                        break;
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                    case 13:
+                        i = 3;
+                        break;
+                    case 14:
+                    case 15:
+                    case 16:
+                    case 17:
+                        i = 4;
+                        break;
+                    case 18:
+                    case 19:
+                    case 20:
+                    case 21:
+                        i = 5;
+                        break;
+                    case 22:
+                    case 23:
+                    case 24:
+                    case 25:
+                    case 26:
+                        i = 6;
+                        break;
+                    case 27:
+                    case 28:
+                    case 29:
+                    case 30:
+                        i = 7;
+                        break;
+                    case 31:
+                    case 32:
+                    case 33:
+                    case 34:
+                        i = 8;
+                        break;
+                    case 35:
+                    case 36:
+                    case 37:
+                    case 38:
+                    case 39:
+                        i = 9;
+                        break;
+                    case 40:
+                    case 41:
+                    case 42:
+                    case 43:
+                        i = 10;
+                        break;
+                    case 44:
+                    case 45:
+                    case 46:
+                    case 47:
+                        i = 11;
+                        break;
+                    default:
+                        i = 12;
+                        break;
+                }
+                _icDateStart = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
+                _icDateFinish = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
+            }
+
             _strNotes = objNode["notes"].InnerText;
         }
 
@@ -6564,10 +6648,9 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
-            objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("year", _intYear.ToString(objCulture));
-            objWriter.WriteElementString("month", Month.ToString(objCulture));
-            objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
+            objWriter.WriteStartElement("entry");
+            objWriter.WriteElementString("icdate", _icDateStart.ToString(objCulture));
+            objWriter.WriteElementString("oocdate", _oocDateStart.ToString(objCulture));
             if (blnPrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -6581,176 +6664,6 @@ namespace Chummer
         public string InternalId => _guiID.ToString();
 
         /// <summary>
-        /// Year.
-        /// </summary>
-        public int Year
-        {
-            get => _intYear;
-            set => _intYear = value;
-        }
-
-        /// <summary>
-        /// Month.
-        /// </summary>
-        public int Month
-        {
-            get
-            {
-                switch (_intWeek)
-                {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                        return 1;
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                        return 2;
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                        return 3;
-                    case 14:
-                    case 15:
-                    case 16:
-                    case 17:
-                        return 4;
-                    case 18:
-                    case 19:
-                    case 20:
-                    case 21:
-                        return 5;
-                    case 22:
-                    case 23:
-                    case 24:
-                    case 25:
-                    case 26:
-                        return 6;
-                    case 27:
-                    case 28:
-                    case 29:
-                    case 30:
-                        return 7;
-                    case 31:
-                    case 32:
-                    case 33:
-                    case 34:
-                        return 8;
-                    case 35:
-                    case 36:
-                    case 37:
-                    case 38:
-                    case 39:
-                        return 9;
-                    case 40:
-                    case 41:
-                    case 42:
-                    case 43:
-                        return 10;
-                    case 44:
-                    case 45:
-                    case 46:
-                    case 47:
-                        return 11;
-                    default:
-                        return 12;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Week of the month.
-        /// </summary>
-        public int MonthWeek
-        {
-            get
-            {
-                switch (_intWeek)
-                {
-                    case 1:
-                    case 5:
-                    case 9:
-                    case 14:
-                    case 18:
-                    case 22:
-                    case 27:
-                    case 31:
-                    case 35:
-                    case 40:
-                    case 44:
-                    case 48:
-                        return 1;
-                    case 2:
-                    case 6:
-                    case 10:
-                    case 15:
-                    case 19:
-                    case 23:
-                    case 28:
-                    case 32:
-                    case 36:
-                    case 41:
-                    case 45:
-                    case 49:
-                        return 2;
-                    case 3:
-                    case 7:
-                    case 11:
-                    case 16:
-                    case 20:
-                    case 24:
-                    case 29:
-                    case 33:
-                    case 37:
-                    case 42:
-                    case 46:
-                    case 50:
-                        return 3;
-                    case 4:
-                    case 8:
-                    case 12:
-                    case 17:
-                    case 21:
-                    case 25:
-                    case 30:
-                    case 34:
-                    case 38:
-                    case 43:
-                    case 47:
-                    case 51:
-                        return 4;
-                    default:
-                        return 5;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Month and Week to display.
-        /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                string strReturn = LanguageManager.GetString("String_WeekDisplay").Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
-                return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Week.
-        /// </summary>
-        public int Week
-        {
-            get => _intWeek;
-            set => _intWeek = value;
-        }
-
-        /// <summary>
         /// Notes.
         /// </summary>
         public string Notes
@@ -6758,6 +6671,19 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
+
+        public DateTime ICStart
+        {
+            get => _icDateStart;
+            set => _icDateStart = value;
+        }
+
+        public DateTime ICFinish
+        {
+            get => _icDateFinish;
+            set => _icDateFinish = value;
+        }
+
         #endregion
     }
 

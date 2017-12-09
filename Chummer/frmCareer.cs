@@ -38,6 +38,7 @@ using System.Collections.ObjectModel;
 using Chummer.Backend.Attributes;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using WindowsFormsCalendar;
 
 namespace Chummer
 {
@@ -176,8 +177,17 @@ namespace Chummer
             _lvwNuyenColumnSorter = new ListViewColumnSorter();
             _lvwNuyenColumnSorter.SortColumn = 0;
             _lvwNuyenColumnSorter.Order = SortOrder.Descending;
+            //TODO: Should this be a separate control? Need to handle characters with no calendar entries.
+            calendar1.MaximumViewDays = 7000000;
+            calendar1.ViewEnd = _objCharacter.Calendar[0].ICFinish.AddMonths(1);
+            calendar1.ViewStart = _objCharacter.Calendar.LastOrDefault().ICStart;
+            monthView1.ViewStart = _objCharacter.Calendar.LastOrDefault().ICFinish;
+            foreach (CalendarObject cw in _objCharacter.Calendar)
+            {
+                CalendarItem c = new CalendarItem(calendar1, cw.ICStart, cw.ICFinish, cw.Notes);
+                calendar1.Items.Add(c);
+            }
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
-
             SetTooltips();
             MoveControls();
         }
@@ -7467,7 +7477,7 @@ namespace Chummer
 
         private void cmdAddWeek_Click(object sender, EventArgs e)
         {
-            CalendarWeek objWeek = new CalendarWeek();
+            /*CalendarObject objWeek = new CalendarObject();
             if (_objCharacter.Calendar != null && _objCharacter.Calendar.LastOrDefault() != null)
             {
                 objWeek.Year = _objCharacter.Calendar.Last().Year;
@@ -7481,7 +7491,7 @@ namespace Chummer
             }
             else
             {
-                objWeek = new CalendarWeek();
+                objWeek = new CalendarObject();
                 frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart();
                 frmPickStart.ShowDialog(this);
 
@@ -7492,7 +7502,7 @@ namespace Chummer
                 objWeek.Week = frmPickStart.SelectedWeek;
             }
 
-            _objCharacter.Calendar.Add(objWeek);
+            _objCharacter.Calendar.Add(objWeek);*/
 
             PopulateCalendar();
 
@@ -7513,15 +7523,15 @@ namespace Chummer
                 return;
             }
 
-            CalendarWeek objWeek = new CalendarWeek();
+            CalendarObject objWeek = new CalendarObject();
 
             // Find the selected Calendar Week.
-            foreach (CalendarWeek objCharacterWeek in _objCharacter.Calendar)
+            foreach (CalendarObject objCharacterWeek in _objCharacter.Calendar)
             {
                 if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
                 {
                     objWeek = objCharacterWeek;
-                    if (!CommonFunctions.ConfirmDelete(_objCharacter, LanguageManager.GetString("Message_DeleteCalendarWeek")))
+                    if (!CommonFunctions.ConfirmDelete(_objCharacter, LanguageManager.GetString("Message_DeleteCalendarObject")))
                         return;
                     _objCharacter.Calendar.Remove(objWeek);
                     _blnIsDirty = true;
@@ -7544,10 +7554,10 @@ namespace Chummer
                 return;
             }
 
-            CalendarWeek objWeek = new CalendarWeek();
+            CalendarObject objWeek = new CalendarObject();
 
             // Find the selected Calendar Week.
-            foreach (CalendarWeek objCharacterWeek in _objCharacter.Calendar)
+            foreach (CalendarObject objCharacterWeek in _objCharacter.Calendar)
             {
                 if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
                 {
@@ -7575,51 +7585,6 @@ namespace Chummer
 
         private void cmdChangeStartWeek_Click(object sender, EventArgs e)
         {
-            // Find the first date.
-            CalendarWeek objStart;
-            if (_objCharacter.Calendar != null && _objCharacter.Calendar.FirstOrDefault() != null)
-            {
-                 objStart = _objCharacter.Calendar.First();
-            }
-            else
-            {
-                return;
-            }
-
-            frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart(objStart);
-            frmPickStart.ShowDialog(this);
-
-            if (frmPickStart.DialogResult == DialogResult.Cancel)
-                return;
-
-            // Determine the difference between the starting value and selected values for year and week.
-            int intYear = frmPickStart.SelectedYear;
-            int intWeek = frmPickStart.SelectedWeek;
-            int intYearDiff = intYear - objStart.Year;
-            int intWeekDiff = intWeek - objStart.Week;
-
-            // Update each of the CalendarWeek entries for the character.
-            foreach (CalendarWeek objWeek in _objCharacter.Calendar)
-            {
-                objWeek.Week += intWeekDiff;
-                objWeek.Year += intYearDiff;
-
-                // If the date range goes outside of 52 weeks, increase or decrease the year as necessary.
-                if (objWeek.Week < 1)
-                {
-                    objWeek.Year--;
-                    objWeek.Week += 52;
-                }
-                if (objWeek.Week > 52)
-                {
-                    objWeek.Year++;
-                    objWeek.Week -= 52;
-                }
-            }
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-            PopulateCalendar();
         }
 
         private void cmdAddImprovement_Click(object sender, EventArgs e)
@@ -22680,9 +22645,9 @@ namespace Chummer
             lstCalendar.Items.Clear();
             for (int i = _objCharacter.Calendar.Count - 1; i >= 0; i--)
             {
-                CalendarWeek objWeek = _objCharacter.Calendar[i];
+                CalendarObject objWeek = _objCharacter.Calendar[i];
                 ListViewItem objItem = new ListViewItem();
-                objItem.Text = objWeek.DisplayName;
+                //objItem.Text = objWeek.DisplayName;
                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem();
                 objNoteItem.Text = objWeek.Notes;
                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();

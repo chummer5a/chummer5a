@@ -2046,7 +2046,7 @@ Data Change:
 - Added German Street Grimoire to books List. Fixes #841.
 
 New Strings:
-- Message_DeleteCalendarWeek
+- Message_DeleteCalendarObject
 - Button_DeleteWeek
 - Tip_CalculatedMovement
 - Message_ConfirmExoticSkillRemove

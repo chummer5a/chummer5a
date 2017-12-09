@@ -134,6 +134,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsCalendar">
+      <HintPath>.\WindowsFormsCalendar.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -7143,7 +7143,7 @@
 			<text>你确定要删除该异种技能吗？</text>
 		</string>
 		<string>
-			<key>Message_DeleteCalendarWeek</key>
+			<key>Message_DeleteCalendarObject</key>
 			<text>你确定要删除该日程表记录吗？</text>
 		</string>
 		<string>
