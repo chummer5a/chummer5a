@@ -39,10 +39,10 @@ namespace Chummer
             this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdPrint = new SplitButton();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboXSLT = new ElasticComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.cboLanguage = new System.Windows.Forms.ComboBox();
+            this.cboLanguage = new ElasticComboBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.SuspendLayout();
@@ -198,14 +198,14 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
         private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-        private System.Windows.Forms.ComboBox cboXSLT;
+        private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Label lblCharacterSheet;
         private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
         internal SplitButton cmdSaveHTML;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.ComboBox cboLanguage;
+        private ElasticComboBox cboLanguage;
     }
 
 }

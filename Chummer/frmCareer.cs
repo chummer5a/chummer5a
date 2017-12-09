@@ -5191,13 +5191,6 @@ namespace Chummer
 
         private void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            int intKarmaCost = 7 * _objOptions.KarmaQuality;
-            if (intKarmaCost > _objCharacter.Karma)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
             frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(_objCharacter);
             frmPickMartialArt.ShowDialog(this);
 
@@ -5212,6 +5205,15 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             MartialArt objMartialArt = new MartialArt(_objCharacter);
             objMartialArt.Create(objXmlArt, objNode);
+
+            int intKarmaCost = objMartialArt.Rating * objMartialArt.Cost * _objOptions.KarmaQuality;
+            if (intKarmaCost > _objCharacter.Karma)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
+                return;
+            }
+
             _objCharacter.MartialArts.Add(objMartialArt);
 
             objNode.ContextMenuStrip = cmsMartialArts;

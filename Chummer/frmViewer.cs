@@ -390,6 +390,9 @@ namespace Chummer
             cmdPrint.AutoSize = false;
             cmdPrint.Width = intWidth + 20;
             cmdSaveHTML.Left = cmdPrint.Right + 6;
+
+            lblCharacterSheet.Left = cboLanguage.Left - lblCharacterSheet.Width - 6;
+            MinimumSize = new System.Drawing.Size(2 * cmdPrint.Left + cmdPrint.Width + cmdSaveHTML.Width + lblCharacterSheet.Width + cboLanguage.Width + cboXSLT.Width + 24, 73);
         }
 
         private void tsSaveAsPdf_Click(object sender, EventArgs e)
@@ -471,7 +474,6 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
             XmlDocument manifest = XmlManager.Load("sheets.xml");
             XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
@@ -515,9 +517,7 @@ namespace Chummer
 
             if (Directory.Exists(path))
             {
-                names = Directory.GetFiles(path)
-                    .Where(s => s.EndsWith(".xsl"))
-                    .Select(Path.GetFileNameWithoutExtension).ToList();
+                names = Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).ToList();
             }
 
             return names;
@@ -562,13 +562,12 @@ namespace Chummer
                 if (node == null)
                     continue;
 
-                string languageName = node.InnerText;
-
-                if (GetXslFilesFromLocalDirectory(Path.GetFileNameWithoutExtension(filePath)).Count > 0)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
                 {
                     ListItem objItem = new ListItem();
-                    objItem.Value = Path.GetFileNameWithoutExtension(filePath);
-                    objItem.Name = languageName;
+                    objItem.Value = strLanguageCode;
+                    objItem.Name = node.InnerText;
 
                     lstLanguages.Add(objItem);
                 }

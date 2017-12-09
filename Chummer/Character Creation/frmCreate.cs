@@ -13103,7 +13103,7 @@ namespace Chummer
             {
                 if (!objMartialArt.IsQuality)
                 {
-                    intMartialArtsPoints += (objMartialArt.Rating * 7) * _objOptions.KarmaQuality;
+                    intMartialArtsPoints += objMartialArt.Rating * objMartialArt.Cost * _objOptions.KarmaQuality;
                     // Add in the Techniques
                     intMartialArtsPoints += (Math.Max(objMartialArt.Advantages.Count - 1, 0) * 5) * _objOptions.KarmaQuality;
                 }
