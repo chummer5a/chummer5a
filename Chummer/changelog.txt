@@ -478,6 +478,7 @@ Data Changes:
 - Added the missing troop transport module for the Ruhrmetall Wolf II. Other modules require errata clarification.
 - Added a bonus for the Muzzle bioware to increase Accuracy for any weapon with 'fangs' in the name.
 - Fixed being able to get Way of Unified Mana (Hapsum-Do) without being an Adept or Mystic Adept. Fixed Way of Unified Mana (Hapsum-Do) costing 7 karma instead of 15.
+- Fixed incorrect drain and duration values on Comet.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
