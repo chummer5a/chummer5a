@@ -506,20 +506,14 @@ namespace Chummer.Backend.Equipment
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-            if (objNode["sourceid"] == null)
+            if (!objNode.TryGetField("sourceid", Guid.TryParse, out _sourceID) || _sourceID.Equals(Guid.Empty))
             {
                 XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-                if (objWeaponNode != null)
-                {
-                    _sourceID = Guid.Parse(objWeaponNode["id"].InnerText);
+                if (objWeaponNode?.TryGetField("id", Guid.TryParse, out _sourceID) == true)
                     _objCachedMyXmlNode = null;
-                }
             }
             else
-            {
-                _sourceID = Guid.Parse(objNode["sourceid"].InnerText);
                 _objCachedMyXmlNode = null;
-            }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             if (_strCategory == "Hold-Outs")
                 _strCategory = "Holdouts";
@@ -538,7 +532,7 @@ namespace Chummer.Backend.Equipment
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
-                    _sourceID = Guid.Parse(objNewOsmiumMaceNode["id"].InnerText);
+                    Guid.TryParse(objNewOsmiumMaceNode["id"].InnerText, out _sourceID);
                     _objCachedMyXmlNode = objNewOsmiumMaceNode;
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("damage", ref _strDamage);

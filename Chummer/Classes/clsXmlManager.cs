@@ -395,6 +395,7 @@ namespace Chummer
             }
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
+            bool blnHasLiveCustomData = false;
             if (GlobalOptions.LiveCustomData && objDoc != null && strFileName != "improvements.xml")
             {
                 XmlElement objDocElement = objDoc.DocumentElement;
@@ -406,6 +407,7 @@ namespace Chummer
                         objXmlFile.Load(strFile);
                         foreach (XmlNode objNode in objXmlFile.SelectNodes("/chummer/*"))
                         {
+                            blnHasLiveCustomData = true;
                             // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
                             List<XmlNode> lstDelete = new List<XmlNode>();
                             foreach (XmlNode objChild in objNode.ChildNodes)
@@ -444,8 +446,8 @@ namespace Chummer
                 }
             }
 
-            //Check for non-unique guids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-            if (strFileName == "improvements.xml" || objReference.DuplicatesChecked) return objDoc;
+            //Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
+            if (strFileName == "improvements.xml" || (objReference.DuplicatesChecked && !blnHasLiveCustomData)) return objDoc;
             {
                 foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
                 {
@@ -457,23 +459,49 @@ namespace Chummer
 
                     //Grab the first XML node that isn't a comment. 
                     if (strNode == null) continue;
-                    var duplicatesList = y.Descendants(strNode)
-                        .GroupBy(g => (string) g.Element("id") ?? string.Empty)
-                        .Where(g => g.Count() > 1)
-                        .Select(g => g.Key)
-                        .ToList();
-                    int i = duplicatesList.Count(o => !string.IsNullOrWhiteSpace(o));
-                    if (i <= 0)
+                    HashSet<string> lstDuplicateIDs = new HashSet<string>();
+                    List<string> lstItemsWithMalformedIDs = new List<string>();
+                    // Not a dictionary specifically so duplicates can be caught. Item1 is ID, Item2 is the item's name.
+                    List<Tuple<string, string>> lstItemsWithIDs = new List<Tuple<string, string>>();
+                    foreach (XElement objLoopNode in y.Descendants(strNode))
                     {
-                        objReference.DuplicatesChecked = true;
-                        continue;
+                        string strId = (string)objLoopNode.Element("id") ?? string.Empty;
+                        if (!string.IsNullOrEmpty(strId))
+                        {
+                            string strItemName = (string)objLoopNode.Element("name") ?? (string)objLoopNode.Element("category") ?? strId;
+                            if (!lstDuplicateIDs.Contains(strId) && lstItemsWithIDs.Any(x => x.Item1 == strId))
+                            {
+                                lstDuplicateIDs.Add(strId);
+                                if (strItemName == strId)
+                                    strItemName = string.Empty;
+                            }
+                            if (!strId.IsGuid())
+                                lstItemsWithMalformedIDs.Add(strItemName);
+                            lstItemsWithIDs.Add(new Tuple<string, string>(strId, strItemName));
+                        }
                     }
-                    string duplicates = string.Join("\n", duplicatesList);
-                    MessageBox.Show(
-                        LanguageManager.GetString("Message_DuplicateGuidWarning")
-                            .Replace("{0}", i.ToString())
-                            .Replace("{1}", strFileName)
-                            .Replace("{2}", duplicates));
+
+                    if (lstDuplicateIDs.Count > 0)
+                    {
+                        string strDuplicatesNames = string.Join("\n", lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_DuplicateGuidWarning")
+                                .Replace("{0}", lstDuplicateIDs.Count.ToString())
+                                .Replace("{1}", strFileName)
+                                .Replace("{2}", strDuplicatesNames));
+                    }
+
+                    if (lstItemsWithMalformedIDs.Count > 0)
+                    {
+                        string strMalformedIdNames = string.Join("\n", lstItemsWithMalformedIDs);
+                        MessageBox.Show(
+                            LanguageManager.GetString("Message_NonGuidIdWarning")
+                                .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
+                                .Replace("{1}", strFileName)
+                                .Replace("{2}", strMalformedIdNames));
+                    }
+
+                    objReference.DuplicatesChecked = true;
                 }
             }
 

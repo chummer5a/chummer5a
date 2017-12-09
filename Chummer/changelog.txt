@@ -310,6 +310,8 @@ Application Changes:
 - Unhardcoded the device rating values of 'ware grades. They can now be modified with custom data files.
 - Added the ability to perform a clean reinstall from within the updater.
 - Added the ability to have Martial Arts with karma costs different from the default of 7.
+- When warning about duplicate GUIDs in data files, Chummer5a will now display the names of the items to which those duplicate IDs belong.
+- In addition to checking for duplicate GUIDs, Chummer5a will now also check for ID fields that do not contain GUIDs, and if it finds any, it will warn users in a manner similar to the warning for duplicate GUIDs.
 
 Data Changes:
 
@@ -562,11 +564,13 @@ New Strings:
 - Button_Clean_Reinstall
 - MessageTitle_Updater_CleanReinstallPrompt
 - Message_Updater_CleanReinstallPrompt
+- Message_NonGuidIdWarning
 
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
 - Label_Options_NewSpecialization
+- Message_DuplicateGuidWarning
 
 Removed Strings:
 - Label_MugshotDimensions
