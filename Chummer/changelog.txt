@@ -567,6 +567,7 @@ New Strings:
 - MessageTitle_Updater_CleanReinstallPrompt
 - Message_Updater_CleanReinstallPrompt
 - Message_NonGuidIdWarning
+- Node_UnequippedModularCyberware
 
 Changed Strings:
 - Message_PositiveQualityLimit

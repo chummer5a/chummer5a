@@ -54,11 +54,12 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Weaknesses");
             System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
             System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Armor");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Gear");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Armor");
+            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Weapons");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.tssBPLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -281,6 +282,7 @@ namespace Chummer
             this.tsWeaponAccessoryGearMenuAddAsPlugin = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicleLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleRenameLocation = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsVehicleLocationAddVehicle = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsVehicleWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleWeaponAccessoryAddGear = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponAccessoryNotes = new System.Windows.Forms.ToolStripMenuItem();
@@ -881,7 +883,6 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsVehicleLocationAddVehicle = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -3168,7 +3169,7 @@ namespace Chummer
             this.tsVehicleRenameLocation,
             this.tsVehicleLocationAddVehicle});
             this.cmsVehicleLocation.Name = "cmsGearLocation";
-            this.cmsVehicleLocation.Size = new System.Drawing.Size(167, 70);
+            this.cmsVehicleLocation.Size = new System.Drawing.Size(167, 48);
             // 
             // tsVehicleRenameLocation
             // 
@@ -3178,6 +3179,15 @@ namespace Chummer
             this.tsVehicleRenameLocation.Tag = "Menu_RenameLocation";
             this.tsVehicleRenameLocation.Text = "&Rename Location";
             this.tsVehicleRenameLocation.Click += new System.EventHandler(this.tsVehicleRenameLocation_Click);
+            // 
+            // tsVehicleLocationAddVehicle
+            // 
+            this.tsVehicleLocationAddVehicle.Image = global::Chummer.Properties.Resources.car_add;
+            this.tsVehicleLocationAddVehicle.Name = "tsVehicleLocationAddVehicle";
+            this.tsVehicleLocationAddVehicle.Size = new System.Drawing.Size(166, 22);
+            this.tsVehicleLocationAddVehicle.Tag = "Menu_AddVehicle";
+            this.tsVehicleLocationAddVehicle.Text = "Add &Vehicle";
+            this.tsVehicleLocationAddVehicle.Click += new System.EventHandler(this.tsVehicleLocationAddVehicle_Click);
             // 
             // cmsVehicleWeaponAccessory
             // 
@@ -5547,9 +5557,13 @@ namespace Chummer
             treeNode20.Name = "nodBioware";
             treeNode20.Tag = "Node_SelectedBioware";
             treeNode20.Text = "Selected Bioware";
+            treeNode21.Name = "nodUnequippedModularCyberware";
+            treeNode21.Tag = "Node_UnequippedModularCyberware";
+            treeNode21.Text = "Unequipped Modular Cyberware";
             this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode19,
-            treeNode20});
+            treeNode20,
+            treeNode21});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
             this.treCyberware.Size = new System.Drawing.Size(295, 572);
@@ -5743,11 +5757,11 @@ namespace Chummer
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(6, 36);
             this.treLifestyles.Name = "treLifestyles";
-            treeNode21.Name = "nodLifestylesRoot";
-            treeNode21.Tag = "Node_SelectedLifestyles";
-            treeNode21.Text = "Selected Lifestyles";
+            treeNode22.Name = "nodLifestylesRoot";
+            treeNode22.Tag = "Node_SelectedLifestyles";
+            treeNode22.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode21});
+            treeNode22});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
             this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -6157,11 +6171,11 @@ namespace Chummer
             this.treArmor.HideSelection = false;
             this.treArmor.Location = new System.Drawing.Point(6, 36);
             this.treArmor.Name = "treArmor";
-            treeNode22.Name = "nodArmorRoot";
-            treeNode22.Tag = "Node_SelectedArmor";
-            treeNode22.Text = "Selected Armor";
+            treeNode23.Name = "nodArmorRoot";
+            treeNode23.Tag = "Node_SelectedArmor";
+            treeNode23.Text = "Selected Armor";
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode23});
             this.treArmor.ShowNodeToolTips = true;
             this.treArmor.Size = new System.Drawing.Size(295, 537);
             this.treArmor.TabIndex = 69;
@@ -6675,11 +6689,11 @@ namespace Chummer
             this.treWeapons.HideSelection = false;
             this.treWeapons.Location = new System.Drawing.Point(6, 36);
             this.treWeapons.Name = "treWeapons";
-            treeNode23.Name = "nodWeaponsRoot";
-            treeNode23.Tag = "Node_SelectedWeapons";
-            treeNode23.Text = "Selected Weapons";
+            treeNode24.Name = "nodWeaponsRoot";
+            treeNode24.Tag = "Node_SelectedWeapons";
+            treeNode24.Text = "Selected Weapons";
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode24});
             this.treWeapons.ShowNodeToolTips = true;
             this.treWeapons.Size = new System.Drawing.Size(295, 540);
             this.treWeapons.TabIndex = 29;
@@ -7350,11 +7364,11 @@ namespace Chummer
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(6, 36);
             this.treGear.Name = "treGear";
-            treeNode24.Name = "nodGearRoot";
-            treeNode24.Tag = "Node_SelectedGear";
-            treeNode24.Text = "Selected Gear";
+            treeNode25.Name = "nodGearRoot";
+            treeNode25.Tag = "Node_SelectedGear";
+            treeNode25.Text = "Selected Gear";
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode25});
             this.treGear.ShowNodeToolTips = true;
             this.treGear.Size = new System.Drawing.Size(295, 540);
             this.treGear.TabIndex = 49;
@@ -8396,11 +8410,11 @@ namespace Chummer
             this.treVehicles.HideSelection = false;
             this.treVehicles.Location = new System.Drawing.Point(8, 36);
             this.treVehicles.Name = "treVehicles";
-            treeNode25.Name = "nodVehiclesRoot";
-            treeNode25.Tag = "Node_SelectedVehicles";
-            treeNode25.Text = "Selected Vehicles";
+            treeNode26.Name = "nodVehiclesRoot";
+            treeNode26.Tag = "Node_SelectedVehicles";
+            treeNode26.Text = "Selected Vehicles";
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
+            treeNode26});
             this.treVehicles.ShowNodeToolTips = true;
             this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(403, 572);
@@ -10057,15 +10071,6 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
-            // 
-            // tsVehicleLocationAddVehicle
-            // 
-            this.tsVehicleLocationAddVehicle.Image = global::Chummer.Properties.Resources.car_add;
-            this.tsVehicleLocationAddVehicle.Name = "tsVehicleLocationAddVehicle";
-            this.tsVehicleLocationAddVehicle.Size = new System.Drawing.Size(166, 22);
-            this.tsVehicleLocationAddVehicle.Tag = "Menu_AddVehicle";
-            this.tsVehicleLocationAddVehicle.Text = "Add &Vehicle";
-            this.tsVehicleLocationAddVehicle.Click += new System.EventHandler(this.tsVehicleLocationAddVehicle_Click);
             // 
             // frmCreate
             // 

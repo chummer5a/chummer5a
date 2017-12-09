@@ -20716,17 +20716,19 @@ namespace Chummer
             DecreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
             if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
-                {
-                    treCyberware.SelectedNode.Nodes.Add(objNode);
-                    treCyberware.SelectedNode.Expand();
-                    objSelectedCyberware.Children.Add(objCyberware);
-                }
-                else
-                {
-                    treCyberware.Nodes[intNode].Nodes.Add(objNode);
-                    treCyberware.Nodes[intNode].Expand();
-                    _objCharacter.Cyberware.Add(objCyberware);
-                }
+            {
+                treCyberware.SelectedNode.Nodes.Add(objNode);
+                treCyberware.SelectedNode.Expand();
+                objSelectedCyberware.Children.Add(objCyberware);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                    intNode = 2;
+                treCyberware.Nodes[intNode].Nodes.Add(objNode);
+                treCyberware.Nodes[intNode].Expand();
+                _objCharacter.Cyberware.Add(objCyberware);
+            }
 
             foreach (Weapon objWeapon in objWeapons)
                 _objCharacter.Weapons.Add(objWeapon);
@@ -24021,6 +24023,7 @@ namespace Chummer
         {
             treCyberware.Nodes[0].Nodes.Clear();
             treCyberware.Nodes[1].Nodes.Clear();
+            treCyberware.Nodes[2].Nodes.Clear();
             Guid sid = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
             {
@@ -24033,7 +24036,7 @@ namespace Chummer
                 // Populate Cyberware.
                 else if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                 {
-                    CommonFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[0], cmsCyberware, cmsCyberwareGear);
+                    CommonFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[objCyberware.IsModularCurrentlyEquipped ? 0 : 2], cmsCyberware, cmsCyberwareGear);
                 }
                 // Populate Bioware.
                 else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
@@ -25389,7 +25392,7 @@ namespace Chummer
             string strSelectedParentID = frmPickMount.SelectedItem;
             if (strSelectedParentID == "None")
             {
-                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
+                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[2], treCyberware);
                 objModularCyberware.Parent = null;
             }
             else
@@ -25418,7 +25421,7 @@ namespace Chummer
                     }
                     else
                     {
-                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treCyberware);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[2], treCyberware);
                         objModularCyberware.Parent = null;
                     }
                 }
@@ -25454,7 +25457,7 @@ namespace Chummer
             string strSelectedParentID = frmPickMount.SelectedItem;
             if (strSelectedParentID == "None")
             {
-                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
+                CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[2], treVehicles);
                 objModularCyberware.Parent = null;
                 RefreshSelectedCyberware();
             }
@@ -25484,7 +25487,7 @@ namespace Chummer
                     }
                     else
                     {
-                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[0], treVehicles);
+                        CommonFunctions.MoveCyberwareNode(_objCharacter, int.MaxValue, _objCharacter.Cyberware, treCyberware.Nodes[2], treVehicles);
                         objModularCyberware.Parent = null;
                         RefreshSelectedCyberware();
                     }

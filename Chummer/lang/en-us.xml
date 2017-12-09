@@ -1179,7 +1179,7 @@
     </string>
     <string>
       <key>Treenode_Roster_FavouriteCharacters</key>
-      <text>Favourite Characters</text>
+      <text>Favorite Characters</text>
     </string>
     <string>
       <key>Menu_Delete</key>
@@ -2021,7 +2021,7 @@
     </string>
     <string>
       <key>Message_HighContact</key>
-      <text>You cannot have a contact worth more than 7 points at chargen</text>
+      <text>You cannot have a contact worth more than 7 points at character generation.</text>
     </string>
     <string>
       <key>Message_SelectCyberware</key>
@@ -2385,7 +2385,7 @@
     </string>
     <string>
       <key>Message_CannotChangeMetatype</key>
-      <text>You cannot change your Metatype until the following Metatype-dependant Qualities have been removed.</text>
+      <text>You cannot change your Metatype until the following Metatype-dependent Qualities have been removed.</text>
     </string>
     <string>
       <key>MessageTitle_CannotChangeMetatype</key>
@@ -4248,6 +4248,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Node_SelectedBioware</key>
       <text>Selected Bioware</text>
+    </string>
+    <string>
+      <key>Node_UnequippedModularCyberware</key>
+      <text>Unequipped Modular Cyberware</text>
     </string>
     <string>
       <key>Label_EssenceConsumption</key>
@@ -8439,7 +8443,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell13</key>
-      <text>Psychic Sense (ie, telepathy, precognition)</text>
+      <text>Psychic Sense (e.g. telepathy, precognition)</text>
     </string>
     <string>
       <key>Checkbox_DetectionSpell14</key>
@@ -8463,7 +8467,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Checkbox_HealthSpell5</key>
-      <text>Restricted Effect (ie, Symptoms Only)</text>
+      <text>Restricted Effect (e.g. Symptoms Only)</text>
     </string>
     <string>
       <key>Checkbox_IllusionSpell1</key>
@@ -8799,7 +8803,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_NonGuidIdWarning</key>
-      <text>{0} items were found in the file {1} with IDs that are not parseable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
+      <text>{0} items were found in the file {1} with IDs that are not parsable as GUIDs. If you are using custom content, please ensure that ID fields are always filled with a unique GUID and only a unique GUID.\n\nItems with non-GUID ID fields:\n{2}</text>
     </string>
   </strings>
 </chummer>
