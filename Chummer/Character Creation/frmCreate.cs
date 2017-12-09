@@ -4197,11 +4197,14 @@ namespace Chummer
         }
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
-            // Select the root Cyberware node then open the Select Cyberware window.
-            treCyberware.SelectedNode = treCyberware.Nodes[0];
-            bool blnAddAgain = PickCyberware();
-            if (blnAddAgain)
-                cmdAddCyberware_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                // Select the root Cyberware node then open the Select Cyberware window.
+                treCyberware.SelectedNode = treCyberware.Nodes[0];
+                blnAddAgain = PickCyberware();
+            }
+            while (blnAddAgain);
         }
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
@@ -4510,11 +4513,14 @@ namespace Chummer
 
         private void cmdAddBioware_Click(object sender, EventArgs e)
         {
-            // Select the root Bioware node then open the Select Cyberware window.
-            treCyberware.SelectedNode = treCyberware.Nodes[1];
-            bool blnAddAgain = PickCyberware(Improvement.ImprovementSource.Bioware);
-            if (blnAddAgain)
-                cmdAddBioware_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                // Select the root Bioware node then open the Select Cyberware window.
+                treCyberware.SelectedNode = treCyberware.Nodes[1];
+                blnAddAgain = PickCyberware(Improvement.ImprovementSource.Bioware);
+            }
+            while (blnAddAgain);
         }
 
         private void cmdAddWeapon_Click(object sender, EventArgs e)
@@ -4750,11 +4756,14 @@ namespace Chummer
 
         private void cmdAddGear_Click(object sender, EventArgs e)
         {
-            // Select the root Gear node then open the Select Gear window.
-            treGear.SelectedNode = treGear.Nodes[0];
-            bool blnAddAgain = PickGear(treGear.SelectedNode);
-            if (blnAddAgain)
-                cmdAddGear_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                // Select the root Gear node then open the Select Gear window.
+                treGear.SelectedNode = treGear.Nodes[0];
+                blnAddAgain = PickGear(treGear.SelectedNode);
+            }
+            while (blnAddAgain);
             CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
         }
 
@@ -6743,27 +6752,25 @@ namespace Chummer
 
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treCyberware.SelectedNode;
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectCyberware"), LanguageManager.GetString("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             bool blnAddAgain = false;
-            if (treCyberware.SelectedNode.Parent == treCyberware.Nodes[1])
+            do
             {
-                blnAddAgain = PickCyberware(Improvement.ImprovementSource.Bioware);
+                if (objSelectedNode.GetTopParent() == treCyberware.Nodes[1])
+                    blnAddAgain = PickCyberware(Improvement.ImprovementSource.Bioware);
+                else
+                    blnAddAgain = PickCyberware();
+                if (blnAddAgain)
+                    treCyberware.SelectedNode = objSelectedNode;
             }
-            else
-            {
-                blnAddAgain = PickCyberware();
-            }
-            if (blnAddAgain)
-            {
-                treCyberware.SelectedNode = treCyberware.SelectedNode.Parent;
-                tsCyberwareAddAsPlugin_Click(sender, e);
-            }
+            while (blnAddAgain);
         }
 
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
@@ -6973,16 +6980,22 @@ namespace Chummer
 
         private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treGear.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGear"), LanguageManager.GetString("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            bool blnAddAgain = PickGear(treGear.SelectedNode);
-            if (blnAddAgain)
-                tsGearAddAsPlugin_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                blnAddAgain = PickGear(treGear.SelectedNode);
+                if (blnAddAgain)
+                    treGear.SelectedNode = objSelectedNode;
+            }
+            while (blnAddAgain);
         }
 
 		private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
@@ -7991,23 +8004,30 @@ namespace Chummer
 
         private void tsAddArmorGear_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level == 0)
+            if (objSelectedNode == null || objSelectedNode.Level == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // Select the root Gear node then open the Select Gear window.
-            bool blnAddAgain = PickArmorGear(true);
-            if (blnAddAgain)
-                tsAddArmorGear_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                // Select the root Gear node then open the Select Gear window.
+                blnAddAgain = PickArmorGear(true);
+                if (blnAddAgain)
+                    treArmor.SelectedNode = objSelectedNode;
+            }
+            while (blnAddAgain);
         }
 
         private void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treArmor.SelectedNode;
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -8015,10 +8035,10 @@ namespace Chummer
 
             // Make sure the selected item is another piece of Gear.
             ArmorMod objMod = null;
-            Gear objGear = CommonFunctions.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+            Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), _objCharacter.Armor);
             if (objGear == null)
             {
-                objMod = CommonFunctions.FindArmorMod(treArmor.SelectedNode.Tag.ToString(), _objCharacter.Armor);
+                objMod = CommonFunctions.FindArmorMod(objSelectedNode.Tag.ToString(), _objCharacter.Armor);
                 if (objMod == null || string.IsNullOrEmpty(objMod.GearCapacity))
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_SelectArmor"), LanguageManager.GetString("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8026,9 +8046,14 @@ namespace Chummer
                 }
             }
 
-            bool blnAddAgain = PickArmorGear(objMod != null);
-            if (blnAddAgain)
-                tsArmorGearAddAsPlugin_Click(sender, e);
+            bool blnAddAgain = false;
+            do
+            {
+                blnAddAgain = PickArmorGear(objMod != null);
+                if (blnAddAgain)
+                    treArmor.SelectedNode = objSelectedNode;
+            }
+            while (blnAddAgain);
         }
 
         private void tsArmorNotes_Click(object sender, EventArgs e)
@@ -21927,10 +21952,16 @@ namespace Chummer
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
         {
-            // Select the root Gear node then open the Select Gear window.
-            bool blnAddAgain = PickGear(treGear.SelectedNode);
-            if (blnAddAgain)
-                PickGear(treGear.SelectedNode);
+            TreeNode objSelectedNode = treGear.SelectedNode;
+            bool blnAddAgain = false;
+            do
+            {
+                // Select the root Gear node then open the Select Gear window.
+                blnAddAgain = PickGear(objSelectedNode);
+                if (blnAddAgain)
+                    treGear.SelectedNode = objSelectedNode;
+            }
+            while (blnAddAgain);
             CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
         }
 
