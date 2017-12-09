@@ -532,7 +532,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
-            objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
+            objWriter.WriteElementString("armor", DisplayArmorValue);
             objWriter.WriteElementString("avail", TotalAvail);
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -926,56 +926,26 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                bool blnUseBase = false;
-                bool blnCustomFitted = false;
-                bool blnHighest = true;
-                int intOverride = 0;
-
-                foreach (Armor a in _objCharacter.Armor.Where(a => a.Equipped))
-                {
-                    if (a.ArmorValue.Substring(0, 1) != "+")
-                        blnUseBase = true;
-                    if (Convert.ToInt32(a.ArmorOverrideValue) > 0)
-                        intOverride += 1;
-                    if (a.Name != _strName)
-                    {
-                        if (Convert.ToInt32(a.ArmorOverrideValue) > Convert.ToInt32(_strO))
-                            blnHighest = false;
-                    }
-                    if (a.Name == _strName)
-                    {
-                        //Check for Custom Fitted armour
-                        if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra.Length > 0 && _objCharacter.Armor.Any(objArmor => objArmor.Equipped && objMod.Extra == objArmor.Name)))
-                        {
-                            blnCustomFitted = true;
-                        }
-                    }
-                }
-
-                if (!blnHighest || Convert.ToInt32(_strO) == 0)
-                    blnUseBase = true;
-
-                int intTotalArmor;
-                int.TryParse(_strA.Replace("Rating", _intRating.ToString()), out intTotalArmor);
-                // if there's zero or usebase is true, we're all done. Calculate as normal.
-                if (blnCustomFitted || (!blnUseBase && intOverride > 1 && !blnHighest))
-                {
-                    int.TryParse(_strO, out intTotalArmor);
-                }
-
+                int.TryParse(_strA.Replace("Rating", _intRating.ToString()), out var intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                foreach (ArmorMod objMod in _lstArmorMods)
-                {
-                    if (objMod.Equipped)
-                        intTotalArmor += objMod.Armor;
-                }
-
+                intTotalArmor += _lstArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
                 intTotalArmor -= _intDamage;
 
                 return intTotalArmor;
             }
         }
 
+        public string DisplayArmorValue
+        {
+            get
+            {
+                return _strA.Substring(0, 1) == "+" || _strA.Substring(0, 1) == "-"
+                    ? (string.IsNullOrWhiteSpace(_strO)
+                        ? $"{TotalArmor:+0;-0;0}"
+                        : $"{TotalArmor:+0;-0;0}/{ArmorOverrideValue}")
+                    : TotalArmor.ToString();
+            }
+        }
         /// <summary>
         /// The Armor's total Cost including Modifications.
         /// </summary>

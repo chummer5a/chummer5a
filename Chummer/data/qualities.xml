@@ -12467,7 +12467,7 @@
         <specificattribute>
           <name>CHA</name>
           <max>-1</max>
-          <val>-1</val>
+          <min>-1</min>
         </specificattribute>
       </bonus>
       <source>CA</source>

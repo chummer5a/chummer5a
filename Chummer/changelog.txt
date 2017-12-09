@@ -1333,6 +1333,7 @@ Application Changes:
 - Changes to the condition monitor now immediately refresh skill dicepools.
 - The cost label for qualities in create mode now shows as Current/Maximum (Total) to assist with calculating quality values. 
     -The total value is mostly going to be seen for Changelings and Point-Buy characters, as it shows qualities that don't contribute to your limit. 
+- Fixed rendering of armour values for accessories and such that have a positive/negative modifier.
 
 Data Changes:
 
@@ -1433,6 +1434,7 @@ Data Changes:
 - Added all missing Critter Gear from HS.
 - Added Specialized Biodrone Cyberware from HS.
 - Certain Martial Arts will now automatically add a free skill specialisation, per Run and Gun page 135. Characters that already have these martial arts will need to remove and re-add the martial art for it to take effect.
+- Fixed CHA bonuses for the Ugly and Doesn't Care quality.
 
 Sheet Changes:
 

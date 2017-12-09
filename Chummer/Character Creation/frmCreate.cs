@@ -6287,7 +6287,7 @@ namespace Chummer
             while (treLimit.SelectedNode != null && treLimit.SelectedNode.Level > 1)
                 treLimit.SelectedNode = treLimit.SelectedNode.Parent;
 
-            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
+            if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level != 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectLimitModifier"), LanguageManager.GetString("MessageTitle_SelectLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6723,6 +6723,11 @@ namespace Chummer
             {
                 if (objItem.Tag != null)
                     objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
+            }
+
+            if (((ContextMenuStrip)sender).Name == "cmsLimitModifier")
+            {
+                //if (CommonFunctions.FindById(treLimit.SelectedNode.Tag.ToString(), _objCharacter.LimitModifiers).)
             }
         }
 
@@ -14826,7 +14831,7 @@ namespace Chummer
                 foreach (Armor objArmor in _objCharacter.Armor)
                 {
                     if (objArmor.Equipped && (objArmor.Location == treArmor.SelectedNode.Text || string.IsNullOrEmpty(objArmor.Location) && treArmor.SelectedNode == treArmor.Nodes[0]))
-                        lblArmorEquipped.Text += objArmor.DisplayName + " (" + objArmor.TotalArmor.ToString() + ")\n";
+                        lblArmorEquipped.Text += objArmor.DisplayName + " (" + objArmor.DisplayArmorValue + ")\n";
                 }
                 if (string.IsNullOrEmpty(lblArmorEquipped.Text))
                     lblArmorEquipped.Text = LanguageManager.GetString("String_None");
@@ -14849,7 +14854,7 @@ namespace Chummer
                     return;
                 }
 
-                lblArmorValue.Text = objArmor.TotalArmor.ToString();
+                lblArmorValue.Text = objArmor.DisplayArmorValue;
                 lblArmorAvail.Text = objArmor.TotalAvail;
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining") + ")";
                 lblArmorCost.Text = objArmor.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -14885,7 +14890,7 @@ namespace Chummer
                 {
                     if (objSelectedMod.IncludedInArmor)
                         cmdDeleteArmor.Enabled = false;
-                    lblArmorValue.Text = objSelectedMod.Armor.ToString();
+                    lblArmorValue.Text = objSelectedMod.Armor.ToString("+0;-0;0");
                     lblArmorAvail.Text = objSelectedMod.TotalAvail;
                     if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
                         lblArmorCapacity.Text = objSelectedMod.CalculatedCapacity;
