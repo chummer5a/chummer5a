@@ -424,14 +424,12 @@ namespace Chummer
             lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
-                if (limit.Count > 0 && limit.Contains(objXmlSpirit["name"].InnerText) || limit.Count == 0)
+                string strSpiritName = objXmlSpirit["name"].InnerText;
+                if (limit.Count == 0 || limit.Contains(strSpiritName))
                 {
                     ListItem objItem = new ListItem();
-                    objItem.Value = objXmlSpirit["name"].InnerText;
-                    if (objXmlSpirit["translate"] != null)
-                        objItem.Name = objXmlSpirit["translate"].InnerText;
-                    else
-                        objItem.Name = objXmlSpirit["name"].InnerText;
+                    objItem.Value = strSpiritName;
+                    objItem.Name = objXmlSpirit["translate"]?.InnerText ?? strSpiritName;
                     lstSpirit.Add(objItem);
                 }
             }
