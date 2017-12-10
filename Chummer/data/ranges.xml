@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ranges.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ranges.xsd">
   <version>0</version>
   <ranges>
     <range>
@@ -228,7 +230,7 @@
       <long>STR*8</long>
       <extreme>STR*15</extreme>
     </range>
-	<range>
+    <range>
       <category>Harpoon Gun</category>
       <min>0</min>
       <short>5</short>
@@ -236,7 +238,7 @@
       <long>40</long>
       <extreme>60</extreme>
     </range>
-	<range>
+    <range>
       <category>Harpoon Gun (Underwater)</category>
       <min>0</min>
       <short>6</short>
@@ -244,7 +246,7 @@
       <long>60</long>
       <extreme>120</extreme>
     </range>
-	<range>
+    <range>
       <category>Flamethrowers</category>
       <min>0</min>
       <short>15</short>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vehicles.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vehicles.xsd">
   <categories>
     <category>Bikes</category>
     <category>Cars</category>
@@ -1629,7 +1631,7 @@
           <visibility>External</visibility>
           <flexibility>Fixed</flexibility>
           <control>Remote</control>
-        </weaponmount> 
+        </weaponmount>
       </weaponmounts>
     </vehicle>
     <vehicle>
@@ -2823,7 +2825,7 @@
           <visibility>External</visibility>
           <flexibility>Flexible</flexibility>
           <control>Manual</control>
-        </weaponmount>        
+        </weaponmount>
       </weaponmounts>
     </vehicle>
     <vehicle>
@@ -6989,7 +6991,7 @@
         <name rating="4">Anti-Theft System</name>
         <name>Amenities (Middle)</name>
         <name>Interior Cameras</name>
-        <name rating ="1">Life Support</name>
+        <name rating="1">Life Support</name>
         <name>Extra Entry/Exit Points</name>
       </mods>
       <seats>8</seats>
@@ -9344,7 +9346,7 @@
       <cost>400</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9362,7 +9364,7 @@
       <cost>800</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9380,7 +9382,7 @@
       <cost>Body * 150</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9397,7 +9399,7 @@
       <cost>1600</cost>
       <rating>0</rating>
       <slots>2</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9415,7 +9417,7 @@
       <cost>2400</cost>
       <rating>0</rating>
       <slots>3</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9433,7 +9435,7 @@
       <cost>3200</cost>
       <rating>0</rating>
       <slots>4</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9451,7 +9453,7 @@
       <cost>4000</cost>
       <rating>0</rating>
       <slots>5</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9469,7 +9471,7 @@
       <cost>4800</cost>
       <rating>0</rating>
       <slots>6</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9487,7 +9489,7 @@
       <cost>25</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9504,7 +9506,7 @@
       <cost>Rating * 100</cost>
       <rating>7</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9521,7 +9523,7 @@
       <cost>50</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9538,7 +9540,7 @@
       <cost>500</cost>
       <rating>0</rating>
       <slots>2</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9555,7 +9557,7 @@
       <cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
       <rating>4</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9572,7 +9574,7 @@
       <cost>Body * Body * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9589,7 +9591,7 @@
       <cost>Body * Body * 1000</cost>
       <rating>0</rating>
       <slots>2</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9606,7 +9608,7 @@
       <cost>Body * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9623,7 +9625,7 @@
       <cost>Variable(10-10000)</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9642,7 +9644,7 @@
       <slots>1</slots>
       <capacity>15</capacity>
       <conditionmonitor>1</conditionmonitor>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9670,7 +9672,7 @@
       <slots>1</slots>
       <capacity>15</capacity>
       <conditionmonitor>1</conditionmonitor>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9698,7 +9700,7 @@
       <slots>1</slots>
       <capacity>15</capacity>
       <conditionmonitor>1</conditionmonitor>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9725,7 +9727,7 @@
       <rating>0</rating>
       <slots>1</slots>
       <capacity>20</capacity>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9752,7 +9754,7 @@
       <rating>0</rating>
       <slots>1</slots>
       <capacity>20</capacity>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9784,7 +9786,7 @@
         <offroadspeed>0</offroadspeed>
         <speed>0</speed>
       </bonus>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9801,7 +9803,7 @@
       <cost>5</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9818,7 +9820,7 @@
       <cost>50</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9835,7 +9837,7 @@
       <cost>Body * 300</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9852,7 +9854,7 @@
       <cost>Body * 75</cost>
       <rating>0</rating>
       <slots>0</slots>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9872,7 +9874,7 @@
       <bonus>
         <pilot>Rating</pilot>
       </bonus>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9903,7 +9905,7 @@
       <bonus>
         <body>-Rating</body>
       </bonus>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -9924,7 +9926,7 @@
         <sensor>Rating</sensor>
       </bonus>
       <minrating>Sensor + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10228,7 +10230,7 @@
         <offroadhandling>Rating</offroadhandling>
       </bonus>
       <minrating>Handling + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10250,7 +10252,7 @@
         <speed>Rating</speed>
       </bonus>
       <minrating>Speed + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10272,7 +10274,7 @@
         <offroadaccel>Rating</offroadaccel>
       </bonus>
       <minrating>Acceleration + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10293,7 +10295,7 @@
         <armor>Rating</armor>
       </bonus>
       <minrating>Armor + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10314,7 +10316,7 @@
         <sensor>Rating</sensor>
       </bonus>
       <minrating>Sensor + 1</minrating>
-      <optionaldrone/>
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10335,8 +10337,8 @@
         <handling>-1</handling>
         <offroadhandling>-1</offroadhandling>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10357,8 +10359,8 @@
         <offroadspeed>-1</offroadspeed>
         <speed>-1</speed>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10379,8 +10381,8 @@
         <accel>Rating</accel>
         <offroadaccel>Rating</offroadaccel>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10400,8 +10402,8 @@
       <bonus>
         <body>-1</body>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10421,8 +10423,8 @@
       <bonus>
         <armor>-3</armor>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10442,8 +10444,8 @@
       <bonus>
         <sensor>-1</sensor>
       </bonus>
-      <downgrade/>
-      <optionaldrone/>
+      <downgrade />
+      <optionaldrone />
       <required>
         <vehicledetails>
           <category operation="contains">Drones</category>
@@ -10693,7 +10695,7 @@
       <avail>4R</avail>
       <category>Size</category>
       <cost>800</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>1</slots>
       <required>
         <vehicledetails>
@@ -10715,7 +10717,7 @@
       <avail>8R</avail>
       <category>Size</category>
       <cost>1600</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>2</slots>
       <required>
         <vehicledetails>
@@ -10737,7 +10739,7 @@
       <avail>10F</avail>
       <category>Size</category>
       <cost>2400</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>3</slots>
       <required>
         <vehicledetails>
@@ -10759,7 +10761,7 @@
       <avail>12F</avail>
       <category>Size</category>
       <cost>3200</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>4</slots>
       <required>
         <vehicledetails>
@@ -10781,7 +10783,7 @@
       <avail>16F</avail>
       <category>Size</category>
       <cost>4000</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>5</slots>
       <required>
         <vehicledetails>
@@ -10803,7 +10805,7 @@
       <avail>20F</avail>
       <category>Size</category>
       <cost>4800</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>6</slots>
       <required>
         <vehicledetails>
@@ -10825,7 +10827,7 @@
       <avail>0</avail>
       <category>Control</category>
       <cost>0</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>0</slots>
     </weaponmount>
     <weaponmount>
@@ -10836,7 +10838,7 @@
       <avail>0</avail>
       <category>Flexibility</category>
       <cost>0</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>0</slots>
     </weaponmount>
     <weaponmount>
@@ -10847,7 +10849,7 @@
       <avail>0</avail>
       <category>Visibility</category>
       <cost>0</cost>
-      <optionaldrone/>
+      <optionaldrone />
       <slots>0</slots>
     </weaponmount>
     <!-- End Region -->

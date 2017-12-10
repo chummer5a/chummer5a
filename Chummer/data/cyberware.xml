@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema cyberware.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema cyberware.xsd">
   <version>0</version>
   <grades>
     <!-- Region Standard -->
@@ -219,7 +221,7 @@
     <cyberware>
       <id>b57eadaa-7c3b-4b80-8d79-cbbd922c1196</id>
       <name>Essence Hole</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>Rating * 0.01</ess>
       <capacity>0</capacity>
@@ -232,7 +234,7 @@
     <cyberware>
       <id>961eac53-0c43-4b19-8741-2872177a3a4c</id>
       <name>Essence Antihole</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>Rating * -0.01</ess>
       <capacity>0</capacity>
@@ -245,7 +247,7 @@
     <cyberware>
       <id>6b219dfa-310a-45ab-98af-40a62e2431cf</id>
       <name>Commlink</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -284,7 +286,7 @@
     <cyberware>
       <id>56e37c9d-9191-4f19-a733-33580888a560</id>
       <name>Cranial Bomb - Kink Bomb</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>[1]</capacity>
@@ -296,7 +298,7 @@
     <cyberware>
       <id>ff8b165b-1b43-479e-b9d7-87d9a341ef71</id>
       <name>Cranial Bomb - Microbomb</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -308,7 +310,7 @@
     <cyberware>
       <id>7af78ea8-2b19-4dee-a07f-194393a4a65b</id>
       <name>Cranial Bomb - Area Bomb</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>[3]</capacity>
@@ -320,7 +322,7 @@
     <cyberware>
       <id>754a2083-9d89-4034-b43f-31bd5bb43595</id>
       <name>Cyberdeck</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.4</ess>
       <capacity>[4]</capacity>
@@ -335,7 +337,7 @@
     <cyberware>
       <id>47c48542-48c3-417e-91f0-b5a456183f05</id>
       <name>Datajack</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -353,7 +355,7 @@
     <cyberware>
       <id>eb9e691a-8002-4138-ac8d-d9714d398b1e</id>
       <name>Data Lock</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -431,7 +433,7 @@
     <cyberware>
       <id>7924a873-341c-43a7-be03-f92895e0dc34</id>
       <name>Tooth Compartment, Storage</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -439,12 +441,12 @@
       <cost>800</cost>
       <source>SR5</source>
       <page>452</page>
-	  <allowgear />
+      <allowgear />
     </cyberware>
     <cyberware>
       <id>cd113e17-8412-4d93-80d0-91d6212646f0</id>
       <name>Tooth Compartment, Breakable</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -452,7 +454,7 @@
       <cost>800</cost>
       <source>SR5</source>
       <page>452</page>
-	  <allowgear />
+      <allowgear />
     </cyberware>
     <cyberware>
       <id>92e9d8e5-b9aa-4786-add3-a1d1f82b8ec0</id>
@@ -511,7 +513,7 @@
     <cyberware>
       <id>5921a6ac-1e20-483b-b210-dc84a14d3045</id>
       <name>Flare Compensation</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -523,7 +525,7 @@
     <cyberware>
       <id>e03d454f-4a15-43ce-9cd0-db80e8600eae</id>
       <name>Image Link</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[*]</capacity>
@@ -535,7 +537,7 @@
     <cyberware>
       <id>97910ef7-dc30-4a87-8314-d1e0021dc39c</id>
       <name>Low-Light Vision</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -547,7 +549,7 @@
     <cyberware>
       <id>fde2bfc3-c7a2-435e-a220-4896f49d8ca9</id>
       <name>Ocular Drone</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0</ess>
       <capacity>[6]</capacity>
@@ -556,12 +558,12 @@
       <source>SR5</source>
       <page>453</page>
       <addvehicle>Ocular Drone</addvehicle>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>fb0419a3-6f0d-4fbb-8b37-39e853efa195</id>
       <name>Retinal Duplication</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -574,7 +576,7 @@
     <cyberware>
       <id>35dba0e2-1d3d-4386-a657-17fedca4622d</id>
       <name>Smartlink</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[3]</capacity>
@@ -589,7 +591,7 @@
     <cyberware>
       <id>ba3204d8-3ec5-4da0-b980-44992a3a4a13</id>
       <name>Thermographic Vision</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -601,7 +603,7 @@
     <cyberware>
       <id>35c9c51e-5364-41b4-b3c9-4d1f080bd48c</id>
       <name>Vision Enhancement</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[Rating]</capacity>
@@ -621,7 +623,7 @@
     <cyberware>
       <id>2c578376-1219-468d-b76b-4c0da44dfca2</id>
       <name>Vision Magnification</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -657,7 +659,7 @@
     <cyberware>
       <id>9cdee6a3-a04e-40a1-95ce-e509b26b192c</id>
       <name>Audio Enhancement</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[Rating]</capacity>
@@ -693,16 +695,16 @@
       <capacity>[1]</capacity>
       <avail>6</avail>
       <cost>2250</cost>
-	  <bonus>
-		<sonicresist>2</sonicresist>
-	  </bonus>
+      <bonus>
+        <sonicresist>2</sonicresist>
+      </bonus>
       <source>SR5</source>
       <page>454</page>
     </cyberware>
     <cyberware>
       <id>ab2e5330-25c6-4460-bab7-35a9e6b9aeb1</id>
       <name>Select Sound Filter</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[Rating]</capacity>
@@ -715,7 +717,7 @@
     <cyberware>
       <id>e0212e7e-e690-41d8-a461-4834a668d9c8</id>
       <name>Sound Link</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[*]</capacity>
@@ -727,7 +729,7 @@
     <cyberware>
       <id>004b7eb4-190e-4903-8308-27fe9b2f626b</id>
       <name>Spatial Recognizer</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -762,8 +764,8 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-		  <cyberware>Bone Lacing (Plastic)</cyberware>
-		  <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -787,8 +789,8 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-		  <cyberware>Bone Lacing (Aluminum)</cyberware>
-		  <cyberware>Bone Lacing (Titanium)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -812,8 +814,8 @@
       <forbidden>
         <oneof>
           <cyberware>Bone Density Augmentation</cyberware>
-		  <cyberware>Bone Lacing (Plastic)</cyberware>
-		  <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
         </oneof>
       </forbidden>
       <notes>Bone Lacing does not increase your BOD score, only tests for resisting damage.</notes>
@@ -841,7 +843,7 @@
     <cyberware>
       <id>be1ed1c6-9a80-4299-9df3-335c59506027</id>
       <name>Fingertip Compartment</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -854,7 +856,7 @@
     <cyberware>
       <id>f145d15f-37e7-4961-98ba-38146dc849c9</id>
       <name>Grapple Gun</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.5</ess>
       <capacity>[4]</capacity>
@@ -866,7 +868,7 @@
     <cyberware>
       <id>02ae9eca-ad70-4c27-8c1d-dec355265b8f</id>
       <name>Internal Air Tank</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.25</ess>
       <capacity>[3]</capacity>
@@ -875,10 +877,10 @@
       <source>SR5</source>
       <page>455</page>
       <rating>3</rating>
-	  <bonus>
-		<toxininhalationimmune />
-		<pathogeninhalationimmune />
-	  </bonus>
+      <bonus>
+        <toxininhalationimmune />
+        <pathogeninhalationimmune />
+      </bonus>
     </cyberware>
     <cyberware>
       <id>46f80a44-80ae-41d7-a7c8-a119c4cff70f</id>
@@ -900,11 +902,11 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
@@ -943,7 +945,7 @@
     <cyberware>
       <id>21055f0b-4f4d-4286-8cfb-e251e5898c04</id>
       <name>Smuggling Compartment</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -976,7 +978,7 @@
     <cyberware>
       <id>df01eed6-a019-4198-b88d-4ba8f9aaefdf</id>
       <name>Obvious Full Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>15</capacity>
@@ -997,23 +999,23 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>arm</limbslot>
     </cyberware>
     <cyberware>
       <id>c7b88f7e-4e3c-4c29-9f86-a4e244ec5066</id>
       <name>Obvious Full Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>20</capacity>
@@ -1034,7 +1036,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1043,8 +1045,8 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -1052,7 +1054,7 @@
     <cyberware>
       <id>eee044c5-3586-4f04-9577-5e290466c485</id>
       <name>Obvious Foot</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.25</ess>
       <capacity>4</capacity>
@@ -1073,7 +1075,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1082,15 +1084,15 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>cc503281-ff05-4e22-9121-09116a4a8306</id>
       <name>Obvious Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.25</ess>
       <capacity>4</capacity>
@@ -1111,22 +1113,22 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>fdb0ef96-2234-46fa-9d51-55c7d1164b7a</id>
       <name>Obvious Lower Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.45</ess>
       <capacity>10</capacity>
@@ -1147,22 +1149,22 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>f769235c-c295-4c31-9843-e9d413d77adf</id>
       <name>Obvious Lower Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.45</ess>
       <capacity>12</capacity>
@@ -1183,7 +1185,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1192,14 +1194,14 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
       <name>Obvious Torso</name>
-	  <limit>{torso}</limit>
+      <limit>{torso}</limit>
       <category>Cyberlimb</category>
       <ess>1.5</ess>
       <capacity>10</capacity>
@@ -1225,17 +1227,17 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>torso</limbslot>
     </cyberware>
     <cyberware>
       <id>ea676290-1859-4a56-86f8-a3fb90decc32</id>
       <name>Obvious Skull</name>
-	  <limit>{skull}</limit>
+      <limit>{skull}</limit>
       <category>Cyberlimb</category>
       <ess>0.75</ess>
       <capacity>4</capacity>
@@ -1261,18 +1263,18 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		  <cyberware>Partial Cyberskull</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+          <cyberware>Partial Cyberskull</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>skull</limbslot>
     </cyberware>
     <cyberware>
       <id>f4a48c40-29df-4435-8d09-b1f3153d61ee</id>
       <name>Synthetic Full Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>8</capacity>
@@ -1293,23 +1295,23 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>arm</limbslot>
     </cyberware>
     <cyberware>
       <id>bf29ff5e-839a-4fd3-8063-371ce05065d6</id>
       <name>Synthetic Full Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>10</capacity>
@@ -1330,7 +1332,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1339,8 +1341,8 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -1348,7 +1350,7 @@
     <cyberware>
       <id>1e511ad7-4806-4862-8685-a04887b1bec9</id>
       <name>Synthetic Foot</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.25</ess>
       <capacity>2</capacity>
@@ -1369,7 +1371,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1378,15 +1380,15 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>a1591e59-d859-40fc-aaf8-30fde5cf6a42</id>
       <name>Synthetic Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.25</ess>
       <capacity>2</capacity>
@@ -1407,22 +1409,22 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>4e8c4c99-b0bf-494f-b82c-1ab15ec26eb7</id>
       <name>Synthetic Lower Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.45</ess>
       <capacity>5</capacity>
@@ -1443,22 +1445,22 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>d3a7e6f2-cb8c-42c0-9aef-c88b26648859</id>
       <name>Synthetic Lower Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.45</ess>
       <capacity>6</capacity>
@@ -1479,7 +1481,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -1488,15 +1490,15 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
       <name>Synthetic Torso</name>
-	  <limit>{torso}</limit>
+      <limit>{torso}</limit>
       <category>Cyberlimb</category>
       <ess>1.5</ess>
       <capacity>5</capacity>
@@ -1522,17 +1524,17 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>torso</limbslot>
     </cyberware>
     <cyberware>
       <id>992fbf6b-8f9a-4c27-a527-8705ecc3341f</id>
       <name>Synthetic Skull</name>
-	  <limit>{skull}</limit>
+      <limit>{skull}</limit>
       <category>Cyberlimb</category>
       <ess>0.75</ess>
       <capacity>2</capacity>
@@ -1557,18 +1559,18 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		  <cyberware>Partial Cyberskull</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+          <cyberware>Partial Cyberskull</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>skull</limbslot>
     </cyberware>
     <cyberware>
       <id>8ea736c6-5a90-471c-9320-18432ec9aaf0</id>
       <name>Armor</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[Rating]</capacity>
@@ -1580,12 +1582,12 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>7d61f860-0637-4214-914d-c68022361d24</id>
       <name>Customized Strength</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
@@ -1595,12 +1597,12 @@
       <page>456</page>
       <minrating>MinimumSTR+1</minrating>
       <rating>MaximumSTR</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>7afb23c7-435f-450c-9d1c-f7a0e7e631a6</id>
       <name>Customized Agility</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
@@ -1610,12 +1612,12 @@
       <page>456</page>
       <minrating>MinimumAGI+1</minrating>
       <rating>MaximumAGI</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>a9f4efd4-b86c-4e90-b0f7-aefa32c3b9de</id>
       <name>Enhanced Strength</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[Rating * 1]</capacity>
@@ -1624,12 +1626,12 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>2c50d5c1-f2ff-4c7b-bf5e-46925e808648</id>
       <name>Enhanced Agility</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[Rating * 1]</capacity>
@@ -1638,12 +1640,12 @@
       <source>SR5</source>
       <page>456</page>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>eea42123-0449-4c20-8c0b-ae766025b72b</id>
       <name>Cyber Holster</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[5]</capacity>
@@ -1651,12 +1653,12 @@
       <cost>2000</cost>
       <source>SR5</source>
       <page>457</page>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>816fbe31-0bfb-455f-a939-fca85b968bd2</id>
       <name>Cyberarm Gyromount</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[8]</capacity>
@@ -1664,13 +1666,13 @@
       <cost>6000</cost>
       <source>SR5</source>
       <page>456</page>
-	  <blocksmounts>elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -1678,7 +1680,7 @@
     <cyberware>
       <id>17e0bf0e-db82-4db7-ad85-d88e9945f5a7</id>
       <name>Cyberarm Slide</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[3]</capacity>
@@ -1686,7 +1688,7 @@
       <cost>3000</cost>
       <source>SR5</source>
       <page>456</page>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>c7a55431-c54c-41ba-8468-0d9c3028010a</id>
@@ -1698,7 +1700,7 @@
       <cost>Rating * 2500</cost>
       <source>SR5</source>
       <page>457</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -1708,14 +1710,14 @@
       </bonus>
       <limit>no</limit>
       <rating>6</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -1723,7 +1725,7 @@
     <cyberware>
       <id>32096cc1-25c0-4b29-a53d-92528f352d2f</id>
       <name>Large Smuggling Compartment</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[5]</capacity>
@@ -1732,12 +1734,12 @@
       <source>SR5</source>
       <page>457</page>
       <allowgear />
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>ec5ed166-d1dc-4afe-80a1-71bc315f7d75</id>
       <name>External Clip Port</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -1749,7 +1751,7 @@
     <cyberware>
       <id>c7ba7834-7337-452c-90e4-d1dd4abcbca5</id>
       <name>Grenade Launcher</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1.5</ess>
       <capacity>[15]</capacity>
@@ -1762,7 +1764,7 @@
     <cyberware>
       <id>ba93ab8d-fd7f-4fc4-bfa3-5f987fd15d77</id>
       <name>Hand Blade</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[2]</capacity>
@@ -1775,7 +1777,7 @@
     <cyberware>
       <id>923d1629-5267-4093-a978-34eb4543cb15</id>
       <name>Hand Razors</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -1788,7 +1790,7 @@
     <cyberware>
       <id>e2997f83-e2a7-4f15-92a2-be9b5081ed59</id>
       <name>Heavy Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -1801,7 +1803,7 @@
     <cyberware>
       <id>abe607f4-ba21-4d7f-b6e1-327f03fab901</id>
       <name>Holdout Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -1814,7 +1816,7 @@
     <cyberware>
       <id>c8df9efc-e88e-4dec-becf-0453f20cdb34</id>
       <name>Laser Sight</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0</ess>
       <capacity>[1]</capacity>
@@ -1822,12 +1824,12 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>45a32fd5-6db3-4e1d-aa34-76d1e299ae8b</id>
       <name>Light Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[4]</capacity>
@@ -1840,7 +1842,7 @@
     <cyberware>
       <id>b6e0d583-33e8-4711-8304-a1d8de86d391</id>
       <name>Machine Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -1853,7 +1855,7 @@
     <cyberware>
       <id>1aa7fe36-10ab-4c3c-9a4f-f26e8460c0a8</id>
       <name>Shock Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[4]</capacity>
@@ -1862,15 +1864,15 @@
       <source>SR5</source>
       <page>458</page>
       <addweapon>Shock Hand</addweapon>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -1878,7 +1880,7 @@
     <cyberware>
       <id>841cac06-6839-4041-a8dc-2050048df076</id>
       <name>Shotgun</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1.25</ess>
       <capacity>[10]</capacity>
@@ -1891,7 +1893,7 @@
     <cyberware>
       <id>8b9541a9-e10a-488d-a076-4e5b1c469839</id>
       <name>Silencer</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -1899,12 +1901,12 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>e8fad85e-01c7-4fda-a5e0-73af457f4cf7</id>
       <name>Sound Suppressor</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -1912,12 +1914,12 @@
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>c9e4a11f-ef4f-4cb6-9392-ce7378456d82</id>
       <name>Spurs</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.3</ess>
       <capacity>[3]</capacity>
@@ -1930,7 +1932,7 @@
     <cyberware>
       <id>13841067-a929-4e8d-b7e3-e8eb68a0dec1</id>
       <name>Submachine Gun</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1</ess>
       <capacity>[8]</capacity>
@@ -2110,7 +2112,7 @@
     <cyberware>
       <id>27aad555-301b-4dfa-826c-40c9c489d6a0</id>
       <name>Additional Eye Mount</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -2128,7 +2130,7 @@
     <cyberware>
       <id>f51aeeaf-dc86-420e-a078-b50a45de600c</id>
       <name>Eye Light System</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -2140,7 +2142,7 @@
     <cyberware>
       <id>02e45643-b577-4d31-8f98-18102eb4a600</id>
       <name>Eye Protectors (Plastic)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -2152,7 +2154,7 @@
     <cyberware>
       <id>19cea27d-b57b-46b1-9604-3362974f68ff</id>
       <name>Eye Protectors (Ballistic Glass)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -2164,7 +2166,7 @@
     <cyberware>
       <id>686b15f5-e661-4813-ab3a-96c1eba33452</id>
       <name>Microscopic Lenses</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[3]</capacity>
@@ -2187,7 +2189,7 @@
     <cyberware>
       <id>a8a5cc69-c4c9-4923-a391-ec22d19033fd</id>
       <name>Targeting Laser</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[4]</capacity>
@@ -2199,7 +2201,7 @@
     <cyberware>
       <id>7f2231a0-1aad-47b9-b3d7-d9a1f2a12b0f</id>
       <name>Targeting Laser (Infrared)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[4]</capacity>
@@ -2213,7 +2215,7 @@
     <cyberware>
       <id>40830ce9-b279-4951-adf2-05a69dd41d77</id>
       <name>Antennae</name>
-	  <limit>3</limit>
+      <limit>3</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2247,7 +2249,7 @@
     <cyberware>
       <id>cf0adced-d9e8-49bb-952f-3b7b339761fa</id>
       <name>Modular Mount</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2291,7 +2293,7 @@
     <cyberware>
       <id>894766dd-d7c5-4fd9-be8e-0578ab09c8d8</id>
       <name>Auto Injector</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -2303,7 +2305,7 @@
     <cyberware>
       <id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
       <name>Auto Injector Expansion</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -2315,7 +2317,7 @@
     <cyberware>
       <id>b2f64852-6fa5-4d7a-bb21-dddee2fb885f</id>
       <name>Auto Injector Killswitch</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.01</ess>
       <capacity>0</capacity>
@@ -2327,7 +2329,7 @@
     <cyberware>
       <id>c14b3ca9-d1a0-4f4b-b368-4b8cf8d88bdb</id>
       <name>Balance Tail</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.25</ess>
       <capacity>0</capacity>
@@ -2346,7 +2348,7 @@
     <cyberware>
       <id>8ead959d-8382-414e-a2db-d2c0605e20e6</id>
       <name>Biomonitor</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2370,7 +2372,7 @@
     <cyberware>
       <id>609fc7eb-d81b-4468-8328-19bb1b48100a</id>
       <name>Cyberfins (Hands)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2378,7 +2380,7 @@
       <cost>500</cost>
       <source>CF</source>
       <page>83</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2386,36 +2388,36 @@
           <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
         </limitmodifier>
       </bonus>
-	  <pairbonus>
-		<specificskill>
+      <pairbonus>
+        <specificskill>
           <name>Swimming</name>
           <bonus>1</bonus>
         </specificskill>
-		<walkmultiplier>
-		  <category>Swim</category>
-		  <percent>50</percent>
-		</walkmultiplier>
-		<sprintbonus>
-		  <category>Swim</category>
-		  <percent>50</percent>
-		</sprintbonus>
-	  </pairbonus>
-	  <required>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>50</percent>
+        </walkmultiplier>
+        <sprintbonus>
+          <category>Swim</category>
+          <percent>50</percent>
+        </sprintbonus>
+      </pairbonus>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
+            <NONE />
             <name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>8066a1cb-acf7-47ae-9b3d-c78742e74b28</id>
       <name>Cyberfins (Feet)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2423,7 +2425,7 @@
       <cost>500</cost>
       <source>CF</source>
       <page>83</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2431,30 +2433,30 @@
           <condition>Only for making repairs, typing, dancing etc., Must be engaged</condition>
         </limitmodifier>
       </bonus>
-	  <pairbonus>
-		<specificskill>
+      <pairbonus>
+        <specificskill>
           <name>Swimming</name>
           <bonus>1</bonus>
         </specificskill>
-		<walkmultiplier>
-		  <category>Swim</category>
-		  <percent>50</percent>
-		</walkmultiplier>
-		<sprintbonus>
-		  <category>Swim</category>
-		  <percent>50</percent>
-		</sprintbonus>
-	  </pairbonus>
-	  <required>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>50</percent>
+        </walkmultiplier>
+        <sprintbonus>
+          <category>Swim</category>
+          <percent>50</percent>
+        </sprintbonus>
+      </pairbonus>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Foot</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Foot</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -2462,7 +2464,7 @@
     <cyberware>
       <id>80c4f377-0dfd-4abc-8481-79667a8255ac</id>
       <name>Cybersafety</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[1]</capacity>
@@ -2474,35 +2476,35 @@
     <cyberware>
       <id>3ff89fbd-1a75-4415-928f-43fb57910ba7</id>
       <name>Flex Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bodyware</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>2000</cost>
-	  <selectside />
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <forbidden>
-		<oneof>
-		  <cyberware>Bone Lacing (Plastic)</cyberware>
-		  <cyberware>Bone Lacing (Aluminum)</cyberware>
-		  <cyberware>Bone Lacing (Titanium)</cyberware>
-		  <bioware>Bone Density Augmentation</bioware>
-		  <cyberware>Obvious Full Arm</cyberware>
-		  <cyberware>Obvious Lower Arm</cyberware>
-		  <cyberware>Obvious Hand</cyberware>
-		  <cyberware>SyntheticFull Arm</cyberware>
-		  <cyberware>Synthetic Lower Arm</cyberware>
-		  <cyberware>Synthetic Hand</cyberware>
-		</oneof>
-	  </forbidden>
+      <selectside />
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <forbidden>
+        <oneof>
+          <cyberware>Bone Lacing (Plastic)</cyberware>
+          <cyberware>Bone Lacing (Aluminum)</cyberware>
+          <cyberware>Bone Lacing (Titanium)</cyberware>
+          <bioware>Bone Density Augmentation</bioware>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>SyntheticFull Arm</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>83</page>
     </cyberware>
     <cyberware>
       <id>7cc7acff-1418-47a7-95b7-5b18a52d0c36</id>
       <name>Foot Anchor</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bodyware</category>
       <ess>0.25</ess>
       <capacity>[3]</capacity>
@@ -2510,8 +2512,8 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>84</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2519,16 +2521,16 @@
           <condition>Only for knockdown resist, Must be engaged.</condition>
         </limitmodifier>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Foot</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Foot</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -2558,7 +2560,7 @@
     <cyberware>
       <id>824e0f41-dba2-40f2-bf98-41128f7bf657</id>
       <name>Magnetic System</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.25</ess>
       <capacity>[2]</capacity>
@@ -2581,7 +2583,7 @@
     <cyberware>
       <id>91e3abfd-8c74-4026-82d6-2d1884424dae</id>
       <name>Retractable Climbing Claws (Hands)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Bodyware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -2589,8 +2591,8 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <addweapon>Retractable Climbing Claws</addweapon>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <addweapon>Retractable Climbing Claws</addweapon>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2598,22 +2600,22 @@
           <condition>Only for Gymanstics (Climbing)</condition>
         </limitmodifier>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>83d207e5-ec4e-4f73-9fd2-c172f7196fb4</id>
       <name>Retractable Climbing Claws (Feet)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Bodyware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -2621,8 +2623,8 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <addweapon>Retractable Climbing Claws</addweapon>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <addweapon>Retractable Climbing Claws</addweapon>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2630,16 +2632,16 @@
           <condition>Only for Gymanstics (Climbing)</condition>
         </limitmodifier>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Foot</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Foot</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -2654,7 +2656,7 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder,ankle,knee,hip</blocksmounts>
+      <blocksmounts>wrist,elbow,shoulder,ankle,knee,hip</blocksmounts>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -2667,24 +2669,24 @@
           <condition>Only for tests involving endurance, Must be tightened</condition>
         </limitmodifier>
       </bonus>
-	  <forbidden>
-		<oneof>
-		  <cyberwarecontains>Liminal</cyberwarecontains>
-		  <cyberware>Obvious Full Arm</cyberware>
-		  <cyberware>Obvious Full Leg</cyberware>
-		  <cyberware>Obvious Lower Arm</cyberware>
-		  <cyberware>Obvious Lower Leg</cyberware>
-		  <cyberware>Obvious Hand</cyberware>
-		  <cyberware>Obvious Foot</cyberware>
-		  <cyberware>Synthetic Full Arm</cyberware>
-		  <cyberware>Synthetic Full Leg</cyberware>
-		  <cyberware>Synthetic Lower Arm</cyberware>
-		  <cyberware>Synthetic Lower Leg</cyberware>
-		  <cyberware>Synthetic Hand</cyberware>
-		  <cyberware>Synthetic Foot</cyberware>
-		  <bioware>Enhanced Articulation</bioware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberwarecontains>Liminal</cyberwarecontains>
+          <cyberware>Obvious Full Arm</cyberware>
+          <cyberware>Obvious Full Leg</cyberware>
+          <cyberware>Obvious Lower Arm</cyberware>
+          <cyberware>Obvious Lower Leg</cyberware>
+          <cyberware>Obvious Hand</cyberware>
+          <cyberware>Obvious Foot</cyberware>
+          <cyberware>Synthetic Full Arm</cyberware>
+          <cyberware>Synthetic Full Leg</cyberware>
+          <cyberware>Synthetic Lower Arm</cyberware>
+          <cyberware>Synthetic Lower Leg</cyberware>
+          <cyberware>Synthetic Hand</cyberware>
+          <cyberware>Synthetic Foot</cyberware>
+          <bioware>Enhanced Articulation</bioware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>d1ad534a-9b28-4925-bfa2-1baa6ef708ed</id>
@@ -2753,7 +2755,7 @@
     <cyberware>
       <id>8f5a6813-b87a-4915-ab91-1c416ef25b23</id>
       <name>Casemod</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -2762,12 +2764,12 @@
       <source>CF</source>
       <page>72</page>
       <rating>4</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>b7ec08aa-a328-46a0-9b41-4c9a4bfc13b2</id>
       <name>Fiberoptic Hair</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2780,7 +2782,7 @@
     <cyberware>
       <id>cb86075d-7d60-4618-9698-9e9268a28989</id>
       <name>Breast Implant (One Breast)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -2792,7 +2794,7 @@
     <cyberware>
       <id>21953b9b-43e8-41a9-af03-5af71797585b</id>
       <name>Breast Implant 2.0 (One Breast)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2804,7 +2806,7 @@
     <cyberware>
       <id>b969bb55-23ab-48a0-b92f-645185853d53</id>
       <name>Cyber Genitalia</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.25</ess>
       <capacity>[1]</capacity>
@@ -2816,7 +2818,7 @@
     <cyberware>
       <id>1c89a29c-ce58-483f-8777-b5b1f6a733c1</id>
       <name>Small LED Tattoo</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -2828,7 +2830,7 @@
     <cyberware>
       <id>a5eac202-c61b-4757-826b-f4ae00c8b87f</id>
       <name>Medium LED Tattoo</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -2840,7 +2842,7 @@
     <cyberware>
       <id>5578f51e-fb72-4247-9126-a4b626a12308</id>
       <name>Large LED Tattoo</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.2</ess>
       <capacity>[4]</capacity>
@@ -2913,7 +2915,7 @@
       <cost>8000</cost>
       <source>CF</source>
       <page>74</page>
-	  <bonus>
+      <bonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>4</value>
@@ -2924,7 +2926,7 @@
     <cyberware>
       <id>e01ae784-7f20-499c-919b-181a483d4dc4</id>
       <name>Steamers</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -2936,7 +2938,7 @@
     <cyberware>
       <id>17cc08c7-be7e-445a-9619-7492aea3433a</id>
       <name>Cosmetic Surgery</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cosmetic Enhancement</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2951,7 +2953,7 @@
     <cyberware>
       <id>100d47b3-a07c-4321-ae68-92fcfd90878b</id>
       <name>Primitive Prosthetic Full Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -2963,17 +2965,17 @@
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <limbslot>arm</limbslot>
     </cyberware>
     <cyberware>
       <id>a504a785-4ae8-4a47-9845-e55c9a6e52c9</id>
       <name>Primitive Prosthetic Lower Arm</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -2985,16 +2987,16 @@
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>a169d4c6-71c2-4fa9-8857-e69158216e32</id>
       <name>Primitive Prosthetic Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3006,16 +3008,16 @@
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
-	  <forbidden>
-		<oneof>
-		  <cyberware>Smart Articulation</cyberware>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>d99e66fe-85b9-47ac-8ef6-8a27211175b5</id>
       <name>Primitive Prosthetic Full Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3026,22 +3028,22 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
-	  <selectside />
+      <selectside />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <cyberware>Smart Articulation</cyberware>
-		  <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -3049,7 +3051,7 @@
     <cyberware>
       <id>bd5d3479-7482-422d-a0dc-16357cf43275</id>
       <name>Primitive Prosthetic Lower Leg</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3060,29 +3062,29 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
-	  <selectside />
+      <selectside />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <cyberware>Smart Articulation</cyberware>
-		  <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>d7c9f80e-247a-44f3-ad1d-96851a4d6c25</id>
       <name>Primitive Prosthetic Foot</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3093,22 +3095,22 @@
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
-	  <selectside />
+      <selectside />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <cyberware>Smart Articulation</cyberware>
-		  <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
@@ -3117,7 +3119,7 @@
     <cyberware>
       <id>196c7cc2-a39a-4750-a3bc-3c1be77900a1</id>
       <name>Built-in Medkit</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
@@ -3129,7 +3131,7 @@
     <cyberware>
       <id>3e90ac38-367e-48fe-a3d1-633570d061ab</id>
       <name>Built-in Toolkit</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
@@ -3141,7 +3143,7 @@
     <cyberware>
       <id>e9a0b651-fb8a-4fc3-81a5-b3eab900c1f8</id>
       <name>Cyberfinger (Custom)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -3149,19 +3151,19 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <bonus>
-		<selecttext />
-	  </bonus>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3169,7 +3171,7 @@
     <cyberware>
       <id>1b2c94f9-86a6-4d84-8f58-1c16569213fa</id>
       <name>Cyberfinger (Fingerlight)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -3177,16 +3179,16 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3194,7 +3196,7 @@
     <cyberware>
       <id>caa21274-3a2f-416e-9589-dfeffc11b1a7</id>
       <name>Cyberfinger (Fingerlighter)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -3202,16 +3204,16 @@
       <cost>550</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3219,7 +3221,7 @@
     <cyberware>
       <id>2badbf90-bf03-432c-95a6-495359039ba8</id>
       <name>Cyberfinger (Grenade)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -3227,19 +3229,19 @@
       <cost>500</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
       <allowgear>
         <gearcategory>Ammunition</gearcategory>
       </allowgear>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3247,7 +3249,7 @@
     <cyberware>
       <id>e6f65d1d-0a49-4256-aca9-2007404013a2</id>
       <name>Cyberfinger (Pistol)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -3255,16 +3257,16 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>86</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3272,10 +3274,10 @@
     <cyberware>
       <id>87475df7-b371-4a89-8623-2582137b5906</id>
       <name>Digigrade Legs</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.25</ess>
-	  <addtoparentess />
+      <addtoparentess />
       <capacity>[4]</capacity>
       <avail>+4</avail>
       <cost>5000</cost>
@@ -3292,27 +3294,27 @@
           <category>Ground</category>
         </runmultiplier>
       </pairbonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
-	  <forbidden>
-		<parentdetails>
-		  <name>Centaur Rear Leg</name>
-		</parentdetails>
-	  </forbidden>
+      <forbidden>
+        <parentdetails>
+          <name>Centaur Rear Leg</name>
+        </parentdetails>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>17c37ef7-1557-4ea4-90bf-6bbe5bc52a1a</id>
       <name>Grapple Hand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.45</ess>
       <capacity>[10]</capacity>
@@ -3321,15 +3323,15 @@
       <source>CF</source>
       <page>87</page>
       <addweapon>Grapple Fist</addweapon>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
       <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3337,7 +3339,7 @@
     <cyberware>
       <id>215e0563-b23c-42c0-9d11-aa4ccc8acf6d</id>
       <name>Remote Cyberhand</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.25</ess>
       <capacity>[5]</capacity>
@@ -3346,15 +3348,15 @@
       <source>R5</source>
       <page>130</page>
       <addvehicle>Remote Cyberhand</addvehicle>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -3362,7 +3364,7 @@
     <cyberware>
       <id>f8baf2a8-2941-4eec-9bac-430e30b8f40c</id>
       <name>Monkey Foot</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.3</ess>
       <capacity>[2]</capacity>
@@ -3370,8 +3372,8 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -3379,16 +3381,16 @@
           <condition>Only when used as hand</condition>
         </limitmodifier>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Foot</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name operation="contains">Foot</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -3396,7 +3398,7 @@
     <cyberware>
       <id>71323559-408e-441f-b53b-d9ffaa49e4c6</id>
       <name>Raptor Foot</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.5</ess>
       <capacity>[4]</capacity>
@@ -3405,8 +3407,8 @@
       <source>CF</source>
       <page>88</page>
       <addweapon>Raptor Foot</addweapon>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -3414,16 +3416,16 @@
           <condition>Only when attacking with the legs</condition>
         </limitmodifier>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Foot</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name operation="contains">Foot</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -3431,7 +3433,7 @@
     <cyberware>
       <id>f7ff7a58-ac0e-49a9-8cbe-741df59a33e5</id>
       <name>Skates</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -3439,31 +3441,31 @@
       <cost>250</cost>
       <source>CF</source>
       <page>88</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>-1</value>
           <condition>Only when in use</condition>
         </limitmodifier>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <percent>50</percent>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <percent>50</percent>
+        </runmultiplier>
       </pairbonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Foot</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <name operation="contains">Foot</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -3471,7 +3473,7 @@
     <cyberware>
       <id>fe394e6c-c9b4-492e-91a3-65b5e63692ed</id>
       <name>Skimmers</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[4]</capacity>
@@ -3479,31 +3481,31 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <pairbonus>
         <limitmodifier>
           <limit>Physical</limit>
           <value>-2</value>
-		  <condition>Only when in use</condition>
+          <condition>Only when in use</condition>
         </limitmodifier>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>100</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <percent>100</percent>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </runmultiplier>
       </pairbonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Foot</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <name operation="contains">Foot</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -3511,7 +3513,7 @@
     <cyberware>
       <id>edb2fd85-6bd8-4c34-be9a-eb9f21a0b8df</id>
       <name>Snake Fingers</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -3519,7 +3521,7 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>88</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <bonus>
         <limitmodifier>
           <limit>Physical</limit>
@@ -3527,27 +3529,27 @@
           <condition>Only with manual dexterity</condition>
         </limitmodifier>
       </bonus>
-	  <pairbonus>
-		<specificskill>
+      <pairbonus>
+        <specificskill>
           <name>Palming</name>
           <bonus>1</bonus>
         </specificskill>
-	  </pairbonus>
-	  <required>
+      </pairbonus>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>b2217ffc-3d2f-41ae-8cd1-640c3e7f4a58</id>
       <name>Obvious Foot, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>3</capacity>
@@ -3555,7 +3557,7 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>ankle</mountsto>
+      <mountsto>ankle</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3569,9 +3571,9 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
-		<conditionmonitor>
+        <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
@@ -3579,7 +3581,7 @@
     <cyberware>
       <id>f34449f5-e7e4-4c73-ac0a-52629b25066e</id>
       <name>Obvious Hand, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>3</capacity>
@@ -3587,7 +3589,7 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>wrist</mountsto>
+      <mountsto>wrist</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3601,17 +3603,17 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
-		<conditionmonitor>
+        <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>41e8fa49-c2e7-46d5-bc75-50024b937483</id>
       <name>Synthetic Foot, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>1</capacity>
@@ -3619,7 +3621,7 @@
       <cost>7000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>ankle</mountsto>
+      <mountsto>ankle</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3633,7 +3635,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3643,7 +3645,7 @@
     <cyberware>
       <id>caab6000-8907-417d-acdb-8ba6cc2f6492</id>
       <name>Synthetic Hand, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>1</capacity>
@@ -3651,7 +3653,7 @@
       <cost>7000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>wrist</mountsto>
+      <mountsto>wrist</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3665,17 +3667,17 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>26170cc6-e538-4c2a-b508-72448431b55d</id>
       <name>Obvious Lower Arm, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>8</capacity>
@@ -3683,7 +3685,7 @@
       <cost>12000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>elbow</mountsto>
+      <mountsto>elbow</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3697,7 +3699,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3707,7 +3709,7 @@
     <cyberware>
       <id>78da1ab2-4af1-48f9-ac14-42ef49bb768d</id>
       <name>Obvious Lower Leg, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>10</capacity>
@@ -3715,7 +3717,7 @@
       <cost>12000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>knee</mountsto>
+      <mountsto>knee</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3729,17 +3731,17 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>fe8d9997-f263-4f8d-9b0f-afb8d08b8408</id>
       <name>Synthetic Lower Arm, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>3</capacity>
@@ -3747,7 +3749,7 @@
       <cost>14000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>elbow</mountsto>
+      <mountsto>elbow</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3761,7 +3763,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3771,7 +3773,7 @@
     <cyberware>
       <id>1edf519a-74ee-42ee-8441-6f7e5c7a8f64</id>
       <name>Synthetic Lower Leg, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>4</capacity>
@@ -3779,7 +3781,7 @@
       <cost>14000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>knee</mountsto>
+      <mountsto>knee</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3793,7 +3795,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3803,7 +3805,7 @@
     <cyberware>
       <id>edc913d5-ff6e-469b-9bcc-dada26dccc10</id>
       <name>Obvious Full Arm, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>12</capacity>
@@ -3811,7 +3813,7 @@
       <cost>18000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>shoulder</mountsto>
+      <mountsto>shoulder</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3825,7 +3827,7 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -3835,7 +3837,7 @@
     <cyberware>
       <id>72ff69ed-a434-43de-ac0e-52665b1da3d6</id>
       <name>Obvious Full Leg, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>17</capacity>
@@ -3843,7 +3845,7 @@
       <cost>18000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>hip</mountsto>
+      <mountsto>hip</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3857,17 +3859,17 @@
         <category>Headware</category>
         <category>Nanocybernetics</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>c0f408f6-31b2-4070-b972-832a5520d489</id>
       <name>Synthetic Full Arm, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>5</capacity>
@@ -3875,7 +3877,7 @@
       <cost>23000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>shoulder</mountsto>
+      <mountsto>shoulder</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3898,7 +3900,7 @@
     <cyberware>
       <id>cbdbdef3-cddb-4aec-87af-fdd4f0860708</id>
       <name>Synthetic Full Leg, Modular</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>7</capacity>
@@ -3906,7 +3908,7 @@
       <cost>23000</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>hip</mountsto>
+      <mountsto>hip</mountsto>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -3926,10 +3928,10 @@
         </conditionmonitor>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>4adbacec-a982-4b52-9d57-793c4e6bf99b</id>
       <name>Modular Gear (Hand)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3937,13 +3939,13 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>wrist</mountsto>
+      <mountsto>wrist</mountsto>
       <allowgear />
     </cyberware>
     <cyberware>
       <id>1021054b-f63e-4de4-b2bc-f6f6ff1a7078</id>
       <name>Modular Gear (Foot)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3951,23 +3953,23 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>ankle</mountsto>
+      <mountsto>ankle</mountsto>
       <allowgear />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>1fb46995-1f74-4c6f-88b7-3acf8bb8a0b4</id>
       <name>Modular Gear (Lower Arm)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3975,13 +3977,13 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>elbow</mountsto>
+      <mountsto>elbow</mountsto>
       <allowgear />
     </cyberware>
     <cyberware>
       <id>059265d7-9f5b-4287-975d-2d3fcbf27339</id>
       <name>Modular Gear (Lower Leg)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3989,23 +3991,23 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>knee</mountsto>
+      <mountsto>knee</mountsto>
       <allowgear />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>c0b6dae8-4d39-4dda-ada5-419809e239a8</id>
       <name>Modular Gear (Full Arm)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -4013,13 +4015,13 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>shoulder</mountsto>
+      <mountsto>shoulder</mountsto>
       <allowgear />
     </cyberware>
     <cyberware>
       <id>54db7bcc-d1d6-45f2-b6ac-96e935b64870</id>
       <name>Modular Gear (Full Leg)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -4027,23 +4029,23 @@
       <cost>50</cost>
       <source>CF</source>
       <page>88</page>
-	  <mountsto>hip</mountsto>
+      <mountsto>hip</mountsto>
       <allowgear />
       <bonus>
-		<walkmultiplier>
-		  <category>Ground</category>
-		  <percent>-50</percent>
-		</walkmultiplier>
-		<runmultiplier>
-		  <category>Ground</category>
-		  <val>-1</val>
-		</runmultiplier>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>-50</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <val>-1</val>
+        </runmultiplier>
       </bonus>
     </cyberware>
     <cyberware>
       <id>a40cbc72-7dc6-4f8f-a9ff-e5e3f471b895</id>
       <name>Telescoping Limb</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[Rating * 3]</capacity>
@@ -4051,19 +4053,19 @@
       <cost>Rating * 1000</cost>
       <source>CF</source>
       <page>90</page>
-	  <blocksmounts>elbow, knee</blocksmounts>
+      <blocksmounts>elbow, knee</blocksmounts>
       <rating>2</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
             <name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Drone Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Lower Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Drone Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Lower Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -4071,7 +4073,7 @@
     <cyberware>
       <id>f6b19dab-872b-423a-8cd3-f5811ff3ba00</id>
       <name>Water Jet</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[4]</capacity>
@@ -4079,25 +4081,25 @@
       <cost>1000</cost>
       <source>CF</source>
       <page>90</page>
-	  <blocksmounts>knee,hip</blocksmounts>
-	  <bonus>
-		<walkmultiplier>
-		  <category>Swim</category>
-		  <percent>100</percent>
-		</walkmultiplier>
-		<sprintbonus>
-		  <category>Swim</category>
-		  <percent>100</percent>
-		</sprintbonus>
-	  </bonus>
-	  <required>
+      <blocksmounts>knee,hip</blocksmounts>
+      <bonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
+        <sprintbonus>
+          <category>Swim</category>
+          <percent>100</percent>
+        </sprintbonus>
+      </bonus>
+      <required>
         <parentdetails>
           <OR>
             <name operation="contains">Full Leg</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Drone Leg</name>
-			<name operation="contains">Lower Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Drone Leg</name>
+            <name operation="contains">Lower Leg</name>
           </OR>
         </parentdetails>
       </required>
@@ -4105,7 +4107,7 @@
     <cyberware>
       <id>4f7794ce-fd49-48f2-bde7-3501b1799814</id>
       <name>Modular Connector, Wrist</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.35</ess>
       <capacity>[5]</capacity>
@@ -4113,24 +4115,24 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
-	  <modularmount>wrist</modularmount>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <modularmount>wrist</modularmount>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>d76785fe-6a14-47ab-b51b-b95e10d142be</id>
       <name>Modular Connector, Ankle</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.35</ess>
       <capacity>[5]</capacity>
@@ -4138,31 +4140,31 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>88</page>
-	  <modularmount>ankle</modularmount>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
-	  <required>
+      <modularmount>ankle</modularmount>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Lower Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Lower Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
-	  <forbidden>
+      <forbidden>
         <oneof>
-		  <quality>Celerity</quality>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>251f792a-8887-4276-a5a9-0e01fec594ac</id>
       <name>Modular Connector, Elbow</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>0.65</ess>
       <capacity>[10]</capacity>
@@ -4170,23 +4172,23 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
-	  <modularmount>elbow</modularmount>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <required>
+      <modularmount>elbow</modularmount>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>4b5659ba-cc39-4b27-9d1e-230e0cea20e7</id>
       <name>Modular Connector, Knee</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>0.65</ess>
       <capacity>[10]</capacity>
@@ -4194,30 +4196,30 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>88</page>
-	  <modularmount>knee</modularmount>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
-	  <required>
+      <modularmount>knee</modularmount>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Full Leg</name>
-			<name operation="contains">Drone Leg</name>
+            <NONE />
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Full Leg</name>
+            <name operation="contains">Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
-	  <forbidden>
+      <forbidden>
         <oneof>
-		  <quality>Celerity</quality>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
     </cyberware>
     <cyberware>
       <id>d4d12624-1754-4a67-8e5e-f41817cfc875</id>
       <name>Modular Connector, Shoulder</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>1.3</ess>
       <capacity>0</capacity>
@@ -4225,16 +4227,16 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
-	  <inheritattributes />
-	  <modularmount>shoulder</modularmount>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <selectside />
-	  <limbslot>arm</limbslot>
+      <inheritattributes />
+      <modularmount>shoulder</modularmount>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <selectside />
+      <limbslot>arm</limbslot>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>c2ccc647-c18b-469b-a3a3-7037dd3a48d4</id>
       <name>Modular Connector, Hip</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>1.3</ess>
       <capacity>0</capacity>
@@ -4242,22 +4244,22 @@
       <cost>6000</cost>
       <source>CF</source>
       <page>88</page>
-	  <inheritattributes />
-	  <modularmount>hip</modularmount>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
-	  <selectside />
-	  <forbidden>
+      <inheritattributes />
+      <modularmount>hip</modularmount>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
+      <selectside />
+      <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
-	  <limbslot>leg</limbslot>
+      <limbslot>leg</limbslot>
     </cyberware>
     <cyberware>
       <id>4630313c-aca9-4aa3-8fce-ba064423b1c7</id>
       <name>Partial Cyberskull</name>
-	  <limit>{skull}</limit>
+      <limit>{skull}</limit>
       <category>Cyberlimb</category>
       <ess>0.4</ess>
       <capacity>4</capacity>
@@ -4277,16 +4279,16 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
-	  <forbidden>
-		<oneof>
-		  <cyberwarecontains>Skull</cyberwarecontains>
-		</oneof>
-	  </forbidden>
+      <forbidden>
+        <oneof>
+          <cyberwarecontains>Skull</cyberwarecontains>
+        </oneof>
+      </forbidden>
     </cyberware>
     <cyberware>
       <id>7232f861-ccba-4ebf-95ef-c5baa76afb1b</id>
       <name>Improved Synthskin</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[Rating * 2]</capacity>
@@ -4295,22 +4297,22 @@
       <source>CF</source>
       <page>87</page>
       <rating>6</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name>Liminal Body, Centaur</name>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
+            <name>Liminal Body, Centaur</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
             <name operation="contains">Synthetic Full Leg</name>
             <name operation="contains">Synthetic Drone</name>
             <name operation="contains">Synthetic Lower Leg</name>
-			<name operation="contains">Synthetic Foot</name>
-			<name operation="contains">Synthetic Full Arm</name>
+            <name operation="contains">Synthetic Foot</name>
+            <name operation="contains">Synthetic Full Arm</name>
             <name operation="contains">Synthetic Lower Arm</name>
-			<name operation="contains">Synthetic Hand</name>
-			<name>Synthetic Torso</name>
-			<name>Synthetic Skull</name>
-			<name>Partial Cyberskull</name>
+            <name operation="contains">Synthetic Hand</name>
+            <name>Synthetic Torso</name>
+            <name>Synthetic Skull</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
@@ -4325,18 +4327,18 @@
       <cost>80000</cost>
       <source>CF</source>
       <page>87</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <bonus>
         <runmultiplier>
-		  <category>Ground</category>
-		  <percent>100</percent>
-		</runmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
       <inheritattributes />
@@ -4345,19 +4347,19 @@
       <subsystems>
         <cyberware>
           <name>Centaur Front Leg</name>
-		  <forced>Left</forced>
+          <forced>Left</forced>
         </cyberware>
         <cyberware>
           <name>Centaur Front Leg</name>
-		  <forced>Right</forced>
+          <forced>Right</forced>
         </cyberware>
         <cyberware>
           <name>Centaur Rear Leg</name>
-		  <forced>Left</forced>
+          <forced>Left</forced>
         </cyberware>
         <cyberware>
           <name>Centaur Rear Leg</name>
-		  <forced>Right</forced>
+          <forced>Right</forced>
         </cyberware>
       </subsystems>
     </cyberware>
@@ -4383,7 +4385,7 @@
         <category>Cyber Implant Weapon</category>
         <category>Headware</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4392,7 +4394,7 @@
       <hide />
       <limbslot>leg</limbslot>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>fb43afdc-7176-4640-baba-6087b15acca3</id>
       <name>Centaur Rear Leg</name>
       <category>Cyberlimb</category>
@@ -4414,7 +4416,7 @@
         <category>Cyber Implant Weapon</category>
         <category>Headware</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -4433,7 +4435,7 @@
       <cost>40000</cost>
       <source>CF</source>
       <page>87</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -4448,14 +4450,14 @@
       </allowsubsystems>
       <bonus>
         <runmultiplier>
-		  <category>Ground</category>
-		  <percent>100</percent>
-		</runmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </runmultiplier>
       </bonus>
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
+          <quality>Celerity</quality>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4471,7 +4473,7 @@
       <cost>50000</cost>
       <source>CF</source>
       <page>87</page>
-	  <blocksmounts>ankle,knee,hip</blocksmounts>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
@@ -4487,8 +4489,8 @@
       <forbidden>
         <oneof>
           <cyberwarecontains>Liminal</cyberwarecontains>
-		  <quality>Celerity</quality>
-		  <cyberware>Smart Articulation</cyberware>
+          <quality>Celerity</quality>
+          <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
@@ -4497,7 +4499,7 @@
     <cyberware>
       <id>2a6ab1b1-f008-4c92-83d9-a298a5dad855</id>
       <name>Cyberlimb Optimization</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[2]</capacity>
@@ -4508,20 +4510,20 @@
       <bonus>
         <selecttext />
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
             <name operation="contains">Full Leg</name>
-			<name operation="contains">Full Arm</name>
-			<name>Synthetic Torso</name>
-			<name>Synthetic Skull</name>
+            <name operation="contains">Full Arm</name>
+            <name>Synthetic Torso</name>
+            <name>Synthetic Skull</name>
             <name operation="contains">Drone Leg</name>
             <name operation="contains">Drone Arm</name>
-			<name>Obvious Torso</name>
-			<name>Obvious Skull</name>
-			<name operation="contains">Liminal Body</name>
+            <name>Obvious Torso</name>
+            <name>Obvious Skull</name>
+            <name operation="contains">Liminal Body</name>
           </OR>
         </parentdetails>
       </required>
@@ -4529,7 +4531,7 @@
     <cyberware>
       <id>85bd6c32-d0c3-4d1b-99ad-833aad376a54</id>
       <name>Bulk Modification (Hand/Foot/Half-Skull)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -4538,20 +4540,20 @@
       <source>CF</source>
       <page>86</page>
       <rating>1</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Obvious Foot</name>
-			<name operation="contains">Obvious Hand</name>
-			<name>Partial Cyberskull</name>
+            <name operation="contains">Obvious Foot</name>
+            <name operation="contains">Obvious Hand</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>89733e57-d1e3-4b26-ae40-02ee2c2be733</id>
       <name>Bulk Modification (Lower Arm/Lower Leg/Skull)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -4560,20 +4562,20 @@
       <source>CF</source>
       <page>86</page>
       <rating>2</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Obvious Lower Leg</name>
-			<name operation="contains">Obvious Lower Arm</name>
-			<name>Obvious Skull</name>
+            <name operation="contains">Obvious Lower Leg</name>
+            <name operation="contains">Obvious Lower Arm</name>
+            <name>Obvious Skull</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>b1421a8e-6579-44d9-854c-dd15c477032a</id>
       <name>Bulk Modification (Full Arm/Full Leg)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -4582,25 +4584,25 @@
       <source>CF</source>
       <page>86</page>
       <rating>4</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name>Centaur Front Leg</name>
-			<name>Centaur Rear Leg</name>
-			<name operation="contains">Obvious Full Leg</name>
+            <name>Centaur Front Leg</name>
+            <name>Centaur Rear Leg</name>
+            <name operation="contains">Obvious Full Leg</name>
             <name>Drone Leg</name>
-			<name operation="contains">Obvious Full Arm</name>
+            <name operation="contains">Obvious Full Arm</name>
             <name>Drone Arm</name>
-			<name>Primitive Drone Arm</name>
-			<name>Primitive Drone Leg</name>
+            <name>Primitive Drone Arm</name>
+            <name>Primitive Drone Leg</name>
           </OR>
         </parentdetails>
       </required>
     </cyberware>
-	<cyberware>
+    <cyberware>
       <id>08b7a781-4631-4a94-bbf2-505bd173d2c5</id>
       <name>Bulk Modification (Torso/Liminal Chassis)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0</ess>
       <capacity>[-Rating]</capacity>
@@ -4609,12 +4611,12 @@
       <source>CF</source>
       <page>86</page>
       <rating>6</rating>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<name>Obvious Torso</name>
-			<name>Liminal Body, Tank (Full)</name>
-			<name>Liminal Body, Wheeled (Full)</name>
+            <name>Obvious Torso</name>
+            <name>Liminal Body, Tank (Full)</name>
+            <name>Liminal Body, Wheeled (Full)</name>
           </OR>
         </parentdetails>
       </required>
@@ -4624,7 +4626,7 @@
     <cyberware>
       <id>5329c8e6-0b37-4c71-85dc-94911e8f8f92</id>
       <name>Custom Grenade Launcher</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1.5</ess>
       <capacity>[15]</capacity>
@@ -4636,7 +4638,7 @@
     <cyberware>
       <id>0260f9dd-7f5b-4ed7-b2d5-bd89f3ada24f</id>
       <name>Custom Heavy Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -4648,7 +4650,7 @@
     <cyberware>
       <id>f965a86c-9022-48e1-a349-14ee74473507</id>
       <name>Custom Holdout Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -4660,7 +4662,7 @@
     <cyberware>
       <id>40926566-7004-4996-922c-408ea2317511</id>
       <name>Custom Light Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[4]</capacity>
@@ -4672,7 +4674,7 @@
     <cyberware>
       <id>25900e3b-d523-4bae-932c-d199a7c00d0f</id>
       <name>Custom Machine Pistol</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -4684,7 +4686,7 @@
     <cyberware>
       <id>2aede5f8-9c4f-4afb-9e33-ecb34cffdef2</id>
       <name>Extreme Cyberimplant Weapon</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[5]</capacity>
@@ -4693,7 +4695,7 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Extreme Cyberimplant</addweapon>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <bonus>
         <selecttext />
       </bonus>
@@ -4701,7 +4703,7 @@
     <cyberware>
       <id>56f1ca37-a6fb-416c-aa38-9dcc02c9c868</id>
       <name>Custom Shotgun</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1.25</ess>
       <capacity>[10]</capacity>
@@ -4713,7 +4715,7 @@
     <cyberware>
       <id>7784dca8-7196-4c73-a5b2-86b0c1c7153d</id>
       <name>Cyberfangs</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -4722,13 +4724,13 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Obvious Skull</name>
-			<name>Synthetic Skull</name>
-			<name>Partial Cyberskull</name>
+            <NONE />
+            <name>Obvious Skull</name>
+            <name>Synthetic Skull</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
@@ -4736,7 +4738,7 @@
     <cyberware>
       <id>4887ede8-dbfa-4e09-9ce5-ecaeee31ada3</id>
       <name>Oral Slasher</name>
-	  <limit>{skull}</limit>
+      <limit>{skull}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[3]</capacity>
@@ -4745,13 +4747,13 @@
       <source>CF</source>
       <page>92</page>
       <addweapon>Oral Slasher</addweapon>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Obvious Skull</name>
-			<name>Synthetic Skull</name>
-			<name>Partial Cyberskull</name>
+            <NONE />
+            <name>Obvious Skull</name>
+            <name>Synthetic Skull</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
@@ -4759,7 +4761,7 @@
     <cyberware>
       <id>a086de85-fd2c-4d87-8658-92ce2967cb96</id>
       <name>Weapon Launcher</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -4771,7 +4773,7 @@
     <cyberware>
       <id>8e5c5340-e5f0-490e-9655-b664badc94d9</id>
       <name>Junkyard Jaw</name>
-	  <limit>{skull}</limit>
+      <limit>{skull}</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.75</ess>
       <capacity>[6]</capacity>
@@ -4785,13 +4787,13 @@
           <physical>1</physical>
         </conditionmonitor>
       </bonus>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Obvious Skull</name>
-			<name>Synthetic Skull</name>
-			<name>Partial Cyberskull</name>
+            <NONE />
+            <name>Obvious Skull</name>
+            <name>Synthetic Skull</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
@@ -4799,7 +4801,7 @@
     <cyberware>
       <id>6683716f-d70a-484c-b6f3-842e6de12ea2</id>
       <name>Cyberfangs, Retractable</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.15</ess>
       <capacity>[2]</capacity>
@@ -4808,13 +4810,13 @@
       <source>CF</source>
       <page>90</page>
       <addweapon>Cyberfangs</addweapon>
-	  <required>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name>Obvious Skull</name>
-			<name>Synthetic Skull</name>
-			<name>Partial Cyberskull</name>
+            <NONE />
+            <name>Obvious Skull</name>
+            <name>Synthetic Skull</name>
+            <name>Partial Cyberskull</name>
           </OR>
         </parentdetails>
       </required>
@@ -4822,7 +4824,7 @@
     <cyberware>
       <id>6b167278-501e-4876-8e16-28f9e86064ba</id>
       <name>Flametosser</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1</ess>
       <capacity>[8]</capacity>
@@ -4835,7 +4837,7 @@
     <cyberware>
       <id>1c2e5421-84f6-4963-bcac-b2fca6001f35</id>
       <name>Flametosser, Expanded Tank</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -4847,7 +4849,7 @@
     <cyberware>
       <id>1619b516-2909-46db-90f3-4ac1784acad5</id>
       <name>Custom Submachine Gun</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1</ess>
       <capacity>[8]</capacity>
@@ -4902,7 +4904,7 @@
     <cyberware>
       <id>c94f0f0f-f201-49b1-9b4b-d921f4228140</id>
       <name>Nanohive, Hard</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Nanocybernetics</category>
       <ess>Rating * 0.25</ess>
       <capacity>[2]</capacity>
@@ -4919,7 +4921,7 @@
     <cyberware>
       <id>52d76c1a-2918-4531-b6ad-5ea732a1e6ea</id>
       <name>Nanohive, Soft</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Nanocybernetics</category>
       <ess>Rating * 0.2</ess>
       <capacity>0</capacity>
@@ -4966,7 +4968,7 @@
     <cyberware>
       <id>9b4e4b37-8f0e-4224-82b6-158077551e1b</id>
       <name>Anti-Rad</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -4980,7 +4982,7 @@
     <cyberware>
       <id>ae74668d-73f9-420f-9f0a-47e72b7912c1</id>
       <name>Control Rig Booster</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -4994,7 +4996,7 @@
     <cyberware>
       <id>e709cb79-e351-41ce-b305-58720993d2c1</id>
       <name>Implant Medic</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5011,7 +5013,7 @@
     <cyberware>
       <id>e12e99da-d596-4217-8423-797f5210b9eb</id>
       <name>Nanite Hunters</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5025,7 +5027,7 @@
     <cyberware>
       <id>e1c20168-92ea-492c-bf47-4c7e24a56c65</id>
       <name>Markers</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5039,7 +5041,7 @@
     <cyberware>
       <id>dac0f054-1594-493b-8a2d-a4c7145eb02e</id>
       <name>Nanotattoos</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5053,7 +5055,7 @@
     <cyberware>
       <id>bc70277a-960b-406c-b7d1-891226c6860b</id>
       <name>Taggants</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5067,7 +5069,7 @@
     <cyberware>
       <id>82039f0f-3332-421b-99e6-507cc5773d61</id>
       <name>Trauma Control System</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Hard Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5083,7 +5085,7 @@
     <cyberware>
       <id>0cf274b2-bc18-40a6-add1-3e7b9bca7384</id>
       <name>Anti-Tox</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5100,7 +5102,7 @@
     <cyberware>
       <id>2df794cf-5bfd-4875-b803-0f03c6d84aac</id>
       <name>Carcerand-Plus</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5117,16 +5119,16 @@
     <cyberware>
       <id>78177ee3-1aff-46c4-add9-1e31d530805d</id>
       <name>Nanosymbiotes</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>16F</avail>
       <cost>Rating * 6000</cost>
-	  <bonus>
-		<stuncmrecovery>Rating</stuncmrecovery>
-		<physicalcmrecovery>Rating</physicalcmrecovery>
-	  </bonus>
+      <bonus>
+        <stuncmrecovery>Rating</stuncmrecovery>
+        <physicalcmrecovery>Rating</physicalcmrecovery>
+      </bonus>
       <source>CF</source>
       <page>149</page>
       <forcegrade>None</forcegrade>
@@ -5135,7 +5137,7 @@
     <cyberware>
       <id>e42916ca-7787-4110-b3b7-777e41b82ca6</id>
       <name>Nantidotes</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5152,7 +5154,7 @@
     <cyberware>
       <id>9890a165-f9b9-4a73-88f2-3b01bc2a9f2e</id>
       <name>Nanotattoos</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5166,7 +5168,7 @@
     <cyberware>
       <id>a16b2703-f26f-489f-839e-44d10632fcf7</id>
       <name>Neural Amplifiers (Learning Stimulus)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5180,7 +5182,7 @@
     <cyberware>
       <id>6692e089-7aef-4638-addd-a9d455014c15</id>
       <name>Neural Amplifiers (Limbic)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5205,7 +5207,7 @@
     <cyberware>
       <id>2a81162a-c6be-46a6-9421-d9380f82e9b3</id>
       <name>Neural Amplifiers (Neocortical)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5230,7 +5232,7 @@
     <cyberware>
       <id>834a8517-bfff-457a-95ab-b056454bb4aa</id>
       <name>Neural Amplifiers (Recall)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5247,7 +5249,7 @@
     <cyberware>
       <id>ad95471d-f301-47e7-b4c5-b789f2111d5f</id>
       <name>O-Cells</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -5261,13 +5263,13 @@
     <cyberware>
       <id>bd3d6bf5-bc70-4378-b84e-244be00faebe</id>
       <name>Oxyrush</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Soft Nanoware</category>
       <ess>0</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>Rating * 1500</cost>
-	  <bonus>
+      <bonus>
         <fatigueresist>Rating</fatigueresist>
       </bonus>
       <source>CF</source>
@@ -5529,7 +5531,7 @@
     <cyberware>
       <id>2e533c08-7403-42de-a9cc-97ded71fe142</id>
       <name>Cybergland</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>Rating * 0.2</ess>
       <capacity>[Rating]</capacity>
@@ -5560,7 +5562,7 @@
     <cyberware>
       <id>b5eef094-72b7-48f5-99fa-73d4680f71cb</id>
       <name>Cyberarm Reloading Slide</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[3]</capacity>
@@ -5568,13 +5570,13 @@
       <cost>2750</cost>
       <source>HT</source>
       <page>187</page>
-	  <blocksmounts>elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Drone Arm</name>
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -5582,7 +5584,7 @@
     <cyberware>
       <id>4dcc6d9d-824e-4e4a-a0cb-86810838f587</id>
       <name>Cybertorso Reloading Rail</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyberlimb Accessory</category>
       <ess>0</ess>
       <capacity>[5]</capacity>
@@ -5590,11 +5592,11 @@
       <cost>3500</cost>
       <source>HT</source>
       <page>187</page>
-	  <requireparent />
-	  <required>
+      <requireparent />
+      <required>
         <parentdetails>
           <OR>
-			<name>Obvious Torso</name>
+            <name>Obvious Torso</name>
             <name>Synthetic Torso</name>
           </OR>
         </parentdetails>
@@ -5603,7 +5605,7 @@
     <cyberware>
       <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
       <name>Cyberfinger (Credstick)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -5611,15 +5613,15 @@
       <cost>500</cost>
       <source>HT</source>
       <page>186</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -5627,7 +5629,7 @@
     <cyberware>
       <id>f8c23c23-ce74-4942-968d-85896f8f17f2</id>
       <name>Cyberfinger (Glass Cutter)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -5635,15 +5637,15 @@
       <cost>550</cost>
       <source>HT</source>
       <page>186</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -5651,7 +5653,7 @@
     <cyberware>
       <id>7ff8850b-d343-42fc-8bef-10acbe46daaa</id>
       <name>Cyberfinger (Injector)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -5659,15 +5661,15 @@
       <cost>650</cost>
       <source>HT</source>
       <page>186</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -5675,7 +5677,7 @@
     <cyberware>
       <id>75d4bef0-b29c-4c77-a2f1-e5955b67fd31</id>
       <name>Cyberfinger (Lockpick)</name>
-	  <limit>{arm} * 5</limit>
+      <limit>{arm} * 5</limit>
       <category>Cyberlimb Enhancement</category>
       <ess>0.05</ess>
       <capacity>[1]</capacity>
@@ -5683,15 +5685,15 @@
       <cost>750</cost>
       <source>HT</source>
       <page>186</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
-	  <required>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <required>
         <parentdetails>
           <OR>
-			<NONE />
-			<name operation="contains">Full Arm</name>
-			<name operation="contains">Lower Arm</name>
-			<name operation="contains">Hand</name>
-			<name operation="contains">Drone Arm</name>
+            <NONE />
+            <name operation="contains">Full Arm</name>
+            <name operation="contains">Lower Arm</name>
+            <name operation="contains">Hand</name>
+            <name operation="contains">Drone Arm</name>
           </OR>
         </parentdetails>
       </required>
@@ -5853,7 +5855,7 @@
       <cost>150000</cost>
       <source>LCD</source>
       <page>206</page>
-	  <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
+      <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
       <subsystems>
         <cyberware>
           <name>Cybereyes Basic System</name>
@@ -5936,7 +5938,7 @@
       <cost>275000</cost>
       <source>LCD</source>
       <page>206</page>
-	  <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
+      <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
       <subsystems>
         <cyberware>
           <name>Cybereyes Basic System</name>
@@ -6021,7 +6023,7 @@
       <cost>175000</cost>
       <source>LCD</source>
       <page>206</page>
-	  <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
+      <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
       <subsystems>
         <cyberware>
           <name>Cybereyes Basic System</name>
@@ -6309,7 +6311,7 @@
       <cost>210000</cost>
       <source>LCD</source>
       <page>207</page>
-	  <blocksmounts>wrist,elbow,shoulder</blocksmounts>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <subsystems>
         <cyberware>
           <name>Commlink</name>
@@ -6737,7 +6739,7 @@
     <cyberware>
       <id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
       <name>Datajack (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -6764,7 +6766,7 @@
     <cyberware>
       <id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
       <name>Cortexbombe (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -6776,7 +6778,7 @@
     <cyberware>
       <id>7cea6881-2fa0-4fa2-ae8d-1013cf957b15</id>
       <name>Data Lock (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -6788,7 +6790,7 @@
     <cyberware>
       <id>d5eb44ac-eaa3-4b8a-9a53-3b8889752a25</id>
       <name>Radio (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.75</ess>
       <capacity>0</capacity>
@@ -6812,7 +6814,7 @@
     <cyberware>
       <id>b12d9c62-ea7e-41de-bafd-88c05ae92b2c</id>
       <name>Telephone (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
@@ -6841,7 +6843,7 @@
     <cyberware>
       <id>3917dd4a-0f77-48c7-bf80-62b90f8f0fff</id>
       <name>Camera (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -6853,7 +6855,7 @@
     <cyberware>
       <id>f6774ee8-50cb-4524-acd7-2e2357071916</id>
       <name>Flare Compensation (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -6865,7 +6867,7 @@
     <cyberware>
       <id>ab435e23-7ff8-4516-942c-cf3467706e50</id>
       <name>Display Link (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -6877,7 +6879,7 @@
     <cyberware>
       <id>4382ca25-5400-4640-8fcd-a60e0b7e6f81</id>
       <name>Thermographic (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[1]</capacity>
@@ -6889,7 +6891,7 @@
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
       <name>Cosmetic Modifcations Eye (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -6901,7 +6903,7 @@
     <cyberware>
       <id>e9c59df9-9009-4e4a-a257-45eaab5885a4</id>
       <name>Low-Light (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[1]</capacity>
@@ -6913,7 +6915,7 @@
     <cyberware>
       <id>3904a4cc-d5d4-463a-aab9-7ffc50229389</id>
       <name>Retinal Duplication (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[1]</capacity>
@@ -6926,7 +6928,7 @@
     <cyberware>
       <id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
       <name>Vision Magnifcation (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -7005,7 +7007,7 @@
     <cyberware>
       <id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
       <name>Cosmetic Modifcations Ear</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Earware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -7017,7 +7019,7 @@
     <cyberware>
       <id>fd3f6510-e145-492b-8c47-9063ea24da2f</id>
       <name>Cyberlimb Full Arm, Obvious (2050)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>15</capacity>
@@ -7037,7 +7039,7 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -7048,7 +7050,7 @@
     <cyberware>
       <id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
       <name>Cyberlimb Full Leg, Obvious (2050)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>20</capacity>
@@ -7068,7 +7070,7 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -7079,7 +7081,7 @@
     <cyberware>
       <id>1839428f-b8a2-4461-af47-c821ae808dde</id>
       <name>Cyberlimb Full Arm, Synthetic (2050)</name>
-	  <limit>{arm}</limit>
+      <limit>{arm}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>8</capacity>
@@ -7099,7 +7101,7 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -7110,7 +7112,7 @@
     <cyberware>
       <id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
       <name>Cyberlimb Full Leg, Synthetic (2050)</name>
-	  <limit>{leg}</limit>
+      <limit>{leg}</limit>
       <category>Cyberlimb</category>
       <ess>1</ess>
       <capacity>10</capacity>
@@ -7130,7 +7132,7 @@
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
       </allowsubsystems>
-	  <selectside />
+      <selectside />
       <bonus>
         <conditionmonitor>
           <physical>1</physical>
@@ -7141,7 +7143,7 @@
     <cyberware>
       <id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>
       <name>Cyberlimb Customization, Strength (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
@@ -7151,12 +7153,12 @@
       <page>203</page>
       <minrating>MinimumSTR+1</minrating>
       <rating>MaximumSTR</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>c6abcc8b-78fb-44a4-a105-450c1b60a57b</id>
       <name>Cyberlimb Customization, Agility (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[0]</capacity>
@@ -7166,12 +7168,12 @@
       <page>203</page>
       <minrating>MinimumAGI+1</minrating>
       <rating>MaximumAGI</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>7a6ed03f-d60f-465d-80e6-c2b37b55befd</id>
       <name>Cyberlimb Augmentation, Armor (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[Rating]</capacity>
@@ -7183,12 +7185,12 @@
         <armor>Rating</armor>
       </bonus>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>55738f72-0344-435d-8f92-b1e16a66c445</id>
       <name>Cyberlimb Augmentation, Strength (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[Rating * 1]</capacity>
@@ -7197,12 +7199,12 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>54b804b3-8a40-4a43-a1e7-41c27499e952</id>
       <name>Cyberlimb Augmentation, Agility (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>[Rating * 1]</capacity>
@@ -7211,7 +7213,7 @@
       <source>2050</source>
       <page>203</page>
       <rating>3</rating>
-	  <requireparent />
+      <requireparent />
     </cyberware>
     <cyberware>
       <id>c7d7d1cb-2506-4b0d-9ae4-7fb1c1135a82</id>
@@ -7271,7 +7273,7 @@
     <cyberware>
       <id>97d4590d-61b9-4a33-91e7-d5877c2f2ae6</id>
       <name>Fingertip Compartment (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -7295,7 +7297,7 @@
     <cyberware>
       <id>df427266-60ea-4289-94ee-a30bb46ceb89</id>
       <name>Cosmetic Modifcations (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -7325,16 +7327,16 @@
         </specificattribute>
       </bonus>
       <forbidden>
-		<oneof>
-		  <quality>Celerity</quality>
-		</oneof>
-	  </forbidden>
+        <oneof>
+          <quality>Celerity</quality>
+        </oneof>
+      </forbidden>
       <rating>4</rating>
     </cyberware>
     <cyberware>
       <id>c2a4d517-0f92-4f89-97cc-7aef5ee5d047</id>
       <name>Hand Razors, Fixed (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -7347,7 +7349,7 @@
     <cyberware>
       <id>c6334eb1-2f37-4f7c-9e5a-1f2255f96a93</id>
       <name>Hand Razors, Retractable (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.2</ess>
       <capacity>[2]</capacity>
@@ -7360,7 +7362,7 @@
     <cyberware>
       <id>6a2a5b60-c9d5-464c-9756-f3e6e0f63b36</id>
       <name>Spur, Fixed (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.1</ess>
       <capacity>[1]</capacity>
@@ -7373,7 +7375,7 @@
     <cyberware>
       <id>0ed1c1e6-d938-48b1-bf41-9680d04e237f</id>
       <name>Spur, Retractable (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0.3</ess>
       <capacity>[3]</capacity>
@@ -7466,7 +7468,7 @@
     <cyberware>
       <id>f06e1949-6416-4015-841e-f3fbaa61a434</id>
       <name>Cyber Holdout Pistol (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.1</ess>
       <capacity>[2]</capacity>
@@ -7479,7 +7481,7 @@
     <cyberware>
       <id>eb8ac46d-f961-4bbd-99b9-7993ecbacfff</id>
       <name>Cyber Light Pistol (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.25</ess>
       <capacity>[4]</capacity>
@@ -7492,7 +7494,7 @@
     <cyberware>
       <id>ce0e344f-4428-499e-8cb9-f83f9041dc9a</id>
       <name>Cyber Machine Pistol (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -7505,7 +7507,7 @@
     <cyberware>
       <id>acffef6c-d88f-4e80-bfd3-924c516ce6f9</id>
       <name>Cyber Heavy Pistol (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>0.5</ess>
       <capacity>[6]</capacity>
@@ -7518,7 +7520,7 @@
     <cyberware>
       <id>f1413ac9-d373-4080-a373-60e5b890b304</id>
       <name>Cyber Submachine Gun (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1</ess>
       <capacity>[10]</capacity>
@@ -7531,7 +7533,7 @@
     <cyberware>
       <id>dbf70a83-ce18-4c55-b937-f326392ddee5</id>
       <name>Cyber Shotgun (2050)</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Cyber Implant Weapon</category>
       <ess>1.25</ess>
       <capacity>[10]</capacity>
@@ -7920,7 +7922,7 @@
     <cyberware>
       <id>d37dd5d2-97d2-47f6-87a1-f55328142ad5</id>
       <name>Horn Compartment</name>
-	  <limit>no</limit>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -7929,7 +7931,7 @@
       <source>TCT</source>
       <page>185</page>
       <rating>0</rating>
-	  <allowgear />
+      <allowgear />
     </cyberware>
     <cyberware>
       <id>d17bef68-2419-45fe-9bb4-e050d61d1352</id>
@@ -7958,7 +7960,7 @@
       <hide />
       <page>30</page>
       <rating>0</rating>
-    </cyberware>    
+    </cyberware>
     <!-- End Region -->
   </cyberwares>
 </chummer>

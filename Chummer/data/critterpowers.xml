@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,7 +18,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
   <version>0</version>
   <categories>
     <category>Allowed Optional Powers</category>
@@ -405,21 +407,21 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Always</duration>
-	  <bonus>
-		<disablecyberwaregrade>Standard</disablecyberwaregrade>
-		<disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
-		<disablecyberwaregrade>Used</disablecyberwaregrade>
-		<disablecyberwaregrade>Alphaware</disablecyberwaregrade>
-		<disablecyberwaregrade>Betaware</disablecyberwaregrade>
-		<disablecyberwaregrade>Omegaware</disablecyberwaregrade>
-		<disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
-		<disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
-		<disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
-		<disablecyberwaregrade>Alphaware (Adapsin)</disablecyberwaregrade>
-		<disablecyberwaregrade>Betaware (Adapsin)</disablecyberwaregrade>
-		<disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
-		<disablebioware />
-	  </bonus>
+      <bonus>
+        <disablecyberwaregrade>Standard</disablecyberwaregrade>
+        <disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
+        <disablecyberwaregrade>Used</disablecyberwaregrade>
+        <disablecyberwaregrade>Alphaware</disablecyberwaregrade>
+        <disablecyberwaregrade>Betaware</disablecyberwaregrade>
+        <disablecyberwaregrade>Omegaware</disablecyberwaregrade>
+        <disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Alphaware (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Betaware (Adapsin)</disablecyberwaregrade>
+        <disablecyberwaregrade>Omegaware (Adapsin)</disablecyberwaregrade>
+        <disablebioware />
+      </bonus>
       <source>SR5</source>
       <page>400</page>
     </power>
@@ -2328,7 +2330,7 @@
       <source>HS</source>
       <page>186</page>
     </power>
-    
+
     <!-- Region Drake Optional Powers -->
     <power>
       <id>31ad1e6d-3e95-42cc-af61-5b59c8e745e6</id>
@@ -2661,16 +2663,16 @@
       <range>Special</range>
       <duration>Instant</duration>
       <karma>8</karma>
-	  <bonus>
-		<toxincontactresist>1</toxincontactresist>
-		<toxiningestionresist>1</toxiningestionresist>
-		<toxininhalationresist>1</toxininhalationresist>
-		<toxininjectionresist>1</toxininjectionresist>
-		<pathogencontactresist>1</pathogencontactresist>
-		<pathogeningestionresist>1</pathogeningestionresist>
-		<pathogeninhalationresist>1</pathogeninhalationresist>
-		<pathogeninjectionresist>1</pathogeninjectionresist>
-	  </bonus>
+      <bonus>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
+        <pathogencontactresist>1</pathogencontactresist>
+        <pathogeningestionresist>1</pathogeningestionresist>
+        <pathogeninhalationresist>1</pathogeninhalationresist>
+        <pathogeninjectionresist>1</pathogeninjectionresist>
+      </bonus>
       <source>HS</source>
       <page>165</page>
     </power>

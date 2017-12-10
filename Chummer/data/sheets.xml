@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -89,7 +90,7 @@
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
       <name>Shadowrun 5 (Core, Grouped by Category)</name>
       <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
@@ -303,7 +304,7 @@
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>613b6079-9ca7-4625-9147-be33b466c5fa</id>
       <name>Shadowrun 5 (Coeur, Groupé par catégorie)</name>
       <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
@@ -410,7 +411,7 @@
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>f388b19f-4d3b-4d21-8e1e-0127d9d349a8</id>
       <name>Shadowrun 5 (Core, Grouped by Category)</name>
       <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
@@ -445,8 +446,8 @@
       <name>Vehicles</name>
       <filename>Vehicles</filename>
     </sheet>
-	</sheets>	
-    <sheets lang="zh-cn">
+  </sheets>
+  <sheets lang="zh-cn">
     <sheet>
       <id>dbe18b2a-a657-48e7-b4ba-9378189014c9</id>
       <name>日程表</name>
