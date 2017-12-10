@@ -3261,10 +3261,18 @@ namespace Chummer.Backend.Equipment
                         if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
                         {
                             strAccAvail = objAccessory.TotalAvail;
-                            if (strAccAvail.EndsWith('F'))
+                            if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")))
+                            {
                                 strAvail = "F";
-                            if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
                                 strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                            }
+                            else if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                            {
+                                if (string.IsNullOrEmpty(strAvail))
+                                    strAvail = "R";
+                                strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                            }
+                                    
                             intAccAvail = Convert.ToInt32(strAccAvail);
                             intAvail += intAccAvail;
                         }
