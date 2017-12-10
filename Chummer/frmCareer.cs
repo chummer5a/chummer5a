@@ -8347,6 +8347,7 @@ namespace Chummer
                 return;
             }
 
+            XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
             bool blnAddAgain = false;
 
             do
@@ -8360,20 +8361,10 @@ namespace Chummer
 
                 frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(_objCharacter);
 
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                 string strMounts = string.Empty;
                 foreach (XmlNode objXmlMount in objXmlMountList)
                 {
-                    bool blnFound = false;
-                    foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
-                    {
-                        if ((objMod.Mount == objXmlMount.InnerText) || (objMod.ExtraMount == objXmlMount.InnerText))
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-                    if (!blnFound)
+                    if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
                         strMounts += objXmlMount.InnerText + "/";
                     }
@@ -9118,7 +9109,9 @@ namespace Chummer
                 return;
             }
 
+            XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
             bool blnAddAgain = false;
+
             do
             {
                 // Make sure the Weapon allows Accessories to be added to it.
@@ -9129,23 +9122,15 @@ namespace Chummer
                 }
 
                 frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(_objCharacter);
-
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+                
                 string strMounts = string.Empty;
                 foreach (XmlNode objXmlMount in objXmlMountList)
                 {
                     // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
-                    bool blnFound = false;
-                    foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
+                    if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
-                        if ((objCurrentAccessory.Mount == objXmlMount.InnerText) || (objCurrentAccessory.ExtraMount == objXmlMount.InnerText))
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-                    if (!blnFound)
                         strMounts += objXmlMount.InnerText + "/";
+                    }
                 }
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 

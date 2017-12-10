@@ -6807,15 +6807,16 @@ namespace Chummer
 
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treWeapons.SelectedNode;
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponAccessory"), LanguageManager.GetString("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Weapon that is selected in the Tree.
-            Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            Weapon objWeapon = CommonFunctions.DeepFindById(objSelectedNode.Tag.ToString(), _objCharacter.Weapons);
 
             if (objWeapon == null)
             {
@@ -6837,6 +6838,8 @@ namespace Chummer
                 return;
             }
 
+            XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
+
             bool blnAddAgain = false;
             do
             {
@@ -6847,20 +6850,10 @@ namespace Chummer
                     break;
                 }
                 frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(_objCharacter);
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                 string strMounts = string.Empty;
                 foreach (XmlNode objXmlMount in objXmlMountList)
                 {
-                    bool blnFound = false;
-                    foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
-                    {
-                        if ((objMod.Mount == objXmlMount.InnerText) || (objMod.ExtraMount == objXmlMount.InnerText))
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-                    if (!blnFound)
+                    if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
                         strMounts += objXmlMount.InnerText + "/";
                     }
@@ -6933,8 +6926,8 @@ namespace Chummer
                 objWeapon.WeaponAccessories.Add(objAccessory);
 
                 objNode.ContextMenuStrip = cmsWeaponAccessory;
-                treWeapons.SelectedNode.Nodes.Add(objNode);
-                treWeapons.SelectedNode.Expand();
+                objSelectedNode.Nodes.Add(objNode);
+                objSelectedNode.Expand();
 
                 RefreshSelectedWeapon();
                 ScheduleCharacterUpdate();
@@ -7324,7 +7317,9 @@ namespace Chummer
                 return;
             }
 
+            XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
             bool blnAddAgain = false;
+
             do
             {
                 // Make sure the Weapon allows Accessories to be added to it.
@@ -7336,22 +7331,14 @@ namespace Chummer
 
                 frmSelectWeaponAccessory frmPickWeaponAccessory = new frmSelectWeaponAccessory(_objCharacter);
 
-                XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
                 string strMounts = string.Empty;
                 foreach (XmlNode objXmlMount in objXmlMountList)
                 {
                     // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
-                    bool blnFound = false;
-                    foreach (WeaponAccessory objCurrentAccessory in objWeapon.WeaponAccessories)
+                    if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
-                        if ((objCurrentAccessory.Mount == objXmlMount.InnerText) || (objCurrentAccessory.ExtraMount == objXmlMount.InnerText))
-                        {
-                            blnFound = true;
-                            break;
-                        }
-                    }
-                    if (!blnFound)
                         strMounts += objXmlMount.InnerText + "/";
+                    }
                 }
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 
@@ -7362,7 +7349,10 @@ namespace Chummer
                 frmPickWeaponAccessory.ShowDialog();
 
                 if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
-                    return;
+                {
+                    frmPickWeaponAccessory.Dispose();
+                    break;
+                }
                 blnAddAgain = frmPickWeaponAccessory.AddAgain;
 
                 // Locate the selected piece.
@@ -7394,8 +7384,9 @@ namespace Chummer
 
         private void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Attempt to locate the selected VehicleWeapon.
-            Weapon objSelectedWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            Weapon objSelectedWeapon = CommonFunctions.FindVehicleWeapon(objSelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             if (objSelectedWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_VehicleWeaponUnderbarrel"), LanguageManager.GetString("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7441,9 +7432,9 @@ namespace Chummer
             foreach (TreeNode objLoopNode in lstNodes)
             {
                 objLoopNode.ContextMenuStrip = cmsVehicleWeapon;
-                treVehicles.SelectedNode.Nodes.Add(objLoopNode);
+                objSelectedNode.Nodes.Add(objLoopNode);
             }
-            treVehicles.SelectedNode.Expand();
+            objSelectedNode.Expand();
             //treWeapons.SelectedNode = objNode;
 
             ScheduleCharacterUpdate();
