@@ -176,7 +176,7 @@ namespace Chummer
             lstKarma.ListViewItemSorter = _lvwKarmaColumnSorter;
             _lvwNuyenColumnSorter = new ListViewColumnSorter();
             _lvwNuyenColumnSorter.SortColumn = 0;
-            _lvwNuyenColumnSorter.Order = SortOrder.Descending;
+            _lvwNuyenColumnSorter.Order = SortOrder.Descending;/*
             //TODO: Should this be a separate control? Need to handle characters with no calendar entries.
             calendar1.MaximumViewDays = 7000000;
             calendar1.ViewEnd = _objCharacter.Calendar[0].ICFinish.AddMonths(1);
@@ -186,7 +186,7 @@ namespace Chummer
             {
                 CalendarItem c = new CalendarItem(calendar1, cw.ICStart, cw.ICFinish, cw.Notes);
                 calendar1.Items.Add(c);
-            }
+            }*/
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
             SetTooltips();
             MoveControls();
@@ -7508,83 +7508,6 @@ namespace Chummer
 
             _blnIsDirty = true;
             UpdateWindowTitle();
-        }
-
-
-        private void cmdDeleteWeek_Click(object sender, EventArgs e)
-        {
-            ListViewItem objItem = null;
-            if (lstCalendar != null && lstCalendar.SelectedItems.Count > 0)
-            {
-                objItem = lstCalendar.SelectedItems[0];
-            }
-            else
-            {
-                return;
-            }
-
-            CalendarObject objWeek = new CalendarObject();
-
-            // Find the selected Calendar Week.
-            foreach (CalendarObject objCharacterWeek in _objCharacter.Calendar)
-            {
-                if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
-                {
-                    objWeek = objCharacterWeek;
-                    if (!CommonFunctions.ConfirmDelete(_objCharacter, LanguageManager.GetString("Message_DeleteCalendarObject")))
-                        return;
-                    _objCharacter.Calendar.Remove(objWeek);
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                    PopulateCalendar();
-                    break;
-                }
-            }
-        }
-
-        private void cmdEditWeek_Click(object sender, EventArgs e)
-        {
-            ListViewItem objItem = null;
-            if (lstCalendar != null && lstCalendar.SelectedItems.Count > 0)
-            {
-                objItem = lstCalendar.SelectedItems[0];
-            }
-            else
-            {
-                return;
-            }
-
-            CalendarObject objWeek = new CalendarObject();
-
-            // Find the selected Calendar Week.
-            foreach (CalendarObject objCharacterWeek in _objCharacter.Calendar)
-            {
-                if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
-                {
-                    objWeek = objCharacterWeek;
-                    break;
-                }
-            }
-
-            frmNotes frmItemNotes = new frmNotes();
-            frmItemNotes.Notes = objWeek.Notes;
-            string strOldValue = objWeek.Notes;
-            frmItemNotes.ShowDialog(this);
-
-            if (frmItemNotes.DialogResult == DialogResult.OK)
-            {
-                objWeek.Notes = frmItemNotes.Notes;
-                if (objWeek.Notes != strOldValue)
-                {
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                    PopulateCalendar();
-                }
-            }
-        }
-
-        private void cmdChangeStartWeek_Click(object sender, EventArgs e)
-        {
         }
 
         private void cmdAddImprovement_Click(object sender, EventArgs e)

@@ -1063,17 +1063,8 @@ namespace Chummer
             this.cmdNuyenGained = new System.Windows.Forms.Button();
             this.tabCalendar = new System.Windows.Forms.TabPage();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.monthView1 = new WindowsFormsCalendar.MonthView();
-            this.calendar1 = new WindowsFormsCalendar.Calendar();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.cmdDeleteWeek = new System.Windows.Forms.Button();
-            this.cmdChangeStartWeek = new System.Windows.Forms.Button();
-            this.cmdEditWeek = new System.Windows.Forms.Button();
-            this.cmdAddWeek = new System.Windows.Forms.Button();
-            this.lstCalendar = new System.Windows.Forms.ListView();
-            this.colCalendarDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colCalendarNotes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tabPlayerCalendar = new System.Windows.Forms.TabPage();
+            this.tabCharacterCalendar = new System.Windows.Forms.TabPage();
             this.tabNotes = new System.Windows.Forms.TabPage();
             this.txtGameNotes = new System.Windows.Forms.TextBox();
             this.tabImprovements = new System.Windows.Forms.TabPage();
@@ -1245,7 +1236,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).BeginInit();
             this.tabCalendar.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.tabNotes.SuspendLayout();
             this.tabImprovements.SuspendLayout();
             this.tabRelationships.SuspendLayout();
@@ -12768,11 +12758,6 @@ namespace Chummer
             // 
             this.tabCalendar.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.tabCalendar.Controls.Add(this.tabControl1);
-            this.tabCalendar.Controls.Add(this.cmdDeleteWeek);
-            this.tabCalendar.Controls.Add(this.cmdChangeStartWeek);
-            this.tabCalendar.Controls.Add(this.cmdEditWeek);
-            this.tabCalendar.Controls.Add(this.cmdAddWeek);
-            this.tabCalendar.Controls.Add(this.lstCalendar);
             this.tabCalendar.Location = new System.Drawing.Point(4, 22);
             this.tabCalendar.Name = "tabCalendar";
             this.tabCalendar.Padding = new System.Windows.Forms.Padding(3);
@@ -12783,157 +12768,34 @@ namespace Chummer
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(9, 52);
+            this.tabControl1.Controls.Add(this.tabPlayerCalendar);
+            this.tabControl1.Controls.Add(this.tabCharacterCalendar);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(3, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(846, 553);
+            this.tabControl1.Size = new System.Drawing.Size(855, 605);
             this.tabControl1.TabIndex = 6;
             // 
-            // tabPage1
+            // tabPlayerCalendar
             // 
-            this.tabPage1.Controls.Add(this.monthView1);
-            this.tabPage1.Controls.Add(this.calendar1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(838, 527);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "OOC Calendar";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPlayerCalendar.Location = new System.Drawing.Point(4, 22);
+            this.tabPlayerCalendar.Name = "tabPlayerCalendar";
+            this.tabPlayerCalendar.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPlayerCalendar.Size = new System.Drawing.Size(847, 579);
+            this.tabPlayerCalendar.TabIndex = 0;
+            this.tabPlayerCalendar.Text = "OOC Calendar";
+            this.tabPlayerCalendar.UseVisualStyleBackColor = true;
             // 
-            // monthView1
+            // tabCharacterCalendar
             // 
-            this.monthView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.monthView1.ArrowsColor = System.Drawing.SystemColors.Window;
-            this.monthView1.ArrowsSelectedColor = System.Drawing.Color.Gold;
-            this.monthView1.DayBackgroundColor = System.Drawing.Color.Empty;
-            this.monthView1.DayGrayedText = System.Drawing.SystemColors.GrayText;
-            this.monthView1.DaySelectedBackgroundColor = System.Drawing.SystemColors.Highlight;
-            this.monthView1.DaySelectedColor = System.Drawing.SystemColors.WindowText;
-            this.monthView1.DaySelectedTextColor = System.Drawing.SystemColors.HighlightText;
-            this.monthView1.ItemPadding = new System.Windows.Forms.Padding(2);
-            this.monthView1.Location = new System.Drawing.Point(6, 7);
-            this.monthView1.MonthTitleColor = System.Drawing.SystemColors.ActiveCaption;
-            this.monthView1.MonthTitleColorInactive = System.Drawing.SystemColors.InactiveCaption;
-            this.monthView1.MonthTitleTextColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.monthView1.MonthTitleTextColorInactive = System.Drawing.SystemColors.InactiveCaptionText;
-            this.monthView1.Name = "monthView1";
-            this.monthView1.Size = new System.Drawing.Size(222, 514);
-            this.monthView1.TabIndex = 1;
-            this.monthView1.Text = "monthView1";
-            this.monthView1.TodayBorderColor = System.Drawing.Color.Maroon;
-            // 
-            // calendar1
-            // 
-            this.calendar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.calendar1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.calendar1.ItemsBackgroundColor = System.Drawing.Color.RoyalBlue;
-            this.calendar1.ItemsFont = null;
-            this.calendar1.ItemsForeColor = System.Drawing.Color.Black;
-            this.calendar1.Location = new System.Drawing.Point(234, 3);
-            this.calendar1.MaximumFullDays = 0;
-            this.calendar1.Name = "calendar1";
-            this.calendar1.Size = new System.Drawing.Size(601, 521);
-            this.calendar1.TabIndex = 0;
-            this.calendar1.Text = "calendar1";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(838, 527);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "IC Calendar";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // cmdDeleteWeek
-            // 
-            this.cmdDeleteWeek.AutoSize = true;
-            this.cmdDeleteWeek.Location = new System.Drawing.Point(186, 6);
-            this.cmdDeleteWeek.Name = "cmdDeleteWeek";
-            this.cmdDeleteWeek.Size = new System.Drawing.Size(83, 23);
-            this.cmdDeleteWeek.TabIndex = 5;
-            this.cmdDeleteWeek.Tag = "Button_DeleteWeek";
-            this.cmdDeleteWeek.Text = "Delete Week";
-            this.cmdDeleteWeek.UseVisualStyleBackColor = true;
-            this.cmdDeleteWeek.Click += new System.EventHandler(this.cmdDeleteWeek_Click);
-            // 
-            // cmdChangeStartWeek
-            // 
-            this.cmdChangeStartWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdChangeStartWeek.AutoSize = true;
-            this.cmdChangeStartWeek.Location = new System.Drawing.Point(737, 6);
-            this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
-            this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
-            this.cmdChangeStartWeek.TabIndex = 4;
-            this.cmdChangeStartWeek.Tag = "Button_ChangeStartWeek";
-            this.cmdChangeStartWeek.Text = "Change Starting Date";
-            this.cmdChangeStartWeek.UseVisualStyleBackColor = true;
-            // 
-            // cmdEditWeek
-            // 
-            this.cmdEditWeek.AutoSize = true;
-            this.cmdEditWeek.Location = new System.Drawing.Point(97, 6);
-            this.cmdEditWeek.Name = "cmdEditWeek";
-            this.cmdEditWeek.Size = new System.Drawing.Size(83, 23);
-            this.cmdEditWeek.TabIndex = 3;
-            this.cmdEditWeek.Tag = "Button_EditWeek";
-            this.cmdEditWeek.Text = "Edit Week";
-            this.cmdEditWeek.UseVisualStyleBackColor = true;
-            this.cmdEditWeek.Click += new System.EventHandler(this.cmdEditWeek_Click);
-            // 
-            // cmdAddWeek
-            // 
-            this.cmdAddWeek.AutoSize = true;
-            this.cmdAddWeek.Location = new System.Drawing.Point(8, 6);
-            this.cmdAddWeek.Name = "cmdAddWeek";
-            this.cmdAddWeek.Size = new System.Drawing.Size(83, 23);
-            this.cmdAddWeek.TabIndex = 2;
-            this.cmdAddWeek.Tag = "Button_AddWeek";
-            this.cmdAddWeek.Text = "Add Week";
-            this.cmdAddWeek.UseVisualStyleBackColor = true;
-            this.cmdAddWeek.Click += new System.EventHandler(this.cmdAddWeek_Click);
-            // 
-            // lstCalendar
-            // 
-            this.lstCalendar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstCalendar.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colCalendarDate,
-            this.colCalendarNotes});
-            this.lstCalendar.FullRowSelect = true;
-            this.lstCalendar.GridLines = true;
-            this.lstCalendar.HideSelection = false;
-            this.lstCalendar.Location = new System.Drawing.Point(8, 35);
-            this.lstCalendar.MultiSelect = false;
-            this.lstCalendar.Name = "lstCalendar";
-            this.lstCalendar.Size = new System.Drawing.Size(847, 10);
-            this.lstCalendar.TabIndex = 1;
-            this.lstCalendar.UseCompatibleStateImageBehavior = false;
-            this.lstCalendar.View = System.Windows.Forms.View.Details;
-            this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
-            // 
-            // colCalendarDate
-            // 
-            this.colCalendarDate.Tag = "String_Date";
-            this.colCalendarDate.Text = "Date";
-            this.colCalendarDate.Width = 131;
-            // 
-            // colCalendarNotes
-            // 
-            this.colCalendarNotes.Tag = "Title_Notes";
-            this.colCalendarNotes.Text = "Notes";
-            this.colCalendarNotes.Width = 650;
+            this.tabCharacterCalendar.Location = new System.Drawing.Point(4, 22);
+            this.tabCharacterCalendar.Name = "tabCharacterCalendar";
+            this.tabCharacterCalendar.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCharacterCalendar.Size = new System.Drawing.Size(838, 527);
+            this.tabCharacterCalendar.TabIndex = 1;
+            this.tabCharacterCalendar.Text = "IC Calendar";
+            this.tabCharacterCalendar.UseVisualStyleBackColor = true;
             // 
             // tabNotes
             // 
@@ -13903,9 +13765,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.chtKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chtNuyen)).EndInit();
             this.tabCalendar.ResumeLayout(false);
-            this.tabCalendar.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
             this.tabNotes.ResumeLayout(false);
             this.tabNotes.PerformLayout();
             this.tabImprovements.ResumeLayout(false);
@@ -15027,17 +14887,8 @@ namespace Chummer
         private ToolStripMenuItem tsWeaponLocationAddWeapon;
         private ToolStripMenuItem tsVehicleLocationAddVehicle;
         private ToolStripMenuItem tsVehicleLocationAddWeapon;
-        private Button cmdDeleteWeek;
-        private Button cmdChangeStartWeek;
-        private Button cmdEditWeek;
-        private Button cmdAddWeek;
-        private ListView lstCalendar;
-        private ColumnHeader colCalendarDate;
-        private ColumnHeader colCalendarNotes;
         private TabControl tabControl1;
-        private TabPage tabPage1;
-        private WindowsFormsCalendar.Calendar calendar1;
-        private TabPage tabPage2;
-        private WindowsFormsCalendar.MonthView monthView1;
+        private TabPage tabPlayerCalendar;
+        private TabPage tabCharacterCalendar;
     }
 }
