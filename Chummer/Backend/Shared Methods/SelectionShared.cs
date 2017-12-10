@@ -800,7 +800,7 @@ namespace Chummer.Backend.Shared_Methods
         /// <param name="intRating"></param>
         /// <param name="intAvailModifier"></param>
         /// <returns></returns>
-        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, bool blnHide, int intRating = 0, int intAvailModifier = 0)
+        public static bool CheckAvailRestriction(XmlNode objXmlGear, Character objCharacter, bool blnHide, int intRating = 1, int intAvailModifier = 0)
         {
             if (objXmlGear == null)
                 return false;
