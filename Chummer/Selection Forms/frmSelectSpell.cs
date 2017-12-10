@@ -117,8 +117,10 @@ namespace Chummer
             }
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
-                if ((limit.Count <= 0 || !limit.Contains(objXmlCategory.InnerText)) && limit.Count != 0) continue;
-                if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != objXmlCategory.InnerText) continue;
+                if (limit.Count != 0 && !limit.Contains(objXmlCategory.InnerText))
+                    continue;
+                if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != objXmlCategory.InnerText)
+                    continue;
                 TreeNode nodCategory = new TreeNode();
                 nodCategory.Tag = objXmlCategory.InnerText;
                 nodCategory.Text = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;

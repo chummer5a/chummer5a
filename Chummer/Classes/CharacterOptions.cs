@@ -113,7 +113,7 @@ namespace Chummer
         private bool _blnHhideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
-        private string _strNuyenFormat = "#,0.00";
+        private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference = false;
 
         private readonly XmlDocument _objBookDoc = null;

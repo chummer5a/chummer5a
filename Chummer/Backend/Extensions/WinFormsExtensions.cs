@@ -50,6 +50,16 @@ namespace Chummer
         }
         #endregion
 
+        #region TreeNode Extensions
+        public static TreeNode GetTopParent(this TreeNode objThis)
+        {
+            TreeNode objReturn = objThis;
+            while (objReturn.Parent != null)
+                objReturn = objReturn.Parent;
+            return objReturn;
+        }
+        #endregion
+
         #region TreeView Extensions
         public static void Add(this TreeView treView, LimitModifier input, ContextMenuStrip strip)
         {

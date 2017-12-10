@@ -107,7 +107,11 @@ namespace Chummer.Backend.Attributes
 					_intKarma = i;
 				}
 			}
-			_enumMetatypeCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText);
+            if (_intBase < 0)
+                _intBase = 0;
+            if (_intKarma < 0)
+                _intKarma = 0;
+            _enumMetatypeCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText);
 			_enumCategory = ConvertToAttributeCategory(_strAbbrev);
 	        _enumMetatypeCategory = ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
 			_intAugModifier = Convert.ToInt32(objNode["augmodifier"].InnerText);

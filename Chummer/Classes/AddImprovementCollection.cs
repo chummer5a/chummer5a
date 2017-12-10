@@ -4763,15 +4763,18 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            SelectedValue = frmPickSpellCategory.SelectedCategory;
+            if (string.IsNullOrEmpty(SelectedValue))
+                SelectedValue = frmPickSpellCategory.SelectedCategory;
+            else
+                SelectedValue += ", " + frmPickSpellCategory.SelectedCategory;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + frmPickSpellCategory.SelectedCategory + ")";
 
-            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("_strSelectedValue = " + frmPickSpellCategory.SelectedCategory);
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
+            CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
         }
 
         public void limitspiritcategory(XmlNode bonusNode)
@@ -4794,15 +4797,18 @@ namespace Chummer.Classes
             {
                 throw new AbortedException();
             }
-            SelectedValue = frmSelect.SelectedItem;
+            if (string.IsNullOrEmpty(SelectedValue))
+                SelectedValue = frmSelect.SelectedItem;
+            else
+                SelectedValue += ", " + frmSelect.SelectedItem;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + frmSelect.SelectedItem + ")";
 
-            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpiritCategory, _strUnique);
+            CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpiritCategory, _strUnique);
         }
         public void movementreplace(XmlNode bonusNode)
         {

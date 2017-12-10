@@ -4560,8 +4560,8 @@
       <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area, Elemental</descriptor>
-      <duration>S</duration>
-      <dv>Special</dv>
+      <duration>I</duration>
+      <dv>F</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>
