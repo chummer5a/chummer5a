@@ -312,6 +312,7 @@ Application Changes:
 - Added the ability to have Martial Arts with karma costs different from the default of 7.
 - When warning about duplicate GUIDs in data files, Chummer5a will now display the names of the items to which those duplicate IDs belong.
 - In addition to checking for duplicate GUIDs, Chummer5a will now also check for ID fields that do not contain GUIDs, and if it finds any, it will warn users in a manner similar to the warning for duplicate GUIDs.
+- Fixed the use of sensor upgrades to replace the current rating rather than adding to it.
 
 Data Changes:
 
@@ -478,6 +479,7 @@ Data Changes:
 - Added the missing troop transport module for the Ruhrmetall Wolf II. Other modules require errata clarification.
 - Added a bonus for the Muzzle bioware to increase Accuracy for any weapon with 'fangs' in the name.
 - Fixed being able to get Way of Unified Mana (Hapsum-Do) without being an Adept or Mystic Adept. Fixed Way of Unified Mana (Hapsum-Do) costing 7 karma instead of 15.
+- Fixed an incorrect tag used in the options menu.
 
 New Strings:
 - Message_Improvement_EmptySelectionList

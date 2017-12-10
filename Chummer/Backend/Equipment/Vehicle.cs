@@ -1327,12 +1327,12 @@ namespace Chummer.Backend.Equipment
                         if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<sensor>"))
                         {
                             string strSensor = objMod.Bonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).FastEscape('+');
-                            intSensor += Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo);
+                            intSensor = Math.Max(Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo), intSensor);
                         }
                         if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<sensor>"))
                         {
                             string strSensor = objMod.WirelessBonus["sensor"].InnerText.Replace("Rating", objMod.Rating.ToString()).FastEscape('+');
-                            intSensor += Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo);
+                            intSensor = Math.Max(Convert.ToInt32(strSensor, GlobalOptions.InvariantCultureInfo), intSensor);
                         }
                     }
                 }

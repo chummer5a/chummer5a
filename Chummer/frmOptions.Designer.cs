@@ -114,7 +114,7 @@ namespace Chummer
             this.lblPDFOffset = new System.Windows.Forms.Label();
             this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
             this.cmdPDFTest = new System.Windows.Forms.Button();
-            this.cboPDFParameters = new ElasticComboBox();
+            this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
             this.chkOmaeEnabled = new System.Windows.Forms.CheckBox();
             this.chkLifeModule = new System.Windows.Forms.CheckBox();
@@ -125,9 +125,9 @@ namespace Chummer
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.lblPDFAppPath = new System.Windows.Forms.Label();
             this.lblXSLT = new System.Windows.Forms.Label();
-            this.cboXSLT = new ElasticComboBox();
+            this.cboXSLT = new Chummer.ElasticComboBox();
             this.lblLanguage = new System.Windows.Forms.Label();
-            this.cboLanguage = new ElasticComboBox();
+            this.cboLanguage = new Chummer.ElasticComboBox();
             this.cmdVerify = new System.Windows.Forms.Button();
             this.cmdVerifyData = new System.Windows.Forms.Button();
             this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
@@ -147,10 +147,10 @@ namespace Chummer
             this.chkAllowSkillDiceRolling = new System.Windows.Forms.CheckBox();
             this.label36 = new System.Windows.Forms.Label();
             this.nudBP = new System.Windows.Forms.NumericUpDown();
-            this.cboBuildMethod = new ElasticComboBox();
+            this.cboBuildMethod = new Chummer.ElasticComboBox();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
-            this.cboLimbCount = new ElasticComboBox();
+            this.cboLimbCount = new Chummer.ElasticComboBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
             this.chkAllowHoverIncrement = new System.Windows.Forms.CheckBox();
@@ -283,7 +283,7 @@ namespace Chummer
             this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
             this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
             this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
-            this.cboSetting = new ElasticComboBox();
+            this.cboSetting = new Chummer.ElasticComboBox();
             this.lblSetting = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
@@ -1760,7 +1760,7 @@ namespace Chummer
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.chkAllowHoverIncrement.Size = new System.Drawing.Size(410, 17);
             this.chkAllowHoverIncrement.TabIndex = 20;
-            this.chkAllowHoverIncrement.Tag = "Checkbox_Option_HideItemsOverAvailLimit";
+            this.chkAllowHoverIncrement.Tag = "Checkbox_Options_AllowHoverIncrement";
             this.chkAllowHoverIncrement.Text = "Allow incrementingvalues of numericupdown controls by hovering over the control";
             this.chkAllowHoverIncrement.UseVisualStyleBackColor = true;
             this.chkAllowHoverIncrement.CheckedChanged += new System.EventHandler(this.OptionsChanged);
