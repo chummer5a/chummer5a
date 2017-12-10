@@ -24,7 +24,7 @@ namespace Chummer.Backend
 { 
     static class BindingListExtensions
     {
-        internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison)
+        internal static void MergeInto<T>(this BindingList<T> list, IEnumerable<T> items, Comparison<T> comparison, Action<T, T> funcMergeIfEquals = null)
         {
             if (list == null) throw new NullReferenceException(nameof(list));
             if (items == null) throw new NullReferenceException(nameof(items));
@@ -32,11 +32,11 @@ namespace Chummer.Backend
 
             foreach (T item in items)
             {
-                list.MergeInto(item, comparison);
+                list.MergeInto(item, comparison, funcMergeIfEquals);
             }
         }
 
-        internal static void MergeInto<T>(this BindingList<T> list, T item, Comparison<T> comparison)
+        internal static void MergeInto<T>(this BindingList<T> list, T item, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
         {
             if (list == null) throw new NullReferenceException(nameof(list));
             if (item == null) throw new NullReferenceException(nameof(item));
@@ -50,9 +50,13 @@ namespace Chummer.Backend
             int mergeIndex = -1;
             for (int i = 0; i < list.Count; ++i)
             {
-                int intCompareResult = comparison(list[i], item);
+                T objLoopExistingItem = list[i];
+                int intCompareResult = comparison(objLoopExistingItem, item);
                 if (intCompareResult == 0)
+                {
+                    funcMergeIfEquals?.Invoke(objLoopExistingItem, item);
                     return;
+                }
                 else if (intCompareResult > 0 && mergeIndex < 0)
                     mergeIndex = i - 1;
             }

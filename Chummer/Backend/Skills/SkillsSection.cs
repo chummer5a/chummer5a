@@ -40,7 +40,14 @@ namespace Chummer.Skills
         {
             var list = GetSkillList(_character, skills, strName);
 
-            Skills.MergeInto(list, CompareSkills);
+            Skills.MergeInto(list, CompareSkills, (objExistSkill, objNewSkill) =>
+            {
+                if (objNewSkill.Base > objExistSkill.Base)
+                    objExistSkill.Base = objNewSkill.Base;
+                if (objNewSkill.Karma > objExistSkill.Karma)
+                    objExistSkill.Karma = objNewSkill.Karma;
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : (x.Free ? 1 : -1));
+            });
             foreach (Skill objSkill in list)
             {
                 string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name;
@@ -108,7 +115,14 @@ namespace Chummer.Skills
                             Karma = skill.Karma
                         };
                         kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.Add(kno);
+                        KnowledgeSkills.MergeInto(kno, (x, y) => String.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (String.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
+                        {
+                            if (objNewSkill.Base > objExistSkill.Base)
+                                objExistSkill.Base = objNewSkill.Base;
+                            if (objNewSkill.Karma > objExistSkill.Karma)
+                                objExistSkill.Karma = objNewSkill.Karma;
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                        });
                     }
                 }
             }
