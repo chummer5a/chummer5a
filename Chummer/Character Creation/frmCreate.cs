@@ -615,7 +615,12 @@ namespace Chummer
             }
             foreach (Weapon objWeapon in _objCharacter.Weapons)
             {
-                CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                TreeNode objLocationNode = treWeapons.Nodes[0];
+                if (!string.IsNullOrEmpty(objWeapon.Location))
+                {
+                    objLocationNode = treWeapons.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == objWeapon.Location) ?? treWeapons.Nodes[0];
+                }
+                CommonFunctions.CreateWeaponTreeNode(objWeapon, objLocationNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             }
 
             PopulateCyberwareList();
@@ -13949,7 +13954,12 @@ namespace Chummer
             }
             foreach (Weapon objWeapon in _objCharacter.Weapons)
             {
-                CommonFunctions.CreateWeaponTreeNode(objWeapon, treWeapons.Nodes[0], cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                TreeNode objLocationNode = treWeapons.Nodes[0];
+                if (!string.IsNullOrEmpty(objWeapon.Location))
+                {
+                    objLocationNode = treWeapons.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == objWeapon.Location) ?? treWeapons.Nodes[0];
+                }
+                CommonFunctions.CreateWeaponTreeNode(objWeapon, objLocationNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             }
 
             // Populate Foci.
