@@ -38,7 +38,6 @@ using System.Collections.ObjectModel;
 using Chummer.Backend.Attributes;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using WindowsFormsCalendar;
 
 namespace Chummer
 {
@@ -176,17 +175,8 @@ namespace Chummer
             lstKarma.ListViewItemSorter = _lvwKarmaColumnSorter;
             _lvwNuyenColumnSorter = new ListViewColumnSorter();
             _lvwNuyenColumnSorter.SortColumn = 0;
-            _lvwNuyenColumnSorter.Order = SortOrder.Descending;/*
-            //TODO: Should this be a separate control? Need to handle characters with no calendar entries.
-            calendar1.MaximumViewDays = 7000000;
-            calendar1.ViewEnd = _objCharacter.Calendar[0].ICFinish.AddMonths(1);
-            calendar1.ViewStart = _objCharacter.Calendar.LastOrDefault().ICStart;
-            monthView1.ViewStart = _objCharacter.Calendar.LastOrDefault().ICFinish;
-            foreach (CalendarObject cw in _objCharacter.Calendar)
-            {
-                CalendarItem c = new CalendarItem(calendar1, cw.ICStart, cw.ICFinish, cw.Notes);
-                calendar1.Items.Add(c);
-            }*/
+            _lvwNuyenColumnSorter.Order = SortOrder.Descending;
+            calCharacter.AddRange(_objCharacter.Calendar);
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
             SetTooltips();
             MoveControls();
@@ -1025,7 +1015,6 @@ namespace Chummer
             treMartialArts.SortCustom();
             UpdateMentorSpirits();
             UpdateInitiationGradeTree();
-            PopulateCalendar();
             RefreshImprovements();
 
             ScheduleCharacterUpdate();
@@ -1652,7 +1641,6 @@ namespace Chummer
 
             lblCareerKarma.Text = _objCharacter.CareerKarma.ToString();
             //UpdateSkillInfo();
-            PopulateCalendar();
             ScheduleCharacterUpdate();
             
             _blnIsDirty = true;
@@ -7470,41 +7458,6 @@ namespace Chummer
             objLocation.ContextMenuStrip = cmsWeaponLocation;
             treWeapons.Nodes.Add(objLocation);
             UpdateWindowTitle();
-
-            _blnIsDirty = true;
-            UpdateWindowTitle();
-        }
-
-        private void cmdAddWeek_Click(object sender, EventArgs e)
-        {
-            /*CalendarObject objWeek = new CalendarObject();
-            if (_objCharacter.Calendar != null && _objCharacter.Calendar.LastOrDefault() != null)
-            {
-                objWeek.Year = _objCharacter.Calendar.Last().Year;
-                objWeek.Week = _objCharacter.Calendar.Last().Week;
-                objWeek.Week++;
-                if (objWeek.Week > 52)
-                {
-                    objWeek.Week = 1;
-                    objWeek.Year++;
-                }
-            }
-            else
-            {
-                objWeek = new CalendarObject();
-                frmSelectCalendarStart frmPickStart = new frmSelectCalendarStart();
-                frmPickStart.ShowDialog(this);
-
-                if (frmPickStart.DialogResult == DialogResult.Cancel)
-                    return;
-
-                objWeek.Year = frmPickStart.SelectedYear;
-                objWeek.Week = frmPickStart.SelectedWeek;
-            }
-
-            _objCharacter.Calendar.Add(objWeek);*/
-
-            PopulateCalendar();
 
             _blnIsDirty = true;
             UpdateWindowTitle();
@@ -17376,10 +17329,7 @@ namespace Chummer
 #endregion
 
 #region Additional Calendar Tab Control Events
-        private void lstCalendar_DoubleClick(object sender, EventArgs e)
-        {
-            cmdEditWeek_Click(sender, e);
-        }
+
 #endregion
 
 #region Additional Improvements Tab Control Events
@@ -18492,7 +18442,6 @@ namespace Chummer
             PopulateGearList();
             RefreshContacts();
             PopulateCyberware();
-            PopulateCalendar();
             PopulateExpenseList();
 
             // Populate Armor.
@@ -22561,29 +22510,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Populate the Calendar List.
-        /// </summary>
-        public void PopulateCalendar()
-        {
-            lstCalendar.Items.Clear();
-            for (int i = _objCharacter.Calendar.Count - 1; i >= 0; i--)
-            {
-                CalendarObject objWeek = _objCharacter.Calendar[i];
-                ListViewItem objItem = new ListViewItem();
-                //objItem.Text = objWeek.DisplayName;
-                ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem();
-                objNoteItem.Text = objWeek.Notes;
-                ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem();
-                objInternalIdItem.Text = objWeek.InternalId;
-
-                objItem.SubItems.Add(objNoteItem);
-                objItem.SubItems.Add(objInternalIdItem);
-
-                lstCalendar.Items.Add(objItem);
-            }
-        }
-
-        /// <summary>
         /// Verify that the user wants to spend their Karma and did not accidentally click the button.
         /// </summary>
         public bool ConfirmKarmaExpense(string strMessage)
@@ -23383,9 +23309,6 @@ namespace Chummer
             cmdKarmaEdit.Left = cmdKarmaSpent.Left + cmdKarmaSpent.Width + 6;
             cmdNuyenSpent.Left = cmdNuyenGained.Left + cmdNuyenGained.Width + 6;
             cmdNuyenEdit.Left = cmdNuyenSpent.Left + cmdNuyenSpent.Width + 6;
-
-            // Calendar Tab.
-            cmdEditWeek.Left = cmdAddWeek.Left + cmdAddWeek.Width + 6;
 
             // Improvements tab.
             cmdEditImprovement.Left = cmdAddImprovement.Left + cmdAddImprovement.Width + 6;

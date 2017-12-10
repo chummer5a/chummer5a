@@ -6514,10 +6514,8 @@ namespace Chummer
     public class CalendarObject : IItemWithGuid
     {
         private Guid _guiID;
-        private DateTime _icDateStart = DateTime.Parse("1/1/2079");
-        private DateTime _icDateFinish = DateTime.Parse("1/1/2079");
-        private DateTime _oocDateStart = DateTime.Today;
-        private DateTime _oocDateFinish = DateTime.Today;
+        private DateTime _dateStart = DateTime.Parse("1/1/2079");
+        private DateTime _dateFinish = DateTime.Parse("1/1/2079");
         private string _strNotes = string.Empty;
 
         #region Constructor, Save, Load, and Print Methods
@@ -6535,10 +6533,8 @@ namespace Chummer
         {
             objWriter.WriteStartElement("week");
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("icdatestart", _icDateStart.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("icdateend", _icDateFinish.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("oocdatestart", _oocDateStart.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("oocdateend", _oocDateFinish.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("datestart", _dateStart.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("dateend", _dateFinish.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
         }
@@ -6552,10 +6548,8 @@ namespace Chummer
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             if (objNode["icdatestart"] != null)
             {
-                _icDateStart = DateTime.Parse(objNode["icdatestart"].InnerText);
-                _oocDateStart = DateTime.Parse(objNode["oocdatestart"].InnerText);
-                _icDateFinish = DateTime.Parse(objNode["icdateend"].InnerText);
-                _oocDateFinish = DateTime.Parse(objNode["oocdateend"].InnerText);
+                _dateStart = DateTime.Parse(objNode["datestart"].InnerText);
+                _dateFinish = DateTime.Parse(objNode["icdateend"].InnerText);
             }
             else
             {
@@ -6635,8 +6629,8 @@ namespace Chummer
                         i = 12;
                         break;
                 }
-                _icDateStart = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
-                _icDateFinish = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
+                _dateStart = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
+                _dateFinish = DateTime.Parse(string.Format($"1/{i}/{objNode["year"].InnerText}"));
             }
 
             _strNotes = objNode["notes"].InnerText;
@@ -6649,8 +6643,8 @@ namespace Chummer
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("entry");
-            objWriter.WriteElementString("icdate", _icDateStart.ToString(objCulture));
-            objWriter.WriteElementString("oocdate", _oocDateStart.ToString(objCulture));
+            objWriter.WriteElementString("icdate", _dateStart.ToString(objCulture));
+            objWriter.WriteElementString("oocdate", _dateStart.ToString(objCulture));
             if (blnPrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -6672,18 +6666,17 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        public DateTime ICStart
+        public DateTime Start
         {
-            get => _icDateStart;
-            set => _icDateStart = value;
+            get => _dateStart;
+            set => _dateStart = value;
         }
 
-        public DateTime ICFinish
+        public DateTime Finish
         {
-            get => _icDateFinish;
-            set => _icDateFinish = value;
+            get => _dateFinish;
+            set => _dateFinish = value;
         }
-
         #endregion
     }
 
