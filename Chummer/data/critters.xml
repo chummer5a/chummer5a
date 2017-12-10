@@ -24855,6 +24855,7 @@
                     <name>critter</name>
                 </enabletab>
                 <initiativepass>1</initiativepass>
+              <unlockskills name="Counterspelling">Name</unlockskills>
             </bonus>
             <powers>
                 <power rating="6">Armor</power>
