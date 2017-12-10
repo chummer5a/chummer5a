@@ -213,26 +213,34 @@ namespace Chummer.UI.Powers
 
         private void cmdAddPower_Click(object sender, EventArgs e)
         {
-            frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
-            frmPickPower.ShowDialog(this);
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickPower.DialogResult == DialogResult.Cancel)
-                return;
-
-            Power objPower = new Power(ObjCharacter);
-
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
+            bool blnAddAgain = false;
 
-            XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            if (objPower.Create(objXmlPower))
+            do
             {
-                ObjCharacter.Powers.Add(objPower);
-                MissingDatabindingsWorkaround();
-                if (frmPickPower.AddAgain)
-                    cmdAddPower_Click(sender, e);
+                frmSelectPower frmPickPower = new frmSelectPower(ObjCharacter);
+                frmPickPower.ShowDialog(this);
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickPower.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickPower.AddAgain;
+
+                Power objPower = new Power(ObjCharacter);
+
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+                frmPickPower.Dispose();
+                if (objPower.Create(objXmlPower))
+                {
+                    ObjCharacter.Powers.Add(objPower);
+                    MissingDatabindingsWorkaround();
+                }
             }
+            while (blnAddAgain);
         }
 
         /// <summary>
