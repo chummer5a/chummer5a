@@ -1097,7 +1097,7 @@ namespace Chummer
                 strFilter += " and contains(armorcapacity, \"[\")";
             else if (_blnShowPositiveCapacityOnly)
                 strFilter += " and not(contains(capacity, \"[\"))";
-            else
+            else if (_blnShowNegativeCapacityOnly)
                 strFilter += " and contains(capacity, \"[\")";
             if (_objParentNode == null)
                 strFilter += " and not(requireparent)";
