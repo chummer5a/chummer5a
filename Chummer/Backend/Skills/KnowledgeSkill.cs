@@ -235,7 +235,7 @@ namespace Chummer.Skills
             int intSpecCount = 0;
             foreach (SkillSpecialization objSpec in Specializations)
             {
-                if (!objSpec.Free && (BuyWithKarma || CharacterObject.BuildMethod == CharacterBuildMethod.Karma || CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule))
+                if (!objSpec.Free && BuyWithKarma)
                     intSpecCount += 1;
             }
             int intSpecCost = CharacterObject.Options.KarmaKnowledgeSpecialization * intSpecCount;

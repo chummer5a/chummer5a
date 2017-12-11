@@ -2685,7 +2685,7 @@
     <Content Include="sheets\de-de\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Calender.xsl">
+    <Content Include="sheets\de-de\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Commlinks.xsl">
@@ -2792,7 +2792,7 @@
     <Content Include="sheets\fr-fr\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Remarques.xsl">
+    <Content Include="sheets\fr-fr\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Game Master Summary.xsl">

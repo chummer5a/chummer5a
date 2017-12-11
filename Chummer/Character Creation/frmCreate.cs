@@ -13315,7 +13315,8 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Calculate the points used by Knowledge Skills.
-            int knowledgeKarmaUsed = _objCharacter.SkillsSection.KnowledgeSkills.Sum(x => x.CurrentKarmaCost());
+            int knowledgeKarmaUsed = _objCharacter.SkillsSection.KnowledgeSkills.TotalCostKarma();
+
             //TODO: Remaining is named USED?
             intKarmaPointsRemain -= knowledgeKarmaUsed;
 
