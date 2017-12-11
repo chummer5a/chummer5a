@@ -872,8 +872,9 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedKit = lstKits.SelectedValue.ToString();
-            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            string[] objSelectedKit = lstKits.SelectedValue.ToString().Split('<');
+            _strSelectedKit = objSelectedKit[0];
+            _strSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
         }
 
