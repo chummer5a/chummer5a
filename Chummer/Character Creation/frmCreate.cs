@@ -19356,11 +19356,11 @@ namespace Chummer
                     Gear objDefaultSensor = null;
 
                     TreeNode objNode = new TreeNode();
-                    Vehicle objVehicle = null;
 
                     XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlVehicle["name"].InnerText + "\"]");
                     if (objXmlVehicleNode == null)
                         continue;
+                    Vehicle objVehicle = new Vehicle(_objCharacter);
                     objVehicle.Create(objXmlVehicleNode, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsWeaponMount, blnCreateChildren);
                     _objCharacter.Vehicles.Add(objVehicle);
 
