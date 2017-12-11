@@ -20,7 +20,7 @@ namespace Chummer.Backend.Equipment
         private string _strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strA = "0";
-        private string _strO = "0";
+        private string _strO = string.Empty;
         private string _strArmorCapacity = "0";
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
@@ -695,6 +695,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                if (_strO == "0")
+                {
+                    _strO = string.Empty;
+                }
                 return _strO;
             }
             set
@@ -939,10 +943,10 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _strA.Substring(0, 1) == "+" || _strA.Substring(0, 1) == "-"
+                return _strA.Substring(0, 1) == "+" || _strA.Substring(0, 1) == "-" || (!string.IsNullOrWhiteSpace(_strO))
                     ? (string.IsNullOrWhiteSpace(_strO)
                         ? $"{TotalArmor:+0;-0;0}"
-                        : $"{TotalArmor:+0;-0;0}/{ArmorOverrideValue}")
+                        : $"{TotalArmor}/{ArmorOverrideValue}")
                     : TotalArmor.ToString();
             }
         }

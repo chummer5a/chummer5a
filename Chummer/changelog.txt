@@ -15,6 +15,7 @@ Application Changes:
 - Fixed a bug where knowledge skill specializations bought with points under Point Buy or Life Modules would still deduct karma from the character.
 - Fixed a bug where skill pool tooltips and other texts that fetch the names of bonus sources would not fetch the name of Mentor Spirits.
 - Fixed a crash when attempting to fire Vehicle Weapons.
+- Fixed calculation of armour to properly account for armour with override values (ie High Fashion Armour Clothing).
 
 Build 196
 

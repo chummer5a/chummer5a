@@ -645,6 +645,7 @@ namespace Chummer
                 else
                 {
                     _strFileName = "default.xml";
+                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
                     objXmlDocument.Load(strFilePath);
                 }
             }

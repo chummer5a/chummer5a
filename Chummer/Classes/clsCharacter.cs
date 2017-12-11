@@ -6127,7 +6127,7 @@ namespace Chummer
                     if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
                     {
                         if (objArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest))
-                            intStacking += Convert.ToInt32(objArmor.TotalArmor);
+                            intStacking += Convert.ToInt32(objArmor.ArmorOverrideValue);
                     }
                 }
 
