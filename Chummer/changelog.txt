@@ -11,6 +11,7 @@ Application Changes:
 - When selecting critter powers for someone who can have optional critter powers, the displayed powers will now properly be filtered by the category selected in the category dropdown box.
 - Fixed a crash that occured when an expense was undone or when a character file got an update outside of Chummer and the "live updates from character file" option was enabled.
 - Fixed a crash when adding PACKS kits containing vehicles. Fixes #2155.
+- Fixed an issue with the Notes sheet not loading under fr-FR localization.
 
 Build 196
 
