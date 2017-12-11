@@ -55,7 +55,6 @@ namespace Chummer
         private bool _blnDraggingGear = false;
         public int contactConnection = 0;
         private StoryBuilder _objStoryBuilder;
-        private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
         ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
         ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
         private Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
@@ -4031,7 +4030,6 @@ namespace Chummer
             do
             {
                 frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
-                frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
                 frmPickSpell.ShowDialog(this);
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)
@@ -4043,7 +4041,6 @@ namespace Chummer
 
                 XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
 
-                lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
                 Spell objSpell = new Spell(_objCharacter);
                 TreeNode objNode = new TreeNode();
                 objSpell.Create(objXmlSpell, objNode, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
@@ -18578,7 +18575,10 @@ namespace Chummer
                 // Positive Qualities.
                 foreach (XmlNode objXmlQuality in objXmlKit.SelectNodes("qualities/positive/quality"))
                 {
-                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
+
+                    if (objXmlQualityNode == null)
+                        continue;
 
                     TreeNode objNode = new TreeNode();
                     List<Weapon> objWeapons = new List<Weapon>();
@@ -18616,7 +18616,10 @@ namespace Chummer
                 // Negative Qualities.
                 foreach (XmlNode objXmlQuality in objXmlKit.SelectNodes("qualities/negative/quality"))
                 {
-                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
+
+                    if (objXmlQualityNode == null)
+                        continue;
 
                     TreeNode objNode = new TreeNode();
                     List<Weapon> objWeapons = new List<Weapon>();
@@ -18700,7 +18703,9 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode();
                     MartialArt objArt = new MartialArt(_objCharacter);
-                    XmlNode objXmlArtNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + objXmlArt["name"].InnerText + "\"]");
+                    XmlNode objXmlArtNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlArt["name"].InnerText + "\"]");
+                    if (objXmlArtNode == null)
+                        continue;
                     objArt.Create(objXmlArtNode, objNode);
                     objArt.Rating = Convert.ToInt32(objXmlArt["rating"].InnerText);
                     _objCharacter.MartialArts.Add(objArt);
@@ -18710,7 +18715,7 @@ namespace Chummer
                     {
                         TreeNode objChildNode = new TreeNode();
                         MartialArtAdvantage objAdvantage = new MartialArtAdvantage(_objCharacter);
-                        XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
+                        XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
                         objAdvantage.Create(objXmlAdvantageNode, objChildNode);
                         objArt.Advantages.Add(objAdvantage);
 
@@ -18743,7 +18748,9 @@ namespace Chummer
 
                 foreach (XmlNode objXmlProgram in objXmlKit.SelectNodes("complexforms/complexform"))
                 {
-                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlProgram["name"].InnerText + "\"]");
+                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
+                    if (objXmlProgramNode == null)
+                        continue;
 
                     string strForceValue = string.Empty;
                     if (objXmlProgram.Attributes["select"] != null)
@@ -18770,7 +18777,9 @@ namespace Chummer
 
                 foreach (XmlNode objXmlProgram in objXmlKit.SelectNodes("programs/program"))
                 {
-                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/programs/program[name = \"" + objXmlProgram["name"].InnerText + "\"]");
+                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/programs/program[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
+                    if (objXmlProgramNode == null)
+                        continue;
 
                     bool boolIsAdvancedProgram = false;
                     if (objXmlProgram["category"]?.InnerText == "Advanced Programs")
@@ -18854,7 +18863,10 @@ namespace Chummer
                         if (objXmlSpell.Attributes["select"] != null)
                             strForceValue = objXmlSpell.Attributes["select"].InnerText;
 
-                        XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + objXmlSpell.InnerText + "\"]");
+                        XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlSpell.InnerText + "\"]");
+
+                        if (objXmlSpellNode == null)
+                            continue;
 
                         Spell objSpell = new Spell(_objCharacter);
                         TreeNode objNode = new TreeNode();
@@ -18973,7 +18985,9 @@ namespace Chummer
 
                 foreach (XmlNode objXmlArmor in objXmlKit.SelectNodes("armors/armor"))
                 {
-                    XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + objXmlArmor["name"].InnerText + "\"]");
+                    XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlArmor["name"].InnerText + "\"]");
+                    if (objXmlArmorNode == null)
+                        continue;
 
                     Armor objArmor = new Armor(_objCharacter);
                     TreeNode objNode = new TreeNode();
@@ -18994,7 +19008,9 @@ namespace Chummer
                         {
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                            XmlNode objXmlModNode = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
+                            XmlNode objXmlModNode = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlMod["name"].InnerText + "\"]");
+                            if (objXmlModNode == null)
+                                continue;
                             ArmorMod objMod = new ArmorMod(_objCharacter);
                             TreeNode objModNode = new TreeNode();
                             int intRating = 0;
@@ -19052,7 +19068,9 @@ namespace Chummer
                     pgbProgress.Value = i;
                     Application.DoEvents();
 
-                    XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                    XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                    if (objXmlWeaponNode == null)
+                        continue;
 
                     Weapon objWeapon = new Weapon(_objCharacter);
                     List<TreeNode> lstNodes = new List<TreeNode>();
@@ -19064,7 +19082,9 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                         {
-                            XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                            XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                            if (objXmlAccessoryNode == null)
+                                continue;
                             WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                             TreeNode objModNode = new TreeNode();
                             string strMount = "Internal";
@@ -19092,8 +19112,9 @@ namespace Chummer
                     // Look for an Underbarrel Weapon.
                     if (objXmlWeapon["underbarrel"] != null)
                     {
-                        XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
-
+                        XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
+                        if (objXmlUnderbarrelNode == null)
+                            continue;
                         Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
                         List<TreeNode> lstUnderbarrelNodes = new List<TreeNode>();
                         objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstUnderbarrelNodes, cmsWeapon, cmsWeaponAccessory, objWeapon.UnderbarrelWeapons, cmsWeaponAccessoryGear, blnCreateChildren);
@@ -19143,7 +19164,9 @@ namespace Chummer
                     if (objXmlCyberware["rating"] != null)
                         intRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
 
-                    XmlNode objXmlCyberwareNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlCyberware["name"].InnerText + "\"]");
+                    XmlNode objXmlCyberwareNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlCyberware["name"].InnerText + "\"]");
+                    if (objXmlCyberwareNode == null)
+                        continue;
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     objCyberware.Create(objXmlCyberwareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                     _objCharacter.Cyberware.Add(objCyberware);
@@ -19161,7 +19184,9 @@ namespace Chummer
                             if (objXmlChild["rating"] != null)
                                 intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
 
-                            XmlNode objXmlChildNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlChild["name"].InnerText + "\"]");
+                            XmlNode objXmlChildNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlChild["name"].InnerText + "\"]");
+                            if (objXmlChildNode == null)
+                                continue;
                             objChildCyberware.Create(objXmlChildNode, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intChildRating, objChildNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                             objCyberware.Children.Add(objChildCyberware);
 
@@ -19235,7 +19260,9 @@ namespace Chummer
                     if (objXmlBioware["rating"] != null)
                         intRating = Convert.ToInt32(objXmlBioware["rating"].InnerText);
 
-                    XmlNode objXmlBiowareNode = objXmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlBioware["name"].InnerText + "\"]");
+                    XmlNode objXmlBiowareNode = objXmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlBioware["name"].InnerText + "\"]");
+                    if (objXmlBiowareNode == null)
+                        continue;
                     Cyberware objCyberware = new Cyberware(_objCharacter);
                     objCyberware.Create(objXmlBiowareNode, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intRating, objNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, true, blnCreateChildren);
                     _objCharacter.Cyberware.Add(objCyberware);
@@ -19313,7 +19340,9 @@ namespace Chummer
                     TreeNode objNode = new TreeNode();
                     Vehicle objVehicle = null;
 
-                    XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + objXmlVehicle["name"].InnerText + "\"]");
+                    XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlVehicle["name"].InnerText + "\"]");
+                    if (objXmlVehicleNode == null)
+                        continue;
                     objVehicle.Create(objXmlVehicleNode, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsWeaponMount, blnCreateChildren);
                     _objCharacter.Vehicles.Add(objVehicle);
 
@@ -19340,7 +19369,9 @@ namespace Chummer
                             int intMarkup = 0;
                             objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
 
-                            XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlMod["name"].InnerText + "\"]");
+                            XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlMod["name"].InnerText + "\"]");
+                            if (objXmlModNode == null)
+                                continue;
                             objMod.Create(objXmlModNode, objModNode, intRating, objVehicle, intMarkup);
                             objVehicle.Mods.Add(objMod);
 
@@ -19371,7 +19402,9 @@ namespace Chummer
                             if (objXmlGear["qty"] != null)
                                 decQty = Convert.ToDecimal(objXmlGear["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\"]");
+                            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\"]");
+                            if (objXmlGearNode == null)
+                                continue;
                             objGear.Create(objXmlGearNode, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, false, blnCreateChildren, false);
                             objGear.Quantity = decQty;
                             objGearNode.Text = objGear.DisplayName;
@@ -19418,7 +19451,9 @@ namespace Chummer
                             Weapon objWeapon = new Weapon(_objCharacter);
 
                             List<Weapon> objSubWeapons = new List<Weapon>();
-                            XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                            XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                            if (objXmlWeaponNode == null)
+                                continue;
                             objWeapon.Create(objXmlWeaponNode, lstWeaponNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSubWeapons, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
                             objWeapon.VehicleMounted = true;
 
@@ -19451,7 +19486,9 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                                 {
-                                    XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                    XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                    if (objXmlAccessoryNode == null)
+                                        continue;
                                     WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                     TreeNode objModNode = new TreeNode();
                                     string strMount = "Internal";
@@ -20868,18 +20905,20 @@ namespace Chummer
         /// <param name="blnCreateChildren">Whether or not the default plugins for the Gear should be created.</param>
         private void AddPACKSGear(XmlDocument objXmlGearDocument, XmlNode objXmlGear, TreeNode objParent, Object objParentObject, ContextMenuStrip cmsContextMenu, bool blnCreateChildren)
         {
+            XmlNode objXmlGearNode;
+            if (objXmlGear["category"] != null)
+                objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\" and category = \"" + objXmlGear["category"].InnerText + "\"]");
+            else
+                objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + _objCharacter.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\"]");
+            if (objXmlGearNode == null)
+                return;
+
             int intRating = 0;
             if (objXmlGear["rating"] != null)
                 intRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
             decimal decQty = 1;
             if (objXmlGear["qty"] != null)
                 decQty = Convert.ToDecimal(objXmlGear["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-            XmlNode objXmlGearNode;
-            if (objXmlGear["category"] != null)
-                objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\" and category = \"" + objXmlGear["category"].InnerText + "\"]");
-            else
-                objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear["name"].InnerText + "\"]");
 
             List<Weapon> objWeapons = new List<Weapon>();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
@@ -20889,23 +20928,20 @@ namespace Chummer
                 strForceValue = objXmlGear["name"].Attributes["select"].InnerText;
 
             Gear objNewGear = null;
-            if (objXmlGearNode != null)
+            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
             {
-                if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
-                {
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Create(objXmlGearNode, objNode, intRating, true, blnCreateChildren);
-                    objCommlink.Quantity = decQty;
-                    objNewGear = objCommlink;
-                }
-                else
-                {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Create(objXmlGearNode, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
-                    objGear.Quantity = decQty;
-                    objNode.Text = objGear.DisplayName;
-                    objNewGear = objGear;
-                }
+                Commlink objCommlink = new Commlink(_objCharacter);
+                objCommlink.Create(objXmlGearNode, objNode, intRating, true, blnCreateChildren);
+                objCommlink.Quantity = decQty;
+                objNewGear = objCommlink;
+            }
+            else
+            {
+                Gear objGear = new Gear(_objCharacter);
+                objGear.Create(objXmlGearNode, objNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, true, blnCreateChildren);
+                objGear.Quantity = decQty;
+                objNode.Text = objGear.DisplayName;
+                objNewGear = objGear;
             }
 
             if (objParentObject.GetType() == typeof(Character))

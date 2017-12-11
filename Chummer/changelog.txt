@@ -1,3 +1,15 @@
+Future Build 197
+
+Application Changes:
+
+- Fixed issues with certain selection forms not obeying restriction requirements if the search field is not empty.
+- Switched the spell selection form to a style similar to most other selection forms, i.e. categories are selectable in a dropdown box and spells are located in a list view, instead of using funky tree views.
+- Users can now use the Search function in the spell selection screen even if spell categories are limited to a single category.
+- PACKS kits will no longer display or add items that require sourcebooks that are not enabled for the character.
+- Chummer5 will no longer do spooky things if it cannot find an item tied to a particular forced value for a selection screen.
+- Lifestyle dropdown boxes will now only be populated by items that abide by the character's enabled sourcebook list (so e.g. Commercial lifestyle will not show up if Run Faster is not enabled).
+- When selecting critter powers for someone who can have optional critter powers, the displayed powers will now properly be filtered by the category selected in the category dropdown box.
+
 Build 196
 
 Application Changes:

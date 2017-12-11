@@ -66,6 +66,12 @@ namespace Chummer
 
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
         {
+            foreach (Label objLabel in Controls.OfType<Label>())
+            {
+                if (objLabel.Text.StartsWith('['))
+                    objLabel.Text = string.Empty;
+            }
+
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -397,116 +403,106 @@ namespace Chummer
         /// </summary>
         private void BuildModList()
         {
-
-            foreach (Label objLabel in Controls.OfType<Label>())
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
+                strFilter += " and category = \"" + strCategory + "\"";
+            else if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                }
             }
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            // Retrieve the list of Mods for the selected Category.
+            XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strFilter + "]");
 
             // Update the list of Mods based on the selected Category.
-            XmlNodeList objXmlModList;
-
             XmlNode objXmlVehicleNode = _objVehicle.MyXmlNode;
-
-            string strCategoryFilter = string.Empty;
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
-                strCategoryFilter = " and category = \"" + cboCategory.SelectedValue + "\"";
-            else
+            List<ListItem> lstMods = new List<ListItem>();
+            foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (!string.IsNullOrEmpty(_strAllowedCategories))
+                if (objXmlMod["forbidden"]?["vehicledetails"] != null)
                 {
-                    string[] strAllowed = _strAllowedCategories.Split(',');
-                    for (int index = 0; index < strAllowed.Length; index++)
+                    // Assumes topmost parent is an AND node
+                    if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
                     {
-                        if (index == 0)
-                        {
-                            strCategoryFilter = $"category = \"{strAllowed[index]}\"";
-                        }
-                        string strAllowedMount = strAllowed[index];
-                        if (!string.IsNullOrEmpty(strAllowedMount))
-                            strCategoryFilter += $" or category = \"{strAllowed[index]}\"";
+                        continue;
                     }
-                    strCategoryFilter = " and (" + strCategoryFilter + ")";
+                }
+                if (objXmlMod["required"]?["vehicledetails"] != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
+                    {
+                        continue;
+                    }
+                }
+
+                if (objXmlMod["forbidden"]?["oneof"] != null)
+                {
+                    XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
+                    //Add to set for O(N log M) runtime instead of O(N * M)
+
+                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
+                    foreach (XmlNode node in objXmlForbiddenList)
+                    {
+                        objForbiddenAccessory.Add(node.InnerText);
+                    }
+
+                    if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                    {
+                        continue;
+                    }
+                }
+
+                if (objXmlMod["required"]?["oneof"] != null)
+                {
+                    XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
+                    //Add to set for O(N log M) runtime instead of O(N * M)
+
+                    HashSet<string> objRequiredAccessory = new HashSet<string>();
+                    foreach (XmlNode node in objXmlRequiredList)
+                    {
+                        objRequiredAccessory.Add(node.InnerText);
+                    }
+
+                    if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                    {
+                        continue;
+                    }
+                }
+
+                XmlNode objXmlRequirements = objXmlMod.SelectSingleNode("requires");
+                if (objXmlRequirements != null)
+                {
+                    if (_objVehicle.Seats < Convert.ToInt32(objXmlRequirements["seats"]?.InnerText))
+                    {
+                        continue;
+                    }
+                }
+
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlMod["id"].InnerText;
+                    objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
+                    lstMods.Add(objItem);
                 }
             }
-            // Retrieve the list of Mods for the selected Category.
-            if (string.IsNullOrWhiteSpace(txtSearch.Text))
-                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ")" + strCategoryFilter + "]");
-            else
-                objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[(" + _objCharacter.Options.BookXPath() + ")" + strCategoryFilter + " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]");
-            List<ListItem> lstMods = new List<ListItem>();
-            if (objXmlModList != null)
-                foreach (XmlNode objXmlMod in objXmlModList)
-                {
-                    if (objXmlMod["forbidden"]?["vehicledetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-                    if (objXmlMod["required"]?["vehicledetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlMod["forbidden"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlForbiddenList)
-                        {
-                            objForbiddenAccessory.Add(node.InnerText);
-                        }
-
-                        if (_lstMods.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlMod["required"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objRequiredAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlRequiredList)
-                        {
-                            objRequiredAccessory.Add(node.InnerText);
-                        }
-
-                        if (!_lstMods.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-
-                    XmlNode objXmlRequirements = objXmlMod.SelectSingleNode("requires");
-                    if (objXmlRequirements != null)
-                    {
-                        if (_objVehicle.Seats < Convert.ToInt32(objXmlRequirements["seats"]?.InnerText))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlMod["id"].InnerText;
-                        objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
-                        lstMods.Add(objItem);
-                    }
-                }
             SortListItem objSort = new SortListItem();
             lstMods.Sort(objSort.Compare);
             lstMod.BeginUpdate();

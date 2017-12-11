@@ -369,20 +369,6 @@ namespace Chummer
                 cboAmmo.SelectedIndex = cboAmmo.FindStringExact(_strForceItem);
                 if (cboAmmo.SelectedIndex != -1)
                     AcceptForm();
-                else
-                {
-                    cboAmmo.DataSource = null;
-                    List<ListItem> lstSingle = new List<ListItem>();
-                    ListItem objItem = new ListItem();
-                    objItem.Value = _strForceItem;
-                    objItem.Name = _strForceItem;
-                    lstSingle.Add(objItem);
-                    cboAmmo.ValueMember = "Value";
-                    cboAmmo.DisplayMember = "Name";
-                    cboAmmo.DataSource = lstSingle;
-                    cboAmmo.SelectedIndex = 0;
-                    AcceptForm();
-                }
             }
             cboAmmo.EndUpdate();
         }

@@ -211,8 +211,6 @@ namespace Chummer
             switch (_objMode)
             {
                 case Mode.Art:
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
-                    break;
                 case Mode.Enhancement:
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
                     break;

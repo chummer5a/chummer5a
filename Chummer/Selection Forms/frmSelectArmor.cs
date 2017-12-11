@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
+using System.Text;
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -86,14 +87,13 @@ namespace Chummer
 
             // Populate the Armor Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            if (objXmlCategoryList != null)
-                foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                    _lstCategory.Add(objItem);
-                }
+            foreach (XmlNode objXmlCategory in objXmlCategoryList)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlCategory.InnerText;
+                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                _lstCategory.Add(objItem);
+            }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
@@ -180,19 +180,7 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-            {
-                txtSearch_TextChanged(sender, e);
-                return;
-            }
-            string strSelectedCategoryPath = string.Empty;
-            // If category selected is "Show All", we show all items regardless of category, otherwise we set the category string to filter for the selected category
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All")
-            {
-                strSelectedCategoryPath = "category = \"" + cboCategory.SelectedValue + "\" and ";
-            }
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[" + strSelectedCategoryPath + "(" + _objCharacter.Options.BookXPath() + ")]");
-            BuildArmorList(objXmlArmorList);
+            RefreshList();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -203,39 +191,7 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtSearch.Text))
-            {
-                cboCategory_SelectedIndexChanged(sender, e);
-                return;
-            }
-
-            string strCategoryFilter = string.Empty;
-
-            if (cboCategory.SelectedValue != null && (cboCategory.SelectedValue.ToString() != "Show All" && _objCharacter.Options.SearchInCategoryOnly))
-                strCategoryFilter = "category = \"" + cboCategory.SelectedValue + "\"";
-            else
-            {
-                foreach (object objListItem in cboCategory.Items)
-                {
-                    ListItem objItem = (ListItem)objListItem;
-                    if (!string.IsNullOrEmpty(objItem.Value))
-                        strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
-                }
-            }
-
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-            if (!string.IsNullOrEmpty(strCategoryFilter))
-                strSearch += " and (" + strCategoryFilter + ")";
-            // Remove the trailing " or )";
-            if (strSearch.EndsWith(" or )"))
-            {
-                strSearch = strSearch.Substring(0, strSearch.Length - 4) + ")";
-            }
-            strSearch += "]";
-
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes(strSearch);
-            BuildArmorList(objXmlArmorList);
+            RefreshList();
         }
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
@@ -295,35 +251,7 @@ namespace Chummer
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            if (string.IsNullOrEmpty(txtSearch.Text))
-            {
-                cboCategory_SelectedIndexChanged(sender, e);
-                return;
-            }
-
-            string strCategoryFilter = string.Empty;
-
-            foreach (object objListItem in cboCategory.Items)
-            {
-                ListItem objItem = (ListItem)objListItem;
-                if (!string.IsNullOrEmpty(objItem.Value))
-                    strCategoryFilter += "category = \"" + objItem.Value + "\" or ";
-            }
-
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/armors/armor[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
-            if (!string.IsNullOrEmpty(strCategoryFilter))
-                strSearch += " and (" + strCategoryFilter + ")";
-            // Remove the trailing " or )";
-            if (strSearch.EndsWith(" or )"))
-            {
-                strSearch = strSearch.Substring(0, strSearch.Length - 4) + ")";
-            }
-            strSearch += "]";
-
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes(strSearch);
-
-            BuildArmorList(objXmlArmorList);
+            RefreshList();
         }
 
         private void dgvArmor_DoubleClick(object sender, EventArgs e)
@@ -428,6 +356,40 @@ namespace Chummer
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Refreshes the displayed lists
+        /// </summary>
+        private void RefreshList()
+        {
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                strFilter += " and category = \"" + strCategory + "\"";
+            else
+            {
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                }
+            }
+
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + "]");
+            BuildArmorList(objXmlArmorList);
+        }
 
         /// <summary>
         /// Builds the list of Armors to render in the active tab.

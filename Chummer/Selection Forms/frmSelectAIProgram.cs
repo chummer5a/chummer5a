@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -86,6 +87,15 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
             cboCategory.ValueMember = "Value";
@@ -101,15 +111,7 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboCategory.SelectedValue == null)
-                return;
-
-            txtSearch.Text = string.Empty;
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            UpdateProgramList(objXmlNodeList);
+            RefreshList();
         }
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -152,18 +154,7 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtSearch.Text))
-            {
-                cboCategory_SelectedIndexChanged(sender, e);
-                return;
-            }
-
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/programs/program[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
-            UpdateProgramList(objXmlNodeList);
+            RefreshList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -252,6 +243,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Refreshes the displayed lists
+        /// </summary>
+        private void RefreshList()
+        {
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                strFilter += " and category = \"" + strCategory + "\"";
+            else
+            {
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                }
+            }
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            // Populate the Program list.
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[" + strFilter + "]");
+
+            UpdateProgramList(objXmlNodeList);
+        }
+
+        /// <summary>
         /// Update the Program List based on a base program node list.
         /// </summary>
         private void UpdateProgramList(XmlNodeList objXmlNodeList)
@@ -303,7 +330,7 @@ namespace Chummer
                 ListItem objItem = new ListItem();
                 objItem.Value = objXmlProgram["id"].InnerText;
                 objItem.Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                if (!string.IsNullOrEmpty(txtSearch.Text) && objXmlProgram["category"] != null && objXmlProgram["category"].InnerText != cboCategory.SelectedValue.ToString())
+                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && objXmlProgram["category"] != null)
                 {
                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlProgram["category"].InnerText);
                     if (objFoundItem != null)

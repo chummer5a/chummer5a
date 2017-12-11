@@ -55,25 +55,23 @@ namespace Chummer
 
             foreach (XmlNode objXmlOption in objXmlOptionList)
             {
-                bool blnAdd = true;
                 // If the Option has Category requirements, make sure they are met before adding the item to the list.
                 if (objXmlOption["programtypes"] != null)
                 {
-                    blnAdd = false;
+                    bool blnAdd = false;
                     foreach (XmlNode objXmlCategory in objXmlOption.SelectNodes("programtypes/programtype"))
                     {
                         if (objXmlCategory.InnerText == _strProgramCategory)
                             blnAdd = true;
                     }
+                    if (!blnAdd)
+                        continue;
                 }
 
-                if (blnAdd)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlOption["name"].InnerText;
-                    objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
-                    lstOption.Add(objItem);
-                }
+                ListItem objItem = new ListItem();
+                objItem.Value = objXmlOption["name"].InnerText;
+                objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
+                lstOption.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
             lstOption.Sort(objSort.Compare);

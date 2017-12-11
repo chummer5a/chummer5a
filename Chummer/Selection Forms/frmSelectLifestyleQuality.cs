@@ -25,6 +25,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 using Chummer.Skills;
 using Chummer.Backend.Attributes;
+using System.Text;
 
 namespace Chummer
 {
@@ -76,14 +77,18 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                if (_objXmlDocument.SelectSingleNode("/chummer/qualities/quality[" + _objCharacter.Options.BookXPath() + "]") != null)
+                string strCategory = objXmlCategory.InnerText;
+                if (BuildQualityList(strCategory, false, true).Count > 0)
                 {
                     ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    objItem.Value = strCategory;
+                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory;
                     _lstCategory.Add(objItem);
                 }
             }
+            SortListItem objSort = new SortListItem();
+            _lstCategory.Sort(objSort.Compare);
+
             if (_lstCategory.Count > 0)
             {
                 ListItem objItem = new ListItem();
@@ -110,12 +115,12 @@ namespace Chummer
             if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.Created)
                 lblBPLabel.Text = LanguageManager.GetString("Label_LP");
 
-            BuildQualityList();
+            BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
@@ -225,7 +230,7 @@ namespace Chummer
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
@@ -235,12 +240,12 @@ namespace Chummer
 
         private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -340,45 +345,66 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private void BuildQualityList()
+        private List<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            List<ListItem> lstLifestyleQuality = new List<ListItem>();
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
-            if (!string.IsNullOrWhiteSpace(txtSearch.Text))
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                strFilter += " and((contains(translate(name, 'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))";
+                strFilter += " and category = \"" + strCategory + "\"";
+            }
+            else
+            {
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                }
             }
 
-            if (cboCategory.SelectedValue != null && cboCategory.SelectedValue.ToString() != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
+            if (txtSearch.TextLength != 0)
             {
-                strFilter += " and category = \"" + cboCategory.SelectedValue.ToString() + "\"";
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
             }
 
             XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]");
+            List<ListItem> lstLifestyleQuality = new List<ListItem>();
             foreach (XmlNode objXmlQuality in objXmlQualityList)
             {
                 string strQualityName = objXmlQuality["name"].InnerText;
                 if (strQualityName != "Dug a Hole" || _strSelectedLifestyle == "Bolt Hole")
                 {
-                    if (!chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                    if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
                         ListItem objItem = new ListItem();
                         objItem.Value = strQualityName;
                         objItem.Name = objXmlQuality["translate"]?.InnerText ?? strQualityName;
 
                         lstLifestyleQuality.Add(objItem);
+                        if (blnTerminateAfterFirst)
+                            break;
                     }
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstLifestyleQuality.Sort(objSort.Compare);
-            lstLifestyleQualities.BeginUpdate();
-            lstLifestyleQualities.DataSource = null;
-            lstLifestyleQualities.ValueMember = "Value";
-            lstLifestyleQualities.DisplayMember = "Name";
-            lstLifestyleQualities.DataSource = lstLifestyleQuality;
-            lstLifestyleQualities.EndUpdate();
+            if (blnDoUIUpdate)
+            {
+                SortListItem objSort = new SortListItem();
+                lstLifestyleQuality.Sort(objSort.Compare);
+                lstLifestyleQualities.BeginUpdate();
+                lstLifestyleQualities.DataSource = null;
+                lstLifestyleQualities.ValueMember = "Value";
+                lstLifestyleQualities.DisplayMember = "Name";
+                lstLifestyleQualities.DataSource = lstLifestyleQuality;
+                lstLifestyleQualities.EndUpdate();
+            }
+
+            return lstLifestyleQuality;
         }
 
         /// <summary>

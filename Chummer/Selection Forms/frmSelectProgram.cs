@@ -56,52 +56,7 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + _objCharacter.Options.BookXPath() + "]");
-
-            bool blnCheckForOptional = false;
-            XmlNode objXmlCritter = null;
-            if (_objCharacter.IsCritter)
-            {
-                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
-                objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
-                    blnCheckForOptional = true;
-            }
-
-            /*
-            // Check to see if the character has the Biowire Echo.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Name == "Biowire")
-                    _blnBiowireEnabled = true;
-            }
-            */
-
-            trePrograms.TreeViewNodeSorter = new SortByName();
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
-            {
-                bool blnAdd = true;
-                TreeNode nodProgram = new TreeNode();
-                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["id"].InnerText;
-
-                // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (blnCheckForOptional)
-                {
-                    blnAdd = false;
-                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
-                    {
-                        if (objXmlForm.InnerText == objXmlProgram["name"].InnerText)
-                            blnAdd = true;
-                    }
-                }
-
-                // Add the Program to the Category node.
-                if (blnAdd)
-                    trePrograms.Nodes.Add(nodProgram);
-            }
-            trePrograms.Nodes[0].Expand();
+            BuildComplexFormList();
         }
 
         private void trePrograms_AfterSelect(object sender, TreeViewEventArgs e)
@@ -159,21 +114,7 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-
-            trePrograms.Nodes.Clear();
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
-            trePrograms.TreeViewNodeSorter = new SortByName();
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
-            {
-                TreeNode nodProgram = new TreeNode();
-                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["id"].InnerText;
-                trePrograms.Nodes.Add(nodProgram);
-            }
+            BuildComplexFormList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -235,6 +176,55 @@ namespace Chummer
         #endregion
 
         #region Methods
+        private void BuildComplexFormList()
+        {
+            bool blnCheckForOptional = false;
+            XmlNode objXmlCritter = null;
+            if (_objCharacter.IsCritter)
+            {
+                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
+                objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
+                    blnCheckForOptional = true;
+            }
+
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            // Populate the Program list.
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + "]");
+            trePrograms.Nodes.Clear();
+            trePrograms.TreeViewNodeSorter = new SortByName();
+            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            {
+                // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
+                if (blnCheckForOptional)
+                {
+                    bool blnAdd = false;
+                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
+                    {
+                        if (objXmlForm.InnerText == objXmlProgram["name"].InnerText)
+                        {
+                            blnAdd = true;
+                            break;
+                        }
+                    }
+                    if (!blnAdd)
+                        continue;
+                }
+
+                TreeNode nodProgram = new TreeNode();
+                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                nodProgram.Tag = objXmlProgram["id"].InnerText;
+                trePrograms.Nodes.Add(nodProgram);
+            }
+        }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>

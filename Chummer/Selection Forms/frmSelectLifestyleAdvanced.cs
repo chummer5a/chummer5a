@@ -69,7 +69,7 @@ namespace Chummer
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();
-            foreach (XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle"))
+            foreach (XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
             {
                 string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
 

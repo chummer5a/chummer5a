@@ -53,7 +53,6 @@ namespace Chummer
         private int _intDragLevel = 0;
         private MouseButtons _objDragButton = new MouseButtons();
         private bool _blnDraggingGear = false;
-        private List<TreeNode> lstExpandSpellCategories = new List<TreeNode>();
         ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
         ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
 
@@ -4045,7 +4044,6 @@ namespace Chummer
                 }
 
                 frmSelectSpell frmPickSpell = new frmSelectSpell(_objCharacter);
-                frmPickSpell.ExpandedCategories = lstExpandSpellCategories;
                 frmPickSpell.ShowDialog(this);
                 // Make sure the dialogue window was not canceled.
                 if (frmPickSpell.DialogResult == DialogResult.Cancel)
@@ -4054,8 +4052,6 @@ namespace Chummer
                     break;
                 }
                 blnAddAgain = frmPickSpell.AddAgain;
-
-                lstExpandSpellCategories = frmPickSpell.ExpandedCategories;
 
                 XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
 

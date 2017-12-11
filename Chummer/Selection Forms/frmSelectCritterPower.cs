@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -176,6 +177,15 @@ namespace Chummer
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
+
+            if (_lstCategory.Count > 0)
+            {
+                ListItem objItem = new ListItem();
+                objItem.Value = "Show All";
+                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                _lstCategory.Insert(0, objItem);
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
             cboCategory.ValueMember = "Value";
@@ -183,18 +193,6 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
             cboCategory.EndUpdate();
 
-            if (blnIsDrake)
-            {
-                foreach (ListItem objItem in cboCategory.Items)
-                {
-                    if (objItem.Value == "Drake")
-                    {
-                        cboCategory.SelectedItem = objItem;
-                        cboCategory.Enabled = false;
-                        break;
-                    }
-                }
-            }
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -337,125 +335,111 @@ namespace Chummer
 
             trePowers.Nodes.Clear();
 
-            if (cboCategory.SelectedValue.ToString() == "Toxic Critter Powers")
-            {
-                // Display the special Toxic Critter Powers.
-                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[toxic = \"yes\" and (" + _objCharacter.Options.BookXPath() + ")]"))
-                {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Tag = objXmlPower["id"].InnerText;
-                    objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-                    trePowers.Nodes.Add(objNode);
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Weakness")
-            {
-                // Display the special Toxic Critter Powers.
-                foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"Weakness\" and (" + _objCharacter.Options.BookXPath() + ")]"))
-                {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Tag = objXmlPower["id"].InnerText;
-                    objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-                    trePowers.Nodes.Add(objNode);
-                }
-            }
-            else
-            {
-                // If the Critter is only allowed certain Powers, display only those.
-                if (objXmlCritter["optionalpowers"] != null)
-                {
-                    foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("optionalpowers/power"))
-                    {
-                        XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                        TreeNode objNode = new TreeNode();
-                        objNode.Tag = objXmlPower["id"].InnerText;
-                        objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-                        trePowers.Nodes.Add(objNode);
-                    }
+            string strCategory = cboCategory.SelectedValue?.ToString();
 
-                    // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
-                    bool blnPhysicalPresence = false;
+            List<string> lstPowerWhitelist = null;
+
+            // If the Critter is only allowed certain Powers, display only those.
+            if (objXmlCritter["optionalpowers"] != null)
+            {
+                lstPowerWhitelist = objXmlCritter.SelectNodes("optionalpowers/power").Cast<XmlNode>().Select(x => x.InnerText).ToList();
+
+                // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
+                bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
+
+                // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
+                foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("powers/power"))
+                {
+                    bool blnAddPower = true;
+                    // Make sure the Critter doesn't already have the Power.
                     foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
                     {
-                        if (objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation")
+                        if (objCheckPower.Name == objXmlCritterPower.InnerText)
                         {
-                            blnPhysicalPresence = true;
+                            blnAddPower = false;
+                            break;
+                        }
+                        if ((objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation") && blnPhysicalPresence)
+                        {
+                            blnAddPower = false;
                             break;
                         }
                     }
 
-                    // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
-                    foreach (XmlNode objXmlCritterPower in objXmlCritter.SelectNodes("powers/power"))
+                    if (blnAddPower)
                     {
-                        bool blnAddPower = true;
-                        // Make sure the Critter doesn't already have the Power.
-                        foreach (CritterPower objCheckPower in _objCharacter.CritterPowers)
-                        {
-                            if (objCheckPower.Name == objXmlCritterPower.InnerText)
-                            {
-                                blnAddPower = false;
-                                break;
-                            }
-                            if ((objCheckPower.Name == "Materialization" || objCheckPower.Name == "Possession" || objCheckPower.Name == "Inhabitation") && blnPhysicalPresence)
-                            {
-                                blnAddPower = false;
-                                break;
-                            }
-                        }
+                        lstPowerWhitelist.Add(objXmlCritterPower.InnerText);
 
-                        if (blnAddPower)
+                        // If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
+                        if (!blnPhysicalPresence)
                         {
-                            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlCritterPower.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                            TreeNode objNode = new TreeNode();
-                            objNode.Tag = objXmlPower["id"].InnerText;
-                            objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-                            trePowers.Nodes.Add(objNode);
-
-                            // If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
-                            if (!blnPhysicalPresence){
-                                if (objXmlPower["name"].InnerText == "Materialization")
+                            if (objXmlCritterPower.InnerText == "Materialization")
+                            {
+                                bool blnFoundPossession = false;
+                                bool blnFoundInhabitation = false;
+                                foreach (string strCheckPower in lstPowerWhitelist)
                                 {
-                                    bool blnFoundPossession = false;
-                                    bool blnFoundInhabitation = false;
-                                    foreach (TreeNode objCheckNode in trePowers.Nodes)
-                                    {
-                                        if (objCheckNode.Tag.ToString() == "Possession")
-                                            blnFoundPossession = true;
-                                        if (objCheckNode.Tag.ToString() == "Inhabitation")
-                                            blnFoundInhabitation = true;
-                                        if (blnFoundInhabitation && blnFoundPossession)
-                                            break;
-                                    }
-                                    if (!blnFoundPossession)
-                                    {
-                                        XmlNode objXmlPossessionPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                                        TreeNode objPossessionNode = new TreeNode();
-                                        objPossessionNode.Tag = objXmlPossessionPower["name"].InnerText;
-                                        objPossessionNode.Text = objXmlPossessionPower["translate"]?.InnerText ?? objXmlPossessionPower["name"].InnerText;
-                                        trePowers.Nodes.Add(objPossessionNode);
-                                    }
-                                    if (!blnFoundInhabitation)
-                                    {
-                                        XmlNode objXmlInhabitationPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                                        TreeNode objInhabitationNode = new TreeNode();
-                                        objInhabitationNode.Tag = objXmlInhabitationPower["name"].InnerText;
-                                        objInhabitationNode.Text = objXmlInhabitationPower["translate"]?.InnerText ?? objXmlInhabitationPower["name"].InnerText;
-                                        trePowers.Nodes.Add(objInhabitationNode);
-                                    }
+                                    if (strCheckPower == "Possession")
+                                        blnFoundPossession = true;
+                                    else if (strCheckPower == "Inhabitation")
+                                        blnFoundInhabitation = true;
+                                    if (blnFoundInhabitation && blnFoundPossession)
+                                        break;
+                                }
+                                if (!blnFoundPossession)
+                                {
+                                    lstPowerWhitelist.Add("Possession");
+                                }
+                                if (!blnFoundInhabitation)
+                                {
+                                    lstPowerWhitelist.Add("Inhabitation");
                                 }
                             }
                         }
                     }
                 }
+            }
+
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
+            {
+                if (strCategory == "Toxic Critter Powers")
+                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"yes\")";
                 else
+                    strFilter += " and category = \"" + strCategory + "\"";
+            }
+            else
+            {
+                bool blnHasToxic = false;
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
                 {
-                    foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]"))
+                    if (!string.IsNullOrEmpty(strItem))
                     {
-                        TreeNode objNode = new TreeNode();
-                        objNode.Tag = objXmlPower["id"].InnerText;
-                        objNode.Text = objXmlPower["translate"]?.InnerText ?? objXmlPower["name"].InnerText;
-                        trePowers.Nodes.Add(objNode);
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                        if (strItem == "Toxic Critter Powers")
+                        {
+                            objCategoryFilter.Append("toxic = \"yes\" or ");
+                            blnHasToxic = true;
+                        }
                     }
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                }
+                if (!blnHasToxic)
+                    strFilter += " and (not(toxic) or toxic != \"yes\")";
+            }
+            foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]"))
+            {
+                string strPowerName = objXmlPower["name"].InnerText;
+                if (lstPowerWhitelist?.Contains(strPowerName) != false)
+                {
+                    TreeNode objNode = new TreeNode();
+                    objNode.Tag = objXmlPower["id"].InnerText;
+                    objNode.Text = objXmlPower["translate"]?.InnerText ?? strPowerName;
+                    trePowers.Nodes.Add(objNode);
                 }
             }
             trePowers.Sort();
@@ -484,7 +468,7 @@ namespace Chummer
 
             if (nudCritterPowerRating.Enabled)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
-            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            _strSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = trePowers.SelectedNode.Tag.ToString();
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.

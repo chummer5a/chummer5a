@@ -100,83 +100,82 @@ namespace Chummer
             strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
             strMount += "mount = \"\"";
             XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
-            if (objXmlAccessoryList != null)
-                foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
+            foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
+            {
+                if (objXmlAccessory.InnerXml.Contains("<extramount>"))
                 {
-                    if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                    if (strAllowed.Length > 1)
                     {
-                        if (strAllowed.Length > 1)
+                        foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
                         {
-                            foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
+                            if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
                             {
-                                if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
-                                {
-                                    goto NextItem;
-                                }
+                                goto NextItem;
                             }
                         }
                     }
-
-                    if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-                    if (objXmlAccessory["required"]?["weapondetails"] != null)
-                    {
-                        // Assumes topmost parent is an AND node
-                        if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlAccessory["forbidden"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlForbiddenList)
-                        {
-                            objForbiddenAccessory.Add(node.InnerText);
-                        }
-
-                        if (_lstAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (objXmlAccessory["required"]?["oneof"] != null)
-                    {
-                        XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
-                        //Add to set for O(N log M) runtime instead of O(N * M)
-
-                        HashSet<string> objRequiredAccessory = new HashSet<string>();
-                        foreach (XmlNode node in objXmlRequiredList)
-                        {
-                            objRequiredAccessory.Add(node.InnerText);
-                        }
-
-                        if (!_lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
-                    {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlAccessory["name"]?.InnerText;
-                        objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
-                        lstAccessories.Add(objItem);
-                    }
-                    NextItem:;
                 }
+
+                if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
+                    {
+                        continue;
+                    }
+                }
+                if (objXmlAccessory["required"]?["weapondetails"] != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
+                    {
+                        continue;
+                    }
+                }
+
+                if (objXmlAccessory["forbidden"]?["oneof"] != null)
+                {
+                    XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
+                    //Add to set for O(N log M) runtime instead of O(N * M)
+
+                    HashSet<string> objForbiddenAccessory = new HashSet<string>();
+                    foreach (XmlNode node in objXmlForbiddenList)
+                    {
+                        objForbiddenAccessory.Add(node.InnerText);
+                    }
+
+                    if (_lstAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                    {
+                        continue;
+                    }
+                }
+
+                if (objXmlAccessory["required"]?["oneof"] != null)
+                {
+                    XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
+                    //Add to set for O(N log M) runtime instead of O(N * M)
+
+                    HashSet<string> objRequiredAccessory = new HashSet<string>();
+                    foreach (XmlNode node in objXmlRequiredList)
+                    {
+                        objRequiredAccessory.Add(node.InnerText);
+                    }
+
+                    if (!_lstAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                    {
+                        continue;
+                    }
+                }
+
+                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
+                {
+                    ListItem objItem = new ListItem();
+                    objItem.Value = objXmlAccessory["name"]?.InnerText;
+                    objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
+                    lstAccessories.Add(objItem);
+                }
+                NextItem:;
+            }
 
             SortListItem objSort = new SortListItem();
             lstAccessories.Sort(objSort.Compare);

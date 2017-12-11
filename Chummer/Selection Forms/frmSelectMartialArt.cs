@@ -54,14 +54,16 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            XmlNodeList objArtList;
+            XmlNodeList objArtList = null;
             List<ListItem> lstMartialArt = new List<ListItem>();
 
             // Populate the Martial Arts list.
-            if (string.IsNullOrEmpty(_strForcedValue))
-                objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
-            else
+            if (!string.IsNullOrEmpty(_strForcedValue))
+            {
                 objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[name = \"" + _strForcedValue + "\"]");
+            }
+            if (objArtList == null || objArtList.Count == 0)
+                objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlArt in objArtList)
             {
                 XmlNode objXmlQuality = objXmlArt["quality"];
