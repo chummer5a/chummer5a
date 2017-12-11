@@ -9,6 +9,7 @@ Application Changes:
 - Chummer5 will no longer do spooky things if it cannot find an item tied to a particular forced value for a selection screen.
 - Lifestyle dropdown boxes will now only be populated by items that abide by the character's enabled sourcebook list (so e.g. Commercial lifestyle will not show up if Run Faster is not enabled).
 - When selecting critter powers for someone who can have optional critter powers, the displayed powers will now properly be filtered by the category selected in the category dropdown box.
+- Fixed a crash that occured when an expense was undone or when a character file got an update outside of Chummer and the "live updates from character file" option was enabled.
 
 Build 196
 

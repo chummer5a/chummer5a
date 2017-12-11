@@ -12087,7 +12087,13 @@ namespace Chummer
             PopulateCalendar();
 
             // Populate Armor.
-            treArmor.Nodes.Clear();
+            for (int i = treArmor.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treArmor.Nodes[i].Remove();
+                else
+                    treArmor.Nodes[i].Nodes.Clear();
+            }
             // Start by populating Locations.
             foreach (string strLocation in _objCharacter.ArmorLocations)
             {
@@ -12103,7 +12109,13 @@ namespace Chummer
             }
 
             // Populate Weapons.
-            treWeapons.Nodes.Clear();
+            for (int i = treWeapons.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treWeapons.Nodes[i].Remove();
+                else
+                    treWeapons.Nodes[i].Nodes.Clear();
+            }
             // Start by populating Locations.
             foreach (string strLocation in _objCharacter.WeaponLocations)
             {
@@ -12127,7 +12139,13 @@ namespace Chummer
             CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
 
             // Populate Vehicles.
-            treVehicles.Nodes.Clear();
+            for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treVehicles.Nodes[i].Remove();
+                else
+                    treVehicles.Nodes[i].Nodes.Clear();
+            }
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
                 CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
@@ -18825,7 +18843,13 @@ namespace Chummer
             PopulateExpenseList();
 
             // Populate Armor.
-            treArmor.Nodes.Clear();
+            for (int i = treArmor.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treArmor.Nodes[i].Remove();
+                else
+                    treArmor.Nodes[i].Nodes.Clear();
+            }
             // Start by populating Locations.
             foreach (string strLocation in _objCharacter.ArmorLocations)
             {
@@ -18839,9 +18863,15 @@ namespace Chummer
             {
                 CommonFunctions.CreateArmorTreeNode(objArmor, treArmor, cmsArmor, cmsArmorMod, cmsArmorGear);
             }
-
+            
             // Populate Weapons.
-            treWeapons.Nodes.Clear();
+            for (int i = treWeapons.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treWeapons.Nodes[i].Remove();
+                else
+                    treWeapons.Nodes[i].Nodes.Clear();
+            }
             // Start by populating Locations.
             foreach (string strLocation in _objCharacter.WeaponLocations)
             {
@@ -18865,7 +18895,13 @@ namespace Chummer
             CommonFunctions.PopulateFocusList(_objCharacter, treFoci);
 
             // Populate Vehicles.
-            treVehicles.Nodes.Clear();
+            for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
+            {
+                if (i != 0)
+                    treVehicles.Nodes[i].Remove();
+                else
+                    treVehicles.Nodes[i].Nodes.Clear();
+            }
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
                 CommonFunctions.CreateVehicleTreeNode(objVehicle, treVehicles, cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount);
