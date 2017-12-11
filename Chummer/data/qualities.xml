@@ -10553,7 +10553,46 @@
       <page>46</page>
     </quality>
     <!-- End Region -->
-    <!--Region Data Trails Negative Qualities -->
+	<!-- Region Dark Terrors Negetive Qualities -->
+	<!quality>
+	  <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
+	  <name>Wildcard Chimera</name>
+	  <karma>Verys</karma>
+	<!/quality>
+	<quality>
+	  <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
+	  <name>It works if you work it</name>
+	  <karma>-5</karma>
+	  <category>Positive</category>
+	  <bonus />
+	  <metagenetic>true</metagenetic>
+	  <source>DTR</source>
+	  <page>164</page>
+	</quality>
+	<quality>
+	  <id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
+	  <name>Soul Swallower</name>
+	  <karma>-7</karma>
+	  <category>Positive</category>
+	  <bonus />
+	  <metagenetic>true</metagenetic>
+	  <source>DTR</source>
+	  <page>164</page>
+	  </quality>
+	<quality>
+	  <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
+	  <name>Metaviral Attunement</karma>
+	  <karma>-5</karma>
+	  <category>Positive</category>
+	  <bonus>
+	    <selecttext />
+	  </bonus>
+	  <metagenetic>true</metagenetic>
+	  <source>DTR</source>
+	  <page>164</page>
+	</quality>
+	<!-- End Region -->
+    <!-- Region Data Trails Negative Qualities -->
     <quality>
       <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
       <name>Code of Honor: Like a Boss</name>
