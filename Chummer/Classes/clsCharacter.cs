@@ -3158,6 +3158,15 @@ namespace Chummer
                         }
                     }
                     break;
+                case Improvement.ImprovementSource.MentorSpirit:
+                    foreach (MentorSpirit objMentorSpirit in _lstMentorSpirits)
+                    {
+                        if (objMentorSpirit.InternalId == objImprovement.SourceName)
+                        {
+                            return objMentorSpirit.DisplayName;
+                        }
+                    }
+                    break;
                 default:
                     if (objImprovement.SourceName == "Armor Encumbrance")
                         return LanguageManager.GetString("String_ArmorEncumbrance");

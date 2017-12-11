@@ -13,6 +13,7 @@ Application Changes:
 - Fixed a crash when adding PACKS kits containing vehicles. Fixes #2155.
 - Fixed an issue with the Notes sheet not loading under fr-FR localization.
 - Fixed a bug where knowledge skill specializations bought with points under Point Buy or Life Modules would still deduct karma from the character.
+- Fixed a bug where skill pool tooltips and other texts that fetch the names of bonus sources would not fetch the name of Mentor Spirits.
 
 Build 196
 
