@@ -9909,7 +9909,7 @@ namespace Chummer
         private void cmsVehicleAmmoSingleShot_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
@@ -9929,7 +9929,7 @@ namespace Chummer
         private void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
@@ -10011,7 +10011,7 @@ namespace Chummer
         private void cmsVehicleAmmoFullBurst_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
@@ -10038,7 +10038,7 @@ namespace Chummer
         private void cmsVehicleAmmoSuppressiveFire_Click(object sender, EventArgs e)
         {
             // Locate the selected Vehicle Weapon.
-            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
+            Weapon objWeapon = CommonFunctions.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
             if (objWeapon == null || objWeapon.AmmoRemaining == 0)
             {
