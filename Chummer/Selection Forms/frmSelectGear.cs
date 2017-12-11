@@ -1098,7 +1098,7 @@ namespace Chummer
             else if (_blnShowPositiveCapacityOnly)
                 strFilter += " and not(contains(capacity, \"[\"))";
             else
-                strFilter += " and contains(capacity, \"[\")]";
+                strFilter += " and contains(capacity, \"[\")";
             if (_objParentNode == null)
                 strFilter += " and not(requireparent)";
 
