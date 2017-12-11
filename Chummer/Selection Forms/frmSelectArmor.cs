@@ -504,16 +504,20 @@ namespace Chummer
                             objItem.Value = objXmlArmor["id"]?.InnerText;
                             objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
 
-                            if (objXmlArmor["category"] != null)
+                            if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                             {
-                                ListItem objFoundItem =
-                                    _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
-                                if (objFoundItem != null)
+                                if (objXmlArmor["category"] != null)
                                 {
-                                    objItem.Name += " [" + objFoundItem.Name + "]";
+                                    ListItem objFoundItem =
+                                        _lstCategory.Find(objFind => objFind.Value == objXmlArmor["category"].InnerText);
+                                    if (objFoundItem != null)
+                                    {
+                                        objItem.Name += " [" + objFoundItem.Name + "]";
+                                    }
                                 }
-                                lstArmors.Add(objItem);
                             }
+
+                            lstArmors.Add(objItem);
                         }
                     }
                     SortListItem objSort = new SortListItem();
