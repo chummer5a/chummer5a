@@ -4918,7 +4918,7 @@ namespace Chummer
             }
         }
 
-        private bool PickVehicle(TreeNode n)
+        private bool AddVehicle(TreeNode n)
         {
             frmSelectVehicle frmPickVehicle = new frmSelectVehicle(_objCharacter);
             frmPickVehicle.ShowDialog(this);
@@ -4998,11 +4998,10 @@ namespace Chummer
 
         private void cmdAddVehicle_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickVehicle(objSelectedNode);
+                blnAddAgain = AddVehicle(treVehicles.Nodes[0]);
             }
             while (blnAddAgain);
         }
@@ -25808,7 +25807,7 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickVehicle(objSelectedNode);
+                blnAddAgain = AddVehicle(objSelectedNode);
             }
             while (blnAddAgain);
         }
