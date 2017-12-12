@@ -652,6 +652,10 @@ namespace Chummer.Backend.Equipment
 		{
 			get
 			{
+			    if (IncludedInVehicle)
+			    {
+			        return 0;
+			    }
 				return OwnCost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost);
 			}
 		}
@@ -716,7 +720,8 @@ namespace Chummer.Backend.Equipment
                 return XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _guiID.ToString() + "\"]");
             }
         }
-        #endregion
+
+	    #endregion
     }
 
     public class WeaponMountOption

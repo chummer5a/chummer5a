@@ -6964,6 +6964,8 @@ namespace Chummer
 
             if (frmPickVehicleMod.DialogResult != DialogResult.Cancel)
             {
+                if (frmPickVehicleMod.FreeCost)
+                    frmPickVehicleMod.WeaponMount.Cost = "0";
                 v.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
                 TreeNode node = new TreeNode();
                 foreach (TreeNode t in treVehicles.SelectedNode.Nodes)

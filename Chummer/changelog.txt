@@ -17,6 +17,8 @@ Application Changes:
 - Fixed a crash when attempting to fire Vehicle Weapons.
 - Fixed calculation of armour to properly account for armour with override values (ie High Fashion Armour Clothing).
 - Fixed a crash when attempting to add a specialization to a custom knowledge skill in career mode. Fixes #2156.
+- Fixed standard weapon mounts accidentally adding their costs to their parent's total cost. 
+- Added Free and Markup checkboxes to the weapon mount creator for use in Career mode.
 - Completely merged the Commlink and Gear classes. Matrix stats now function independently of whether or not a gear can form a persona, and only gears that can form personas will now show up in commlink sections. This should also fix Persona Firmware not being required to allow a gear to be marked as an active commlink. Fixes #2158.
 - Gear no longer adds its children's Matrix attributes to its own. Instead, separate stats are kept track of for Matrix attribute modifiers.
 
