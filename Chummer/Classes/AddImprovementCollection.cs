@@ -2885,6 +2885,7 @@ namespace Chummer.Classes
             Log.Info("selectmentorspirit");
             Log.Info("selectmentorspirit = " + bonusNode.OuterXml);
             frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter);
+            frmPickMentorSpirit.ForcedMentor = ForcedValue;
             frmPickMentorSpirit.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -2907,7 +2908,7 @@ namespace Chummer.Classes
             string strForce = ForcedValue;
             MentorSpirit objMentor = new MentorSpirit(_objCharacter);
             _objCharacter.MentorSpirits.Add(objMentor);
-            objMentor.Create(mentorDoc, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
+            objMentor.Create(mentorDoc, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.Choice1BonusNode, frmPickMentorSpirit.Choice2BonusNode, string.Empty, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2, frmPickMentorSpirit.MentorsMask);
 
             ForcedValue = strForce;
             SelectedValue = strHoldValue;

@@ -23,6 +23,7 @@ Application Changes:
 - Gear no longer adds its children's Matrix attributes to its own. Instead, separate stats are kept track of for Matrix attribute modifiers.
 - Quantities of gear entries that begin with "Nuyen" will now follow the decimal formatting of nuyen cost formatting. Fixes #2157.
 - The updater's install code will now attempt to handle files that are currently in use and then abort with a warning if it does not succeed instead of crashing. Fixes #2165.
+- Fixed an issue with reapplying improvements for Mentor Spirits who have an "all" bonus where choices are required. Fixes #2153.
 
 Build 196
 

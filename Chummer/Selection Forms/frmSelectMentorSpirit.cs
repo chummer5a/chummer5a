@@ -30,6 +30,7 @@ namespace Chummer
         private XmlNode _nodChoice1Bonus;
         private XmlNode _nodChoice2Bonus;
         private string _strXmlFile = "mentors.xml";
+        private string _strForceMentor = string.Empty;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
@@ -76,6 +77,16 @@ namespace Chummer
             lstMentor.DisplayMember = "Name";
             lstMentor.DataSource = lstMentors;
             lstMentor.EndUpdate();
+
+            if (!string.IsNullOrEmpty(_strForceMentor))
+            {
+                int intForceMentorIndex = lstMentor.FindStringExact(_strForceMentor);
+                if (intForceMentorIndex != -1)
+                {
+                    lstMentor.SelectedIndex = intForceMentorIndex;
+                    lstMentor.Enabled = false;
+                }
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -191,6 +202,17 @@ namespace Chummer
             set
             {
                 _strXmlFile = value;
+            }
+        }
+
+        /// <summary>
+        /// Forced selection for mentor spirit
+        /// </summary>
+        public string ForcedMentor
+        {
+            set
+            {
+                _strForceMentor = value;
             }
         }
 
