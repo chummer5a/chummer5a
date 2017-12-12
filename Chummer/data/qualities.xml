@@ -10554,18 +10554,31 @@
     </quality>
     <!-- End Region -->
 	<!-- Region Dark Terrors Negetive Qualities -->
-	<!quality>
+	<quality>
 	  <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
 	  <name>Wildcard Chimera</name>
-	  <karma>Verys</karma>
-	<!/quality>
+	  <karma>Variable(0-30)</karma>
+	  <category>Positive</category>
+	  <bonus>
+	  <optionalpowers>
+	    <optionalpower select>Third Eye</optionalpower>
+		<optionalpower select>Scent Glands</optionalpower>
+		<optionalpower select>Scales</optionalpower>
+		<optionalpower select>Critter Spook</optionalpower>
+		<optionalpower select>Cold-Blooded</optionalpower>
+		<optionalpower select>Bioluminescence</optionalpower>
+		<optionalpower select>Cyclopean Eye</optionalpower>
+		<optionalpower select>Berserker</optionalpower>
+		<optionalpower select>Astral Hazing (Awakened)</optionalpower>
+		<optionalpower select>Impaired Mental Atribute</optionalpower>
+	  </optionalpowers>
+	</quality>
 	<quality>
 	  <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
 	  <name>It works if you work it</name>
 	  <karma>-5</karma>
 	  <category>Positive</category>
 	  <bonus />
-	  <metagenetic>true</metagenetic>
 	  <source>DTR</source>
 	  <page>164</page>
 	</quality>
@@ -10575,7 +10588,6 @@
 	  <karma>-7</karma>
 	  <category>Positive</category>
 	  <bonus />
-	  <metagenetic>true</metagenetic>
 	  <source>DTR</source>
 	  <page>164</page>
 	  </quality>
@@ -10587,7 +10599,6 @@
 	  <bonus>
 	    <selecttext />
 	  </bonus>
-	  <metagenetic>true</metagenetic>
 	  <source>DTR</source>
 	  <page>164</page>
 	</quality>
