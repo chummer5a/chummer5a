@@ -505,29 +505,16 @@ namespace Chummer.Backend.Equipment
                         strChildForceSource = objXmlChild["source"].InnerText;
                     if (objXmlChild["page"] != null)
                         strChildForcePage = objXmlChild["page"].InnerText;
-                    Gear objChild = null;
                     // Create the new piece of Gear.
                     TreeNode objChildNode = new TreeNode();
                     List<Weapon> objChildWeapons = new List<Weapon>();
                     List<TreeNode> objChildWeaponNodes = new List<TreeNode>();
-                    if (!string.IsNullOrEmpty(objXmlChild["devicerating"]?.InnerText))
-                    {
-                        Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Create(objXmlGear, objChildNode, intChildRating, blnCreateImprovements, true, strChildForceValue);
-                        objCommlink.Quantity = decChildQty;
-                        objChildNode.Text = objCommlink.DisplayName;
 
-                        objChild = objCommlink;
-                    }
-                    else
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear.Create(objXmlGear, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue, false, false, blnCreateImprovements);
-                        objGear.Quantity = decChildQty;
-                        objChildNode.Text = objGear.DisplayName;
+                    Gear objChild = new Gear(_objCharacter);
+                    objChild.Create(objXmlGear, objChildNode, intChildRating, objChildWeapons, objChildWeaponNodes, strChildForceValue, false, false, blnCreateImprovements);
+                    objChild.Quantity = decChildQty;
+                    objChildNode.Text = objChild.DisplayName;
 
-                        objChild = objGear;
-                    }
                     objChild.Cost = "0";
                     objChild.ParentID = InternalId;
                     if (!string.IsNullOrEmpty(strChildForceSource))
@@ -623,17 +610,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in _lstGear)
                 {
-                    // Use the Gear's SubClass if applicable.
-                    if (objGear.GetType() == typeof(Commlink))
-                    {
-                        Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink = (Commlink)objGear;
-                        objCommlink.Save(objWriter);
-                    }
-                    else
-                    {
-                        objGear.Save(objWriter);
-                    }
+                    objGear.Save(objWriter);
                 }
                 objWriter.WriteEndElement();
             }
@@ -776,19 +753,9 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
                 foreach (XmlNode nodChild in nodChildren)
                 {
-                    if (nodChild["iscommlink"]?.InnerText == System.Boolean.TrueString || (nodChild["category"].InnerText == "Commlinks" ||
-                        nodChild["category"].InnerText == "Commlink Accessories" || nodChild["category"].InnerText == "Cyberdecks" || nodChild["category"].InnerText == "Rigger Command Consoles"))
-                    {
-                        Gear objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Load(nodChild, blnCopy);
-                        _lstGear.Add(objCommlink);
-                    }
-                    else
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodChild, blnCopy);
-                        _lstGear.Add(objGear);
-                    }
+                    Gear objGear = new Gear(_objCharacter);
+                    objGear.Load(nodChild, blnCopy);
+                    _lstGear.Add(objGear);
                 }
             }
 
@@ -845,16 +812,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in _lstGear)
                 {
-                    // Use the Gear's SubClass if applicable.
-                    Commlink objCommlink = objGear as Commlink;
-                    if (objCommlink != null)
-                    {
-                        objCommlink.Print(objWriter, objCulture);
-                    }
-                    else
-                    {
-                        objGear.Print(objWriter, objCulture);
-                    }
+                    objGear.Print(objWriter, objCulture);
                 }
                 objWriter.WriteEndElement();
             }

@@ -36,6 +36,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strExtra = string.Empty;
+        private string _strCanFormPersona = string.Empty;
         private bool _blnBonded = false;
         private bool _blnEquipped = true;
         private bool _blnWirelessOn = true;
@@ -61,6 +62,20 @@ namespace Chummer.Backend.Equipment
         private string _strForcedValue = string.Empty;
         private bool _blnDisableQuantity = false;
         private bool _blnAllowRename = false;
+
+        private string _strAttack = string.Empty;
+        private string _strSleaze = string.Empty;
+        private string _strDataProcessing = string.Empty;
+        private string _strFirewall = string.Empty;
+        private string _strAttributeArray = string.Empty;
+        private string _strModAttack = string.Empty;
+        private string _strModSleaze = string.Empty;
+        private string _strModDataProcessing = string.Empty;
+        private string _strModFirewall = string.Empty;
+        private string _strModAttributeArray = string.Empty;
+        private int _intPrograms = 0;
+        private string _strOverclocked = "None";
+        private bool _blnCanSwapAttributes = false;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public Gear(Character objCharacter)
@@ -110,6 +125,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlGear.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlGear.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             objXmlGear.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
@@ -376,6 +392,30 @@ namespace Chummer.Backend.Equipment
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
             _nodWeaponBonus = objXmlGear["weaponbonus"];
             objNode.Text = DisplayName;
+
+            if (!objXmlGear.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+            {
+                objXmlGear.TryGetStringFieldQuickly("attack", ref _strAttack);
+                objXmlGear.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                objXmlGear.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                objXmlGear.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            }
+            else
+            {
+                _blnCanSwapAttributes = true;
+                string[] strArray = _strAttributeArray.Split(',');
+                _strAttack = strArray[0];
+                _strSleaze = strArray[1];
+                _strDataProcessing = strArray[2];
+                _strFirewall = strArray[3];
+            }
+            objXmlGear.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            objXmlGear.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            objXmlGear.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            objXmlGear.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            objXmlGear.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            objXmlGear.TryGetInt32FieldQuickly("programs", ref _intPrograms);
         }
 
         public void CreateChildren(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Gear objParent, TreeNode objNode, bool blnHacked, bool blnAddImprovements)
@@ -541,11 +581,7 @@ namespace Chummer.Backend.Equipment
             objChildNode.ForeColor = SystemColors.GrayText;
             objChildNode.ContextMenuStrip = objNode.ContextMenuStrip;
             objParent.Children.Add(objChild);
-            Commlink objCommlink = objParent as Commlink;
-            if (objCommlink?.CanSwapAttributes == true)
-            {
-                objCommlink.RefreshCyberdeckArray();
-            }
+            RefreshCyberdeckArray();
 
             // Change the Capacity of the child if necessary.
             if (objXmlChild["capacity"] != null)
@@ -582,6 +618,7 @@ namespace Chummer.Backend.Equipment
             _strCost = objGear.Cost;
             _strSource = objGear.Source;
             _strPage = objGear.Page;
+            _strCanFormPersona = objGear.CanFormPersona;
             _blnDisableQuantity = objGear.DisableQuantity;
             _strExtra = objGear.Extra;
             _blnBonded = objGear.Bonded;
@@ -605,19 +642,26 @@ namespace Chummer.Backend.Equipment
             {
                 TreeNode objChildNode = new TreeNode();
                 Gear objChild = new Gear(_objCharacter);
-                if (objGearChild.GetType() == typeof(Commlink))
-                {
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink.Copy(objGearChild, objChildNode, objWeapons, objWeaponNodes);
-                    objChild = objCommlink;
-                }
-                else
-                    objChild.Copy(objGearChild, objChildNode, objWeapons, objWeaponNodes);
+                objChild.Copy(objGearChild, objChildNode, objWeapons, objWeaponNodes);
                 _objChildren.Add(objChild);
 
                 objNode.Nodes.Add(objChildNode);
                 objNode.Expand();
             }
+
+            _strOverclocked = objGear.Overclocked;
+            _strAttack = objGear.Attack;
+            _strSleaze = objGear.Sleaze;
+            _strDataProcessing = objGear.DataProcessing;
+            _strFirewall = objGear.Firewall;
+            _strAttributeArray = objGear.AttributeArray;
+            _strModAttack = objGear.ModAttack;
+            _strModSleaze = objGear.ModSleaze;
+            _strModDataProcessing = objGear.ModDataProcessing;
+            _strModFirewall = objGear.ModFirewall;
+            _strModAttributeArray = objGear.ModAttributeArray;
+            IsActive = objGear.IsActive;
+            HomeNode = objGear.HomeNode;
         }
 
         /// <summary>
@@ -667,6 +711,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw("<weaponbonus>" + _nodWeaponBonus.InnerXml + "</weaponbonus>");
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("canformpersona", _strCanFormPersona);
             objWriter.WriteElementString("disablequantity", _blnDisableQuantity.ToString());
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
@@ -682,21 +727,27 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in _objChildren)
             {
-                // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
-                {
-                    Commlink objCommlink = objGear as Commlink;
-                    objCommlink?.Save(objWriter);
-                }
-                else
-                {
-                    objGear.Save(objWriter);
-                }
+                objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+            
+            objWriter.WriteElementString("overclocked", _strOverclocked);
+            objWriter.WriteElementString("attack", _strAttack);
+            objWriter.WriteElementString("sleaze", _strSleaze);
+            objWriter.WriteElementString("dataprocessing", _strDataProcessing);
+            objWriter.WriteElementString("firewall", _strFirewall);
+            objWriter.WriteElementString("attributearray", _strAttributeArray);
+            objWriter.WriteElementString("modattack", _strModAttack);
+            objWriter.WriteElementString("modsleaze", _strModSleaze);
+            objWriter.WriteElementString("moddataprocessing", _strModDataProcessing);
+            objWriter.WriteElementString("modfirewall", _strModFirewall);
+            objWriter.WriteElementString("modattributearray", _strModAttributeArray);
+            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
+            objWriter.WriteElementString("active", IsActive.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
         }
 
         /// <summary>
@@ -766,8 +817,10 @@ namespace Chummer.Backend.Equipment
             _nodWeaponBonus = objNode["weaponbonus"];
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             objNode.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
-            objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
+                MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             string strWeaponID = string.Empty;
             if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID))
             {
@@ -798,13 +851,6 @@ namespace Chummer.Backend.Equipment
                 {
                     Gear objGear = new Gear(_objCharacter);
                     objGear.Load(nodChild, blnCopy);
-
-                    if (objGear.MyXmlNode?["devicerating"] != null)
-                    {
-                        Commlink objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Load(nodChild, blnCopy);
-                        objGear = objCommlink;
-                    }
                     objGear.Parent = this;
                     _objChildren.Add(objGear);
                 }
@@ -878,6 +924,90 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
+            if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("attack", ref _strAttack);
+            if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+            if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+            if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+            bool blnIsActive = false;
+            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                IsActive = true;
+            if (blnCopy)
+            {
+                HomeNode = false;
+            }
+            else
+            {
+                bool blnIsHomeNode = false;
+                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                {
+                    HomeNode = true;
+                }
+            }
+            if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
+            {
+                // Legacy shim
+                if (Category == "Cyberdecks")
+                {
+                    _blnCanSwapAttributes = (Name != "MCT Trainee" && Name != "C-K Analyst" && Name != "Aztechnology Emissary" &&
+                        Name != "Yak Killer" && Name != "Ring of Light Special" && Name != "Ares Echo Unlimited");
+                }
+            }
+
+            if (blnNeedCommlinkLegacyShim)
+            {
+                if (_strDeviceRating == "0")
+                {
+                    _strModAttack = _strAttack;
+                    _strModSleaze = _strSleaze;
+                    _strModDataProcessing = _strDataProcessing;
+                    _strModFirewall = _strFirewall;
+                    if (MyXmlNode != null)
+                    {
+                        _strAttack = string.Empty;
+                        MyXmlNode.TryGetStringFieldQuickly("attack", ref _strAttack);
+                        _strSleaze = string.Empty;
+                        MyXmlNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                        _strDataProcessing = string.Empty;
+                        MyXmlNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                        _strFirewall = string.Empty;
+                        MyXmlNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                    }
+                }
+                MyXmlNode?.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
+                bool blnIsCommlinkLegacy = false;
+                objNode.TryGetBoolFieldQuickly("iscommlink", ref blnIsCommlinkLegacy);
+                // This is Commlink Functionality, which originally had Persona Firmware that would now make the Commlink Functionality item count as a commlink
+                if (blnIsCommlinkLegacy != IsCommlink)
+                {
+                    for (int i = Children.Count - 1; i >= 0; --i)
+                    {
+                        Gear objLoopChild = Children[i];
+                        if (objLoopChild.ParentID == InternalId && objLoopChild.CanFormPersona == "Parent")
+                            Children.RemoveAt(i);
+                    }
+                }
+            }
+
+            RefreshCyberdeckArray();
+
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
@@ -898,7 +1028,7 @@ namespace Chummer.Backend.Equipment
         /// Core code to Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void PrintInner(XmlTextWriter objWriter, CultureInfo objCulture, bool blnIsCommlink = false)
+        public void PrintInner(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
             {
@@ -909,7 +1039,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
-            objWriter.WriteElementString("iscommlink", blnIsCommlink.ToString());
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
             objWriter.WriteElementString("ispersona", (Name == "Living Persona").ToString());
             //objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
             objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
@@ -941,16 +1071,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in _objChildren)
             {
-                // Use the Gear's SubClass if applicable.
-                Commlink objCommlink = objGear as Commlink;
-                if (objCommlink != null)
-                {
-                    objCommlink.Print(objWriter, objCulture);
-                }
-                else
-                {
-                    objGear.Print(objWriter, objCulture);
-                }
+                objGear.Print(objWriter, objCulture);
             }
             objWriter.WriteEndElement();
             if (_nodWeaponBonus != null)
@@ -961,6 +1082,15 @@ namespace Chummer.Backend.Equipment
             }
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
+
+            objWriter.WriteElementString("attack", GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString(objCulture));
+            objWriter.WriteElementString("active", IsActive.ToString());
+            objWriter.WriteElementString("homenode", HomeNode.ToString());
         }
 
         /// <summary>
@@ -1395,6 +1525,29 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// String to determine if gear can form persona or grants persona forming to its parent.
+        /// </summary>
+        public string CanFormPersona
+        {
+            get
+            {
+                return _strCanFormPersona;
+            }
+            set
+            {
+                _strCanFormPersona = value;
+            }
+        }
+
+        public bool IsCommlink
+        {
+            get
+            {
+                return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
+            }
+        }
+
+        /// <summary>
         /// Whether to disable the ability to get more of a particular gear.
         /// </summary>
         public bool DisableQuantity
@@ -1457,23 +1610,27 @@ namespace Chummer.Backend.Equipment
 
         public string GetMatrixAttributeString(string strAttributeName)
         {
-            Commlink objThis = this as Commlink;
-            if (objThis != null)
+            switch (strAttributeName)
             {
-                switch (strAttributeName)
-                {
-                    case "Attack":
-                        return objThis.Attack;
-                    case "Sleaze":
-                        return objThis.Sleaze;
-                    case "Data Processing":
-                        return objThis.DataProcessing;
-                    case "Firewall":
-                        return objThis.Firewall;
-                }
+                case "Attack":
+                    return Attack;
+                case "Sleaze":
+                    return Sleaze;
+                case "Data Processing":
+                    return DataProcessing;
+                case "Firewall":
+                    return Firewall;
+                case "Mod Attack":
+                    return ModAttack;
+                case "Mod Sleaze":
+                    return ModSleaze;
+                case "Mod Data Processing":
+                    return ModDataProcessing;
+                case "Mod Firewall":
+                    return ModFirewall;
+                case "Device Rating":
+                    return DeviceRating;
             }
-            if (strAttributeName == "Device Rating")
-                return DeviceRating;
             return string.Empty;
         }
 
@@ -1486,7 +1643,27 @@ namespace Chummer.Backend.Equipment
         {
             string strExpression = GetMatrixAttributeString(strAttributeName);
             if (string.IsNullOrEmpty(strExpression))
-                return 0;
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        if (IsCommlink)
+                            strExpression = "2";
+                        else
+                            return 0;
+                        break;
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            return 0;
+                        break;
+                    case "Attack":
+                    case "Sleaze":
+                    default:
+                        return 0;
+                }
+            }
 
             if (strExpression.StartsWith("FixedValues"))
             {
@@ -1496,14 +1673,12 @@ namespace Chummer.Backend.Equipment
             }
             if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
             {
-                Commlink objParent = Parent as Commlink;
-
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 foreach (string strMatrixAttribute in MatrixAttributeStrings)
                 {
-                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => (objParent != null ? objParent.GetBaseMatrixAttribute(strMatrixAttribute) : 0).ToString(GlobalOptions.InvariantCultureInfo));
-                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => (objParent != null ? objParent.GetMatrixAttributeString(strMatrixAttribute) : "0"));
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
                     if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                     {
                         int intTotalChildrenValue = 0;
@@ -1511,9 +1686,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (loopGear.Equipped)
                             {
-                                Commlink objLoopCommlink = loopGear as Commlink;
-                                if (objLoopCommlink != null)
-                                    intTotalChildrenValue += objLoopCommlink.GetBaseMatrixAttribute(strMatrixAttribute);
+                                intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
                             }
                         }
                         objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1539,20 +1712,20 @@ namespace Chummer.Backend.Equipment
         {
             int intReturn = 0;
 
+            if (_objCharacter.Overclocker && Overclocked == strAttributeName)
+            {
+                intReturn += 1;
+            }
+
+            if (!strAttributeName.StartsWith("Mod "))
+                strAttributeName = "Mod " + strAttributeName;
+
             foreach (Gear loopGear in Children)
             {
                 if (loopGear.Equipped)
                 {
-                    Commlink objCommlink = loopGear as Commlink;
-                    if (objCommlink != null)
-                        intReturn += objCommlink.GetTotalMatrixAttribute(strAttributeName);
+                    intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
                 }
-            }
-
-            Commlink objThis = this as Commlink;
-            if (objThis != null && CharacterObject.Overclocker && objThis.Overclocked == strAttributeName)
-            {
-                intReturn += 1;
             }
 
             return intReturn;
@@ -1668,6 +1841,236 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _blnDiscountCost = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not an item is an A.I.'s Home Node.
+        /// </summary>
+        public bool HomeNode
+        {
+            get
+            {
+                return _objCharacter.HomeNodeGear == this;
+            }
+            set
+            {
+                if (value)
+                {
+                    _objCharacter.HomeNodeGear = this;
+                    _objCharacter.HomeNodeVehicle = null;
+                }
+                else if (_objCharacter.HomeNodeGear == this)
+                    _objCharacter.HomeNodeGear = null;
+            }
+        }
+
+        /// <summary>
+        /// Attack.
+        /// </summary>
+        public string Attack
+        {
+            get
+            {
+                return _strAttack;
+            }
+            set
+            {
+                _strAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Sleaze.
+        /// </summary>
+        public string Sleaze
+        {
+            get
+            {
+                return _strSleaze;
+            }
+            set
+            {
+                _strSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Data Processing.
+        /// </summary>
+        public string DataProcessing
+        {
+            get
+            {
+                return _strDataProcessing;
+            }
+            set
+            {
+                _strDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Firewall.
+        /// </summary>
+        public string Firewall
+        {
+            get
+            {
+                return _strFirewall;
+            }
+            set
+            {
+                _strFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attack by this.
+        /// </summary>
+        public string ModAttack
+        {
+            get
+            {
+                return _strModAttack;
+            }
+            set
+            {
+                _strModAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Sleaze by this.
+        /// </summary>
+        public string ModSleaze
+        {
+            get
+            {
+                return _strModSleaze;
+            }
+            set
+            {
+                _strModSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Data Processing by this.
+        /// </summary>
+        public string ModDataProcessing
+        {
+            get
+            {
+                return _strModDataProcessing;
+            }
+            set
+            {
+                _strModDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Firewall by this.
+        /// </summary>
+        public string ModFirewall
+        {
+            get
+            {
+                return _strModFirewall;
+            }
+            set
+            {
+                _strModFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Cyberdeck's Attribute Array string.
+        /// </summary>
+        public string AttributeArray
+        {
+            get
+            {
+                return _strAttributeArray;
+            }
+            set
+            {
+                _strAttributeArray = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attribute Array by this.
+        /// </summary>
+        public string ModAttributeArray
+        {
+            get
+            {
+                return _strModAttributeArray;
+            }
+            set
+            {
+                _strModAttributeArray = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
+        /// </summary>
+        public bool IsActive
+        {
+            get
+            {
+                return _objCharacter.ActiveCommlink == this;
+            }
+            set
+            {
+                if (value)
+                {
+                    _objCharacter.ActiveCommlink = this;
+                }
+                else if (_objCharacter.ActiveCommlink == this)
+                {
+                    _objCharacter.ActiveCommlink = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Commlink's Processor Limit.
+        /// </summary>
+        public int ProcessorLimit
+        {
+            get
+            {
+                return GetTotalMatrixAttribute("Device Rating");
+            }
+        }
+
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        public string Overclocked
+        {
+            get
+            {
+                return _strOverclocked;
+            }
+            set
+            {
+                _strOverclocked = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this is a cyberdeck whose attributes we could swap around.
+        /// </summary>
+        public bool CanSwapAttributes
+        {
+            get
+            {
+                return _blnCanSwapAttributes;
             }
         }
 
@@ -2362,6 +2765,133 @@ namespace Chummer.Backend.Equipment
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
+        /// </summary>
+        public void RefreshCommlinkCBOs(ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
+        {
+            int intBaseAttack = GetBaseMatrixAttribute("Attack");
+            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
+            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
+            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
+            int intBonusAttack = GetBonusMatrixAttribute("Attack");
+            int intBonusSleaze = GetBonusMatrixAttribute("Sleaze");
+            int intBonusDP = GetBonusMatrixAttribute("Data Processing");
+            int intBonusFirewall = GetBonusMatrixAttribute("Firewall");
+
+            cboAttack.BeginUpdate();
+            cboSleaze.BeginUpdate();
+            cboDP.BeginUpdate();
+            cboFirewall.BeginUpdate();
+
+            cboAttack.Enabled = false;
+            cboAttack.BindingContext = new BindingContext();
+            cboAttack.ValueMember = "Value";
+            cboAttack.DisplayMember = "Name";
+            cboAttack.DataSource = new List<string>() { (intBaseAttack + intBonusAttack).ToString(), (intBaseSleaze + intBonusAttack).ToString(), (intBaseDP + intBonusAttack).ToString(), (intBaseFirewall + intBonusAttack).ToString() };
+            cboAttack.SelectedIndex = 0;
+            cboAttack.Visible = true;
+            cboAttack.Enabled = CanSwapAttributes;
+
+            cboSleaze.Enabled = false;
+            cboSleaze.BindingContext = new BindingContext();
+            cboSleaze.ValueMember = "Value";
+            cboSleaze.DisplayMember = "Name";
+            cboSleaze.DataSource = new List<string>() { (intBaseAttack + intBonusSleaze).ToString(), (intBaseSleaze + intBonusSleaze).ToString(), (intBaseDP + intBonusSleaze).ToString(), (intBaseFirewall + intBonusSleaze).ToString() };
+            cboSleaze.SelectedIndex = 1;
+            cboSleaze.Visible = true;
+            cboSleaze.Enabled = CanSwapAttributes;
+
+            cboDP.Enabled = false;
+            cboDP.BindingContext = new BindingContext();
+            cboDP.ValueMember = "Value";
+            cboDP.DisplayMember = "Name";
+            cboDP.DataSource = new List<string>() { (intBaseAttack + intBonusDP).ToString(), (intBaseSleaze + intBonusDP).ToString(), (intBaseDP + intBonusDP).ToString(), (intBaseFirewall + intBonusDP).ToString() };
+            cboDP.SelectedIndex = 2;
+            cboDP.Visible = true;
+            cboDP.Enabled = CanSwapAttributes;
+
+            cboFirewall.Enabled = false;
+            cboFirewall.BindingContext = new BindingContext();
+            cboFirewall.ValueMember = "Value";
+            cboFirewall.DisplayMember = "Name";
+            cboFirewall.DataSource = new List<string>() { (intBaseAttack + intBonusFirewall).ToString(), (intBaseSleaze + intBonusFirewall).ToString(), (intBaseDP + intBonusFirewall).ToString(), (intBaseFirewall + intBonusFirewall).ToString() };
+            cboFirewall.SelectedIndex = 3;
+            cboFirewall.Visible = true;
+            cboFirewall.Enabled = CanSwapAttributes;
+
+            cboAttack.EndUpdate();
+            cboSleaze.EndUpdate();
+            cboDP.EndUpdate();
+            cboFirewall.EndUpdate();
+        }
+
+        public void RefreshCyberdeckArray()
+        {
+            if (!CanSwapAttributes)
+                return;
+            int intBaseAttack = GetBaseMatrixAttribute("Attack");
+            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
+            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
+            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
+            List<int> lstStatsArray = new List<int>(4);
+            lstStatsArray.Add(intBaseAttack);
+            lstStatsArray.Add(intBaseSleaze);
+            lstStatsArray.Add(intBaseDP);
+            lstStatsArray.Add(intBaseFirewall);
+            lstStatsArray.Sort();
+            lstStatsArray.Reverse();
+
+            string[] strCyberdeckArray = AttributeArray.Split(',');
+            foreach (Gear objChild in Children)
+            {
+                string strLoopArrayText = objChild.ModAttributeArray;
+                if (!string.IsNullOrEmpty(strLoopArrayText))
+                {
+                    string[] strLoopArray = strLoopArrayText.Split(',');
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";
+                    }
+                }
+            }
+            for (int i = 0; i < 4; ++i)
+            {
+                if (intBaseAttack == lstStatsArray[i])
+                {
+                    _strAttack = strCyberdeckArray[i];
+                    lstStatsArray[i] = int.MinValue;
+                    break;
+                }
+            }
+            for (int i = 0; i < 4; ++i)
+            {
+                if (intBaseSleaze == lstStatsArray[i])
+                {
+                    _strSleaze = strCyberdeckArray[i];
+                    lstStatsArray[i] = int.MinValue;
+                    break;
+                }
+            }
+            for (int i = 0; i < 4; ++i)
+            {
+                if (intBaseDP == lstStatsArray[i])
+                {
+                    _strDataProcessing = strCyberdeckArray[i];
+                    lstStatsArray[i] = int.MinValue;
+                    break;
+                }
+            }
+            for (int i = 0; i < 4; ++i)
+            {
+                if (intBaseFirewall == lstStatsArray[i])
+                {
+                    _strFirewall = strCyberdeckArray[i];
+                    break;
+                }
+            }
         }
         #endregion
     }

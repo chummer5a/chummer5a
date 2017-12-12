@@ -1640,12 +1640,6 @@
       <hide />
       <gears startcollapsed="yes">
         <usegear>
-          <name>Persona Firmware</name>
-          <category>Electronic Modification</category>
-          <source>SR5</source>
-          <page>438</page>
-        </usegear>
-        <usegear>
           <name select="Music Player">Custom Item</name>
           <category>Custom</category>
           <source>SR5</source>
@@ -1720,6 +1714,7 @@
       <dataprocessing>{LOG}</dataprocessing>
       <firewall>{WIL}</firewall>
       <addoncategory>Custom</addoncategory>
+      <canformpersona>Self</canformpersona>
       <hide />
     </gear>
     <gear>
@@ -1739,6 +1734,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1760,6 +1756,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1781,6 +1778,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1802,6 +1800,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1823,6 +1822,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1844,6 +1844,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1865,6 +1866,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1886,6 +1888,7 @@
       <devicerating>7</devicerating>
       <dataprocessing>7</dataprocessing>
       <firewall>7</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1907,6 +1910,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1967,6 +1971,7 @@
       <devicerating>1</devicerating>
       <attributearray>4,3,2,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -1995,6 +2000,7 @@
       <devicerating>1</devicerating>
       <attributearray>4,3,3,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2023,6 +2029,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,3,2</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2051,6 +2058,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,4,2</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2079,6 +2087,7 @@
       <devicerating>3</devicerating>
       <attributearray>6,5,4,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2107,6 +2116,7 @@
       <devicerating>3</devicerating>
       <attributearray>6,5,5,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2135,6 +2145,7 @@
       <devicerating>4</devicerating>
       <attributearray>7,6,5,4</attributearray>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2163,6 +2174,7 @@
       <devicerating>5</devicerating>
       <attributearray>8,7,6,5</attributearray>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2191,6 +2203,7 @@
       <devicerating>6</devicerating>
       <attributearray>9,8,7,6</attributearray>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2220,6 +2233,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2241,6 +2255,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2262,6 +2277,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2283,6 +2299,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2304,6 +2321,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2325,6 +2343,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2346,6 +2365,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2367,6 +2387,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2388,6 +2409,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2409,6 +2431,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2430,6 +2453,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2451,6 +2475,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2472,6 +2497,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2493,6 +2519,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2514,6 +2541,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2535,6 +2563,7 @@
       <devicerating>7</devicerating>
       <dataprocessing>7</dataprocessing>
       <firewall>7</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2557,6 +2586,7 @@
       <sleaze>5</sleaze>
       <dataprocessing>1</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Lunchbox">Commlink Form Factor, Non-Standard</name>
@@ -2588,6 +2618,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Bracelet">Commlink Form Factor, Non-Standard</name>
@@ -2613,6 +2644,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Agent</name>
@@ -2639,6 +2671,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Agent</name>
@@ -2673,6 +2706,7 @@
       <dataprocessing>1</dataprocessing>
       <firewall>2</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Biofeedback Filter</name>
@@ -2705,6 +2739,7 @@
       <devicerating>1</devicerating>
       <attributearray>2,2,1,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2736,6 +2771,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>3</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Edit</name>
@@ -2768,6 +2804,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,1,1</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2799,6 +2836,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>8</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2827,6 +2865,7 @@
       <devicerating>3</devicerating>
       <attributearray>7,5,3,1</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2858,6 +2897,7 @@
       <dataprocessing>2</dataprocessing>
       <firewall>3</firewall>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2889,6 +2929,7 @@
       <dataprocessing>2</dataprocessing>
       <firewall>6</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2917,6 +2958,7 @@
       <devicerating>4</devicerating>
       <attributearray>8,6,4,2</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2945,6 +2987,7 @@
       <devicerating>4</devicerating>
       <attributearray>8,5,4,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2976,6 +3019,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>5</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3004,6 +3048,7 @@
       <devicerating>6</devicerating>
       <attributearray>9,9,8,8</attributearray>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3032,6 +3077,7 @@
       <devicerating>5</devicerating>
       <attributearray>8,7,7,5</attributearray>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3253,6 +3299,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
       <hide />
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3274,6 +3321,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
       <hide />
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3295,6 +3343,7 @@
       <cost>800</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Urban Brawl News">Datasoft</name>
@@ -3320,6 +3369,7 @@
       <cost>2500</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Wristband">Commlink Form Factor, Non-Standard</name>
@@ -3357,6 +3407,7 @@
       <cost>5000</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3375,6 +3426,7 @@
       <programs>3</programs>
       <avail>10R</avail>
       <cost>210000</cost>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3409,6 +3461,7 @@
       <programs>4</programs>
       <avail>12R</avail>
       <cost>285000</cost>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3448,6 +3501,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>2</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3469,6 +3523,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3490,6 +3545,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3511,6 +3567,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>4</firewall>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3532,6 +3589,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>5</firewall>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3553,6 +3611,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>4</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3574,6 +3633,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>6</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3596,6 +3656,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>6</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3617,6 +3678,7 @@
       <dataprocessing>6</dataprocessing>
       <firewall>5</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3638,6 +3700,7 @@
       <dataprocessing>7</dataprocessing>
       <firewall>6</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3659,6 +3722,7 @@
       <dataprocessing>8</dataprocessing>
       <firewall>7</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4762,6 +4826,7 @@
       <cost>10</cost>
       <costfor>10</costfor>
       <devicerating>3</devicerating>
+      <sleaze>3</sleaze>
     </gear>
     <!-- End Region -->
     <!-- Region ECCM-->
@@ -4775,6 +4840,7 @@
       <avail>(Rating)R</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 100</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>8f351e25-d734-4bd0-86da-80b68a4cae68</id>
@@ -4795,6 +4861,7 @@
       <page>441</page>
       <avail>(Rating)R</avail>
       <cost>Rating * 150</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>6576cfa9-f2f5-4624-bbde-60a8f3f13785</id>
@@ -4806,6 +4873,7 @@
       <avail>(Rating * 3)F</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 200</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>f47ee634-8f59-43c5-8502-32e447f03980</id>
@@ -4817,6 +4885,7 @@
       <avail>(Rating * 2)F</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 200</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>d1fca845-ae01-4b39-a176-1506da699e0e</id>
@@ -5235,6 +5304,7 @@
       <addoncategory>Audio Enhancements</addoncategory>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
@@ -6260,6 +6330,7 @@
       <page>447</page>
       <avail>Rating</avail>
       <cost>Rating * 100</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>a2953d6e-8bb8-40a8-b7f6-997be35947cf</id>
@@ -9854,7 +9925,7 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*3000</cost>
       <devicerating>0</devicerating>
-      <attack>Rating</attack>
+      <modattack>{Rating}</modattack>
       <required>
         <geardetails>
           <OR>
@@ -9876,7 +9947,7 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*3000</cost>
       <devicerating>0</devicerating>
-      <sleaze>Rating</sleaze>
+      <modsleaze>{Rating}</modsleaze>
       <required>
         <geardetails>
           <OR>
@@ -10275,8 +10346,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
+      <modattack>1</modattack>
       <required>
         <geardetails>
           <attributearray operation="exists" NOT="" />
@@ -10298,8 +10368,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
+      <modsleaze>1</modsleaze>
       <required>
         <geardetails>
           <attributearray operation="exists" NOT="" />
@@ -10335,14 +10404,14 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
+      <modsleaze>1</modsleaze>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
           <OR>
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
+            <name>Add Sleaze Modification</name>
           </OR>
         </geardetails>
       </required>
@@ -10357,14 +10426,14 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
+      <modattack>1</modattack>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
           <OR>
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
+            <name>Add Attack Modification</name>
           </OR>
         </geardetails>
       </required>
@@ -10379,8 +10448,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <dataprocessing>1</dataprocessing>
+      <moddataprocessing>1</moddataprocessing>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
@@ -10401,8 +10469,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <firewall>1</firewall>
+      <modfirewall>1</modfirewall>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
@@ -10423,8 +10490,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
+      <modsleaze>-1</modsleaze>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10446,8 +10512,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
+      <modattack>-1</modattack>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10469,8 +10534,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <dataprocessing>-1</dataprocessing>
+      <moddataprocessing>-1</moddataprocessing>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10492,8 +10556,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <firewall>-1</firewall>
+      <modfirewall>-1</modfirewall>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10515,9 +10578,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <sleaze>-1</sleaze>
+      <modattack>1</modattack>
+      <modsleaze>-1</modsleaze>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10535,9 +10597,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <dataprocessing>-1</dataprocessing>
+      <modattack>1</modattack>
+      <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10555,9 +10616,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <firewall>-1</firewall>
+      <modattack>1</modattack>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10575,9 +10635,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <sleaze>1</sleaze>
+      <modattack>-1</modattack>
+      <modsleaze>1</modsleaze>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10595,9 +10654,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
-      <dataprocessing>-1</dataprocessing>
+      <modsleaze>1</modsleaze>
+      <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10615,9 +10673,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
-      <firewall>-1</firewall>
+      <modsleaze>1</modsleaze>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10635,9 +10692,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <dataprocessing>1</dataprocessing>
+      <modattack>-1</modattack>
+      <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10655,9 +10711,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
-      <dataprocessing>1</dataprocessing>
+      <modsleaze>-1</modsleaze>
+      <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10675,9 +10730,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <dataprocessing>1</dataprocessing>
-      <firewall>-1</firewall>
+      <moddataprocessing>1</moddataprocessing>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <dataprocessing operation="greaterthan">0</dataprocessing>
@@ -10695,9 +10749,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <firewall>1</firewall>
+      <modattack>-1</modattack>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10715,9 +10768,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
-      <firewall>1</firewall>
+      <modsleaze>-1</modsleaze>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10735,9 +10787,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <dataprocessing>-1</dataprocessing>
-      <firewall>1</firewall>
+      <moddataprocessing>-1</moddataprocessing>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <dataprocessing operation="greaterthan">0</dataprocessing>
@@ -10755,7 +10806,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,-1,0,0</modattributearray>
       <required>
         <geardetails>
@@ -10773,7 +10823,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,0,-1,0</modattributearray>
       <required>
         <geardetails>
@@ -10791,7 +10840,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,0,0,-1</modattributearray>
       <required>
         <geardetails>
@@ -10809,7 +10857,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,1,0,0</modattributearray>
       <required>
         <geardetails>
@@ -10827,7 +10874,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,1,-1,0</modattributearray>
       <required>
         <geardetails>
@@ -10845,7 +10891,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,1,0,-1</modattributearray>
       <required>
         <geardetails>
@@ -10863,7 +10908,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,0,1,0</modattributearray>
       <required>
         <geardetails>
@@ -10881,7 +10925,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,-1,1,0</modattributearray>
       <required>
         <geardetails>
@@ -10899,7 +10942,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,0,1,-1</modattributearray>
       <required>
         <geardetails>
@@ -10917,7 +10959,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,0,0,1</modattributearray>
       <required>
         <geardetails>
@@ -10935,7 +10976,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,-1,0,1</modattributearray>
       <required>
         <geardetails>
@@ -10953,7 +10993,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,0,-1,1</modattributearray>
       <required>
         <geardetails>
@@ -10971,6 +11010,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
+      <canformpersona>Parent</canformpersona>
       <requireparent />
     </gear>
     <gear>
@@ -11455,6 +11495,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -11476,6 +11517,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>

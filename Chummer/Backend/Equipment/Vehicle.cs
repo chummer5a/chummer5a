@@ -285,14 +285,9 @@ namespace Chummer.Backend.Equipment
 
                         List<Weapon> objWeapons = new List<Weapon>();
                         List<TreeNode> objWeaponNodes = new List<TreeNode>();
-                        if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
-                        {
-                            Commlink objCommlink = new Commlink(_objCharacter);
-                            objCommlink.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
-                            objGear = objCommlink;
-                        }
-                        else
-                            objGear.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+
+                        objGear.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+
                         objGear.Cost = "0";
                         objGear.Quantity = decQty;
                         objGear.MaxRating = intMaxRating;
@@ -498,17 +493,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
-                {
-                    Commlink objCommlink = new Commlink(_objCharacter);
-                    objCommlink = (Commlink)objGear;
-                    objCommlink.Save(objWriter);
-                }
-                else
-                {
-                    objGear.Save(objWriter);
-                }
+                objGear.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
@@ -688,19 +673,10 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     string strChildCategory = nodChild["category"].InnerText;
-                    if (nodChild["iscommlink"]?.InnerText == System.Boolean.TrueString ||
-                        (strChildCategory == "Commlinks" || strChildCategory == "Commlink Accessories" || strChildCategory == "Cyberdecks" || strChildCategory == "Rigger Command Consoles"))
-                    {
-                        Gear objCommlink = new Commlink(_objCharacter);
-                        objCommlink.Load(nodChild, blnCopy);
-                        _lstGear.Add(objCommlink);
-                    }
-                    else
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodChild, blnCopy);
-                        _lstGear.Add(objGear);
-                    }
+
+                    Gear objGear = new Gear(_objCharacter);
+                    objGear.Load(nodChild, blnCopy);
+                    _lstGear.Add(objGear);
                 }
             }
 
@@ -771,16 +747,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                // Use the Gear's SubClass if applicable.
-                Commlink objCommlink = objGear as Commlink;
-                if (objCommlink != null)
-                {
-                    objCommlink.Print(objWriter, objCulture);
-                }
-                else
-                {
-                    objGear.Print(objWriter, objCulture);
-                }
+                objGear.Print(objWriter, objCulture);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
@@ -1428,7 +1395,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (value)
                 {
-                    _objCharacter.HomeNodeCommlink = null;
+                    _objCharacter.HomeNodeGear = null;
                     _objCharacter.HomeNodeVehicle = this;
                 }
                 else if (_objCharacter.HomeNodeVehicle == this)

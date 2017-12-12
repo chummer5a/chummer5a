@@ -1239,33 +1239,20 @@ namespace Chummer.Classes
 
             // Create the new piece of Gear.
             List<Weapon> objWeapons = new List<Weapon>();
-            Gear objNewGear = null;
 
-            if (!string.IsNullOrEmpty(node["devicerating"]?.InnerText))
-            {
-                Commlink objCommlink = new Commlink(_objCharacter);
-                objCommlink.Create(node, new TreeNode(), intRating, true, true, ForcedValue);
-                objCommlink.Quantity = decQty;
-
-                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                if (_objCharacter.ActiveCommlink == null)
-                {
-                    objCommlink.IsActive = true;
-                }
-
-                objNewGear = objCommlink;
-            }
-            else
-            {
-                Gear objGear = new Gear(_objCharacter);
-                objGear.Create(node, new TreeNode(), intRating, objWeapons, new List<TreeNode>(), ForcedValue);
-                objGear.Quantity = decQty;
-
-                objNewGear = objGear;
-            }
+            Gear objNewGear = new Gear(_objCharacter);
+            objNewGear.Create(node, new TreeNode(), intRating, objWeapons, new List<TreeNode>(), ForcedValue);
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
+
+            objNewGear.Quantity = decQty;
+
+            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+            if (_objCharacter.ActiveCommlink == null && objNewGear.IsCommlink)
+            {
+                objNewGear.IsActive = true;
+            }
 
             objNewGear.Cost = "0";
             // Create any Weapons that came with this Gear.

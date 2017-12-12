@@ -140,16 +140,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a Commlink.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Gear to find.</param>
-        /// <param name="lstCommlink">List of Commlinks to search.</param>
-        public static Commlink FindCommlink(string strGuid, IEnumerable<Gear> lstCommlink)
-        {
-            return DeepFindById(strGuid, lstCommlink) as Commlink;
-        }
-
-        /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
         /// <param name="strGuid">InternalId of the Gear to find.</param>
@@ -911,9 +901,7 @@ namespace Chummer
                 }
             }
 
-            Commlink objCommlink = (objGear as Commlink);
-            if (objCommlink != null)
-                objCommlink.IsActive = false;
+            objGear.IsActive = false;
             return decReturn;
         }
 
@@ -1346,11 +1334,7 @@ namespace Chummer
                         objSelectedArmorMod.Gear.Remove(objGear);
                     else
                         objSelectedArmor.Gear.Remove(objGear);
-                    Commlink objCommlink = objGearParent as Commlink;
-                    if (objCommlink?.CanSwapAttributes == true)
-                    {
-                        objCommlink.RefreshCyberdeckArray();
-                    }
+                    objGearParent.RefreshCyberdeckArray();
                     decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
                 }
             }
@@ -1882,11 +1866,7 @@ namespace Chummer
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                Commlink objCommlink = objGear.Parent as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
+                objGear.Parent.RefreshCyberdeckArray();
             }
 
             if (objDestination.Level == 0)
@@ -1905,11 +1885,7 @@ namespace Chummer
                 objParent.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
-                Commlink objCommlink = objParent as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
+                objParent.RefreshCyberdeckArray();
             }
 
             TreeNode objClone = treGear.SelectedNode;
@@ -2332,11 +2308,7 @@ namespace Chummer
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                Commlink objCommlink = objGear.Parent as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
+                objGear.Parent.RefreshCyberdeckArray();
             }
 
             if (blnDestinationLocation)
@@ -2352,11 +2324,7 @@ namespace Chummer
                 objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
-                Commlink objCommlink = objDestinationGear as Commlink;
-                if (objCommlink?.CanSwapAttributes == true)
-                {
-                    objCommlink.RefreshCyberdeckArray();
-                }
+                objDestinationGear.RefreshCyberdeckArray();
             }
 
             TreeNode objClone = treVehicles.SelectedNode;

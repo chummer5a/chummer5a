@@ -314,14 +314,8 @@ namespace Chummer.Backend.Equipment
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                            if (!string.IsNullOrEmpty(objXmlGear["devicerating"]?.InnerText))
-                            {
-                                Commlink objCommlink = new Commlink(_objCharacter);
-                                objCommlink.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, false, false, blnAddChildImprovements, blnChildCreateChildren);
-                                objGear = objCommlink;
-                            }
-                            else
-                                objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, false, false, blnAddChildImprovements, blnChildCreateChildren);
+                            objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, false, false, blnAddChildImprovements, blnChildCreateChildren);
+
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
                             objGear.MinRating = intGearRating;

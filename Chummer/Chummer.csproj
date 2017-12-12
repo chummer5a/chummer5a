@@ -154,7 +154,6 @@
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Equipment\Armor.cs" />
     <Compile Include="Backend\Equipment\CapacityStyle.cs" />
-    <Compile Include="Backend\Equipment\Commlink.cs" />
     <Compile Include="Backend\Equipment\Cyberware.cs" />
     <Compile Include="Backend\Equipment\Equipment.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />

@@ -106,11 +106,11 @@ namespace Chummer
         public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
-        private Commlink _objHomeNodeCommlink = null;
+        private Gear _objHomeNodeGear = null;
         private Vehicle _objHomeNodeVehicle = null;
 
         // Active Commlink
-        private Commlink _objActiveCommlink = null;
+        private Gear _objActiveGear = null;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
@@ -749,15 +749,7 @@ namespace Chummer
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                // Use the Gear's SubClass if applicable.
-                if (objGear.GetType() == typeof(Commlink))
-                {
-                    (objGear as Commlink).Save(objWriter);
-                }
-                else
-                {
-                    objGear.Save(objWriter);
-                }
+                objGear.Save(objWriter);
             }
             // </gears>
             objWriter.WriteEndElement();
@@ -1644,22 +1636,9 @@ namespace Chummer
             objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
             foreach (XmlNode objXmlGear in objXmlNodeList)
             {
-                string strCategory = objXmlGear["category"]?.InnerText;
-                if (objXmlGear["iscommlink"]?.InnerText == System.Boolean.TrueString ||
-                    (strCategory == "Commlinks" || strCategory == "Commlink Accessories" || strCategory == "Cyberdecks" || strCategory == "Rigger Command Consoles"))
-                {
-                    Commlink objCommlink = new Commlink(this);
-                    objCommlink.Load(objXmlGear);
-                    _lstGear.Add(objCommlink);
-                    if (objCommlink.Name == "Living Persona")
-                        objLivingPersonaQuality = null;
-                }
-                else
-                {
-                    Gear objGear = new Gear(this);
-                    objGear.Load(objXmlGear);
-                    _lstGear.Add(objGear);
-                }
+                Gear objGear = new Gear(this);
+                objGear.Load(objXmlGear);
+                _lstGear.Add(objGear);
             }
             // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
             if (objLivingPersonaQuality != null && LastSavedVersion <= Version.Parse("5.195.1"))
@@ -2737,17 +2716,7 @@ namespace Chummer
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                // Use the Gear's SubClass if applicable.
-                Commlink objCommlink = objGear as Commlink;
-                if (objCommlink != null)
-                //if (objGear.Category == "Commlinks" || objGear.Category == "Rigger Command Consoles" || objGear.Category == "Cyberdecks" || objGear.GetType() == typeof(Commlink))
-                {
-                    objCommlink.Print(objWriter, objCulture);
-                }
-                else
-                {
-                    objGear.Print(objWriter, objCulture);
-                }
+                objGear.Print(objWriter, objCulture);
             }
             // </gears>
             objWriter.WriteEndElement();
@@ -5110,10 +5079,10 @@ namespace Chummer
                 if (_strMetatype == "A.I.")
                 {
                     int intINI = (INT.TotalValue) + WoundModifiers;
-                    if (HomeNodeVehicle != null || HomeNodeCommlink != null)
+                    if (HomeNodeVehicle != null || HomeNodeGear != null)
                     {
                         int intHomeNodePilot = HomeNodeVehicle?.Pilot ?? 0;
-                        int intHomeNodeDP = Math.Max(HomeNodeCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                        int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
                         if (intHomeNodeDP > intHomeNodePilot)
                         {
                             intINI += intHomeNodeDP;
@@ -6585,9 +6554,9 @@ namespace Chummer
                             intLimit = HomeNodeVehicle.DeviceRating;
                         }
                     }
-                    else if (HomeNodeCommlink != null)
+                    else if (HomeNodeGear != null)
                     {
-                        int intHomeNodeDP = HomeNodeCommlink.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = HomeNodeGear.GetTotalMatrixAttribute("Data Processing");
                         if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
@@ -6606,10 +6575,10 @@ namespace Chummer
             get
             {
                 int intLimit;
-                if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeCommlink != null))
+                if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeGear != null))
                 {
                     int intHomeNodePilot = _objHomeNodeVehicle?.Pilot ?? 0;
-                    int intHomeNodeDP = Math.Max(_objHomeNodeCommlink?.GetTotalMatrixAttribute("Data Processing") ?? 0, _objHomeNodeVehicle?.DeviceRating ?? 0);
+                    int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
                     if (intHomeNodeDP >= intHomeNodePilot)
                     {
                         intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
@@ -8288,30 +8257,30 @@ namespace Chummer
         /// <summary>
         /// The Active Commlink of the character. Returns null if home node is not a commlink.
         /// </summary>
-        public Commlink ActiveCommlink
+        public Gear ActiveCommlink
         {
             get
             {
-                return _objActiveCommlink;
+                return _objActiveGear;
             }
             set
             {
-                _objActiveCommlink = value;
+                _objActiveGear = value;
             }
         }
 
         /// <summary>
         /// Commlink Home Node. Returns null if home node is not a commlink.
         /// </summary>
-        public Commlink HomeNodeCommlink
+        public Gear HomeNodeGear
         {
             get
             {
-                return _objHomeNodeCommlink;
+                return _objHomeNodeGear;
             }
             set
             {
-                _objHomeNodeCommlink = value;
+                _objHomeNodeGear = value;
             }
         }
 

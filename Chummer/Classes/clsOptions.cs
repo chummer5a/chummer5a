@@ -32,15 +32,14 @@ namespace Chummer
     public enum ClipboardContentType
     {
         None = 0,
-        Gear = 1,
-        Commlink = 2,
-        OperatingSystem = 3,
-        Cyberware = 4,
-        Bioware = 5,
-        Armor = 6,
-        Weapon = 7,
-        Vehicle = 8,
-        Lifestyle = 9,
+        Gear,
+        OperatingSystem,
+        Cyberware,
+        Bioware,
+        Armor,
+        Weapon,
+        Vehicle,
+        Lifestyle,
     }
 
     public class SourcebookInfo

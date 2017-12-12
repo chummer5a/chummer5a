@@ -9550,7 +9550,7 @@ namespace Chummer
             this.chkActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkActiveCommlink.Text = "Active Commlink";
             this.chkActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkActiveCommlink.Visible = false;
+            this.chkActiveCommlink.Enabled = false;
             this.chkActiveCommlink.CheckedChanged += new System.EventHandler(this.chkActiveCommlink_CheckedChanged);
             // 
             // chkCommlinks
