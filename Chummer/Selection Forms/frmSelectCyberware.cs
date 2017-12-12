@@ -921,7 +921,7 @@ namespace Chummer
                     strCategoryFilter += objCategoryFilter.ToString().TrimEnd(" or ");
                 }
             }
-            strFilter += strCategoryFilter + " and category = \"None\")";
+            strFilter += " and " + strCategoryFilter + " or category = \"None\")";
             if (txtSearch.TextLength != 0)
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
@@ -938,7 +938,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_strSelectedGrade))
             {
                 strFilter += " and (not(forcegrade) or forcegrade = \"None\" or forcegrade = \"" + _strSelectedGrade + "\")";
-                if (!blnDoUIUpdate && _strSelectedGrade.Contains("Used"))
+                if (_strSelectedGrade.Contains("Used"))
                     strFilter += " and not(nosecondhand)";
             }
 
