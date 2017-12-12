@@ -15233,7 +15233,25 @@ namespace Chummer
 
                 //nudGearQty.Minimum = objGear.CostFor;
                 nudGearQty.Increment = objGear.CostFor;
-                if (objGear.Category == "Currency")
+                if (objGear.Name.StartsWith("Nuyen"))
+                {
+                    int intDecimalPlaces = _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.');
+                    if (intDecimalPlaces <= 0)
+                    {
+                        nudGearQty.DecimalPlaces = 0;
+                        nudGearQty.Minimum = 1.0m;
+                    }
+                    else
+                    {
+                        nudGearQty.DecimalPlaces = intDecimalPlaces;
+                        decimal decMinimum = 1.0m;
+                        // Need a for loop instead of a power system to maintain exact precision
+                        for (int i = 0; i < intDecimalPlaces; ++i)
+                            decMinimum /= 10.0m;
+                        nudGearQty.Minimum = decMinimum;
+                    }
+                }
+                else if (objGear.Category == "Currency")
                 {
                     nudGearQty.DecimalPlaces = 2;
                     nudGearQty.Minimum = 0.01m;
@@ -16401,7 +16419,25 @@ namespace Chummer
                             cmdDeleteVehicle.Enabled = false;
                         nudVehicleRating.Enabled = false;
                         nudVehicleGearQty.Enabled = !objGear.DisableQuantity;
-                        if (objGear.Category == "Currency")
+                        if (objGear.Name.StartsWith("Nuyen"))
+                        {
+                            int intDecimalPlaces = _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.');
+                            if (intDecimalPlaces <= 0)
+                            {
+                                nudGearQty.DecimalPlaces = 0;
+                                nudGearQty.Minimum = 1.0m;
+                            }
+                            else
+                            {
+                                nudGearQty.DecimalPlaces = intDecimalPlaces;
+                                decimal decMinimum = 1.0m;
+                                // Need a for loop instead of a power system to maintain exact precision
+                                for (int i = 0; i < intDecimalPlaces; ++i)
+                                    decMinimum /= 10.0m;
+                                nudGearQty.Minimum = decMinimum;
+                            }
+                        }
+                        else if (objGear.Category == "Currency")
                         {
                             nudVehicleGearQty.DecimalPlaces = 2;
                             nudVehicleGearQty.Minimum = 0.01m;

@@ -6138,17 +6138,30 @@ namespace Chummer
 
             Gear objSelectedGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
 
+            decimal decMinimumAmount = 1.0m;
+            int intDecimalPlaces = 0;
+            if (objSelectedGear.Name.StartsWith("Nuyen"))
+            {
+                intDecimalPlaces = Math.Max(0, _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.'));
+                // Need a for loop instead of a power system to maintain exact precision
+                for (int i = 0; i < intDecimalPlaces; ++i)
+                    decMinimumAmount /= 10.0m;
+            }
+            else if (objSelectedGear.Category == "Currency")
+            {
+                intDecimalPlaces = 2;
+                decMinimumAmount = 0.01m;
+            }
             // Cannot split a stack of 1 item.
-            if (objSelectedGear.Quantity <= (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m))
+            if (objSelectedGear.Quantity <= decMinimumAmount)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotSplitGear"), LanguageManager.GetString("MessageTitle_CannotSplitGear"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
-            decimal decMinValue = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
-            frmPickNumber.Minimum = decMinValue;
-            frmPickNumber.Maximum = objSelectedGear.Quantity - decMinValue;
+            frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+            frmPickNumber.Minimum = decMinimumAmount;
+            frmPickNumber.Maximum = objSelectedGear.Quantity - decMinimumAmount;
             frmPickNumber.Description = LanguageManager.GetString("String_SplitGear");
             frmPickNumber.ShowDialog(this);
 
@@ -6243,8 +6256,22 @@ namespace Chummer
 
             Gear objSelectedGear = CommonFunctions.DeepFindById(frmPickItem.SelectedItem, _objCharacter.Gear);
 
-            frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
-            frmPickNumber.Minimum = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
+            decimal decMinimumAmount = 1.0m;
+            int intDecimalPlaces = 0;
+            if (objSelectedGear.Name.StartsWith("Nuyen"))
+            {
+                intDecimalPlaces = Math.Max(0, _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.'));
+                // Need a for loop instead of a power system to maintain exact precision
+                for (int i = 0; i < intDecimalPlaces; ++i)
+                    decMinimumAmount /= 10.0m;
+            }
+            else if (objSelectedGear.Category == "Currency")
+            {
+                intDecimalPlaces = 2;
+                decMinimumAmount = 0.01m;
+            }
+            frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+            frmPickNumber.Minimum = decMinimumAmount;
             frmPickNumber.Maximum = objGear.Quantity;
             frmPickNumber.Description = LanguageManager.GetString("String_MergeGear");
             frmPickNumber.ShowDialog(this);
@@ -6327,14 +6354,29 @@ namespace Chummer
             }
 
             Gear objSelectedGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear);
+
+            decimal decMinimumAmount = 1.0m;
+            int intDecimalPlaces = 0;
+            if (objSelectedGear.Name.StartsWith("Nuyen"))
+            {
+                intDecimalPlaces = Math.Max(0, _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.'));
+                // Need a for loop instead of a power system to maintain exact precision
+                for (int i = 0; i < intDecimalPlaces; ++i)
+                    decMinimumAmount /= 10.0m;
+            }
+            else if (objSelectedGear.Category == "Currency")
+            {
+                intDecimalPlaces = 2;
+                decMinimumAmount = 0.01m;
+            }
+
             decimal decMove = 0;
-            decimal decMinAmount = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
-            if (objSelectedGear.Quantity == decMinAmount)
-                decMove = decMinAmount;
+            if (objSelectedGear.Quantity == decMinimumAmount)
+                decMove = decMinimumAmount;
             else
             {
-                frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
-                frmPickNumber.Minimum = decMinAmount;
+                frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                frmPickNumber.Minimum = decMinimumAmount;
                 frmPickNumber.Maximum = objSelectedGear.Quantity;
                 frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
                 frmPickNumber.ShowDialog(this);
@@ -6500,14 +6542,28 @@ namespace Chummer
                 // Locate the selected Gear.
                 Gear objSelectedGear = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
 
+                decimal decMinimumAmount = 1.0m;
+                int intDecimalPlaces = 0;
+                if (objSelectedGear.Name.StartsWith("Nuyen"))
+                {
+                    intDecimalPlaces = Math.Max(0, _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.'));
+                    // Need a for loop instead of a power system to maintain exact precision
+                    for (int i = 0; i < intDecimalPlaces; ++i)
+                        decMinimumAmount /= 10.0m;
+                }
+                else if (objSelectedGear.Category == "Currency")
+                {
+                    intDecimalPlaces = 2;
+                    decMinimumAmount = 0.01m;
+                }
+
                 decimal decMove = 0;
-                decimal decMinAmount = (objSelectedGear.Category == "Currency" ? 0.01m : 1.0m);
-                if (objSelectedGear.Quantity == decMinAmount)
-                    decMove = decMinAmount;
+                if (objSelectedGear.Quantity == decMinimumAmount)
+                    decMove = decMinimumAmount;
                 else
                 {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber(objSelectedGear.Category == "Currency" ? 2 : 0);
-                    frmPickNumber.Minimum = decMinAmount;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    frmPickNumber.Minimum = decMinimumAmount;
                     frmPickNumber.Maximum = objSelectedGear.Quantity;
                     frmPickNumber.Description = LanguageManager.GetString("String_MoveGear");
                     frmPickNumber.ShowDialog(this);

@@ -262,7 +262,25 @@ namespace Chummer
                 nudGearQty.Value = 1;
                 nudGearQty.Increment = 1;
             }
-            if (objXmlGear["category"].InnerText == "Currency")
+            if (objXmlGear["name"].InnerText.StartsWith("Nuyen"))
+            {
+                int intDecimalPlaces = _objCharacter.Options.NuyenFormat.Length - 1 - _objCharacter.Options.NuyenFormat.LastIndexOf('.');
+                if (intDecimalPlaces <= 0)
+                {
+                    nudGearQty.DecimalPlaces = 0;
+                    nudGearQty.Minimum = 1.0m;
+                }
+                else
+                {
+                    nudGearQty.DecimalPlaces = intDecimalPlaces;
+                    decimal decMinimum = 1.0m;
+                    // Need a for loop instead of a power system to maintain exact precision
+                    for (int i = 0; i < intDecimalPlaces; ++i)
+                        decMinimum /= 10.0m;
+                    nudGearQty.Minimum = decMinimum;
+                }
+            }
+            else if (objXmlGear["category"].InnerText == "Currency")
             {
                 nudGearQty.DecimalPlaces = 2;
                 nudGearQty.Minimum = 0.01m;
