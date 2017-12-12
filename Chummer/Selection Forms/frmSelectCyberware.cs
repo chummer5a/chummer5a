@@ -921,7 +921,7 @@ namespace Chummer
                     strCategoryFilter += objCategoryFilter.ToString().TrimEnd(" or ");
                 }
             }
-            strFilter += " and " + strCategoryFilter + "category = \"None\")";
+            strFilter += strCategoryFilter + " and category = \"None\")";
             if (txtSearch.TextLength != 0)
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
