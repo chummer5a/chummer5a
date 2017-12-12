@@ -51,28 +51,29 @@ namespace Chummer
             objItem.Value = "Custom";
             objItem.Name = string.Empty;
             lstItems.Add(objItem);
-            foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
-            {
-                objItem = new ListItem();
-                objItem.Value = objXmlSpecialization.InnerText;
-                objItem.Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText;
-                lstItems.Add(objItem);
-
-                if (_objSkill.SkillCategory == "Combat Active")
+            if (objXmlSkill != null)
+                foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
                 {
-                    // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-                    //Might need to include skill name or might miss some values?
-                    XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-                    foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                    objItem = new ListItem();
+                    objItem.Value = objXmlSpecialization.InnerText;
+                    objItem.Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText;
+                    lstItems.Add(objItem);
+
+                    if (_objSkill.SkillCategory == "Combat Active")
                     {
-                        objItem = new ListItem();
-                        objItem.Value = objXmlWeapon["name"].InnerText;
-                        objItem.Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText;
-                        lstItems.Add(objItem);
+                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                        //Might need to include skill name or might miss some values?
+                        XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
+                        foreach (XmlNode objXmlWeapon in objXmlWeaponList)
+                        {
+                            objItem = new ListItem();
+                            objItem.Value = objXmlWeapon["name"].InnerText;
+                            objItem.Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText;
+                            lstItems.Add(objItem);
+                        }
                     }
                 }
-            }
             // Populate the lists.
             cboSpec.BeginUpdate();
             cboSpec.ValueMember = "Value";
@@ -80,7 +81,7 @@ namespace Chummer
             cboSpec.DataSource = lstItems;
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-            if (cboSpec.Items.Count == 1 && AllowAutoSelect)
+            if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
                 AcceptForm();
 
             if (!string.IsNullOrEmpty(_strForceItem))
@@ -137,7 +138,7 @@ namespace Chummer
         }
         private void cboSpec_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSpec.SelectedValue.ToString() == "Custom")
+            if (cboSpec.SelectedValue?.ToString() == "Custom")
             {
                 cboSpec.DropDownStyle = ComboBoxStyle.DropDown;
             }
