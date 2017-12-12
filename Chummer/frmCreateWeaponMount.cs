@@ -1,12 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -47,11 +41,7 @@ namespace Chummer
             if (nodeList != null)
                 foreach (XmlNode node in nodeList)
                 {
-                    bool add = true;
-                    if (node["optionaldrone"] != null && !_vehicle.IsDrone)
-                    {
-                        add = false;
-                    }
+                    bool add = !(node["optionaldrone"] != null && !_vehicle.IsDrone);
                     if (add)
                     {
                         ListItem objItem = new ListItem();
@@ -100,6 +90,9 @@ namespace Chummer
             cboControl.DisplayMember = "Name";
             cboControl.DataSource = _lstControl;
             cboControl.EndUpdate();
+            nudMarkup.Visible = AllowDiscounts;
+            lblMarkupLabel.Visible = AllowDiscounts;
+            lblMarkupPercentLabel.Visible = AllowDiscounts;
             _loading = false;
             comboBox_SelectedIndexChanged(null, null);
         }
@@ -108,19 +101,19 @@ namespace Chummer
 		{
             TreeNode tree = new TreeNode();
             //TODO: THIS IS UGLY AS SHIT, FIX BETTER
-            XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue.ToString() + "\"]");
+            XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue + "\"]");
             if (node["forbidden"] != null)
             {
                 XmlNodeList list = node.SelectNodes("/forbidden/control");
-                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue.ToString() + "\"]");
+                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue + "\"]");
                 if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
                     return;
                 list = node.SelectNodes("/forbidden/flexibility");
-                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue.ToString() + "\"]");
+                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue + "\"]");
                 if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
                     return;
                 list = node.SelectNodes("/forbidden/visibility");
-                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue.ToString() + "\"]");
+                check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue + "\"]");
                 if (list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText))
                     return;
             }
@@ -128,7 +121,7 @@ namespace Chummer
             {
                 bool requirementsMet = true;
                 XmlNodeList list = node.SelectNodes("/required/control");
-                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue.ToString() + "\"]");
+                XmlNode check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboControl.SelectedValue + "\"]");
                 if (list.Count > 0)
                 {
                     requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
@@ -138,7 +131,7 @@ namespace Chummer
                 list = node.SelectNodes("/required/flexibility");
                 if (list.Count > 0)
                 {
-                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue.ToString() + "\"]");
+                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboFlexibility.SelectedValue + "\"]");
                     requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
                     if (!requirementsMet)
                         return;
@@ -146,7 +139,7 @@ namespace Chummer
                 list = node.SelectNodes("/required/visibility");
                 if (list.Count > 0)
                 {
-                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue.ToString() + "\"]");
+                    check = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboVisibility.SelectedValue + "\"]");
                     requirementsMet = requirementsMet && list.Cast<XmlNode>().Any(n => n.InnerText == check["name"].InnerText);
                     if (!requirementsMet)
                         return;
@@ -172,36 +165,57 @@ namespace Chummer
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_loading) return;
-            XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue + "\"]");
-            int cost = Convert.ToInt32(node["cost"].InnerText);
-            int avail = 0;
-            string availSuffix = string.Empty;
-            int slots = Convert.ToInt32(node["slots"].InnerText);
+            UpdateInfo();
+        }
 
-            if (node["avail"].InnerText.EndsWith('F') || node["avail"].InnerText.EndsWith('R'))
-            {
-                availSuffix = node["avail"].InnerText.Substring(node["avail"].InnerText.Length - 1, 1);
-                avail = Convert.ToInt32(node["avail"].InnerText.Substring(0, node["avail"].InnerText.Length - 1));
-            }
-            List<object> boxes = new List<object>
-            {
-                cboVisibility.SelectedValue,
-                cboFlexibility.SelectedValue,
-                cboControl.SelectedValue
-            };
-            foreach (object box in boxes)
-            {
-                node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + box + "\"]");
-                if (node == null) continue;
-                avail += Convert.ToInt32(node["avail"].InnerText);
-                cost += Convert.ToInt32(node["cost"].InnerText);
-                slots += Convert.ToInt32(node["slots"].InnerText);
-            }
+        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateInfo();
+        }
 
-            lblCost.Text = cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblSlots.Text = slots.ToString();
-            lblAvailability.Text = $"{avail}{availSuffix}";
+	    public bool FreeCost => chkFreeItem.Checked;
+
+	    public decimal Markup => nudMarkup.Value;
+
+	    public bool AllowDiscounts = false;
+        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateInfo();
+        }
+
+	    private void UpdateInfo()
+	    {
+	        if (_loading) return;
+	        XmlNode node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue + "\"]");
+	        decimal cost = 0;
+	        if (!chkFreeItem.Checked) cost = Convert.ToInt32(node["cost"].InnerText);
+	        int avail = 0;
+	        string availSuffix = string.Empty;
+	        int slots = Convert.ToInt32(node["slots"].InnerText);
+
+	        if (node["avail"].InnerText.EndsWith('F') || node["avail"].InnerText.EndsWith('R'))
+	        {
+	            availSuffix = node["avail"].InnerText.Substring(node["avail"].InnerText.Length - 1, 1);
+	            avail = Convert.ToInt32(node["avail"].InnerText.Substring(0, node["avail"].InnerText.Length - 1));
+	        }
+	        List<object> boxes = new List<object>
+	        {
+	            cboVisibility.SelectedValue,
+	            cboFlexibility.SelectedValue,
+	            cboControl.SelectedValue
+	        };
+	        foreach (object box in boxes)
+	        {
+	            node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + box + "\"]");
+	            if (node == null) continue;
+	            avail += Convert.ToInt32(node["avail"].InnerText);
+	            if (!chkFreeItem.Checked) cost += Convert.ToInt32(node["cost"].InnerText);
+	            slots += Convert.ToInt32(node["slots"].InnerText);
+	        }
+	        cost *= 1 + (nudMarkup.Value / 100.0m);
+	        lblCost.Text = cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+	        lblSlots.Text = slots.ToString();
+	        lblAvailability.Text = $"{avail}{availSuffix}";
         }
     }
 }

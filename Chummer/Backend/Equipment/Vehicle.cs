@@ -248,6 +248,7 @@ namespace Chummer.Backend.Equipment
                     TreeNode t = new TreeNode();
                     WeaponMount w = new WeaponMount(_objCharacter, this);
                     w.CreateByName(objXmlVehicleMod, t);
+                    w.IncludedInVehicle = true;
                     WeaponMounts.Add(w);
                 }
             }

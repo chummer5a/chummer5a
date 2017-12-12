@@ -44,6 +44,11 @@
             this.lblCost = new System.Windows.Forms.Label();
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
+            this.chkFreeItem = new System.Windows.Forms.CheckBox();
+            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
+            this.lblMarkupLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -209,11 +214,65 @@
             this.lblSlotsLabel.Tag = "";
             this.lblSlotsLabel.Text = "Slots:";
             // 
+            // chkFreeItem
+            // 
+            this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.Location = new System.Drawing.Point(280, 89);
+            this.chkFreeItem.Name = "chkFreeItem";
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeItem.TabIndex = 59;
+            this.chkFreeItem.Tag = "Checkbox_Free";
+            this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.UseVisualStyleBackColor = true;
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            // 
+            // nudMarkup
+            // 
+            this.nudMarkup.DecimalPlaces = 2;
+            this.nudMarkup.Location = new System.Drawing.Point(115, 117);
+            this.nudMarkup.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudMarkup.Minimum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            -2147352576});
+            this.nudMarkup.Name = "nudMarkup";
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
+            this.nudMarkup.TabIndex = 63;
+            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+            // 
+            // lblMarkupPercentLabel
+            // 
+            this.lblMarkupPercentLabel.AutoSize = true;
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(170, 119);
+            this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
+            this.lblMarkupPercentLabel.TabIndex = 64;
+            this.lblMarkupPercentLabel.Text = "%";
+            // 
+            // lblMarkupLabel
+            // 
+            this.lblMarkupLabel.AutoSize = true;
+            this.lblMarkupLabel.Location = new System.Drawing.Point(55, 119);
+            this.lblMarkupLabel.Name = "lblMarkupLabel";
+            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblMarkupLabel.TabIndex = 62;
+            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
+            this.lblMarkupLabel.Text = "Markup:";
+            // 
             // frmCreateWeaponMount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(355, 144);
+            this.Controls.Add(this.nudMarkup);
+            this.Controls.Add(this.lblMarkupPercentLabel);
+            this.Controls.Add(this.lblMarkupLabel);
+            this.Controls.Add(this.chkFreeItem);
             this.Controls.Add(this.lblSlots);
             this.Controls.Add(this.lblSlotsLabel);
             this.Controls.Add(this.lblAvailability);
@@ -233,6 +292,7 @@
             this.Name = "frmCreateWeaponMount";
             this.Text = "Create Weapon Mount";
             this.Load += new System.EventHandler(this.frmCreateWeaponMount_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,5 +316,9 @@
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblSlots;
         private System.Windows.Forms.Label lblSlotsLabel;
+        private System.Windows.Forms.CheckBox chkFreeItem;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.Label lblMarkupLabel;
     }
 }

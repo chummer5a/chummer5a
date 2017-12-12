@@ -9023,27 +9023,27 @@ namespace Chummer
         {
             Vehicle v = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(v, _objCharacter);
+            frmPickVehicleMod.AllowDiscounts = true;
             frmPickVehicleMod.ShowDialog(this);
 
             if (frmPickVehicleMod.DialogResult != DialogResult.Cancel)
             {
-                // Check the item's Cost and make sure the character can afford it.
-                decimal decCost = frmPickVehicleMod.WeaponMount.TotalCost;
-                // Apply a markup if applicable.
-                /*if (frmPickWeaponAccessory.Markup != 0)
+                if (!frmPickVehicleMod.FreeCost)
                 {
-                    decCost *= 1 + (frmPickWeaponAccessory.Markup / 100.0m);
-                }
+                    // Check the item's Cost and make sure the character can afford it.
+                    decimal decCost = frmPickVehicleMod.WeaponMount.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickVehicleMod.Markup != 0)
+                    {
+                        decCost *= 1 + (frmPickVehicleMod.Markup / 100.0m);
+                    }
 
-                // Multiply the cost if applicable.
-                if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
-                    decCost *= _objOptions.RestrictedCostMultiplier;
-                if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
-                    decCost *= _objOptions.ForbiddenCostMultiplier;
-                */
-                //if (!frmPickWeaponAccessory.FreeCost)
-                //{
-                if (decCost > _objCharacter.Nuyen)
+                    // Multiply the cost if applicable.
+                    if (frmPickVehicleMod.WeaponMount.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && _objOptions.MultiplyRestrictedCost)
+                        decCost *= _objOptions.RestrictedCostMultiplier;
+                    if (frmPickVehicleMod.WeaponMount.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden")) && _objOptions.MultiplyForbiddenCost)
+                        decCost *= _objOptions.ForbiddenCostMultiplier;
+                    if (decCost > _objCharacter.Nuyen)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
@@ -9060,7 +9060,7 @@ namespace Chummer
                         objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponAccessory, frmPickVehicleMod.WeaponMount.InternalId);
                         objExpense.Undo = objUndo;
                     }
-                //}
+                }
 
                 v.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
                 TreeNode node = new TreeNode();

@@ -17,6 +17,8 @@ Application Changes:
 - Fixed a crash when attempting to fire Vehicle Weapons.
 - Fixed calculation of armour to properly account for armour with override values (ie High Fashion Armour Clothing).
 - Fixed a crash when attempting to add a specialization to a custom knowledge skill in career mode. Fixes #2156.
+- Fixed standard weapon mounts accidentally adding their costs to their parent's total cost. 
+- Added Free and Markup checkboxes to the weapon mount creator for use in Career mode.
 
 Build 196
 
