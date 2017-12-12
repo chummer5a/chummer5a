@@ -483,7 +483,23 @@ namespace Chummer
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
                         entry.ExtractToFile(strLoopPath, true);
-                        lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
+                    }
+                    catch (IOException)
+                    {
+                        try
+                        {
+                            if (File.Exists(strLoopPath + ".old"))
+                                File.Delete(strLoopPath + ".old");
+                            File.Move(strLoopPath, strLoopPath + ".old");
+                            Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
+                            entry.ExtractToFile(strLoopPath, true);
+                        }
+                        catch (IOException)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strLoopPath));
+                            blnDoRestart = false;
+                            break;
+                        }
                     }
                     catch (UnauthorizedAccessException)
                     {
@@ -491,6 +507,7 @@ namespace Chummer
                         blnDoRestart = false;
                         break;
                     }
+                    lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                 }
             }
             if (blnDoRestart)
