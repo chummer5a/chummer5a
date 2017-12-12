@@ -4669,17 +4669,66 @@ namespace Chummer.Classes
             if (frmPickItem.DialogResult == DialogResult.Cancel)
                 throw new AbortedException();
             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
-            XmlNode objXmlBonusQuality = bonusNode.SelectSingleNode("quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+            XmlNode objXmlBonusQuality = bonusNode.SelectSingleNode("quality[\"" + frmPickItem.SelectedItem + "\"]");
             TreeNode objAddQualityNode = new TreeNode();
             Quality objAddQuality = new Quality(_objCharacter);
 
-            strForceValue = objXmlBonusQuality?.Attributes?["select"].InnerText;
+            strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
             objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
-            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
+            if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText != bool.TrueString)
             {
                 objAddQuality.BP = 0;
                 objAddQuality.ContributeToLimit = false;
             }
+            if (bonusNode["discountqualities"] != null)
+            {
+                lstQualities.Clear();
+                frmPickItem = new frmSelectItem();
+                ListItem objItem = new ListItem();
+                objItem.Value = "None";
+                objItem.Name = LanguageManager.GetString("String_None");
+                lstQualities.Add(objItem);
+                foreach (XmlNode objXmlAddQuality in bonusNode.SelectNodes("discountqualities/quality"))
+                {
+                    if (objXmlAddQuality.Attributes["select"] != null)
+                        strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
+
+                    XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
+                    objItem = new ListItem();
+                    objItem.Value = objXmlQuality["name"].InnerText;
+                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    if (!string.IsNullOrWhiteSpace(strForceValue)) objItem.Name += strForceValue;
+                    lstQualities.Add(objItem);
+                }
+                if (!string.IsNullOrWhiteSpace(strForceValue)) objItem.Name += strForceValue;
+                lstQualities.Add(objItem);
+                if (lstQualities.Count == 0)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", SourceName));
+                    throw new AbortedException();
+                }
+                frmPickItem.GeneralItems = lstQualities;
+                frmPickItem.ShowDialog();
+
+                // Don't do anything else if the form was canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    throw new AbortedException();
+                if (frmPickItem.SelectedItem != "None")
+                {
+                    objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
+                    objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[\"" + frmPickItem.SelectedItem + "\"]");
+                    int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText);
+                    objAddQualityNode = new TreeNode();
+                    Quality discountQuality = new Quality(_objCharacter);
+                    discountQuality.BP = 0;
+                    strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
+                    discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
+                    _objCharacter.Qualities.Add(discountQuality);
+                    objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                    CreateImprovement(discountQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                }
+            }
+
             _objCharacter.Qualities.Add(objAddQuality);
             CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
         }

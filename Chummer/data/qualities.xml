@@ -10557,25 +10557,50 @@
 	<quality>
 	  <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
 	  <name>Wildcard Chimera</name>
-	  <karma>Variable(0-30)</karma>
+	  <karma>0</karma>
 	  <category>Positive</category>
-	  <bonus>
-	  <optionalpowers>
-	    <optionalpower select>Third Eye</optionalpower>
-		<optionalpower select>Scent Glands</optionalpower>
-		<optionalpower select>Scales</optionalpower>
-		<optionalpower select>Critter Spook</optionalpower>
-		<optionalpower select>Cold-Blooded</optionalpower>
-		<optionalpower select>Bioluminescence</optionalpower>
-		<optionalpower select>Cyclopean Eye</optionalpower>
-		<optionalpower select>Berserker</optionalpower>
-		<optionalpower select>Astral Hazing (Awakened)</optionalpower>
-		<optionalpower select>Impaired Mental Atribute</optionalpower>
-	  </optionalpowers>
+    <bonus>
+      <selectquality>
+        <quality contributetobp="True">Infected Optional Power: Armor</quality>
+        <quality contributetobp="True">Infected Optional Power: Compulsion</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Hearing)</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Low-Light Vision)</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Smell)</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Taste)</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Thermographic Vision)</quality>
+        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Visual Acuity)</quality>
+        <quality contributetobp="True">Infected Optional Power: Fear</quality>
+        <quality contributetobp="True">Infected Optional Power: Immunity (Fire)</quality>
+        <quality contributetobp="True">Infected Optional Power: Immunity (Pathogens)</quality>as
+        <quality contributetobp="True">Infected Optional Power: Immunity (Toxins)</quality>
+        <quality contributetobp="True">Infected Optional Power: Influence</quality>
+        <quality contributetobp="True">Infected Optional Power: Magical Guard</quality>
+        <quality contributetobp="True">Infected Optional Power: Mist Form</quality>
+        <quality contributetobp="True">Infected Optional Power: Paralyzing Howl</quality>
+        <quality contributetobp="True">Infected Optional Power: Regeneration</quality>
+        <discountqualities>
+          <quality discount="-1">Third Eye</quality>
+          <quality discount="-2">Scent Glands</quality>
+          <quality discount="-3">Scales</quality>
+          <quality discount="-3">Critter Spook</quality>
+          <quality discount="-3">Cold-Blooded</quality>
+          <quality discount="-3">Bioluminescence</quality>
+          <quality discount="-4">Cyclopean Eye</quality>
+          <quality discount="-4">Berserker</quality>
+          <quality discount="-8">Astral Hazing</quality>
+          <quality discount="-8">Impaired Attribute (Charisma)</quality>
+          <quality discount="-8">Impaired Attribute (Intuition)</quality>
+          <quality discount="-8">Impaired Attribute (Willpower)</quality>
+          <quality discount="-8">Impaired Attribute (Logic)</quality>
+        </discountqualities>
+      </selectquality>
+    </bonus>
+    <source>DTR</source>
+    <page>163</page>
 	</quality>
 	<quality>
 	  <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
-	  <name>It works if you work it</name>
+	  <name>It Works If You Work It</name>
 	  <karma>-5</karma>
 	  <category>Positive</category>
 	  <bonus />
@@ -10593,7 +10618,7 @@
 	  </quality>
 	<quality>
 	  <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
-	  <name>Metaviral Attunement</karma>
+	  <name>Metaviral Attunement</name>
 	  <karma>-5</karma>
 	  <category>Positive</category>
 	  <bonus>
