@@ -30,10 +30,13 @@ Application Changes:
 - Limit Modifier sources will now automatically display translated names when switching languages.
 - Improvement source names will now also contain information about the source's parents. Fixes #2082.
 - Fixed characters with Friends in High Places not being able to pass character validity checks for their Friends in High Places contacts. Fixes #2171.
+- An AI can no longer adopt an item as a home node if it would not have enough program slots to hold it.
+- Vehicles and cyberware can now have custom-defined Matrix attributes and/or Matrix attribute arrays in their data files.
 
 Data Changes:
 
 - Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).
+- Data lock cyberware will now display its proper Matrix attributes, i.e. with a Device Rating equal to its rating instead of being based off of its grade.
 
 Build 196
 

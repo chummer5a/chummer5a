@@ -206,6 +206,77 @@ namespace Chummer
             cboFirewall.EndUpdate();
         }
 
+        public static bool ProcessMatrixAttributeCBOChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttributeCBO, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
+        {
+            if (objThis == null)
+                return false;
+            
+            string strTemp = string.Empty;
+            Action<string> funcAttributePropertySetter = null;
+
+            if (cboChangedAttributeCBO == cboAttack)
+            {
+                strTemp = objThis.Attack;
+                funcAttributePropertySetter = (x => objThis.Attack = x);
+            }
+            else if (cboChangedAttributeCBO == cboSleaze)
+            {
+                strTemp = objThis.Sleaze;
+                funcAttributePropertySetter = (x => objThis.Sleaze = x);
+            }
+            else if (cboChangedAttributeCBO == cboDP)
+            {
+                strTemp = objThis.DataProcessing;
+                funcAttributePropertySetter = (x => objThis.DataProcessing = x);
+            }
+            else if (cboChangedAttributeCBO == cboFirewall)
+            {
+                strTemp = objThis.Firewall;
+                funcAttributePropertySetter = (x => objThis.Firewall = x);
+            }
+            else
+                return false;
+
+            int intCurrentIndex = cboChangedAttributeCBO.SelectedIndex;
+            bool blnRefreshCharacter = false;
+            // Find the combo with the same value as this one and change it to the missing value.
+            if (cboChangedAttributeCBO != cboAttack && cboAttack.SelectedIndex == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Attack);
+                objThis.Attack = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttributeCBO != cboSleaze && cboSleaze.SelectedIndex == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Sleaze);
+                objThis.Sleaze = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttributeCBO != cboDP && cboDP.SelectedIndex == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.DataProcessing);
+                objThis.DataProcessing = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttributeCBO != cboFirewall && cboFirewall.SelectedIndex == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Firewall);
+                objThis.Firewall = strTemp;
+                blnRefreshCharacter = true;
+            }
+
+            if (blnRefreshCharacter)
+            {
+                objThis.RefreshMatrixAttributeCBOs(cboAttack, cboSleaze, cboDP, cboFirewall);
+            }
+
+            return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
+        }
+
+        /// <summary>
+        /// If this item has an attribute array, refresh it.
+        /// </summary>
+        /// <param name="objThis"></param>
         public static void RefreshMatrixAttributeArray(this IHasMatrixAttributes objThis)
         {
             if (objThis == null)

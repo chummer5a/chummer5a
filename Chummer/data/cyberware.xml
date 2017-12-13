@@ -364,6 +364,7 @@
       <source>SR5</source>
       <page>452</page>
       <rating>12</rating>
+      <devicerating>{Rating}</devicerating>
     </cyberware>
     <cyberware>
       <id>e9136c81-f8d5-4e7f-be2d-3be7ff6d1673</id>

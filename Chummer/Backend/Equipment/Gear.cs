@@ -730,7 +730,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
 
-
             objWriter.WriteElementString("programlimit", _strProgramLimit);
             objWriter.WriteElementString("overclocked", _strOverclocked);
             objWriter.WriteElementString("attack", _strAttack);
@@ -1622,7 +1621,16 @@ namespace Chummer.Backend.Equipment
                 {
                     case "Device Rating":
                         if (IsCommlink)
-                            strExpression = "2";
+                            return 2;
+                        else
+                            return 0;
+                    case "Program Limit":
+                        if (IsCommlink)
+                        {
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                return 2;
+                        }
                         else
                             return 0;
                         break;

@@ -15351,41 +15351,15 @@ namespace Chummer
         {
             if (_blnSkipRefresh || !cboGearAttack.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
-            if (objCommlink == null)
-                return;
-            int intCurrentIndex = cboGearAttack.SelectedIndex;
 
             _blnLoading = true;
-            string strTemp = objCommlink.Attack;
-            bool blnRefreshCBOs = true;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearSleaze.SelectedIndex == intCurrentIndex)
+
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboGearAttack, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
-                objCommlink.Attack = objCommlink.Sleaze;
-                objCommlink.Sleaze = strTemp;
-            }
-            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Attack = objCommlink.DataProcessing;
-                objCommlink.DataProcessing = strTemp;
-            }
-            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Attack = objCommlink.Firewall;
-                objCommlink.Firewall = strTemp;
-            }
-            else
-                blnRefreshCBOs = false;
-            if (blnRefreshCBOs)
-            {
-                objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                {
-                    ScheduleCharacterUpdate();
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
 
             _blnLoading = false;
@@ -15394,41 +15368,15 @@ namespace Chummer
         {
             if (_blnSkipRefresh || !cboGearSleaze.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
-            if (objCommlink == null)
-                return;
-            int intCurrentIndex = cboGearSleaze.SelectedIndex;
 
             _blnLoading = true;
-            string strTemp = objCommlink.Sleaze;
-            bool blnRefreshCBOs = true;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearAttack.SelectedIndex == intCurrentIndex)
+
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboGearSleaze, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
-                objCommlink.Sleaze = objCommlink.Attack;
-                objCommlink.Attack = strTemp;
-            }
-            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Sleaze = objCommlink.DataProcessing;
-                objCommlink.DataProcessing = strTemp;
-            }
-            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Sleaze = objCommlink.Firewall;
-                objCommlink.Firewall = strTemp;
-            }
-            else
-                blnRefreshCBOs = false;
-            if (blnRefreshCBOs)
-            {
-                objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                {
-                    ScheduleCharacterUpdate();
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
 
             _blnLoading = false;
@@ -15437,41 +15385,15 @@ namespace Chummer
         {
             if (_blnSkipRefresh || !cboGearDataProcessing.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
-            if (objCommlink == null)
-                return;
-            int intCurrentIndex = cboGearDataProcessing.SelectedIndex;
 
             _blnLoading = true;
-            string strTemp = objCommlink.DataProcessing;
-            bool blnRefreshCBOs = true;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearSleaze.SelectedIndex == intCurrentIndex)
+
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboGearDataProcessing, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
-                objCommlink.DataProcessing = objCommlink.Sleaze;
-                objCommlink.Sleaze = strTemp;
-            }
-            else if (cboGearAttack.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.DataProcessing = objCommlink.Attack;
-                objCommlink.Attack = strTemp;
-            }
-            else if (cboGearFirewall.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.DataProcessing = objCommlink.Firewall;
-                objCommlink.Firewall = strTemp;
-            }
-            else
-                blnRefreshCBOs = false;
-            if (blnRefreshCBOs)
-            {
-                objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                {
-                    ScheduleCharacterUpdate();
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
 
             _blnLoading = false;
@@ -15480,41 +15402,15 @@ namespace Chummer
         {
             if (_blnSkipRefresh || !cboGearFirewall.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
-            if (objCommlink == null)
-                return;
-            int intCurrentIndex = cboGearFirewall.SelectedIndex;
 
             _blnLoading = true;
-            string strTemp = objCommlink.Firewall;
-            bool blnRefreshCBOs = true;
-            // Find the combo with the same value as this one and change it to the missing value.
-            if (cboGearAttack.SelectedIndex == intCurrentIndex)
+
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), _objCharacter.Gear.GetAllDescendants(x => x.Children));
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboGearFirewall, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
-                objCommlink.Firewall = objCommlink.Attack;
-                objCommlink.Attack = strTemp;
-            }
-            else if (cboGearSleaze.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Firewall = objCommlink.Sleaze;
-                objCommlink.Sleaze = strTemp;
-            }
-            else if (cboGearDataProcessing.SelectedIndex == intCurrentIndex)
-            {
-                objCommlink.Firewall = objCommlink.DataProcessing;
-                objCommlink.DataProcessing = strTemp;
-            }
-            else
-                blnRefreshCBOs = false;
-            if (blnRefreshCBOs)
-            {
-                objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                {
-                    ScheduleCharacterUpdate();
-                    _blnIsDirty = true;
-                    UpdateWindowTitle();
-                }
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
 
             _blnLoading = false;
@@ -15524,531 +15420,247 @@ namespace Chummer
         {
             if (_blnSkipRefresh || !cboVehicleGearAttack.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treVehicles.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, _objCharacter.Vehicles);
+            if (objTarget == null)
             {
-                int intCurrentIndex = cboVehicleGearAttack.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Attack;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                objTarget = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles);
+                if (objTarget == null)
+                    objTarget = CommonFunctions.FindVehicleCyberware(strGuid, _objCharacter.Vehicles);
             }
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboVehicleGearAttack, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            {
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+
+            _blnLoading = false;
         }
         private void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboVehicleGearSleaze.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treVehicles.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, _objCharacter.Vehicles);
+            if (objTarget == null)
             {
-                int intCurrentIndex = cboVehicleGearSleaze.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Sleaze;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                objTarget = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles);
+                if (objTarget == null)
+                    objTarget = CommonFunctions.FindVehicleCyberware(strGuid, _objCharacter.Vehicles);
             }
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboVehicleGearSleaze, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            {
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+
+            _blnLoading = false;
         }
         private void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboVehicleGearFirewall.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treVehicles.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, _objCharacter.Vehicles);
+            if (objTarget == null)
             {
-                int intCurrentIndex = cboVehicleGearFirewall.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Firewall;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboVehicleGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                objTarget = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles);
+                if (objTarget == null)
+                    objTarget = CommonFunctions.FindVehicleCyberware(strGuid, _objCharacter.Vehicles);
             }
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboVehicleGearFirewall, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            {
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+
+            _blnLoading = false;
         }
         private void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboVehicleGearDataProcessing.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treVehicles.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, _objCharacter.Vehicles);
+            if (objTarget == null)
             {
-                int intCurrentIndex = cboVehicleGearDataProcessing.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.DataProcessing;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboVehicleGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboVehicleGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboVehicleGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                objTarget = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles);
+                if (objTarget == null)
+                    objTarget = CommonFunctions.FindVehicleCyberware(strGuid, _objCharacter.Vehicles);
             }
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboVehicleGearDataProcessing, cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall))
+            {
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
+            }
+
+            _blnLoading = false;
         }
 
         private void cboCyberwareGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboCyberwareGearAttack.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware.GetAllDescendants(x => x.Children));
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treCyberware.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(strGuid, _objCharacter.Cyberware);
+            if (objTarget == null)
+                objTarget = CommonFunctions.FindCyberwareGear(strGuid, _objCharacter.Cyberware);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboCyberwareGearAttack, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
             {
-                int intCurrentIndex = cboCyberwareGearAttack.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Attack;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboCyberwareGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboCyberwareGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboCyberwareGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboCyberwareGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboCyberwareGearSleaze.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware.GetAllDescendants(x => x.Children));
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treCyberware.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(strGuid, _objCharacter.Cyberware);
+            if (objTarget == null)
+                objTarget = CommonFunctions.FindCyberwareGear(strGuid, _objCharacter.Cyberware);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboCyberwareGearSleaze, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
             {
-                int intCurrentIndex = cboCyberwareGearSleaze.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Sleaze;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboCyberwareGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboCyberwareGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboCyberwareGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboCyberwareGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboCyberwareGearDataProcessing.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware.GetAllDescendants(x => x.Children));
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treCyberware.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(strGuid, _objCharacter.Cyberware);
+            if (objTarget == null)
+                objTarget = CommonFunctions.FindCyberwareGear(strGuid, _objCharacter.Cyberware);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboCyberwareGearDataProcessing, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
             {
-                int intCurrentIndex = cboCyberwareGearDataProcessing.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.DataProcessing;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboCyberwareGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboCyberwareGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboCyberwareGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboCyberwareGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboCyberwareGearFirewall.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), _objCharacter.Cyberware.GetAllDescendants(x => x.Children));
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            string strGuid = treCyberware.SelectedNode.Tag.ToString();
+            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(strGuid, _objCharacter.Cyberware);
+            if (objTarget == null)
+                objTarget = CommonFunctions.FindCyberwareGear(strGuid, _objCharacter.Cyberware);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboCyberwareGearFirewall, cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall))
             {
-                int intCurrentIndex = cboCyberwareGearFirewall.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Firewall;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboCyberwareGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboCyberwareGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboCyberwareGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
 
         private void cboWeaponGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboWeaponGearAttack.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            IHasMatrixAttributes objTarget = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
-                int intCurrentIndex = cboWeaponGearAttack.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Attack;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboWeaponGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboWeaponGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboWeaponGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Attack = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboWeaponGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboWeaponGearSleaze.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            IHasMatrixAttributes objTarget = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
-                int intCurrentIndex = cboWeaponGearSleaze.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Sleaze;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboWeaponGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboWeaponGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else if (cboWeaponGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Sleaze = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboWeaponGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboWeaponGearDataProcessing.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            IHasMatrixAttributes objTarget = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
-                int intCurrentIndex = cboWeaponGearDataProcessing.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.DataProcessing;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboWeaponGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboWeaponGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboWeaponGearFirewall.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.DataProcessing = objCommlink.Firewall;
-                    objCommlink.Firewall = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
         private void cboWeaponGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh || !cboWeaponGearFirewall.Enabled)
                 return;
-            Gear objCommlink = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
-            if (objCommlink != null)
+
+            _blnLoading = true;
+
+            IHasMatrixAttributes objTarget = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), _objCharacter.Weapons);
+            if (objTarget.ProcessMatrixAttributeCBOChange(_objCharacter, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
             {
-                int intCurrentIndex = cboWeaponGearFirewall.SelectedIndex;
-
-                _blnLoading = true;
-                string strTemp = objCommlink.Firewall;
-                bool blnRefreshCBOs = true;
-                // Find the combo with the same value as this one and change it to the missing value.
-                if (cboWeaponGearAttack.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Attack;
-                    objCommlink.Attack = strTemp;
-                }
-                else if (cboWeaponGearSleaze.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.Sleaze;
-                    objCommlink.Sleaze = strTemp;
-                }
-                else if (cboWeaponGearDataProcessing.SelectedIndex == intCurrentIndex)
-                {
-                    objCommlink.Firewall = objCommlink.DataProcessing;
-                    objCommlink.DataProcessing = strTemp;
-                }
-                else
-                    blnRefreshCBOs = false;
-                if (blnRefreshCBOs)
-                {
-                    objCommlink.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
-                    if (objCommlink.IsActiveCommlink(_objCharacter) || objCommlink.IsHomeNode(_objCharacter))
-                    {
-                        ScheduleCharacterUpdate();
-                        _blnIsDirty = true;
-                        UpdateWindowTitle();
-                    }
-                }
-
-                _blnLoading = false;
+                ScheduleCharacterUpdate();
+                _blnIsDirty = true;
+                UpdateWindowTitle();
             }
+
+            _blnLoading = false;
         }
 #endregion
 
@@ -20421,7 +20033,7 @@ namespace Chummer
                     {
                         chkGearHomeNode.Visible = true;
                         chkGearHomeNode.Checked = objGear.IsHomeNode(_objCharacter);
-                        chkGearHomeNode.Enabled = chkActiveCommlink.Enabled;
+                        chkGearHomeNode.Enabled = chkActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
 
                     if (objGear.MaxRating > 0)
@@ -21779,6 +21391,7 @@ namespace Chummer
                 {
                     chkVehicleHomeNode.Visible = true;
                     chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(_objCharacter);
+                    chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objVehicle.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                 }
             }
             else if (treVehicles.SelectedNode.Level == 2)
@@ -21913,7 +21526,7 @@ namespace Chummer
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objGear.IsHomeNode(_objCharacter);
-                            chkVehicleHomeNode.Enabled = objGear.IsCommlink;
+                            chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                         }
                     }
                     else
@@ -22113,7 +21726,7 @@ namespace Chummer
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(_objCharacter);
-                        chkVehicleHomeNode.Enabled = objGear.IsCommlink;
+                        chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
                 }
                 else
@@ -22281,7 +21894,7 @@ namespace Chummer
                             {
                                 chkVehicleHomeNode.Visible = true;
                                 chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(_objCharacter);
-                                chkVehicleHomeNode.Enabled = objCyberware.IsCommlink;
+                                chkVehicleHomeNode.Enabled = objCyberware.IsCommlink && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                             }
 
                             string strBook = _objOptions.LanguageBookShort(objCyberware.Source);
@@ -22336,7 +21949,7 @@ namespace Chummer
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(_objCharacter);
-                        chkVehicleHomeNode.Enabled = objGear.IsCommlink;
+                        chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (_objCharacter.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
                 }
                 else

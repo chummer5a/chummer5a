@@ -67,6 +67,21 @@ namespace Chummer.Backend.Equipment
         private string _strBlocksMounts = string.Empty;
         private string _strForced = string.Empty;
 
+        private string _strDeviceRating = string.Empty;
+        private string _strAttack = string.Empty;
+        private string _strSleaze = string.Empty;
+        private string _strDataProcessing = string.Empty;
+        private string _strFirewall = string.Empty;
+        private string _strAttributeArray = string.Empty;
+        private string _strModAttack = string.Empty;
+        private string _strModSleaze = string.Empty;
+        private string _strModDataProcessing = string.Empty;
+        private string _strModFirewall = string.Empty;
+        private string _strModAttributeArray = string.Empty;
+        private string _strProgramLimit = string.Empty;
+        private string _strOverclocked = "None";
+        private bool _blnCanSwapAttributes = false;
+
         private readonly Character _objCharacter;
 
         #region Helper Methods
@@ -141,6 +156,31 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
 
             _intRating = Math.Min(Math.Max(intRating, MinRating), MaxRating);
+
+            objXmlCyberware.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objXmlCyberware.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+            {
+                objXmlCyberware.TryGetStringFieldQuickly("attack", ref _strAttack);
+                objXmlCyberware.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                objXmlCyberware.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                objXmlCyberware.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            }
+            else
+            {
+                _blnCanSwapAttributes = true;
+                string[] strArray = _strAttributeArray.Split(',');
+                _strAttack = strArray[0];
+                _strSleaze = strArray[1];
+                _strDataProcessing = strArray[2];
+                _strFirewall = strArray[3];
+            }
+            objXmlCyberware.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            objXmlCyberware.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            objXmlCyberware.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            objXmlCyberware.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            objXmlCyberware.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            objXmlCyberware.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
             objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
@@ -618,8 +658,23 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
             objWriter.WriteElementString("addtoparentess", AddToParentESS.ToString());
+
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("devicerating", _strDeviceRating);
+            objWriter.WriteElementString("programlimit", _strProgramLimit);
+            objWriter.WriteElementString("overclocked", _strOverclocked);
+            objWriter.WriteElementString("attack", _strAttack);
+            objWriter.WriteElementString("sleaze", _strSleaze);
+            objWriter.WriteElementString("dataprocessing", _strDataProcessing);
+            objWriter.WriteElementString("firewall", _strFirewall);
+            objWriter.WriteElementString("attributearray", _strAttributeArray);
+            objWriter.WriteElementString("modattack", _strModAttack);
+            objWriter.WriteElementString("modsleaze", _strModSleaze);
+            objWriter.WriteElementString("moddataprocessing", _strModDataProcessing);
+            objWriter.WriteElementString("modfirewall", _strModFirewall);
+            objWriter.WriteElementString("modattributearray", _strModAttributeArray);
+            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -790,6 +845,34 @@ namespace Chummer.Backend.Equipment
                     this.SetHomeNode(_objCharacter, true);
                 }
             }
+
+            if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
+                MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
+                MyXmlNode?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+            objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
+            if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("attack", ref _strAttack);
+            if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+            if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+            if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            this.RefreshMatrixAttributeArray();
         }
 
         /// <summary>
@@ -2223,13 +2306,22 @@ namespace Chummer.Backend.Equipment
                 switch (strAttributeName)
                 {
                     case "Device Rating":
-                        strExpression = _objGrade.DeviceRating.ToString();
+                        return _objGrade.DeviceRating;
+                    case "Program Limit":
+                        if (IsCommlink)
+                        {
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                return _objGrade.DeviceRating;
+                        }
+                        else
+                            return _objGrade.DeviceRating;
                         break;
                     case "Data Processing":
                     case "Firewall":
                         strExpression = this.GetMatrixAttributeString("Device Rating");
                         if (string.IsNullOrEmpty(strExpression))
-                            strExpression = _objGrade.DeviceRating.ToString();
+                            return _objGrade.DeviceRating;
                         break;
                     case "Attack":
                     case "Sleaze":
@@ -2304,11 +2396,11 @@ namespace Chummer.Backend.Equipment
                     intReturn += objLoopCyberware.GetTotalMatrixAttribute(strAttributeName);
                 }
             }
-            foreach (Gear loopGear in Gear)
+            foreach (Gear objLoopGear in Gear)
             {
-                if (loopGear.Equipped)
+                if (objLoopGear.Equipped)
                 {
-                    intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
+                    intReturn += objLoopGear.GetTotalMatrixAttribute(strAttributeName);
                 }
             }
 
@@ -2830,43 +2922,170 @@ namespace Chummer.Backend.Equipment
         public bool IsProgram => false;
 
         /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// Device rating string for Cyberware. If it's empty, then GetBaseMatrixAttribute for Device Rating will fetch the grade's DR.
         /// </summary>
-        public string DeviceRating { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string Attack { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string Sleaze { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string DataProcessing { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string Firewall { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string ModAttack { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string ModSleaze { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string ModDataProcessing { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
-        /// </summary>
-        public string ModFirewall { get => string.Empty; set { } }
+        public string DeviceRating
+        {
+            get
+            {
+                return _strDeviceRating;
+            }
+            set
+            {
+                _strDeviceRating = value;
+            }
+        }
 
-        private string _strOverclocked = "None";
+        /// <summary>
+        /// Attack string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Attack
+        {
+            get
+            {
+                return _strAttack;
+            }
+            set
+            {
+                _strAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Sleaze string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Sleaze
+        {
+            get
+            {
+                return _strSleaze;
+            }
+            set
+            {
+                _strSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Data Processing string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string DataProcessing
+        {
+            get
+            {
+                return _strDataProcessing;
+            }
+            set
+            {
+                _strDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Firewall string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Firewall
+        {
+            get
+            {
+                return _strFirewall;
+            }
+            set
+            {
+                _strFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attack by this.
+        /// </summary>
+        public string ModAttack
+        {
+            get
+            {
+                return _strModAttack;
+            }
+            set
+            {
+                _strModAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Sleaze by this.
+        /// </summary>
+        public string ModSleaze
+        {
+            get
+            {
+                return _strModSleaze;
+            }
+            set
+            {
+                _strModSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Data Processing by this.
+        /// </summary>
+        public string ModDataProcessing
+        {
+            get
+            {
+                return _strModDataProcessing;
+            }
+            set
+            {
+                _strModDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Firewall by this.
+        /// </summary>
+        public string ModFirewall
+        {
+            get
+            {
+                return _strModFirewall;
+            }
+            set
+            {
+                _strModFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Cyberdeck's Attribute Array string.
+        /// </summary>
+        public string AttributeArray
+        {
+            get
+            {
+                return _strAttributeArray;
+            }
+            set
+            {
+                _strAttributeArray = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attribute Array by this.
+        /// </summary>
+        public string ModAttributeArray
+        {
+            get
+            {
+                return _strModAttributeArray;
+            }
+            set
+            {
+                _strModAttributeArray = value;
+            }
+        }
+
         /// <summary>
         /// ASDF attribute boosted by Overclocker.
         /// </summary>
@@ -2909,23 +3128,36 @@ namespace Chummer.Backend.Equipment
                 return intBonusBoxes;
             }
         }
-        
+
         /// <summary>
-        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// Commlink's Limit for how many Programs they can run.
         /// </summary>
-        public string ProgramLimit { get => string.Empty; set { } }
+        public string ProgramLimit
+        {
+            get
+            {
+                return _strProgramLimit;
+            }
+            set
+            {
+                _strProgramLimit = value;
+            }
+        }
+
         /// <summary>
-        /// Always false for Cyberware.
+        /// Returns true if this is a cyberdeck whose attributes we could swap around.
         /// </summary>
-        public bool CanSwapAttributes { get => false; set { } }
-        /// <summary>
-        /// Empty for Cyberware.
-        /// </summary>
-        public string AttributeArray { get => string.Empty; set { } }
-        /// <summary>
-        /// Empty for Cyberware.
-        /// </summary>
-        public string ModAttributeArray { get => string.Empty; set { } }
+        public bool CanSwapAttributes
+        {
+            get
+            {
+                return _blnCanSwapAttributes;
+            }
+            set
+            {
+                _blnCanSwapAttributes = value;
+            }
+        }
 
         public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
         {
