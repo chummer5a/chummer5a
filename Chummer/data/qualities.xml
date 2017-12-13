@@ -2236,7 +2236,9 @@
       <karma>20</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <magicianswaydiscount />
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>

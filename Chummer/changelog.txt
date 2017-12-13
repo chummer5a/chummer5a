@@ -27,6 +27,9 @@ Application Changes:
 - Implemented an improvement to the selectquality method that allows having another quality provide a discount, which is used by the Wildcard Chimera quality.
 - Fixed the implementation of the selectskill improvement to properly support Exotic skills. Characters with improvements such as IMproved Ability (skill) should Reapply Improvements or remove and re-add the improvement source.
 
+Data Changes:
+- Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
+
 Build 196
 
 Application Changes:
