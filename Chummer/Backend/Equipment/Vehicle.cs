@@ -2579,7 +2579,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CanFormPersona { get => string.Empty; set { } }
 
-        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent"));
+        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Vehicles.
