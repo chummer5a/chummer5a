@@ -486,70 +486,77 @@ namespace Chummer.Classes
                 }
             }
             else
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
+                if (frmPickSkill.SelectedSkill.Contains("Exotic Melee Weapon") ||
                         frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
                         frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
+            {
+                foreach (var skill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                {
+                    var objSkill = (ExoticSkill) skill;
+                    if ($"{objSkill.Name} ({objSkill.Specific})" != frmPickSkill.SelectedSkill) continue;
+                    // We've found the selected Skill.
+                    if (strNodeInnerXml.Contains("val"))
                     {
-                        if ($"{objSkill.Name} ({objSkill.Specialization})" != frmPickSkill.SelectedSkill) continue;
-                        // We've found the selected Skill.
-                        if (strNodeInnerXml.Contains("val"))
-                        {
-                            Log.Info("Calling CreateImprovement");
-                            CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
-                                SourceName,
-                                Improvement.ImprovementType.Skill, _strUnique,
-                                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1,
-                                0, 0, 0, 0, string.Empty, blnAddToRating);
-                        }
-
-                        if (strNodeInnerXml.Contains("disablespecializationeffects"))
-                        {
-                            Log.Info("Calling CreateImprovement");
-                            CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.DisableSpecializationEffects,
-                                _strUnique);
-                        }
-
-                        if (!strNodeInnerXml.Contains("max")) continue;
                         Log.Info("Calling CreateImprovement");
-                        CreateImprovement($"{objSkill.Name} ({objSkill.Specialization})", _objImprovementSource,
+                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
                             SourceName,
-                            Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-                            ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty, blnAddToRating);
+                            Improvement.ImprovementType.Skill, _strUnique,
+                            ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1,
+                            0, 0, 0, 0, string.Empty, blnAddToRating);
                     }
-                    else
+
+                    if (strNodeInnerXml.Contains("disablespecializationeffects"))
                     {
-                        if (objSkill.Name != frmPickSkill.SelectedSkill) continue;
-                        // We've found the selected Skill.
-                        if (strNodeInnerXml.Contains("val"))
-                        {
-                            Log.Info("Calling CreateImprovement");
-                            CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.Skill,
-                                _strUnique,
-                                ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty,
-                                blnAddToRating);
-                        }
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                            SourceName,
+                            Improvement.ImprovementType.DisableSpecializationEffects,
+                            _strUnique);
+                    }
 
-                        if (strNodeInnerXml.Contains("disablespecializationeffects"))
-                        {
-                            Log.Info("Calling CreateImprovement");
-                            CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.DisableSpecializationEffects,
-                                _strUnique);
-                        }
-
-                        if (!strNodeInnerXml.Contains("max")) continue;
+                    if (!strNodeInnerXml.Contains("max")) continue;
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement($"{objSkill.Name} ({objSkill.Specific})", _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+                        ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+                        blnAddToRating);
+                }
+            }
+            else
+            {
+                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                {
+                    if (objSkill.Name != frmPickSkill.SelectedSkill) continue;
+                    // We've found the selected Skill.
+                    if (strNodeInnerXml.Contains("val"))
+                    {
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
-                            0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+                            ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating), 1, 0, 0, 0, 0,
+                            string.Empty,
                             blnAddToRating);
                     }
+
+                    if (strNodeInnerXml.Contains("disablespecializationeffects"))
+                    {
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.DisableSpecializationEffects,
+                            _strUnique);
+                    }
+
+                    if (!strNodeInnerXml.Contains("max")) continue;
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Skill,
+                        _strUnique,
+                        0, 1, 0, ValueToInt(_objCharacter, bonusNode["max"].InnerText, _intRating), 0, 0, string.Empty,
+                        blnAddToRating);
                 }
+            }
         }
 
         // Select a Skill Group.

@@ -300,8 +300,19 @@ namespace Chummer.Skills
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.Skill:
-                            if (objImprovement.ImprovedName == Name)
+
+                            if (IsExoticSkill)
+                            {
+                                var s = (ExoticSkill)this;
+                                if (objImprovement.ImprovedName == $"{Name} ({s.Specific})")
+                                {
+                                    lstReturn.Add(objImprovement);
+                                }
+                            }
+                            else if (objImprovement.ImprovedName == Name)
+                            {
                                 lstReturn.Add(objImprovement);
+                            }
                             break;
                         case Improvement.ImprovementType.SkillGroup:
                             if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
