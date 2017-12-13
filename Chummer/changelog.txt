@@ -29,6 +29,7 @@ Application Changes:
 - Matrix Attributes are now an interface that is connected to Gear, Vehicle, and Cyberware and are able to fully interact with one another. Among other things, this means that Matrix Attributes will always show up for those items, that Electronic Modifications for Cyberware and Vehicles are possible, and that Cyberware with the Persona Firmware Electronic Modification will show up as a Commlink (and if the appropriate checkboxes are available in the UI, can be marked as an AI home node and/or the user's active commlink).
 - Limit Modifier sources will now automatically display translated names when switching languages.
 - Improvement source names will now also contain information about the source's parents. Fixes #2082.
+- Fixed characters with Friends in High Places not being able to pass character validity checks for their Friends in High Places contacts. Fixes #2171.
 
 Data Changes:
 

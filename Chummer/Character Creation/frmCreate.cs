@@ -17427,7 +17427,7 @@ namespace Chummer
                 blnValid = false;
             }
 
-            if (_objCharacter.Contacts.Any(x => (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7 && !x.Free))
+            if (_objCharacter.Contacts.Any(x => (!_objCharacter.FriendsInHighPlaces || x.Connection < 8) && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7 && !x.Free))
             {
                 blnValid = false;
                 strMessage += "\n\t" + LanguageManager.GetString("Message_HighContact");
