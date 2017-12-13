@@ -16399,10 +16399,16 @@ namespace Chummer
             string strGuid = treVehicles.SelectedNode?.Tag.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(strGuid))
             {
-                IHasMatrixAttributes objVehicle = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
-                if (objVehicle != null)
+                IHasMatrixAttributes objTarget = CommonFunctions.FindByIdWithNameCheck(strGuid, _objCharacter.Vehicles);
+                if (objTarget == null)
                 {
-                    objVehicle.SetHomeNode(_objCharacter, chkVehicleHomeNode.Checked);
+                    objTarget = CommonFunctions.FindVehicleGear(strGuid, _objCharacter.Vehicles);
+                    if (objTarget == null)
+                        objTarget = CommonFunctions.FindVehicleCyberware(strGuid, _objCharacter.Vehicles);
+                }
+                if (objTarget != null)
+                {
+                    objTarget.SetHomeNode(_objCharacter, chkVehicleHomeNode.Checked);
                     RefreshSelectedVehicle();
                     if (chkGearHomeNode.Checked)
                         RefreshSelectedGear();
