@@ -1251,7 +1251,7 @@ namespace Chummer.Classes
             // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
             if (_objCharacter.ActiveCommlink == null && objNewGear.IsCommlink)
             {
-                objNewGear.IsActive = true;
+                objNewGear.SetActiveCommlink(_objCharacter, true);
             }
 
             objNewGear.Cost = "0";

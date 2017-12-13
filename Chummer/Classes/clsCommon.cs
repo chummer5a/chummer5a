@@ -901,7 +901,7 @@ namespace Chummer
                 }
             }
 
-            objGear.IsActive = false;
+            objGear.SetActiveCommlink(objCharacter, false);
             return decReturn;
         }
 
@@ -1334,7 +1334,7 @@ namespace Chummer
                         objSelectedArmorMod.Gear.Remove(objGear);
                     else
                         objSelectedArmor.Gear.Remove(objGear);
-                    objGearParent.RefreshCyberdeckArray();
+                    objGearParent.RefreshMatrixAttributeArray();
                     decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
                 }
             }
@@ -1866,7 +1866,7 @@ namespace Chummer
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                objGear.Parent.RefreshCyberdeckArray();
+                objGear.Parent.RefreshMatrixAttributeArray();
             }
 
             if (objDestination.Level == 0)
@@ -1885,7 +1885,7 @@ namespace Chummer
                 objParent.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objParent;
-                objParent.RefreshCyberdeckArray();
+                objParent.RefreshMatrixAttributeArray();
             }
 
             TreeNode objClone = treGear.SelectedNode;
@@ -2308,7 +2308,7 @@ namespace Chummer
             else
             {
                 objGear.Parent.Children.Remove(objGear);
-                objGear.Parent.RefreshCyberdeckArray();
+                objGear.Parent.RefreshMatrixAttributeArray();
             }
 
             if (blnDestinationLocation)
@@ -2324,7 +2324,7 @@ namespace Chummer
                 objDestinationGear.Children.Add(objGear);
                 objGear.Location = string.Empty;
                 objGear.Parent = objDestinationGear;
-                objDestinationGear.RefreshCyberdeckArray();
+                objDestinationGear.RefreshMatrixAttributeArray();
             }
 
             TreeNode objClone = treVehicles.SelectedNode;

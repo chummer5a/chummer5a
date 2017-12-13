@@ -27,7 +27,7 @@
       <name>None</name>
       <ess>1</ess>
       <cost>1</cost>
-      <devicerating>2</devicerating>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SR5</source>
       <page>1</page>
@@ -37,7 +37,7 @@
       <name>Standard</name>
       <ess>1</ess>
       <cost>1</cost>
-      <devicerating>2</devicerating>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SR5</source>
       <page>451</page>
@@ -47,7 +47,7 @@
       <name>Standard (Burnout's Way)</name>
       <ess>0.8</ess>
       <cost>1</cost>
-      <devicerating>2</devicerating>
+      <devicerating>0</devicerating>
       <avail>0</avail>
       <source>SG</source>
       <page>177</page>
@@ -57,7 +57,7 @@
       <name>Used</name>
       <ess>1.25</ess>
       <cost>0.75</cost>
-      <devicerating>2</devicerating>
+      <devicerating>0</devicerating>
       <avail>-4</avail>
       <source>SR5</source>
       <page>451</page>
@@ -67,7 +67,7 @@
       <name>Alphaware</name>
       <ess>0.8</ess>
       <cost>1.2</cost>
-      <devicerating>3</devicerating>
+      <devicerating>0</devicerating>
       <avail>+2</avail>
       <source>SR5</source>
       <page>451</page>
@@ -77,7 +77,7 @@
       <name>Betaware</name>
       <ess>0.7</ess>
       <cost>1.5</cost>
-      <devicerating>4</devicerating>
+      <devicerating>0</devicerating>
       <avail>+4</avail>
       <source>SR5</source>
       <page>451</page>
@@ -87,7 +87,7 @@
       <name>Deltaware</name>
       <ess>0.5</ess>
       <cost>2.5</cost>
-      <devicerating>5</devicerating>
+      <devicerating>0</devicerating>
       <avail>+8</avail>
       <source>SR5</source>
       <page>451</page>
@@ -97,7 +97,7 @@
       <name>Gammaware</name>
       <ess>0.4</ess>
       <cost>5</cost>
-      <devicerating>6</devicerating>
+      <devicerating>0</devicerating>
       <avail>+12</avail>
       <source>CF</source>
       <page>72</page>
@@ -107,7 +107,7 @@
       <name>Omegaware</name>
       <ess>1</ess>
       <cost>0.75</cost>
-      <devicerating>2</devicerating>
+      <devicerating>0</devicerating>
       <avail>-4</avail>
       <source>CF</source>
       <page>71</page>

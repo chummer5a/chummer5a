@@ -106,11 +106,10 @@ namespace Chummer
         public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
-        private Gear _objHomeNodeGear = null;
-        private Vehicle _objHomeNodeVehicle = null;
+        private IHasMatrixAttributes _objHomeNode = null;
 
         // Active Commlink
-        private Gear _objActiveGear = null;
+        private IHasMatrixAttributes _objActiveCommlink = null;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
@@ -5079,10 +5078,13 @@ namespace Chummer
                 if (_strMetatype == "A.I.")
                 {
                     int intINI = (INT.TotalValue) + WoundModifiers;
-                    if (HomeNodeVehicle != null || HomeNodeGear != null)
+                    if (HomeNode != null)
                     {
-                        int intHomeNodePilot = HomeNodeVehicle?.Pilot ?? 0;
-                        int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                        int intHomeNodePilot = 0;
+                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                        if (objHomeNodeVehicle != null)
+                            intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                         if (intHomeNodeDP > intHomeNodePilot)
                         {
                             intINI += intHomeNodeDP;
@@ -6526,7 +6528,8 @@ namespace Chummer
             {
                 if (_strMetatype == "A.I.")
                 {
-                    return HomeNodeVehicle?.Handling ?? 0;
+                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    return objHomeNodeVehicle?.Handling ?? 0;
                 }
                 int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
                 return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
@@ -6543,20 +6546,18 @@ namespace Chummer
                 int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
                 if (_strMetatype == "A.I.")
                 {
-                    if (HomeNodeVehicle != null)
+                    if (HomeNode != null)
                     {
-                        if (HomeNodeVehicle.CalculatedSensor > intLimit)
+                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                        if (objHomeNodeVehicle != null)
                         {
-                            intLimit = HomeNodeVehicle.CalculatedSensor;
+                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                            if (intHomeNodeSensor > intLimit)
+                            {
+                                intLimit = intHomeNodeSensor;
+                            }
                         }
-                        if (HomeNodeVehicle.DeviceRating > intLimit)
-                        {
-                            intLimit = HomeNodeVehicle.DeviceRating;
-                        }
-                    }
-                    else if (HomeNodeGear != null)
-                    {
-                        int intHomeNodeDP = HomeNodeGear.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                         if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
@@ -6575,10 +6576,13 @@ namespace Chummer
             get
             {
                 int intLimit;
-                if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeGear != null))
+                if (_strMetatype == "A.I." && HomeNode != null)
                 {
-                    int intHomeNodePilot = _objHomeNodeVehicle?.Pilot ?? 0;
-                    int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                    int intHomeNodePilot = 0;
+                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    if (objHomeNodeVehicle != null)
+                        intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                     if (intHomeNodeDP >= intHomeNodePilot)
                     {
                         intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
@@ -8257,45 +8261,30 @@ namespace Chummer
         /// <summary>
         /// The Active Commlink of the character. Returns null if home node is not a commlink.
         /// </summary>
-        public Gear ActiveCommlink
+        public IHasMatrixAttributes ActiveCommlink
         {
             get
             {
-                return _objActiveGear;
+                return _objActiveCommlink;
             }
             set
             {
-                _objActiveGear = value;
+                _objActiveCommlink = value;
             }
         }
 
         /// <summary>
-        /// Commlink Home Node. Returns null if home node is not a commlink.
+        /// Home Node. Returns null if home node is not set to any item.
         /// </summary>
-        public Gear HomeNodeGear
+        public IHasMatrixAttributes HomeNode
         {
             get
             {
-                return _objHomeNodeGear;
+                return _objHomeNode;
             }
             set
             {
-                _objHomeNodeGear = value;
-            }
-        }
-
-        /// <summary>
-        /// Vehicle Home Node. Returns null if home node is not a vehicle.
-        /// </summary>
-        public Vehicle HomeNodeVehicle
-        {
-            get
-            {
-                return _objHomeNodeVehicle;
-            }
-            set
-            {
-                _objHomeNodeVehicle = value;
+                _objHomeNode = value;
             }
         }
 

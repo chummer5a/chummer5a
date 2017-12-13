@@ -15,10 +15,8 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Standard Character Gear.
     /// </summary>
-    public class Gear : INamedParentWithGuidAndNode<Gear>
+    public class Gear : INamedParentWithGuidAndNode<Gear>, IHasMatrixAttributes
     {
-        public static string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating" };
-
         private Guid _guiID;
         private string _SourceGuid;
         private string _strName = string.Empty;
@@ -73,7 +71,7 @@ namespace Chummer.Backend.Equipment
         private string _strModDataProcessing = string.Empty;
         private string _strModFirewall = string.Empty;
         private string _strModAttributeArray = string.Empty;
-        private int _intPrograms = 0;
+        private string _strProgramLimit = string.Empty;
         private string _strOverclocked = "None";
         private bool _blnCanSwapAttributes = false;
 
@@ -415,7 +413,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             objXmlGear.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
 
-            objXmlGear.TryGetInt32FieldQuickly("programs", ref _intPrograms);
+            objXmlGear.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
         }
 
         public void CreateChildren(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Gear objParent, TreeNode objNode, bool blnHacked, bool blnAddImprovements)
@@ -581,7 +579,7 @@ namespace Chummer.Backend.Equipment
             objChildNode.ForeColor = SystemColors.GrayText;
             objChildNode.ContextMenuStrip = objNode.ContextMenuStrip;
             objParent.Children.Add(objChild);
-            RefreshCyberdeckArray();
+            this.RefreshMatrixAttributeArray();
 
             // Change the Capacity of the child if necessary.
             if (objXmlChild["capacity"] != null)
@@ -660,8 +658,6 @@ namespace Chummer.Backend.Equipment
             _strModDataProcessing = objGear.ModDataProcessing;
             _strModFirewall = objGear.ModFirewall;
             _strModAttributeArray = objGear.ModAttributeArray;
-            IsActive = objGear.IsActive;
-            HomeNode = objGear.HomeNode;
         }
 
         /// <summary>
@@ -733,7 +729,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
-            
+
+
+            objWriter.WriteElementString("programlimit", _strProgramLimit);
             objWriter.WriteElementString("overclocked", _strOverclocked);
             objWriter.WriteElementString("attack", _strAttack);
             objWriter.WriteElementString("sleaze", _strSleaze);
@@ -746,8 +744,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modfirewall", _strModFirewall);
             objWriter.WriteElementString("modattributearray", _strModAttributeArray);
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
-            objWriter.WriteElementString("active", IsActive.ToString());
-            objWriter.WriteElementString("homenode", HomeNode.ToString());
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
         }
 
         /// <summary>
@@ -924,7 +922,9 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-
+            
+            if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
+                MyXmlNode?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
                 MyXmlNode?.TryGetStringFieldQuickly("attack", ref _strAttack);
@@ -948,17 +948,17 @@ namespace Chummer.Backend.Equipment
                 MyXmlNode?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             bool blnIsActive = false;
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
-                IsActive = true;
+                this.SetActiveCommlink(_objCharacter, true);
             if (blnCopy)
             {
-                HomeNode = false;
+                this.SetHomeNode(_objCharacter, false);
             }
             else
             {
                 bool blnIsHomeNode = false;
                 if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {
-                    HomeNode = true;
+                    this.SetHomeNode(_objCharacter, true);
                 }
             }
             if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
@@ -1006,7 +1006,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            RefreshCyberdeckArray();
+            this.RefreshMatrixAttributeArray();
 
             if (blnCopy)
             {
@@ -1083,14 +1083,14 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
 
-            objWriter.WriteElementString("attack", GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            objWriter.WriteElementString("sleaze", GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            objWriter.WriteElementString("dataprocessing", GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            objWriter.WriteElementString("firewall", GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            objWriter.WriteElementString("devicerating", GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            objWriter.WriteElementString("processorlimit", ProcessorLimit.ToString(objCulture));
-            objWriter.WriteElementString("active", IsActive.ToString());
-            objWriter.WriteElementString("homenode", HomeNode.ToString());
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
         }
 
         /// <summary>
@@ -1608,32 +1608,6 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool AllowRename => _blnAllowRename;
 
-        public string GetMatrixAttributeString(string strAttributeName)
-        {
-            switch (strAttributeName)
-            {
-                case "Attack":
-                    return Attack;
-                case "Sleaze":
-                    return Sleaze;
-                case "Data Processing":
-                    return DataProcessing;
-                case "Firewall":
-                    return Firewall;
-                case "Mod Attack":
-                    return ModAttack;
-                case "Mod Sleaze":
-                    return ModSleaze;
-                case "Mod Data Processing":
-                    return ModDataProcessing;
-                case "Mod Firewall":
-                    return ModFirewall;
-                case "Device Rating":
-                    return DeviceRating;
-            }
-            return string.Empty;
-        }
-
         /// <summary>
         /// Get the base value of a Matrix attribute of this gear (without children or Overclocker)
         /// </summary>
@@ -1641,7 +1615,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public int GetBaseMatrixAttribute(string strAttributeName)
         {
-            string strExpression = GetMatrixAttributeString(strAttributeName);
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
             if (string.IsNullOrEmpty(strExpression))
             {
                 switch (strAttributeName)
@@ -1654,7 +1628,7 @@ namespace Chummer.Backend.Equipment
                         break;
                     case "Data Processing":
                     case "Firewall":
-                        strExpression = GetMatrixAttributeString("Device Rating");
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
                         if (string.IsNullOrEmpty(strExpression))
                             return 0;
                         break;
@@ -1675,7 +1649,7 @@ namespace Chummer.Backend.Equipment
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
                 objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
-                foreach (string strMatrixAttribute in MatrixAttributeStrings)
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {
                     objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
                     objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
@@ -1712,7 +1686,7 @@ namespace Chummer.Backend.Equipment
         {
             int intReturn = 0;
 
-            if (_objCharacter.Overclocker && Overclocked == strAttributeName)
+            if (Overclocked == strAttributeName)
             {
                 intReturn += 1;
             }
@@ -1729,14 +1703,6 @@ namespace Chummer.Backend.Equipment
             }
 
             return intReturn;
-        }
-
-        /// <summary>
-        /// Get the total value of a Matrix attribute of this gear after children and Overclocker
-        /// </summary>
-        public int GetTotalMatrixAttribute(string strAttributeName)
-        {
-            return GetBaseMatrixAttribute(strAttributeName) + GetBonusMatrixAttribute(strAttributeName);
         }
 
         /// <summary>
@@ -1841,27 +1807,6 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _blnDiscountCost = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not an item is an A.I.'s Home Node.
-        /// </summary>
-        public bool HomeNode
-        {
-            get
-            {
-                return _objCharacter.HomeNodeGear == this;
-            }
-            set
-            {
-                if (value)
-                {
-                    _objCharacter.HomeNodeGear = this;
-                    _objCharacter.HomeNodeVehicle = null;
-                }
-                else if (_objCharacter.HomeNodeGear == this)
-                    _objCharacter.HomeNodeGear = null;
             }
         }
 
@@ -2015,36 +1960,26 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Whether or not this Commlink is active and counting towards the character's Matrix Initiative.
-        /// </summary>
-        public bool IsActive
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
         {
             get
             {
-                return _objCharacter.ActiveCommlink == this;
-            }
-            set
-            {
-                if (value)
-                {
-                    _objCharacter.ActiveCommlink = this;
-                }
-                else if (_objCharacter.ActiveCommlink == this)
-                {
-                    _objCharacter.ActiveCommlink = null;
-                }
+                return Children.Cast<IHasMatrixAttributes>().ToList();
             }
         }
 
         /// <summary>
-        /// Commlink's Processor Limit.
+        /// Commlink's Limit for how many Programs they can run.
         /// </summary>
-        public int ProcessorLimit
+        public string ProgramLimit
         {
             get
             {
-                return GetTotalMatrixAttribute("Device Rating");
+                return _strProgramLimit;
+            }
+            set
+            {
+                _strProgramLimit = value;
             }
         }
 
@@ -2071,6 +2006,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _blnCanSwapAttributes;
+            }
+            set
+            {
+                _blnCanSwapAttributes = value;
             }
         }
 
@@ -2734,7 +2673,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return BaseMatrixBoxes + (GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
+                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
             }
         }
 
@@ -2765,133 +2704,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
             return false;
-        }
-
-        /// <summary>
-        /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
-        /// </summary>
-        public void RefreshCommlinkCBOs(ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
-        {
-            int intBaseAttack = GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
-            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
-            int intBonusAttack = GetBonusMatrixAttribute("Attack");
-            int intBonusSleaze = GetBonusMatrixAttribute("Sleaze");
-            int intBonusDP = GetBonusMatrixAttribute("Data Processing");
-            int intBonusFirewall = GetBonusMatrixAttribute("Firewall");
-
-            cboAttack.BeginUpdate();
-            cboSleaze.BeginUpdate();
-            cboDP.BeginUpdate();
-            cboFirewall.BeginUpdate();
-
-            cboAttack.Enabled = false;
-            cboAttack.BindingContext = new BindingContext();
-            cboAttack.ValueMember = "Value";
-            cboAttack.DisplayMember = "Name";
-            cboAttack.DataSource = new List<string>() { (intBaseAttack + intBonusAttack).ToString(), (intBaseSleaze + intBonusAttack).ToString(), (intBaseDP + intBonusAttack).ToString(), (intBaseFirewall + intBonusAttack).ToString() };
-            cboAttack.SelectedIndex = 0;
-            cboAttack.Visible = true;
-            cboAttack.Enabled = CanSwapAttributes;
-
-            cboSleaze.Enabled = false;
-            cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.ValueMember = "Value";
-            cboSleaze.DisplayMember = "Name";
-            cboSleaze.DataSource = new List<string>() { (intBaseAttack + intBonusSleaze).ToString(), (intBaseSleaze + intBonusSleaze).ToString(), (intBaseDP + intBonusSleaze).ToString(), (intBaseFirewall + intBonusSleaze).ToString() };
-            cboSleaze.SelectedIndex = 1;
-            cboSleaze.Visible = true;
-            cboSleaze.Enabled = CanSwapAttributes;
-
-            cboDP.Enabled = false;
-            cboDP.BindingContext = new BindingContext();
-            cboDP.ValueMember = "Value";
-            cboDP.DisplayMember = "Name";
-            cboDP.DataSource = new List<string>() { (intBaseAttack + intBonusDP).ToString(), (intBaseSleaze + intBonusDP).ToString(), (intBaseDP + intBonusDP).ToString(), (intBaseFirewall + intBonusDP).ToString() };
-            cboDP.SelectedIndex = 2;
-            cboDP.Visible = true;
-            cboDP.Enabled = CanSwapAttributes;
-
-            cboFirewall.Enabled = false;
-            cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.ValueMember = "Value";
-            cboFirewall.DisplayMember = "Name";
-            cboFirewall.DataSource = new List<string>() { (intBaseAttack + intBonusFirewall).ToString(), (intBaseSleaze + intBonusFirewall).ToString(), (intBaseDP + intBonusFirewall).ToString(), (intBaseFirewall + intBonusFirewall).ToString() };
-            cboFirewall.SelectedIndex = 3;
-            cboFirewall.Visible = true;
-            cboFirewall.Enabled = CanSwapAttributes;
-
-            cboAttack.EndUpdate();
-            cboSleaze.EndUpdate();
-            cboDP.EndUpdate();
-            cboFirewall.EndUpdate();
-        }
-
-        public void RefreshCyberdeckArray()
-        {
-            if (!CanSwapAttributes)
-                return;
-            int intBaseAttack = GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = GetBaseMatrixAttribute("Sleaze");
-            int intBaseDP = GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = GetBaseMatrixAttribute("Firewall");
-            List<int> lstStatsArray = new List<int>(4);
-            lstStatsArray.Add(intBaseAttack);
-            lstStatsArray.Add(intBaseSleaze);
-            lstStatsArray.Add(intBaseDP);
-            lstStatsArray.Add(intBaseFirewall);
-            lstStatsArray.Sort();
-            lstStatsArray.Reverse();
-
-            string[] strCyberdeckArray = AttributeArray.Split(',');
-            foreach (Gear objChild in Children)
-            {
-                string strLoopArrayText = objChild.ModAttributeArray;
-                if (!string.IsNullOrEmpty(strLoopArrayText))
-                {
-                    string[] strLoopArray = strLoopArrayText.Split(',');
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";
-                    }
-                }
-            }
-            for (int i = 0; i < 4; ++i)
-            {
-                if (intBaseAttack == lstStatsArray[i])
-                {
-                    _strAttack = strCyberdeckArray[i];
-                    lstStatsArray[i] = int.MinValue;
-                    break;
-                }
-            }
-            for (int i = 0; i < 4; ++i)
-            {
-                if (intBaseSleaze == lstStatsArray[i])
-                {
-                    _strSleaze = strCyberdeckArray[i];
-                    lstStatsArray[i] = int.MinValue;
-                    break;
-                }
-            }
-            for (int i = 0; i < 4; ++i)
-            {
-                if (intBaseDP == lstStatsArray[i])
-                {
-                    _strDataProcessing = strCyberdeckArray[i];
-                    lstStatsArray[i] = int.MinValue;
-                    break;
-                }
-            }
-            for (int i = 0; i < 4; ++i)
-            {
-                if (intBaseFirewall == lstStatsArray[i])
-                {
-                    _strFirewall = strCyberdeckArray[i];
-                    break;
-                }
-            }
         }
         #endregion
     }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -13,7 +14,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Cyberware.
     /// </summary>
-    public class Cyberware : INamedParentWithGuidAndNode<Cyberware>
+    public class Cyberware : INamedParentWithGuidAndNode<Cyberware>, IHasMatrixAttributes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;
@@ -617,6 +618,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
             objWriter.WriteElementString("addtoparentess", AddToParentESS.ToString());
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -771,6 +774,22 @@ namespace Chummer.Backend.Equipment
             }
             else
                 _blnAddToParentESS = MyXmlNode?["addtoparentess"] != null;
+
+            bool blnIsActive = false;
+            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                this.SetActiveCommlink(_objCharacter, true);
+            if (blnCopy)
+            {
+                this.SetHomeNode(_objCharacter, false);
+            }
+            else
+            {
+                bool blnIsHomeNode = false;
+                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                {
+                    this.SetHomeNode(_objCharacter, true);
+                }
+            }
         }
 
         /// <summary>
@@ -824,6 +843,15 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -1636,15 +1664,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intBonusBoxes = 0;
-                foreach (Gear objGear in Gear)
-                {
-                    if (objGear.Equipped)
-                    {
-                        intBonusBoxes += objGear.TotalBonusMatrixBoxes;
-                    }
-                }
-                return BaseMatrixBoxes + (_objGrade.DeviceRating + 1) / 2 + intBonusBoxes;
+                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
             }
         }
 
@@ -2195,6 +2215,106 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public int GetBaseMatrixAttribute(string strAttributeName)
+        {
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        strExpression = _objGrade.DeviceRating.ToString();
+                        break;
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            strExpression = _objGrade.DeviceRating.ToString();
+                        break;
+                    case "Attack":
+                    case "Sleaze":
+                    default:
+                        return 0;
+                }
+            }
+
+            if (strExpression.StartsWith("FixedValues"))
+            {
+                string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                if (Rating > 0)
+                    strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
+            }
+            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                objValue.Replace("{Rating}", Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => (Parent?.GetBaseMatrixAttribute(strMatrixAttribute) ?? 0).ToString(GlobalOptions.InvariantCultureInfo));
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
+                    if (Children.Count + Gear.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                    {
+                        int intTotalChildrenValue = 0;
+                        foreach (Cyberware objLoopCyberware in Children)
+                        {
+                            if (objLoopCyberware.IsModularCurrentlyEquipped)
+                            {
+                                intTotalChildrenValue += objLoopCyberware.GetBaseMatrixAttribute(strMatrixAttribute);
+                            }
+                        }
+                        foreach (Gear objLoopGear in Gear)
+                        {
+                            if (objLoopGear.Equipped)
+                            {
+                                intTotalChildrenValue += objLoopGear.GetBaseMatrixAttribute(strMatrixAttribute);
+                            }
+                        }
+                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
+                }
+                foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
+            }
+            int intReturn = 0;
+            int.TryParse(strExpression, out intReturn);
+            return intReturn;
+        }
+
+        public int GetBonusMatrixAttribute(string strAttributeName)
+        {
+            int intReturn = 0;
+
+            if (Overclocked == strAttributeName)
+            {
+                intReturn += 1;
+            }
+
+            if (!strAttributeName.StartsWith("Mod "))
+                strAttributeName = "Mod " + strAttributeName;
+
+            foreach (Cyberware objLoopCyberware in Children)
+            {
+                if (objLoopCyberware.IsModularCurrentlyEquipped)
+                {
+                    intReturn += objLoopCyberware.GetTotalMatrixAttribute(strAttributeName);
+                }
+            }
+            foreach (Gear loopGear in Gear)
+            {
+                if (loopGear.Equipped)
+                {
+                    intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
+                }
+            }
+
+            return intReturn;
+        }
+
         /// <summary>
         /// Total cost of the just the Cyberware itself before we factor in any multipliers.
         /// </summary>
@@ -2704,6 +2824,114 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return false;
+            }
+        }
+
+        public bool IsProgram => false;
+
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string DeviceRating { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string Attack { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string Sleaze { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string DataProcessing { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string Firewall { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string ModAttack { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string ModSleaze { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string ModDataProcessing { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string ModFirewall { get => string.Empty; set { } }
+
+        private string _strOverclocked = "None";
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        public string Overclocked
+        {
+            get
+            {
+                return _strOverclocked;
+            }
+            set
+            {
+                _strOverclocked = value;
+            }
+        }
+
+        /// <summary>
+        /// Empty for Cyberware.
+        /// </summary>
+        public string CanFormPersona { get => string.Empty; set { } }
+
+        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent"));
+
+        /// <summary>
+        /// 0 for Cyberware.
+        /// </summary>
+        public int BonusMatrixBoxes { get => 0; set { } }
+
+        public int TotalBonusMatrixBoxes
+        {
+            get
+            {
+                int intBonusBoxes = 0;
+                foreach (Gear objGear in Gear)
+                {
+                    if (objGear.Equipped)
+                    {
+                        intBonusBoxes += objGear.TotalBonusMatrixBoxes;
+                    }
+                }
+                return intBonusBoxes;
+            }
+        }
+        
+        /// <summary>
+        /// Empty for Cyberware, use TotalMatrixAttribute() instead.
+        /// </summary>
+        public string ProgramLimit { get => string.Empty; set { } }
+        /// <summary>
+        /// Always false for Cyberware.
+        /// </summary>
+        public bool CanSwapAttributes { get => false; set { } }
+        /// <summary>
+        /// Empty for Cyberware.
+        /// </summary>
+        public string AttributeArray { get => string.Empty; set { } }
+        /// <summary>
+        /// Empty for Cyberware.
+        /// </summary>
+        public string ModAttributeArray { get => string.Empty; set { } }
+
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
+        {
+            get
+            {
+                return IEnumerableExtensions.Both(Gear.Cast<IHasMatrixAttributes>(), Children.Cast<IHasMatrixAttributes>()).ToList();
             }
         }
         #endregion

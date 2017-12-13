@@ -24,6 +24,11 @@ Application Changes:
 - Quantities of gear entries that begin with "Nuyen" will now follow the decimal formatting of nuyen cost formatting. Fixes #2157.
 - The updater's install code will now attempt to handle files that are currently in use and then abort with a warning if it does not succeed instead of crashing. Fixes #2165.
 - Fixed an issue with reapplying improvements for Mentor Spirits who have an "all" bonus where choices are required. Fixes #2153.
+- Matrix Attributes are now an interface that is connected to Gear, Vehicle, and Cyberware and are able to fully interact with one another. Among other things, this means that Matrix Attributes will always show up for those items, that Electronic Modifications for Cyberware and Vehicles are possible, and that Cyberware with the Persona Firmware Electronic Modification will show up as a Commlink (and if the appropriate checkboxes are available in the UI, can be marked as an AI home node and/or the user's active commlink).
+
+Data Changes:
+
+- Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).
 
 Build 196
 
