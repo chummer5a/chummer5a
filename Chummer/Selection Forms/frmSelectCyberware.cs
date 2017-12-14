@@ -1169,9 +1169,11 @@ namespace Chummer
                         (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
                         (_objCharacter.AdapsinEnabled || !objGrade.Adapsin))
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objGrade.Name;
-                        objItem.Name = objGrade.DisplayName;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objGrade.Name,
+                            Name = objGrade.DisplayName
+                        };
                         _lstGrade.Add(objItem);
                     }
                 }
@@ -1216,9 +1218,11 @@ namespace Chummer
                 // Make sure the category contains items that we can actually display
                 if (RefreshList(objXmlCategory.InnerText, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlCategory.InnerText,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                    };
                     _lstCategory.Add(objItem);
                 }
             }
@@ -1228,9 +1232,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 

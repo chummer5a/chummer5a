@@ -105,8 +105,7 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
         {
-            KarmaExpenseType result;
-            return Enum.TryParse(strValue, out result) ? result : KarmaExpenseType.ManualAdd;
+            return Enum.TryParse(strValue, out KarmaExpenseType result) ? result : KarmaExpenseType.ManualAdd;
         }
 
         /// <summary>
@@ -115,8 +114,7 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
         {
-            NuyenExpenseType result;
-            return Enum.TryParse(strValue, out result) ? result : NuyenExpenseType.ManualAdd;
+            return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
         }
         #endregion
 

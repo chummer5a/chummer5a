@@ -120,8 +120,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer parent = ParentForm as frmCareer;
-            if (parent != null)
+            if (ParentForm is frmCareer parent)
             {
                 int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
@@ -171,8 +170,10 @@ namespace Chummer.UI.Skills
                     return;
             }
 
-            frmSelectSpec selectForm = new frmSelectSpec(_skill);
-            selectForm.Mode = "Knowledge";
+            frmSelectSpec selectForm = new frmSelectSpec(_skill)
+            {
+                Mode = "Knowledge"
+            };
             selectForm.ShowDialog();
 
             if (selectForm.DialogResult != DialogResult.OK) return;

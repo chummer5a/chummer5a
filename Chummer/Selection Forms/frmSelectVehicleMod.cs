@@ -89,20 +89,25 @@ namespace Chummer
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/modcategories/category");
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
-                if (!string.IsNullOrEmpty(_strLimitToCategories) && strValues.All(value => value != objXmlCategory.InnerText))
-                    continue;
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                _lstCategory.Add(objItem);
+                if (string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == objXmlCategory.InnerText))
+                {
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlCategory.InnerText,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                    };
+                    _lstCategory.Add(objItem);
+                }
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
             cboCategory.BeginUpdate();
@@ -497,9 +502,11 @@ namespace Chummer
 
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMod["id"].InnerText;
-                    objItem.Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlMod["id"].InnerText,
+                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
+                    };
                     lstMods.Add(objItem);
                 }
             }

@@ -431,15 +431,17 @@ namespace Chummer
                 }
             }
 
-            Dictionary<string, string> dicParams = new Dictionary<string, string>();
-            dicParams.Add("encoding", "UTF-8");
-            dicParams.Add("dpi", "300");
-            dicParams.Add("margin-top", "13");
-            dicParams.Add("margin-bottom", "19");
-            dicParams.Add("margin-left", "13");
-            dicParams.Add("margin-right", "13");
-            dicParams.Add("image-quality", "100");
-            dicParams.Add("print-media-type", "");
+            Dictionary<string, string> dicParams = new Dictionary<string, string>
+            {
+                { "encoding", "UTF-8" },
+                { "dpi", "300" },
+                { "margin-top", "13" },
+                { "margin-bottom", "19" },
+                { "margin-left", "13" },
+                { "margin-right", "13" },
+                { "image-quality", "100" },
+                { "print-media-type", "" }
+            };
             PdfConvert.ConvertHtmlToPdf(new PdfDocument
             {
                 Html = webBrowser1.DocumentText,
@@ -478,9 +480,11 @@ namespace Chummer
             XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
-                objItem.Name = sheet["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText,
+                    Name = sheet["name"].InnerText
+                };
 
                 lstSheets.Add(objItem);
             }
@@ -502,9 +506,11 @@ namespace Chummer
 
             foreach (string fileName in fileNames)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.Combine("omae", fileName);
-                objItem.Name = menuMainOmae + ": " + fileName;
+                ListItem objItem = new ListItem
+                {
+                    Value = Path.Combine("omae", fileName),
+                    Name = menuMainOmae + ": " + fileName
+                };
 
                 items.Add(objItem);
             }
@@ -565,9 +571,11 @@ namespace Chummer
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                 if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strLanguageCode;
-                    objItem.Name = node.InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strLanguageCode,
+                        Name = node.InnerText
+                    };
 
                     lstLanguages.Add(objItem);
                 }

@@ -216,7 +216,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
                     using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
                     {
-                        DataReceivedEventHandler outputHandler = (sender, e) =>
+                        void outputHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -226,9 +226,9 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 output.AppendLine(e.Data);
                             }
-                        };
+                        }
 
-                        DataReceivedEventHandler errorHandler = (sender, e) =>
+                        void errorHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -238,7 +238,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 error.AppendLine(e.Data);
                             }
-                        };
+                        }
 
                         process.OutputDataReceived += outputHandler;
                         process.ErrorDataReceived += errorHandler;

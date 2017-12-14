@@ -848,8 +848,7 @@ namespace Chummer.Backend.Shared_Methods
                     if (objLoopNode.NodeType == XmlNodeType.Element && objLoopNode.Name.StartsWith("cost"))
                     {
                         string strLoopCostString = objLoopNode.Name.Substring(4);
-                        int intTmp;
-                        if (int.TryParse(strLoopCostString, out intTmp))
+                        if (int.TryParse(strLoopCostString, out int intTmp))
                         {
                             intRating = Math.Min(intRating, intTmp);
                         }
@@ -865,8 +864,7 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 catch (XPathException)
                 {
-                    decimal decTemp;
-                    if (decimal.TryParse(objCostNode.InnerText, out decTemp))
+                    if (decimal.TryParse(objCostNode.InnerText, out decimal decTemp))
                     {
                         decCost = decTemp;
                     }

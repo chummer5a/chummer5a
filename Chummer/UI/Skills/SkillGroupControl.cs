@@ -56,8 +56,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer objParent = ParentForm as frmCareer;
-            if (objParent != null)
+            if (ParentForm is frmCareer objParent)
             {
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());

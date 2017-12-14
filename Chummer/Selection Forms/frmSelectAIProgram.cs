@@ -79,9 +79,11 @@ namespace Chummer
                 }
                 if (blnAddItem)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlCategory.InnerText,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                    };
                     _lstCategory.Add(objItem);
                 }
             }
@@ -90,9 +92,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -327,9 +331,11 @@ namespace Chummer
                     if (!blnAdd)
                         continue;
                 }
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlProgram["id"].InnerText;
-                objItem.Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlProgram["id"].InnerText,
+                    Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText
+                };
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && objXmlProgram["category"] != null)
                 {
                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlProgram["category"].InnerText);

@@ -158,7 +158,7 @@ namespace Chummer
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
-        public void setGUID(Guid guidExisting)
+        public void SetGUID(Guid guidExisting)
         {
             _guiID = guidExisting;
         }
@@ -800,9 +800,7 @@ namespace Chummer
         /// <returns>Is the Quality valid on said Character</returns>
         public static bool IsValid(Character objCharacter, XmlNode objXmlQuality)
         {
-            QualityFailureReason q;
-            List<Quality> q2;
-            return IsValid(objCharacter, objXmlQuality, out q, out q2);
+            return IsValid(objCharacter, objXmlQuality, out QualityFailureReason q, out List<Quality> q2);
         }
 
         /// <summary>
@@ -1162,8 +1160,7 @@ namespace Chummer
                     foreach (XmlNode objXmlSkillNode in objXmlCritterNode["skills"].ChildNodes)
                     {
                         string attrName = objXmlSkillNode.Attributes?["attr"]?.Value;
-                        int attr;
-                        if (!attributes.TryGetValue(attrName, out attr))
+                        if (!attributes.TryGetValue(attrName, out int attr))
                             attr = _intForce;
                         int dicepool = attr + _intForce;
 
@@ -1718,8 +1715,7 @@ namespace Chummer
                     intPos = strDV.IndexOf('-') + 1;
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
-                    int intAfter;
-                    int.TryParse(strAfter, out intAfter);
+                    int.TryParse(strAfter, out int intAfter);
                     intAfter += 2;
                     strDV += intAfter.ToString();
                 }
@@ -1728,8 +1724,7 @@ namespace Chummer
                     intPos = strDV.IndexOf('+');
                     string strAfter = strDV.Substring(intPos, strDV.Length - intPos);
                     strDV = strDV.Substring(0, intPos);
-                    int intAfter;
-                    int.TryParse(strAfter, out intAfter);
+                    int.TryParse(strAfter, out int intAfter);
                     intAfter -= 2;
                     if (intAfter > 0)
                         strDV += "+" + intAfter.ToString();

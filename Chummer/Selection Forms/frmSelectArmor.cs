@@ -89,9 +89,11 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 _lstCategory.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -99,9 +101,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -264,10 +268,8 @@ namespace Chummer
             if (e.Column.Index == 1)
             {
                 int intResult = 1;
-                int intTmp1;
-                int intTmp2;
-                if (int.TryParse(e.CellValue1.ToString(), out intTmp1) &&
-                        int.TryParse(e.CellValue2.ToString(), out intTmp2) &&
+                if (int.TryParse(e.CellValue1.ToString(), out int intTmp1) &&
+                        int.TryParse(e.CellValue2.ToString(), out int intTmp2) &&
                         intTmp1 < intTmp2)
                     intResult = -1;
 
@@ -462,9 +464,11 @@ namespace Chummer
                     {
                         if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, chkHideOverAvailLimit.Checked))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objXmlArmor["id"]?.InnerText;
-                            objItem.Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objXmlArmor["id"]?.InnerText,
+                                Name = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText
+                            };
 
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                             {

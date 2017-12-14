@@ -48,9 +48,11 @@ namespace Chummer
                 objXmlDocument.Load(strFileName);
                 string strSettingsName = objXmlDocument.SelectSingleNode("/settings/name").InnerText;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.GetFileName(strFileName);
-                objItem.Name = strSettingsName;
+                ListItem objItem = new ListItem
+                {
+                    Value = Path.GetFileName(strFileName),
+                    Name = strSettingsName
+                };
 
                 lstSettings.Add(objItem);
             }

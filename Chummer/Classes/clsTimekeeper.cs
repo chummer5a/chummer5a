@@ -44,8 +44,7 @@ namespace Chummer
 
         public static TimeSpan Elapsed(string taskname)
         {
-            TimeSpan objStartTimeSpan;
-            if (Starts.TryGetValue(taskname, out objStartTimeSpan))
+            if (Starts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
             {
                 return time.Elapsed - objStartTimeSpan;
             }
@@ -57,8 +56,7 @@ namespace Chummer
 
         public static TimeSpan Finish(string taskname)
         {
-            TimeSpan objStartTimeSpan;
-            if (Starts.TryRemove(taskname, out objStartTimeSpan))
+            if (Starts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
                 TimeSpan final = time.Elapsed - objStartTimeSpan;
 
@@ -67,8 +65,7 @@ namespace Chummer
 
                 Debug.WriteLine(logentry);
 
-                Tuple<TimeSpan, int> existing;
-                if (Statistics.TryGetValue(taskname, out existing))
+                if (Statistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
                 {
                     Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
                 }
@@ -76,7 +73,7 @@ namespace Chummer
                 {
                     Statistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
-                
+
                 return final;
             }
             else

@@ -84,9 +84,10 @@ namespace Chummer
                 if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
                 {
 
-                    TreeNode treNode = new TreeNode();
-
-                    treNode.Text = xmlNode["name"].InnerText;
+                    TreeNode treNode = new TreeNode
+                    {
+                        Text = xmlNode["name"].InnerText
+                    };
                     if (xmlNode["versions"] != null)
                     {
                         treNode.Nodes.AddRange(
@@ -226,9 +227,11 @@ namespace Chummer
                         XmlAttribute attrib = xnode.Attributes["order"];
                         if (attrib != null)
                         {
-                            ListItem item = new ListItem();
-                            item.Name = xnode.InnerText;
-                            item.Value = xnode.Attributes["order"].Value;
+                            ListItem item = new ListItem
+                            {
+                                Name = xnode.InnerText,
+                                Value = xnode.Attributes["order"].Value
+                            };
                             Stages.Add(item);
                         }
                     }
@@ -236,9 +239,8 @@ namespace Chummer
                     //Sort based on integer value of key
                     Stages.Sort((x, y) =>
                     {
-                        int xint = 0;
                         int yint = 0;
-                        if (int.TryParse(x.Value, out xint))
+                        if (int.TryParse(x.Value, out int xint))
                         {
                             if (int.TryParse(y.Value, out yint))
                             {

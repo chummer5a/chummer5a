@@ -259,11 +259,13 @@ namespace Chummer
             }
             objCache.FilePath = strFile;
             objCache.FileName = strFile.Substring(strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-            TreeNode objNode = new TreeNode();
-            objNode.ContextMenuStrip = cmsRoster;
-            objNode.Text = CalculatedName(objCache);
-            objNode.ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
-            
+            TreeNode objNode = new TreeNode
+            {
+                ContextMenuStrip = cmsRoster,
+                Text = CalculatedName(objCache),
+                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">")
+            };
+
             lock (_lstCharacterCacheLock)
             {
                 _lstCharacterCache.Add(objCache);
@@ -499,8 +501,7 @@ namespace Chummer
 
                     if (nodNewNode.Level == 0 || nodNewNode.Parent == nodDestinationNode)
                         return;
-                    int intCharacterIndex;
-                    if (int.TryParse(nodNewNode.Tag.ToString(), out intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
+                    if (int.TryParse(nodNewNode.Tag.ToString(), out int intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
                     {
                         CharacterCache objCache = _lstCharacterCache[intCharacterIndex];
 

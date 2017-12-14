@@ -48,38 +48,50 @@ namespace Chummer
             List<ListItem> lstSkills = new List<ListItem>();
             foreach (XmlNode objXmlSkill in _objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Combat Active\"]"))
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSkill["name"].InnerText;
-                objItem.Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlSkill["name"].InnerText,
+                    Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
+                };
                 lstSkills.Add(objItem);
             }
 
             List<ListItem> lstDVBase = new List<ListItem>();
-            ListItem objHalfStrength = new ListItem();
-            objHalfStrength.Value = "(STR/2)";
-            objHalfStrength.Name = "(" + _objCharacter.STR.DisplayAbbrev + "/2)";
+            ListItem objHalfStrength = new ListItem
+            {
+                Value = "(STR/2)",
+                Name = "(" + _objCharacter.STR.DisplayAbbrev + "/2)"
+            };
             lstDVBase.Add(objHalfStrength);
-            ListItem objStrength = new ListItem();
-            objStrength.Value = "(STR)";
-            objStrength.Name = $"({_objCharacter.STR.DisplayAbbrev})";
+            ListItem objStrength = new ListItem
+            {
+                Value = "(STR)",
+                Name = $"({_objCharacter.STR.DisplayAbbrev})"
+            };
             lstDVBase.Add(objStrength);
             for (int i = 1; i <= 20; i++)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = i.ToString();
-                objItem.Name = i.ToString();
+                ListItem objItem = new ListItem
+                {
+                    Value = i.ToString(),
+                    Name = i.ToString()
+                };
                 lstDVBase.Add(objItem);
             }
 
             List<ListItem> lstDVType = new List<ListItem>();
-            ListItem objDVPhysical = new ListItem();
-            objDVPhysical.Value = "P";
-            objDVPhysical.Name = LanguageManager.GetString("String_DamagePhysical");
+            ListItem objDVPhysical = new ListItem
+            {
+                Value = "P",
+                Name = LanguageManager.GetString("String_DamagePhysical")
+            };
             lstDVType.Add(objDVPhysical);
 
-            ListItem objDVStun = new ListItem();
-            objDVStun.Value = "S";
-            objDVStun.Name = LanguageManager.GetString("String_DamageStun");
+            ListItem objDVStun = new ListItem
+            {
+                Value = "S",
+                Name = LanguageManager.GetString("String_DamageStun")
+            };
             lstDVType.Add(objDVStun);
 
             // Bind the Lists to the ComboBoxes.
@@ -159,21 +171,23 @@ namespace Chummer
             XmlNode objPower = _objXmlPowersDocument.SelectSingleNode("/chummer/powers/power[name = \"Natural Weapon\"]");
 
             // Create the Weapon.
-            _objWeapon = new Weapon(_objCharacter);
-            _objWeapon.Name = txtName.Text;
-            _objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-            _objWeapon.WeaponType = "Melee";
-            _objWeapon.Reach = decimal.ToInt32(nudReach.Value);
-            _objWeapon.Damage = strDamage;
-            _objWeapon.AP = strAP;
-            _objWeapon.Mode = "0";
-            _objWeapon.RC = "0";
-            _objWeapon.Concealability = 0;
-            _objWeapon.Avail = "0";
-            _objWeapon.Cost = 0;
-            _objWeapon.UseSkill = cboSkill.SelectedValue.ToString();
-            _objWeapon.Source = objPower["source"].InnerText;
-            _objWeapon.Page = objPower["page"].InnerText;
+            _objWeapon = new Weapon(_objCharacter)
+            {
+                Name = txtName.Text,
+                Category = LanguageManager.GetString("Tab_Critter"),
+                WeaponType = "Melee",
+                Reach = decimal.ToInt32(nudReach.Value),
+                Damage = strDamage,
+                AP = strAP,
+                Mode = "0",
+                RC = "0",
+                Concealability = 0,
+                Avail = "0",
+                Cost = 0,
+                UseSkill = cboSkill.SelectedValue.ToString(),
+                Source = objPower["source"].InnerText,
+                Page = objPower["page"].InnerText
+            };
 
             DialogResult = DialogResult.OK;
         }

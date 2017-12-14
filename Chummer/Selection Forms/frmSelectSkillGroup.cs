@@ -67,18 +67,22 @@ namespace Chummer
 
                     if (blnAdd)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlSkill.InnerText;
-                        objItem.Name = objXmlSkill.Attributes["translate"]?.InnerText ?? objXmlSkill.InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlSkill.InnerText,
+                            Name = objXmlSkill.Attributes["translate"]?.InnerText ?? objXmlSkill.InnerText
+                        };
                         lstGroups.Add(objItem);
                     }
                 }
             }
             else
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = _strForceValue;
-                objItem.Name = _strForceValue;
+                ListItem objItem = new ListItem
+                {
+                    Value = _strForceValue,
+                    Name = _strForceValue
+                };
                 lstGroups.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

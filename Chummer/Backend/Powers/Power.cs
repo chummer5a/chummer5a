@@ -225,8 +225,7 @@ namespace Chummer
                 XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
-                    int intTemp;
-                    if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out intTemp))
+                    if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out int intTemp))
                     {
                         Create(objXmlPower, intTemp, null, false);
                         objNode.TryGetStringFieldQuickly("notes", ref _strNotes);

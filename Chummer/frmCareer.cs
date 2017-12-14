@@ -1421,40 +1421,49 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
-            //Create the dropdown for the character's primary arm.
-            List<ListItem> lstPrimaryArm = new List<ListItem>();
-            ListItem objLeftHand = new ListItem();
-            objLeftHand.Value = "Left";
-            objLeftHand.Name = LanguageManager.GetString("String_Improvement_SideLeft");
-            lstPrimaryArm.Add(objLeftHand);
-            ListItem objRightHand = new ListItem();
-            objRightHand.Value = "Right";
-            objRightHand.Name = LanguageManager.GetString("String_Improvement_SideRight");
-            lstPrimaryArm.Add(objRightHand);
-            if (_objCharacter.Ambidextrous)
-            {
-                ListItem objAmbidextrous = new ListItem();
-                objAmbidextrous.Value = "Ambidextrous";
-                objAmbidextrous.Name = LanguageManager.GetString("String_Ambidextrous");
-                lstPrimaryArm.Add(objAmbidextrous);
-            }
 
-            SortListItem objSortHand = new SortListItem();
-            lstPrimaryArm.Sort(objSortHand.Compare);
             cboPrimaryArm.BeginUpdate();
-            cboPrimaryArm.ValueMember = "Value";
-            cboPrimaryArm.DisplayMember = "Name";
-            cboPrimaryArm.DataSource = lstPrimaryArm;
+
+            List<ListItem> lstPrimaryArm = new List<ListItem>();
             if (_objCharacter.Ambidextrous)
             {
-                cboPrimaryArm.SelectedValue = "Ambidextrous";
+                ListItem objAmbidextrous = new ListItem
+                {
+                    Value = "Ambidextrous",
+                    Name = LanguageManager.GetString("String_Ambidextrous")
+                };
+                lstPrimaryArm.Add(objAmbidextrous);
                 cboPrimaryArm.Enabled = false;
             }
             else
             {
-                cboPrimaryArm.SelectedValue = _objCharacter.PrimaryArm;
+                //Create the dropdown for the character's primary arm.
+                ListItem objLeftHand = new ListItem
+                {
+                    Value = "Left",
+                    Name = LanguageManager.GetString("String_Improvement_SideLeft")
+                };
+                ListItem objRightHand = new ListItem
+                {
+                    Value = "Right",
+                    Name = LanguageManager.GetString("String_Improvement_SideRight")
+                };
+                lstPrimaryArm.Add(objLeftHand);
+                lstPrimaryArm.Add(objRightHand);
+                SortListItem objSortHand = new SortListItem();
+                lstPrimaryArm.Sort(objSortHand.Compare);
                 cboPrimaryArm.Enabled = true;
             }
+
+            string strPrimaryArm = _objCharacter.PrimaryArm;
+
+            cboPrimaryArm.ValueMember = "Value";
+            cboPrimaryArm.DisplayMember = "Name";
+            cboPrimaryArm.DataSource = lstPrimaryArm;
+            cboPrimaryArm.SelectedValue = strPrimaryArm;
+            if (cboPrimaryArm.SelectedIndex == -1)
+                cboPrimaryArm.SelectedIndex = 0;
+
             cboPrimaryArm.EndUpdate();
         }
 
@@ -24984,7 +24993,8 @@ namespace Chummer
 
         private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnLoading) return;
+            if (_blnLoading || _objCharacter.Ambidextrous)
+                return;
             _objCharacter.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
         }
 
@@ -25099,9 +25109,11 @@ namespace Chummer
             Cyberware objModularCyberware = CommonFunctions.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString(), _objCharacter.Vehicles);
             if (objModularCyberware == null)
                 return;
-            frmSelectItem frmPickMount = new frmSelectItem();
-            frmPickMount.GeneralItems = CommonFunctions.ConstructModularCyberlimbList(_objCharacter, objModularCyberware);
-            frmPickMount.Description = LanguageManager.GetString("MessageTitle_SelectCyberware");
+            frmSelectItem frmPickMount = new frmSelectItem
+            {
+                GeneralItems = CommonFunctions.ConstructModularCyberlimbList(_objCharacter, objModularCyberware),
+                Description = LanguageManager.GetString("MessageTitle_SelectCyberware")
+            };
             frmPickMount.ShowDialog();
 
             // Make sure the dialogue window was not canceled.

@@ -276,9 +276,11 @@ namespace Chummer
                     // lstItems.Add(new ListItem());
                     foreach (XmlNode objXmlPriority in objItems)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlPriority["value"].InnerText;
-                        objItem.Name = objXmlPriority["translate"]?.InnerText ?? objXmlPriority["name"].InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlPriority["value"].InnerText,
+                            Name = objXmlPriority["translate"]?.InnerText ?? objXmlPriority["name"].InnerText
+                        };
                         lstItems.Add(objItem);
                     }
                     SortListItem objPrioritySort = new SortListItem();
@@ -412,13 +414,17 @@ namespace Chummer
             XmlNode objXmlInhabitation = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
             List<ListItem> lstMethods = new List<ListItem>();
 
-            ListItem objPossession = new ListItem();
-            objPossession.Value = "Possession";
-            objPossession.Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText;
+            ListItem objPossession = new ListItem
+            {
+                Value = "Possession",
+                Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText
+            };
 
-            ListItem objInhabitation = new ListItem();
-            objInhabitation.Value = "Inhabitation";
-            objInhabitation.Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText;
+            ListItem objInhabitation = new ListItem
+            {
+                Value = "Inhabitation",
+                Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText
+            };
 
             lstMethods.Add(objInhabitation);
             lstMethods.Add(objPossession);
@@ -483,18 +489,22 @@ namespace Chummer
                 }
 
                 List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem();
-                objNone.Value = "None";
-                objNone.Name = LanguageManager.GetString("String_None");
+                ListItem objNone = new ListItem
+                {
+                    Value = "None",
+                    Name = LanguageManager.GetString("String_None")
+                };
                 lstMetavariants.Add(objNone);
 
                 // Retrieve the list of Metavariants for the selected Metatype.
                 XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
                 foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
                 {
-                    ListItem objMetavariant = new ListItem();
-                    objMetavariant.Value = objXmlMetavariant["name"].InnerText;
-                    objMetavariant.Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText;
+                    ListItem objMetavariant = new ListItem
+                    {
+                        Value = objXmlMetavariant["name"].InnerText,
+                        Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText
+                    };
                     lstMetavariants.Add(objMetavariant);
                 }
 
@@ -513,11 +523,9 @@ namespace Chummer
                 if (cboMetavariant.SelectedValue != null && cboMetavariant.SelectedValue.ToString() != "None" && lstMetatypes.SelectedValue != null && cboHeritage.SelectedValue != null)
                     strMetavariantString = "/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]";
                 XmlNode objXmlMetatypeNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]" + strMetavariantString);
-                int intSpecialAttribPoints = 0;
-                int.TryParse(objXmlMetatypeNode?["value"]?.InnerText, out intSpecialAttribPoints);
+                int.TryParse(objXmlMetatypeNode?["value"]?.InnerText, out int intSpecialAttribPoints);
                 XmlNode objXmlTalentsNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
-                int intTalentSpecialAttribPoints = 0;
-                if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out intTalentSpecialAttribPoints))
+                if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTalentSpecialAttribPoints))
                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
                 lblSpecial.Text = intSpecialAttribPoints.ToString();
 
@@ -549,9 +557,11 @@ namespace Chummer
             {
                 // Clear the Metavariant list if nothing is currently selected.
                 List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem();
-                objNone.Value = "None";
-                objNone.Name = LanguageManager.GetString("String_None");
+                ListItem objNone = new ListItem
+                {
+                    Value = "None",
+                    Name = LanguageManager.GetString("String_None")
+                };
                 lstMetavariants.Add(objNone);
 
                 cboMetavariant.BeginUpdate();
@@ -598,8 +608,7 @@ namespace Chummer
                 {
                     string strSkillCount = (objTalentsNode.SelectSingleNode("skillqty")?.InnerText ??
                                             objTalentsNode.SelectSingleNode("skillgroupqty")?.InnerText) ?? string.Empty;
-                    int intSkillCount;
-                    if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out intSkillCount))
+                    if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
                         string strSkillType = (objTalentsNode.SelectSingleNode("skilltype")?.InnerText ??
                                                objTalentsNode.SelectSingleNode("skillgrouptype")?.InnerText);
@@ -743,10 +752,8 @@ namespace Chummer
                         if (cboMetavariant.SelectedValue != null && cboMetavariant.SelectedValue.ToString() != "None" && lstMetatypes.SelectedValue != null && cboHeritage.SelectedValue != null)
                             strMetavariantString = "/metavariants/metavariant[name = \"" + cboMetavariant.SelectedValue.ToString() + "\"]";
                         XmlNode objXmlMetatypePriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]" + strMetavariantString);
-                        int intSpecialAttribPoints = 0;
-                        int.TryParse(objXmlMetatypePriorityNode?["value"]?.InnerText, out intSpecialAttribPoints);
-                        int intTalentSpecialAttribPoints = 0;
-                        if (int.TryParse(objTalentsNode["specialattribpoints"]?.InnerText, out intTalentSpecialAttribPoints))
+                        int.TryParse(objXmlMetatypePriorityNode?["value"]?.InnerText, out int intSpecialAttribPoints);
+                        if (int.TryParse(objTalentsNode["specialattribpoints"]?.InnerText, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
                         lblSpecial.Text = intSpecialAttribPoints.ToString();
                     }
@@ -806,11 +813,9 @@ namespace Chummer
                 }
 
                 // Set the special attributes label.
-                int intSpecialAttribPoints = 0;
-                int.TryParse(objXmlMetavariantBP?["value"]?.InnerText, out intSpecialAttribPoints);
+                int.TryParse(objXmlMetavariantBP?["value"]?.InnerText, out int intSpecialAttribPoints);
                 XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
-                int intTalentSpecialAttribPoints = 0;
-                if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText, out intTalentSpecialAttribPoints))
+                if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText, out int intTalentSpecialAttribPoints))
                     intSpecialAttribPoints += intTalentSpecialAttribPoints;
                 lblSpecial.Text = intSpecialAttribPoints.ToString();
 
@@ -977,11 +982,9 @@ namespace Chummer
 
                     lblMetavariantBP.Text = objXmlMetatypePriorityNode["karma"]?.InnerText;
                     // Set the special attributes label.
-                    int intSpecialAttribPoints = 0;
-                    int.TryParse(objXmlMetatypePriorityNode["value"]?.InnerText, out intSpecialAttribPoints);
+                    int.TryParse(objXmlMetatypePriorityNode["value"]?.InnerText, out int intSpecialAttribPoints);
                     XmlNode objXmlTalentPriorityNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue + "\"]/talents/talent[name = \"" + cboTalents.SelectedValue + "\"]");
-                    int intTalentSpecialAttribPoints = 0;
-                    if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText, out intTalentSpecialAttribPoints))
+                    if (int.TryParse(objXmlTalentPriorityNode?["specialattribpoints"]?.InnerText, out int intTalentSpecialAttribPoints))
                         intSpecialAttribPoints += intTalentSpecialAttribPoints;
                     lblSpecial.Text = intSpecialAttribPoints.ToString();
                 }
@@ -1252,21 +1255,23 @@ namespace Chummer
                 //Load any natural weapons the character has. 
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-                    objWeapon.WeaponType = "Melee";
-                    objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-                    objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
-                    objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
-                    objWeapon.Mode = "0";
-                    objWeapon.RC = "0";
-                    objWeapon.Concealability = 0;
-                    objWeapon.Avail = "0";
-                    objWeapon.Cost = 0;
-                    objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-                    objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-                    objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+                    Weapon objWeapon = new Weapon(_objCharacter)
+                    {
+                        Name = objXmlNaturalWeapon["name"].InnerText,
+                        Category = LanguageManager.GetString("Tab_Critter"),
+                        WeaponType = "Melee",
+                        Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
+                        Damage = objXmlNaturalWeapon["damage"].InnerText,
+                        AP = objXmlNaturalWeapon["ap"].InnerText,
+                        Mode = "0",
+                        RC = "0",
+                        Concealability = 0,
+                        Avail = "0",
+                        Cost = 0,
+                        UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
+                        Source = objXmlNaturalWeapon["source"].InnerText,
+                        Page = objXmlNaturalWeapon["page"].InnerText
+                    };
 
                     _objCharacter.Weapons.Add(objWeapon);
                 }
@@ -1674,9 +1679,11 @@ namespace Chummer
                     if (!blnRequirementMet)
                         continue;
                 }
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlPriorityTalent["value"].InnerText;
-                objItem.Name = objXmlPriorityTalent["translate"]?.InnerText ?? objXmlPriorityTalent["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlPriorityTalent["value"].InnerText,
+                    Name = objXmlPriorityTalent["translate"]?.InnerText ?? objXmlPriorityTalent["name"].InnerText
+                };
                 lstTalent.Add(objItem);
             }
 
@@ -1717,9 +1724,11 @@ namespace Chummer
                 XmlNodeList objXmlMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + cboHeritage.SelectedValue + "\"]/metatypes/metatype[name = \"" + objXmlMetatype["name"]?.InnerText + "\"]");
                 if (objXmlMetatypePriorityList.Count > 0)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMetatype["name"]?.InnerText;
-                    objItem.Name = objXmlMetatype["translate"]?.InnerText ?? objXmlMetatype["name"]?.InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlMetatype["name"]?.InnerText,
+                        Name = objXmlMetatype["translate"]?.InnerText ?? objXmlMetatype["name"]?.InnerText
+                    };
                     lstMetatype.Add(objItem);
                 }
             }
@@ -1816,9 +1825,11 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlCategory.InnerText,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                    };
                     _lstCategory.Add(objItem);
                 }
             }

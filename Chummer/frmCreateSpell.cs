@@ -52,9 +52,11 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();
@@ -67,49 +69,69 @@ namespace Chummer
             cboCategory.SelectedIndex = 0;
 
             // Populate the list of Spell Types.
-            ListItem itmPhysical = new ListItem();
-            itmPhysical.Value = "P";
-            itmPhysical.Name = LanguageManager.GetString("String_DescPhysical");
-            ListItem itmMana = new ListItem();
-            itmMana.Value = "M";
-            itmMana.Name = LanguageManager.GetString("String_DescMana");
-            List<ListItem> lstTypes = new List<ListItem>();
-            lstTypes.Add(itmPhysical);
-            lstTypes.Add(itmMana);
+            ListItem itmPhysical = new ListItem
+            {
+                Value = "P",
+                Name = LanguageManager.GetString("String_DescPhysical")
+            };
+            ListItem itmMana = new ListItem
+            {
+                Value = "M",
+                Name = LanguageManager.GetString("String_DescMana")
+            };
+            List<ListItem> lstTypes = new List<ListItem>
+            {
+                itmPhysical,
+                itmMana
+            };
             cboType.ValueMember = "Value";
             cboType.DisplayMember = "Name";
             cboType.DataSource = lstTypes;
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
-            ListItem itmTouch = new ListItem();
-            itmTouch.Value = "T";
-            itmTouch.Name = LanguageManager.GetString("String_SpellRangeTouchLong");
-            ListItem itmLOS = new ListItem();
-            itmLOS.Value = "LOS";
-            itmLOS.Name = LanguageManager.GetString("String_SpellRangeLineOfSight");
-            List<ListItem> lstRanges = new List<ListItem>();
-            lstRanges.Add(itmTouch);
-            lstRanges.Add(itmLOS);
+            ListItem itmTouch = new ListItem
+            {
+                Value = "T",
+                Name = LanguageManager.GetString("String_SpellRangeTouchLong")
+            };
+            ListItem itmLOS = new ListItem
+            {
+                Value = "LOS",
+                Name = LanguageManager.GetString("String_SpellRangeLineOfSight")
+            };
+            List<ListItem> lstRanges = new List<ListItem>
+            {
+                itmTouch,
+                itmLOS
+            };
             cboRange.ValueMember = "Value";
             cboRange.DisplayMember = "Name";
             cboRange.DataSource = lstRanges;
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
-            ListItem itmInstant = new ListItem();
-            itmInstant.Value = "I";
-            itmInstant.Name = LanguageManager.GetString("String_SpellDurationInstantLong");
-            ListItem itmPermanent = new ListItem();
-            itmPermanent.Value = "P";
-            itmPermanent.Name = LanguageManager.GetString("String_SpellDurationPermanentLong");
-            ListItem itmSustained = new ListItem();
-            itmSustained.Value = "S";
-            itmSustained.Name = LanguageManager.GetString("String_SpellDurationSustainedLong");
-            List<ListItem> lstDurations = new List<ListItem>();
-            lstDurations.Add(itmInstant);
-            lstDurations.Add(itmPermanent);
-            lstDurations.Add(itmSustained);
+            ListItem itmInstant = new ListItem
+            {
+                Value = "I",
+                Name = LanguageManager.GetString("String_SpellDurationInstantLong")
+            };
+            ListItem itmPermanent = new ListItem
+            {
+                Value = "P",
+                Name = LanguageManager.GetString("String_SpellDurationPermanentLong")
+            };
+            ListItem itmSustained = new ListItem
+            {
+                Value = "S",
+                Name = LanguageManager.GetString("String_SpellDurationSustainedLong")
+            };
+            List<ListItem> lstDurations = new List<ListItem>
+            {
+                itmInstant,
+                itmPermanent,
+                itmSustained
+            };
             cboDuration.ValueMember = "Value";
             cboDuration.DisplayMember = "Name";
             cboDuration.DataSource = lstDurations;

@@ -207,13 +207,11 @@ namespace Chummer
             }
 
             // If the object is a Form, call the UpdateForm method to provide its translations.
-            Form objForm = objObject as Form;
-            if (objForm != null)
+            if (objObject is Form objForm)
                 UpdateForm(objForm);
 
             // If the object is a UserControl, call the UpdateUserControl method to provide its translations.
-            UserControl objUserControl = objObject as UserControl;
-            if (objUserControl != null)
+            if (objObject is UserControl objUserControl)
                 UpdateUserControl(objUserControl);
         }
 
@@ -387,8 +385,7 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, bool blnReturnError = true)
         {
-            string strReturn;
-            if (_objDictionary.TryGetValue(strKey, out strReturn))
+            if (_objDictionary.TryGetValue(strKey, out string strReturn))
             {
                 return strReturn;
             }
@@ -416,9 +413,11 @@ namespace Chummer
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString();
-                        objString.Key = objNode["key"]?.InnerText;
-                        objString.Text = objNode["text"]?.InnerText;
+                        LanguageString objString = new LanguageString
+                        {
+                            Key = objNode["key"]?.InnerText,
+                            Text = objNode["text"]?.InnerText
+                        };
                         lstEnglish.Add(objString);
                     }
                 },
@@ -430,9 +429,11 @@ namespace Chummer
                     objLanguageDocument.Load(strLangPath);
                     foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString();
-                        objString.Key = objNode["key"]?.InnerText;
-                        objString.Text = objNode["text"]?.InnerText;
+                        LanguageString objString = new LanguageString
+                        {
+                            Key = objNode["key"]?.InnerText,
+                            Text = objNode["text"]?.InnerText
+                        };
                         lstLanguage.Add(objString);
                     }
                 }

@@ -59,9 +59,11 @@ namespace Chummer
             {
                 foreach (string strFileName in dlgOpenFile.FileNames)
                 {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = Path.GetFileName(strFileName);
-                    objNode.Tag = strFileName;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = Path.GetFileName(strFileName),
+                        Tag = strFileName
+                    };
                     treCharacters.Nodes.Add(objNode);
                 }
             }
@@ -98,8 +100,10 @@ namespace Chummer
             for (int i = 0; i < lstCharacters.Length; ++i)
             {
                 Character objCharacter = lstCharacters[i];
-                objCharacter = new Character();
-                objCharacter.FileName = treCharacters.Nodes[i].Tag.ToString();
+                objCharacter = new Character
+                {
+                    FileName = treCharacters.Nodes[i].Tag.ToString()
+                };
             }
             // Parallelized load because this is one major bottleneck.
             Parallel.ForEach(lstCharacters, objCharacter =>
@@ -137,9 +141,11 @@ namespace Chummer
 
             if (_frmPrintView == null)
             {
-                _frmPrintView = new frmViewer();
-                _frmPrintView.Characters = _lstCharacters;
-                _frmPrintView.SelectedSheet = "Game Master Summary";
+                _frmPrintView = new frmViewer
+                {
+                    Characters = _lstCharacters,
+                    SelectedSheet = "Game Master Summary"
+                };
                 _frmPrintView.Show();
             }
             else

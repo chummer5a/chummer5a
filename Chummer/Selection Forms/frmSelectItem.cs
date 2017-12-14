@@ -54,9 +54,11 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
-                    ListItem objAmmo = new ListItem();
-                    objAmmo.Value = objGear.InternalId;
-                    objAmmo.Name = objGear.DisplayNameShort;
+                    ListItem objAmmo = new ListItem
+                    {
+                        Value = objGear.InternalId,
+                        Name = objGear.DisplayNameShort
+                    };
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)
                     {
@@ -81,9 +83,11 @@ namespace Chummer
                 // Add each of the items to a new List.
                 foreach (Vehicle objVehicle in _lstVehicles)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objVehicle.InternalId;
-                    objItem.Name = objVehicle.DisplayName;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objVehicle.InternalId,
+                        Name = objVehicle.DisplayName
+                    };
                     lstItems.Add(objItem);
                 }
             }
@@ -92,9 +96,11 @@ namespace Chummer
                 // Add each of the items to a new List.
                 foreach (VehicleMod objMod in _lstVehicleMods)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objMod.InternalId;
-                    objItem.Name = objMod.DisplayName;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objMod.InternalId,
+                        Name = objMod.DisplayName
+                    };
                     lstItems.Add(objItem);
                 }
             }
@@ -118,9 +124,11 @@ namespace Chummer
 
                     foreach (XmlNode objNode in objXmlList)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objNode.InnerText;
-                        objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objNode.InnerText,
+                            Name = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
+                        };
                         lstItems.Add(objItem);
                     }
                 }
@@ -131,18 +139,22 @@ namespace Chummer
                     {
                         if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objCyberware.DisplayNameShort;
-                            objItem.Name = objCyberware.DisplayNameShort;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objCyberware.DisplayNameShort,
+                                Name = objCyberware.DisplayNameShort
+                            };
                             lstItems.Add(objItem);
                         }
                         foreach (Cyberware objChild in objCyberware.Children)
                         {
                             if (objChild.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objChild.DisplayNameShort;
-                                objItem.Name = objChild.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objChild.DisplayNameShort,
+                                    Name = objChild.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                         }
@@ -153,18 +165,22 @@ namespace Chummer
                     {
                         if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objArmor.DisplayNameShort;
-                            objItem.Name = objArmor.DisplayNameShort;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objArmor.DisplayNameShort,
+                                Name = objArmor.DisplayNameShort
+                            };
                             lstItems.Add(objItem);
                         }
                         foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
                             if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objMod.DisplayNameShort,
+                                    Name = objMod.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                         }
@@ -172,9 +188,11 @@ namespace Chummer
                         {
                             if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objGear.DisplayNameShort;
-                                objItem.Name = objGear.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objGear.DisplayNameShort,
+                                    Name = objGear.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                         }
@@ -185,18 +203,22 @@ namespace Chummer
                     {
                         if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objWeapon.DisplayNameShort;
-                            objItem.Name = objWeapon.DisplayNameShort;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objWeapon.DisplayNameShort,
+                                Name = objWeapon.DisplayNameShort
+                            };
                             lstItems.Add(objItem);
                         }
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
                             if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objAccessory.DisplayNameShort;
-                                objItem.Name = objAccessory.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objAccessory.DisplayNameShort,
+                                    Name = objAccessory.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                         }
@@ -206,18 +228,22 @@ namespace Chummer
                             {
                                 if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
-                                    objItem.Name = objUnderbarrelWeapon.DisplayNameShort;
+                                    ListItem objItem = new ListItem
+                                    {
+                                        Value = objUnderbarrelWeapon.DisplayNameShort,
+                                        Name = objUnderbarrelWeapon.DisplayNameShort
+                                    };
                                     lstItems.Add(objItem);
                                 }
                                 foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                                 {
                                     if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                     {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objAccessory.DisplayNameShort;
-                                        objItem.Name = objAccessory.DisplayNameShort;
+                                        ListItem objItem = new ListItem
+                                        {
+                                            Value = objAccessory.DisplayNameShort,
+                                            Name = objAccessory.DisplayNameShort
+                                        };
                                         lstItems.Add(objItem);
                                     }
                                 }
@@ -230,27 +256,33 @@ namespace Chummer
                     {
                         if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objGear.DisplayNameShort;
-                            objItem.Name = objGear.DisplayNameShort;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objGear.DisplayNameShort,
+                                Name = objGear.DisplayNameShort
+                            };
                             lstItems.Add(objItem);
                         }
                         foreach (Gear objChild in objGear.Children)
                         {
                             if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objChild.DisplayNameShort;
-                                objItem.Name = objChild.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objChild.DisplayNameShort,
+                                    Name = objChild.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                             foreach (Gear objSubChild in objChild.Children)
                             {
                                 if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objSubChild.DisplayNameShort;
-                                    objItem.Name = objSubChild.DisplayNameShort;
+                                    ListItem objItem = new ListItem
+                                    {
+                                        Value = objSubChild.DisplayNameShort,
+                                        Name = objSubChild.DisplayNameShort
+                                    };
                                     lstItems.Add(objItem);
                                 }
                             }
@@ -262,36 +294,44 @@ namespace Chummer
                     {
                         if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objVehicle.DisplayNameShort;
-                            objItem.Name = objVehicle.DisplayNameShort;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objVehicle.DisplayNameShort,
+                                Name = objVehicle.DisplayNameShort
+                            };
                             lstItems.Add(objItem);
                         }
                         foreach (VehicleMod objMod in objVehicle.Mods)
                         {
                             if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objMod.IncludedInVehicle)
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objMod.DisplayNameShort,
+                                    Name = objMod.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                             foreach (Weapon objWeapon in objMod.Weapons)
                             {
                                 if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objWeapon.DisplayNameShort;
-                                    objItem.Name = objWeapon.DisplayNameShort;
+                                    ListItem objItem = new ListItem
+                                    {
+                                        Value = objWeapon.DisplayNameShort,
+                                        Name = objWeapon.DisplayNameShort
+                                    };
                                     lstItems.Add(objItem);
                                 }
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
                                     if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                     {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objAccessory.DisplayNameShort;
-                                        objItem.Name = objAccessory.DisplayNameShort;
+                                        ListItem objItem = new ListItem
+                                        {
+                                            Value = objAccessory.DisplayNameShort,
+                                            Name = objAccessory.DisplayNameShort
+                                        };
                                         lstItems.Add(objItem);
                                     }
                                 }
@@ -301,18 +341,22 @@ namespace Chummer
                                     {
                                         if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                         {
-                                            ListItem objItem = new ListItem();
-                                            objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
-                                            objItem.Name = objUnderbarrelWeapon.DisplayNameShort;
+                                            ListItem objItem = new ListItem
+                                            {
+                                                Value = objUnderbarrelWeapon.DisplayNameShort,
+                                                Name = objUnderbarrelWeapon.DisplayNameShort
+                                            };
                                             lstItems.Add(objItem);
                                         }
                                         foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                                         {
                                             if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
                                             {
-                                                ListItem objItem = new ListItem();
-                                                objItem.Value = objAccessory.DisplayNameShort;
-                                                objItem.Name = objAccessory.DisplayNameShort;
+                                                ListItem objItem = new ListItem
+                                                {
+                                                    Value = objAccessory.DisplayNameShort,
+                                                    Name = objAccessory.DisplayNameShort
+                                                };
                                                 lstItems.Add(objItem);
                                             }
                                         }
@@ -324,27 +368,33 @@ namespace Chummer
                         {
                             if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objGear.DisplayNameShort;
-                                objItem.Name = objGear.DisplayNameShort;
+                                ListItem objItem = new ListItem
+                                {
+                                    Value = objGear.DisplayNameShort,
+                                    Name = objGear.DisplayNameShort
+                                };
                                 lstItems.Add(objItem);
                             }
                             foreach (Gear objChild in objGear.Children)
                             {
                                 if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objChild.DisplayNameShort;
-                                    objItem.Name = objChild.DisplayNameShort;
+                                    ListItem objItem = new ListItem
+                                    {
+                                        Value = objChild.DisplayNameShort,
+                                        Name = objChild.DisplayNameShort
+                                    };
                                     lstItems.Add(objItem);
                                 }
                                 foreach (Gear objSubChild in objChild.Children)
                                 {
                                     if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
                                     {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objSubChild.DisplayNameShort;
-                                        objItem.Name = objSubChild.DisplayNameShort;
+                                        ListItem objItem = new ListItem
+                                        {
+                                            Value = objSubChild.DisplayNameShort,
+                                            Name = objSubChild.DisplayNameShort
+                                        };
                                         lstItems.Add(objItem);
                                     }
                                 }

@@ -47,16 +47,20 @@ namespace Chummer
             else
                 objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + _objSkill.Name + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
             // Populate the Skill's Specializations (if any).
-            ListItem objItem = new ListItem();
-            objItem.Value = "Custom";
-            objItem.Name = string.Empty;
+            ListItem objItem = new ListItem
+            {
+                Value = "Custom",
+                Name = string.Empty
+            };
             lstItems.Add(objItem);
             if (objXmlSkill != null)
                 foreach (XmlNode objXmlSpecialization in objXmlSkill.SelectNodes("specs/spec"))
                 {
-                    objItem = new ListItem();
-                    objItem.Value = objXmlSpecialization.InnerText;
-                    objItem.Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText;
+                    objItem = new ListItem
+                    {
+                        Value = objXmlSpecialization.InnerText,
+                        Name = objXmlSpecialization.Attributes["translate"]?.InnerText ?? objXmlSpecialization.InnerText
+                    };
                     lstItems.Add(objItem);
 
                     if (_objSkill.SkillCategory == "Combat Active")
@@ -67,9 +71,11 @@ namespace Chummer
                         XmlNodeList objXmlWeaponList = objXmlWeaponDocument.SelectNodes("/chummer/weapons/weapon[spec = \"" + objXmlSpecialization.InnerText + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
                         foreach (XmlNode objXmlWeapon in objXmlWeaponList)
                         {
-                            objItem = new ListItem();
-                            objItem.Value = objXmlWeapon["name"].InnerText;
-                            objItem.Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText;
+                            objItem = new ListItem
+                            {
+                                Value = objXmlWeapon["name"].InnerText,
+                                Name = objXmlWeapon.Attributes?["translate"]?.InnerText ?? objXmlWeapon.InnerText
+                            };
                             lstItems.Add(objItem);
                         }
                     }
@@ -93,9 +99,11 @@ namespace Chummer
                 {
                     cboSpec.DataSource = null;
                     List<ListItem> lstSingle = new List<ListItem>();
-                    objItem = new ListItem();
-                    objItem.Value = _strForceItem;
-                    objItem.Name = _strForceItem;
+                    objItem = new ListItem
+                    {
+                        Value = _strForceItem,
+                        Name = _strForceItem
+                    };
                     lstSingle.Add(objItem);
                     cboSpec.ValueMember = "Value";
                     cboSpec.DisplayMember = "Name";

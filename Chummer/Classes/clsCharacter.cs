@@ -1524,9 +1524,11 @@ namespace Chummer
             // Sort the Powers in alphabetical order.
             foreach (XmlNode objXmlPower in objXmlNodeList)
             {
-                ListItem objGroup = new ListItem();
-                objGroup.Value = objXmlPower["extra"]?.InnerText ?? string.Empty;
-                objGroup.Name = objXmlPower["name"]?.InnerText ?? string.Empty;
+                ListItem objGroup = new ListItem()
+                {
+                    Value = objXmlPower["extra"]?.InnerText ?? string.Empty,
+                    Name = objXmlPower["name"]?.InnerText ?? string.Empty
+                };
 
                 lstPowerOrder.Add(objGroup);
             }
@@ -2812,8 +2814,10 @@ namespace Chummer
                 {
                     this
                 };
-                _frmPrintView = new frmViewer();
-                _frmPrintView.Characters = lstCharacters;
+                _frmPrintView = new frmViewer
+                {
+                    Characters = lstCharacters
+                };
                 if (blnDialog)
                     _frmPrintView.ShowDialog();
                 else
@@ -5152,19 +5156,14 @@ namespace Chummer
                     int intINI = (INT.TotalValue) + WoundModifiers;
                     if (HomeNode != null)
                     {
-                        int intHomeNodePilot = 0;
-                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                        if (objHomeNodeVehicle != null)
-                            intHomeNodePilot = objHomeNodeVehicle.Pilot;
                         int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                        if (intHomeNodeDP > intHomeNodePilot)
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
-                            intINI += intHomeNodeDP;
+                            int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                            if (intHomeNodePilot > intHomeNodeDP)
+                                intHomeNodeDP = intHomeNodePilot;
                         }
-                        else
-                        {
-                            intINI += intHomeNodePilot;
-                        }
+                        intINI += intHomeNodeDP;
                     }
                     return intINI;
                 }
@@ -6620,8 +6619,7 @@ namespace Chummer
                 {
                     if (HomeNode != null)
                     {
-                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                        if (objHomeNodeVehicle != null)
+                        if (HomeNode is Vehicle objHomeNodeVehicle)
                         {
                             int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
                             if (intHomeNodeSensor > intLimit)
@@ -6650,19 +6648,16 @@ namespace Chummer
                 int intLimit;
                 if (_strMetatype == "A.I." && HomeNode != null)
                 {
-                    int intHomeNodePilot = 0;
-                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
-                    if (objHomeNodeVehicle != null)
-                        intHomeNodePilot = objHomeNodeVehicle.Pilot;
                     int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
-                    if (intHomeNodeDP >= intHomeNodePilot)
+
+                    if (HomeNode is Vehicle objHomeNodeVehicle)
                     {
-                        intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
+                        int intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                        if (intHomeNodePilot > intHomeNodeDP)
+                            intHomeNodeDP = intHomeNodePilot;
                     }
-                    else
-                    {
-                        intLimit = (CHA.TotalValue + intHomeNodePilot + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
-                    }
+
+                    intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
                 }
                 else
                 {
@@ -7429,8 +7424,7 @@ namespace Chummer
         public string AvailTest(decimal decCost, string strAvail)
         {
             string strReturn;
-            int intAvail;
-            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted")).TrimEnd(LanguageManager.GetString("String_AvailForbidden")), out intAvail);
+            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted")).TrimEnd(LanguageManager.GetString("String_AvailForbidden")), out int intAvail);
 
             if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden"))))
             {
@@ -8216,15 +8210,13 @@ namespace Chummer
                 for (int i = 0; i < intRanks; ++i)
                 {
                     Quality objQuality = new Quality(this);
-                    Guid guidOld;
-                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out guidOld))
-                        objQuality.setGUID(guidOld);
+                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
+                        objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = QualitySource.Selected;
                     if (objOldXmlQuality["qualitysource"] != null)
                         objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"].InnerText);
                     objQuality.Create(objXmlNewQuality, this, objQualitySource, new TreeNode(), new List<Weapon>(), new List<TreeNode>(), objOldXmlQuality["extra"]?.InnerText);
-                    int intOldBP;
-                    if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out intOldBP))
+                    if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 
                     _lstQualities.Add(objQuality);

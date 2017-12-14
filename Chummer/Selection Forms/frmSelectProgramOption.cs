@@ -68,9 +68,11 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlOption["name"].InnerText;
-                objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlOption["name"].InnerText,
+                    Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText
+                };
                 lstOption.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

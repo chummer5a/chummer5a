@@ -44,9 +44,11 @@ namespace Chummer
                     bool add = !(node["optionaldrone"] != null && !_vehicle.IsDrone);
                     if (add)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = node["id"].InnerText;
-                        objItem.Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = node["id"].InnerText,
+                            Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText
+                        };
                         switch (node["category"].InnerText)
                         {
                             case "Visibility":

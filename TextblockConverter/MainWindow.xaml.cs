@@ -24,10 +24,9 @@ namespace WpfApplication1
 
         private void ConvertString(bool critter = true)
         {
-	        Guid g;
-	        if (!Guid.TryParse(txtGUID.Text, out g))
+            if (!Guid.TryParse(txtGUID.Text, out Guid g))
             {
-	            txtGUID.Text = Guid.NewGuid().ToString();
+                txtGUID.Text = Guid.NewGuid().ToString();
             }
             var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 	        if (lines.Length <= 1) return;

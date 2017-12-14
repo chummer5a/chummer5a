@@ -474,9 +474,11 @@ namespace Chummer.Backend.Equipment
 
             if (WeaponMounts.Count > 0)
             {
-                TreeNode mountsNode = new TreeNode();
-                mountsNode.Tag = "String_WeaponMounts";
-                mountsNode.Text = LanguageManager.GetString("String_WeaponMounts");
+                TreeNode mountsNode = new TreeNode()
+                {
+                    Tag = "String_WeaponMounts",
+                    Text = LanguageManager.GetString("String_WeaponMounts")
+                };
                 objNode.Nodes.Add(mountsNode);
                 // Weapon Mounts
                 foreach (WeaponMount wm in WeaponMounts)
@@ -709,8 +711,10 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
                 foreach (XmlNode nodChild in nodChildren)
                 {
-                    VehicleMod objMod = new VehicleMod(_objCharacter);
-                    objMod.Parent = this;
+                    VehicleMod objMod = new VehicleMod(_objCharacter)
+                    {
+                        Parent = this
+                    };
                     objMod.Load(nodChild, blnCopy);
                     _lstVehicleMods.Add(objMod);
                 }
@@ -721,8 +725,10 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode nodChild in nodChildren)
                 {
-                    WeaponMount wm = new WeaponMount(_objCharacter, this);
-                    wm.Parent = this;
+                    WeaponMount wm = new WeaponMount(_objCharacter, this)
+                    {
+                        Parent = this
+                    };
                     wm.Load(nodChild, this, blnCopy);
                     WeaponMounts.Add(wm);
                 }
@@ -2979,8 +2985,7 @@ namespace Chummer.Backend.Equipment
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
             }
-            int intReturn = 0;
-            int.TryParse(strExpression, out intReturn);
+            int.TryParse(strExpression, out int intReturn);
             return intReturn;
         }
 

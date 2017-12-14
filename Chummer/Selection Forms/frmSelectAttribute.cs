@@ -157,9 +157,11 @@ namespace Chummer
         /// </summary>
         public void AddMAG()
         {
-            ListItem objMAG = new ListItem();
-            objMAG.Value = "MAG";
-            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort");
+            ListItem objMAG = new ListItem
+            {
+                Value = "MAG",
+                Name = LanguageManager.GetString("String_AttributeMAGShort")
+            };
             _lstAttributes.Add(objMAG);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -174,9 +176,11 @@ namespace Chummer
         /// </summary>
         public void AddMAGAdept()
         {
-            ListItem objMAG = new ListItem();
-            objMAG.Value = "MAGAdept";
-            objMAG.Name = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")";
+            ListItem objMAG = new ListItem
+            {
+                Value = "MAGAdept",
+                Name = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"
+            };
             _lstAttributes.Add(objMAG);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -191,9 +195,11 @@ namespace Chummer
         /// </summary>
         public void AddRES()
         {
-            ListItem objRES = new ListItem();
-            objRES.Value = "RES";
-            objRES.Name = LanguageManager.GetString("String_AttributeRESShort");
+            ListItem objRES = new ListItem
+            {
+                Value = "RES",
+                Name = LanguageManager.GetString("String_AttributeRESShort")
+            };
             _lstAttributes.Add(objRES);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -208,9 +214,11 @@ namespace Chummer
         /// </summary>
         public void AddDEP()
         {
-            ListItem objDEP = new ListItem();
-            objDEP.Value = "DEP";
-            objDEP.Name = LanguageManager.GetString("String_AttributeDEPShort");
+            ListItem objDEP = new ListItem
+            {
+                Value = "DEP",
+                Name = LanguageManager.GetString("String_AttributeDEPShort")
+            };
             _lstAttributes.Add(objDEP);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -227,9 +235,11 @@ namespace Chummer
         public void SingleAttribute(string strValue)
         {
             List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
+            ListItem objItem = new ListItem
+            {
+                Value = strValue,
+                Name = strValue
+            };
             lstItems.Add(objItem);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
@@ -248,9 +258,11 @@ namespace Chummer
             _lstAttributes.Clear();
             foreach (string strAttribute in strValue)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strAttribute;
-                objItem.Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short");
+                ListItem objItem = new ListItem
+                {
+                    Value = strAttribute,
+                    Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short")
+                };
                 _lstAttributes.Add(objItem);
             }
             cboAttribute.BeginUpdate();

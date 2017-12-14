@@ -45,7 +45,7 @@ namespace ChummerDataViewer.Model
 						//Into anon type with a little extra info. DB lookup to see if known, parse guid 
 						var newItems = response.Items
 							.Select(x => new { item = x, guid = Guid.Parse(x["crash_id"].S)})
-							.Select(old => new {item = old.item, guid = old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
+							.Select(old => new { old.item,  old.guid, known = PersistentState.Database.GetCrash(old.guid) != null })
 							.ToList();
 
 						//If all items are known
@@ -140,16 +140,15 @@ namespace ChummerDataViewer.Model
 		private static void WriteCrashToDb(Dictionary<string, AttributeValue> attributeValues)
 		{
 			Guid guid = Guid.Parse(attributeValues["crash_id"].S);
-			Version version;
-			if (Version.TryParse(attributeValues["version"].S, out version))
-			{
-			}
-			else
-			{
-				version = new Version(attributeValues["version"].S + ".0");
-			}
+            if (Version.TryParse(attributeValues["version"].S, out Version version))
+            {
+            }
+            else
+            {
+                version = new Version(attributeValues["version"].S + ".0");
+            }
 
-			PersistentState.Database.CreateCrashReport(
+            PersistentState.Database.CreateCrashReport(
 				guid,
 				long.Parse(attributeValues["upload_timestamp"].N),
 				attributeValues["build_type"].S,

@@ -127,8 +127,10 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmPowerNotes = new frmNotes();
-            frmPowerNotes.Notes = _objPower.Notes;
+            frmNotes frmPowerNotes = new frmNotes
+            {
+                Notes = _objPower.Notes
+            };
             frmPowerNotes.ShowDialog(this);
 
             if (frmPowerNotes.DialogResult == DialogResult.OK)

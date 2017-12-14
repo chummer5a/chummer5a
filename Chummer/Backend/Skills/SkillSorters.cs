@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +12,7 @@ namespace Chummer.Backend.Skills
 
         public SkillSorter(Comparison<Skill> comparison)
         {
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-
-            _comparison = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <summary>
@@ -36,9 +34,7 @@ namespace Chummer.Backend.Skills
 
         public KnowledgeSkillSorter(Comparison<KnowledgeSkill> comparison)
         {
-            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
-
-            _comparison = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         /// <summary>

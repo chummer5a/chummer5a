@@ -159,9 +159,11 @@ namespace Chummer
                     XmlNode objFirstItem = objXmlDocument.SelectSingleNode(strXPath);
                     if (objFirstItem != null)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = strInnerText;
-                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = strInnerText,
+                            Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText
+                        };
                         _lstCategory.Add(objItem);
                     }
                 }
@@ -206,13 +208,17 @@ namespace Chummer
             XmlNode objXmlInhabitation = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
             List<ListItem> lstMethods = new List<ListItem>();
 
-            ListItem objPossession = new ListItem();
-            objPossession.Value = "Possession";
-            objPossession.Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText;
+            ListItem objPossession = new ListItem
+            {
+                Value = "Possession",
+                Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText
+            };
 
-            ListItem objInhabitation = new ListItem();
-            objInhabitation.Value = "Inhabitation";
-            objInhabitation.Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText;
+            ListItem objInhabitation = new ListItem
+            {
+                Value = "Inhabitation",
+                Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText
+            };
 
             lstMethods.Add(objInhabitation);
             lstMethods.Add(objPossession);
@@ -266,18 +272,22 @@ namespace Chummer
                 }
 
                 List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem();
-                objNone.Value = "None";
-                objNone.Name = LanguageManager.GetString("String_None");
+                ListItem objNone = new ListItem
+                {
+                    Value = "None",
+                    Name = LanguageManager.GetString("String_None")
+                };
                 lstMetavariants.Add(objNone);
 
                 // Retrieve the list of Metavariants for the selected Metatype.
                 XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
                 foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
                 {
-                    ListItem objMetavariant = new ListItem();
-                    objMetavariant.Value = objXmlMetavariant["name"].InnerText;
-                    objMetavariant.Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText;
+                    ListItem objMetavariant = new ListItem
+                    {
+                        Value = objXmlMetavariant["name"].InnerText,
+                        Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText
+                    };
                     lstMetavariants.Add(objMetavariant);
                 }
 
@@ -359,9 +369,11 @@ namespace Chummer
             {
                 // Clear the Metavariant list if nothing is currently selected.
                 List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem();
-                objNone.Value = "None";
-                objNone.Name = LanguageManager.GetString("String_None");
+                ListItem objNone = new ListItem
+                {
+                    Value = "None",
+                    Name = LanguageManager.GetString("String_None")
+                };
                 lstMetavariants.Add(objNone);
 
                 cboMetavariant.BeginUpdate();
@@ -707,21 +719,23 @@ namespace Chummer
                 //Load any natural weapons the character has. 
                 foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
                 {
-                    Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-                    objWeapon.WeaponType = "Melee";
-                    objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
-                    objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
-                    objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
-                    objWeapon.Mode = "0";
-                    objWeapon.RC = "0";
-                    objWeapon.Concealability = 0;
-                    objWeapon.Avail = "0";
-                    objWeapon.Cost = 0;
-                    objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-                    objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-                    objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
+                    Weapon objWeapon = new Weapon(_objCharacter)
+                    {
+                        Name = objXmlNaturalWeapon["name"].InnerText,
+                        Category = LanguageManager.GetString("Tab_Critter"),
+                        WeaponType = "Melee",
+                        Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText),
+                        Damage = objXmlNaturalWeapon["damage"].InnerText,
+                        AP = objXmlNaturalWeapon["ap"].InnerText,
+                        Mode = "0",
+                        RC = "0",
+                        Concealability = 0,
+                        Avail = "0",
+                        Cost = 0,
+                        UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
+                        Source = objXmlNaturalWeapon["source"].InnerText,
+                        Page = objXmlNaturalWeapon["page"].InnerText
+                    };
 
                     _objCharacter.Weapons.Add(objWeapon);
                 }
@@ -1015,9 +1029,12 @@ namespace Chummer
 
             foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlMetatype["name"]?.InnerText;
-                objItem.Name = objXmlMetatype["translate"]?.InnerText ?? objItem.Value;
+                string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objXmlMetatype["translate"]?.InnerText ?? strName
+                };
                 lstMetatype.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

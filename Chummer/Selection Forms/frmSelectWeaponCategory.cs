@@ -65,18 +65,22 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 lstCategory.Add(objItem);
             }
 
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Cyberware";
-                objItem.Name = "Cyberware";
+                ListItem objItem = new ListItem
+                {
+                    Value = "Cyberware",
+                    Name = "Cyberware"
+                };
                 lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();

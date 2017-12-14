@@ -136,9 +136,11 @@ namespace Chummer
                 }
                 if (!_lstCategory.Select(x => x.Value).Contains(strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strCategory;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strCategory,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory
+                    };
                     _lstCategory.Add(objItem);
                 }
             }
@@ -148,9 +150,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -761,8 +765,7 @@ namespace Chummer
                         if (objLoopNode.NodeType == XmlNodeType.Element && objLoopNode.Name.StartsWith("avail"))
                         {
                             string strLoopCostString = objLoopNode.Name.Substring(4);
-                            int intTmp;
-                            if (int.TryParse(strLoopCostString, out intTmp))
+                            if (int.TryParse(strLoopCostString, out int intTmp))
                             {
                                 intHighestAvailNode = Math.Max(intHighestAvailNode, intTmp);
                             }
@@ -827,8 +830,7 @@ namespace Chummer
                             if (objLoopNode.NodeType == XmlNodeType.Element && objLoopNode.Name.StartsWith("cost"))
                             {
                                 string strLoopCostString = objLoopNode.Name.Substring(4);
-                                int intTmp;
-                                if (int.TryParse(strLoopCostString, out intTmp))
+                                if (int.TryParse(strLoopCostString, out int intTmp))
                                 {
                                     intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
                                 }
@@ -861,8 +863,7 @@ namespace Chummer
                         catch (XPathException)
                         {
                             lblCost.Text = objCostNode.InnerText;
-                            decimal decTemp;
-                            if (decimal.TryParse(objCostNode.InnerText, out decTemp))
+                            if (decimal.TryParse(objCostNode.InnerText, out decimal decTemp))
                             {
                                 decItemCost = decTemp;
                                 lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -1157,10 +1158,12 @@ namespace Chummer
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                     Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
                 {
-                    ListItem objItem = new ListItem();
-                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
-                    objItem.Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText;
-                    objItem.Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        // When searching, Category needs to be added to the Value so we can identify the English Category name.
+                        Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText,
+                        Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText
+                    };
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
@@ -1202,9 +1205,11 @@ namespace Chummer
             string[] strCategoryList = strCategories.Split(',');
             foreach (string strCategory in strCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strCategory;
-                objItem.Name = strCategory;
+                ListItem objItem = new ListItem
+                {
+                    Value = strCategory,
+                    Name = strCategory
+                };
                 _lstCategory.Add(objItem);
             }
             cboCategory.BeginUpdate();

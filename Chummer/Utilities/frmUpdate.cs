@@ -149,8 +149,7 @@ namespace Chummer
                     File.Move(_strTempUpdatePath, _strTempUpdatePath + ".old");
                 }
                 string strURL = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
-                Uri uriConnectionAddress;
-                if (Uri.TryCreate(strURL, UriKind.Absolute, out uriConnectionAddress))
+                if (Uri.TryCreate(strURL, UriKind.Absolute, out Uri uriConnectionAddress))
                 {
                     try
                     {
@@ -323,8 +322,7 @@ namespace Chummer
                 cmdUpdate.Enabled = false;
                 return;
             }
-            Version objLatestVersion = null;
-            Version.TryParse(strLatestVersion, out objLatestVersion);
+            Version.TryParse(strLatestVersion, out Version objLatestVersion);
             int intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
             if (intResult > 0)
@@ -523,8 +521,7 @@ namespace Chummer
 
         private void DownloadUpdates()
         {
-            Uri uriDownloadFileAddress;
-            if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out uriDownloadFileAddress))
+            if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
                 return;
             Log.Enter("DownloadUpdates");
             cmdUpdate.Enabled = false;
@@ -550,8 +547,7 @@ namespace Chummer
         /// </summary>
         private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            int intTmp;
-            if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(), out intTmp))
+            if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(), out int intTmp))
                 pgbOverallProgress.Value = intTmp;
         }
 

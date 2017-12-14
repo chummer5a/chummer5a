@@ -53,8 +53,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
         public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, decimal decMarkup = 0)
         {
-            if (objParent == null) throw new ArgumentNullException(nameof(objParent));
-            Parent = objParent;
+            Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);

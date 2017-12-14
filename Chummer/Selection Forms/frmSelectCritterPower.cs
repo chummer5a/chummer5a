@@ -69,9 +69,11 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 _lstCategory.Add(objItem);
             }
 
@@ -180,9 +182,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -436,9 +440,11 @@ namespace Chummer
                 string strPowerName = objXmlPower["name"].InnerText;
                 if (lstPowerWhitelist?.Contains(strPowerName) != false)
                 {
-                    TreeNode objNode = new TreeNode();
-                    objNode.Tag = objXmlPower["id"].InnerText;
-                    objNode.Text = objXmlPower["translate"]?.InnerText ?? strPowerName;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Tag = objXmlPower["id"].InnerText,
+                        Text = objXmlPower["translate"]?.InnerText ?? strPowerName
+                    };
                     trePowers.Nodes.Add(objNode);
                 }
             }

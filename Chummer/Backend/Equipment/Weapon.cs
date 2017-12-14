@@ -209,9 +209,11 @@ namespace Chummer.Backend.Equipment
             TreeNode objNode = null;
             if (lstNodes != null)
             {
-                objNode = new TreeNode();
-                objNode.Text = DisplayName;
-                objNode.Tag = _guiID.ToString();
+                objNode = new TreeNode
+                {
+                    Text = DisplayName,
+                    Tag = _guiID.ToString()
+                };
                 lstNodes.Add(objNode);
             }
 

@@ -69,17 +69,21 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 _lstCategory.Add(objItem);
             }
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -408,9 +412,12 @@ namespace Chummer
                 }
                 if (!chkLimitList.Checked || SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlQuality["name"].InnerText;
-                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objItem.Value;
+                    string strName = objXmlQuality["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strName,
+                        Name = objXmlQuality["translate"]?.InnerText ?? strName
+                    };
 
                     lstQuality.Add(objItem);
                 }

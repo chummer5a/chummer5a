@@ -138,8 +138,7 @@ namespace Chummer.Skills
         {
             if (n?["suid"] == null) return null;
 
-            Guid suid;
-            if (!Guid.TryParse(n["suid"].InnerText, out suid))
+            if (!Guid.TryParse(n["suid"].InnerText, out Guid suid))
             {
                 return null;
             }
@@ -230,27 +229,25 @@ namespace Chummer.Skills
         {
             if (n == null)
                 return null;
-            Guid suid;
-            Skill skill;
+            n.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
 
-            n.TryGetField("id", Guid.TryParse, out suid, Guid.NewGuid());
-
-            int baseRating;
-            int.TryParse(n["base"]?.InnerText, out baseRating);
-            int fullRating;
-            int.TryParse(n["rating"]?.InnerText, out fullRating);
+            int.TryParse(n["base"]?.InnerText, out int baseRating);
+            int.TryParse(n["rating"]?.InnerText, out int fullRating);
             int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
 
             bool blnTemp = false;
 
+            Skill skill;
             if (n.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
-                KnowledgeSkill kno = new KnowledgeSkill(character);
-                kno.WriteableName = n["name"]?.InnerText;
-                kno.Base = baseRating;
-                kno.Karma = karmaRating;
+                KnowledgeSkill kno = new KnowledgeSkill(character)
+                {
+                    WriteableName = n["name"]?.InnerText,
+                    Base = baseRating,
+                    Karma = karmaRating,
 
-                kno.Type = n["skillcategory"]?.InnerText;
+                    Type = n["skillcategory"]?.InnerText
+                };
 
                 skill = kno;
             }
@@ -271,8 +268,7 @@ namespace Chummer.Skills
                 skill._base = baseRating;
                 skill._karma = karmaRating;
 
-                ExoticSkill exoticSkill = skill as ExoticSkill;
-                if (exoticSkill != null)
+                if (skill is ExoticSkill exoticSkill)
                 {
                     string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
                     //don't need to do more load then.
@@ -322,8 +318,7 @@ namespace Chummer.Skills
                 string category = n["category"]?.InnerText;
                 if (string.IsNullOrEmpty(category))
                     return null;
-                bool knoSkill;
-                if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out knoSkill))
+                if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool knoSkill))
                 {
                     knoNode = document.SelectSingleNode($"/chummer/categories/category[. = '{category}']");
                     knoSkill = knoNode?.Attributes?["type"]?.InnerText != "active";

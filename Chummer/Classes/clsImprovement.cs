@@ -779,9 +779,8 @@ namespace Chummer
             }
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
-            int intCachedValue;
             Tuple<Character, Improvement.ImprovementType> objCacheKey = new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovementType);
-            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objCacheKey, out intCachedValue) && intCachedValue != int.MinValue)
+            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -936,8 +935,7 @@ namespace Chummer
             else
             {
                 //Log.Exit("ValueToInt");
-                int intReturn = 0;
-                int.TryParse(strValue, out intReturn);
+                int.TryParse(strValue, out int intReturn);
                 return intReturn;
             }
         }
@@ -1037,9 +1035,11 @@ namespace Chummer
                     else
                     {
                     // Display the Select Text window and record the value that was entered.
-                    frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText")
-                        .Replace("{0}", strFriendlyName);
+                    frmSelectText frmPickText = new frmSelectText
+                    {
+                        Description = LanguageManager.GetString("String_Improvement_SelectText")
+                        .Replace("{0}", strFriendlyName)
+                    };
                     frmPickText.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
@@ -1607,22 +1607,24 @@ namespace Chummer
             if (objCharacter != null)
             {
                 // Record the improvement.
-                Improvement objImprovement = new Improvement(objCharacter);
-                objImprovement.ImprovedName = strImprovedName;
-                objImprovement.ImproveSource = objImprovementSource;
-                objImprovement.SourceName = strSourceName;
-                objImprovement.ImproveType = objImprovementType;
-                objImprovement.UniqueName = strUnique;
-                objImprovement.Value = intValue;
-                objImprovement.Rating = intRating;
-                objImprovement.Minimum = intMinimum;
-                objImprovement.Maximum = intMaximum;
-                objImprovement.Augmented = intAugmented;
-                objImprovement.AugmentedMaximum = intAugmentedMaximum;
-                objImprovement.Exclude = strExclude;
-                objImprovement.AddToRating = blnAddToRating;
-                objImprovement.Target = strTarget;
-                objImprovement.Condition = strCondition;
+                Improvement objImprovement = new Improvement(objCharacter)
+                {
+                    ImprovedName = strImprovedName,
+                    ImproveSource = objImprovementSource,
+                    SourceName = strSourceName,
+                    ImproveType = objImprovementType,
+                    UniqueName = strUnique,
+                    Value = intValue,
+                    Rating = intRating,
+                    Minimum = intMinimum,
+                    Maximum = intMaximum,
+                    Augmented = intAugmented,
+                    AugmentedMaximum = intAugmentedMaximum,
+                    Exclude = strExclude,
+                    AddToRating = blnAddToRating,
+                    Target = strTarget,
+                    Condition = strCondition
+                };
 
                 // Add the Improvement to the list.
                 objCharacter.Improvements.Add(objImprovement);

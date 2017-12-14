@@ -89,8 +89,7 @@ namespace Chummer
             if (cboXSLT.Text == string.Empty)
                 return;
 
-            string strBoxText;
-            if (_dictCache.TryGetValue(cboXSLT.Text, out strBoxText))
+            if (_dictCache.TryGetValue(cboXSLT.Text, out string strBoxText))
             {
                 rtbText.Text = strBoxText;
             }

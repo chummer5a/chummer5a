@@ -151,9 +151,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrEmpty(_strForcedValue))
                 {
-                    frmSelectText frmPickText = new frmSelectText();
-                    frmPickText.PreventXPathErrors = true;
-                    frmPickText.Description = LanguageManager.GetString("String_CustomItem_SelectText");
+                    frmSelectText frmPickText = new frmSelectText
+                    {
+                        PreventXPathErrors = true,
+                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
+                    };
                     frmPickText.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
@@ -218,8 +220,10 @@ namespace Chummer.Backend.Equipment
             // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
             if (_strCategory == "Ammunition" && (_strName.StartsWith("Ammo:") || _strName.StartsWith("Arrow:") || _strName.StartsWith("Bolt:")))
             {
-                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory();
-                frmPickWeaponCategory.Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo");
+                frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory
+                {
+                    Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo")
+                };
                 if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
@@ -464,8 +468,10 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objChoiceNode["name"]?.InnerText ?? string.Empty
+                            };
                             string strName = LanguageManager.GetString(objItem.Value, false);
                             if (string.IsNullOrEmpty(strName))
                                 strName = LanguageManager.TranslateExtra(objItem.Value);
@@ -488,9 +494,11 @@ namespace Chummer.Backend.Equipment
                         string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                         if (string.IsNullOrEmpty(strFriendlyName))
                             strFriendlyName = LanguageManager.TranslateExtra(strChooseGearNodeName);
-                        frmSelectItem frmPickItem = new frmSelectItem();
-                        frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName);
-                        frmPickItem.GeneralItems = lstGears;
+                        frmSelectItem frmPickItem = new frmSelectItem
+                        {
+                            Description = LanguageManager.GetString("String_Improvement_SelectText").Replace("{0}", strFriendlyName),
+                            GeneralItems = lstGears
+                        };
 
                         frmPickItem.ShowDialog();
 
@@ -1683,8 +1691,7 @@ namespace Chummer.Backend.Equipment
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
             }
-            int intReturn = 0;
-            int.TryParse(strExpression, out intReturn);
+            int.TryParse(strExpression, out int intReturn);
             return intReturn;
         }
 
@@ -2217,8 +2224,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 if (!string.IsNullOrEmpty(strSecondHalf))
                     strReturn += "/" + strSecondHalf;
-                decimal decReturn;
-                if (decimal.TryParse(strReturn, out decReturn))
+                if (decimal.TryParse(strReturn, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
                 return strReturn;
@@ -2277,8 +2283,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 else
                 {
-                    decimal decReturn;
-                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
                         return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }

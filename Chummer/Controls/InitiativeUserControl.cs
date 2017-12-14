@@ -308,10 +308,12 @@ namespace Chummer
                 if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
                 {
                     Character objLoopCharacter = characters[j];
-                    frmInitRoller frmHits = new frmInitRoller();
-                    frmHits.Text = "Initiative: " + objLoopCharacter.Name;
-                    frmHits.Description = "initiative result";
-                    frmHits.Dice = objLoopCharacter.InitPasses;
+                    frmInitRoller frmHits = new frmInitRoller
+                    {
+                        Text = "Initiative: " + objLoopCharacter.Name,
+                        Description = "initiative result",
+                        Dice = objLoopCharacter.InitPasses
+                    };
                     frmHits.ShowDialog(this);
 
                     if (frmHits.DialogResult != DialogResult.OK)
@@ -376,8 +378,10 @@ namespace Chummer
                 if (chkBoxChummer.SelectedItem == null)
                     MessageBox.Show("Please select a chummer before right-clicking");
 
-                frmInitRoller frmHits = new frmInitRoller();
-                frmHits.Dice = characters[chkBoxChummer.SelectedIndex].InitPasses;
+                frmInitRoller frmHits = new frmInitRoller
+                {
+                    Dice = characters[chkBoxChummer.SelectedIndex].InitPasses
+                };
                 frmHits.ShowDialog(this);
 
                 if (frmHits.DialogResult != DialogResult.OK)
@@ -404,8 +408,10 @@ namespace Chummer
         {
             if (character.InitRoll == Int32.MinValue)
             {
-                frmInitRoller frmHits = new frmInitRoller();
-                frmHits.Dice = character.InitPasses;
+                frmInitRoller frmHits = new frmInitRoller
+                {
+                    Dice = character.InitPasses
+                };
                 frmHits.ShowDialog(this);
 
                 if (frmHits.DialogResult != DialogResult.OK)

@@ -60,9 +60,11 @@ namespace Chummer
 
         private void cmdBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "XSL Files (*.xsl; *.xslt)|*.xsl;*.xslt";
-            openFileDialog.Multiselect = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "XSL Files (*.xsl; *.xslt)|*.xsl;*.xslt",
+                Multiselect = true
+            };
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
             {

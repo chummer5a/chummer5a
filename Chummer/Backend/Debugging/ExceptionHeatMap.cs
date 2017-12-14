@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,8 +24,7 @@ namespace Chummer.Debugging
             if (frame == null) return;
             string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
 
-            int intTmp;
-            if (_map.TryGetValue(heat, out intTmp))
+            if (_map.TryGetValue(heat, out int intTmp))
             {
                 _map[heat] += intTmp + 1;
             }

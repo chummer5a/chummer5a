@@ -78,9 +78,11 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 _lstCategory.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -88,9 +90,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -341,8 +345,7 @@ namespace Chummer
                             strSuffix = LanguageManager.GetString("String_AvailForbidden");
                         strAvail = strAvail.Substring(0, strAvail.Length - 1);
                     }
-                    int intTmp;
-                    if (int.TryParse(strAvail, out intTmp))
+                    if (int.TryParse(strAvail, out int intTmp))
                         strAvail = (intTmp + 4).ToString() + strSuffix;
                 }
             }

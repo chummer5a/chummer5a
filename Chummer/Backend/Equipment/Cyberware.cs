@@ -333,8 +333,10 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    frmSelectSide frmPickSide = new frmSelectSide();
-                    frmPickSide.Description = LanguageManager.GetString("Label_SelectSide").Replace("{0}", DisplayNameShort);
+                    frmSelectSide frmPickSide = new frmSelectSide
+                    {
+                        Description = LanguageManager.GetString("Label_SelectSide").Replace("{0}", DisplayNameShort)
+                    };
                     string strForcedSide = string.Empty;
                     if (_strForced == "Right" || _strForced == "Left")
                         strForcedSide = _strForced;
@@ -475,11 +477,13 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objXmlSubsystemNode["name"].InnerText + "\"]");
 
                     Cyberware objSubsystem = new Cyberware(_objCharacter);
-                    TreeNode objSubsystemNode = new TreeNode();
-                    objSubsystemNode.Text = objSubsystem.DisplayName;
-                    objSubsystemNode.Tag = objSubsystem.InternalId;
-                    objSubsystemNode.ForeColor = SystemColors.GrayText;
-                    objSubsystemNode.ContextMenuStrip = objParentTreeNode.ContextMenuStrip;
+                    TreeNode objSubsystemNode = new TreeNode
+                    {
+                        Text = objSubsystem.DisplayName,
+                        Tag = objSubsystem.InternalId,
+                        ForeColor = SystemColors.GrayText,
+                        ContextMenuStrip = objParentTreeNode.ContextMenuStrip
+                    };
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
                     objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
@@ -502,11 +506,13 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objXmlSubsystemNode["name"].InnerText + "\"]");
 
                     Cyberware objSubsystem = new Cyberware(_objCharacter);
-                    TreeNode objSubsystemNode = new TreeNode();
-                    objSubsystemNode.Text = objSubsystem.DisplayName;
-                    objSubsystemNode.Tag = objSubsystem.InternalId;
-                    objSubsystemNode.ForeColor = SystemColors.GrayText;
-                    objSubsystemNode.ContextMenuStrip = objParentTreeNode.ContextMenuStrip;
+                    TreeNode objSubsystemNode = new TreeNode
+                    {
+                        Text = objSubsystem.DisplayName,
+                        Tag = objSubsystem.InternalId,
+                        ForeColor = SystemColors.GrayText,
+                        ContextMenuStrip = objParentTreeNode.ContextMenuStrip
+                    };
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
                     objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, objSubsystemNode, objWeapons, objWeaponNodes, objVehicles, objVehicleNodes, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
@@ -724,9 +730,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             // Legacy shim for old-form customized attribute
-            int intDummy;
             if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
-                int.TryParse(MaxRatingString, out intDummy))
+                int.TryParse(MaxRatingString, out int intDummy))
             {
                 XmlNode objMyXmlNode = MyXmlNode;
                 if (objMyXmlNode != null)
@@ -822,8 +827,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             if (objNode["addtoparentess"] != null)
             {
-                bool blnTmp;
-                if (bool.TryParse(objNode["addtoparentess"].InnerText, out blnTmp))
+                if (bool.TryParse(objNode["addtoparentess"].InnerText, out bool blnTmp))
                 {
                     _blnAddToParentESS = blnTmp;
                 }
@@ -1202,8 +1206,7 @@ namespace Chummer.Backend.Equipment
                 {
                     return _objCharacter.LimbCount(LimbSlot);
                 }
-                int intReturn = 0;
-                int.TryParse(_strLimbSlotCount, out intReturn);
+                int.TryParse(_strLimbSlotCount, out int intReturn);
                 return intReturn;
             }
             set
@@ -2182,8 +2185,7 @@ namespace Chummer.Backend.Equipment
                     // Just a straight Capacity, so return the value.
                     strReturn = _strCapacity;
                 }
-                decimal decReturn;
-                if (decimal.TryParse(strReturn, out decReturn))
+                if (decimal.TryParse(strReturn, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 return strReturn;
             }
@@ -2373,8 +2375,7 @@ namespace Chummer.Backend.Equipment
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
             }
-            int intReturn = 0;
-            int.TryParse(strExpression, out intReturn);
+            int.TryParse(strExpression, out int intReturn);
             return intReturn;
         }
 

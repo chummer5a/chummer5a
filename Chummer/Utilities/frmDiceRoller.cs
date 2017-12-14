@@ -46,17 +46,23 @@ namespace Chummer
             MoveControls();
 
             List<ListItem> lstMethod = new List<ListItem>();
-            ListItem itmStandard = new ListItem();
-            itmStandard.Value = "Standard";
-            itmStandard.Name = LanguageManager.GetString("String_DiceRoller_Standard");
+            ListItem itmStandard = new ListItem
+            {
+                Value = "Standard",
+                Name = LanguageManager.GetString("String_DiceRoller_Standard")
+            };
 
-            ListItem itmLarge = new ListItem();
-            itmLarge.Value = "Large";
-            itmLarge.Name = LanguageManager.GetString("String_DiceRoller_Large");
+            ListItem itmLarge = new ListItem
+            {
+                Value = "Large",
+                Name = LanguageManager.GetString("String_DiceRoller_Large")
+            };
 
-            ListItem itmReallyLarge = new ListItem();
-            itmReallyLarge.Value = "ReallyLarge";
-            itmReallyLarge.Name = LanguageManager.GetString("String_DiceRoller_ReallyLarge");
+            ListItem itmReallyLarge = new ListItem
+            {
+                Value = "ReallyLarge",
+                Name = LanguageManager.GetString("String_DiceRoller_ReallyLarge")
+            };
 
             lstMethod.Add(itmStandard);
             lstMethod.Add(itmLarge);

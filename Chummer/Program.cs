@@ -84,8 +84,7 @@ namespace Chummer
 #if !DEBUG
         AppDomain.CurrentDomain.UnhandledException += (o, e) =>
         {
-            Exception ex = e.ExceptionObject as Exception;
-            if(ex != null)
+            if (e.ExceptionObject is Exception ex)
                 CrashHandler.WebMiniDumpHandler(ex);
 
             //main.Hide();

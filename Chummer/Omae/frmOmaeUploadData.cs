@@ -59,17 +59,21 @@ namespace Chummer
             string strFilePath = Path.Combine(Application.StartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strFilePath, "custom*_*.xml"))
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Tag = strFile;
-                objNode.Text = Path.GetFileName(strFile);
+                TreeNode objNode = new TreeNode
+                {
+                    Tag = strFile,
+                    Text = Path.GetFileName(strFile)
+                };
                 treFiles.Nodes.Add(objNode);
             }
 
             foreach (string strFile in Directory.GetFiles(strFilePath, "override*_*.xml"))
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Tag = strFile;
-                objNode.Text = Path.GetFileName(strFile);
+                TreeNode objNode = new TreeNode
+                {
+                    Tag = strFile,
+                    Text = Path.GetFileName(strFile)
+                };
                 treFiles.Nodes.Add(objNode);
             }
         }

@@ -281,8 +281,7 @@ namespace Chummer.Skills
         {
             if (saved == null)
                 return null;
-            Guid g;
-            saved.TryGetField("id", Guid.TryParse, out g);
+            saved.TryGetField("id", Guid.TryParse, out Guid g);
             SkillGroup group = new SkillGroup(character, saved["name"]?.InnerText, g);
 
             saved.TryGetInt32FieldQuickly("karma", ref group._skillFromKarma);

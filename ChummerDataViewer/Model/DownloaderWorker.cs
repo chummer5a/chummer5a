@@ -36,17 +36,16 @@ namespace ChummerDataViewer.Model
 				WebClient client = new WebClient();
 				while (true)
 				{
-					DownloadTask task;
-					if (_queue.TryTake(out task))
-					{
-						OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
-						byte[] encrypted = client.DownloadData(task.Url);
-					    byte[] buffer;
-					    buffer = Decrypt(task.Key, encrypted);
-					    WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
-					}
+                    if (_queue.TryTake(out DownloadTask task))
+                    {
+                        OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
+                        byte[] encrypted = client.DownloadData(task.Url);
+                        byte[] buffer;
+                        buffer = Decrypt(task.Key, encrypted);
+                        WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
+                    }
 
-					if (_queue.IsEmpty)
+                    if (_queue.IsEmpty)
 					{
 						OnStatusChanged(new StatusChangedEventArgs("Idle"));
 						resetEvent.WaitOne(15000);  //in case i fuck something up
@@ -71,11 +70,12 @@ namespace ChummerDataViewer.Model
             AesManaged managed = null;
             try
 	        {
-                managed = new AesManaged();
-
-                managed.IV = GetIv(key);
-	            managed.Key = GetKey(key);
-	            ICryptoTransform encryptor = managed.CreateDecryptor();
+                managed = new AesManaged
+                {
+                    IV = GetIv(key),
+                    Key = GetKey(key)
+                };
+                ICryptoTransform encryptor = managed.CreateDecryptor();
 
                 MemoryStream msEncrypt = new MemoryStream();
                 // csEncrypt.Dispose() should call msEncrypt.Dispose()

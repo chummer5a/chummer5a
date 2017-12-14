@@ -192,8 +192,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsGuid(this string strGuid)
         {
-            Guid guidDummy;
-            return Guid.TryParse(strGuid, out guidDummy);
+            return Guid.TryParse(strGuid, out Guid guidDummy);
         }
     }
 }

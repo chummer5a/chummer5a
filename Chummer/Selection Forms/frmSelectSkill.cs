@@ -155,9 +155,11 @@ namespace Chummer
                     {
                         continue;
                     }
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strXmlSkillName;
-                    objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strXmlSkillName,
+                        Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName
+                    };
                     lstSkills.Add(objItem);
                 }
 
@@ -188,8 +190,10 @@ namespace Chummer
 
                         if (blnAddSkill)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objExoticSkill.Name + " (" + objExoticSkill.Specific + ")"
+                            };
                             // Use the translated Exotic Skill name if available.
                             XmlNode objXmlSkill =
                                 _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
@@ -233,18 +237,22 @@ namespace Chummer
                     {
                         string strXmlSkillName = objXmlSkill["name"].InnerText;
                         dicSkillXmlFound[strXmlSkillName] = true;
-                        ListItem objItem = new ListItem();
-                        objItem.Value = strXmlSkillName;
-                        objItem.Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = strXmlSkillName,
+                            Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName
+                        };
                         lstSkills.Add(objItem);
                     }
                     foreach (KeyValuePair<string, bool> objLoopEntry in dicSkillXmlFound)
                     {
                         if (!objLoopEntry.Value)
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objLoopEntry.Key;
-                            objItem.Name = objLoopEntry.Key;
+                            ListItem objItem = new ListItem
+                            {
+                                Value = objLoopEntry.Key,
+                                Name = objLoopEntry.Key
+                            };
                             lstSkills.Add(objItem);
                         }
                     }
@@ -258,9 +266,11 @@ namespace Chummer
                         {
                             continue;
                         }
-                        ListItem objSkill = new ListItem();
-                        objSkill.Value = objKnow.Name;
-                        objSkill.Name = objKnow.DisplayName;
+                        ListItem objSkill = new ListItem
+                        {
+                            Value = objKnow.Name,
+                            Name = objKnow.DisplayName
+                        };
                         lstSkills.Add(objSkill);
                     }
                 }

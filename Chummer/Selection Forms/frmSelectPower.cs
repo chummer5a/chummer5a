@@ -228,9 +228,12 @@ namespace Chummer
                 if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, null, null, _objXmlDocument, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlPower["name"].InnerText;
-                objItem.Name = objXmlPower["translate"]?.InnerText ?? objItem.Value;
+                string strName = objXmlPower["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objXmlPower["translate"]?.InnerText ?? strName
+                };
                 lstPower.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

@@ -125,9 +125,11 @@ namespace Chummer
                     continue;
                 if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != objXmlCategory.InnerText)
                     continue;
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlCategory.InnerText,
+                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                };
                 _lstCategory.Add(objItem);
             }
             SortListItem objSort = new SortListItem();
@@ -135,9 +137,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -442,9 +446,11 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlSpell["id"].InnerText;
-                objItem.Name = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = objXmlSpell["id"].InnerText,
+                    Name = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText
+                };
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && objXmlSpell["category"] != null)
                 {
                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlSpell["category"].InnerText);

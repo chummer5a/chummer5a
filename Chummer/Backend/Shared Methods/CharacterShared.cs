@@ -340,10 +340,12 @@ namespace Chummer
             //Add the Critter Powers that exist.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Text = objPower.DisplayName;
-                objNode.Tag = objPower.InternalId;
-                objNode.ContextMenuStrip = cmsCritterPowers;
+                TreeNode objNode = new TreeNode
+                {
+                    Text = objPower.DisplayName,
+                    Tag = objPower.InternalId,
+                    ContextMenuStrip = cmsCritterPowers
+                };
                 if (!string.IsNullOrEmpty(objPower.Notes))
                     objNode.ForeColor = Color.SaddleBrown;
                 objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
@@ -397,10 +399,12 @@ namespace Chummer
                 {
                     if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
                         continue;
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = objQuality.DisplayName;
-                    objNode.Tag = objQuality.InternalId;
-                    objNode.ContextMenuStrip = cmsQuality;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = objQuality.DisplayName,
+                        Tag = objQuality.InternalId,
+                        ContextMenuStrip = cmsQuality
+                    };
 
                     if (!string.IsNullOrEmpty(objQuality.Notes))
                         objNode.ForeColor = Color.SaddleBrown;
@@ -686,8 +690,10 @@ namespace Chummer
                 }
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
 
             string strShowFileName = string.Empty;
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);

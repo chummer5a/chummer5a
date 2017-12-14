@@ -189,8 +189,7 @@ namespace Chummer
         /// <returns>true if successful read</returns>
         public static bool TryPreserveField<T>(this XmlNode node, string field, ref T read) where T : IConvertible
         {
-            T value;
-            if (node.TryGetField(field, out value))
+            if (node.TryGetField(field, out T value))
             {
                 read = value;
                 return true;
@@ -209,8 +208,7 @@ namespace Chummer
         public static bool TryCheckValue(this XmlNode node, string field, string value)
         {
             //QUESTION: Create regex version?
-            string fieldValue;
-            if (node.TryGetField(field, out fieldValue))
+            if (node.TryGetField(field, out string fieldValue))
             {
                 return fieldValue == value;
             }
@@ -390,8 +388,7 @@ namespace Chummer
             {
                 if (objCulture == null)
                     objCulture = GlobalOptions.InvariantCultureInfo;
-                int intTmp;
-                if (int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out intTmp))
+                if (int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
                 {
                     read = intTmp;
                     return true;
@@ -409,8 +406,7 @@ namespace Chummer
             XmlElement objField = node[field];
             if (objField != null)
             {
-                bool blnTmp;
-                if (bool.TryParse(objField.InnerText, out blnTmp))
+                if (bool.TryParse(objField.InnerText, out bool blnTmp))
                 {
                     read = blnTmp;
                     return true;
@@ -430,8 +426,7 @@ namespace Chummer
             {
                 if (objCulture == null)
                     objCulture = GlobalOptions.InvariantCultureInfo;
-                decimal decTmp;
-                if (decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decTmp))
+                if (decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
                 {
                     read = decTmp;
                     return true;
@@ -451,8 +446,7 @@ namespace Chummer
             {
                 if (objCulture == null)
                     objCulture = GlobalOptions.InvariantCultureInfo;
-                double dblTmp;
-                if (double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out dblTmp))
+                if (double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
                 {
                     read = dblTmp;
                     return true;

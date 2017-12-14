@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,12 +70,16 @@ namespace Chummer
                 //next phase
                 MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
 
-                double junk; //Not used, tryparse needs out
+                //double junk; //Not used, tryparse needs out
 
                 //LINQ magic to cast matchcollection to the double[]
-                fixedDoubles = (from val in m2.Cast<Match>()
-                    where double.TryParse(val.Groups[1].Value, out junk)
-                    select double.Parse(val.Groups[1].Value)).ToArray();
+                List<double> lstValues = new List<double>();
+                foreach (Match objMatch in m2)
+                {
+                    if (double.TryParse(objMatch.Groups[1].Value, out double dblValue))
+                        lstValues.Add(dblValue);
+                }
+                fixedDoubles = lstValues.ToArray();
             }
             else
             {

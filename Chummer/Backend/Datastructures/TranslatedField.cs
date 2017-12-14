@@ -51,8 +51,7 @@ namespace Chummer.Datastructures
             {
                 if (orginal != null && value != null)
                 {
-                    T objTmp;
-                    if (_translate.TryGetValue(orginal, out objTmp) && objTmp == translated)
+                    if (_translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
                     {
                         _translate.TryGetValue(value, out translated);
                     }

@@ -206,8 +206,7 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer parrent = ParentForm as frmCareer;
-            if (parrent != null)
+            if (ParentForm is frmCareer parrent)
             {
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
                     _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
@@ -320,8 +319,10 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmItemNotes = new frmNotes();
-            frmItemNotes.Notes = _skill.Notes;
+            frmNotes frmItemNotes = new frmNotes
+            {
+                Notes = _skill.Notes
+            };
             frmItemNotes.ShowDialog(this);
 
             if (frmItemNotes.DialogResult == DialogResult.OK)

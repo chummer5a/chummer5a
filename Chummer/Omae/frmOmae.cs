@@ -59,19 +59,25 @@ namespace Chummer
         {
             List<ListItem> lstSort = new List<ListItem>();
 
-            ListItem objName = new ListItem();
-            objName.Value = "0";
-            objName.Name = "Name";
+            ListItem objName = new ListItem
+            {
+                Value = "0",
+                Name = "Name"
+            };
             lstSort.Add(objName);
 
-            ListItem objDate = new ListItem();
-            objDate.Value = "1";
-            objDate.Name = "Most Recent";
+            ListItem objDate = new ListItem
+            {
+                Value = "1",
+                Name = "Most Recent"
+            };
             lstSort.Add(objDate);
 
-            ListItem objPopular = new ListItem();
-            objPopular.Value = "2";
-            objPopular.Name = "Most Downloaded";
+            ListItem objPopular = new ListItem
+            {
+                Value = "2",
+                Name = "Most Downloaded"
+            };
             lstSort.Add(objPopular);
 
             cboSortOrder.DataSource = lstSort;
@@ -86,19 +92,25 @@ namespace Chummer
         {
             List<ListItem> lstMode = new List<ListItem>();
 
-            ListItem objAny = new ListItem();
-            objAny.Value = "-1";
-            objAny.Name = "Any Mode";
+            ListItem objAny = new ListItem
+            {
+                Value = "-1",
+                Name = "Any Mode"
+            };
             lstMode.Add(objAny);
 
-            ListItem objCreate = new ListItem();
-            objCreate.Value = "0";
-            objCreate.Name = "Create Mode";
+            ListItem objCreate = new ListItem
+            {
+                Value = "0",
+                Name = "Create Mode"
+            };
             lstMode.Add(objCreate);
 
-            ListItem objCareer = new ListItem();
-            objCareer.Value = "1";
-            objCareer.Name = "Career Mode";
+            ListItem objCareer = new ListItem
+            {
+                Value = "1",
+                Name = "Career Mode"
+            };
             lstMode.Add(objCareer);
 
             cboFilterMode.DataSource = lstMode;
@@ -182,28 +194,36 @@ namespace Chummer
                 // Stuff all of the items into a ListItem List.
                 foreach (XmlNode objNode in objXmlDocument.SelectNodes("/types/type"))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objNode["id"].InnerText;
-                    objItem.Name = objNode["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objNode["id"].InnerText,
+                        Name = objNode["name"].InnerText
+                    };
                     _lstCharacterTypes.Add(objItem);
                 }
 
                 // Add an item for Official NPCs.
-                ListItem objNPC = new ListItem();
-                objNPC.Value = "4";
-                objNPC.Name = "Official NPC Packs";
+                ListItem objNPC = new ListItem
+                {
+                    Value = "4",
+                    Name = "Official NPC Packs"
+                };
                 _lstCharacterTypes.Add(objNPC);
 
                 // Add an item for Custom Data.
-                ListItem objData = new ListItem();
-                objData.Value = "data";
-                objData.Name = "Data";
+                ListItem objData = new ListItem
+                {
+                    Value = "data",
+                    Name = "Data"
+                };
                 _lstCharacterTypes.Add(objData);
 
                 // Add an item for Character Sheets.
-                ListItem objSheets = new ListItem();
-                objSheets.Value = "sheets";
-                objSheets.Name = "Character Sheets";
+                ListItem objSheets = new ListItem
+                {
+                    Value = "sheets",
+                    Name = "Character Sheets"
+                };
                 _lstCharacterTypes.Add(objSheets);
 
                 cboCharacterTypes.Items.Clear();
@@ -694,9 +714,11 @@ namespace Chummer
 
                     if (objXmlDocument.SelectNodes("/characters/character").Count == 0)
                     {
-                        Label lblResults = new Label();
-                        lblResults.Text = LanguageManager.GetString("String_Omae_NoCharacters");
-                        lblResults.Width = 200;
+                        Label lblResults = new Label
+                        {
+                            Text = LanguageManager.GetString("String_Omae_NoCharacters"),
+                            Width = 200
+                        };
                         panOmae.Controls.Add(lblResults);
                     }
                     else
@@ -742,9 +764,11 @@ namespace Chummer
 
                     if (objXmlDocument.SelectNodes("/datas/data").Count == 0)
                     {
-                        Label lblResults = new Label();
-                        lblResults.Text = LanguageManager.GetString("String_Omae_NoData");
-                        lblResults.Width = 200;
+                        Label lblResults = new Label
+                        {
+                            Text = LanguageManager.GetString("String_Omae_NoData"),
+                            Width = 200
+                        };
                         panOmae.Controls.Add(lblResults);
                     }
                     else
@@ -790,9 +814,11 @@ namespace Chummer
 
                     if (objXmlDocument.SelectNodes("/sheets/sheet").Count == 0)
                     {
-                        Label lblResults = new Label();
-                        lblResults.Text = LanguageManager.GetString("String_Omae_NoSheets");
-                        lblResults.Width = 200;
+                        Label lblResults = new Label
+                        {
+                            Text = LanguageManager.GetString("String_Omae_NoSheets"),
+                            Width = 200
+                        };
                         panOmae.Controls.Add(lblResults);
                     }
                     else

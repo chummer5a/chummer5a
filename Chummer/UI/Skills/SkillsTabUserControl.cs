@@ -448,8 +448,10 @@ namespace Chummer.UI.Skills
 
             XmlNode node = document.SelectSingleNode("/chummer/skills/skill[name = \"" + frmPickExoticSkill.SelectedExoticSkill + "\"]");
 
-            ExoticSkill skill = new ExoticSkill(ObjCharacter, node);
-            skill.Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation;
+            ExoticSkill skill = new ExoticSkill(ObjCharacter, node)
+            {
+                Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation
+            };
             skill.Upgrade();
             ObjCharacter.SkillsSection.Skills.Add(skill);
             ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecialization + ")", skill);
@@ -464,14 +466,18 @@ namespace Chummer.UI.Skills
         {
             if (_character.Created)
             {
-                frmSelectItem form = new frmSelectItem();
-                form.Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill");
-                form.DropdownItems = KnowledgeSkill.DefaultKnowledgeSkillCatagories;
+                frmSelectItem form = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill"),
+                    DropdownItems = KnowledgeSkill.DefaultKnowledgeSkillCatagories
+                };
 
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    KnowledgeSkill skill = new KnowledgeSkill(ObjCharacter);
-                    skill.WriteableName = form.SelectedItem;
+                    KnowledgeSkill skill = new KnowledgeSkill(ObjCharacter)
+                    {
+                        WriteableName = form.SelectedItem
+                    };
                     skill.LoadDefaultType(skill.Name);
 
 

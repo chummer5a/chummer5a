@@ -121,8 +121,7 @@ namespace Chummer.Skills
 
         private void LoadSuggestedSpecializations(string name)
         {
-            string strNameValue;
-            if (NameCategoryMap.TryGetValue(name, out strNameValue))
+            if (NameCategoryMap.TryGetValue(name, out string strNameValue))
             {
                 SuggestedSpecializations.Clear();
 
@@ -201,8 +200,7 @@ namespace Chummer.Skills
             get { return _type; }
             set
             {
-                string strNewAttributeValue;
-                if (!CategoriesSkillMap.TryGetValue(value, out strNewAttributeValue)) return;
+                if (!CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue)) return;
                 AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
 

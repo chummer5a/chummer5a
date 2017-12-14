@@ -597,9 +597,8 @@ namespace Chummer
                         {
                             if (objChild.NodeType != XmlNodeType.Element)
                                 continue;
-                            bool blnLoopHasIdentifier = false;
                             // For each child, if no edits were made, but the child has an identifier (id and/or name field), then append the child to the old node.
-                            if (!AmendNodeChildern(objDoc, objChild, strNewXPath, out blnLoopHasIdentifier))
+                            if (!AmendNodeChildern(objDoc, objChild, strNewXPath, out bool blnLoopHasIdentifier))
                             {
                                 if (blnLoopHasIdentifier)
                                 {
@@ -651,10 +650,12 @@ namespace Chummer
 
             string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
             FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
 
             objWriter.WriteStartDocument();
             // <results>

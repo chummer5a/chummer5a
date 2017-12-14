@@ -592,8 +592,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Free || FreeByLifestyle)
                     return 0;
-                decimal decReturn = 0.0m;
-                if (!decimal.TryParse(_strCost, out decReturn))
+                if (!decimal.TryParse(_strCost, out decimal decReturn))
                 {
                     try
                     {

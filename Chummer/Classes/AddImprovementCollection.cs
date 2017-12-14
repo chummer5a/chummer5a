@@ -268,8 +268,10 @@ namespace Chummer.Classes
         public void selectrestricted(XmlNode bonusNode)
         {
             Log.Info("selectrestricted");
-            frmSelectItem frmPickItem = new frmSelectItem();
-            frmPickItem.Character = _objCharacter;
+            frmSelectItem frmPickItem = new frmSelectItem
+            {
+                Character = _objCharacter
+            };
             if (!string.IsNullOrEmpty(ForcedValue))
                 frmPickItem.ForceItem = ForcedValue;
             frmPickItem.AllowAutoSelect = false;
@@ -1189,11 +1191,13 @@ namespace Chummer.Classes
             string strExtra = string.Empty;
             if (node["bonus"]?["selecttext"] != null)
             {
-                
-                frmSelectText frmPickText = new frmSelectText();
-                frmPickText.Description =
+
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description =
                     LanguageManager.GetString("String_Improvement_SelectText")
-                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText);
+                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText)
+                };
                 frmPickText.ShowDialog();
                 // Make sure the dialogue window was not canceled.
                 if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -1322,10 +1326,12 @@ namespace Chummer.Classes
                 {
                     if (objXmlProgram["bonus"]["selecttext"] != null)
                     {
-                        frmSelectText frmPickText = new frmSelectText();
-                        frmPickText.Description =
+                        frmSelectText frmPickText = new frmSelectText
+                        {
+                            Description =
                             LanguageManager.GetString("String_Improvement_SelectText")
-                                .Replace("{0}", frmPickProgram.SelectedProgram);
+                                .Replace("{0}", frmPickProgram.SelectedProgram)
+                        };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -1397,10 +1403,12 @@ namespace Chummer.Classes
                 {
                     if (objXmlProgram["bonus"]["selecttext"] != null)
                     {
-                        frmSelectText frmPickText = new frmSelectText();
-                        frmPickText.Description =
+                        frmSelectText frmPickText = new frmSelectText
+                        {
+                            Description =
                             LanguageManager.GetString("String_Improvement_SelectText")
-                                .Replace("{0}", frmPickProgram.SelectedProgram);
+                                .Replace("{0}", frmPickProgram.SelectedProgram)
+                        };
                         frmPickText.ShowDialog();
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.DialogResult == DialogResult.Cancel)
@@ -1519,13 +1527,15 @@ namespace Chummer.Classes
             bool free = bonusNode["free"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
             bool forceloyalty = bonusNode["forceloyalty"] != null;
-            Contact contact = new Contact(_objCharacter);
-            contact.Free = free;
-            contact.IsGroup = group;
-            contact.Loyalty = loyalty;
-            contact.ForceLoyalty = forceloyalty;
-            contact.Connection = connection;
-            contact.ReadOnly = !canwrite;
+            Contact contact = new Contact(_objCharacter)
+            {
+                Free = free,
+                IsGroup = group,
+                Loyalty = loyalty,
+                ForceLoyalty = forceloyalty,
+                Connection = connection,
+                ReadOnly = !canwrite
+            };
             _objCharacter.Contacts.Add(contact);
 
             CreateImprovement(contact.GUID, Improvement.ImprovementSource.Quality, SourceName,
@@ -1711,8 +1721,10 @@ namespace Chummer.Classes
                     types = KnowledgeSkill.KnowledgeTypes;
                 }
 
-                frmSelectItem select = new frmSelectItem();
-                select.DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray());
+                frmSelectItem select = new frmSelectItem
+                {
+                    DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray())
+                };
 
                 select.ShowDialog();
                 if (select.DialogResult == DialogResult.Cancel)
@@ -2735,25 +2747,35 @@ namespace Chummer.Classes
                 frmSelectItem frmPickCategory = new frmSelectItem();
                 List<ListItem> lstGeneralItems = new List<ListItem>();
 
-                ListItem liBlades = new ListItem();
-                liBlades.Name = "Blades";
-                liBlades.Value = "Blades";
+                ListItem liBlades = new ListItem
+                {
+                    Name = "Blades",
+                    Value = "Blades"
+                };
 
-                ListItem liClubs = new ListItem();
-                liClubs.Name = "Clubs";
-                liClubs.Value = "Clubs";
+                ListItem liClubs = new ListItem
+                {
+                    Name = "Clubs",
+                    Value = "Clubs"
+                };
 
-                ListItem liUnarmed = new ListItem();
-                liUnarmed.Name = "Unarmed";
-                liUnarmed.Value = "Unarmed";
+                ListItem liUnarmed = new ListItem
+                {
+                    Name = "Unarmed",
+                    Value = "Unarmed"
+                };
 
-                ListItem liAstral = new ListItem();
-                liAstral.Name = "Astral Combat";
-                liAstral.Value = "Astral Combat";
+                ListItem liAstral = new ListItem
+                {
+                    Name = "Astral Combat",
+                    Value = "Astral Combat"
+                };
 
-                ListItem liExotic = new ListItem();
-                liExotic.Name = "Exotic Melee Weapons";
-                liExotic.Value = "Exotic Melee Weapons";
+                ListItem liExotic = new ListItem
+                {
+                    Name = "Exotic Melee Weapons",
+                    Value = "Exotic Melee Weapons"
+                };
 
                 lstGeneralItems.Add(liAstral);
                 lstGeneralItems.Add(liBlades);
@@ -2827,9 +2849,11 @@ namespace Chummer.Classes
 
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
-                    ListItem liLoopItem = new ListItem();
-                    liLoopItem.Name = LanguageManager.TranslateExtra(objXmlCategory.InnerText);
-                    liLoopItem.Value = objXmlCategory.InnerText;
+                    ListItem liLoopItem = new ListItem
+                    {
+                        Name = LanguageManager.TranslateExtra(objXmlCategory.InnerText),
+                        Value = objXmlCategory.InnerText
+                    };
                     lstGeneralItems.Add(liLoopItem);
                 }
 
@@ -2891,8 +2915,10 @@ namespace Chummer.Classes
         {
             Log.Info("selectmentorspirit");
             Log.Info("selectmentorspirit = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter);
-            frmPickMentorSpirit.ForcedMentor = ForcedValue;
+            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            {
+                ForcedMentor = ForcedValue
+            };
             frmPickMentorSpirit.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -2929,8 +2955,10 @@ namespace Chummer.Classes
         {
             Log.Info("selectparagon");
             Log.Info("selectparagon = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter);
-            frmPickMentorSpirit.XmlFile = "paragons.xml";
+            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            {
+                XmlFile = "paragons.xml"
+            };
             frmPickMentorSpirit.ShowDialog();
 
             // Make sure the dialogue window was not canceled.
@@ -3099,8 +3127,10 @@ namespace Chummer.Classes
         {
             Log.Info("selectside");
             Log.Info("selectside = " + bonusNode.OuterXml);
-            frmSelectSide frmPickSide = new frmSelectSide();
-            frmPickSide.Description = LanguageManager.GetString("Label_SelectSide").Replace("{0}", _strFriendlyName);
+            frmSelectSide frmPickSide = new frmSelectSide
+            {
+                Description = LanguageManager.GetString("Label_SelectSide").Replace("{0}", _strFriendlyName)
+            };
             if (!string.IsNullOrEmpty(ForcedValue))
                 frmPickSide.ForceValue(ForcedValue);
             else
@@ -3338,9 +3368,11 @@ namespace Chummer.Classes
                     if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddMetamagic, false, _objCharacter, null, null, null, string.Empty, LanguageManager.GetString("String_Metamagic"), _strFriendlyName))
                     {
                         XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + objXmlAddMetamagic.InnerText + "\"]");
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlMetamagic["name"].InnerText;
-                        objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlMetamagic["name"].InnerText,
+                            Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText
+                        };
                         lstMetamagics.Add(objItem);
                     }
                 }
@@ -3424,9 +3456,11 @@ namespace Chummer.Classes
                     if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddEcho, false, _objCharacter, null, null, null, string.Empty, LanguageManager.GetString("String_Echo"), _strFriendlyName))
                     {
                         XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + objXmlAddEcho.InnerText + "\"]");
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlEcho["name"].InnerText;
-                        objItem.Name = objXmlEcho["translate"]?.InnerText ?? objXmlEcho["name"].InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlEcho["name"].InnerText,
+                            Name = objXmlEcho["translate"]?.InnerText ?? objXmlEcho["name"].InnerText
+                        };
                         lstEchoes.Add(objItem);
                     }
                 }
@@ -4157,14 +4191,20 @@ namespace Chummer.Classes
             List<ListItem> lstCritters = new List<ListItem>();
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Name = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText;
-                objItem.Value = objItem.Name;
+                string strName = objXmlNode["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objXmlNode["translate"]?.InnerText ?? strName
+                };
+                
                 lstCritters.Add(objItem);
             }
 
-            frmSelectItem frmPickItem = new frmSelectItem();
-            frmPickItem.GeneralItems = lstCritters;
+            frmSelectItem frmPickItem = new frmSelectItem
+            {
+                GeneralItems = lstCritters
+            };
             frmPickItem.ShowDialog();
 
             if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -4220,19 +4260,24 @@ namespace Chummer.Classes
             List<ListItem> lstArmors = new List<ListItem>();
             foreach (XmlNode objNode in objXmlNodeList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objNode["name"]?.InnerText;
-                objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode["name"]?.InnerText;
+                string strName = objNode["name"]?.InnerText ?? string.Empty;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objNode.Attributes?["translate"]?.InnerText ?? strName
+                };
                 lstArmors.Add(objItem);
             }
 
             if (lstArmors.Count > 0)
             {
 
-                frmSelectItem frmPickItem = new frmSelectItem();
-                frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText")
-                    .Replace("{0}", _strFriendlyName);
-                frmPickItem.GeneralItems = lstArmors;
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("String_Improvement_SelectText")
+                    .Replace("{0}", _strFriendlyName),
+                    GeneralItems = lstArmors
+                };
 
                 Log.Info("_strLimitSelection = " + LimitSelection);
                 Log.Info("_strForcedValue = " + ForcedValue);
@@ -4279,17 +4324,22 @@ namespace Chummer.Classes
             List<ListItem> list = new List<ListItem>();
             foreach (XmlNode objNode in objXmlNodeList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objNode["name"]?.InnerText;
-                objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode["name"]?.InnerText;
+                string strName = objNode["name"]?.InnerText ?? string.Empty;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objNode.Attributes?["translate"]?.InnerText ?? strName
+                };
                 list.Add(objItem);
             }
 
             if (list.Count <= 0) return;
-            frmSelectItem frmPickItem = new frmSelectItem();
-            frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText")
-                .Replace("{0}", _strFriendlyName);
-            frmPickItem.GeneralItems = list;
+            frmSelectItem frmPickItem = new frmSelectItem
+            {
+                Description = LanguageManager.GetString("String_Improvement_SelectText")
+                .Replace("{0}", _strFriendlyName),
+                GeneralItems = list
+            };
 
             Log.Info("_strLimitSelection = " + LimitSelection);
             Log.Info("_strForcedValue = " + ForcedValue);
@@ -4330,9 +4380,11 @@ namespace Chummer.Classes
             {
                 // If the character is null (this is a Vehicle), the user must enter their own string.
                 // Display the Select Item window and record the value that was entered.
-                frmSelectText frmPickText = new frmSelectText();
-                frmPickText.Description = LanguageManager.GetString("String_Improvement_SelectText")
-                    .Replace("{0}", _strFriendlyName);
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description = LanguageManager.GetString("String_Improvement_SelectText")
+                    .Replace("{0}", _strFriendlyName)
+                };
 
                 Log.Info("_strLimitSelection = " + LimitSelection);
                 Log.Info("_strForcedValue = " + ForcedValue);
@@ -4368,17 +4420,21 @@ namespace Chummer.Classes
                 {
                     if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objWeapon.InternalId;
-                        objItem.Name = objWeapon.DisplayName;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objWeapon.InternalId,
+                            Name = objWeapon.DisplayName
+                        };
                         lstWeapons.Add(objItem);
                     }
                 }
 
-                frmSelectItem frmPickItem = new frmSelectItem();
-                frmPickItem.Description = LanguageManager.GetString("String_Improvement_SelectText")
-                    .Replace("{0}", _strFriendlyName);
-                frmPickItem.GeneralItems = lstWeapons;
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("String_Improvement_SelectText")
+                    .Replace("{0}", _strFriendlyName),
+                    GeneralItems = lstWeapons
+                };
 
                 Log.Info("_strLimitSelection = " + LimitSelection);
                 Log.Info("_strForcedValue = " + ForcedValue);
@@ -4415,8 +4471,10 @@ namespace Chummer.Classes
             XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
             Log.Info("selectoptionalpower");
             // Display the Select Attribute window and record which Skill was selected.
-            frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower();
-            frmPickPower.Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower");
+            frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower
+            {
+                Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower")
+            };
             string strForcedValue = string.Empty;
 
             List<KeyValuePair<string, string>> lstValue = new List<KeyValuePair<string, string>>();
@@ -4517,9 +4575,11 @@ namespace Chummer.Classes
             {
                 if (!_objCharacter.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DealerConnection && objImprovement.UniqueName == objNode.InnerText))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objNode.InnerText;
-                    objItem.Name = LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText);
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objNode.InnerText,
+                        Name = LanguageManager.GetString("String_DealerConnection_" + objNode.InnerText)
+                    };
                     lstItems.Add(objItem);
                 }
             }
@@ -4528,9 +4588,11 @@ namespace Chummer.Classes
                 MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", SourceName));
                 throw new AbortedException();
             }
-            frmSelectItem frmPickItem = new frmSelectItem();
-            frmPickItem.GeneralItems = lstItems;
-            frmPickItem.AllowAutoSelect = false;
+            frmSelectItem frmPickItem = new frmSelectItem
+            {
+                GeneralItems = lstItems,
+                AllowAutoSelect = false
+            };
             frmPickItem.ShowDialog();
             // Make sure the dialogue window was not canceled.
             if (frmPickItem.DialogResult == DialogResult.Cancel)
@@ -4584,9 +4646,8 @@ namespace Chummer.Classes
                 final = frmSelect.SelectedItem;
             }
 
-            SkillsSection.FilterOptions skills;
             string strName = string.Empty;
-            if (Enum.TryParse(final, out skills))
+            if (Enum.TryParse(final, out SkillsSection.FilterOptions skills))
             {
                 bool blnAdd = true;
                 if (bonusNode.Attributes["name"] != null)
@@ -4658,9 +4719,11 @@ namespace Chummer.Classes
                 if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAddQuality, false, _objCharacter, null, null, objXmlDocument, string.Empty, LanguageManager.GetString("String_Quality"), _strFriendlyName))
                 {
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlQuality["name"].InnerText;
-                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = objXmlQuality["name"].InnerText,
+                        Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText
+                    };
                     lstQualities.Add(objItem);
                 }
             }
@@ -4691,9 +4754,11 @@ namespace Chummer.Classes
             {
                 lstQualities.Clear();
                 frmPickItem = new frmSelectItem();
-                ListItem objItem = new ListItem();
-                objItem.Value = "None";
-                objItem.Name = LanguageManager.GetString("String_None");
+                ListItem objItem = new ListItem
+                {
+                    Value = "None",
+                    Name = LanguageManager.GetString("String_None")
+                };
                 lstQualities.Add(objItem);
                 foreach (XmlNode objXmlAddQuality in bonusNode.SelectNodes("discountqualities/quality"))
                 {
@@ -4701,9 +4766,11 @@ namespace Chummer.Classes
                         strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
-                    objItem = new ListItem();
-                    objItem.Value = objXmlQuality["name"].InnerText;
-                    objItem.Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText;
+                    objItem = new ListItem
+                    {
+                        Value = objXmlQuality["name"].InnerText,
+                        Name = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"].InnerText
+                    };
                     if (!string.IsNullOrWhiteSpace(strForceValue)) objItem.Name += strForceValue;
                     lstQualities.Add(objItem);
                 }
@@ -4726,8 +4793,10 @@ namespace Chummer.Classes
                     objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[\"" + frmPickItem.SelectedItem + "\"]");
                     int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText);
                     objAddQualityNode = new TreeNode();
-                    Quality discountQuality = new Quality(_objCharacter);
-                    discountQuality.BP = 0;
+                    Quality discountQuality = new Quality(_objCharacter)
+                    {
+                        BP = 0
+                    };
                     strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
                     discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
                     _objCharacter.Qualities.Add(discountQuality);
@@ -4797,8 +4866,10 @@ namespace Chummer.Classes
         {
             Log.Info("limitspellcategory");
             // Display the Select Spell window.
-            frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory();
-            frmPickSpellCategory.Description = LanguageManager.GetString("Title_SelectSpellCategory");
+            frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory
+            {
+                Description = LanguageManager.GetString("Title_SelectSpellCategory")
+            };
             frmPickSpellCategory.ShowDialog();
 
             // Make sure the dialogue window was not canceled.

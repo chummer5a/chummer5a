@@ -188,15 +188,13 @@ namespace Chummer
             }
             if (macroName == "year")
             {
-                int year;
-                if (int.TryParse(_objCharacter.Age, out year))
+                if (int.TryParse(_objCharacter.Age, out int year))
                 {
-                    int age;
-                    if (int.TryParse(macroPool, out age))
+                    if (int.TryParse(macroPool, out int age))
                     {
-                        return (DateTime.UtcNow.Year + 72 + age - year).ToString();
+                        return (DateTime.UtcNow.Year + 62 + age - year).ToString();
                     }
-                    return (DateTime.UtcNow.Year + 72 - year).ToString();
+                    return (DateTime.UtcNow.Year + 62 - year).ToString();
                 }
                 return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }
@@ -214,9 +212,8 @@ namespace Chummer
                 {
                     if (userMacro.FirstChild != null)
                     {
-                        string selected;
                         //Already defined, no need to do anything fancy
-                        if (!persistenceDictionary.TryGetValue(macroPool, out selected))
+                        if (!persistenceDictionary.TryGetValue(macroPool, out string selected))
                         {
                             if (userMacro.FirstChild.Name == "random")
                             {

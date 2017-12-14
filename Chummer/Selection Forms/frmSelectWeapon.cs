@@ -106,9 +106,11 @@ namespace Chummer
                 if (_objXmlCategoryList != null)
                     foreach (XmlNode objXmlCategory in _objXmlCategoryList)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlCategory.InnerText;
-                        objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = objXmlCategory.InnerText,
+                            Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
+                        };
                         _lstCategory.Add(objItem);
                     }
             }
@@ -117,9 +119,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
 
@@ -288,8 +292,7 @@ namespace Chummer
                     string strAP = objWeapon.TotalAP;
                     if (strAP == "-")
                         strAP = "0";
-                    int intRC;
-                    int.TryParse(objWeapon.TotalRC, out intRC);
+                    int.TryParse(objWeapon.TotalRC, out int intRC);
                     string strAmmo = objWeapon.Ammo;
                     string strMode = objWeapon.Mode;
                     string strReach = objWeapon.TotalReach.ToString();

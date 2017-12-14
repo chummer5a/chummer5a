@@ -50,8 +50,10 @@ namespace Chummer
         /// </summary>
         private void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 LoadCharacter(openFileDialog.FileName);
@@ -66,8 +68,10 @@ namespace Chummer
             if (File.Exists(fileName) && fileName.EndsWith("chum5"))
             {
                 Cursor = Cursors.WaitCursor;
-                Character objCharacter = new Character();
-                objCharacter.FileName = fileName;
+                Character objCharacter = new Character
+                {
+                    FileName = fileName
+                };
                 if (!objCharacter.Load())
                 {
                     Cursor = Cursors.Default;   // TODO edward setup error page

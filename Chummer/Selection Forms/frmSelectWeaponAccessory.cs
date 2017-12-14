@@ -169,9 +169,12 @@ namespace Chummer
 
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlAccessory["name"]?.InnerText;
-                    objItem.Name = objXmlAccessory["translate"]?.InnerText ?? objItem.Value;
+                    string strName = objXmlAccessory["name"]?.InnerText ?? string.Empty;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strName,
+                        Name = objXmlAccessory["translate"]?.InnerText ?? strName
+                    };
                     lstAccessories.Add(objItem);
                 }
                 NextItem:;
@@ -435,8 +438,7 @@ namespace Chummer
                 lblRC.Visible = false;
                 lblRCLabel.Visible = false;
             }
-            int intMaxRating;
-            if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out intMaxRating) && intMaxRating > 1)
+            if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out int intMaxRating) && intMaxRating > 1)
             {
                 nudRating.Enabled = true;
                 nudRating.Visible = true;

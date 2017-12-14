@@ -169,9 +169,11 @@ namespace Chummer.Backend.Equipment
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlCategoryNode in objXmlArmorNode["selectmodsfromcategory"])
                 {
-                    frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter);
-                    frmPickArmorMod.AllowedCategories = objXmlCategoryNode.InnerText;
-                    frmPickArmorMod.ExcludeGeneralCategory = true;
+                    frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(_objCharacter)
+                    {
+                        AllowedCategories = objXmlCategoryNode.InnerText,
+                        ExcludeGeneralCategory = true
+                    };
                     frmPickArmorMod.ShowDialog();
 
                     if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
@@ -757,8 +759,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    decimal decReturn;
-                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
                         return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }
@@ -1178,8 +1179,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    decimal decReturn;
-                    if (decimal.TryParse(_strArmorCapacity, out decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
                         strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     else
                         strReturn = _strArmorCapacity;

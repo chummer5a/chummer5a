@@ -154,10 +154,9 @@ namespace CrashHandler
 		        byte[] zip = GetZip();
 
 		        SetProgress(CrashDumperProgress.Encrypting);
-		        byte[] iv, key;
-		        byte[] encrypted = Encrypt(zip, out iv, out key);
+                byte[] encrypted = Encrypt(zip, out byte[] iv, out byte[] key);
 
-		        SetProgress(CrashDumperProgress.Uploading);
+                SetProgress(CrashDumperProgress.Uploading);
 		        string location = Upload(encrypted);
 
                 CrashLogWriter.WriteLine("Files uploaded");
@@ -213,12 +212,14 @@ namespace CrashHandler
             _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
             using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
 			{
-                MiniDumpExceptionInformation info = new MiniDumpExceptionInformation();
-				info.ClientPointers = true;
-				info.ExceptionPointers = exceptionInfo;
-				info.ThreadId = threadId;
+                MiniDumpExceptionInformation info = new MiniDumpExceptionInformation
+                {
+                    ClientPointers = true,
+                    ExceptionPointers = exceptionInfo,
+                    ThreadId = threadId
+                };
 
-				MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
+                MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
 				                      MINIDUMP_TYPE.MiniDumpWithDataSegs |
 				                      MINIDUMP_TYPE.MiniDumpWithHandleData |
 				                      MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |

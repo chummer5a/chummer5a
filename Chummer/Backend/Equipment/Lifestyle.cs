@@ -150,8 +150,7 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
             //Can't out property and no backing field
-            Guid source;
-            if (objNode.TryGetField("sourceid", Guid.TryParse, out source))
+            if (objNode.TryGetField("sourceid", Guid.TryParse, out Guid source))
             {
                 SourceID = source;
             }

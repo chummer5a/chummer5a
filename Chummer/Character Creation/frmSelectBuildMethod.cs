@@ -43,26 +43,34 @@ namespace Chummer
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>();
-            ListItem objKarma = new ListItem();
-            objKarma.Value = "Karma";
-            objKarma.Name = LanguageManager.GetString("String_Karma");
+            ListItem objKarma = new ListItem
+            {
+                Value = "Karma",
+                Name = LanguageManager.GetString("String_Karma")
+            };
             lstBuildMethod.Add(objKarma);
 
-            ListItem objPriority = new ListItem();
-            objPriority.Value = "Priority";
-            objPriority.Name = LanguageManager.GetString("String_Priority");
+            ListItem objPriority = new ListItem
+            {
+                Value = "Priority",
+                Name = LanguageManager.GetString("String_Priority")
+            };
             lstBuildMethod.Add(objPriority);
 
-            ListItem objSumtoTen = new ListItem();
-            objSumtoTen.Value = "SumtoTen";
-            objSumtoTen.Name = LanguageManager.GetString("String_SumtoTen");
+            ListItem objSumtoTen = new ListItem
+            {
+                Value = "SumtoTen",
+                Name = LanguageManager.GetString("String_SumtoTen")
+            };
             lstBuildMethod.Add(objSumtoTen);
 
             if (GlobalOptions.LifeModuleEnabled)
             {
-                ListItem objLifeModule = new ListItem();
-                objLifeModule.Value = "LifeModule";
-                objLifeModule.Name = LanguageManager.GetString("String_LifeModule");
+                ListItem objLifeModule = new ListItem
+                {
+                    Value = "LifeModule",
+                    Name = LanguageManager.GetString("String_LifeModule")
+                };
                 lstBuildMethod.Add(objLifeModule);
             }
 

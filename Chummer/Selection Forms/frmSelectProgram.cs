@@ -218,9 +218,11 @@ namespace Chummer
                         continue;
                 }
 
-                TreeNode nodProgram = new TreeNode();
-                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["id"].InnerText;
+                TreeNode nodProgram = new TreeNode
+                {
+                    Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText,
+                    Tag = objXmlProgram["id"].InnerText
+                };
                 trePrograms.Nodes.Add(nodProgram);
             }
         }

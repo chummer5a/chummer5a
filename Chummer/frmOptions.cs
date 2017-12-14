@@ -456,9 +456,11 @@ namespace Chummer
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                var newSource = new SourcebookInfo();
-                newSource.Code = tag;
-                newSource.Offset = offset;
+                var newSource = new SourcebookInfo
+                {
+                    Code = tag,
+                    Offset = offset
+                };
                 GlobalOptions.SourcebookInfo.Add(newSource);
             }
         }
@@ -666,12 +668,13 @@ namespace Chummer
                 if (objXmlBook["hide"] != null)
                     continue;
                 bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
-                TreeNode objNode = new TreeNode();
+                TreeNode objNode = new TreeNode
+                {
+                    Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText,
 
-                objNode.Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText;
-
-                objNode.Tag = objXmlBook["code"].InnerText;
-                objNode.Checked = blnChecked;
+                    Tag = objXmlBook["code"].InnerText,
+                    Checked = blnChecked
+                };
                 treSourcebook.Nodes.Add(objNode);
             }
 
@@ -686,11 +689,12 @@ namespace Chummer
 
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo)
                 {
-                    TreeNode objNode = new TreeNode();
-
-                    objNode.Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
-                    objNode.Tag = objCustomDataDirectory.Name;
-                    objNode.Checked = objCustomDataDirectory.Enabled;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")",
+                        Tag = objCustomDataDirectory.Name,
+                        Checked = objCustomDataDirectory.Enabled
+                    };
                     treCustomDataDirectories.Nodes.Add(objNode);
                 }
             }
@@ -1039,23 +1043,31 @@ namespace Chummer
         {
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>();
-            ListItem objKarma = new ListItem();
-            objKarma.Value = "Karma";
-            objKarma.Name = LanguageManager.GetString("String_Karma");
+            ListItem objKarma = new ListItem
+            {
+                Value = "Karma",
+                Name = LanguageManager.GetString("String_Karma")
+            };
 
-            ListItem objPriority = new ListItem();
-            objPriority.Value = "Priority";
-            objPriority.Name = LanguageManager.GetString("String_Priority");
+            ListItem objPriority = new ListItem
+            {
+                Value = "Priority",
+                Name = LanguageManager.GetString("String_Priority")
+            };
 
-            ListItem objSumtoTen = new ListItem();
-            objSumtoTen.Value = "SumtoTen";
-            objSumtoTen.Name = LanguageManager.GetString("String_SumtoTen");
+            ListItem objSumtoTen = new ListItem
+            {
+                Value = "SumtoTen",
+                Name = LanguageManager.GetString("String_SumtoTen")
+            };
 
             if (GlobalOptions.LifeModuleEnabled)
             {
-                ListItem objLifeModule = new ListItem();
-                objLifeModule.Value = "LifeModule";
-                objLifeModule.Name = LanguageManager.GetString("String_LifeModule");
+                ListItem objLifeModule = new ListItem
+                {
+                    Value = "LifeModule",
+                    Name = LanguageManager.GetString("String_LifeModule")
+                };
                 lstBuildMethod.Add(objLifeModule);
             }
 
@@ -1109,9 +1121,11 @@ namespace Chummer
             int intIndex = 0;
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
-                ListItem objPDFArgument = new ListItem();
-                objPDFArgument.Name = objXmlNode["name"].InnerText;
-                objPDFArgument.Value = objXmlNode["value"].InnerText;
+                ListItem objPDFArgument = new ListItem
+                {
+                    Name = objXmlNode["name"].InnerText,
+                    Value = objXmlNode["value"].InnerText
+                };
                 lstPdfParameters.Add(objPDFArgument);
                 if (!String.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == objPDFArgument.Value)
                 {
@@ -1166,9 +1180,11 @@ namespace Chummer
 
                 string settingName = node.InnerText;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.GetFileName(filePath);
-                objItem.Name = settingName;
+                ListItem objItem = new ListItem
+                {
+                    Value = Path.GetFileName(filePath),
+                    Name = settingName
+                };
 
                 lstSettings.Add(objItem);
             }
@@ -1206,9 +1222,11 @@ namespace Chummer
 
                 string languageName = node.InnerText;
 
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.GetFileNameWithoutExtension(filePath);
-                objItem.Name = languageName;
+                ListItem objItem = new ListItem
+                {
+                    Value = Path.GetFileNameWithoutExtension(filePath),
+                    Name = languageName
+                };
 
                 lstLanguages.Add(objItem);
             }
@@ -1268,9 +1286,11 @@ namespace Chummer
             XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText;
-                objItem.Name = sheet["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText,
+                    Name = sheet["name"].InnerText
+                };
 
                 lstSheets.Add(objItem);
             }
@@ -1292,9 +1312,11 @@ namespace Chummer
 
             foreach (string fileName in fileNames)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = Path.Combine("omae", fileName);
-                objItem.Name = menuMainOmae + ": " + fileName;
+                ListItem objItem = new ListItem
+                {
+                    Value = Path.Combine("omae", fileName),
+                    Name = menuMainOmae + ": " + fileName
+                };
 
                 items.Add(objItem);
             }
@@ -1364,9 +1386,11 @@ namespace Chummer
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                var newSource = new SourcebookInfo();
-                newSource.Code = tag;
-                newSource.Path = path;
+                var newSource = new SourcebookInfo
+                {
+                    Code = tag,
+                    Path = path
+                };
                 GlobalOptions.SourcebookInfo.Add(newSource);
             }
         }
@@ -1461,13 +1485,17 @@ namespace Chummer
 
                 if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText();
-                    frmSelectCustomDirectoryName.Description = LanguageManager.GetString("String_CustomItem_SelectText");
+                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+                    {
+                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
+                    };
                     if (frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
                     {
-                        CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo();
-                        objNewCustomDataDirectory.Name = frmSelectCustomDirectoryName.SelectedValue;
-                        objNewCustomDataDirectory.Path = selectFolderDialog.SelectedPath;
+                        CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo
+                        {
+                            Name = frmSelectCustomDirectoryName.SelectedValue,
+                            Path = selectFolderDialog.SelectedPath
+                        };
 
                         if (GlobalOptions.CustomDataDirectoryInfo.Any(x => x.Name == objNewCustomDataDirectory.Name))
                         {
@@ -1507,8 +1535,10 @@ namespace Chummer
                 CustomDataDirectoryInfo objInfoToRename = GlobalOptions.CustomDataDirectoryInfo.FirstOrDefault(x => x.Name == objSelectedCustomDataDirectory.Tag.ToString());
                 if (objInfoToRename != null)
                 {
-                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText();
-                    frmSelectCustomDirectoryName.Description = LanguageManager.GetString("String_CustomItem_SelectText");
+                    frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+                    {
+                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
+                    };
                     if (frmSelectCustomDirectoryName.ShowDialog(this) == DialogResult.OK)
                     {
                         if (GlobalOptions.CustomDataDirectoryInfo.Any(x => x.Name == frmSelectCustomDirectoryName.Name))

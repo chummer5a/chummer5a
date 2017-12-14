@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Chummer.Datastructures
@@ -49,8 +49,7 @@ namespace Chummer.Datastructures
 
         public ReverseTree<T> Find(T key)
         {
-            ReverseTree<T> objRet;
-            if (!_seachDictionary.TryGetValue(key, out objRet))
+            if (!_seachDictionary.TryGetValue(key, out ReverseTree<T> objRet))
             {
                 objRet = new ReverseTree<T>(key); // single tree with only key
             }

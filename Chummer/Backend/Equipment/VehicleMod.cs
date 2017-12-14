@@ -68,8 +68,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="intMarkup">Discount or markup that applies to the base cost of the mod.</param>
         public void Create(XmlNode objXmlMod, TreeNode objNode, int intRating, Vehicle objParent, decimal decMarkup = 0)
         {
-            if (objParent == null) throw new ArgumentNullException(nameof(objParent));
-            Parent = objParent;
+            Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (objXmlMod.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -1065,8 +1064,7 @@ namespace Chummer.Backend.Equipment
                 }
                 if (string.IsNullOrEmpty(strReturn))
                     strReturn = "0";
-                decimal decReturn;
-                if (decimal.TryParse(strReturn, out decReturn))
+                if (decimal.TryParse(strReturn, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 return strReturn;
             }

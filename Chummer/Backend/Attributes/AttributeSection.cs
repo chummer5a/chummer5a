@@ -177,8 +177,7 @@ namespace Chummer.Backend.Attributes
 
 		public BindingSource GetAttributeBindingByName(string abbrev)
 		{
-            BindingSource objAttributeBinding;
-            if (_bindings.TryGetValue(abbrev, out objAttributeBinding))
+            if (_bindings.TryGetValue(abbrev, out BindingSource objAttributeBinding))
                 return objAttributeBinding;
             return null;
 		}

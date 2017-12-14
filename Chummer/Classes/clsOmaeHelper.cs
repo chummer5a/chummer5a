@@ -36,22 +36,24 @@ namespace Chummer
         /// </summary>
         public omaeSoapClient GetOmaeService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "omaeSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "omaeSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = System.Text.Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true
+            };
 
             objBinding.ReaderQuotas.MaxDepth = 32;
             objBinding.ReaderQuotas.MaxStringContentLength = 8388608;
@@ -79,22 +81,24 @@ namespace Chummer
         /// </summary>
         public translationSoapClient GetTranslationService()
         {
-            BasicHttpBinding objBinding = new BasicHttpBinding();
-            objBinding.Name = "translationSoap";
-            objBinding.CloseTimeout = TimeSpan.FromMinutes(1);
-            objBinding.OpenTimeout = TimeSpan.FromMinutes(1);
-            objBinding.ReceiveTimeout = TimeSpan.FromMinutes(10);
-            objBinding.SendTimeout = TimeSpan.FromMinutes(1);
-            objBinding.AllowCookies = false;
-            objBinding.BypassProxyOnLocal = false;
-            objBinding.HostNameComparisonMode = HostNameComparisonMode.StrongWildcard;
-            objBinding.MaxBufferSize = 5242880; // 5 MB
-            objBinding.MaxReceivedMessageSize = 5242880; // 5 MB
-            objBinding.MaxBufferPoolSize = 524288;
-            objBinding.MessageEncoding = WSMessageEncoding.Text;
-            objBinding.TextEncoding = System.Text.Encoding.UTF8;
-            objBinding.TransferMode = TransferMode.Buffered;
-            objBinding.UseDefaultWebProxy = true;
+            BasicHttpBinding objBinding = new BasicHttpBinding
+            {
+                Name = "translationSoap",
+                CloseTimeout = TimeSpan.FromMinutes(1),
+                OpenTimeout = TimeSpan.FromMinutes(1),
+                ReceiveTimeout = TimeSpan.FromMinutes(10),
+                SendTimeout = TimeSpan.FromMinutes(1),
+                AllowCookies = false,
+                BypassProxyOnLocal = false,
+                HostNameComparisonMode = HostNameComparisonMode.StrongWildcard,
+                MaxBufferSize = 5242880, // 5 MB
+                MaxReceivedMessageSize = 5242880, // 5 MB
+                MaxBufferPoolSize = 524288,
+                MessageEncoding = WSMessageEncoding.Text,
+                TextEncoding = System.Text.Encoding.UTF8,
+                TransferMode = TransferMode.Buffered,
+                UseDefaultWebProxy = true
+            };
 
             objBinding.ReaderQuotas.MaxDepth = 32;
             objBinding.ReaderQuotas.MaxStringContentLength = 8388608;

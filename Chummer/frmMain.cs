@@ -154,8 +154,10 @@ namespace Chummer
             );
             Timekeeper.Finish("cache_load");
 
-            frmCharacterRoster frmCharacter = new frmCharacterRoster();
-            frmCharacter.MdiParent = this;
+            frmCharacterRoster frmCharacter = new frmCharacterRoster
+            {
+                MdiParent = this
+            };
             _frmCharacterRoster = frmCharacter;
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
@@ -364,8 +366,10 @@ namespace Chummer
             objCharacter.BuildPoints = 0;
 
             // Show the Metatype selection window.
-            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter);
-            frmSelectMetatype.XmlFile = "critters.xml";
+            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter)
+            {
+                XmlFile = "critters.xml"
+            };
             frmSelectMetatype.ShowDialog();
             Cursor = Cursors.Default;
 
@@ -383,9 +387,11 @@ namespace Chummer
                 objCharacter.Weapons.Add(objWeapon);
             }
 
-            frmCareer frmNewCharacter = new frmCareer(objCharacter);
-            frmNewCharacter.MdiParent = this;
-            frmNewCharacter.WindowState = FormWindowState.Maximized;
+            frmCareer frmNewCharacter = new frmCareer(objCharacter)
+            {
+                MdiParent = this,
+                WindowState = FormWindowState.Maximized
+            };
             frmNewCharacter.Show();
 
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
@@ -444,10 +450,12 @@ namespace Chummer
                 // If this is a new child form and does not have a tab page, create one.
                 if (ActiveMdiChild.Tag == null)
                 {
-                    TabPage tp = new TabPage();
-                    // Add a tab page.
-                    tp.Tag = ActiveMdiChild;
-                    tp.Parent = tabForms;
+                    TabPage tp = new TabPage
+                    {
+                        // Add a tab page.
+                        Tag = ActiveMdiChild,
+                        Parent = tabForms
+                    };
 
                     if (ActiveMdiChild.GetType() == typeof(frmCareer))
                     {
@@ -477,8 +485,7 @@ namespace Chummer
 
         private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Form objForm = sender as Form;
-            if (objForm != null)
+            if (sender is Form objForm)
             {
                 objForm.FormClosed -= ActiveMdiChild_FormClosed;
                 objForm.Dispose();
@@ -526,8 +533,7 @@ namespace Chummer
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
             if (tabForms.TabCount > 0 && tabForms.SelectedTab != null)
             {
-                Character objCharacter = sender as Character;
-                if (objCharacter != null)
+                if (sender is Character objCharacter)
                 {
                     string strTitle = objCharacter.CharacterName.Trim();
 
@@ -775,9 +781,11 @@ namespace Chummer
                 objCharacter.Weapons.Add(objWeapon);
             }
 
-            frmCreate frmNewCharacter = new frmCreate(objCharacter);
-            frmNewCharacter.MdiParent = this;
-            frmNewCharacter.WindowState = FormWindowState.Maximized;
+            frmCreate frmNewCharacter = new frmCreate(objCharacter)
+            {
+                MdiParent = this,
+                WindowState = FormWindowState.Maximized
+            };
             frmNewCharacter.Show();
 
             objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
@@ -789,9 +797,11 @@ namespace Chummer
         /// </summary>
         private void OpenFile(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
-            openFileDialog.Multiselect = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
+                Multiselect = true
+            };
 
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -887,8 +897,10 @@ namespace Chummer
             {
                 Timekeeper.Start("loading");
                 bool blnLoaded = false;
-                objCharacter = new Character();
-                objCharacter.FileName = strFileName;
+                objCharacter = new Character
+                {
+                    FileName = strFileName
+                };
 
                 XmlDocument objXmlDocument = new XmlDocument();
                 //StreamReader is used to prevent encoding errors
@@ -908,15 +920,13 @@ namespace Chummer
                 XmlNode objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                 if (!string.IsNullOrEmpty(objXmlCharacter?["appversion"]?.InnerText))
                 {
-                    Version verSavedVersion;
-                    Version verCorrectedVersion;
                     string strVersion = objXmlCharacter["appversion"].InnerText;
                     if (strVersion.StartsWith("0."))
                     {
                         strVersion = strVersion.Substring(2);
                     }
-                    Version.TryParse(strVersion, out verSavedVersion);
-                    Version.TryParse("5.188.34", out verCorrectedVersion);
+                    Version.TryParse(strVersion, out Version verSavedVersion);
+                    Version.TryParse("5.188.34", out Version verCorrectedVersion);
                     if (verCorrectedVersion != null && verSavedVersion != null)
                     {
                         int intResult = verSavedVersion.CompareTo(verCorrectedVersion);

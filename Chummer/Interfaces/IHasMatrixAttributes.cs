@@ -287,11 +287,13 @@ namespace Chummer
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
             int intBaseDP = objThis.GetBaseMatrixAttribute("Data Processing");
             int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
-            List<int> lstStatsArray = new List<int>(4);
-            lstStatsArray.Add(intBaseAttack);
-            lstStatsArray.Add(intBaseSleaze);
-            lstStatsArray.Add(intBaseDP);
-            lstStatsArray.Add(intBaseFirewall);
+            List<int> lstStatsArray = new List<int>(4)
+            {
+                intBaseAttack,
+                intBaseSleaze,
+                intBaseDP,
+                intBaseFirewall
+            };
             lstStatsArray.Sort();
             lstStatsArray.Reverse();
 

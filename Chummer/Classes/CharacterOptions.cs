@@ -239,10 +239,12 @@ namespace Chummer
         {
             string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
             objWriter.WriteStartDocument();
 
             // <settings>
@@ -957,8 +959,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
-                bool blnTemp;
-                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                     blnStorage = blnTemp;
                 _objBaseChummerKey.DeleteValue(strBoolName);
             }
@@ -972,8 +973,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
             if (objRegistryResult != null)
             {
-                int intTemp;
-                if (int.TryParse(objRegistryResult.ToString(), out intTemp))
+                if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
                     intStorage = intTemp;
                 _objBaseChummerKey.DeleteValue(strIntName);
             }
@@ -987,8 +987,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
             if (objRegistryResult != null)
             {
-                decimal decTemp;
-                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
+                if (decimal.TryParse(objRegistryResult.ToString(), out decimal decTemp))
                     decStorage = decTemp;
                 _objBaseChummerKey.DeleteValue(strDecName);
             }
