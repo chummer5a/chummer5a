@@ -37,8 +37,7 @@ Data Changes:
 
 - Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).
 - Data lock cyberware will now display its proper Matrix attributes, i.e. with a Device Rating equal to its rating instead of being based off of its grade.
-
-Data Changes:
+- Implemented priority mode requirements for shapeshifters. 
 - Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
 
 Build 196
