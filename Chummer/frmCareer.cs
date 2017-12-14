@@ -1744,7 +1744,7 @@ namespace Chummer
 #if DEBUG
             CharacterObject.PrintToStream(objStream, objWriter, GlobalOptions.CultureInfo);
 #else
-            _objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
+            CharacterObject.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
 
             // </characters>
