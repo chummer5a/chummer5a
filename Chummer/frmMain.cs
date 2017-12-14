@@ -53,6 +53,7 @@ namespace Chummer
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion = string.Empty;
+
         #region Control Events
         public frmMain()
         {
@@ -688,6 +689,12 @@ namespace Chummer
                 MessageBox.Show(objImpersonation.Rating.ToString());
         }
 
+        private void mnuToolsTranslator_Click(object sender, EventArgs e)
+        {
+            string strTranslator = Path.Combine(Application.StartupPath, "Translator.exe");
+            if (File.Exists(strTranslator))
+                System.Diagnostics.Process.Start(strTranslator);
+        }
         #endregion
 
         #region Methods

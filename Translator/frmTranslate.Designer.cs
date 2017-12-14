@@ -1,6 +1,6 @@
 ﻿namespace Translator
 {
-    partial class FrmTranslate
+    partial class frmTranslate
     {
         /// <summary>
         /// Required designer variable.

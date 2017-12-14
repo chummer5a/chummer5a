@@ -1143,6 +1143,10 @@
       <key>Menu_Main_About</key>
       <text>&amp;About...</text>
     </string>
+    <string>
+      <key>Menu_Main_Translator</key>
+      <text>Translator</text>
+    </string>
     <!-- End Region -->
     <!-- Region Character Roster -->
     <string>

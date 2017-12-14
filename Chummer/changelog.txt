@@ -33,6 +33,7 @@ Application Changes:
 - An AI can no longer adopt an item as a home node if it would not have enough program slots to hold it.
 - Vehicles and cyberware can now have custom-defined Matrix attributes and/or Matrix attribute arrays in their data files.
 - Added Notes fields to all Create methods for objects.
+- The Translator tool can now be opened from within Chummer via Tools > Translator.
 
 Data Changes:
 
@@ -40,6 +41,10 @@ Data Changes:
 - Data lock cyberware will now display its proper Matrix attributes, i.e. with a Device Rating equal to its rating instead of being based off of its grade.
 - Implemented priority mode requirements for shapeshifters. 
 - Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
+
+New Strings:
+
+- Menu_Main_Translator
 
 Build 196
 
