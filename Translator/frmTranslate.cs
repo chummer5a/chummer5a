@@ -32,7 +32,7 @@ namespace Translator
             _strPath = Application.StartupPath;
             _strLanguage = strLanguage;
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            _strCode = Language.Substring(Language.IndexOf('(') + 1, 5);
+            _strCode = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
 
             InitializeComponent();
         }
