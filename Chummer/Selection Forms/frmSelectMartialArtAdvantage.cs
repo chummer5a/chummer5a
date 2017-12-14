@@ -72,9 +72,11 @@ namespace Chummer
 
                 if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strAdvantageName;
-                    objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strAdvantageName,
+                        Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName
+                    };
                     lstAdvantage.Add(objItem);
                 }
                 NotNewAdvantage:;

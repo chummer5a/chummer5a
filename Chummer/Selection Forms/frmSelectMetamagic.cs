@@ -203,19 +203,22 @@ namespace Chummer
             string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
 
             if (objXmlMetamagicList != null)
+            {
                 foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                 {
-
-                    bool add = !chkLimitList.Checked ||
-                                  (chkLimitList.Checked &&
-                                   Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter,
-                                       _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s));
-                    if (!add) continue;
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlMetamagic["name"]?.InnerText;
-                    objItem.Name = objXmlMetamagic["translate"]?.InnerText ?? objItem.Value;
-                    lstMetamagics.Add(objItem);
+                    if (!chkLimitList.Checked ||
+                        Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
+                    {
+                        string strName = objXmlMetamagic["name"]?.InnerText ?? string.Empty;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = strName,
+                            Name = objXmlMetamagic["translate"]?.InnerText ?? strName
+                        };
+                        lstMetamagics.Add(objItem);
+                    }
                 }
+            }
             else
             {
                 Utils.BreakIfDebug();

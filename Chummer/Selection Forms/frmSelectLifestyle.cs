@@ -105,8 +105,7 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    decimal decCost = 0.0m;
-                    if (!decimal.TryParse(strCost, out decCost))
+                    if (!decimal.TryParse(strCost, out decimal decCost))
                     {
                         try
                         {
@@ -271,8 +270,7 @@ namespace Chummer
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-            Guid source;
-            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))
+            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
                 _objLifestyle.SourceID = source;
             }
@@ -321,8 +319,7 @@ namespace Chummer
                     XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
                     {
-                        decimal decLoopCost = 0.0m;
-                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, out decLoopCost))
+                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, out decimal decLoopCost))
                         {
                             try
                             {

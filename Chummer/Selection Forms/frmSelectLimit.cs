@@ -118,9 +118,11 @@ namespace Chummer
         public void SingleLimit(string strValue)
         {
             List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
+            ListItem objItem = new ListItem
+            {
+                Value = strValue,
+                Name = strValue
+            };
             lstItems.Add(objItem);
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
@@ -139,9 +141,11 @@ namespace Chummer
             _lstLimits.Clear();
             foreach (string strLimit in strValue)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strLimit;
-                objItem.Name = LanguageManager.GetString("String_Limit" + strLimit + "Short");
+                ListItem objItem = new ListItem
+                {
+                    Value = strLimit,
+                    Name = LanguageManager.GetString("String_Limit" + strLimit + "Short")
+                };
                 _lstLimits.Add(objItem);
             }
             cboLimit.BeginUpdate();

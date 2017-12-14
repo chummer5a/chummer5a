@@ -100,9 +100,11 @@ namespace Chummer
         public void SinglePower(string strValue)
         {
             List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
+            ListItem objItem = new ListItem
+            {
+                Value = strValue,
+                Name = strValue
+            };
             lstItems.Add(objItem);
             cboPower.BeginUpdate();
             cboPower.DataSource = null;

@@ -57,9 +57,12 @@ namespace Chummer
             XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlManeuver in objManeuverList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlManeuver["name"].InnerText;
-                objItem.Name = objXmlManeuver["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
+                string strName = objXmlManeuver["name"].InnerText;
+                ListItem objItem = new ListItem
+                {
+                    Value = strName,
+                    Name = objXmlManeuver["translate"]?.InnerText ?? strName
+                };
                 lstManeuver.Add(objItem);
             }
             SortListItem objSort = new SortListItem();

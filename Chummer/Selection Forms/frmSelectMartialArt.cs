@@ -71,9 +71,12 @@ namespace Chummer
                     continue;
                 if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlArt["name"].InnerText;
-                    objItem.Name = objXmlArt["translate"]?.InnerText ?? objXmlArt["name"].InnerText;
+                    string strName = objXmlArt["name"].InnerText;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strName,
+                        Name = objXmlArt["translate"]?.InnerText ?? strName
+                    };
                     lstMartialArt.Add(objItem);
                 }
             }

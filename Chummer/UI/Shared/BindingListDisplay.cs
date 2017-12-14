@@ -317,8 +317,7 @@ namespace Chummer.UI.Shared
                 _parent = parent;
                 Item = item;
 
-                INotifyPropertyChanged prop = item as INotifyPropertyChanged;
-                if (prop != null)
+                if (item is INotifyPropertyChanged prop)
                 {
                     prop.PropertyChanged += item_ChangedEvent;
                 }
@@ -395,11 +394,9 @@ namespace Chummer.UI.Shared
 
             public int Compare(TType x, TType y)
             {
-                int xindex;
-                if (_index.TryGetValue(x, out xindex))
+                if (_index.TryGetValue(x, out int xindex))
                 {
-                    int yindex;
-                    if (_index.TryGetValue(y, out yindex))
+                    if (_index.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }

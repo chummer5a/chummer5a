@@ -76,8 +76,7 @@ namespace Chummer.UI.Attributes
 		}
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            frmCareer parent = ParentForm as frmCareer;
-            if (parent != null)
+            if (ParentForm is frmCareer parent)
             {
                 int upgradeKarmaCost = attribute.UpgradeKarmaCost();
 

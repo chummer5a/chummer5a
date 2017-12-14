@@ -80,9 +80,11 @@ namespace Chummer
                 string strCategory = objXmlCategory.InnerText;
                 if (BuildQualityList(strCategory, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strCategory;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory;
+                    ListItem objItem = new ListItem
+                    {
+                        Value = strCategory,
+                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory
+                    };
                     _lstCategory.Add(objItem);
                 }
             }
@@ -91,9 +93,11 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Show All";
-                objItem.Name = LanguageManager.GetString("String_ShowAll");
+                ListItem objItem = new ListItem
+                {
+                    Value = "Show All",
+                    Name = LanguageManager.GetString("String_ShowAll")
+                };
                 _lstCategory.Insert(0, objItem);
             }
             cboCategory.BeginUpdate();
@@ -163,8 +167,7 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlQuality["cost"].InnerText ?? string.Empty;
-                    decimal decCost = 0.0m;
-                    if (!decimal.TryParse(strCost, out decCost))
+                    if (!decimal.TryParse(strCost, out decimal decCost))
                     {
                         try
                         {
@@ -382,9 +385,11 @@ namespace Chummer
                 {
                     if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = strQualityName;
-                        objItem.Name = objXmlQuality["translate"]?.InnerText ?? strQualityName;
+                        ListItem objItem = new ListItem
+                        {
+                            Value = strQualityName,
+                            Name = objXmlQuality["translate"]?.InnerText ?? strQualityName
+                        };
 
                         lstLifestyleQuality.Add(objItem);
                         if (blnTerminateAfterFirst)

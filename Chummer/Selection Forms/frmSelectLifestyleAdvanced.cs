@@ -524,8 +524,7 @@ namespace Chummer
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.StyleType = _objType;
 
-            Guid source;
-            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))
+            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
                 _objLifestyle.SourceID = source;
             }

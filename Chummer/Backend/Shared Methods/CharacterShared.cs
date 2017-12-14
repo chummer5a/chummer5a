@@ -42,15 +42,16 @@ namespace Chummer
     [System.ComponentModel.DesignerCategory("")]
     public class CharacterShared : Form
     {
-        protected readonly Character _objCharacter;
-        protected readonly CharacterOptions _objOptions;
-        protected bool _blnIsDirty = false;
-        protected bool _blnRequestCharacterUpdate = false;
+        private readonly Character _objCharacter;
+        private readonly CharacterOptions _objOptions;
+        private bool _blnIsDirty = false;
+        private bool _blnRequestCharacterUpdate = false;
 
         public CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
             _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
@@ -595,13 +596,29 @@ namespace Chummer
             }
             set
             {
-                _blnIsDirty = value;
+                if (_blnIsDirty != value)
+                {
+                    _blnIsDirty = value;
+                    UpdateWindowTitle(true);
+                }
             }
         }
 
         public void ScheduleCharacterUpdate()
         {
             _blnRequestCharacterUpdate = true;
+        }
+
+        public bool IsCharacterUpdateRequested
+        {
+            get
+            {
+                return _blnRequestCharacterUpdate;
+            }
+            set
+            {
+                _blnRequestCharacterUpdate = value;
+            }
         }
 
         public Character CharacterObject
@@ -612,29 +629,39 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public virtual void UpdateWindowTitle(bool blnCanSkip = true)
+        public CharacterOptions CharacterObjectOptions
         {
-            UpdateWindowTitle(string.Empty, string.Empty, blnCanSkip);
+            get
+            {
+                return _objOptions;
+            }
+        }
+
+        private void objCharacter_CharacterNameChanged(Object sender)
+        {
+            UpdateWindowTitle(false);
         }
 
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        public void UpdateWindowTitle(string strAlias, string strMode, bool blnCanSkip = true)
+        public virtual void UpdateWindowTitle(bool blnCanSkip)
         {
-            if (Text.EndsWith('*') && blnCanSkip)
-                return;
+            UpdateWindowTitle(string.Empty, blnCanSkip);
+        }
 
-            Text = string.Empty;
-            if (!string.IsNullOrEmpty(strAlias))
-                Text += strAlias + " - ";
-            Text += strMode;
-            Text += " (" + _objCharacter.Options.Name + ")";
+        /// <summary>
+        /// Update the Window title to show the Character's name and unsaved changes status.
+        /// </summary>
+        public void UpdateWindowTitle(string strMode, bool blnCanSkip = true)
+        {
+            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+                return;
+            
+            string strTitle = _objCharacter.CharacterName + " - " + strMode + " (" + _objCharacter.Options.Name + ")";
             if (_blnIsDirty)
-                Text += "*";
+                strTitle += '*';
+            this.DoThreadSafe(() => Text = strTitle);
         }
 
         /// <summary>
@@ -659,9 +686,8 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                _blnIsDirty = false;
                 GlobalOptions.AddToMRUList(_objCharacter.FileName, "mru", true, true);
-                UpdateWindowTitle(false);
+                IsDirty = false;
                 Cursor = Cursors.Default;
 
                 // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
