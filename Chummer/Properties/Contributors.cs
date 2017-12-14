@@ -14,6 +14,7 @@ namespace Chummer.Properties
             "Holger Schlegel<holgerschlegel>",
             "cfresquet",
             "angelforest",
+            "Youneko17",
             "Ternega",
             "sethsatan",
             "MerGatto<MerGatto>",
@@ -28,11 +29,10 @@ namespace Chummer.Properties
             "AMDX9",
             "David Dashifen Kees<dashifen>",
             "Kadrack",
-            "Youneko17",
+            "mudge6",
             "Richard Zang<richard-zang>",
             "Claire<MachineMuse>",
             "DeastinY<DeastinY>",
-            "SquadronROE",
         };
     }
 }

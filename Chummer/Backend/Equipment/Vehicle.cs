@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -12,7 +13,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle.
     /// </summary>
-    public class Vehicle : INamedItemWithGuidAndNode
+    public class Vehicle : INamedItemWithGuidAndNode, IHasMatrixAttributes
     {
         private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
@@ -55,6 +56,21 @@ namespace Chummer.Backend.Equipment
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
+
+        private string _strDeviceRating = string.Empty;
+        private string _strAttack = string.Empty;
+        private string _strSleaze = string.Empty;
+        private string _strDataProcessing = string.Empty;
+        private string _strFirewall = string.Empty;
+        private string _strAttributeArray = string.Empty;
+        private string _strModAttack = string.Empty;
+        private string _strModSleaze = string.Empty;
+        private string _strModDataProcessing = string.Empty;
+        private string _strModFirewall = string.Empty;
+        private string _strModAttributeArray = string.Empty;
+        private string _strProgramLimit = string.Empty;
+        private string _strOverclocked = "None";
+        private bool _blnCanSwapAttributes = false;
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled = 0;
@@ -183,6 +199,31 @@ namespace Chummer.Backend.Equipment
             }
             objXmlVehicle.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlVehicle.TryGetStringFieldQuickly("page", ref _strPage);
+
+            objXmlVehicle.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objXmlVehicle.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+            {
+                objXmlVehicle.TryGetStringFieldQuickly("attack", ref _strAttack);
+                objXmlVehicle.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                objXmlVehicle.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                objXmlVehicle.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            }
+            else
+            {
+                _blnCanSwapAttributes = true;
+                string[] strArray = _strAttributeArray.Split(',');
+                _strAttack = strArray[0];
+                _strSleaze = strArray[1];
+                _strDataProcessing = strArray[2];
+                _strFirewall = strArray[3];
+            }
+            objXmlVehicle.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            objXmlVehicle.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            objXmlVehicle.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            objXmlVehicle.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            objXmlVehicle.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            objXmlVehicle.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -482,7 +523,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
-            objWriter.WriteElementString("homenode", HomeNode.ToString());
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Save(objWriter);
@@ -515,6 +555,22 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
             objWriter.WriteEndElement();
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("devicerating", _strDeviceRating);
+            objWriter.WriteElementString("programlimit", _strProgramLimit);
+            objWriter.WriteElementString("overclocked", _strOverclocked);
+            objWriter.WriteElementString("attack", _strAttack);
+            objWriter.WriteElementString("sleaze", _strSleaze);
+            objWriter.WriteElementString("dataprocessing", _strDataProcessing);
+            objWriter.WriteElementString("firewall", _strFirewall);
+            objWriter.WriteElementString("attributearray", _strAttributeArray);
+            objWriter.WriteElementString("modattack", _strModAttack);
+            objWriter.WriteElementString("modsleaze", _strModSleaze);
+            objWriter.WriteElementString("moddataprocessing", _strModDataProcessing);
+            objWriter.WriteElementString("modfirewall", _strModFirewall);
+            objWriter.WriteElementString("modattributearray", _strModAttributeArray);
+            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             _objCharacter.SourceProcess(_strSource);
         }
 
@@ -527,7 +583,7 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                HomeNode = false;
+                this.SetHomeNode(_objCharacter, false);
             }
             else
             {
@@ -535,9 +591,12 @@ namespace Chummer.Backend.Equipment
                 bool blnIsHomeNode = false;
                 if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {
-                    HomeNode = true;
+                    this.SetHomeNode(_objCharacter, true);
                 }
             }
+            bool blnIsActive = false;
+            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                this.SetActiveCommlink(_objCharacter, true);
 
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID) || _sourceID.Equals(Guid.Empty))
@@ -701,6 +760,35 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount);
 
+
+            if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
+                MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
+                MyXmlNode?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+            objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
+            if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("attack", ref _strAttack);
+            if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+            if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+            if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
+                MyXmlNode?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
+                MyXmlNode?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
+                MyXmlNode?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
+                MyXmlNode?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
+                MyXmlNode?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            this.RefreshMatrixAttributeArray();
+
             if (objNode["locations"] != null)
             {
                 // Locations.
@@ -738,9 +826,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", _strVehicleName);
-            objWriter.WriteElementString("devicerating", DeviceRating.ToString(objCulture));
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("homenode", HomeNode.ToString());
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
                 objMod.Print(objWriter, objCulture);
@@ -1024,39 +1119,6 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Device Rating.
-        /// </summary>
-        public int DeviceRating
-        {
-            get
-            {
-                int intDeviceRating = Pilot;
-
-                foreach (VehicleMod objMod in _lstVehicleMods)
-                {
-                    if (objMod.Bonus != null)
-                    {
-                        // Add the Modification's Device Rating to the Vehicle's base Device Rating.
-                        if (objMod.Bonus.InnerXml.Contains("<devicerating>"))
-                            intDeviceRating += Convert.ToInt32(objMod.Bonus["devicerating"].InnerText);
-                    }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                    {
-                        // Add the Modification's Wireless Device Rating to the Vehicle's base Device Rating if wireless is on.
-                        if (objMod.WirelessBonus.InnerXml.Contains("<devicerating>"))
-                            intDeviceRating += Convert.ToInt32(objMod.WirelessBonus["devicerating"].InnerText);
-                    }
-                }
-
-                // Device Rating cannot go below 1.
-                if (intDeviceRating < 1)
-                    intDeviceRating = 1;
-
-                return intDeviceRating;
-            }
-        }
-
-        /// <summary>
         /// Base Matrix Boxes.
         /// </summary>
         public int BaseMatrixBoxes
@@ -1074,7 +1136,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return BaseMatrixBoxes + (DeviceRating + 1) / 2;
+                return BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 + TotalBonusMatrixBoxes;
             }
         }
 
@@ -1380,27 +1442,6 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return strReturn;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Vehicle is an A.I.'s Home Node.
-        /// </summary>
-        public bool HomeNode
-        {
-            get
-            {
-                return _objCharacter.HomeNodeVehicle == this;
-            }
-            set
-            {
-                if (value)
-                {
-                    _objCharacter.HomeNodeGear = null;
-                    _objCharacter.HomeNodeVehicle = this;
-                }
-                else if (_objCharacter.HomeNodeVehicle == this)
-                    _objCharacter.HomeNodeVehicle = null;
             }
         }
 
@@ -2558,6 +2599,269 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXmlNode;
             }
         }
+
+        public bool IsProgram => false;
+
+        /// <summary>
+        /// Device rating string for Cyberware. If it's empty, then GetBaseMatrixAttribute for Device Rating will fetch the grade's DR.
+        /// </summary>
+        public string DeviceRating
+        {
+            get
+            {
+                return _strDeviceRating;
+            }
+            set
+            {
+                _strDeviceRating = value;
+            }
+        }
+
+        /// <summary>
+        /// Attack string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Attack
+        {
+            get
+            {
+                return _strAttack;
+            }
+            set
+            {
+                _strAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Sleaze string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Sleaze
+        {
+            get
+            {
+                return _strSleaze;
+            }
+            set
+            {
+                _strSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Data Processing string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string DataProcessing
+        {
+            get
+            {
+                return _strDataProcessing;
+            }
+            set
+            {
+                _strDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Firewall string (if one is explicitly specified for this 'ware).
+        /// </summary>
+        public string Firewall
+        {
+            get
+            {
+                return _strFirewall;
+            }
+            set
+            {
+                _strFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attack by this.
+        /// </summary>
+        public string ModAttack
+        {
+            get
+            {
+                return _strModAttack;
+            }
+            set
+            {
+                _strModAttack = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Sleaze by this.
+        /// </summary>
+        public string ModSleaze
+        {
+            get
+            {
+                return _strModSleaze;
+            }
+            set
+            {
+                _strModSleaze = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Data Processing by this.
+        /// </summary>
+        public string ModDataProcessing
+        {
+            get
+            {
+                return _strModDataProcessing;
+            }
+            set
+            {
+                _strModDataProcessing = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Firewall by this.
+        /// </summary>
+        public string ModFirewall
+        {
+            get
+            {
+                return _strModFirewall;
+            }
+            set
+            {
+                _strModFirewall = value;
+            }
+        }
+
+        /// <summary>
+        /// Cyberdeck's Attribute Array string.
+        /// </summary>
+        public string AttributeArray
+        {
+            get
+            {
+                return _strAttributeArray;
+            }
+            set
+            {
+                _strAttributeArray = value;
+            }
+        }
+
+        /// <summary>
+        /// Modify Parent's Attribute Array by this.
+        /// </summary>
+        public string ModAttributeArray
+        {
+            get
+            {
+                return _strModAttributeArray;
+            }
+            set
+            {
+                _strModAttributeArray = value;
+            }
+        }
+        
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        public string Overclocked
+        {
+            get
+            {
+                return _strOverclocked;
+            }
+            set
+            {
+                _strOverclocked = value;
+            }
+        }
+
+        /// <summary>
+        /// Empty for Vehicles.
+        /// </summary>
+        public string CanFormPersona { get => string.Empty; set { } }
+
+        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
+
+        /// <summary>
+        /// 0 for Vehicles.
+        /// </summary>
+        public int BonusMatrixBoxes { get => 0; set { } }
+
+        public int TotalBonusMatrixBoxes
+        {
+            get
+            {
+                int intReturn = 0;
+                foreach (Gear objGear in Gear)
+                {
+                    if (objGear.Equipped)
+                    {
+                        intReturn += objGear.TotalBonusMatrixBoxes;
+                    }
+                }
+                foreach (VehicleMod objMod in _lstVehicleMods)
+                {
+                    if (objMod.Bonus != null)
+                    {
+                        // Add the Modification's Device Rating to the Vehicle's base Device Rating.
+                        if (objMod.Bonus.InnerXml.Contains("<matrixcmbonus>"))
+                            intReturn += Convert.ToInt32(objMod.Bonus["matrixcmbonus"].InnerText);
+                    }
+                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    {
+                        // Add the Modification's Wireless Device Rating to the Vehicle's base Device Rating if wireless is on.
+                        if (objMod.WirelessBonus.InnerXml.Contains("<matrixcmbonus>"))
+                            intReturn += Convert.ToInt32(objMod.WirelessBonus["matrixcmbonus"].InnerText);
+                    }
+                }
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Commlink's Limit for how many Programs they can run.
+        /// </summary>
+        public string ProgramLimit
+        {
+            get
+            {
+                return _strProgramLimit;
+            }
+            set
+            {
+                _strProgramLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this is a cyberdeck whose attributes we could swap around.
+        /// </summary>
+        public bool CanSwapAttributes
+        {
+            get
+            {
+                return _blnCanSwapAttributes;
+            }
+            set
+            {
+                _blnCanSwapAttributes = value;
+            }
+        }
+
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
+        {
+            get
+            {
+                return Gear.Cast<IHasMatrixAttributes>().ToList();
+            }
+        }
         #endregion
 
         #region Methods
@@ -2622,6 +2926,111 @@ namespace Chummer.Backend.Equipment
         public bool HasModularElectronics()
         {
             return _lstVehicleMods.Any(objMod => objMod.Name == "Modular Electronics");
+        }
+
+        public int GetBaseMatrixAttribute(string strAttributeName)
+        {
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        return Pilot;
+                    case "Program Limit":
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            return Pilot;
+                        break;
+                    case "Attack":
+                    case "Sleaze":
+                    default:
+                        return 0;
+                }
+            }
+
+            if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                List<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = new List<IHasMatrixAttributes>(ChildrenWithMatrixAttributes);
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                {
+                    if (lstChildrenWithMatrixAttributes.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                    {
+                        int intTotalChildrenValue = 0;
+                        foreach (Gear loopGear in lstChildrenWithMatrixAttributes)
+                        {
+                            if (loopGear.Equipped)
+                            {
+                                intTotalChildrenValue += loopGear.GetBaseMatrixAttribute(strMatrixAttribute);
+                            }
+                        }
+                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
+                }
+                foreach (string strCharAttributeName in Attributes.AttributeSection.AttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalValue.ToString());
+                    objValue.CheapReplace(strExpression, "{" + strCharAttributeName + "Base}", () => _objCharacter.GetAttribute(strCharAttributeName).TotalBase.ToString());
+                }
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                return Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(objValue.ToString())));
+            }
+            int intReturn = 0;
+            int.TryParse(strExpression, out intReturn);
+            return intReturn;
+        }
+
+        public int GetBonusMatrixAttribute(string strAttributeName)
+        {
+            int intReturn = 0;
+
+            if (Overclocked == strAttributeName)
+            {
+                intReturn += 1;
+            }
+
+            string strAttributeNodeName = string.Empty;
+            switch (strAttributeName)
+            {
+                case "Device Rating":
+                    strAttributeNodeName = "devicerating";
+                    break;
+                case "Program Limit":
+                    strAttributeNodeName = "programs";
+                    break;
+            }
+            if (!string.IsNullOrEmpty(strAttributeNodeName))
+            {
+                foreach (VehicleMod objMod in _lstVehicleMods)
+                {
+                    XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
+                    if (objBonus != null)
+                    {
+                        intReturn += Convert.ToInt32(objBonus.InnerText);
+                    }
+                    objBonus = objMod.WirelessOn ? objMod.WirelessBonus?[strAttributeNodeName] : null;
+                    if (objBonus != null)
+                    {
+                        intReturn += Convert.ToInt32(objBonus.InnerText);
+                    }
+                }
+            }
+
+            if (!strAttributeName.StartsWith("Mod "))
+                strAttributeName = "Mod " + strAttributeName;
+
+            foreach (Gear loopGear in Gear)
+            {
+                if (loopGear.Equipped)
+                {
+                    intReturn += loopGear.GetTotalMatrixAttribute(strAttributeName);
+                }
+            }
+
+            return intReturn;
         }
         #endregion
     }

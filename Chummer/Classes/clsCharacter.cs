@@ -106,11 +106,10 @@ namespace Chummer
         public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
-        private Gear _objHomeNodeGear = null;
-        private Vehicle _objHomeNodeVehicle = null;
+        private IHasMatrixAttributes _objHomeNode = null;
 
         // Active Commlink
-        private Gear _objActiveGear = null;
+        private IHasMatrixAttributes _objActiveCommlink = null;
 
         // If true, the Character creation has been finalized and is maintained through Karma.
         private bool _blnCreated = false;
@@ -2514,7 +2513,10 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
             {
-                string strName = objImprovement.UniqueName + ": ";
+                string strName = GetObjectName(objImprovement);
+                if (strName == objImprovement.SourceName)
+                    strName = objImprovement.UniqueName;
+                strName += ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
                 strName += objImprovement.Value.ToString(objCulture);
@@ -2540,7 +2542,10 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
             {
-                string strName = objImprovement.UniqueName + ": ";
+                string strName = GetObjectName(objImprovement);
+                if (strName == objImprovement.SourceName)
+                    strName = objImprovement.UniqueName;
+                strName += ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
                 strName += objImprovement.Value.ToString(objCulture);
@@ -2566,7 +2571,10 @@ namespace Chummer
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in _lstImprovements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
             {
-                string strName = objImprovement.UniqueName + ": ";
+                string strName = GetObjectName(objImprovement);
+                if (strName == objImprovement.SourceName)
+                    strName = objImprovement.UniqueName;
+                strName += ": ";
                 if (objImprovement.Value > 0)
                     strName += "+";
                 strName += objImprovement.Value.ToString(objCulture);
@@ -2935,57 +2943,106 @@ namespace Chummer
                 case Improvement.ImprovementSource.Cyberware:
                     Cyberware objReturnCyberware = _lstCyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnCyberware != null)
-                        return objReturnCyberware.DisplayNameShort;
+                    {
+                        string strWareReturn = objReturnCyberware.DisplayNameShort;
+                        if (objReturnCyberware.Parent != null)
+                            strWareReturn += " (" + objReturnCyberware.Parent.DisplayNameShort + ")";
+                        return strWareReturn;
+                    }
                     foreach (Vehicle objVehicle in _lstVehicles)
                     {
                         foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                         {
                             objReturnCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnCyberware != null)
-                                return objReturnCyberware.DisplayNameShort;
+                            {
+                                string strWareReturn = objReturnCyberware.DisplayNameShort;
+                                if (objReturnCyberware.Parent != null)
+                                    strWareReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objReturnCyberware.Parent.DisplayNameShort + ")";
+                                else
+                                    strWareReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ")";
+                                return strWareReturn;
+                            }
                         }
                     }
                     break;
                 case Improvement.ImprovementSource.Gear:
                     Gear objReturnGear = _lstGear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnGear != null)
-                        return objReturnGear.DisplayNameShort;
+                    {
+                        string strGearReturn = objReturnGear.DisplayNameShort;
+                        if (objReturnGear.Parent != null)
+                            strGearReturn += " (" + objReturnGear.Parent.DisplayNameShort + ")" ; 
+                        return strGearReturn;
+                    }
                     foreach (Weapon objWeapon in _lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                     {
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
                             objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnGear != null)
-                                return objReturnGear.DisplayNameShort;
+                            {
+                                string strGearReturn = objReturnGear.DisplayNameShort;
+                                if (objReturnGear.Parent != null)
+                                    strGearReturn += " (" + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                else
+                                    strGearReturn += " (" + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                return strGearReturn;
+                            }
                         }
                     }
                     foreach (Armor objArmor in _lstArmor)
                     {
                         objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
-                            return objReturnGear.DisplayNameShort;
-                    }
-                    foreach (Cyberware objCyberware in _lstCyberware)
-                    {
-                        foreach (Cyberware objChildCyberware in _lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                         {
-                            objReturnGear = objChildCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
-                            if (objReturnGear != null)
-                                return objReturnGear.DisplayNameShort;
+                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            if (objReturnGear.Parent != null)
+                                strGearReturn += " (" + objArmor.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                            else
+                                strGearReturn += " (" + objArmor.DisplayNameShort + ")";
+                            return strGearReturn;
+                        }
+                    }
+                    foreach (Cyberware objCyberware in _lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+                    {
+                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
+                        if (objReturnGear != null)
+                        {
+                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            if (objReturnGear.Parent != null)
+                                strGearReturn += " (" + objCyberware.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                            else
+                                strGearReturn += " (" + objCyberware.DisplayNameShort + ")";
+                            return strGearReturn;
                         }
                     }
                     foreach (Vehicle objVehicle in _lstVehicles)
                     {
                         objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
-                            return objReturnGear.DisplayNameShort;
+                        {
+                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            if (objReturnGear.Parent != null)
+                                strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                            else
+                                strGearReturn += " (" + objVehicle.DisplayNameShort + ")";
+                            return strGearReturn;
+                        }
                         foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
                         {
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
                                 objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
-                                    return objReturnGear.DisplayNameShort;
+                                {
+                                    string strGearReturn = objReturnGear.DisplayNameShort;
+                                    if (objReturnGear.Parent != null)
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                    else
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                    return strGearReturn;
+                                }
                             }
                         }
                         foreach (VehicleMod objVehicleMod in objVehicle.Mods)
@@ -2996,14 +3053,28 @@ namespace Chummer
                                 {
                                     objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                     if (objReturnGear != null)
-                                        return objReturnGear.DisplayNameShort;
+                                    {
+                                        string strGearReturn = objReturnGear.DisplayNameShort;
+                                        if (objReturnGear.Parent != null)
+                                            strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                        else
+                                            strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                        return strGearReturn;
+                                    }
                                 }
                             }
                             foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
                             {
                                 objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
-                                    return objReturnGear.DisplayNameShort;
+                                {
+                                    string strGearReturn = objReturnGear.DisplayNameShort;
+                                    if (objReturnGear.Parent != null)
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objCyberware.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                    else
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objCyberware.DisplayNameShort + ")";
+                                    return strGearReturn;
+                                }
                             }
                         }
                     }
@@ -3079,7 +3150,7 @@ namespace Chummer
                         {
                             if (objMod.InternalId == objImprovement.SourceName)
                             {
-                                return objMod.DisplayNameShort;
+                                return objMod.DisplayNameShort + " (" + objArmor.DisplayNameShort + ")";
                             }
                         }
                     }
@@ -5079,10 +5150,13 @@ namespace Chummer
                 if (_strMetatype == "A.I.")
                 {
                     int intINI = (INT.TotalValue) + WoundModifiers;
-                    if (HomeNodeVehicle != null || HomeNodeGear != null)
+                    if (HomeNode != null)
                     {
-                        int intHomeNodePilot = HomeNodeVehicle?.Pilot ?? 0;
-                        int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                        int intHomeNodePilot = 0;
+                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                        if (objHomeNodeVehicle != null)
+                            intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                         if (intHomeNodeDP > intHomeNodePilot)
                         {
                             intINI += intHomeNodeDP;
@@ -6526,7 +6600,8 @@ namespace Chummer
             {
                 if (_strMetatype == "A.I.")
                 {
-                    return HomeNodeVehicle?.Handling ?? 0;
+                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    return objHomeNodeVehicle?.Handling ?? 0;
                 }
                 int intLimit = (STR.TotalValue * 2 + BOD.TotalValue + REA.TotalValue + 2) / 3;
                 return intLimit + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalLimit);
@@ -6543,20 +6618,18 @@ namespace Chummer
                 int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
                 if (_strMetatype == "A.I.")
                 {
-                    if (HomeNodeVehicle != null)
+                    if (HomeNode != null)
                     {
-                        if (HomeNodeVehicle.CalculatedSensor > intLimit)
+                        Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                        if (objHomeNodeVehicle != null)
                         {
-                            intLimit = HomeNodeVehicle.CalculatedSensor;
+                            int intHomeNodeSensor = objHomeNodeVehicle.CalculatedSensor;
+                            if (intHomeNodeSensor > intLimit)
+                            {
+                                intLimit = intHomeNodeSensor;
+                            }
                         }
-                        if (HomeNodeVehicle.DeviceRating > intLimit)
-                        {
-                            intLimit = HomeNodeVehicle.DeviceRating;
-                        }
-                    }
-                    else if (HomeNodeGear != null)
-                    {
-                        int intHomeNodeDP = HomeNodeGear.GetTotalMatrixAttribute("Data Processing");
+                        int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                         if (intHomeNodeDP > intLimit)
                         {
                             intLimit = intHomeNodeDP;
@@ -6575,10 +6648,13 @@ namespace Chummer
             get
             {
                 int intLimit;
-                if (_strMetatype == "A.I." && (HomeNodeVehicle != null || HomeNodeGear != null))
+                if (_strMetatype == "A.I." && HomeNode != null)
                 {
-                    int intHomeNodePilot = _objHomeNodeVehicle?.Pilot ?? 0;
-                    int intHomeNodeDP = Math.Max(HomeNodeGear?.GetTotalMatrixAttribute("Data Processing") ?? 0, HomeNodeVehicle?.DeviceRating ?? 0);
+                    int intHomeNodePilot = 0;
+                    Vehicle objHomeNodeVehicle = HomeNode as Vehicle;
+                    if (objHomeNodeVehicle != null)
+                        intHomeNodePilot = objHomeNodeVehicle.Pilot;
+                    int intHomeNodeDP = HomeNode.GetTotalMatrixAttribute("Data Processing");
                     if (intHomeNodeDP >= intHomeNodePilot)
                     {
                         intLimit = (CHA.TotalValue + intHomeNodeDP + WIL.TotalValue + decimal.ToInt32(decimal.Ceiling(Essence)) + 2) / 3;
@@ -8257,45 +8333,30 @@ namespace Chummer
         /// <summary>
         /// The Active Commlink of the character. Returns null if home node is not a commlink.
         /// </summary>
-        public Gear ActiveCommlink
+        public IHasMatrixAttributes ActiveCommlink
         {
             get
             {
-                return _objActiveGear;
+                return _objActiveCommlink;
             }
             set
             {
-                _objActiveGear = value;
+                _objActiveCommlink = value;
             }
         }
 
         /// <summary>
-        /// Commlink Home Node. Returns null if home node is not a commlink.
+        /// Home Node. Returns null if home node is not set to any item.
         /// </summary>
-        public Gear HomeNodeGear
+        public IHasMatrixAttributes HomeNode
         {
             get
             {
-                return _objHomeNodeGear;
+                return _objHomeNode;
             }
             set
             {
-                _objHomeNodeGear = value;
-            }
-        }
-
-        /// <summary>
-        /// Vehicle Home Node. Returns null if home node is not a vehicle.
-        /// </summary>
-        public Vehicle HomeNodeVehicle
-        {
-            get
-            {
-                return _objHomeNodeVehicle;
-            }
-            set
-            {
-                _objHomeNodeVehicle = value;
+                _objHomeNode = value;
             }
         }
 
