@@ -1,4 +1,4 @@
-﻿namespace Translator
+namespace Translator
 {
     partial class frmTranslate
     {
@@ -67,6 +67,7 @@
             // 
             this.dgvSection.AllowUserToAddRows = false;
             this.dgvSection.AllowUserToDeleteRows = false;
+            this.dgvSection.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvSection.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -87,6 +88,7 @@
             // 
             this.dgvTranslate.AllowUserToAddRows = false;
             this.dgvTranslate.AllowUserToDeleteRows = false;
+            this.dgvTranslate.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));

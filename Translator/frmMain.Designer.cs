@@ -37,12 +37,16 @@ namespace Translator
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmdEdit = new System.Windows.Forms.Button();
             this.cboLanguages = new System.Windows.Forms.ComboBox();
+            this.txtRegionCode = new System.Windows.Forms.TextBox();
+            this.lblDash = new System.Windows.Forms.Label();
             this.gbxCreate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbxCreate
             // 
+            this.gbxCreate.Controls.Add(this.lblDash);
+            this.gbxCreate.Controls.Add(this.txtRegionCode);
             this.gbxCreate.Controls.Add(this.txtLanguageName);
             this.gbxCreate.Controls.Add(this.label1);
             this.gbxCreate.Controls.Add(this.cmdCreate);
@@ -61,7 +65,7 @@ namespace Translator
             this.txtLanguageName.MaxLength = 100;
             this.txtLanguageName.Name = "txtLanguageName";
             this.txtLanguageName.Size = new System.Drawing.Size(76, 20);
-            this.txtLanguageName.TabIndex = 2;
+            this.txtLanguageName.TabIndex = 3;
             // 
             // label1
             // 
@@ -78,17 +82,17 @@ namespace Translator
             this.cmdCreate.Location = new System.Drawing.Point(103, 71);
             this.cmdCreate.Name = "cmdCreate";
             this.cmdCreate.Size = new System.Drawing.Size(75, 23);
-            this.cmdCreate.TabIndex = 3;
+            this.cmdCreate.TabIndex = 4;
             this.cmdCreate.Text = "Create";
             this.cmdCreate.UseVisualStyleBackColor = true;
             this.cmdCreate.Click += new System.EventHandler(this.cmdCreate_Click);
             // 
             // txtLanguageCode
             // 
-            this.txtLanguageCode.Location = new System.Drawing.Point(133, 19);
+            this.txtLanguageCode.Location = new System.Drawing.Point(103, 19);
             this.txtLanguageCode.MaxLength = 2;
             this.txtLanguageCode.Name = "txtLanguageCode";
-            this.txtLanguageCode.Size = new System.Drawing.Size(45, 20);
+            this.txtLanguageCode.Size = new System.Drawing.Size(30, 20);
             this.txtLanguageCode.TabIndex = 1;
             // 
             // lblLanguageCode
@@ -117,7 +121,7 @@ namespace Translator
             this.cmdEdit.Location = new System.Drawing.Point(63, 58);
             this.cmdEdit.Name = "cmdEdit";
             this.cmdEdit.Size = new System.Drawing.Size(75, 23);
-            this.cmdEdit.TabIndex = 5;
+            this.cmdEdit.TabIndex = 6;
             this.cmdEdit.Text = "Edit";
             this.cmdEdit.UseVisualStyleBackColor = true;
             this.cmdEdit.Click += new System.EventHandler(this.cmdEdit_Click);
@@ -129,7 +133,25 @@ namespace Translator
             this.cboLanguages.Location = new System.Drawing.Point(40, 19);
             this.cboLanguages.Name = "cboLanguages";
             this.cboLanguages.Size = new System.Drawing.Size(122, 21);
-            this.cboLanguages.TabIndex = 4;
+            this.cboLanguages.TabIndex = 5;
+            // 
+            // txtRegionCode
+            // 
+            this.txtRegionCode.Location = new System.Drawing.Point(148, 19);
+            this.txtRegionCode.MaxLength = 2;
+            this.txtRegionCode.Name = "txtRegionCode";
+            this.txtRegionCode.Size = new System.Drawing.Size(30, 20);
+            this.txtRegionCode.TabIndex = 2;
+            // 
+            // lblDash
+            // 
+            this.lblDash.AutoSize = true;
+            this.lblDash.Location = new System.Drawing.Point(136, 22);
+            this.lblDash.Name = "lblDash";
+            this.lblDash.Size = new System.Drawing.Size(10, 13);
+            this.lblDash.TabIndex = 148;
+            this.lblDash.Tag = "";
+            this.lblDash.Text = "-";
             // 
             // frmMain
             // 
@@ -138,7 +160,7 @@ namespace Translator
             this.ClientSize = new System.Drawing.Size(445, 127);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxCreate);
-            this.Name = "FrmMain";
+            this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer Translator";
             this.Load += new System.EventHandler(this.frmMain_Load);
@@ -157,6 +179,9 @@ namespace Translator
             }
             base.Dispose(disposing);
         }
+
+        private Label lblDash;
+        private TextBox txtRegionCode;
     }
 }
 

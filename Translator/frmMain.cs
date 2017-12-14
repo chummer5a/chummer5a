@@ -23,18 +23,28 @@ namespace Translator
         {
             if (string.IsNullOrEmpty(txtLanguageName.Text))
             {
-                MessageBox.Show("You must provide a language name.");
+                MessageBox.Show("You must provide a language name, per ISO 639-1.");
                 return;
             }
-            if (txtLanguageCode.Text.Length != 5)
+            if (string.IsNullOrEmpty(txtRegionCode.Text))
             {
-                MessageBox.Show("You must provide a five character language abbreviation.");
+                MessageBox.Show("You must provide a region name, per ISO 3166-1.");
+                return;
+            }
+            if (txtLanguageCode.Text.Length != 2)
+            {
+                MessageBox.Show("You must provide a two characters for the language code, per ISO 639-1.");
+                return;
+            }
+            if (txtRegionCode.Text.Length != 2)
+            {
+                MessageBox.Show("You must provide a two character for the region code, per ISO 3166-1.");
                 return;
             }
 
             Cursor = Cursors.WaitCursor;
-            string lower = txtLanguageCode.Text.ToLower();
-            string str = _objEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + lower.ToUpper() + ")";
+            string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
+            string strName = _objEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
 
             XmlDocument objDataDoc = new XmlDocument();
             XmlDeclaration xmlDeclaration = objDataDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
@@ -71,7 +81,7 @@ namespace Translator
             ProcessTraditions(objDataDoc);
             ProcessVehicles(objDataDoc);
             ProcessWeapons(objDataDoc);
-            objDataDoc.Save(Path.Combine(PATH, "lang", lower + "_data.xml"));
+            objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
 
             XmlDocument objDoc = new XmlDocument();
             xmlDeclaration = objDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
@@ -80,7 +90,7 @@ namespace Translator
             xmlVersionNode = objDoc.CreateElement("version");
             xmlVersionNode.InnerText = "-500";
             XmlNode xmlNameNode = objDoc.CreateElement("name");
-            xmlNameNode.InnerText = str;
+            xmlNameNode.InnerText = strName;
             xmlRootChummerNode.AppendChild(xmlVersionNode);
             xmlRootChummerNode.AppendChild(xmlNameNode);
             objDoc.AppendChild(xmlRootChummerNode);
@@ -92,10 +102,10 @@ namespace Translator
             {
                 xmlRootChummerNode.AppendChild(objDoc.ImportNode(xmlStringsNode, true));
             }
-            objDoc.Save(Path.Combine(PATH, "lang", lower + ".xml"));
+            objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
 
             LoadLanguageList();
-            using (var frmTranslate = new frmTranslate(str))
+            using (var frmTranslate = new frmTranslate(strName))
             {
                 frmTranslate.ShowDialog(this);
                 Cursor = Cursors.Default;
@@ -584,10 +594,6 @@ namespace Translator
                         XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataBookName;
                         xmlBookNode.AppendChild(xmlTranslateElement);
-
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
-                        xmlPageElement.InnerText = xmlDataBookNode["page"].InnerText;
-                        xmlBookNode.AppendChild(xmlPageElement);
 
                         xmlBookNodesParent.AppendChild(xmlBookNode);
                     }
@@ -1246,7 +1252,7 @@ namespace Translator
         private static void ProcessGear(XmlDocument objDataDoc)
         {
             XmlDocument xmlDataDocument = new XmlDocument();
-            xmlDataDocument.Load(Path.Combine(PATH, "data", "gears.xml"));
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "gear.xml"));
 
             XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
             if (xmlRootNode == null)
@@ -1254,12 +1260,12 @@ namespace Translator
                 xmlRootNode = objDataDoc.CreateElement("chummer");
                 objDataDoc.AppendChild(xmlRootNode);
             }
-            XmlNode xmlRootGearFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"gears.xml\"]");
+            XmlNode xmlRootGearFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"gear.xml\"]");
             if (xmlRootGearFileNode == null)
             {
                 xmlRootGearFileNode = objDataDoc.CreateElement("chummer");
                 XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
-                xmlAttribute.Value = "gears.xml";
+                xmlAttribute.Value = "gear.xml";
                 xmlRootGearFileNode.Attributes.Append(xmlAttribute);
                 xmlRootNode.AppendChild(xmlRootGearFileNode);
             }
@@ -2066,7 +2072,7 @@ namespace Translator
         private static void ProcessMetamagic(XmlDocument objDataDoc)
         {
             XmlDocument xmlDataDocument = new XmlDocument();
-            xmlDataDocument.Load(Path.Combine(PATH, "data", "metamagics.xml"));
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "metamagic.xml"));
 
             XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
             if (xmlRootNode == null)
@@ -2074,12 +2080,12 @@ namespace Translator
                 xmlRootNode = objDataDoc.CreateElement("chummer");
                 objDataDoc.AppendChild(xmlRootNode);
             }
-            XmlNode xmlRootMetamagicFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"metamagics.xml\"]");
+            XmlNode xmlRootMetamagicFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"metamagic.xml\"]");
             if (xmlRootMetamagicFileNode == null)
             {
                 xmlRootMetamagicFileNode = objDataDoc.CreateElement("chummer");
                 XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
-                xmlAttribute.Value = "metamagics.xml";
+                xmlAttribute.Value = "metamagic.xml";
                 xmlRootMetamagicFileNode.Attributes.Append(xmlAttribute);
                 xmlRootNode.AppendChild(xmlRootMetamagicFileNode);
             }
@@ -2342,24 +2348,10 @@ namespace Translator
                         foreach (XmlNode xmlDataMetavariantNode in xmlDataMetavariantNodeList.SelectNodes("metavariant"))
                         {
                             string strDataMetavariantName = xmlDataMetavariantNode["name"].InnerText;
-                            string strDataMetavariantId = xmlDataMetavariantNode["id"].InnerText;
                             XmlNode xmlMetavariantNode = xmlMetavariantNodesParent.SelectSingleNode("metavariant[name=\"" + strDataMetavariantName + "\"]");
-                            if (xmlMetavariantNode != null)
-                            {
-                                if (xmlMetavariantNode["id"] == null)
-                                {
-                                    XmlNode xmlIdElement = objDataDoc.CreateElement("id");
-                                    xmlIdElement.InnerText = strDataMetavariantId;
-                                    xmlMetavariantNode.PrependChild(xmlIdElement);
-                                }
-                            }
-                            else
+                            if (xmlMetavariantNode == null)
                             {
                                 xmlMetavariantNode = objDataDoc.CreateElement("metavariant");
-
-                                XmlNode xmlIdElement = objDataDoc.CreateElement("id");
-                                xmlIdElement.InnerText = strDataMetavariantId;
-                                xmlMetavariantNode.AppendChild(xmlIdElement);
 
                                 XmlNode xmlNameElement = objDataDoc.CreateElement("name");
                                 xmlNameElement.InnerText = strDataMetavariantName;
@@ -2687,10 +2679,6 @@ namespace Translator
                         XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataPriorityName;
                         xmlPriorityNode.AppendChild(xmlTranslateElement);
-
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
-                        xmlPageElement.InnerText = xmlDataPriorityNode["page"].InnerText;
-                        xmlPriorityNode.AppendChild(xmlPageElement);
 
                         xmlPriorityNodesParent.AppendChild(xmlPriorityNode);
                     }
@@ -3326,10 +3314,6 @@ namespace Translator
                         xmlTranslateElement.InnerText = strDataKnowledgeSkillName;
                         xmlKnowledgeSkillNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
-                        xmlPageElement.InnerText = xmlDataKnowledgeSkillNode["page"].InnerText;
-                        xmlKnowledgeSkillNode.AppendChild(xmlPageElement);
-
                         xmlKnowledgeSkillNodesParent.AppendChild(xmlKnowledgeSkillNode);
                     }
 
@@ -3911,10 +3895,6 @@ namespace Translator
                         XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
                         xmlTranslateElement.InnerText = strDataDrainAttributeName;
                         xmlDrainAttributeNode.AppendChild(xmlTranslateElement);
-
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
-                        xmlPageElement.InnerText = xmlDataDrainAttributeNode["page"].InnerText;
-                        xmlDrainAttributeNode.AppendChild(xmlPageElement);
 
                         xmlDrainAttributeNodesParent.AppendChild(xmlDrainAttributeNode);
                     }
