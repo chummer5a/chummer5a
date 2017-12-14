@@ -118,6 +118,7 @@ namespace Chummer.Backend.Equipment
             _blnWirelessOn = _nodWirelessBonus != null;
             objXmlGear.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlGear.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
+            objXmlGear.TryGetStringFieldQuickly("notes", ref _strNotes);
             _intRating = Math.Max(Math.Min(intRating, _intMaxRating), _intMinRating);
             objXmlGear.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);

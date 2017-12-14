@@ -108,6 +108,7 @@ namespace Chummer.Backend.Equipment
                 _blnPrint = false;
             if (objXmlLifestyleQuality["contributetolimit"]?.InnerText == "no")
                 _blnContributeToLimit = false;
+            objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;

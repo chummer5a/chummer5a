@@ -178,6 +178,7 @@ namespace Chummer
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
+            objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
             XmlNode objKarmaNode = objXmlQuality["karma"];
             if (objKarmaNode != null)
@@ -1694,7 +1695,7 @@ namespace Chummer
                     _strExtra = ImprovementManager.SelectedValue;
                 }
             }
-
+            objXmlSpellNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -2854,7 +2855,8 @@ namespace Chummer
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-                _nodBonus = objXmlMetamagicNode["bonus"];
+            objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
                 int intRating = 1;
@@ -3135,6 +3137,7 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
+            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -3376,6 +3379,7 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
+            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -3631,6 +3635,7 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
             {
@@ -3891,6 +3896,7 @@ namespace Chummer
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
 
@@ -4166,6 +4172,7 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
+            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
@@ -4418,6 +4425,7 @@ namespace Chummer
         {
             if (objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
+            objXmlAdvantageNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAdvantageNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -4585,7 +4593,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
-
+            objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
         }
@@ -4794,7 +4802,7 @@ namespace Chummer
                     return;
                 }
             }
-
+            objXmlLimitModifierNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
         }
@@ -5837,6 +5845,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
             _nodBonus = objXmlPowerNode["bonus"];
+            objXmlPowerNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
@@ -6808,7 +6817,7 @@ namespace Chummer
             objXmlMentor.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
-
+            objXmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (objXmlMentor["id"] != null)
                 _sourceID = Guid.Parse(objXmlMentor["id"].InnerText);
 

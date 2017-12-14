@@ -32,6 +32,7 @@ Application Changes:
 - Fixed characters with Friends in High Places not being able to pass character validity checks for their Friends in High Places contacts. Fixes #2171.
 - An AI can no longer adopt an item as a home node if it would not have enough program slots to hold it.
 - Vehicles and cyberware can now have custom-defined Matrix attributes and/or Matrix attribute arrays in their data files.
+- Added Notes fields to all Create methods for objects.
 
 Data Changes:
 
