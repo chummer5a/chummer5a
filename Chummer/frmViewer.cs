@@ -37,7 +37,7 @@ namespace Chummer
         private XmlDocument _objCharacterXML = new XmlDocument();
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
-        private CultureInfo objPrintCulture = GlobalOptions.CultureInfo;
+        private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
         private BackgroundWorker _workerRefresher = new BackgroundWorker();
         private BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
 
@@ -282,7 +282,7 @@ namespace Chummer
 
             foreach (Character objCharacter in _lstCharacters)
 #if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter, objPrintCulture);
+                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture);
 #else
                 objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
 #endif
@@ -657,7 +657,7 @@ namespace Chummer
         {
             try
             {
-                objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue.ToString());
+                _objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue.ToString());
             }
             catch (CultureNotFoundException)
             {

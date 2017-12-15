@@ -2846,73 +2846,73 @@
     <Content Include="sheets\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Calendar.xsl">
+    <Content Include="sheets\ja-jp\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Commlinks.xsl">
+    <Content Include="sheets\ja-jp\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Contacts.xsl">
+    <Content Include="sheets\ja-jp\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Dossier.xsl">
+    <Content Include="sheets\ja-jp\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Expenses.xsl">
+    <Content Include="sheets\ja-jp\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Fancy Blocks.xsl">
+    <Content Include="sheets\ja-jp\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Formatted Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Game Master Summary.xsl">
+    <Content Include="sheets\ja-jp\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Notes.xsl">
+    <Content Include="sheets\ja-jp\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Core%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 set CSS.xslt">
+    <Content Include="sheets\ja-jp\Shadowrun 5 set CSS.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Vehicles.xsl">
+    <Content Include="sheets\ja-jp\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\xz.language.xslt">
+    <Content Include="sheets\ja-jp\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Notes set.xslt">
@@ -3280,11 +3280,11 @@
     <Content Include="lang\fr-fr_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\jp-jp.xml">
+    <Content Include="lang\ja-jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\jp-jp_data.xml">
+    <Content Include="lang\ja-jp_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="lang\zh-cn.xml">

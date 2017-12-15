@@ -19,31 +19,137 @@ namespace Translator
         }
 
         #region Control Events
+        private void cboLanguages_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bool blnEnableButtons = cboLanguages.SelectedIndex != -1;
+            cmdEdit.Enabled = blnEnableButtons;
+            cmdRebuild.Enabled = blnEnableButtons;
+        }
+
+        private void txtLanguageCode_TextChanged(object sender, EventArgs e)
+        {
+            bool blnDoProcess = txtLanguageCode.TextLength == 2 && txtRegionCode.TextLength == 2;
+            cmdCreate.Enabled = blnDoProcess;
+            if (blnDoProcess)
+            {
+                string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
+                try
+                {
+                    CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
+                    string strName = objSelectedCulture.NativeName;
+                    int intCountryNameIndex = strName.LastIndexOf('(');
+                    if (intCountryNameIndex != -1)
+                        strName = strName.Substring(0, intCountryNameIndex).Trim();
+                    txtLanguageName.Text = _objEnUSTextInfo.ToTitleCase(strName);
+                }
+                catch (CultureNotFoundException)
+                {
+                }
+            }
+            if (txtLanguageCode.TextLength == 2)
+                txtRegionCode.Select();
+        }
+
+        private void txtRegionCode_TextChanged(object sender, EventArgs e)
+        {
+            bool blnDoProcess = txtLanguageCode.TextLength == 2 && txtRegionCode.TextLength == 2;
+            cmdCreate.Enabled = blnDoProcess;
+            if (blnDoProcess)
+            {
+                string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
+                try
+                {
+                    CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
+                    string strName = objSelectedCulture.NativeName;
+                    int intCountryNameIndex = strName.LastIndexOf('(');
+                    if (intCountryNameIndex != -1)
+                        strName = strName.Substring(0, intCountryNameIndex).Trim();
+                    txtLanguageName.Text = _objEnUSTextInfo.ToTitleCase(strName);
+                }
+                catch (CultureNotFoundException)
+                {
+                }
+            }
+        }
+
         private void cmdCreate_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtLanguageName.Text))
+            if (txtLanguageCode.TextLength != 2)
             {
-                MessageBox.Show("You must provide a language name, per ISO 639-1.");
+                MessageBox.Show("You must provide a two characters for the language code.");
                 return;
             }
-            if (string.IsNullOrEmpty(txtRegionCode.Text))
+            if (txtRegionCode.TextLength != 2)
             {
-                MessageBox.Show("You must provide a region name, per ISO 3166-1.");
+                MessageBox.Show("You must provide a two character for the region code.");
                 return;
             }
-            if (txtLanguageCode.Text.Length != 2)
+            string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
+            try
             {
-                MessageBox.Show("You must provide a two characters for the language code, per ISO 639-1.");
-                return;
+                CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
             }
-            if (txtRegionCode.Text.Length != 2)
+            catch (CultureNotFoundException)
             {
-                MessageBox.Show("You must provide a two character for the region code, per ISO 3166-1.");
-                return;
+                if (MessageBox.Show("The language code you provided has a language code that does not comply with ISO 639-1 and/or a region code that does not comply with ISO 3166-1. This may cause issues with Chummer.\n\nAre you sure you wish to use the entered code?",
+                    "Language Code Issue", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
+                    return;
+            }
+
+            if (File.Exists(Path.Combine(PATH, "lang", strLowerCode + "_data.xml")) || File.Exists(Path.Combine(PATH, "lang", strLowerCode + ".xml")))
+            {
+                DialogResult eDialogResult = MessageBox.Show("A translation already exists with the same code as the one you provided. Do you wish to rebuild the existing translation instead of clearing it and starting anew?",
+                    "Localization Already Exists", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                switch (eDialogResult)
+                {
+                    case DialogResult.Cancel:
+                        return;
+                    case DialogResult.Yes:
+                        {
+                            XmlDocument objExistingTranslationDoc = new XmlDocument();
+                            objExistingTranslationDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+
+                            string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
+                            if (!string.IsNullOrEmpty(strToSelect))
+                            {
+                                int intIndexToSelect = cboLanguages.FindStringExact(strToSelect);
+                                if (intIndexToSelect != -1)
+                                {
+                                    cboLanguages.SelectedIndex = intIndexToSelect;
+                                    cmdRebuild_Click(sender, e);
+                                }
+                            }
+                        }
+                        return;
+                    case DialogResult.No:
+                        {
+                            try
+                            {
+                                string strPath = Path.Combine(PATH, "lang", strLowerCode + "_data.xml");
+                                if (File.Exists(strPath))
+                                    File.Delete(strPath);
+                                strPath = Path.Combine(PATH, "lang", strLowerCode + "xml");
+                                if (File.Exists(strPath))
+                                    File.Delete(strPath);
+                            }
+                            catch (IOException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to delete the existing translation. Aborting operation.",
+                                    "File Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to delete the existing translation. Aborting operation.",
+                                    "File Deletion Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            break;
+                        }
+                }
             }
 
             Cursor = Cursors.WaitCursor;
-            string strLowerCode = txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToLower();
             string strName = _objEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
 
             XmlDocument objDataDoc = new XmlDocument();
@@ -54,33 +160,7 @@ namespace Translator
             xmlVersionNode.InnerText = "-500";
             xmlRootChummerNode.AppendChild(xmlVersionNode);
             objDataDoc.AppendChild(xmlRootChummerNode);
-
-            ProcessArmor(objDataDoc);
-            ProcessBioware(objDataDoc);
-            ProcessBooks(objDataDoc);
-            ProcessComplexForms(objDataDoc);
-            ProcessCritterPowers(objDataDoc);
-            ProcessCritters(objDataDoc);
-            ProcessCyberware(objDataDoc);
-            ProcessEchoes(objDataDoc);
-            ProcessGear(objDataDoc);
-            ProcessImprovements(objDataDoc);
-            ProcessLicenses(objDataDoc);
-            ProcessLifestyles(objDataDoc);
-            ProcessMartialArts(objDataDoc);
-            ProcessMentors(objDataDoc);
-            ProcessMetamagic(objDataDoc);
-            ProcessMetatypes(objDataDoc);
-            ProcessPowers(objDataDoc);
-            ProcessPriorities(objDataDoc);
-            ProcessPrograms(objDataDoc);
-            ProcessQualities(objDataDoc);
-            ProcessSkills(objDataDoc);
-            ProcessSpells(objDataDoc);
-            ProcessStreams(objDataDoc);
-            ProcessTraditions(objDataDoc);
-            ProcessVehicles(objDataDoc);
-            ProcessWeapons(objDataDoc);
+            ProcessDataDoc(objDataDoc);
             objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
 
             XmlDocument objDoc = new XmlDocument();
@@ -124,6 +204,96 @@ namespace Translator
             }
         }
 
+        private void cmdRebuild_Click(object sender, EventArgs e)
+        {
+            if (cboLanguages.SelectedIndex == -1)
+                return;
+
+            Cursor = Cursors.WaitCursor;
+            string strLowerCode = cboLanguages.Text.Substring(cboLanguages.Text.IndexOf('(') + 1, 5).ToLower();
+
+            XmlDocument objDataDoc = new XmlDocument();
+            objDataDoc.Load(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+            XmlNode xmlRootChummerNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootChummerNode == null)
+            {
+                xmlRootChummerNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootChummerNode);
+            }
+            XmlNode xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
+            if (xmlVersionNode == null)
+            {
+                xmlVersionNode = objDataDoc.CreateElement("version");
+                xmlVersionNode.InnerText = "-500";
+                xmlRootChummerNode.AppendChild(xmlVersionNode);
+            }
+            ProcessDataDoc(objDataDoc);
+            objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+
+            XmlDocument objDoc = new XmlDocument();
+            objDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+            xmlRootChummerNode = objDoc.SelectSingleNode("/chummer");
+            if (xmlRootChummerNode == null)
+            {
+                xmlRootChummerNode = objDoc.CreateElement("chummer");
+                objDoc.AppendChild(xmlRootChummerNode);
+            }
+
+            XmlNode xmlNameNode = xmlRootChummerNode.SelectSingleNode("name");
+            if (xmlNameNode == null)
+            {
+                xmlNameNode = objDoc.CreateElement("name");
+                xmlNameNode.InnerText = cboLanguages.Text;
+                xmlRootChummerNode.AppendChild(xmlNameNode);
+            }
+
+            xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
+            if (xmlVersionNode == null)
+            {
+                xmlVersionNode = objDoc.CreateElement("version");
+                xmlVersionNode.InnerText = "-500";
+                xmlRootChummerNode.AppendChild(xmlVersionNode);
+            }
+            XmlNode xmlTranslatedStringsNode = xmlRootChummerNode.SelectSingleNode("strings");
+            if (xmlTranslatedStringsNode == null)
+            {
+                xmlTranslatedStringsNode = objDoc.CreateElement("strings");
+                xmlRootChummerNode.AppendChild(xmlTranslatedStringsNode);
+            }
+
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
+            XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
+            if (xmlStringsNode != null)
+            {
+                foreach (XmlNode xmlStringNode in xmlStringsNode.SelectNodes("string"))
+                {
+                    string strKey = xmlStringNode["key"].InnerText;
+                    XmlNode xmlTranslatedStringNode = xmlTranslatedStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                    if (xmlTranslatedStringNode == null)
+                    {
+                        xmlTranslatedStringsNode.AppendChild(objDoc.ImportNode(xmlStringNode, true));
+                    }
+                }
+                foreach (XmlNode xmlTranslatedStringNode in xmlTranslatedStringsNode.SelectNodes("string"))
+                {
+                    string strKey = xmlTranslatedStringNode["key"].InnerText;
+                    XmlNode xmlStringNode = xmlStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                    if (xmlStringNode == null)
+                    {
+                        xmlTranslatedStringsNode.RemoveChild(xmlTranslatedStringNode);
+                    }
+                }
+            }
+            objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+            
+            using (var frmTranslate = new frmTranslate(xmlNameNode.InnerText))
+            {
+                frmTranslate.ShowDialog(this);
+                Cursor = Cursors.Default;
+            }
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             LoadLanguageList();
@@ -146,6 +316,36 @@ namespace Translator
         #endregion Methods
 
         #region Process Methods
+        private static void ProcessDataDoc(XmlDocument objDataDoc)
+        {
+            ProcessArmor(objDataDoc);
+            ProcessBioware(objDataDoc);
+            ProcessBooks(objDataDoc);
+            ProcessComplexForms(objDataDoc);
+            ProcessCritterPowers(objDataDoc);
+            ProcessCritters(objDataDoc);
+            ProcessCyberware(objDataDoc);
+            ProcessEchoes(objDataDoc);
+            ProcessGear(objDataDoc);
+            ProcessImprovements(objDataDoc);
+            ProcessLicenses(objDataDoc);
+            ProcessLifestyles(objDataDoc);
+            ProcessMartialArts(objDataDoc);
+            ProcessMentors(objDataDoc);
+            ProcessMetamagic(objDataDoc);
+            ProcessMetatypes(objDataDoc);
+            ProcessPowers(objDataDoc);
+            ProcessPriorities(objDataDoc);
+            ProcessPrograms(objDataDoc);
+            ProcessQualities(objDataDoc);
+            ProcessSkills(objDataDoc);
+            ProcessSpells(objDataDoc);
+            ProcessStreams(objDataDoc);
+            ProcessTraditions(objDataDoc);
+            ProcessVehicles(objDataDoc);
+            ProcessWeapons(objDataDoc);
+        }
+
         private static void ProcessArmor(XmlDocument objDataDoc)
         {
             XmlDocument xmlDataDocument = new XmlDocument();
@@ -4418,6 +4618,6 @@ namespace Translator
                 }
             }
         }
-#endregion Process Methods
+        #endregion Process Methods
     }
 }

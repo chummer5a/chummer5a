@@ -39,6 +39,7 @@ namespace Translator
             this.cboLanguages = new System.Windows.Forms.ComboBox();
             this.txtRegionCode = new System.Windows.Forms.TextBox();
             this.lblDash = new System.Windows.Forms.Label();
+            this.cmdRebuild = new System.Windows.Forms.Button();
             this.gbxCreate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -79,6 +80,7 @@ namespace Translator
             // 
             // cmdCreate
             // 
+            this.cmdCreate.Enabled = false;
             this.cmdCreate.Location = new System.Drawing.Point(103, 71);
             this.cmdCreate.Name = "cmdCreate";
             this.cmdCreate.Size = new System.Drawing.Size(75, 23);
@@ -94,6 +96,7 @@ namespace Translator
             this.txtLanguageCode.Name = "txtLanguageCode";
             this.txtLanguageCode.Size = new System.Drawing.Size(30, 20);
             this.txtLanguageCode.TabIndex = 1;
+            this.txtLanguageCode.TextChanged += new System.EventHandler(this.txtLanguageCode_TextChanged);
             // 
             // lblLanguageCode
             // 
@@ -107,6 +110,7 @@ namespace Translator
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.cmdRebuild);
             this.groupBox1.Controls.Add(this.cmdEdit);
             this.groupBox1.Controls.Add(this.cboLanguages);
             this.groupBox1.Location = new System.Drawing.Point(233, 12);
@@ -118,7 +122,8 @@ namespace Translator
             // 
             // cmdEdit
             // 
-            this.cmdEdit.Location = new System.Drawing.Point(63, 58);
+            this.cmdEdit.Enabled = false;
+            this.cmdEdit.Location = new System.Drawing.Point(15, 71);
             this.cmdEdit.Name = "cmdEdit";
             this.cmdEdit.Size = new System.Drawing.Size(75, 23);
             this.cmdEdit.TabIndex = 6;
@@ -130,10 +135,11 @@ namespace Translator
             // 
             this.cboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLanguages.FormattingEnabled = true;
-            this.cboLanguages.Location = new System.Drawing.Point(40, 19);
+            this.cboLanguages.Location = new System.Drawing.Point(15, 19);
             this.cboLanguages.Name = "cboLanguages";
-            this.cboLanguages.Size = new System.Drawing.Size(122, 21);
+            this.cboLanguages.Size = new System.Drawing.Size(171, 21);
             this.cboLanguages.TabIndex = 5;
+            this.cboLanguages.SelectedIndexChanged += new System.EventHandler(this.cboLanguages_SelectedIndexChanged);
             // 
             // txtRegionCode
             // 
@@ -142,6 +148,7 @@ namespace Translator
             this.txtRegionCode.Name = "txtRegionCode";
             this.txtRegionCode.Size = new System.Drawing.Size(30, 20);
             this.txtRegionCode.TabIndex = 2;
+            this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
             // 
             // lblDash
             // 
@@ -152,6 +159,17 @@ namespace Translator
             this.lblDash.TabIndex = 148;
             this.lblDash.Tag = "";
             this.lblDash.Text = "-";
+            // 
+            // cmdRebuild
+            // 
+            this.cmdRebuild.Enabled = false;
+            this.cmdRebuild.Location = new System.Drawing.Point(111, 71);
+            this.cmdRebuild.Name = "cmdRebuild";
+            this.cmdRebuild.Size = new System.Drawing.Size(75, 23);
+            this.cmdRebuild.TabIndex = 7;
+            this.cmdRebuild.Text = "Rebuild";
+            this.cmdRebuild.UseVisualStyleBackColor = true;
+            this.cmdRebuild.Click += new System.EventHandler(this.cmdRebuild_Click);
             // 
             // frmMain
             // 
@@ -182,6 +200,7 @@ namespace Translator
 
         private Label lblDash;
         private TextBox txtRegionCode;
+        private Button cmdRebuild;
     }
 }
 
