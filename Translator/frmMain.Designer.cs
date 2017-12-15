@@ -175,7 +175,7 @@ namespace Translator
             // pbProcessProgress
             // 
             this.pbProcessProgress.Location = new System.Drawing.Point(12, 124);
-            this.pbProcessProgress.Maximum = 27;
+            this.pbProcessProgress.Maximum = 29;
             this.pbProcessProgress.Name = "pbProcessProgress";
             this.pbProcessProgress.Size = new System.Drawing.Size(422, 23);
             this.pbProcessProgress.Step = 1;

@@ -1227,6 +1227,7 @@ namespace Chummer
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
                 objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
+                objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName);
             }
 
             objWriter.WriteStartElement("power");

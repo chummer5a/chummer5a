@@ -41,6 +41,7 @@ Application Changes:
 - Fixed a bug where the quality level numerical up-down would never be enabled in Career mode.
 - Fixed a bug where Re-Apply Improvements would not properly re-apply bonuses of 'ware, first level bonuses of qualities, and bonuses tied to items that were included in a filter list but whose parents were not included.
 - If the updater encounters an error during installation of the new update, it will now restore the old versions of all files. Fixes #2175.
+- Added support for translation of items in ranges.xml and spiritpowers.xml. Updated the translator to also process data from these files.
 
 Data Changes:
 

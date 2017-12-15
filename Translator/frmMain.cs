@@ -413,6 +413,9 @@ namespace Translator
             ProcessPrograms(objDataDoc);
             BeginInvoke(_funcDoProgressBarStep);
 
+            ProcessRanges(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessQualities(objDataDoc);
             BeginInvoke(_funcDoProgressBarStep);
 
@@ -420,6 +423,9 @@ namespace Translator
             BeginInvoke(_funcDoProgressBarStep);
 
             ProcessSpells(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
+            ProcessSpiritPowers(objDataDoc);
             BeginInvoke(_funcDoProgressBarStep);
 
             ProcessStreams(objDataDoc);
@@ -3203,6 +3209,79 @@ namespace Translator
             }
         }
 
+        private static void ProcessRanges(XmlDocument objDataDoc)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "ranges.xml"));
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+            XmlNode xmlRootRangeFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"ranges.xml\"]");
+            if (xmlRootRangeFileNode == null)
+            {
+                xmlRootRangeFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "qualities.xml";
+                xmlRootRangeFileNode.Attributes.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootRangeFileNode);
+            }
+
+            // Process Ranges
+
+            XmlNode xmlRangeNodesParent = xmlRootRangeFileNode.SelectSingleNode("ranges");
+            if (xmlRangeNodesParent == null)
+            {
+                xmlRangeNodesParent = objDataDoc.CreateElement("ranges");
+                xmlRootRangeFileNode.AppendChild(xmlRangeNodesParent);
+            }
+
+            XmlNode xmlDataRangeNodeList = xmlDataDocument.SelectSingleNode("/chummer/ranges");
+            if (xmlDataRangeNodeList != null)
+            {
+                foreach (XmlNode xmlDataRangeNode in xmlDataRangeNodeList.SelectNodes("range"))
+                {
+                    string strDataRangeName = xmlDataRangeNode["category"].InnerText;
+                    XmlNode xmlRangeNode = xmlRangeNodesParent.SelectSingleNode("range[category = \"" + strDataRangeName + "\"]");
+                    if (xmlRangeNode == null)
+                    {
+                        xmlRangeNode = objDataDoc.CreateElement("range");
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("category");
+                        xmlNameElement.InnerText = strDataRangeName;
+                        xmlRangeNode.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataRangeName;
+                        xmlRangeNode.AppendChild(xmlTranslateElement);
+
+                        xmlRangeNodesParent.AppendChild(xmlRangeNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlRangeNode in xmlRangeNodesParent.SelectNodes("range"))
+            {
+                xmlRangeNode.Attributes.RemoveAll();
+                if (xmlDataRangeNodeList?.SelectSingleNode("range[category = \"" + xmlRangeNode["category"]?.InnerText + "\"]") == null)
+                {
+#if !DELETE
+                    {
+                        XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                        xmlExistsAttribute.Value = "False";
+                        xmlRangeNode.Attributes.Append(xmlExistsAttribute);
+                    }
+#else
+                    {
+                        xmlRangeNodesParent.RemoveChild(xmlRangeNode);
+                    }
+#endif
+                }
+            }
+        }
+
         private static void ProcessQualities(XmlDocument objDataDoc)
         {
             XmlDocument xmlDataDocument = new XmlDocument();
@@ -3818,6 +3897,83 @@ namespace Translator
 #else
                     {
                         xmlSpellNodesParent.RemoveChild(xmlSpellNode);
+                    }
+#endif
+                }
+            }
+        }
+
+        private static void ProcessSpiritPowers(XmlDocument objDataDoc)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "spiritpowers.xml"));
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+            XmlNode xmlRootPowerFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"spiritpowers.xml\"]");
+            if (xmlRootPowerFileNode == null)
+            {
+                xmlRootPowerFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "spiritpowers.xml";
+                xmlRootPowerFileNode.Attributes.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootPowerFileNode);
+            }
+
+            // Process Powers
+
+            XmlNode xmlPowerNodesParent = xmlRootPowerFileNode.SelectSingleNode("powers");
+            if (xmlPowerNodesParent == null)
+            {
+                xmlPowerNodesParent = objDataDoc.CreateElement("powers");
+                xmlRootPowerFileNode.AppendChild(xmlPowerNodesParent);
+            }
+
+            XmlNode xmlDataPowerNodeList = xmlDataDocument.SelectSingleNode("/chummer/powers");
+            if (xmlDataPowerNodeList != null)
+            {
+                foreach (XmlNode xmlDataPowerNode in xmlDataPowerNodeList.SelectNodes("power"))
+                {
+                    string strDataPowerName = xmlDataPowerNode["name"].InnerText;
+                    XmlNode xmlPowerNode = xmlPowerNodesParent.SelectSingleNode("power[name=\"" + strDataPowerName + "\"]");
+                    if (xmlPowerNode == null)
+                    {
+                        xmlPowerNode = objDataDoc.CreateElement("power");
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        xmlNameElement.InnerText = strDataPowerName;
+                        xmlPowerNode.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataPowerName;
+                        xmlPowerNode.AppendChild(xmlTranslateElement);
+
+                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
+                        xmlPageElement.InnerText = xmlDataPowerNode["page"].InnerText;
+                        xmlPowerNode.AppendChild(xmlPageElement);
+
+                        xmlPowerNodesParent.AppendChild(xmlPowerNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlPowerNode in xmlPowerNodesParent.SelectNodes("power"))
+            {
+                xmlPowerNode.Attributes.RemoveAll();
+                if (xmlDataPowerNodeList?.SelectSingleNode("power[name = \"" + xmlPowerNode["name"]?.InnerText + "\"]") == null)
+                {
+#if !DELETE
+                    {
+                        XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                        xmlExistsAttribute.Value = "False";
+                        xmlPowerNode.Attributes.Append(xmlExistsAttribute);
+                    }
+#else
+                    {
+                        xmlPowerNodesParent.RemoveChild(xmlPowerNode);
                     }
 #endif
                 }
