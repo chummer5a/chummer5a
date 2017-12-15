@@ -45,11 +45,13 @@ namespace CrashHandler
 		[STAThread]
 		static void Main(string[] args)
 		{ 
-			if (args.Length == 0) return;
-
-            if (_functions.TryGetValue(args[0], out Action<string[]> actCachedAction))
+            for (int i = 0; i < args.Length - 1; ++i)
             {
-                actCachedAction(args.Skip(1).ToArray());
+                if (_functions.TryGetValue(args[i], out Action<string[]> actCachedAction))
+                {
+                    actCachedAction(args.Skip(i + 1).ToArray());
+                    break;
+                }
             }
 
             //Application.EnableVisualStyles();

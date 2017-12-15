@@ -20,6 +20,7 @@ namespace Translator
         private readonly string _strCode = string.Empty;
         private readonly string _strLanguage = string.Empty;
         private readonly string _strPath = string.Empty;
+        private readonly Action _funcDoProgressBarStep;
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public frmTranslate()
@@ -35,6 +36,7 @@ namespace Translator
             _strCode = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
 
             InitializeComponent();
+            _funcDoProgressBarStep = new Action(() => pbTranslateProgressBar.PerformStep());
         }
 
         #region Control Events
@@ -51,14 +53,16 @@ namespace Translator
         private void btnSearch_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
+            pbTranslateProgressBar.Value = 0;
             string strNeedle = txtSearch.Text;
             int rowCount = dgvSection.RowCount;
             int columnCount = dgvSection.ColumnCount;
+            pbTranslateProgressBar.Maximum = rowCount * columnCount;
             int rowIndex = dgvSection.SelectedCells[0].RowIndex;
-            for (int i = rowIndex; i <= rowCount; ++i)
+            for (int i = rowIndex; i < rowCount; ++i)
             {
                 DataGridViewCellCollection objCurrentRowCells = dgvSection.Rows[i].Cells;
-                for (int j = 0; j <= columnCount; j++)
+                for (int j = 0; j < columnCount; j++)
                 {
                     DataGridViewCell objCurrentCell = objCurrentRowCells[j];
                     if (objCurrentCell.Value.ToString().IndexOf(strNeedle, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
@@ -67,15 +71,17 @@ namespace Translator
                         objCurrentCell.Selected = true;
                         dgvSection.FirstDisplayedScrollingRowIndex = i;
                         dgvSection.Select();
+                        pbTranslateProgressBar.Value = pbTranslateProgressBar.Maximum;
                         Cursor = Cursors.Default;
                         return;
                     }
+                    pbTranslateProgressBar.PerformStep();
                 }
             }
             for (int i = 0; i < rowIndex; ++i)
             {
                 DataGridViewCellCollection objCurrentRowCells = dgvSection.Rows[i].Cells;
-                for (int j = 0; j <= columnCount; j++)
+                for (int j = 0; j < columnCount; j++)
                 {
                     DataGridViewCell objCurrentCell = objCurrentRowCells[j];
                     if (objCurrentCell.Value.ToString().IndexOf(strNeedle, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
@@ -84,9 +90,11 @@ namespace Translator
                         objCurrentCell.Selected = true;
                         dgvSection.FirstDisplayedScrollingRowIndex = i;
                         dgvSection.Select();
+                        pbTranslateProgressBar.Value = pbTranslateProgressBar.Maximum;
                         Cursor = Cursors.Default;
                         return;
                     }
+                    pbTranslateProgressBar.PerformStep();
                 }
             }
             Cursor = Cursors.Default;
@@ -316,8 +324,7 @@ namespace Translator
             if (_blnLoading || cboSection.SelectedIndex < 0)
                 return;
             Cursor = Cursors.WaitCursor;
-            dgvTranslate.Visible = false;
-            dgvSection.Visible = true;
+            pbTranslateProgressBar.Value = 0;
             var dataTable = new DataTable("strings");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
@@ -328,7 +335,15 @@ namespace Translator
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
-            foreach (XmlNode xmlNodeToShow in _objDataDoc.SelectNodes("/chummer/chummer[@file=\"" + strFileName + "\"]/" + strSection))
+            XmlNodeList xmlBaseList = _objDataDoc.SelectNodes("/chummer/chummer[@file=\"" + strFileName + "\"]/" + strSection);
+            int intSegments = 0;
+            foreach (XmlNode xmlNodeToShow in xmlBaseList)
+            {
+                if (xmlNodeToShow.HasChildNodes)
+                    intSegments += xmlNodeToShow.ChildNodes.Count;
+            }
+            pbTranslateProgressBar.Maximum = intSegments;
+            foreach (XmlNode xmlNodeToShow in xmlBaseList)
             {
                 XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
                 var xmlDocument = new XmlDocument();
@@ -365,6 +380,7 @@ namespace Translator
                         lock (arrayRowsToDisplayLock)
                             arrayRowsToDisplay[i] = objArray;
                     }
+                    BeginInvoke(_funcDoProgressBarStep);
                 });
                 DataRowCollection objDataTableRows = dataTable.Rows;
                 foreach (object[] objArray in arrayRowsToDisplay)
@@ -387,6 +403,8 @@ namespace Translator
             {
                 TranslatedIndicator(row);
             }
+            dgvTranslate.Visible = false;
+            dgvSection.Visible = true;
             Cursor = Cursors.Default;
         }
 
@@ -429,8 +447,7 @@ namespace Translator
         private void LoadStrings()
         {
             Cursor = Cursors.WaitCursor;
-            dgvTranslate.Visible = true;
-            dgvSection.Visible = false;
+            pbTranslateProgressBar.Value = 0;
             var xmlDocument = new XmlDocument();
             xmlDocument.Load(Path.Combine(ApplicationPath, "lang", "en-us.xml"));
             var dataTable = new DataTable("strings");
@@ -440,6 +457,8 @@ namespace Translator
             dataTable.Columns.Add("Translated?");
             //XmlNodeList xmlNodeList = _objTranslationDoc.SelectNodes("/chummer/strings/string");
             XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/strings/string");
+            pbTranslateProgressBar.Maximum = xmlNodeList.Count;
+
             object[][] arrayRowsToDisplay = new object[xmlNodeList.Count][];
             object arrayRowsToDisplayLock = new object();
             Parallel.For(0, xmlNodeList.Count, i =>
@@ -464,6 +483,8 @@ namespace Translator
                     lock (arrayRowsToDisplayLock)
                         arrayRowsToDisplay[i] = objArray;
                 }
+
+                BeginInvoke(_funcDoProgressBarStep);
             });
             DataRowCollection objDataTableRows = dataTable.Rows;
             foreach (object[] objArray in arrayRowsToDisplay)
@@ -484,6 +505,8 @@ namespace Translator
             {
                 TranslatedIndicator(row);
             }
+            dgvTranslate.Visible = true;
+            dgvSection.Visible = false;
             Cursor = Cursors.Default;
         }
 

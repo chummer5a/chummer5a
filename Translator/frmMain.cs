@@ -3,6 +3,8 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -12,10 +14,12 @@ namespace Translator
     {
         private static readonly TextInfo _objEnUSTextInfo = (new CultureInfo("en-US", false)).TextInfo;
         private static readonly string PATH = Application.StartupPath;
+        private readonly Action _funcDoProgressBarStep;
 
         public frmMain()
         {
             InitializeComponent();
+            _funcDoProgressBarStep = new Action(() => pbProcessProgress.PerformStep());
         }
 
         #region Control Events
@@ -150,39 +154,48 @@ namespace Translator
             }
 
             Cursor = Cursors.WaitCursor;
+            pbProcessProgress.Value = 0;
             string strName = _objEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
 
-            XmlDocument objDataDoc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = objDataDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
-            objDataDoc.AppendChild(xmlDeclaration);
-            XmlNode xmlRootChummerNode = objDataDoc.CreateElement("chummer");
-            XmlNode xmlVersionNode = objDataDoc.CreateElement("version");
-            xmlVersionNode.InnerText = "-500";
-            xmlRootChummerNode.AppendChild(xmlVersionNode);
-            objDataDoc.AppendChild(xmlRootChummerNode);
-            ProcessDataDoc(objDataDoc);
-            objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+            Parallel.Invoke(
+                () =>
+                {
+                    XmlDocument objDataDoc = new XmlDocument();
+                    XmlDeclaration xmlDeclaration = objDataDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
+                    objDataDoc.AppendChild(xmlDeclaration);
+                    XmlNode xmlRootChummerNode = objDataDoc.CreateElement("chummer");
+                    XmlNode xmlVersionNode = objDataDoc.CreateElement("version");
+                    xmlVersionNode.InnerText = "-500";
+                    xmlRootChummerNode.AppendChild(xmlVersionNode);
+                    objDataDoc.AppendChild(xmlRootChummerNode);
+                    ProcessDataDoc(objDataDoc);
+                    objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+                },
+                () =>
+                {
+                    XmlDocument objDoc = new XmlDocument();
+                    XmlDeclaration xmlDeclaration = objDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
+                    objDoc.AppendChild(xmlDeclaration);
+                    XmlNode xmlRootChummerNode = objDoc.CreateElement("chummer");
+                    XmlNode xmlVersionNode = objDoc.CreateElement("version");
+                    xmlVersionNode.InnerText = "-500";
+                    XmlNode xmlNameNode = objDoc.CreateElement("name");
+                    xmlNameNode.InnerText = strName;
+                    xmlRootChummerNode.AppendChild(xmlVersionNode);
+                    xmlRootChummerNode.AppendChild(xmlNameNode);
+                    objDoc.AppendChild(xmlRootChummerNode);
 
-            XmlDocument objDoc = new XmlDocument();
-            xmlDeclaration = objDoc.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
-            objDoc.AppendChild(xmlDeclaration);
-            xmlRootChummerNode = objDoc.CreateElement("chummer");
-            xmlVersionNode = objDoc.CreateElement("version");
-            xmlVersionNode.InnerText = "-500";
-            XmlNode xmlNameNode = objDoc.CreateElement("name");
-            xmlNameNode.InnerText = strName;
-            xmlRootChummerNode.AppendChild(xmlVersionNode);
-            xmlRootChummerNode.AppendChild(xmlNameNode);
-            objDoc.AppendChild(xmlRootChummerNode);
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
-            XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
-            if (xmlStringsNode != null)
-            {
-                xmlRootChummerNode.AppendChild(objDoc.ImportNode(xmlStringsNode, true));
-            }
-            objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+                    var xmlDocument = new XmlDocument();
+                    xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
+                    XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
+                    if (xmlStringsNode != null)
+                    {
+                        xmlRootChummerNode.AppendChild(objDoc.ImportNode(xmlStringsNode, true));
+                    }
+                    objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+                    BeginInvoke(_funcDoProgressBarStep);
+                }
+                );
 
             LoadLanguageList();
             using (var frmTranslate = new frmTranslate(strName))
@@ -200,6 +213,7 @@ namespace Translator
             using (var frmTranslate = new frmTranslate(cboLanguages.Text))
             {
                 frmTranslate.ShowDialog();
+                pbProcessProgress.Value = 0;
                 Cursor = Cursors.Default;
             }
         }
@@ -210,86 +224,100 @@ namespace Translator
                 return;
 
             Cursor = Cursors.WaitCursor;
+            pbProcessProgress.Value = 0;
             string strLowerCode = cboLanguages.Text.Substring(cboLanguages.Text.IndexOf('(') + 1, 5).ToLower();
 
-            XmlDocument objDataDoc = new XmlDocument();
-            objDataDoc.Load(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
-            XmlNode xmlRootChummerNode = objDataDoc.SelectSingleNode("/chummer");
-            if (xmlRootChummerNode == null)
-            {
-                xmlRootChummerNode = objDataDoc.CreateElement("chummer");
-                objDataDoc.AppendChild(xmlRootChummerNode);
-            }
-            XmlNode xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
-            if (xmlVersionNode == null)
-            {
-                xmlVersionNode = objDataDoc.CreateElement("version");
-                xmlVersionNode.InnerText = "-500";
-                xmlRootChummerNode.AppendChild(xmlVersionNode);
-            }
-            ProcessDataDoc(objDataDoc);
-            objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+            string strName = cboLanguages.Text;
 
-            XmlDocument objDoc = new XmlDocument();
-            objDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
-            xmlRootChummerNode = objDoc.SelectSingleNode("/chummer");
-            if (xmlRootChummerNode == null)
-            {
-                xmlRootChummerNode = objDoc.CreateElement("chummer");
-                objDoc.AppendChild(xmlRootChummerNode);
-            }
-
-            XmlNode xmlNameNode = xmlRootChummerNode.SelectSingleNode("name");
-            if (xmlNameNode == null)
-            {
-                xmlNameNode = objDoc.CreateElement("name");
-                xmlNameNode.InnerText = cboLanguages.Text;
-                xmlRootChummerNode.AppendChild(xmlNameNode);
-            }
-
-            xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
-            if (xmlVersionNode == null)
-            {
-                xmlVersionNode = objDoc.CreateElement("version");
-                xmlVersionNode.InnerText = "-500";
-                xmlRootChummerNode.AppendChild(xmlVersionNode);
-            }
-            XmlNode xmlTranslatedStringsNode = xmlRootChummerNode.SelectSingleNode("strings");
-            if (xmlTranslatedStringsNode == null)
-            {
-                xmlTranslatedStringsNode = objDoc.CreateElement("strings");
-                xmlRootChummerNode.AppendChild(xmlTranslatedStringsNode);
-            }
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
-            XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
-            if (xmlStringsNode != null)
-            {
-                foreach (XmlNode xmlStringNode in xmlStringsNode.SelectNodes("string"))
+            Parallel.Invoke(
+                () =>
                 {
-                    string strKey = xmlStringNode["key"].InnerText;
-                    XmlNode xmlTranslatedStringNode = xmlTranslatedStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
-                    if (xmlTranslatedStringNode == null)
+                    XmlDocument objDataDoc = new XmlDocument();
+                    objDataDoc.Load(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+                    XmlNode xmlRootChummerNode = objDataDoc.SelectSingleNode("/chummer");
+                    if (xmlRootChummerNode == null)
                     {
-                        xmlTranslatedStringsNode.AppendChild(objDoc.ImportNode(xmlStringNode, true));
+                        xmlRootChummerNode = objDataDoc.CreateElement("chummer");
+                        objDataDoc.AppendChild(xmlRootChummerNode);
                     }
-                }
-                foreach (XmlNode xmlTranslatedStringNode in xmlTranslatedStringsNode.SelectNodes("string"))
+                    XmlNode xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
+                    if (xmlVersionNode == null)
+                    {
+                        xmlVersionNode = objDataDoc.CreateElement("version");
+                        xmlVersionNode.InnerText = "-500";
+                        xmlRootChummerNode.AppendChild(xmlVersionNode);
+                    }
+                    ProcessDataDoc(objDataDoc);
+                    objDataDoc.Save(Path.Combine(PATH, "lang", strLowerCode + "_data.xml"));
+                },
+                () =>
                 {
-                    string strKey = xmlTranslatedStringNode["key"].InnerText;
-                    XmlNode xmlStringNode = xmlStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
-                    if (xmlStringNode == null)
+                    XmlDocument objDoc = new XmlDocument();
+                    objDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+                    XmlNode xmlRootChummerNode = objDoc.SelectSingleNode("/chummer");
+                    if (xmlRootChummerNode == null)
                     {
-                        xmlTranslatedStringsNode.RemoveChild(xmlTranslatedStringNode);
+                        xmlRootChummerNode = objDoc.CreateElement("chummer");
+                        objDoc.AppendChild(xmlRootChummerNode);
                     }
+
+                    XmlNode xmlNameNode = xmlRootChummerNode.SelectSingleNode("name");
+                    if (xmlNameNode == null)
+                    {
+                        xmlNameNode = objDoc.CreateElement("name");
+                        xmlNameNode.InnerText = cboLanguages.Text;
+                        xmlRootChummerNode.AppendChild(xmlNameNode);
+                    }
+                    else
+                        strName = xmlNameNode.InnerText;
+
+                    XmlNode xmlVersionNode = xmlRootChummerNode.SelectSingleNode("version");
+                    if (xmlVersionNode == null)
+                    {
+                        xmlVersionNode = objDoc.CreateElement("version");
+                        xmlVersionNode.InnerText = "-500";
+                        xmlRootChummerNode.AppendChild(xmlVersionNode);
+                    }
+                    XmlNode xmlTranslatedStringsNode = xmlRootChummerNode.SelectSingleNode("strings");
+                    if (xmlTranslatedStringsNode == null)
+                    {
+                        xmlTranslatedStringsNode = objDoc.CreateElement("strings");
+                        xmlRootChummerNode.AppendChild(xmlTranslatedStringsNode);
+                    }
+
+                    var xmlDocument = new XmlDocument();
+                    xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
+                    XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
+                    if (xmlStringsNode != null)
+                    {
+                        foreach (XmlNode xmlStringNode in xmlStringsNode.SelectNodes("string"))
+                        {
+                            string strKey = xmlStringNode["key"].InnerText;
+                            XmlNode xmlTranslatedStringNode = xmlTranslatedStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                            if (xmlTranslatedStringNode == null)
+                            {
+                                xmlTranslatedStringsNode.AppendChild(objDoc.ImportNode(xmlStringNode, true));
+                            }
+                        }
+                        foreach (XmlNode xmlTranslatedStringNode in xmlTranslatedStringsNode.SelectNodes("string"))
+                        {
+                            string strKey = xmlTranslatedStringNode["key"].InnerText;
+                            XmlNode xmlStringNode = xmlStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                            if (xmlStringNode == null)
+                            {
+                                xmlTranslatedStringsNode.RemoveChild(xmlTranslatedStringNode);
+                            }
+                        }
+                    }
+                    objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+                    BeginInvoke(_funcDoProgressBarStep);
                 }
-            }
-            objDoc.Save(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+                );
             
-            using (var frmTranslate = new frmTranslate(xmlNameNode.InnerText))
+            using (var frmTranslate = new frmTranslate(strName))
             {
                 frmTranslate.ShowDialog(this);
+                pbProcessProgress.Value = 0;
                 Cursor = Cursors.Default;
             }
         }
@@ -313,37 +341,98 @@ namespace Translator
                     cboLanguages.Items.Add(strInnerText);
             }
         }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void DoThreadSafe(Action funcToRun)
+        {
+            if (InvokeRequired)
+                Invoke(funcToRun);
+            else
+                funcToRun.Invoke();
+        }
         #endregion Methods
 
         #region Process Methods
-        private static void ProcessDataDoc(XmlDocument objDataDoc)
-        {
+        private void ProcessDataDoc(XmlDocument objDataDoc)
+        {          
             ProcessArmor(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessBioware(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessBooks(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessComplexForms(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessCritterPowers(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessCritters(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessCyberware(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessEchoes(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessGear(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessImprovements(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessLicenses(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessLifestyles(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessMartialArts(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessMentors(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessMetamagic(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessMetatypes(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessPowers(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessPriorities(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessPrograms(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessQualities(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessSkills(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessSpells(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessStreams(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessTraditions(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessVehicles(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
+
             ProcessWeapons(objDataDoc);
+            BeginInvoke(_funcDoProgressBarStep);
         }
 
         private static void ProcessArmor(XmlDocument objDataDoc)

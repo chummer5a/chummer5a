@@ -29,17 +29,18 @@ namespace Translator
         private void InitializeComponent()
         {
             this.gbxCreate = new System.Windows.Forms.GroupBox();
+            this.lblDash = new System.Windows.Forms.Label();
+            this.txtRegionCode = new System.Windows.Forms.TextBox();
             this.txtLanguageName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.cmdCreate = new System.Windows.Forms.Button();
             this.txtLanguageCode = new System.Windows.Forms.TextBox();
             this.lblLanguageCode = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cmdRebuild = new System.Windows.Forms.Button();
             this.cmdEdit = new System.Windows.Forms.Button();
             this.cboLanguages = new System.Windows.Forms.ComboBox();
-            this.txtRegionCode = new System.Windows.Forms.TextBox();
-            this.lblDash = new System.Windows.Forms.Label();
-            this.cmdRebuild = new System.Windows.Forms.Button();
+            this.pbProcessProgress = new System.Windows.Forms.ProgressBar();
             this.gbxCreate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -59,6 +60,25 @@ namespace Translator
             this.gbxCreate.TabIndex = 0;
             this.gbxCreate.TabStop = false;
             this.gbxCreate.Text = "Create a Language File";
+            // 
+            // lblDash
+            // 
+            this.lblDash.AutoSize = true;
+            this.lblDash.Location = new System.Drawing.Point(136, 22);
+            this.lblDash.Name = "lblDash";
+            this.lblDash.Size = new System.Drawing.Size(10, 13);
+            this.lblDash.TabIndex = 148;
+            this.lblDash.Tag = "";
+            this.lblDash.Text = "-";
+            // 
+            // txtRegionCode
+            // 
+            this.txtRegionCode.Location = new System.Drawing.Point(148, 19);
+            this.txtRegionCode.MaxLength = 2;
+            this.txtRegionCode.Name = "txtRegionCode";
+            this.txtRegionCode.Size = new System.Drawing.Size(30, 20);
+            this.txtRegionCode.TabIndex = 2;
+            this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
             // 
             // txtLanguageName
             // 
@@ -120,6 +140,17 @@ namespace Translator
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Edit Language File";
             // 
+            // cmdRebuild
+            // 
+            this.cmdRebuild.Enabled = false;
+            this.cmdRebuild.Location = new System.Drawing.Point(111, 71);
+            this.cmdRebuild.Name = "cmdRebuild";
+            this.cmdRebuild.Size = new System.Drawing.Size(75, 23);
+            this.cmdRebuild.TabIndex = 7;
+            this.cmdRebuild.Text = "Rebuild";
+            this.cmdRebuild.UseVisualStyleBackColor = true;
+            this.cmdRebuild.Click += new System.EventHandler(this.cmdRebuild_Click);
+            // 
             // cmdEdit
             // 
             this.cmdEdit.Enabled = false;
@@ -141,41 +172,21 @@ namespace Translator
             this.cboLanguages.TabIndex = 5;
             this.cboLanguages.SelectedIndexChanged += new System.EventHandler(this.cboLanguages_SelectedIndexChanged);
             // 
-            // txtRegionCode
+            // pbProcessProgress
             // 
-            this.txtRegionCode.Location = new System.Drawing.Point(148, 19);
-            this.txtRegionCode.MaxLength = 2;
-            this.txtRegionCode.Name = "txtRegionCode";
-            this.txtRegionCode.Size = new System.Drawing.Size(30, 20);
-            this.txtRegionCode.TabIndex = 2;
-            this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
-            // 
-            // lblDash
-            // 
-            this.lblDash.AutoSize = true;
-            this.lblDash.Location = new System.Drawing.Point(136, 22);
-            this.lblDash.Name = "lblDash";
-            this.lblDash.Size = new System.Drawing.Size(10, 13);
-            this.lblDash.TabIndex = 148;
-            this.lblDash.Tag = "";
-            this.lblDash.Text = "-";
-            // 
-            // cmdRebuild
-            // 
-            this.cmdRebuild.Enabled = false;
-            this.cmdRebuild.Location = new System.Drawing.Point(111, 71);
-            this.cmdRebuild.Name = "cmdRebuild";
-            this.cmdRebuild.Size = new System.Drawing.Size(75, 23);
-            this.cmdRebuild.TabIndex = 7;
-            this.cmdRebuild.Text = "Rebuild";
-            this.cmdRebuild.UseVisualStyleBackColor = true;
-            this.cmdRebuild.Click += new System.EventHandler(this.cmdRebuild_Click);
+            this.pbProcessProgress.Location = new System.Drawing.Point(12, 124);
+            this.pbProcessProgress.Maximum = 27;
+            this.pbProcessProgress.Name = "pbProcessProgress";
+            this.pbProcessProgress.Size = new System.Drawing.Size(422, 23);
+            this.pbProcessProgress.Step = 1;
+            this.pbProcessProgress.TabIndex = 147;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(445, 127);
+            this.ClientSize = new System.Drawing.Size(445, 153);
+            this.Controls.Add(this.pbProcessProgress);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxCreate);
             this.Name = "frmMain";
@@ -201,6 +212,7 @@ namespace Translator
         private Label lblDash;
         private TextBox txtRegionCode;
         private Button cmdRebuild;
+        private ProgressBar pbProcessProgress;
     }
 }
 
