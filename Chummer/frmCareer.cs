@@ -11694,35 +11694,34 @@ namespace Chummer
                     break;
                 case NuyenExpenseType.AddVehicle:
                     // Locate the Vehicle that was added.
-                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                    Vehicle v = CommonFunctions.FindById(objEntry.Undo.ObjectId, CharacterObject.Vehicles);
+                    if (v != null)
                     {
-                        if (objVehicle.InternalId == objEntry.Undo.ObjectId)
+                        foreach (Gear objLoopGear in v.Gear)
                         {
-                            // Remove the Vehicle.
-                            CharacterObject.Vehicles.Remove(objVehicle);
-
-                            foreach (Gear objLoopGear in objVehicle.Gear)
-                            {
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
-                            }
-                            foreach (Weapon objLoopWeapon in objVehicle.Weapons)
+                            CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                        }
+                        foreach (Weapon objLoopWeapon in v.Weapons)
+                        {
+                            CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                        }
+                        foreach (VehicleMod objLoopMod in v.Mods)
+                        {
+                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                             {
                                 CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
                             }
-                            foreach (VehicleMod objLoopMod in objVehicle.Mods)
+                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                             {
-                                foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
-                                {
-                                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
-                                }
-                                foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
-                                {
-                                    CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
-                                }
+                                CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons,
+                                    treVehicles);
                             }
-
-                            CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
                         }
+
+                        // Remove the Vehicle.
+                        CharacterObject.Vehicles.Remove(v);
+
+                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
                     }
                     break;
                 case NuyenExpenseType.AddVehicleMod:
@@ -11751,6 +11750,7 @@ namespace Chummer
 
                         // Remove the Vehicle Mod from the tree.
                         CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
+                        break;
                     }
                     break;
                 case NuyenExpenseType.AddVehicleGear:
