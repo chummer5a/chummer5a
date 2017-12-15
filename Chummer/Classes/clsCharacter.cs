@@ -6135,43 +6135,26 @@ namespace Chummer
             {
                 int intHighest = 0;
                 string strHighest = string.Empty;
-                bool blnCustomFit = false;
 
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+')))
+                foreach (Armor objArmor in _lstArmor.Where(objArmor => !objArmor.ArmorValue.StartsWith('+') && objArmor.Equipped && objArmor.TotalArmor > intHighest))
                 {
-                    // Don't look at items that start with "+" since we'll consider those next.
-                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped)
+                    intHighest = objArmor.TotalArmor;
+                    strHighest = objArmor.Name;
+                    if (objArmor.Category == "High-Fashion Armor Clothing")
                     {
-                        intHighest = objArmor.TotalArmor;
-                        strHighest = objArmor.Name;
-                        blnCustomFit = objArmor.Category == "High-Fashion Armor Clothing";
+                        foreach (Armor a in _lstArmor.Where(a => (a.Category == "High-Fashion Armor Clothing" || a.ArmorOverrideValue.StartsWith('+')) && a.Equipped))
+                        {
+                            if (a.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest))
+                                intHighest += Convert.ToInt32(a.ArmorOverrideValue);
+                        }
                     }
                 }
 
                 int intArmor = intHighest;
 
                 // Run through the list of Armor currently worn again and look at non-Clothing items that start with "+" since they stack with the highest Armor.
-                int intStacking = 0;
-                foreach (Armor objArmor in _lstArmor)
-                {
-                    if (objArmor.ArmorValue.StartsWith('+') && objArmor.Category != "Clothing" && objArmor.Equipped)
-                        intStacking += objArmor.TotalArmor;
-                    if (objArmor.TotalArmor > intHighest && objArmor.Equipped && !objArmor.ArmorValue.StartsWith('+'))
-                    {
-                        strHighest = objArmor.Name;
-                        blnCustomFit = (objArmor.Category == "High-Fashion Armor Clothing");
-                    }
-                }
-
-                foreach (Armor objArmor in _lstArmor.Where(objArmor => (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorOverrideValue.StartsWith('+')) && objArmor.Equipped))
-                {
-                    if (objArmor.Category == "High-Fashion Armor Clothing" && blnCustomFit)
-                    {
-                        if (objArmor.ArmorMods.Any(objMod => objMod.Name == "Custom Fit (Stack)" && objMod.Extra == strHighest))
-                            intStacking += Convert.ToInt32(objArmor.ArmorOverrideValue);
-                    }
-                }
+                int intStacking = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith('+') && objArmor.Category != "Clothing" && objArmor.Equipped).AsParallel().Sum(objArmor => objArmor.TotalArmor);
 
                 // Run through the list of Armor currently worn again and look at Clothing items that start with "+" since they stack with eachother.
                 int intClothing = _lstArmor.Where(objArmor => objArmor.ArmorValue.StartsWith('+') && objArmor.Category == "Clothing" && objArmor.Equipped).AsParallel().Sum(objArmor => objArmor.TotalArmor);
