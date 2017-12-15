@@ -44,6 +44,7 @@ Data Changes:
 - Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
 - Corrected the code of the Japanese localization to ja-JP (from jp-JP).
 - Fixed Berserker's Rage being eligible for a PP discount under The Spiritual Way. Part of #2180.
+- Fixed a crash caused by a typo in Thundercloud Morgan's weapon mounts. Fixes #2183.
 
 New Strings:
 

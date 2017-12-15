@@ -586,7 +586,7 @@
       <weaponmounts>
         <weaponmount>
           <control>Manual</control>
-          <flexibility>Fixes</flexibility>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
