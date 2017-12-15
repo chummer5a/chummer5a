@@ -359,7 +359,7 @@ namespace Chummer
                 cmdUpdate.Enabled = false;
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
-                if (!CreateBackupZipAndRenameExes())
+                if (!CreateBackupZip())
                 {
                     Cursor = Cursors.Default;
                     return;
@@ -402,7 +402,7 @@ namespace Chummer
                 cmdUpdate.Enabled = false;
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
-                if (!CreateBackupZipAndRenameExes())
+                if (!CreateBackupZip())
                 {
                     Cursor = Cursors.Default;
                     return;
@@ -425,7 +425,7 @@ namespace Chummer
             }
         }
 
-        private bool CreateBackupZipAndRenameExes()
+        private bool CreateBackupZip()
         {
             //Create a backup file in the temp directory. 
             string strBackupZipPath = Path.Combine(Path.GetTempPath(), "chummer" + CurrentVersion + ".zip");
@@ -436,29 +436,20 @@ namespace Chummer
                 {
                     ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
                 }
-                // Delete the old Chummer5 executables, libraries, and other files whose current versions are in use, then rename the current versions.
-                foreach (string strLoopExeName in Directory.GetFiles(_strAppPath, "*.exe", SearchOption.AllDirectories))
-                {
-                    if (File.Exists(strLoopExeName + ".old"))
-                        File.Delete(strLoopExeName + ".old");
-                    File.Move(strLoopExeName, strLoopExeName + ".old");
-                }
-                foreach (string strLoopDllName in Directory.GetFiles(_strAppPath, "*.dll", SearchOption.AllDirectories))
-                {
-                    if (File.Exists(strLoopDllName + ".old"))
-                        File.Delete(strLoopDllName + ".old");
-                    File.Move(strLoopDllName, strLoopDllName + ".old");
-                }
-                foreach (string strLoopPdbName in Directory.GetFiles(_strAppPath, "*.pdb", SearchOption.AllDirectories))
-                {
-                    if (File.Exists(strLoopPdbName + ".old"))
-                        File.Delete(strLoopPdbName + ".old");
-                    File.Move(strLoopPdbName, strLoopPdbName + ".old");
-                }
             }
             catch (UnauthorizedAccessException)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                return false;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strBackupZipPath));
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             return true;
@@ -469,28 +460,26 @@ namespace Chummer
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
             Log.Info("Extracting downloaded archive into application path: ", strZipPath);
-            using (ZipArchive archive = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+            try
             {
-                foreach (ZipArchiveEntry entry in archive.Entries)
+                using (ZipArchive archive = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                 {
-                    // Skip directories because they already get handled with Directory.CreateDirectory
-                    if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
-                        continue;
-                    string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
-                    try
+                    foreach (ZipArchiveEntry entry in archive.Entries)
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
-                        entry.ExtractToFile(strLoopPath, true);
-                    }
-                    catch (IOException)
-                    {
+                        // Skip directories because they already get handled with Directory.CreateDirectory
+                        if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
+                            continue;
+                        string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
                         try
                         {
-                            if (File.Exists(strLoopPath + ".old"))
-                                File.Delete(strLoopPath + ".old");
-                            File.Move(strLoopPath, strLoopPath + ".old");
                             Directory.CreateDirectory(Path.GetDirectoryName(strLoopPath));
-                            entry.ExtractToFile(strLoopPath, true);
+                            if (File.Exists(strLoopPath))
+                            {
+                                if (File.Exists(strLoopPath + ".old"))
+                                    File.Delete(strLoopPath + ".old");
+                                File.Move(strLoopPath, strLoopPath + ".old");
+                            }
+                            entry.ExtractToFile(strLoopPath, false);
                         }
                         catch (IOException)
                         {
@@ -498,15 +487,36 @@ namespace Chummer
                             blnDoRestart = false;
                             break;
                         }
+                        catch (NotSupportedException)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strLoopPath));
+                            blnDoRestart = false;
+                            break;
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            blnDoRestart = false;
+                            break;
+                        }
+                        lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                     }
-                    catch (UnauthorizedAccessException)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
-                        blnDoRestart = false;
-                        break;
-                    }
-                    lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                 }
+            }
+            catch (IOException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + strZipPath);
+                blnDoRestart = false;
+            }
+            catch (NotSupportedException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + strZipPath);
+                blnDoRestart = false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                blnDoRestart = false;
             }
             if (blnDoRestart)
             {
@@ -516,6 +526,25 @@ namespace Chummer
                         File.Delete(strFileToDelete);
                 }
                 Utils.RestartApplication(string.Empty);
+            }
+            else
+            {
+                foreach (string strBackupFileName in Directory.GetFiles(_strAppPath, "*.old", SearchOption.AllDirectories))
+                {
+                    try
+                    {
+                        File.Move(strBackupFileName, strBackupFileName.Substring(0, strBackupFileName.Length - 4));
+                    }
+                    catch (IOException)
+                    {
+                    }
+                    catch (NotSupportedException)
+                    {
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                    }
+                }
             }
         }
 
