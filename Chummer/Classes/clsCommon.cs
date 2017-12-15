@@ -1404,56 +1404,57 @@ namespace Chummer
         public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
-            if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objGear.InternalId))
-                return;
-            XmlNode objNode = objGear.MyXmlNode;
-            if (objNode != null)
+            if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objGear.InternalId))
             {
-                if (objGear.Category == "Stacked Focus")
+                XmlNode objNode = objGear.MyXmlNode;
+                if (objNode != null)
                 {
-                    StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
-                    if (objStack != null)
+                    if (objGear.Category == "Stacked Focus")
                     {
-                        foreach (Gear objFociGear in objStack.Gear)
+                        StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
+                        if (objStack != null)
                         {
-                            ReaddGearImprovements(objCharacter, objFociGear, treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                            foreach (Gear objFociGear in objStack.Gear)
+                            {
+                                ReaddGearImprovements(objCharacter, objFociGear, treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                            }
                         }
                     }
+                    objGear.Bonus = objNode["bonus"];
+                    objGear.WirelessBonus = objNode["wirelessbonus"];
+                    if (blnStackEquipped && objGear.Equipped)
+                    {
+                        if (objGear.Bonus != null)
+                        {
+                            ImprovementManager.ForcedValue = objGear.Extra;
+                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                                if (objGearNode != null)
+                                    objGearNode.Text = objGear.DisplayName;
+                            }
+                        }
+                        if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                        {
+                            ImprovementManager.ForcedValue = objGear.Extra;
+                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objGear.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
+                                if (objGearNode != null)
+                                    objGearNode.Text = objGear.DisplayName;
+                            }
+                        }
+                    }
+
                 }
-                objGear.Bonus = objNode["bonus"];
-                objGear.WirelessBonus = objNode["wirelessbonus"];
-                if (blnStackEquipped && objGear.Equipped)
+                else
                 {
-                    if (objGear.Bonus != null)
-                    {
-                        ImprovementManager.ForcedValue = objGear.Extra;
-                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objGear.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                            if (objGearNode != null)
-                                objGearNode.Text = objGear.DisplayName;
-                        }
-                    }
-                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                    {
-                        ImprovementManager.ForcedValue = objGear.Extra;
-                        ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
-                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                        {
-                            objGear.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
-                            if (objGearNode != null)
-                                objGearNode.Text = objGear.DisplayName;
-                        }
-                    }
+                    strOutdatedItems += objGear.DisplayName + "\n";
                 }
-                
-            }
-            else
-            {
-                strOutdatedItems += objGear.DisplayName + "\n";
             }
             foreach (Gear objChild in objGear.Children)
                 ReaddGearImprovements(objCharacter, objChild, treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);

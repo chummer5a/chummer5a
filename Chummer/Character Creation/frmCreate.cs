@@ -2040,6 +2040,35 @@ namespace Chummer
                                 objTreeNode.Text = objQuality.DisplayName;
                         }
                     }
+                    objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                    if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                    {
+                        bool blnDoFirstLevel = true;
+                        for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
+                        {
+                            Quality objCheckQuality = CharacterObject.Qualities[k];
+                            if (j != k && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.QualityId == objQuality.Extra && objCheckQuality.QualityId == objQuality.SourceName)
+                            {
+                                if (k < j || objCheckQuality.OriginSource == QualitySource.Improvement || (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objCheckQuality.InternalId)))
+                                {
+                                    blnDoFirstLevel = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnDoFirstLevel)
+                        {
+                            ImprovementManager.ForcedValue = strSelected;
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objQuality.Extra = ImprovementManager.SelectedValue;
+                                TreeNode objTreeNode = CommonFunctions.FindNode(objQuality.InternalId, treQualities);
+                                if (objTreeNode != null)
+                                    objTreeNode.Text = objQuality.DisplayName;
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -2061,11 +2090,8 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], false, 1, objMartialArt.DisplayNameShort);
                         }
                     }
-                    foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                    foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
                     {
-                        // We're only re-apply improvements a list of items, not all of them
-                        if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objAdvantage.InternalId))
-                            continue;
                         XmlNode objNode = objMartialArtNode.SelectSingleNode("techniques/technique[name = \"" + objAdvantage.Name + "\"]");
                         if (objNode != null)
                         {
@@ -2085,11 +2111,8 @@ namespace Chummer
             }
 
             // Refresh Spells.
-            foreach (Spell objSpell in CharacterObject.Spells)
+            foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objSpell.InternalId))
-                    continue;
                 XmlNode objNode = objSpell.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2120,11 +2143,8 @@ namespace Chummer
             }
 
             // Refresh Adept Powers.
-            foreach (Power objPower in CharacterObject.Powers)
+            foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objPower.InternalId))
-                    continue;
                 XmlNode objNode = objPower.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2142,11 +2162,8 @@ namespace Chummer
             }
 
             // Refresh Complex Forms.
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
+            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objComplexForm.InternalId))
-                    continue;
                 XmlNode objNode = objComplexForm.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2176,11 +2193,8 @@ namespace Chummer
             }
 
             // Refresh AI Programs and Advanced Programs
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms)
+            foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objProgram.InternalId))
-                    continue;
                 XmlNode objNode = objProgram.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2210,11 +2224,8 @@ namespace Chummer
             }
 
             // Refresh Critter Powers.
-            foreach (CritterPower objPower in CharacterObject.CritterPowers)
+            foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
             {
-                // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objPower.InternalId))
-                    continue;
                 XmlNode objNode = objPower.MyXmlNode;
                 if (objNode != null)
                 {
@@ -2277,51 +2288,55 @@ namespace Chummer
 
             // Refresh Cyberware and Bioware.
             Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => lstInternalIdFilter != null && !lstInternalIdFilter.Contains(x.InternalId)))
+            foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
             {
-                XmlNode objNode = objCyberware.MyXmlNode;
-                if (objNode != null)
+                // We're only re-apply improvements a list of items, not all of them
+                if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objCyberware.InternalId))
                 {
-                    objCyberware.Bonus = objNode["bonus"];
-                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                    objCyberware.PairBonus = objNode["pairbonus"];
-                    if (objCyberware.IsModularCurrentlyEquipped)
+                    XmlNode objNode = objCyberware.MyXmlNode;
+                    if (objNode != null)
                     {
-                        if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                            ImprovementManager.ForcedValue = objCyberware.Forced;
-                        if (objCyberware.Bonus != null)
+                        objCyberware.Bonus = objNode["bonus"];
+                        objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                        objCyberware.PairBonus = objNode["pairbonus"];
+                        if (objCyberware.IsModularCurrentlyEquipped)
                         {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                objCyberware.Extra = ImprovementManager.SelectedValue;
+                            if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
+                                ImprovementManager.ForcedValue = objCyberware.Forced;
+                            if (objCyberware.Bonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+                            if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                            {
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                                    objCyberware.Extra = ImprovementManager.SelectedValue;
+                            }
+                            if (objCyberware.PairBonus != null)
+                            {
+                                Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
+                                if (objMatchingCyberware != null)
+                                    dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
+                                else
+                                    dicPairableCyberwares.Add(objCyberware, 1);
+                            }
                         }
-                        if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                        {
-                            ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                objCyberware.Extra = ImprovementManager.SelectedValue;
-                        }
-                        if (objCyberware.PairBonus != null)
-                        {
-                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => x.Name == objCyberware.Name && x.Extra == objCyberware.Extra);
-                            if (objMatchingCyberware != null)
-                                dicPairableCyberwares[objMatchingCyberware] = dicPairableCyberwares[objMatchingCyberware] + 1;
-                            else
-                                dicPairableCyberwares.Add(objCyberware, 1);
-                        }
+                        TreeNode objWareNode = CommonFunctions.FindNode(objCyberware.InternalId, treCyberware);
+                        if (objWareNode != null)
+                            objWareNode.Text = objCyberware.DisplayName;
                     }
-                }
-                else
-                {
-                    strOutdatedItems += objCyberware.DisplayName + "\n";
+                    else
+                    {
+                        strOutdatedItems += objCyberware.DisplayName + "\n";
+                    }
                 }
                 foreach (Gear objGear in objCyberware.Gear)
                 {
                     CommonFunctions.ReaddGearImprovements(CharacterObject, objGear, treCyberware, ref strOutdatedItems, lstInternalIdFilter);
                 }
-                TreeNode objWareNode = CommonFunctions.FindNode(objCyberware.InternalId, treCyberware);
-                if (objWareNode != null)
-                    objWareNode.Text = objCyberware.DisplayName;
             }
             // Separate Pass for PairBonuses
             foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
@@ -2358,64 +2373,66 @@ namespace Chummer
             foreach (Armor objArmor in CharacterObject.Armor)
             {
                 // We're only re-apply improvements a list of items, not all of them
-                if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objArmor.InternalId))
-                    continue;
-                XmlNode objNode = objArmor.MyXmlNode;
-                if (objNode != null)
+                if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objArmor.InternalId))
                 {
-                    objArmor.Bonus = objNode["bonus"];
-                    if (objArmor.Bonus != null)
+                    XmlNode objNode = objArmor.MyXmlNode;
+                    if (objNode != null)
                     {
-                        if (objArmor.Equipped)
+                        objArmor.Bonus = objNode["bonus"];
+                        if (objArmor.Bonus != null)
                         {
-                            ImprovementManager.ForcedValue = objArmor.Extra;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort);
-                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            if (objArmor.Equipped)
                             {
-                                objArmor.Extra = ImprovementManager.SelectedValue;
-
-                                TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
-                                if (objArmorNode != null)
-                                    objArmorNode.Text = objArmor.DisplayName;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    strOutdatedItems += objArmor.DisplayName + "\n";
-                }
-
-                foreach (ArmorMod objMod in objArmor.ArmorMods)
-                {
-                    // We're only re-apply improvements a list of items, not all of them
-                    if (lstInternalIdFilter != null && !lstInternalIdFilter.Contains(objMod.InternalId))
-                        continue;
-                    XmlNode objChild = objMod.MyXmlNode;
-
-                    if (objChild != null)
-                    {
-                        objMod.Bonus = objChild["bonus"];
-                        if (objMod.Bonus != null)
-                        {
-                            if (objMod.Equipped)
-                            {
-                                ImprovementManager.ForcedValue = objMod.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
+                                ImprovementManager.ForcedValue = objArmor.Extra;
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, false, objArmor.Rating, objArmor.DisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
-                                    objMod.Extra = ImprovementManager.SelectedValue;
+                                    objArmor.Extra = ImprovementManager.SelectedValue;
 
-                                    TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
-                                    if (objPluginNode != null)
-                                        objPluginNode.Text = objMod.DisplayName;
+                                    TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
+                                    if (objArmorNode != null)
+                                        objArmorNode.Text = objArmor.DisplayName;
                                 }
                             }
                         }
                     }
                     else
                     {
-                        strOutdatedItems += objMod.DisplayName + "\n";
+                        strOutdatedItems += objArmor.DisplayName + "\n";
+                    }
+                }
+
+                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                {
+                    // We're only re-apply improvements a list of items, not all of them
+                    if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objMod.InternalId))
+                    {
+                        XmlNode objChild = objMod.MyXmlNode;
+
+                        if (objChild != null)
+                        {
+                            objMod.Bonus = objChild["bonus"];
+                            if (objMod.Bonus != null)
+                            {
+                                if (objMod.Equipped)
+                                {
+                                    ImprovementManager.ForcedValue = objMod.Extra;
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, false, objMod.Rating, objMod.DisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objMod.Extra = ImprovementManager.SelectedValue;
+
+                                        TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
+                                        if (objPluginNode != null)
+                                            objPluginNode.Text = objMod.DisplayName;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            strOutdatedItems += objMod.DisplayName + "\n";
+                        }
                     }
                     foreach (Gear objGear in objMod.Gear)
                     {
@@ -10167,11 +10184,8 @@ namespace Chummer
                 nudQualityLevel.Value = 1;
                 return;
             }
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
-            XmlNode objQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
-            string strLimitString = objQualityNode?["limit"]?.InnerText;
-            if (objQualityNode?["chargenlimit"] != null)
-                strLimitString = objQualityNode["chargenlimit"].InnerText;
+            XmlNode objQualityNode = objSelectedQuality.MyXmlNode;
+            string strLimitString = objQualityNode?["chargenlimit"]?.InnerText ?? objQualityNode?["limit"]?.InnerText;
             if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode?["nolevels"] == null && Int32.TryParse(strLimitString, out int intMaxRating))
             {
                 nudQualityLevel.Maximum = intMaxRating;
@@ -10192,13 +10206,13 @@ namespace Chummer
                 Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
                 int intCurrentLevels = objSelectedQuality.Levels;
 
+                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                 bool blnRequireUpdate = false;
                 bool blnRequireTreQualitiesRebuild = false;
                 // Adding new levels
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
-                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objSelectedQuality.Name + "\"]");
+                    XmlNode objXmlSelectedQuality = objSelectedQuality.MyXmlNode;
                     if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject, null, null, objXmlDocument))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);

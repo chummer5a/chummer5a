@@ -1292,6 +1292,28 @@ namespace Chummer
                                         objQuality.Extra = ImprovementManager.SelectedValue;
                                     }
                                 }
+                                objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                {
+                                    bool blnDoFirstLevel = true;
+                                    foreach (Quality objCheckQuality in Qualities)
+                                    {
+                                        if (objCheckQuality != objQuality && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.QualityId == objQuality.Extra && objCheckQuality.QualityId == objQuality.SourceName)
+                                        {
+                                            blnDoFirstLevel = false;
+                                            break;
+                                        }
+                                    }
+                                    if (blnDoFirstLevel)
+                                    {
+                                        ImprovementManager.ForcedValue = objQuality.Extra;
+                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort);
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
+                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                        }
+                                    }
+                                }
                             }
                             else
                             {
@@ -1657,6 +1679,28 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                        }
+                    }
+                    objLivingPersonaQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                    if (objLivingPersonaQuality.FirstLevelBonus?.HasChildNodes == true)
+                    {
+                        bool blnDoFirstLevel = true;
+                        foreach (Quality objCheckQuality in Qualities)
+                        {
+                            if (objCheckQuality != objLivingPersonaQuality && objCheckQuality.QualityId == objLivingPersonaQuality.QualityId && objCheckQuality.QualityId == objLivingPersonaQuality.Extra && objCheckQuality.QualityId == objLivingPersonaQuality.SourceName)
+                            {
+                                blnDoFirstLevel = false;
+                                break;
+                            }
+                        }
+                        if (blnDoFirstLevel)
+                        {
+                            ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus, false, 1, objLivingPersonaQuality.DisplayNameShort);
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                            }
                         }
                     }
                 }

@@ -95,6 +95,7 @@ namespace Chummer
         private QualitySource _objQualitySource = QualitySource.Selected;
         private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
+        private XmlNode _nodFirstLevelBonus;
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
         private string _strAltName = string.Empty;
@@ -324,7 +325,8 @@ namespace Chummer
                 _nodDiscounts = objXmlQuality["costdiscount"];
             }
             // If the item grants a bonus, pass the information to the Improvement Manager.
-            if (objXmlQuality["bonus"]?.ChildNodes.Count > 0)
+            _nodBonus = objXmlQuality["bonus"];
+            if (_nodBonus?.ChildNodes.Count > 0)
             {
                 ImprovementManager.ForcedValue = strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["bonus"], false, 1, DisplayNameShort))
@@ -341,7 +343,8 @@ namespace Chummer
             {
                 _strExtra = strForceValue;
             }
-            if (Levels == 0 && objXmlQuality["firstlevelbonus"]?.ChildNodes.Count > 0)
+            _nodFirstLevelBonus = objXmlQuality["firstlevelbonus"];
+            if (Levels == 0 && _nodFirstLevelBonus?.ChildNodes.Count > 0)
             {
                 ImprovementManager.ForcedValue = strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlQuality["firstlevelbonus"], false, 1, DisplayNameShort))
@@ -390,6 +393,10 @@ namespace Chummer
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
                 objWriter.WriteElementString("bonus", string.Empty);
+            if (_nodFirstLevelBonus != null)
+                objWriter.WriteRaw("<bonus>" + _nodFirstLevelBonus.InnerXml + "</bonus>");
+            else
+                objWriter.WriteElementString("bonus", string.Empty);
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
             if (_nodDiscounts != null)
@@ -434,6 +441,9 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
+            _nodFirstLevelBonus = objNode["firstlevelbonus"];
+            if (_nodFirstLevelBonus == null)
+                _nodFirstLevelBonus = MyXmlNode?["firstlevelbonus"];
             _nodDiscounts = objNode["costdiscount"];
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -585,6 +595,15 @@ namespace Chummer
         {
             get => _nodBonus;
             set => _nodBonus = value;
+        }
+
+        /// <summary>
+        /// Bonus node from the XML file only awarded for the first instance the character has the quality.
+        /// </summary>
+        public XmlNode FirstLevelBonus
+        {
+            get => _nodFirstLevelBonus;
+            set => _nodFirstLevelBonus = value;
         }
 
         /// <summary>
