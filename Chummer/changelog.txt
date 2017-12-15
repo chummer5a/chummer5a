@@ -37,6 +37,7 @@ Application Changes:
 - Added a "Rebuild" button to the Translator tool. When used, it will regenerate the strings of an existing translation, removing any unused strings and adding any new ones that have been added after the document was initially created.
 - Fixed a crash when refunding vehicle purchases in career mode. Fixes #2184.
 - Fixed weapons on weapon mounts not being calculated into sell and refund amounts.
+- Fixed behaviour of ArmorRating property to properly account for the Custom Fit (Stack) rules from Run and Gun again.
 - Fixed a bug where the quality level numerical up-down would never be enabled in Career mode.
 - Fixed a bug where Re-Apply Improvements would not properly re-apply bonuses of 'ware, first level bonuses of qualities, and bonuses tied to items that were included in a filter list but whose parents were not included.
 
