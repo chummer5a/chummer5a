@@ -35,6 +35,8 @@ Application Changes:
 - Added Notes fields to all Create methods for objects.
 - The Translator tool can now be opened from within Chummer via Tools > Translator.
 - Added a "Rebuild" button to the Translator tool. When used, it will regenerate the strings of an existing translation, removing any unused strings and adding any new ones that have been added after the document was initially created.
+- Fixed a crash when refunding vehicle purchases in career mode. Fixes #2184.
+- Fixed weapons on weapon mounts not being calculated into sell and refund amounts.
 
 Data Changes:
 

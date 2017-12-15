@@ -11693,10 +11693,10 @@ namespace Chummer
                     CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
                     break;
                 case NuyenExpenseType.AddVehicle:
-                    // Locate the Vehicle that was added.
-                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                     {
-                        if (objVehicle.InternalId == objEntry.Undo.ObjectId)
+                        // Locate the Vehicle that was added.
+                        Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId);
+                        if (objVehicle != null)
                         {
                             // Remove the Vehicle.
                             CharacterObject.Vehicles.Remove(objVehicle);
@@ -11718,6 +11718,13 @@ namespace Chummer
                                 foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                                 {
                                     CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
+                                }
+                            }
+                            foreach (WeaponMount objLoopWeaponMount in objVehicle.WeaponMounts)
+                            {
+                                foreach (Weapon objLoopWeapon in objLoopWeaponMount.Weapons)
+                                {
+                                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
                                 }
                             }
 
