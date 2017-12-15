@@ -7848,7 +7848,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5fae16cf-c68c-46e8-91b2-ca5220824ba5</id>
@@ -7862,7 +7861,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
@@ -7876,7 +7874,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
