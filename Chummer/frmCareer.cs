@@ -11695,12 +11695,9 @@ namespace Chummer
                 case NuyenExpenseType.AddVehicle:
                     {
                         // Locate the Vehicle that was added.
-                        Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == objEntry.Undo.ObjectId);
+                        Vehicle objVehicle = CommonFunctions.FindById(objEntry.Undo.ObjectId, CharacterObject.Vehicles);
                         if (objVehicle != null)
                         {
-                            // Remove the Vehicle.
-                            CharacterObject.Vehicles.Remove(objVehicle);
-
                             foreach (Gear objLoopGear in objVehicle.Gear)
                             {
                                 CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
@@ -11727,6 +11724,9 @@ namespace Chummer
                                     CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
                                 }
                             }
+
+                            // Remove the Vehicle.
+                            CharacterObject.Vehicles.Remove(objVehicle);
 
                             CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
                         }
