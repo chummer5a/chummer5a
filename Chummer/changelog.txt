@@ -43,6 +43,7 @@ Data Changes:
 - Implemented priority mode requirements for shapeshifters. 
 - Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
 - Corrected the code of the Japanese localization to ja-JP (from jp-JP).
+- Fixed Berserker's Rage being eligible for a PP discount under The Spiritual Way. Part of #2180.
 
 New Strings:
 

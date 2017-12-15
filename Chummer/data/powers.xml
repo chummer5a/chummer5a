@@ -622,13 +622,7 @@
       <page>169</page>
       <action>Complex</action>
       <adeptway>.5</adeptway>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Spiritual Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
+      <adeptwayrequires />
       <required>
         <oneof>
           <power>Berserk</power>
