@@ -174,7 +174,7 @@ namespace Chummer
         /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public virtual void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -366,7 +366,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void Save(XmlTextWriter objWriter)
+        public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("guid", _guiID.ToString());
@@ -420,7 +420,7 @@ namespace Chummer
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public virtual void Load(XmlNode objNode)
+        public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -6826,7 +6826,7 @@ namespace Chummer
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="blnMentorMask">Whether the Mentor's Mask is enabled.</param>
-        public virtual void Create(XmlNode objXmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
+        public void Create(XmlNode objXmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
         {
             _blnMentorMask = blnMentorMask;
             _eMentorType = eMentorType;
@@ -6932,7 +6932,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void Save(XmlTextWriter objWriter)
+        public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("mentorspirit");
             objWriter.WriteElementString("guid", _guiID.ToString());
@@ -6968,10 +6968,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Mentor Spirit from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public virtual void Load(XmlNode objNode)
+        public void Load(XmlNode objNode)
         {
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -7042,8 +7042,10 @@ namespace Chummer
             set
             {
                 if (_strName != value)
+                {
                     _objCachedMyXmlNode = null;
-                _strName = value;
+                    _strName = value;
+                }
             }
         }
 

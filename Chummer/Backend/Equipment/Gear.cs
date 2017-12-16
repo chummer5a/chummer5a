@@ -670,20 +670,13 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Begin to save the object's XML to the XmlWriter.
+        /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void SaveBegin(XmlTextWriter objWriter)
+        public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("gear");
-        }
 
-        /// <summary>
-        /// Core code to Save the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void SaveInner(XmlTextWriter objWriter)
-        {
             objWriter.WriteElementString("guid", _guiID.ToString());
             objWriter.WriteElementString("id", _SourceGuid);
             objWriter.WriteElementString("name", _strName);
@@ -754,34 +747,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString());
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
-        }
 
-        /// <summary>
-        /// End saving the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void SaveEnd(XmlTextWriter objWriter)
-        {
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
-        }
-
-        /// <summary>
-        /// Save the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
-        {
-            SaveBegin(objWriter);
-            SaveInner(objWriter);
-            SaveEnd(objWriter);
         }
 
         /// <summary>
         /// Load the Gear from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public virtual void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
