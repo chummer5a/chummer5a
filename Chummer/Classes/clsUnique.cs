@@ -394,9 +394,9 @@ namespace Chummer
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             if (_nodFirstLevelBonus != null)
-                objWriter.WriteRaw("<bonus>" + _nodFirstLevelBonus.InnerXml + "</bonus>");
+                objWriter.WriteRaw("<firstlevelbonus>" + _nodFirstLevelBonus.InnerXml + "</firstlevelbonus>");
             else
-                objWriter.WriteElementString("bonus", string.Empty);
+                objWriter.WriteElementString("firstlevelbonus", string.Empty);
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
             if (_nodDiscounts != null)
