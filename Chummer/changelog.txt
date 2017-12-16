@@ -43,6 +43,8 @@ Application Changes:
 - If the updater encounters an error during installation of the new update, it will now restore the old versions of all files. Fixes #2175.
 - Added support for translation of items in ranges.xml and spiritpowers.xml. Updated the translator to also process data from these files.
 - Fixed various issues regarding encumbrance, Custom Fit, clothing, and items that add armor value. Fixes #2188.
+- Made some minor tweaks to lifestyles. Fixes a quirk if a character gains Improvements that change their lifestyle costs, cost alterations from lifestyle qualities are shown in their treenode. 
+- Fixed incorrect Concealment values for Bio-Spike II and III.
 
 Data Changes:
 

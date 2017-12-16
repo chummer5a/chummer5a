@@ -150,7 +150,7 @@ namespace Chummer.Backend.Equipment
                 Free = true;
             }
             objNode.Name = Name;
-            objNode.Text = DisplayName;
+            objNode.Text = FormattedDisplayName;
             objNode.Tag = InternalId;
         }
 

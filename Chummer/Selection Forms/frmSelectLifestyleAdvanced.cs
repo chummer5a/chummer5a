@@ -95,7 +95,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.DisplayName,
+                        Text = objQuality.FormattedDisplayName,
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes
                     };
@@ -127,7 +127,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.DisplayName,
+                        Text = objQuality.FormattedDisplayName,
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes,
                         ForeColor = SystemColors.GrayText
@@ -509,8 +509,7 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"].InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"].InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            //_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
-            _objLifestyle.Cost = CalculateValues();
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = decimal.ToInt32(nudArea.Value);

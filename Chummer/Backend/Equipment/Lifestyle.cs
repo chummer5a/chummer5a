@@ -216,6 +216,22 @@ namespace Chummer.Backend.Equipment
             {
                 _objType = ConverToLifestyleType(strtemp);
             }
+            LegacyShim();
+        }
+
+        /// <summary>
+        /// Converts old lifestyle structures to new standards. 
+        /// </summary>
+        private void LegacyShim()
+        {
+            //Lifestyles would previously store the entire calculated value of their cost as the Cost string. Better to have it be a volatile Complex Property. 
+            if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && !string.IsNullOrWhiteSpace(_strBaseLifestyle))
+            {
+                XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
+                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + _guiID + "\"]") ??
+                                                  objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strName + "\"]");
+                Cost = Convert.ToInt32(objLifestyleQualityNode["cost"].InnerText);
+            }
         }
 
         /// <summary>
@@ -703,11 +719,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //TODO: Should we really be returning a cached unvalidated value here?
-                if (_objType != LifestyleType.Standard)
-                {
-                    return Cost;
-                }
                 decimal decReturn = 0;
 
                 decimal decMultiplier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);

@@ -7823,7 +7823,7 @@
       <name>Bone Spike II</name>
       <category>Bio-Weapon</category>
       <type>Melee</type>
-      <conceal>0</conceal>
+      <conceal>-10</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
       <damage>(STR+3)P</damage>
@@ -7845,7 +7845,7 @@
       <name>Bone Spike III</name>
       <category>Bio-Weapon</category>
       <type>Melee</type>
-      <conceal>0</conceal>
+      <conceal>-10</conceal>
       <accuracy>Physical</accuracy>
       <reach>0</reach>
       <damage>(STR+4)P</damage>
