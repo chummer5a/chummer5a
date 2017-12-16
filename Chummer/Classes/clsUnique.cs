@@ -1367,7 +1367,7 @@ namespace Chummer
         }
 
         private XmlNode _objCachedMyXmlNode = null;
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public XmlNode MyXmlNode
@@ -1443,10 +1443,11 @@ namespace Chummer
                     if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
                         _strCritterName = CritterName;
                 }
-                if (PropertyChanged != null)
+                PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
+                if (objPropertyChanged != null)
                 {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(CritterName)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
                 }
             }
         }
@@ -5027,7 +5028,7 @@ namespace Chummer
 
         private List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Helper Methods
@@ -5621,13 +5622,14 @@ namespace Chummer
                     if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                         _strMetatype = Metatype;
                 }
-                if (PropertyChanged != null)
+                PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
+                if (objPropertyChanged != null)
                 {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Age)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Sex)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Metatype)));
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Age)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Sex)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Metatype)));
+                    objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(NoLinkedCharacter)));
                 }
             }
         }

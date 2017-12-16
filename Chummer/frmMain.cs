@@ -194,7 +194,7 @@ namespace Chummer
             frmCharacter.Show();
         }
 
-        private frmCharacterRoster _frmCharacterRoster;
+        private readonly frmCharacterRoster _frmCharacterRoster;
         public frmCharacterRoster CharacterRoster
         {
             get
@@ -220,7 +220,7 @@ namespace Chummer
             }
         }
 
-        private Stopwatch IdleUpdateCheck_StopWatch = Stopwatch.StartNew();
+        private readonly Stopwatch IdleUpdateCheck_StopWatch = Stopwatch.StartNew();
         public void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
@@ -554,7 +554,7 @@ namespace Chummer
                 }
                 else
                 {
-                    _frmRoller.Focus();
+                    _frmRoller.Activate();
                 }
             }
             else
@@ -686,13 +686,6 @@ namespace Chummer
                 e.Effect = DragDropEffects.All;
             else
                 e.Effect = DragDropEffects.None;
-        }
-
-        private void trySkillToolStripMenuItem_Click(object sender, EventArgs e, Character objCharacter)
-        {
-            Skill objImpersonation = objCharacter?.SkillsSection?.GetActiveSkill("Impersonation");
-            if (objImpersonation != null)
-                MessageBox.Show(objImpersonation.Rating.ToString());
         }
 
         private void mnuToolsTranslator_Click(object sender, EventArgs e)
@@ -1066,7 +1059,7 @@ namespace Chummer
                 {
                     _frmRoller.Dice = intDice;
                     _frmRoller.Qualities = objCharacter.Qualities;
-                    _frmRoller.Focus();
+                    _frmRoller.Activate();
                 }
             }
             else

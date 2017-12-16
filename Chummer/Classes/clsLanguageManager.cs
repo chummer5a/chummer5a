@@ -90,7 +90,7 @@ namespace Chummer
                     _blnDebug = true;
             }
 #endif
-            if (!Utils.IsRunningInVisualStudio())
+            if (!Utils.IsRunningInVisualStudio)
             {
                 _objDictionary.Clear();
                 XmlDocument objEnglishDocument = new XmlDocument();

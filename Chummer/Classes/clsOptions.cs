@@ -211,7 +211,8 @@ namespace Chummer
 
         static GlobalOptions()
         {
-            if (Utils.IsRunningInVisualStudio()) return;
+            if (Utils.IsRunningInVisualStudio)
+                return;
 
             _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             if (_objBaseChummerKey == null)

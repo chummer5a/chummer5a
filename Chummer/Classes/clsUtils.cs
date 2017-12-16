@@ -32,41 +32,13 @@ namespace Chummer
 {
     static class Utils
     {
-        //someday this should parse into an abstract syntax tree, but this hack
-        //have worked for a few years, and will work a few years more
-        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords)
-        {
-            //parse to base math string
-            Regex regex = new Regex(string.Join("|", keywords.Keys));
-            number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
-            
-            try
-            {
-                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                if (float.TryParse(CommonFunctions.EvaluateInvariantXPath(number)?.ToString(), out parsed))
-                {
-                    return true;
-                }
-            }
-            catch (XPathException ex)
-            {
-                Log.Exception(ex);
-            }
-
-            parsed = 0;
-            return false;
-        }
-
         public static void BreakIfDebug()
         {
             if (Debugger.IsAttached)
                 Debugger.Break();
         }
 
-        public static bool IsRunningInVisualStudio()
-        {
-            return Process.GetCurrentProcess().ProcessName == "devenv";
-        }
+        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
         private static Version _objCachedGitVersion = null;
         public static Version CachedGitVersion
