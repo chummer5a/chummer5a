@@ -907,6 +907,22 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// The Armor's total bonus Armor value including Modifications.
+        /// </summary>
+        public int TotalOverrideArmor
+        {
+            get
+            {
+                int.TryParse(_strO.Replace("Rating", _intRating.ToString()), out var intTotalArmor);
+                // Go through all of the Mods for this piece of Armor and add the Armor value.
+                intTotalArmor += _lstArmorMods.Where(o => o.Equipped).Sum(o => o.Armor);
+                intTotalArmor -= _intDamage;
+
+                return intTotalArmor;
+            }
+        }
+
         public string DisplayArmorValue
         {
             get
