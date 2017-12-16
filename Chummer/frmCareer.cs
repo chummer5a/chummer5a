@@ -18736,9 +18736,9 @@ namespace Chummer
             }
 
             // Reduce the CM Penalties to 0 if the character has Improvements to ignore them.
-            if (CharacterObject.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyStun, true))
+            if (CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyStun && objImprovement.Enabled))
                 intStunCMPenalty = 0;
-            if (CharacterObject.HasImprovement(Improvement.ImprovementType.IgnoreCMPenaltyPhysical, true))
+            if (CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.IgnoreCMPenaltyPhysical && objImprovement.Enabled))
                 intPhysicalCMPenalty = 0;
 
             intCMPenalty = intPhysicalCMPenalty + intStunCMPenalty;
@@ -19000,9 +19000,9 @@ namespace Chummer
             if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
                 GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
 
-            cmdQuickenSpell.Visible = CharacterObject.HasImprovement(Improvement.ImprovementType.QuickeningMetamagic, true);
-            cmdAddBioware.Enabled = !CharacterObject.HasImprovement(Improvement.ImprovementType.DisableBioware, true);
-            cmdAddCyberware.Enabled = !CharacterObject.HasImprovement(Improvement.ImprovementType.DisableCyberware, true);
+            cmdQuickenSpell.Visible = CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.QuickeningMetamagic && objImprovement.Enabled);
+            cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
+            cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             RefreshLimitModifiers();
             RefreshImprovements();
             UpdateReputation();

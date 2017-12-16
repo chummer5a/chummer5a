@@ -13975,8 +13975,8 @@ namespace Chummer
             if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
                 GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
 
-            cmdAddBioware.Enabled = !CharacterObject.HasImprovement(Improvement.ImprovementType.DisableBioware, true);
-            cmdAddCyberware.Enabled = !CharacterObject.HasImprovement(Improvement.ImprovementType.DisableCyberware, true);
+            cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
+            cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             RefreshImprovements();
             RefreshLimitModifiers();
             UpdateReputation();
