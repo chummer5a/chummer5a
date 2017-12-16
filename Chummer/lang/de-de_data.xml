@@ -11078,7 +11078,7 @@
             <gear>
                 <id>f3472dc1-4c7b-403a-8001-6441bb65a687</id>
                 <name>Grenade: Thermal Smoke</name>
-                <page>438</page>
+                <page>437</page>
                 <translate>Granate: IR-Rauch</translate>
             </gear>
             <gear>
@@ -32714,8 +32714,8 @@
             <weapon>
                 <id>9629810f-8db3-44a4-afc4-97eb5b391fb5</id>
                 <name>Grenade: Flash-Bang</name>
-                <page>437</page>
-                <translate>Granate: Betäubung</translate>
+                <page>438</page>
+                <translate>Granate: Schock</translate>
             </weapon>
             <weapon>
                 <id>fdee91ef-c382-49c4-87f6-b9166b9bd9fa</id>
@@ -32726,13 +32726,13 @@
             <weapon>
                 <id>c674a254-d47b-4215-a12d-e6dd3f0910af</id>
                 <name>Grenade: Fragmentation</name>
-                <page>437</page>
+                <page>438</page>
                 <translate>Granate: Splitter</translate>
             </weapon>
             <weapon>
                 <id>cbe5694e-9da3-4aad-a0a0-036087dbab55</id>
                 <name>Grenade: High Explosive</name>
-                <page>437</page>
+                <page>438</page>
                 <translate>Granate: Spreng</translate>
             </weapon>
             <weapon>
@@ -32744,13 +32744,13 @@
             <weapon>
                 <id>aab70ade-8586-4539-a184-99cb63e7bfab</id>
                 <name>Grenade: Smoke</name>
-                <page>437</page>
+                <page>438</page>
                 <translate>Granate: Rauch</translate>
             </weapon>
             <weapon>
                 <id>691ba610-d99a-4a86-a010-e21fa17e924c</id>
                 <name>Grenade: Thermal Smoke</name>
-                <page>438</page>
+                <page>437</page>
                 <translate>Granate: IR-Rauch</translate>
             </weapon>
             <weapon>
