@@ -258,14 +258,11 @@ namespace Chummer
         /// </summary>
         public void RefreshSheet()
         {
-            if (_workerOutputGenerator.IsBusy)
-                _workerOutputGenerator.CancelAsync();
             Cursor = Cursors.AppStarting;
             SetDocumentText(LanguageManager.GetString("String_Generating_Sheet"));
-            if (!_workerOutputGenerator.IsBusy)
-            {
-                _workerOutputGenerator.RunWorkerAsync();
-            }
+            if (_workerOutputGenerator.IsBusy)
+                _workerOutputGenerator.CancelAsync();
+            _workerOutputGenerator.RunWorkerAsync();
         }
 
         /// <summary>
