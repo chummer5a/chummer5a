@@ -228,9 +228,8 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && !string.IsNullOrWhiteSpace(_strBaseLifestyle))
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + _guiID + "\"]") ??
-                                                  objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strName + "\"]");
-                Cost = Convert.ToInt32(objLifestyleQualityNode["cost"].InnerText);
+                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
+                Cost = Convert.ToInt32(objLifestyleQualityNode?["cost"]?.InnerText);
             }
         }
 
