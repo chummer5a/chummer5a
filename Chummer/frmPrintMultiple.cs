@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -66,6 +67,10 @@ namespace Chummer
                     };
                     treCharacters.Nodes.Add(objNode);
                 }
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
+                }
             }
         }
 
@@ -80,6 +85,10 @@ namespace Chummer
                     prgProgress.Value = 0;
                 }
                 treCharacters.SelectedNode.Remove();
+                if (_frmPrintView != null)
+                {
+                    cmdPrint_Click(sender, e);
+                }
             }
         }
 
@@ -87,32 +96,45 @@ namespace Chummer
         {
             cmdPrint.Enabled = false;
             if (!_workerPrinter.IsBusy)
+            {
+                prgProgress.Value = 0;
+                prgProgress.Maximum = treCharacters.Nodes.Count;
                 _workerPrinter.RunWorkerAsync();
+            }
         }
 
-        private void DoPrint(object sender, EventArgs e)
+        private void DoPrint(object sender, DoWorkEventArgs e)
         {
-            prgProgress.Value = 0;
-            prgProgress.Maximum = treCharacters.Nodes.Count;
             Action funcIncreaseProgress = new Action(() => prgProgress.Value += 1);
 
             Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
             for (int i = 0; i < lstCharacters.Length; ++i)
             {
+                if (_workerPrinter.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
                 Character objCharacter = lstCharacters[i];
                 objCharacter = new Character
                 {
                     FileName = treCharacters.Nodes[i].Tag.ToString()
                 };
             }
+
             // Parallelized load because this is one major bottleneck.
             Parallel.ForEach(lstCharacters, objCharacter =>
             {
+                if (_workerPrinter.CancellationPending)
+                    throw new OperationCanceledException();
                 objCharacter.Load();
                 prgProgress.Invoke(funcIncreaseProgress);
             });
 
-            _lstCharacters = new List<Character>(lstCharacters);
+            if (_workerPrinter.CancellationPending)
+                e.Cancel = true;
+            else
+                _lstCharacters = new List<Character>(lstCharacters);
         }
 
         private frmViewer _frmPrintView;
@@ -133,26 +155,29 @@ namespace Chummer
             }
         }
 
-        private void FinishPrint(object sender, EventArgs e)
+        private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
         {
             cmdPrint.Enabled = true;
             // Set the ProgressBar back to 0.
             prgProgress.Value = 0;
 
-            if (_frmPrintView == null)
+            if (!e.Cancelled)
             {
-                _frmPrintView = new frmViewer
+                if (_frmPrintView == null)
                 {
-                    Characters = _lstCharacters,
-                    SelectedSheet = "Game Master Summary"
-                };
-                _frmPrintView.Show();
+                    _frmPrintView = new frmViewer
+                    {
+                        Characters = _lstCharacters,
+                        SelectedSheet = "Game Master Summary"
+                    };
+                    _frmPrintView.Show();
+                }
+                else
+                {
+                    _frmPrintView.Activate();
+                }
+                _frmPrintView.RefreshCharacters();
             }
-            else
-            {
-                _frmPrintView.Activate();
-            }
-            _frmPrintView.RefreshCharacters();
         }
         #endregion
 
