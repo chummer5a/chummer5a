@@ -536,28 +536,26 @@ namespace Chummer
                     strFilter += " and ";
                 strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + "\"";
             }
+
+            XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
+            string strCustomXPath = objAmendingNodeAttribs?["xpathfilter"]?.InnerText;
+            if (!string.IsNullOrEmpty(strCustomXPath))
+            {
+                if (!string.IsNullOrEmpty(strFilter))
+                    strFilter += " and ";
+                strFilter += "(" + strCustomXPath + ")";
+            }
+
             if (!string.IsNullOrEmpty(strFilter))
                 strFilter = "[" + strFilter + "]";
 
-            string strNewXPath = strXPath + "/" + objAmendingNode.Name + strFilter;
-            XmlNode objNodeToEdit = objDoc.SelectSingleNode(strNewXPath);
+            XmlNodeList objNodesToEdit = null;
 
-            blnHasIdentifier = (objAmendingNodeId != null || objAmendingNodeName != null || objAmendingNodeExtraIds.Count > 0);
-            XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
-            // We don't want to edit a random element if we don't have an identifier, so select the one whose text matches our own if it exists.
-            if (!blnHasIdentifier && objAmendingNodeAttribs?["requireinnertextmatch"]?.InnerText == "yes")
-            {
-                blnHasIdentifier = true;
-                objNodeToEdit = null;
-                foreach (XmlNode objLoopNode in objDoc.SelectNodes(strXPath))
-                {
-                    if (objLoopNode.Name == objAmendingNode.Name && objLoopNode.InnerText == objAmendingNode.InnerText)
-                    {
-                        objNodeToEdit = objLoopNode;
-                        break;
-                    }
-                }
-            }
+            blnHasIdentifier = (objAmendingNodeId != null || objAmendingNodeName != null || objAmendingNodeExtraIds.Count > 0 || !string.IsNullOrEmpty(strCustomXPath));
+            string strNewXPath = strXPath + "/" + objAmendingNode.Name + strFilter;
+            if (objNodesToEdit == null)
+                objNodesToEdit = objDoc.SelectNodes(strNewXPath);
+
             bool blnHasElementChildren = false;
             if (objAmendingNode.HasChildNodes)
             {
@@ -570,68 +568,82 @@ namespace Chummer
                     }
                 }
             }
-            if (objNodeToEdit != null && (blnHasIdentifier || blnHasElementChildren || objAmendingNodeAttribs?["remove"]?.InnerText == "yes"))
+            bool blnReturn = false;
+            if (objNodesToEdit != null && (blnHasIdentifier || blnHasElementChildren || objAmendingNodeAttribs?["remove"]?.InnerText == "yes"))
             {
-                // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
-                if (objAmendingNodeAttribs?["remove"]?.InnerText == "yes")
+                foreach (XmlNode objNodeToEdit in objNodesToEdit)
                 {
-                    objDoc.SelectSingleNode(strXPath).RemoveChild(objNodeToEdit);
-                }
-                else
-                {
-                    XmlAttributeCollection objNodeToEditAttribs = objNodeToEdit.Attributes;
-                    // Attributes are the only thing that is overwritten completely
-                    if (objNodeToEditAttribs != null && objAmendingNodeAttribs != null && objAmendingNodeAttribs.Count > 0)
+                    // If the old node exists and the amending node has the attribute 'remove="yes"', then the old node is completely erased.
+                    if (objAmendingNodeAttribs?["remove"]?.InnerText == "yes")
                     {
-                        objNodeToEditAttribs.RemoveAll();
-                        foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
-                        {
-                            if (objNewAttribute.Name != "requireinnertextmatch" && objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
-                                objNodeToEditAttribs.Append(objNewAttribute);
-                        }
+                        objNodeToEdit.ParentNode.RemoveChild(objNodeToEdit);
                     }
-                    // If the amending node has children elements, run this method on all of its children.
-                    if (blnHasElementChildren)
-                    {
-                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
-                        {
-                            if (objChild.NodeType != XmlNodeType.Element)
-                                continue;
-                            // For each child, if no edits were made, but the child has an identifier (id and/or name field), then append the child to the old node.
-                            if (!AmendNodeChildern(objDoc, objChild, strNewXPath, out bool blnLoopHasIdentifier))
-                            {
-                                if (blnLoopHasIdentifier)
-                                {
-                                    objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
-                                }
-                            }
-                            blnHasIdentifier = blnHasIdentifier || blnLoopHasIdentifier;
-                        }
-                    }
-                    // If neither the amending node nor the old node has children elements, overwrite the old node with the amending one.
                     else
                     {
-                        foreach (XmlNode objChild in objNodeToEdit.ChildNodes)
+                        XmlAttributeCollection objNodeToEditAttribs = objNodeToEdit.Attributes;
+                        // Attributes are the only thing that is overwritten completely
+                        if (objNodeToEditAttribs != null && objAmendingNodeAttribs != null && objAmendingNodeAttribs.Count > 0)
                         {
-                            if (objChild.NodeType == XmlNodeType.Element)
+                            objNodeToEditAttribs.RemoveAll();
+                            foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
                             {
-                                blnHasElementChildren = true;
-                                break;
+                                if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
+                                    objNodeToEditAttribs.Append(objNewAttribute);
                             }
                         }
-                        if (!blnHasElementChildren)
-                            objNodeToEdit.InnerXml = objAmendingNode.InnerXml;
+                        // If the amending node has children elements, run this method on all of its children.
+                        if (blnHasElementChildren)
+                        {
+                            foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                            {
+                                if (objChild.NodeType != XmlNodeType.Element)
+                                    continue;
+                                // For each child, if no edits were made, but the child has an identifier (id and/or name field), then append the child to the old node.
+                                if (!AmendNodeChildern(objDoc, objChild, strNewXPath, out bool blnLoopHasIdentifier))
+                                {
+                                    if (blnLoopHasIdentifier)
+                                    {
+                                        objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
+                                    }
+                                }
+                                blnHasIdentifier = blnHasIdentifier || blnLoopHasIdentifier;
+                            }
+                        }
+                        // If neither the amending node nor the old node has children elements, overwrite the old node with the amending one.
+                        else
+                        {
+                            foreach (XmlNode objChild in objNodeToEdit.ChildNodes)
+                            {
+                                if (objChild.NodeType == XmlNodeType.Element)
+                                {
+                                    blnHasElementChildren = true;
+                                    break;
+                                }
+                            }
+                            if (!blnHasElementChildren)
+                                objNodeToEdit.InnerXml = objAmendingNode.InnerXml;
+                        }
                     }
                 }
-                return true;
+                blnReturn = true;
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
             else if (objAmendingNodeAttribs?["addifnotfound"]?.InnerText != "no")
             {
-                return objDoc.SelectSingleNode(strXPath)?.AppendChild(objDoc.ImportNode(objAmendingNode, true)) != null;
+                foreach (XmlNode objParentNode in objDoc.SelectNodes(strXPath))
+                {
+                    XmlNode objNewChildNode = objDoc.ImportNode(objAmendingNode, true);
+                    XmlAttributeCollection objNodeToEditAttribs = objNewChildNode.Attributes;
+                    objNodeToEditAttribs.RemoveAll();
+                    foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
+                    {
+                        if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "remove" && objNewAttribute.Name != "addifnotfound")
+                            objNewChildNode.Attributes.Append(objNewAttribute);
+                    }
+                    blnReturn = objParentNode.AppendChild(objNewChildNode) != null || blnReturn;
+                }
             }
-
-            return false;
+            return blnReturn;
         }
 
         /// <summary>
