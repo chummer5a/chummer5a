@@ -1992,7 +1992,7 @@ namespace Chummer
                                                                         x.ImproveSource == Improvement.ImprovementSource.Power ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Quality ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus).ToList());
+                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus).ToList(), _blnReapplyImprovements);
             else
                 ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName) &&
                                                                         (x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
@@ -2010,7 +2010,7 @@ namespace Chummer
                                                                         x.ImproveSource == Improvement.ImprovementSource.Power ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Quality ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus)).ToList());
+                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus)).ToList(), _blnReapplyImprovements);
 
             // Refresh Qualities.
             // We cannot use foreach because qualities can add more qualities
