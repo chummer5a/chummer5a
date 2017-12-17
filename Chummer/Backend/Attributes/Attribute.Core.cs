@@ -1194,7 +1194,7 @@ namespace Chummer.Backend.Attributes
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
         /// <returns>Price in karma</returns>
-        public virtual int UpgradeKarmaCost()
+        public int UpgradeKarmaCost()
         {
             int intValue = Value;
             int upgrade;
@@ -1236,7 +1236,7 @@ namespace Chummer.Backend.Attributes
 
         }
 
-        public virtual int TotalKarmaCost()
+        public int TotalKarmaCost()
         {
             if (Karma == 0)
                 return 0;
@@ -1281,14 +1281,17 @@ namespace Chummer.Backend.Attributes
         private bool _oldUpgrade;
         private void OnCharacterChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName != nameof(Character.Karma)) return;
-            if (_oldUpgrade == CanUpgradeCareer) return;
-            _oldUpgrade = CanUpgradeCareer;
-            OnPropertyChanged(nameof(CanUpgradeCareer));
+            if (propertyChangedEventArgs.PropertyName != nameof(Character.Karma))
+                return;
+            if (_oldUpgrade != CanUpgradeCareer)
+            {
+                _oldUpgrade = CanUpgradeCareer;
+                OnPropertyChanged(nameof(CanUpgradeCareer));
+            }
         }
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             foreach (string s in DependencyTree.Find(propertyName))
             {

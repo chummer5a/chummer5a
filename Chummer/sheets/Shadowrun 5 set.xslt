@@ -2501,7 +2501,7 @@
               <xsl:value-of select="$lang.Radiation"/>
             </td>
             <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="judgeintentionsresist"/>
+              <xsl:value-of select="radiationresist"/>
             </td>
           </tr>
           <tr bgcolor="#e4e4e4">
@@ -2509,7 +2509,7 @@
               <xsl:value-of select="$lang.JudgeIntentions"/>
             </td>
             <td style="text-align: center; vertical-align: middle;">
-              <xsl:value-of select="radiationresist"/>
+              <xsl:value-of select="judgeintentionsresist"/>
             </td>
           </tr>
         </table>
