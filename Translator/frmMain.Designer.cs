@@ -41,6 +41,7 @@ namespace Translator
             this.cmdEdit = new System.Windows.Forms.Button();
             this.cboLanguages = new System.Windows.Forms.ComboBox();
             this.pbProcessProgress = new System.Windows.Forms.ProgressBar();
+            this.cmdCancel = new System.Windows.Forms.Button();
             this.gbxCreate.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -64,7 +65,7 @@ namespace Translator
             // lblDash
             // 
             this.lblDash.AutoSize = true;
-            this.lblDash.Location = new System.Drawing.Point(136, 22);
+            this.lblDash.Location = new System.Drawing.Point(147, 22);
             this.lblDash.Name = "lblDash";
             this.lblDash.Size = new System.Drawing.Size(10, 13);
             this.lblDash.TabIndex = 148;
@@ -73,19 +74,20 @@ namespace Translator
             // 
             // txtRegionCode
             // 
-            this.txtRegionCode.Location = new System.Drawing.Point(148, 19);
+            this.txtRegionCode.Location = new System.Drawing.Point(163, 19);
             this.txtRegionCode.MaxLength = 2;
             this.txtRegionCode.Name = "txtRegionCode";
-            this.txtRegionCode.Size = new System.Drawing.Size(30, 20);
+            this.txtRegionCode.Size = new System.Drawing.Size(32, 20);
             this.txtRegionCode.TabIndex = 2;
             this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
+            this.txtRegionCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRegionCode_KeyDown);
             // 
             // txtLanguageName
             // 
-            this.txtLanguageName.Location = new System.Drawing.Point(102, 45);
+            this.txtLanguageName.Location = new System.Drawing.Point(51, 45);
             this.txtLanguageName.MaxLength = 100;
             this.txtLanguageName.Name = "txtLanguageName";
-            this.txtLanguageName.Size = new System.Drawing.Size(76, 20);
+            this.txtLanguageName.Size = new System.Drawing.Size(144, 20);
             this.txtLanguageName.TabIndex = 3;
             // 
             // label1
@@ -93,10 +95,10 @@ namespace Translator
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(10, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 146;
             this.label1.Tag = "";
-            this.label1.Text = "Language Name";
+            this.label1.Text = "Name";
             // 
             // cmdCreate
             // 
@@ -111,12 +113,12 @@ namespace Translator
             // 
             // txtLanguageCode
             // 
-            this.txtLanguageCode.Location = new System.Drawing.Point(103, 19);
-            this.txtLanguageCode.MaxLength = 2;
+            this.txtLanguageCode.Location = new System.Drawing.Point(109, 19);
             this.txtLanguageCode.Name = "txtLanguageCode";
-            this.txtLanguageCode.Size = new System.Drawing.Size(30, 20);
+            this.txtLanguageCode.Size = new System.Drawing.Size(32, 20);
             this.txtLanguageCode.TabIndex = 1;
             this.txtLanguageCode.TextChanged += new System.EventHandler(this.txtLanguageCode_TextChanged);
+            this.txtLanguageCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLanguageCode_KeyDown);
             // 
             // lblLanguageCode
             // 
@@ -175,17 +177,28 @@ namespace Translator
             // pbProcessProgress
             // 
             this.pbProcessProgress.Location = new System.Drawing.Point(12, 124);
-            this.pbProcessProgress.Maximum = 29;
             this.pbProcessProgress.Name = "pbProcessProgress";
-            this.pbProcessProgress.Size = new System.Drawing.Size(422, 23);
+            this.pbProcessProgress.Size = new System.Drawing.Size(351, 23);
             this.pbProcessProgress.Step = 1;
             this.pbProcessProgress.TabIndex = 147;
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.Enabled = false;
+            this.cmdCancel.Location = new System.Drawing.Point(369, 124);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(65, 23);
+            this.cmdCancel.TabIndex = 8;
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(445, 153);
+            this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.pbProcessProgress);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.gbxCreate);
@@ -213,6 +226,7 @@ namespace Translator
         private TextBox txtRegionCode;
         private Button cmdRebuild;
         private ProgressBar pbProcessProgress;
+        private Button cmdCancel;
     }
 }
 

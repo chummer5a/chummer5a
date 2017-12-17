@@ -2701,7 +2701,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrWhiteSpace(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
-                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRange + "\"]");
+                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                     XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                     if (xmlTranslateNode != null)
                     {
@@ -2732,7 +2732,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
                     XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
-                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRange + "\"]");
+                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
                     XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
                     if (xmlTranslateNode != null)
                     {
@@ -2770,7 +2770,7 @@ namespace Chummer.Backend.Equipment
 
 
             XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
-            XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[category = \"" + strRangeCategory + "\"]");
+            XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRangeCategory + "\"]");
             if (objXmlCategoryNode?[strFindRange] == null)
             {
                 return -1;
