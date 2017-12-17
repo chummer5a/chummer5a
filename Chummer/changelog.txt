@@ -45,6 +45,8 @@ Application Changes:
 - Fixed various issues regarding encumbrance, Custom Fit, clothing, and items that add armor value. Fixes #2188.
 - Made some minor tweaks to lifestyles. Fixes a quirk if a character gains Improvements that change their lifestyle costs, cost alterations from lifestyle qualities are shown in their treenode. 
 - Fixed incorrect Concealment values for Bio-Spike II and III.
+- Multiple languages can be translated at the same time using Translator, and it now supports cancellation of Create and Rebuild operations.
+- Altered the format of entries in ranges.xml so that they conform to a similar format as other data types (their names are now stored in "name" nodes instead of "category" nodes). This also fixes issues with the Translator incorrectly loading and saving range entries.
 
 Data Changes:
 

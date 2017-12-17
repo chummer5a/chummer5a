@@ -20,7 +20,8 @@ namespace Translator
         private readonly string _strCode = string.Empty;
         private readonly string _strLanguage = string.Empty;
         private readonly string _strPath = string.Empty;
-        private readonly Action _funcDoProgressBarStep;
+        private readonly BackgroundWorker _workerSectionLoader = new BackgroundWorker();
+        private readonly BackgroundWorker _workerStringsLoader = new BackgroundWorker();
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public frmTranslate()
@@ -36,10 +37,27 @@ namespace Translator
             _strCode = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
 
             InitializeComponent();
-            _funcDoProgressBarStep = new Action(() => pbTranslateProgressBar.PerformStep());
+
+            _workerSectionLoader.WorkerReportsProgress = true;
+            _workerSectionLoader.WorkerSupportsCancellation = false;
+            _workerSectionLoader.DoWork += DoLoadSection;
+            _workerSectionLoader.ProgressChanged += RefreshProgressBar;
+            _workerSectionLoader.RunWorkerCompleted += FinishLoadingSection;
+
+            _workerStringsLoader.WorkerReportsProgress = true;
+            _workerStringsLoader.WorkerSupportsCancellation = false;
+            _workerStringsLoader.DoWork += DoLoadStrings;
+            _workerStringsLoader.ProgressChanged += RefreshProgressBar;
+            _workerStringsLoader.RunWorkerCompleted += FinishLoadingStrings;
         }
 
         #region Control Events
+        private void frmTranslate_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.MainForm.OpenTranslateWindows.Remove(this);
+            Dispose(true);
+        }
+
         private void chkOnlyTranslation_CheckedChanged(object sender, EventArgs e)
         {
             // ReSharper disable once LocalizableElement
@@ -50,6 +68,7 @@ namespace Translator
             }
             LoadSection();
         }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
@@ -57,6 +76,7 @@ namespace Translator
             string strNeedle = txtSearch.Text;
             int rowCount = dgvSection.RowCount;
             int columnCount = dgvSection.ColumnCount;
+            pbTranslateProgressBar.Step = 1;
             pbTranslateProgressBar.Maximum = rowCount * columnCount;
             int rowIndex = dgvSection.SelectedCells[0].RowIndex;
             for (int i = rowIndex; i < rowCount; ++i)
@@ -71,7 +91,7 @@ namespace Translator
                         objCurrentCell.Selected = true;
                         dgvSection.FirstDisplayedScrollingRowIndex = i;
                         dgvSection.Select();
-                        pbTranslateProgressBar.Value = pbTranslateProgressBar.Maximum;
+                        pbTranslateProgressBar.Value = 0;
                         Cursor = Cursors.Default;
                         return;
                     }
@@ -90,7 +110,7 @@ namespace Translator
                         objCurrentCell.Selected = true;
                         dgvSection.FirstDisplayedScrollingRowIndex = i;
                         dgvSection.Select();
-                        pbTranslateProgressBar.Value = pbTranslateProgressBar.Maximum;
+                        pbTranslateProgressBar.Value = 0;
                         Cursor = Cursors.Default;
                         return;
                     }
@@ -318,31 +338,104 @@ namespace Translator
         }
         #endregion
 
-        #region Methods
-        private void LoadSection()
+        #region BackgroundWorker Events
+        private void DoLoadStrings(object sender, DoWorkEventArgs e)
         {
-            if (_blnLoading || cboSection.SelectedIndex < 0)
-                return;
-            Cursor = Cursors.WaitCursor;
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(Path.Combine(ApplicationPath, "lang", "en-us.xml"));
+            var dataTable = new DataTable("strings");
+            dataTable.Columns.Add("Key");
+            dataTable.Columns.Add("English");
+            dataTable.Columns.Add("Text");
+            dataTable.Columns.Add("Translated?");
+            //XmlNodeList xmlNodeList = _objTranslationDoc.SelectNodes("/chummer/strings/string");
+            XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/strings/string");
+
+            int intSegmentsToProcess = xmlNodeList.Count;
+            int intSegmentsProcessed = 0;
+            object intSegmentsProcessedLock = new object();
+
+            object[][] arrayRowsToDisplay = new object[xmlNodeList.Count][];
+            object arrayRowsToDisplayLock = new object();
+            Parallel.For(0, xmlNodeList.Count, i =>
+            {
+                XmlNode xmlNodeEnglish = xmlNodeList[i];
+                string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
+                string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
+                string strTranslated = strEnglish;
+                var blnTranslated = false;
+                XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
+                if (xmlNodeLocal != null)
+                {
+                    strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
+                    XmlNode xmlNodeAttributesTranslated = xmlNodeEnglish.Attributes?["translated"];
+                    blnTranslated = xmlNodeAttributesTranslated != null
+                        ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
+                        : strEnglish != strTranslated;
+                }
+                if (!blnTranslated || !chkOnlyTranslation.Checked)
+                {
+                    object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
+                    lock (arrayRowsToDisplayLock)
+                        arrayRowsToDisplay[i] = objArray;
+                }
+                lock (intSegmentsProcessedLock)
+                    intSegmentsProcessed += 1;
+                _workerStringsLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
+            });
+            DataRowCollection objDataTableRows = dataTable.Rows;
+            foreach (object[] objArray in arrayRowsToDisplay)
+            {
+                if (objArray != null)
+                    objDataTableRows.Add(objArray);
+            }
+            var dataSet = new DataSet("strings");
+            dataSet.Tables.Add(dataTable);
+            e.Result = dataSet;
+        }
+
+        private void FinishLoadingStrings(object sender, RunWorkerCompletedEventArgs e)
+        {
+            dgvTranslate.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dgvTranslate.DataSource = e.Result as DataSet;
+            dgvTranslate.DataMember = "strings";
+            dgvTranslate.Columns[0].FillWeight = 1f;
+            dgvTranslate.Columns[1].FillWeight = 4.25f;
+            dgvTranslate.Columns[2].FillWeight = 4.25f;
+            dgvTranslate.Columns[3].FillWeight = 0.5f;
+            foreach (DataGridViewRow row in dgvTranslate.Rows)
+            {
+                TranslatedIndicator(row);
+            }
+            dgvTranslate.Visible = true;
+            dgvSection.Visible = false;
             pbTranslateProgressBar.Value = 0;
+            Cursor = Cursors.Default;
+        }
+
+        private void DoLoadSection(object sender, DoWorkEventArgs e)
+        {
             var dataTable = new DataTable("strings");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
             dataTable.Columns.Add("Book");
             dataTable.Columns.Add("Page");
             dataTable.Columns.Add("Translated?");
-            string strFileName = cboFile.Text;
-            string strSection = cboSection.Text;
+            string[] strArgs = e.Argument as string[];
+            string strFileName = strArgs[0];
+            string strSection = strArgs[1];
             if (strSection == "[Show All Sections]")
                 strSection = "*";
             XmlNodeList xmlBaseList = _objDataDoc.SelectNodes("/chummer/chummer[@file=\"" + strFileName + "\"]/" + strSection);
-            int intSegments = 0;
+            int intSegmentsToProcess = 0;
             foreach (XmlNode xmlNodeToShow in xmlBaseList)
             {
                 if (xmlNodeToShow.HasChildNodes)
-                    intSegments += xmlNodeToShow.ChildNodes.Count;
+                    intSegmentsToProcess += xmlNodeToShow.ChildNodes.Count;
             }
-            pbTranslateProgressBar.Maximum = intSegments;
+            int intSegmentsProcessed = 0;
+            object intSegmentsProcessedLock = new object();
+
             foreach (XmlNode xmlNodeToShow in xmlBaseList)
             {
                 XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
@@ -380,7 +473,9 @@ namespace Translator
                         lock (arrayRowsToDisplayLock)
                             arrayRowsToDisplay[i] = objArray;
                     }
-                    BeginInvoke(_funcDoProgressBarStep);
+                    lock (intSegmentsProcessedLock)
+                        intSegmentsProcessed += 1;
+                    _workerSectionLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
                 });
                 DataRowCollection objDataTableRows = dataTable.Rows;
                 foreach (object[] objArray in arrayRowsToDisplay)
@@ -389,10 +484,21 @@ namespace Translator
                         objDataTableRows.Add(objArray);
                 }
             }
-            var dataSet = new DataSet("strings");
+
+            DataSet dataSet = new DataSet("strings");
             dataSet.Tables.Add(dataTable);
+            e.Result = dataSet;
+        }
+
+        private void RefreshProgressBar(object sender, ProgressChangedEventArgs e)
+        {
+            pbTranslateProgressBar.Value = (e.ProgressPercentage * pbTranslateProgressBar.Maximum) / 100;
+        }
+
+        private void FinishLoadingSection(object sender, RunWorkerCompletedEventArgs e)
+        {
             dgvSection.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvSection.DataSource = dataSet;
+            dgvSection.DataSource = e.Result as DataSet;
             dgvSection.DataMember = "strings";
             dgvSection.Columns[0].FillWeight = 4.25f;
             dgvSection.Columns[1].FillWeight = 4.25f;
@@ -405,7 +511,23 @@ namespace Translator
             }
             dgvTranslate.Visible = false;
             dgvSection.Visible = true;
+            pbTranslateProgressBar.Value = 0;
             Cursor = Cursors.Default;
+        }
+        #endregion BackgroundWorker Events
+
+        #region Methods
+        private void LoadSection()
+        {
+            if (_blnLoading || cboSection.SelectedIndex < 0 || _workerSectionLoader.IsBusy)
+                return;
+
+            Cursor = Cursors.WaitCursor;
+            pbTranslateProgressBar.Value = 0;
+
+            string[] strArgs = { cboFile.Text, cboSection.Text };
+
+            _workerSectionLoader.RunWorkerAsync(strArgs);
         }
 
         private void LoadSections()
@@ -448,66 +570,8 @@ namespace Translator
         {
             Cursor = Cursors.WaitCursor;
             pbTranslateProgressBar.Value = 0;
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(Path.Combine(ApplicationPath, "lang", "en-us.xml"));
-            var dataTable = new DataTable("strings");
-            dataTable.Columns.Add("Key");
-            dataTable.Columns.Add("English");
-            dataTable.Columns.Add("Text");
-            dataTable.Columns.Add("Translated?");
-            //XmlNodeList xmlNodeList = _objTranslationDoc.SelectNodes("/chummer/strings/string");
-            XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/strings/string");
-            pbTranslateProgressBar.Maximum = xmlNodeList.Count;
 
-            object[][] arrayRowsToDisplay = new object[xmlNodeList.Count][];
-            object arrayRowsToDisplayLock = new object();
-            Parallel.For(0, xmlNodeList.Count, i =>
-            {
-                XmlNode xmlNodeEnglish = xmlNodeList[i];
-                string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
-                string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
-                string strTranslated = strEnglish;
-                var blnTranslated = false;
-                XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
-                if (xmlNodeLocal != null)
-                {
-                    strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
-                    XmlNode xmlNodeAttributesTranslated = xmlNodeEnglish.Attributes?["translated"];
-                    blnTranslated = xmlNodeAttributesTranslated != null
-                        ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
-                        : strEnglish != strTranslated;
-                }
-                if (!blnTranslated || !chkOnlyTranslation.Checked)
-                {
-                    object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
-                    lock (arrayRowsToDisplayLock)
-                        arrayRowsToDisplay[i] = objArray;
-                }
-
-                BeginInvoke(_funcDoProgressBarStep);
-            });
-            DataRowCollection objDataTableRows = dataTable.Rows;
-            foreach (object[] objArray in arrayRowsToDisplay)
-            {
-                if (objArray != null)
-                    objDataTableRows.Add(objArray);
-            }
-            var dataSet = new DataSet("strings");
-            dataSet.Tables.Add(dataTable);
-            dgvTranslate.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-            dgvTranslate.DataSource = dataSet;
-            dgvTranslate.DataMember = "strings";
-            dgvTranslate.Columns[0].FillWeight = 1f;
-            dgvTranslate.Columns[1].FillWeight = 4.25f;
-            dgvTranslate.Columns[2].FillWeight = 4.25f;
-            dgvTranslate.Columns[3].FillWeight = 0.5f;
-            foreach (DataGridViewRow row in dgvTranslate.Rows)
-            {
-                TranslatedIndicator(row);
-            }
-            dgvTranslate.Visible = true;
-            dgvSection.Visible = false;
-            Cursor = Cursors.Default;
+            _workerStringsLoader.RunWorkerAsync();
         }
 
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
