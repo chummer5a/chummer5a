@@ -1624,10 +1624,8 @@ namespace Chummer
                 objNode.Expand();
             }
 
-            TreeNode objParent = new TreeNode();
-            if (string.IsNullOrEmpty(objArmor.Location))
-                objParent = treArmor.Nodes[0];
-            else
+            TreeNode objParent = treArmor.Nodes[0];
+            if (!string.IsNullOrEmpty(objArmor.Location))
             {
                 foreach (TreeNode objFind in treArmor.Nodes)
                 {
@@ -1756,10 +1754,8 @@ namespace Chummer
 
                 objGearNode.ContextMenuStrip = cmsVehicleGear;
 
-                TreeNode objParent = new TreeNode();
-                if (string.IsNullOrEmpty(objGear.Location))
-                    objParent = objNode;
-                else
+                TreeNode objParent = objNode;
+                if (!string.IsNullOrEmpty(objGear.Location))
                 {
                     foreach (TreeNode objFind in objNode.Nodes)
                     {

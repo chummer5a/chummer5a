@@ -3223,10 +3223,8 @@ namespace Chummer
 
                         objNode.ContextMenuStrip = cmsGear;
 
-                        TreeNode objParent = new TreeNode();
-                        if (string.IsNullOrEmpty(objGear.Location))
-                            objParent = treGear.Nodes[0];
-                        else
+                        TreeNode objParent = treGear.Nodes[0];
+                        if (!string.IsNullOrEmpty(objGear.Location))
                         {
                             foreach (TreeNode objFind in treGear.Nodes)
                             {
@@ -18174,13 +18172,12 @@ namespace Chummer
             {
                 XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
                 XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"].InnerText + "\"]");
-                TreeNode objChildNode = new TreeNode();
                 int intChildRating = 0;
 
                 if (objXmlChild["rating"] != null)
                     intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
 
-                objChildNode = CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, false, objSource, strType, objCyberware);
+                TreeNode objChildNode = CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, false, objSource, strType, objCyberware);
                 objNode.Nodes.Add(objChildNode);
                 objNode.Expand();
             }
@@ -18993,11 +18990,10 @@ namespace Chummer
 
                     Gear objDefaultSensor = null;
 
-                    TreeNode objNode = new TreeNode();
-
                     XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlVehicle["name"].InnerText + "\"]");
                     if (objXmlVehicleNode == null)
                         continue;
+                    TreeNode objNode = new TreeNode();
                     Vehicle objVehicle = new Vehicle(CharacterObject);
                     objVehicle.Create(objXmlVehicleNode, objNode, cmsVehicle, cmsVehicleGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsWeaponMount, blnCreateChildren);
                     CharacterObject.Vehicles.Add(objVehicle);
@@ -19017,9 +19013,6 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
                         {
-                            TreeNode objModNode = new TreeNode();
-                            VehicleMod objMod = new VehicleMod(CharacterObject);
-
                             int intRating = 0;
                             objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
                             int intMarkup = 0;
@@ -19028,6 +19021,8 @@ namespace Chummer
                             XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlMod["name"].InnerText + "\"]");
                             if (objXmlModNode == null)
                                 continue;
+                            TreeNode objModNode = new TreeNode();
+                            VehicleMod objMod = new VehicleMod(CharacterObject);
                             objMod.Create(objXmlModNode, objModNode, intRating, objVehicle, intMarkup);
                             objVehicle.Mods.Add(objMod);
 
@@ -19043,6 +19038,9 @@ namespace Chummer
 
                         foreach (XmlNode objXmlGear in objXmlVehicle.SelectNodes("gears/gear"))
                         {
+                            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\"]");
+                            if (objXmlGearNode == null)
+                                continue;
                             List<Weapon> objWeapons = new List<Weapon>();
                             List<TreeNode> objWeaponNodes = new List<TreeNode>();
                             TreeNode objGearNode = new TreeNode();
@@ -19058,9 +19056,6 @@ namespace Chummer
                             if (objXmlGear["qty"] != null)
                                 decQty = Convert.ToDecimal(objXmlGear["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 
-                            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\"]");
-                            if (objXmlGearNode == null)
-                                continue;
                             objGear.Create(objXmlGearNode, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue, false, false, false, blnCreateChildren, false);
                             objGear.Quantity = decQty;
                             objGearNode.Text = objGear.DisplayName;
@@ -20518,13 +20513,12 @@ namespace Chummer
             foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))
             {
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-                TreeNode objNode = new TreeNode();
                 int intRating = 0;
 
                 if (objXmlItem["rating"] != null)
                     intRating = Convert.ToInt32(objXmlItem["rating"].InnerText);
 
-                objNode = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, true, objSource, strType, null);
+                TreeNode objNode = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, true, objSource, strType, null);
 
                 objNode.Expand();
                 treCyberware.Nodes[intParentNode].Nodes.Add(objNode);
@@ -20780,10 +20774,8 @@ namespace Chummer
 
                     objNode.ContextMenuStrip = cmsGear;
 
-                    TreeNode objParent = new TreeNode();
-                    if (string.IsNullOrEmpty(objGear.Location))
-                        objParent = treGear.Nodes[0];
-                    else
+                    TreeNode objParent = treGear.Nodes[0];
+                    if (!string.IsNullOrEmpty(objGear.Location))
                     {
                         foreach (TreeNode objFind in treGear.Nodes)
                         {

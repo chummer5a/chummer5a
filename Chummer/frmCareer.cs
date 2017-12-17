@@ -6508,17 +6508,15 @@ namespace Chummer
                 objGearNode.ContextMenuStrip = cmsVehicleGear;
 
                 // Locate the Node for the selected Vehicle.
-                TreeNode nodParent = new TreeNode();
                 foreach (TreeNode nodNode in treVehicles.Nodes[0].Nodes)
                 {
                     if (nodNode.Tag.ToString() == objVehicle.InternalId)
                     {
-                        nodParent = nodNode;
+                        nodNode.Nodes.Add(objGearNode);
                         break;
                     }
                 }
-
-                nodParent.Nodes.Add(objGearNode);
+                
                 objVehicle.Gear.Add(objGear);
             }
             else
@@ -6607,8 +6605,7 @@ namespace Chummer
 
                 CharacterObject.Weapons.Add(objWeapon);
 
-                TreeNode objNode = new TreeNode();
-                objNode = treVehicles.SelectedNode;
+                TreeNode objNode = treVehicles.SelectedNode;
 
                 treVehicles.SelectedNode.Remove();
                 treWeapons.Nodes[0].Nodes.Add(objNode);
@@ -15344,8 +15341,7 @@ namespace Chummer
             objWeapon.Location = string.Empty;
 
             // Move the TreeNode to the Vehicle Mod.
-            TreeNode objNode = new TreeNode();
-            objNode = treWeapons.SelectedNode;
+            TreeNode objNode = treWeapons.SelectedNode;
             treWeapons.SelectedNode.Remove();
 
             foreach (TreeNode objVehicleNode in treVehicles.Nodes[0].Nodes)
@@ -17976,13 +17972,9 @@ namespace Chummer
                 return;
 
             // Locate the selected Cyberware.
-            TreeNode objCyberwareNode = new TreeNode();
-            objCyberwareNode = treCyberware.SelectedNode;
-            if (treCyberware.SelectedNode.Level > 1)
-            {
-                while (objCyberwareNode.Level > 1)
-                    objCyberwareNode = objCyberwareNode.Parent;
-            }
+            TreeNode objCyberwareNode = treCyberware.SelectedNode;
+            while (objCyberwareNode.Level > 1)
+                objCyberwareNode = objCyberwareNode.Parent;
 
             Cyberware objCyberware = CommonFunctions.DeepFindById(objCyberwareNode.Tag.ToString(), CharacterObject.Cyberware);
 
@@ -18018,13 +18010,9 @@ namespace Chummer
                 return;
 
             // Locate the selected Gear.
-            TreeNode objGearNode = new TreeNode();
-            objGearNode = treGear.SelectedNode;
-            if (treGear.SelectedNode.Level > 1)
-            {
-                while (objGearNode.Level > 1)
-                    objGearNode = objGearNode.Parent;
-            }
+            TreeNode objGearNode = treGear.SelectedNode;
+            while (objGearNode.Level > 1)
+                objGearNode = objGearNode.Parent;
 
             Gear objGear = null;
             foreach (Gear objCharacterGear in CharacterObject.Gear)
@@ -18067,13 +18055,9 @@ namespace Chummer
                 return;
 
             // Locate the selected Vehicle.
-            TreeNode objVehicleNode = new TreeNode();
-            objVehicleNode = treVehicles.SelectedNode;
-            if (treVehicles.SelectedNode.Level > 1)
-            {
-                while (objVehicleNode.Level > 1)
-                    objVehicleNode = objVehicleNode.Parent;
-            }
+            TreeNode objVehicleNode = treVehicles.SelectedNode;
+            while (objVehicleNode.Level > 1)
+                objVehicleNode = objVehicleNode.Parent;
 
             Vehicle objVehicle = null;
             foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
@@ -19109,8 +19093,7 @@ namespace Chummer
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                 {
                     // Locate the selected Cyberware.
-                    TreeNode objCyberwareNode = new TreeNode();
-                    objCyberwareNode = treCyberware.SelectedNode;
+                    TreeNode objCyberwareNode = treCyberware.SelectedNode;
                     tabCyberwareCM.Visible = true;
                     if (treCyberware.SelectedNode.Level > 1)
                     {
@@ -21283,13 +21266,9 @@ namespace Chummer
             if (treVehicles.SelectedNode.Level != 0)
             {
                 // Locate the selected Vehicle.
-                TreeNode objVehicleNode = new TreeNode();
-                objVehicleNode = treVehicles.SelectedNode;
-                if (treVehicles.SelectedNode.Level > 1)
-                {
-                    while (objVehicleNode.Level > 1)
-                        objVehicleNode = objVehicleNode.Parent;
-                }
+                TreeNode objVehicleNode = treVehicles.SelectedNode;
+                while (objVehicleNode.Level > 1)
+                    objVehicleNode = objVehicleNode.Parent;
 
                 Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(objVehicleNode.Tag.ToString(), CharacterObject.Vehicles);
                 if (objVehicle == null)
@@ -22811,10 +22790,8 @@ namespace Chummer
                 else
                     nodImprovement.ForeColor = SystemColors.GrayText;
 
-                TreeNode objParent = new TreeNode();
-                if (string.IsNullOrEmpty(objImprovement.CustomGroup))
-                    objParent = treImprovements.Nodes[0];
-                else
+                TreeNode objParent = treImprovements.Nodes[0];
+                if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
                 {
                     foreach (TreeNode objFind in treImprovements.Nodes)
                     {
@@ -23740,10 +23717,8 @@ namespace Chummer
 
                     CommonFunctions.BuildGearTree(objGear, objNode, cmsGear);
 
-                    TreeNode objParent = new TreeNode();
-                    if (string.IsNullOrEmpty(objGear.Location))
-                        objParent = treGear.Nodes[0];
-                    else
+                    TreeNode objParent = treGear.Nodes[0];
+                    if (!string.IsNullOrEmpty(objGear.Location))
                     {
                         foreach (TreeNode objFind in treGear.Nodes)
                         {
@@ -23844,13 +23819,12 @@ namespace Chummer
             {
                 XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
                 XmlNode objXmlChildCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlChild["name"].InnerText + "\"]");
-                TreeNode objChildNode = new TreeNode();
                 int intChildRating = 0;
 
                 if (objXmlChild["rating"] != null)
                     intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
 
-                objChildNode = CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, false, objSource, strType, objCyberware);
+                TreeNode objChildNode = CreateSuiteCyberware(objXmlChild, objXmlChildCyberware, objGrade, intChildRating, false, objSource, strType, objCyberware);
                 objNode.Nodes.Add(objChildNode);
                 objNode.Expand();
             }
@@ -23902,13 +23876,12 @@ namespace Chummer
             foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))
             {
                 XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/" + strType + "s/" + strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-                TreeNode objNode = new TreeNode();
                 int intRating = 0;
 
                 if (objXmlItem["rating"] != null)
                     intRating = Convert.ToInt32(objXmlItem["rating"].InnerText);
 
-                objNode = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, true, objSource, strType, null);
+                TreeNode objNode = CreateSuiteCyberware(objXmlItem, objXmlCyberware, objGrade, intRating, true, objSource, strType, null);
 
                 objNode.Expand();
                 treCyberware.Nodes[intParentNode].Nodes.Add(objNode);
