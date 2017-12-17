@@ -710,7 +710,7 @@ namespace Chummer
                     int intMAG = CharacterObject.MAG.TotalValue;
                     if (CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                         intMAG = CharacterObject.MAGAdept.TotalValue;
-                    intReturn = Math.Max(intReturn, intMAG);
+                    intReturn = Math.Min(intReturn, intMAG);
                 }
                 return intReturn;
             }
