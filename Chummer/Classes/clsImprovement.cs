@@ -1180,7 +1180,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
-        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList)
+        /// <param name="reapplyImprovements">Whether we're reapplying Improvements.</param>
+        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool reapplyImprovements = false)
         {
             Log.Enter("RemoveImprovements");
 
@@ -1487,7 +1488,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName));
+                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !reapplyImprovements);
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);

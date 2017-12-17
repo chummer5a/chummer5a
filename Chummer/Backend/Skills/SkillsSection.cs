@@ -15,6 +15,7 @@ namespace Chummer.Skills
     {
         private readonly Character _character;
         private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
+        private static List<Skill> _skillBackupList = new List<Skill>();
 
         public SkillsSection(Character character)
         {
@@ -56,7 +57,7 @@ namespace Chummer.Skills
             }
         }
 
-        internal void RemoveSkills(FilterOptions skills)
+        internal void RemoveSkills(FilterOptions skills, bool createKnowledge = true)
         {
             string category;
             switch (skills)
@@ -102,10 +103,11 @@ namespace Chummer.Skills
                 {
                     Skill skill = Skills[i];
                     _skillValueBackup[skill.SkillId] = skill;
+                    _skillBackupList.Add(skill);
                     Skills.RemoveAt(i);
                     SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name);
-
-                    if (_character.Created && skill.TotalBaseRating > 0)
+                    
+                    if (_character.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
                         KnowledgeSkill kno = new KnowledgeSkill(_character)
                         {
@@ -615,8 +617,21 @@ namespace Chummer.Skills
                 objSkillItem.Name = objXmlSkill["translate"]?.InnerText ?? objSkillItem.Value;
                 lstSkillOrder.Add(objSkillItem);
                 //TODO: read from backup
-                Skill objSkill = Skill.FromData(objXmlSkill, c);
-                dicSkills.Add(objSkillItem.Value, objSkill);
+                if (_skillBackupList.Count > 0)
+                {
+                    Skill objSkill =
+                        _skillBackupList.FirstOrDefault(s => s.SkillId == Guid.Parse(objXmlSkill["id"].InnerText));
+                    if (objSkill != null)
+                    {
+                        dicSkills.Add(objSkill.Name,objSkill);
+                        _skillBackupList.Remove(objSkill);
+                    }
+                }
+                else
+                {
+                    Skill objSkill = Skill.FromData(objXmlSkill, c);
+                    dicSkills.Add(objSkillItem.Value, objSkill);
+                }
             }
             SortListItem objSort = new SortListItem();
             lstSkillOrder.Sort(objSort.Compare);
