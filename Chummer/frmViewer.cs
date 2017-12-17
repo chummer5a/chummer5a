@@ -262,7 +262,10 @@ namespace Chummer
                 _workerOutputGenerator.CancelAsync();
             Cursor = Cursors.WaitCursor;
             SetDocumentText(LanguageManager.GetString("String_Generating_Sheet"));
-            _workerOutputGenerator.RunWorkerAsync();
+            if (!_workerOutputGenerator.IsBusy)
+            {
+                _workerOutputGenerator.RunWorkerAsync();
+            }
         }
 
         /// <summary>
