@@ -34,7 +34,7 @@ namespace Chummer
             MoveControls();
         }
 
-        public frmSelectCalendarStart(CalendarObject objWeek)
+        public frmSelectCalendarStart(CalendarItem objWeek)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);

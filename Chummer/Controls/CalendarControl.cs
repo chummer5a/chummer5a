@@ -23,10 +23,13 @@ namespace Chummer
             monthView1.DataBindings.Add("ViewStart", this, nameof(StartDate), false, DataSourceUpdateMode.OnPropertyChanged);
         }
 
-        public void AddRange(List<CalendarObject> calendarObjects)
+        public void AddRange(List<CalendarItem> calendarObjects)
         {
-            _calItems.AddRange(calendarObjects.Select(co => new CalendarItem(calendar1, co.Start, co.Finish, co.Notes))
-                .ToList());
+            foreach (CalendarItem c in calendarObjects)
+            {
+                c.Calendar = calendar1;
+            }
+            _calItems.AddRange(calendarObjects);
             StartDate = _calItems.Select(o => o.EndDate).Max();
             calendar1.SetViewRange(StartDate,EndDate);
         }

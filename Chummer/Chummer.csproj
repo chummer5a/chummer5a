@@ -368,6 +368,51 @@
     <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Calendar\CalendarColorTable.cs" />
+    <Compile Include="UI\Calendar\CalendarDay.cs" />
+    <Compile Include="UI\Calendar\CalendarDayTop.cs" />
+    <Compile Include="UI\Calendar\CalendarHighlightRange.cs" />
+    <Compile Include="UI\Calendar\CalendarItem.cs" />
+    <Compile Include="UI\Calendar\CalendarItemCollection.cs" />
+    <Compile Include="UI\Calendar\CalendarSelectableElement.cs" />
+    <Compile Include="UI\Calendar\CalendarTimeScaleUnit.cs" />
+    <Compile Include="UI\Calendar\CalendarWeek.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarDaysMode.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarItemImageAlign.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarScrollBars.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarState.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarTimeFormat.cs" />
+    <Compile Include="UI\Calendar\Enums\CalendarTimeScale.cs" />
+    <Compile Include="UI\Calendar\Enums\Corners.cs" />
+    <Compile Include="UI\Calendar\Enums\MonthViewSelection.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarDayEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarItemCancelEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarItemEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarLoadEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererBoxEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererDayEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererItemBoundsEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererItemEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\CalendarRendererTimeUnitEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\MonthViewBoxEventArgs.cs" />
+    <Compile Include="UI\Calendar\EventArgs\MonthViewMontEventArgs.cs" />
+    <Compile Include="UI\Calendar\ICalendarSelectableElement.cs" />
+    <Compile Include="UI\Calendar\ISelectableElement.cs" />
+    <Compile Include="UI\Calendar\MonthViewDay.cs" />
+    <Compile Include="UI\Calendar\MonthViewMonth.cs" />
+    <Compile Include="UI\Calendar\Renderers\CalendarProfessionalRenderer.cs" />
+    <Compile Include="UI\Calendar\Renderers\CalendarRenderer.cs" />
+    <Compile Include="UI\Calendar\Renderers\CalendarSystemRenderer.cs" />
+    <Compile Include="UI\Calendar\UserControls\Calendar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Calendar\UserControls\CalendarTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Calendar\UserControls\MonthView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
