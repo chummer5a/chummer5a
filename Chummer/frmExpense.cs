@@ -156,7 +156,7 @@ namespace Chummer
         }
 
         public bool KarmaNuyenExchange { get; set; }
-        public string KarmaNuyenExchangeString { get; internal set; }
+        public string KarmaNuyenExchangeString { get; set; }
 
         #endregion
 
