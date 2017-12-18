@@ -402,7 +402,7 @@ namespace Chummer
             XmlNode objXmlMetatype = null;
             if (lstMetatypes.SelectedValue != null)
             {
-                objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
+                objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + lstMetatypes.SelectedValue + "\"]");
             }
 
             XmlNode objXmlMetavariant = null;
