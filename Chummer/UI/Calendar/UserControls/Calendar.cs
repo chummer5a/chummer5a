@@ -1547,10 +1547,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarDayEventArgs"/> instance containing the event data.</param>
         protected virtual void OnDayHeaderClick( CalendarDayEventArgs e )
         {
-            if( DayHeaderClick != null )
-            {
-                DayHeaderClick( this, e );
-            }
+            DayHeaderClick?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1559,10 +1556,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemClick( CalendarItemEventArgs e )
         {
-            if( ItemClick != null )
-            {
-                ItemClick( this, e );
-            }
+            ItemClick?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1571,10 +1565,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemCancelEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemCreating( CalendarItemCancelEventArgs e )
         {
-            if( ItemCreating != null )
-            {
-                ItemCreating( this, e );
-            }
+            ItemCreating?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1583,10 +1574,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemCancelEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemCreated( CalendarItemCancelEventArgs e )
         {
-            if( ItemCreated != null )
-            {
-                ItemCreated( this, e );
-            }
+            ItemCreated?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1595,10 +1583,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemCancelEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemDeleting( CalendarItemCancelEventArgs e )
         {
-            if( ItemDeleting != null )
-            {
-                ItemDeleting( this, e );
-            }
+            ItemDeleting?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1607,10 +1592,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemDeleted( CalendarItemEventArgs e )
         {
-            if( ItemDeleted != null )
-            {
-                ItemDeleted( this, e );
-            }
+            ItemDeleted?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1619,10 +1601,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemDoubleClick( CalendarItemEventArgs e )
         {
-            if( ItemDoubleClick != null )
-            {
-                ItemDoubleClick( this, e );
-            }
+            ItemDoubleClick?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1631,10 +1610,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemCancelEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemEditing( CalendarItemCancelEventArgs e )
         {
-            if( ItemTextEditing != null )
-            {
-                ItemTextEditing( this, e );
-            }
+            ItemTextEditing?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1643,10 +1619,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemCancelEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemEdited( CalendarItemCancelEventArgs e )
         {
-            if( ItemTextEdited != null )
-            {
-                ItemTextEdited( this, e );
-            }
+            ItemTextEdited?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1655,10 +1628,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemSelected( CalendarItemEventArgs e )
         {
-            if( ItemSelected != null )
-            {
-                ItemSelected( this, e );
-            }
+            ItemSelected?.Invoke( this, e );
         }
 
         /// <summary>
@@ -1667,10 +1637,7 @@ namespace Chummer
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemsPositioned( EventArgs e )
         {
-            if( ItemsPositioned != null )
-            {
-                ItemsPositioned( this, e );
-            }
+            ItemsPositioned?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1679,10 +1646,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemDatesChanged( CalendarItemEventArgs e )
         {
-            if( ItemDatesChanged != null )
-            {
-                ItemDatesChanged( this, e );
-            }
+            ItemDatesChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1691,10 +1655,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarItemEventArgs"/> instance containing the event data.</param>
         protected virtual void OnItemMouseHover( CalendarItemEventArgs e )
         {
-            if( ItemMouseHover != null )
-            {
-                ItemMouseHover( this, e );
-            }
+            ItemMouseHover?.Invoke(this, e);
         }
 
         /// <summary>
@@ -1786,10 +1747,7 @@ namespace Chummer
         /// <param name="e">The <see cref="WindowsFormsCalendar.CalendarLoadEventArgs"/> instance containing the event data.</param>
         protected virtual void OnLoadItems( CalendarLoadEventArgs e )
         {
-            if( LoadItems != null )
-            {
-                LoadItems( this, e );
-            }
+            LoadItems?.Invoke(this, e);
         }
 
         /// <summary>

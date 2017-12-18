@@ -15,6 +15,8 @@ namespace Chummer
     public partial class CalendarControl : UserControl
     {
         private List<CalendarItem> _calItems = new List<CalendarItem>();
+        private Character _character;
+
         public CalendarControl()
         {
             InitializeComponent();
@@ -49,7 +51,7 @@ namespace Chummer
 
         private void calendar1_ItemCreated(object sender, CalendarItemCancelEventArgs e)
         {
-            _calItems.Add(e.Item);
+            CharacterObject.Calendar.Add(e.Item);
         }
 
         private void calendar1_ItemMouseHover(object sender, CalendarItemEventArgs e)
@@ -293,5 +295,11 @@ namespace Chummer
         public DateTime EndDate => StartDate.AddMonths(1);
 
         public bool InCharacter { get; set; } = true;
+
+        public Character CharacterObject
+        {
+            get => _character;
+            set => _character = value;
+        }
     }
 }
