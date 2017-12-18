@@ -45,7 +45,6 @@ namespace Chummer
             }
             MoveControls();
 
-            List<ListItem> lstMethod = new List<ListItem>();
             ListItem itmStandard = new ListItem
             {
                 Value = "Standard",
@@ -64,9 +63,12 @@ namespace Chummer
                 Name = LanguageManager.GetString("String_DiceRoller_ReallyLarge")
             };
 
-            lstMethod.Add(itmStandard);
-            lstMethod.Add(itmLarge);
-            lstMethod.Add(itmReallyLarge);
+            List<ListItem> lstMethod = new List<ListItem>
+            {
+                itmStandard,
+                itmLarge,
+                itmReallyLarge
+            };
 
             cboMethod.BeginUpdate();
             cboMethod.ValueMember = "Value";
@@ -187,18 +189,16 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
             }
-            else
+            else if (nudThreshold.Value > 0)
             {
-                if (nudThreshold.Value > 0)
-                {
-                    if (intHitCount >= nudThreshold.Value)
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                    else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                }
+                if (intHitCount >= nudThreshold.Value)
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
                 else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
             }
+            else
+                lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+
             lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum") + " " + lstRandom.Sum().ToString();
             lstResults.BeginUpdate();
             lstResults.DataSource = null;
@@ -301,12 +301,7 @@ namespace Chummer
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
-                    int intTarget = 5;
-                    // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-                    if (chkCinematicGameplay.Checked)
-                        intTarget = 4;
-
-                    if (intLoopResult >= intTarget)
+                    if (intLoopResult >= intKeepThreshold)
                         intHitCount++;
                     if (intLoopResult <= intGlitchMin)
                         intGlitchCount++;
@@ -358,18 +353,16 @@ namespace Chummer
                 else
                     lblResults.Text += LanguageManager.GetString("String_DiceRoller_CriticalGlitch");
             }
-            else
+            else if (nudThreshold.Value > 0)
             {
-                if (nudThreshold.Value > 0)
-                {
-                    if (intHitCount >= nudThreshold.Value)
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
-                    else
-                        lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
-                }
+                if (intHitCount >= nudThreshold.Value)
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Success") + " (" + LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString()) + ")";
                 else
-                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+                    lblResults.Text += LanguageManager.GetString("String_DiceRoller_Failure") + " (" + LanguageManager.GetString("String_DiceRoller_Glitch").Replace("{0}", intHitCount.ToString()) + ")";
             }
+            else
+                lblResults.Text += LanguageManager.GetString("String_DiceRoller_Hits").Replace("{0}", intHitCount.ToString());
+
             lblResults.Text += "\n\n" + LanguageManager.GetString("Label_DiceRoller_Sum") + " " + (lstRandom.Sum() + intKeepSum).ToString();
             lstResults.BeginUpdate();
             lstResults.DataSource = null;

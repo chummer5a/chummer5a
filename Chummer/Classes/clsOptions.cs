@@ -285,7 +285,7 @@ namespace Chummer
                     _strLanguage = "fr-fr";
                     break;
                 case "jp":
-                    _strLanguage = "jp-jp";
+                    _strLanguage = "ja-jp";
                     break;
                 case "zh":
                     _strLanguage = "zh-cn";

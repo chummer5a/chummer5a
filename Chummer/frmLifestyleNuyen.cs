@@ -50,13 +50,14 @@ namespace Chummer
             lblDice.Text = LanguageManager.GetString("Label_LifestyleNuyen_ResultOf").Replace("{0}", Dice.ToString());
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = Dice;
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {((nudDiceResult.Value + Extra) * Multiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥'}";
+            nudDiceResult_ValueChanged(sender, e);
             MoveControls();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            lblResult.Text = $" + {Extra}) x {Multiplier} = {((nudDiceResult.Value + Extra) * Multiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥'}";
+            lblResult.Text = " + " + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ") x " + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                + " = " + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
         #endregion
 

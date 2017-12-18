@@ -79,7 +79,7 @@ namespace Chummer
             set
             {
                 txtNotes.Text = value;
-                txtNotes.Select(txtNotes.Text.Length, 0);
+                txtNotes.Select(value.Length, 0);
             }
         }
         #endregion
