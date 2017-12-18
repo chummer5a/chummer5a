@@ -13792,7 +13792,7 @@ namespace Chummer
 
             // Calculate Free Contacts Points. Free points = (CHA) * 2.
             int intCHA = dicAttributeValues["CHA"];
-            if (CharacterObjectOptions.UseTotalValueForFreeKnowledge)
+            if (CharacterObjectOptions.UseTotalValueForFreeContacts)
             {
                 intCHA = dicAttributeTotalValues["CHA"];
             }
