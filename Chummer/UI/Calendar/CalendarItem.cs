@@ -575,12 +575,12 @@ namespace Chummer
         public void Load(XmlNode objNode)
         {
             _guiID = Guid.Parse(objNode["guid"].InnerText);
-            if (objNode["icdatestart"] != null)
+            if (objNode["datestart"] != null)
             {
-                _startDate = DateTime.Parse(objNode["datestart"].InnerText);
-                _endDate = DateTime.Parse(objNode["icdateend"].InnerText);
+                _startDate = DateTime.ParseExact(objNode["datestart"].InnerText, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                _endDate   = DateTime.ParseExact(objNode["dateend"].InnerText, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             }
-            else
+            else if (objNode["week"] != null)
             {
                 int i = 0;
                 switch (Convert.ToInt32(objNode["week"].InnerText))
@@ -692,6 +692,7 @@ namespace Chummer
             _foreColor = Color.Empty;
             _backgroundColorLighter = Color.Empty;
             _imageAlign = CalendarItemImageAlign.West;
+            _guiID = new Guid();
             if (calendar == null) return;
             _font = calendar.ItemsFont;
             _backgroundColor = calendar.ItemsBackgroundColor;

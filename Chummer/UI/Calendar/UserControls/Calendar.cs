@@ -786,7 +786,8 @@ namespace Chummer
             item.StartDate = dstart;
             item.EndDate = dend.Add( duration );
             item.Text = itemText;
-
+            item.Calendar = this;
+            item.Font = Font;
             CalendarItemCancelEventArgs evtA = new CalendarItemCancelEventArgs( item );
 
             OnItemCreating( evtA );

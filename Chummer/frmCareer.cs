@@ -176,6 +176,7 @@ namespace Chummer
             _lvwNuyenColumnSorter = new ListViewColumnSorter();
             _lvwNuyenColumnSorter.SortColumn = 0;
             _lvwNuyenColumnSorter.Order = SortOrder.Descending;
+            calCharacter.CharacterObject = _objCharacter;
             calCharacter.AddRange(_objCharacter.Calendar);
             lstNuyen.ListViewItemSorter = _lvwNuyenColumnSorter;
             SetTooltips();

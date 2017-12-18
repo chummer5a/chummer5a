@@ -139,21 +139,6 @@ namespace Chummer
             this.calendar1.ActivateEditMode();
         }
 
-        private void DemoForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            /*List<ItemInfo> itemInfoList = new List<ItemInfo>();
-            foreach (CalendarItem calendarItem in this._items)
-                itemInfoList.Add(new ItemInfo(calendarItem.StartDate, calendarItem.EndDate, calendarItem.Text, calendarItem.BackgroundColor));
-            XmlSerializer xmlSerializer = new XmlSerializer(itemInfoList.GetType());
-            if (this.ItemsFile.Exists)
-                this.ItemsFile.Delete();
-            using (Stream stream = (Stream)this.ItemsFile.OpenWrite())
-            {
-                xmlSerializer.Serialize(stream, (object)itemInfoList);
-                stream.Close();
-            }*/
-        }
-
         private void otherColorTagToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (ColorDialog colorDialog = new ColorDialog())
