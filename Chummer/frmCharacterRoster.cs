@@ -15,7 +15,7 @@ namespace Chummer
     {
         List<CharacterCache> _lstCharacterCache = new List<CharacterCache>();
         private object _lstCharacterCacheLock = new object();
-        HtmlToolTip tipTooltip = new HtmlToolTip();
+        private readonly HtmlToolTip tipTooltip = new HtmlToolTip();
 
         public frmCharacterRoster()
         {

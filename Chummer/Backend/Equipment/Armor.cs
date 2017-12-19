@@ -1000,7 +1000,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public List<ArmorMod> ArmorMods
+        public IList<ArmorMod> ArmorMods
         {
             get
             {
@@ -1011,7 +1011,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {
@@ -1073,7 +1073,7 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
-        private static char[] chrAvails = { 'F', 'R' };
+        private static readonly char[] chrAvails = { 'F', 'R' };
         /// <summary>
         /// Total Availablility of the Armor and its Modifications and Gear.
         /// </summary>

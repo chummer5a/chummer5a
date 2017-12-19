@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -37,7 +37,7 @@ namespace ChummerDataViewer
 		}
 
 		//TODO: move this to a better place
-		private string GuessStack(string stacktrace)
+		private static string GuessStack(string stacktrace)
 		{
 			string exception = stacktrace.Split(':')[0];
 

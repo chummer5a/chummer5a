@@ -66,17 +66,7 @@ namespace Chummer
         /// </summary>
         public class TransportWrapper
         {
-            private readonly Control _control;
-
-            public TransportWrapper(Control control)
-            {
-                _control = control;
-            }
-
-            public Control Control
-            {
-                get { return _control; }
-            }
+            public Control Control;
         }
 
         public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();

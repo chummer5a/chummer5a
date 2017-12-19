@@ -55,10 +55,10 @@ namespace Chummer
         private bool _blnDraggingGear = false;
         public int contactConnection = 0;
         private StoryBuilder _objStoryBuilder;
-        ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
-        ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
-        private Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
-        private Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
+        private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
+        private readonly ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
+        private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
+        private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
 
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -407,21 +407,11 @@ namespace Chummer
             foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
             {
                 string strName = objXmlTradition["name"].InnerText;
-                ListItem objItem = new ListItem
-                {
-                    Value = strName,
-                    Name = objXmlTradition["translate"]?.InnerText ?? strName
-                };
-                lstTraditions.Add(objItem);
+                lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstTraditions.Sort(objSort.Compare);
-            ListItem objBlank = new ListItem
-            {
-                Value = "None",
-                Name = LanguageManager.GetString("String_None")
-            };
-            lstTraditions.Insert(0, objBlank);
+            lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
             cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
             cboTradition.DisplayMember = "Name";
@@ -430,22 +420,14 @@ namespace Chummer
 
             // Populate the Magician Custom Drain Options list.
             objXmlDocument = XmlManager.Load("traditions.xml");
-            List<ListItem> lstDrainAttributes = new List<ListItem>();
-            ListItem objDrainBlank = new ListItem
+            List<ListItem> lstDrainAttributes = new List<ListItem>
             {
-                Value = string.Empty,
-                Name = string.Empty
+                ListItem.Blank
             };
-            lstDrainAttributes.Add(objDrainBlank);
             foreach (XmlNode objXmlDrain in objXmlDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
             {
                 string strName = objXmlDrain["name"].InnerText;
-                ListItem objItem = new ListItem
-                {
-                    Value = strName,
-                    Name = objXmlDrain["translate"]?.InnerText ?? strName
-                };
-                lstDrainAttributes.Add(objItem);
+                lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
             }
             SortListItem objDrainSort = new SortListItem();
             lstDrainAttributes.Sort(objDrainSort.Compare);
@@ -463,24 +445,16 @@ namespace Chummer
 
             // Populate the Magician Custom Spirits lists - Combat.
             objXmlDocument = XmlManager.Load("traditions.xml");
-            List<ListItem> lstSpirit = new List<ListItem>();
-            ListItem objSpiritBlank = new ListItem
+            List<ListItem> lstSpirit = new List<ListItem>
             {
-                Value = string.Empty,
-                Name = string.Empty
+                ListItem.Blank
             };
-            lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
                 string strSpiritName = objXmlSpirit["name"].InnerText;
                 if (limit.Count == 0 || limit.Contains(strSpiritName))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strSpiritName,
-                        Name = objXmlSpirit["translate"]?.InnerText ?? strSpiritName
-                    };
-                    lstSpirit.Add(objItem);
+                    lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
                 }
             }
             SortListItem objSpiritSort = new SortListItem();
@@ -1370,29 +1344,14 @@ namespace Chummer
             List<ListItem> lstPrimaryArm = new List<ListItem>();
             if (CharacterObject.Ambidextrous)
             {
-                ListItem objAmbidextrous = new ListItem
-                {
-                    Value = "Ambidextrous",
-                    Name = LanguageManager.GetString("String_Ambidextrous")
-                };
-                lstPrimaryArm.Add(objAmbidextrous);
+                lstPrimaryArm.Add(new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous")));
                 cboPrimaryArm.Enabled = false;
             }
             else
             {
                 //Create the dropdown for the character's primary arm.
-                ListItem objLeftHand = new ListItem
-                {
-                    Value = "Left",
-                    Name = LanguageManager.GetString("String_Improvement_SideLeft")
-                };
-                ListItem objRightHand = new ListItem
-                {
-                    Value = "Right",
-                    Name = LanguageManager.GetString("String_Improvement_SideRight")
-                };
-                lstPrimaryArm.Add(objLeftHand);
-                lstPrimaryArm.Add(objRightHand);
+                lstPrimaryArm.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
+                lstPrimaryArm.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
                 SortListItem objSortHand = new SortListItem();
                 lstPrimaryArm.Sort(objSortHand.Compare);
                 cboPrimaryArm.Enabled = true;
@@ -1960,7 +1919,7 @@ namespace Chummer
             DoReapplyImprovements();
         }
 
-        private void DoReapplyImprovements(List<string> lstInternalIdFilter = null)
+        private void DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             Cursor = Cursors.WaitCursor;
 
@@ -5791,11 +5750,10 @@ namespace Chummer
                     i--;
                     break;
                 }
-                Quality q = CharacterObject.Qualities.Find(x => (
+                if (CharacterObject.Qualities.Any(x => (
                     x.Type == QualityType.LifeModule &&
                     x.Stage == node.InnerText
-                ));
-                if (q == null)
+                )))
                 {
                     break;
                 }
@@ -6425,10 +6383,9 @@ namespace Chummer
             }
 
             // Create the Stacked Focus.
-            StackedFocus objStack = new StackedFocus(CharacterObject)
-            {
-                Gear = lstStack
-            };
+            StackedFocus objStack = new StackedFocus(CharacterObject);
+            foreach (Gear objGear in lstStack)
+                objStack.Gear.Add(objGear);
             CharacterObject.StackedFoci.Add(objStack);
 
             // Remove the Gear from the character and replace it with a Stacked Focus item.
@@ -10399,7 +10356,7 @@ namespace Chummer
                 if (objCyberware == null)
                     return;
 
-                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, CharacterObject.Options);
+                IList<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, CharacterObject.Options);
 
                 // Updated the selected Cyberware Grade.
                 objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == cboCyberwareGrade.SelectedValue.ToString());
@@ -12718,7 +12675,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
-        private int CalculateAttributeBP(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
+        private static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             int intBP = 0;
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
@@ -12737,7 +12694,7 @@ namespace Chummer
             return intBP;
         }
 
-        private int CalculateAttributePriorityPoints(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null)
+        private int CalculateAttributePriorityPoints(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
         {
             int intAtt = 0;
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority ||
@@ -12760,7 +12717,7 @@ namespace Chummer
             return intAtt;
         }
 
-        private string BuildAttributes(List<CharacterAttrib> attribs, List<CharacterAttrib> extraAttribs = null, bool special = false)
+        private string BuildAttributes(ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
             string s = $"{bp} {LanguageManager.GetString("String_Karma")}";
@@ -15243,7 +15200,7 @@ namespace Chummer
 		        {
 			        CharacterAttrib newAtt = new CharacterAttrib(CharacterObject, att.Abbrev,
 				        CharacterAttrib.AttributeCategory.Shapeshifter);
-					CharacterObject.AttributeSection.CopyAttribute(att,newAtt, s, xmlDoc);
+					AttributeSection.CopyAttribute(att,newAtt, s, xmlDoc);
 					staging.Add(newAtt);
 		        }
 		        foreach (CharacterAttrib att in staging)
@@ -17092,31 +17049,22 @@ namespace Chummer
         /// </summary>
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
-            List<Grade> objGradeList = CommonFunctions.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, CharacterObject.Options);
+            IList<Grade> objGradeList = CommonFunctions.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, CharacterObject.Options);
             List<ListItem> lstCyberwareGrades = new List<ListItem>();
 
             foreach (Grade objWareGrade in objGradeList)
             {
-                bool blnAddItem = true;
                 if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
-                    blnAddItem = false;
+                    continue;
                 else if (CharacterObject.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                         && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                    blnAddItem = false;
-                else if (blnAddItem && blnIgnoreSecondHand && objWareGrade.SecondHand)
-                    blnAddItem = false;
-                else if (blnAddItem && !CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
-                    blnAddItem = false;
+                    continue;
+                else if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                    continue;
+                else if (!CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
+                    continue;
 
-                if (blnAddItem)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objWareGrade.Name,
-                        Name = objWareGrade.DisplayName
-                    };
-                    lstCyberwareGrades.Add(objItem);
-                }
+                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName));
             }
             cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;
@@ -18208,7 +18156,7 @@ namespace Chummer
             TreeNode objWeaponTreeNodes = treWeapons.Nodes[0];
             TreeNode objVehicleTreeNodes = treVehicles.Nodes[0];
 
-            XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmPickPACKSKit.SelectedCategory + "\"]");
+            XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
             bool blnDoQualityTreeUpdate = false;
             // Update Qualities.
             if (objXmlKit["qualities"] != null)
@@ -19114,7 +19062,7 @@ namespace Chummer
                                 if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
-                                    objMod.Weapons.AddRange(objSubWeapons);
+                                    ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                     foreach (TreeNode objModNode in objNode.Nodes)
                                     {
                                         if (objModNode.Tag.ToString() == objMod.InternalId)
@@ -19558,7 +19506,7 @@ namespace Chummer
         /// Determine the integer portion of an item's Availability.
         /// </summary>
         /// <param name="strAvail">Availability string to parse.</param>
-        private int GetAvailInt(string strAvail)
+        private static int GetAvailInt(string strAvail)
         {
             string strReturn = strAvail.TrimStart('+');
             if (strReturn.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
@@ -21288,7 +21236,7 @@ namespace Chummer
         private void panContactControl_MouseDown(object sender, MouseEventArgs e)
         {
             Control source = (Control)sender;
-            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+            source.DoDragDrop(new TransportWrapper { Control = source }, DragDropEffects.Move);
         }
 
         private void panEnemies_Click(object sender, EventArgs e)

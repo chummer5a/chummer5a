@@ -92,7 +92,7 @@ namespace Chummer
                     break;
             }
 
-            _objGradeList = CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
+            _objGradeList = (List<Grade>)CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -899,7 +899,7 @@ namespace Chummer
             }
         }
 
-        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -945,7 +945,7 @@ namespace Chummer
             return BuildCyberwareList(_objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private List<ListItem> BuildCyberwareList(XmlNodeList objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private IList<ListItem> BuildCyberwareList(XmlNodeList objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -1052,12 +1052,9 @@ namespace Chummer
                     continue;
                 if (ParentVehicle == null && !Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter))
                     continue;
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCyberware["name"]?.InnerText,
-                    Name = objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText
-                };
-                lstCyberwares.Add(objItem);
+
+                string strName = objXmlCyberware["name"]?.InnerText ?? string.Empty;
+                lstCyberwares.Add(new ListItem(strName, objXmlCyberware["translate"]?.InnerText ?? strName));
                 if (blnTerminateAfterFirst)
                     break;
                 NextCyberware:;
@@ -1169,12 +1166,7 @@ namespace Chummer
                         (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
                         (_objCharacter.AdapsinEnabled || !objGrade.Adapsin))
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objGrade.Name,
-                            Name = objGrade.DisplayName
-                        };
-                        _lstGrade.Add(objItem);
+                        _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName));
                     }
                 }
                 cboGrade.BeginUpdate();
@@ -1218,12 +1210,8 @@ namespace Chummer
                 // Make sure the category contains items that we can actually display
                 if (RefreshList(objXmlCategory.InnerText, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlCategory.InnerText,
-                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                    };
-                    _lstCategory.Add(objItem);
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
 
@@ -1232,12 +1220,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();

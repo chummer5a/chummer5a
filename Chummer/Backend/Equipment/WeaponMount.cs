@@ -283,7 +283,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public List<Weapon> Weapons
+        public IList<Weapon> Weapons
 		{
 			get
 			{
@@ -552,7 +552,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// 
         /// </summary>
-        public List<WeaponMountOption> WeaponMountOptions { get; set; } = new List<WeaponMountOption>();
+        public IList<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>();
         #endregion
 
         #region Complex Properties
@@ -753,7 +753,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="id">String guid of the object.</param>
         /// <param name="list">List to add the object to. Called inside the Create method in case the mount itself is null.</param>
-        public void Create(string id, List<WeaponMountOption> list)
+        public void Create(string id, ICollection<WeaponMountOption> list)
         {
             XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
             XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");

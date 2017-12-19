@@ -34,39 +34,22 @@ namespace Chummer
         /// <summary>
         /// An individual language string.
         /// </summary>
-        private class LanguageString
+        public struct LanguageString
         {
-            private string _strKey = string.Empty;
-            private string _strText = string.Empty;
-
             /// <summary>
             /// String's unique Key.
             /// </summary>
-            public string Key
-            {
-                get
-                {
-                    return _strKey;
-                }
-                set
-                {
-                    _strKey = value;
-                }
-            }
+            public string Key;
 
             /// <summary>
             /// String's text.
             /// </summary>
-            public string Text
+            public string Text;
+
+            public LanguageString(string strKey, string strText)
             {
-                get
-                {
-                    return _strText;
-                }
-                set
-                {
-                    _strText = value;
-                }
+                Key = strKey ?? string.Empty;
+                Text = strText ?? string.Empty;
             }
         }
 
@@ -75,9 +58,9 @@ namespace Chummer
 #endif
         private static string _strLanguage = string.Empty;
         private static readonly ConcurrentDictionary<string, string> _objDictionary = new ConcurrentDictionary<string, string>();
-        static bool _blnLoaded = false;
-        static readonly XmlDocument _objXmlDocument = new XmlDocument();
-        static XmlDocument _objXmlDataDocument;
+        private static readonly bool _blnLoaded = false;
+        private static readonly XmlDocument _objXmlDocument = new XmlDocument();
+        private static XmlDocument _objXmlDataDocument;
 
         #region Constructor
         static LanguageManager()
@@ -413,12 +396,7 @@ namespace Chummer
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString
-                        {
-                            Key = objNode["key"]?.InnerText,
-                            Text = objNode["text"]?.InnerText
-                        };
-                        lstEnglish.Add(objString);
+                        lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
                     }
                 },
                 () =>
@@ -429,12 +407,7 @@ namespace Chummer
                     objLanguageDocument.Load(strLangPath);
                     foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString
-                        {
-                            Key = objNode["key"]?.InnerText,
-                            Text = objNode["text"]?.InnerText
-                        };
-                        lstLanguage.Add(objString);
+                        lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
                     }
                 }
             );

@@ -48,13 +48,13 @@ namespace Chummer
         private bool _blnSkipRefresh = false;
         private bool _blnSkipUpdate = false;
         private bool _blnLoading = false;
-        private bool _blnSkipToolStripRevert = false;
+        private readonly bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements = false;
         private int _intDragLevel = 0;
         private MouseButtons _objDragButton = new MouseButtons();
         private bool _blnDraggingGear = false;
-        ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
-        ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
+        private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
+        private readonly ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
 
         private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
         private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
@@ -373,21 +373,12 @@ namespace Chummer
             List<ListItem> lstTraditions = new List<ListItem>();
             foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlTradition["name"].InnerText,
-                    Name = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText
-                };
-                lstTraditions.Add(objItem);
+                string strName = objXmlTradition["name"].InnerText;
+                lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstTraditions.Sort(objSort.Compare);
-            ListItem objBlank = new ListItem
-            {
-                Value = "None",
-                Name = LanguageManager.GetString("String_None")
-            };
-            lstTraditions.Insert(0, objBlank);
+            lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
             cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
             cboTradition.DisplayMember = "Name";
@@ -396,21 +387,14 @@ namespace Chummer
 
             // Populate the Magician Custom Drain Options list.
             objXmlDocument = XmlManager.Load("traditions.xml");
-            List<ListItem> lstDrainAttributes = new List<ListItem>();
-            ListItem objDrainBlank = new ListItem
+            List<ListItem> lstDrainAttributes = new List<ListItem>
             {
-                Value = string.Empty,
-                Name = string.Empty
+                ListItem.Blank
             };
-            lstDrainAttributes.Add(objDrainBlank);
             foreach (XmlNode objXmlDrain in objXmlDocument.SelectNodes("/chummer/drainattributes/drainattribute"))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlDrain["name"].InnerText,
-                    Name = objXmlDrain["translate"]?.InnerText ?? objXmlDrain["name"].InnerText
-                };
-                lstDrainAttributes.Add(objItem);
+                string strName = objXmlDrain["name"].InnerText;
+                lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
             }
             SortListItem objDrainSort = new SortListItem();
             lstDrainAttributes.Sort(objDrainSort.Compare);
@@ -428,24 +412,16 @@ namespace Chummer
 
             // Populate the Magician Custom Spirits lists - Combat.
             objXmlDocument = XmlManager.Load("traditions.xml");
-            List<ListItem> lstSpirit = new List<ListItem>();
-            ListItem objSpiritBlank = new ListItem
+            List<ListItem> lstSpirit = new List<ListItem>
             {
-                Value = string.Empty,
-                Name = string.Empty
+                ListItem.Blank
             };
-            lstSpirit.Add(objSpiritBlank);
             foreach (XmlNode objXmlSpirit in objXmlDocument.SelectNodes("/chummer/spirits/spirit"))
             {
                 string strSpiritName = objXmlSpirit["name"].InnerText;
                 if (limit.Count == 0 || limit.Contains(strSpiritName))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strSpiritName,
-                        Name = objXmlSpirit["translate"]?.InnerText ?? strSpiritName
-                    };
-                    lstSpirit.Add(objItem);
+                    lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
                 }
             }
             SortListItem objSpiritSort = new SortListItem();
@@ -490,16 +466,12 @@ namespace Chummer
             objXmlDocument = XmlManager.Load("streams.xml");
             List<ListItem> lstStreams = new List<ListItem>
             {
-                objBlank
+                ListItem.Blank
             };
             foreach (XmlNode objXmlTradition in objXmlDocument.SelectNodes("/chummer/traditions/tradition[" + CharacterObjectOptions.BookXPath() + "]"))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlTradition["name"].InnerText,
-                    Name = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText
-                };
-                lstStreams.Add(objItem);
+                string strName = objXmlTradition["name"].InnerText;
+                lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
             lstStreams.Sort(objSort.Compare);
             cboStream.BeginUpdate();
@@ -512,24 +484,15 @@ namespace Chummer
 			if (CharacterObject.MetatypeCategory == "Shapeshifter")
 			{
 				XmlDocument objDoc = XmlManager.Load("metatypes.xml");
-				List<ListItem> lstAttributeCategories = new List<ListItem>();
 				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]");
-                ListItem objItem = new ListItem
+                List<ListItem> lstAttributeCategories = new List<ListItem>
                 {
-                    Value = "Shapeshifter",
-                    Name = node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText
-                };
-                lstAttributeCategories.Add(objItem);
-				
-				node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]/metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]");
-
-                objItem = new ListItem
-                {
-                    Value = "Standard",
-                    Name = node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText
+                    new ListItem("Shapeshifter", node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText)
                 };
 
-                lstAttributeCategories.Add(objItem);
+                node = node?.SelectSingleNode($"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]");
+
+                lstAttributeCategories.Add(new ListItem("Standard", node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText));
 
 				lstAttributeCategories.Sort(objSort.Compare);
 				cboAttributeCategory.BeginUpdate();
@@ -1462,32 +1425,23 @@ namespace Chummer
 
             cboPrimaryArm.BeginUpdate();
 
-            List<ListItem> lstPrimaryArm = new List<ListItem>();
+            List<ListItem> lstPrimaryArm = null;
             if (CharacterObject.Ambidextrous)
             {
-                ListItem objAmbidextrous = new ListItem
+                lstPrimaryArm = new List<ListItem>
                 {
-                    Value = "Ambidextrous",
-                    Name = LanguageManager.GetString("String_Ambidextrous")
+                    new ListItem("Ambidextrous", LanguageManager.GetString("String_Ambidextrous"))
                 };
-                lstPrimaryArm.Add(objAmbidextrous);
                 cboPrimaryArm.Enabled = false;
             }
             else
             {
                 //Create the dropdown for the character's primary arm.
-                ListItem objLeftHand = new ListItem
+                lstPrimaryArm = new List<ListItem>
                 {
-                    Value = "Left",
-                    Name = LanguageManager.GetString("String_Improvement_SideLeft")
+                    new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
+                    new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
                 };
-                ListItem objRightHand = new ListItem
-                {
-                    Value = "Right",
-                    Name = LanguageManager.GetString("String_Improvement_SideRight")
-                };
-                lstPrimaryArm.Add(objLeftHand);
-                lstPrimaryArm.Add(objRightHand);
                 SortListItem objSortHand = new SortListItem();
                 lstPrimaryArm.Sort(objSortHand.Compare);
                 cboPrimaryArm.Enabled = true;
@@ -1971,7 +1925,7 @@ namespace Chummer
             DoReapplyImprovements();
         }
 
-        private void DoReapplyImprovements(List<string> lstInternalIdFilter = null)
+        private void DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             Cursor = Cursors.WaitCursor;
 
@@ -2643,7 +2597,8 @@ namespace Chummer
                 objMerge.BurntStreetCred = objVessel.BurntStreetCred;
                 objMerge.Notoriety = objVessel.Notoriety;
                 objMerge.PublicAwareness = objVessel.PublicAwareness;
-                objMerge.Mugshots = objVessel.Mugshots;
+                foreach (Image objMugshot in objVessel.Mugshots)
+                    objMerge.Mugshots.Add(objMugshot);
 
                 string strShowFileName = Path.GetFileName(CharacterObject.FileName);
 
@@ -2715,11 +2670,8 @@ namespace Chummer
             List<ListItem> lstMetatype = new List<ListItem>();
             foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlMetatype["name"].InnerText,
-                    Name = objXmlMetatype["translate"]?.InnerText ?? objXmlMetatype["name"].InnerText
-                };
+                string strName = objXmlMetatype["name"].InnerText;
+                ListItem objItem = new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName);
                 lstMetatype.Add(objItem);
             }
 
@@ -4006,7 +3958,7 @@ namespace Chummer
         private void panContactControl_MouseDown(object sender, MouseEventArgs e)
         {
             Control source = (Control)sender;
-            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
+            source.DoDragDrop(new TransportWrapper { Control = source }, DragDropEffects.Move);
         }
 
         private void cmdAddContact_Click(object sender, EventArgs e)
@@ -7825,10 +7777,9 @@ namespace Chummer
             }
 
             // Create the Stacked Focus.
-            StackedFocus objStack = new StackedFocus(CharacterObject)
-            {
-                Gear = lstStack
-            };
+            StackedFocus objStack = new StackedFocus(CharacterObject);
+            foreach (Gear objGear in lstStack)
+                objStack.Gear.Add(objGear);
             CharacterObject.StackedFoci.Add(objStack);
 
             // Remove the Gear from the character and replace it with a Stacked Focus item.
@@ -19166,37 +19117,14 @@ namespace Chummer
                     {
                         cboCyberwareGearOverclocker.Visible = true;
                         lblCyberwareGearOverclocker.Visible = true;
-                        ArrayList lstOverclocker = new ArrayList();
-                        ListItem objAttribute = new ListItem
+                        List<ListItem> lstOverclocker = new List<ListItem>
                         {
-                            Value = "None",
-                            Name = LanguageManager.GetString("String_None")
+                            new ListItem("None", LanguageManager.GetString("String_None")),
+                            new ListItem("Attack", LanguageManager.GetString("String_Attack")),
+                            new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
+                            new ListItem("Data Processing", LanguageManager.GetString("String_DataProcessing")),
+                            new ListItem("Firewall", LanguageManager.GetString("String_Firewall"))
                         };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Attack",
-                            Name = LanguageManager.GetString("String_Attack")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Sleaze",
-                            Name = LanguageManager.GetString("String_Sleaze")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Data Processing",
-                            Name = LanguageManager.GetString("String_DataProcessing")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Firewall",
-                            Name = LanguageManager.GetString("String_Firewall")
-                        };
-                        lstOverclocker.Add(objAttribute);
 
                         cboCyberwareGearOverclocker.BindingContext = new BindingContext();
                         cboCyberwareGearOverclocker.DisplayMember = "Name";
@@ -19421,10 +19349,8 @@ namespace Chummer
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                     for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                     {
-                        ListItem objAmmo = new ListItem();
                         objWeapon.ActiveAmmoSlot = i;
                         Gear objGear = CommonFunctions.DeepFindById(objWeapon.AmmoLoaded, CharacterObject.Gear);
-                        objAmmo.Value = i.ToString();
 
                         string strPlugins = string.Empty;
                         if (objGear != null)
@@ -19438,6 +19364,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPlugins))
                             strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
+                        ListItem objAmmo = new ListItem(i.ToString(), string.Empty);
                         if (objGear == null)
                         {
                             if (objWeapon.AmmoRemaining == 0)
@@ -19588,10 +19515,8 @@ namespace Chummer
                     int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                     for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                     {
-                        ListItem objAmmo = new ListItem();
                         objWeapon.ActiveAmmoSlot = i;
                         Gear objGear = CommonFunctions.DeepFindById(objWeapon.AmmoLoaded, CharacterObject.Gear);
-                        objAmmo.Value = i.ToString();
 
                         string strPlugins = string.Empty;
                         if (objGear != null)
@@ -19605,6 +19530,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPlugins))
                             strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
+                        ListItem objAmmo = new ListItem(i.ToString(), string.Empty);
                         if (objGear == null)
                             objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                         else
@@ -20028,37 +19954,14 @@ namespace Chummer
                     {
                         cboGearOverclocker.Visible = true;
                         lblGearOverclocker.Visible = true;
-                        ArrayList lstOverclocker = new ArrayList();
-                        ListItem objAttribute = new ListItem
+                        List<ListItem> lstOverclocker = new List<ListItem>
                         {
-                            Value = "None",
-                            Name = LanguageManager.GetString("String_None")
+                            new ListItem("None", LanguageManager.GetString("String_None")),
+                            new ListItem("Attack", LanguageManager.GetString("String_Attack")),
+                            new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
+                            new ListItem("Data Processing", LanguageManager.GetString("String_DataProcessing")),
+                            new ListItem("Firewall", LanguageManager.GetString("String_Firewall"))
                         };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Attack",
-                            Name = LanguageManager.GetString("String_Attack")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Sleaze",
-                            Name = LanguageManager.GetString("String_Sleaze")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Data Processing",
-                            Name = LanguageManager.GetString("String_DataProcessing")
-                        };
-                        lstOverclocker.Add(objAttribute);
-                        objAttribute = new ListItem
-                        {
-                            Value = "Firewall",
-                            Name = LanguageManager.GetString("String_Firewall")
-                        };
-                        lstOverclocker.Add(objAttribute);
 
                         cboGearOverclocker.BindingContext = new BindingContext();
                         cboGearOverclocker.DisplayMember = "Name";
@@ -21628,10 +21531,8 @@ namespace Chummer
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                             for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                             {
-                                ListItem objAmmo = new ListItem();
                                 objWeapon.ActiveAmmoSlot = i;
                                 Gear objVehicleGear = CommonFunctions.DeepFindById(objWeapon.AmmoLoaded, objCurrentVehicle.Gear);
-                                objAmmo.Value = i.ToString();
 
                                 string strPlugins = string.Empty;
                                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
@@ -21651,6 +21552,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
+                                ListItem objAmmo = new ListItem(i.ToString(), string.Empty);
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
@@ -21813,10 +21715,8 @@ namespace Chummer
                             int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                             for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                             {
-                                ListItem objAmmo = new ListItem();
                                 objWeapon.ActiveAmmoSlot = i;
                                 Gear objVehicleGear = CommonFunctions.DeepFindById(objWeapon.AmmoLoaded, objCurrentVehicle.Gear);
-                                objAmmo.Value = i.ToString();
 
                                 string strPlugins = string.Empty;
                                 foreach (Vehicle objVehicle in CharacterObject.Vehicles)
@@ -21836,6 +21736,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
+                                ListItem objAmmo = new ListItem(i.ToString(), string.Empty);
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
@@ -22114,10 +22015,8 @@ namespace Chummer
                         int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                         for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                         {
-                            ListItem objAmmo = new ListItem();
                             objWeapon.ActiveAmmoSlot = i;
                             Gear objVehicleGear = CommonFunctions.DeepFindById(objWeapon.AmmoLoaded, objCurrentVehicle.Gear);
-                            objAmmo.Value = i.ToString();
 
                             string strPlugins = string.Empty;
                             foreach (Vehicle objVehicle in CharacterObject.Vehicles)
@@ -22137,29 +22036,30 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strPlugins))
                                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
 
-                                if (objVehicleGear == null)
-                                {
-                                    if (objWeapon.AmmoRemaining == 0)
-                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
-                                    else
-                                        objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
-                                }
+                            ListItem objAmmo = new ListItem(i.ToString(), string.Empty);
+                            if (objVehicleGear == null)
+                            {
+                                if (objWeapon.AmmoRemaining == 0)
+                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty");
                                 else
-                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
+                                    objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource");
+                            }
+                            else
+                                objAmmo.Name = LanguageManager.GetString("String_SlotNumber").Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort;
 
                             if (!string.IsNullOrEmpty(strPlugins))
-                                    objAmmo.Name += " [" + strPlugins + "]";
-                                lstAmmo.Add(objAmmo);
-                            }
-                            objWeapon.ActiveAmmoSlot = intCurrentSlot;
+                                objAmmo.Name += " [" + strPlugins + "]";
+                            lstAmmo.Add(objAmmo);
+                        }
+                        objWeapon.ActiveAmmoSlot = intCurrentSlot;
                         cboVehicleWeaponAmmo.BeginUpdate();
-                            cboVehicleWeaponAmmo.Enabled = true;
-                            cboVehicleWeaponAmmo.ValueMember = "Value";
-                            cboVehicleWeaponAmmo.DisplayMember = "Name";
-                            cboVehicleWeaponAmmo.DataSource = lstAmmo;
-                            cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
-                            if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-                                cboVehicleWeaponAmmo.SelectedIndex = 0;
+                        cboVehicleWeaponAmmo.Enabled = true;
+                        cboVehicleWeaponAmmo.ValueMember = "Value";
+                        cboVehicleWeaponAmmo.DisplayMember = "Name";
+                        cboVehicleWeaponAmmo.DataSource = lstAmmo;
+                        cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
+                        if (cboVehicleWeaponAmmo.SelectedIndex == -1)
+                            cboVehicleWeaponAmmo.SelectedIndex = 0;
                         cboVehicleWeaponAmmo.EndUpdate();
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
@@ -22338,7 +22238,7 @@ namespace Chummer
             }
 
             //Problem data isen't ordered so we have to sort it anyway
-            CharacterObject.ExpenseEntries.Sort(delegate(ExpenseLogEntry e1, ExpenseLogEntry e2)
+            ((List<ExpenseLogEntry>)CharacterObject.ExpenseEntries).Sort(delegate(ExpenseLogEntry e1, ExpenseLogEntry e2)
             {
                 if (e1 == null && e2 == null) return 0;
                 if (e1 == null) return -1;
@@ -22430,7 +22330,7 @@ namespace Chummer
         /// <summary>
         /// Dummy method to trap the Options MRUChanged Event.
         /// </summary>
-        public void DoNothing()
+        public static void DoNothing()
         {
         }
 
@@ -22747,12 +22647,7 @@ namespace Chummer
                 {
                     string strName = "000000";
                     strName = strName.Substring(0, 6 - objImprovement.SortOrder.ToString().Length) + objImprovement.SortOrder.ToString();
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objImprovement.SourceName,
-                        Name = strName
-                    };
-                    lstImprovements.Add(objItem);
+                    lstImprovements.Add(new ListItem(objImprovement.SourceName, strName));
                 }
             }
 
@@ -25236,7 +25131,7 @@ namespace Chummer
         }
         private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CharacterObject.AttributeSection.AttributeCategory = CharacterObject.AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+            CharacterObject.AttributeSection.AttributeCategory = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
             CharacterObject.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.TotalAugmentedMaximum));
             CharacterObject.AttributeSection.ResetBindings();
 

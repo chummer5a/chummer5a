@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ namespace Chummer
                 MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
         }
 
-        private List<KeyValuePair<String, Stream>> values; 
+        private readonly List<KeyValuePair<String, Stream>> values; 
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report

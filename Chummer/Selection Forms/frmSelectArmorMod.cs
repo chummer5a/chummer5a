@@ -400,12 +400,8 @@ namespace Chummer
             {
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlMod["name"].InnerText,
-                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                    };
-                    lstMods.Add(objItem);
+                    string strName = objXmlMod["name"].InnerText;
+                    lstMods.Add(new ListItem(strName, objXmlMod["translate"]?.InnerText ?? strName));
                 }
             }
             SortListItem objSort = new SortListItem();

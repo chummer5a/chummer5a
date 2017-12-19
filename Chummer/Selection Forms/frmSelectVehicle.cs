@@ -39,7 +39,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
@@ -78,24 +78,15 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -424,15 +415,16 @@ namespace Chummer
             {
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem { Value = objXmlVehicle["name"]?.InnerText };
-                    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
+                    string strName = objXmlVehicle["name"]?.InnerText;
+                    ListItem objItem = new ListItem(strName, objXmlVehicle["translate"]?.InnerText ?? strName);
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
-                        if (objXmlVehicle["category"] != null)
+                        string strCategory = objXmlVehicle["category"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strCategory))
                         {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
-                            if (objFoundItem != null)
+                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                            if (!string.IsNullOrEmpty(objFoundItem.Name))
                             {
                                 objItem.Name += " [" + objFoundItem.Name + "]";
                             }

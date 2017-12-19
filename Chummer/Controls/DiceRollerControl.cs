@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class DiceRollerControl : UserControl
     {
-        private static Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private static readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         #region Properties

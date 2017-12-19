@@ -35,7 +35,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectMentorSpirit(Character objCharacter)
@@ -64,12 +64,7 @@ namespace Chummer
             XmlNodeList objXmlMentorList = _objXmlDocument.SelectNodes("/chummer/mentors/mentor[(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlMentor in objXmlMentorList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlMentor["id"].InnerText,
-                    Name = objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText
-                };
-                lstMentors.Add(objItem);
+                lstMentors.Add(new ListItem(objXmlMentor["id"].InnerText, objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText));
             }
             SortListItem objSort = new SortListItem();
             lstMentors.Sort(objSort.Compare);
@@ -128,16 +123,10 @@ namespace Chummer
                     string strName = objChoice["name"].InnerText;
                     if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strName,
-                            Name = objChoice["translate"]?.InnerText ?? strName
-                        };
-                        
                         if (objChoice.Attributes["set"]?.InnerText == "2")
-                            lstChoice2.Add(objItem);
+                            lstChoice2.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
                         else
-                            lstChoice1.Add(objItem);
+                            lstChoice1.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
                     }
                 }
 

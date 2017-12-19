@@ -115,7 +115,7 @@ namespace Chummer
         /// Convert a string to a QualityType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public QualityType ConvertToQualityType(string strValue)
+        public static QualityType ConvertToQualityType(string strValue)
         {
             switch (strValue)
             {
@@ -1015,7 +1015,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Character _objLinkedCharacter;
 
-        private List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -1023,7 +1023,7 @@ namespace Chummer
         /// Convert a string to a SpiritType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public SpiritType ConvertToSpiritType(string strValue)
+        public static SpiritType ConvertToSpiritType(string strValue)
         {
             switch (strValue)
             {
@@ -1216,7 +1216,7 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
+        private static void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
@@ -1457,7 +1457,7 @@ namespace Chummer
         /// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<Image> Mugshots
+		public IList<Image> Mugshots
         {
             get
             {
@@ -1465,13 +1465,6 @@ namespace Chummer
                     return LinkedCharacter.Mugshots;
                 else
                     return _lstMugshots;
-            }
-            set
-            {
-                if (LinkedCharacter != null)
-                    LinkedCharacter.Mugshots = value;
-                else
-                    _lstMugshots = value;
             }
         }
 
@@ -2544,7 +2537,7 @@ namespace Chummer
     public class Focus : INamedItemWithGuid
     {
         private Guid _guiID;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private string _strName = string.Empty;
         private Guid _guiGearId;
         private int _intRating;
@@ -2629,7 +2622,7 @@ namespace Chummer
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
@@ -2825,10 +2818,9 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get => _lstGear;
-            set => _lstGear = value;
         }
         #endregion
     }
@@ -4388,7 +4380,7 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public List<MartialArtAdvantage> Advantages => _lstAdvantages;
+        public IList<MartialArtAdvantage> Advantages => _lstAdvantages;
         public IList<MartialArtAdvantage> Children => Advantages;
 
         /// <summary>
@@ -5019,14 +5011,14 @@ namespace Chummer
         private Color _objColour;
         private bool _blnFree;
         private bool _blnIsGroup;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private bool _blnMadeMan;
         private bool _blnBlackmail;
         private bool _blnFamily;
         private bool _readonly;
         private bool _blnForceLoyalty;
 
-        private List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
         
         public event PropertyChangedEventHandler PropertyChanged;
@@ -5036,7 +5028,7 @@ namespace Chummer
         /// Convert a string to a ContactType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ContactType ConvertToContactType(string strValue)
+        public static ContactType ConvertToContactType(string strValue)
         {
             switch (strValue)
             {
@@ -5639,7 +5631,7 @@ namespace Chummer
         /// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<Image> Mugshots
+		public IList<Image> Mugshots
         {
             get
             {
@@ -5647,13 +5639,6 @@ namespace Chummer
                     return LinkedCharacter.Mugshots;
                 else
                     return _lstMugshots;
-            }
-            set
-            {
-                if (LinkedCharacter != null)
-                    LinkedCharacter.Mugshots = value;
-                else
-                    _lstMugshots = value;
             }
         }
 

@@ -31,7 +31,7 @@ namespace Chummer
     public class HoverDisplayCordinator
     {
         //List of controls in the group. A n-tree might do this faster
-        private List<Control> _controls;
+        private readonly List<Control> _controls;
 
         //If it have left once we don't want to do it again. This limits flexibility
         //but we don't need general pourpose and this is easier to implement

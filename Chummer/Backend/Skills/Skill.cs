@@ -388,7 +388,8 @@ namespace Chummer.Skills
                 SuggestedSpecializations.Capacity = lstSuggestedSpecializationsXml.Count;
                 foreach (XmlNode node in lstSuggestedSpecializationsXml)
                 {
-                    SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+                    string strInnerText = node.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
 
@@ -638,7 +639,7 @@ namespace Chummer.Skills
                     //TODO translate (could not find it in lang file, did not check old source)
                 }
 
-                List<Improvement> lstRelevantImprovements = RelevantImprovements() ?? new List<Improvement>();
+                IList<Improvement> lstRelevantImprovements = RelevantImprovements() ?? new List<Improvement>();
 
                 StringBuilder s;
                 if (CyberwareRating() > TotalBaseRating)
@@ -1072,7 +1073,7 @@ namespace Chummer.Skills
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements)
+        private void OnImprovementEvent(ICollection<Improvement> improvements)
         {
             _cachedFreeBase = int.MinValue;
             _cachedFreeKarma = int.MinValue;

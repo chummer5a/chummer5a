@@ -33,22 +33,10 @@ namespace Chummer
             LanguageManager.Load(GlobalOptions.Language, this);
 
             // Create a list for the sides.
-            ListItem objLeft = new ListItem
-            {
-                Value = "Left",
-                Name = LanguageManager.GetString("String_Improvement_SideLeft")
-            };
-
-            ListItem objRight = new ListItem
-            {
-                Value = "Right",
-                Name = LanguageManager.GetString("String_Improvement_SideRight")
-            };
-
             List<ListItem> lstSides = new List<ListItem>
             {
-                objLeft,
-                objRight
+                new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
+                new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
             };
 
             cboSide.BeginUpdate();

@@ -25,7 +25,7 @@ namespace Chummer
     {
         private int _intSelectedYear = 2072;
         private int _intSelectedWeek = 1;
-        CalendarWeek objDefaultWeek = new CalendarWeek();
+        private readonly CalendarWeek objDefaultWeek = new CalendarWeek();
 
         #region Control Events
         public frmSelectCalendarStart()

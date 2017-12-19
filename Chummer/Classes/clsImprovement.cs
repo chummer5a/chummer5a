@@ -1244,7 +1244,7 @@ namespace Chummer
                     case Improvement.ImprovementType.SkillKnowledgeForced:
                         Guid guid = Guid.Parse(objImprovement.ImprovedName);
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-                        objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
+                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.Id == guid);
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1409,8 +1409,7 @@ namespace Chummer
                             {
                                 string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
                                 // Determine which GradeList to use for the Cyberware.
-                                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options);
-                                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == strNewName);
+                                objCyberware.Grade = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options).FirstOrDefault(x => x.Name == strNewName);
                             }
                         }
                         break;

@@ -30,7 +30,7 @@ namespace Chummer
 {
     public partial class frmPrintMultiple : Form
     {
-        BackgroundWorker _workerPrinter = new BackgroundWorker();
+        private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
         List<Character> _lstCharacters = null;
 
         #region Control Events
@@ -147,7 +147,7 @@ namespace Chummer
             }
         }
 
-        public List<Character> CharacterList
+        public IList<Character> CharacterList
         {
             get
             {

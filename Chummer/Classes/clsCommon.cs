@@ -52,8 +52,8 @@ namespace Chummer
         #region XPath Evaluators
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        static XmlDocument objXPathNavigatorDocument = new XmlDocument();
-        static XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();
+        private static readonly XmlDocument objXPathNavigatorDocument = new XmlDocument();
+        private static readonly XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -340,7 +340,7 @@ namespace Chummer
         /// <param name="strGuid"></param>
         /// <param name="lstVehicles"></param>
         /// <returns></returns>
-        internal static WeaponMount FindVehicleWeaponMount(string strGuid, List<Vehicle> lstVehicles, out Vehicle outVehicle)
+        internal static WeaponMount FindVehicleWeaponMount(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle outVehicle)
         {
             if (strGuid != Guid.Empty.ToString())
             {
@@ -1401,7 +1401,7 @@ namespace Chummer
         #endregion
 
         #region Add Improvements Functions
-        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, List<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
+        public static void ReaddGearImprovements(Character objCharacter, Gear objGear, TreeView treGears, ref string strOutdatedItems, ICollection<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objGear.InternalId))
@@ -2508,8 +2508,7 @@ namespace Chummer
                 objNode.Nodes.Clear();
 
             objCharacter.Spells.Clear();
-            objCharacter.Spirits.RemoveAll(x => x.EntityType == SpiritType.Spirit);
-
+            ((List<Spirit>)objCharacter.Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
         }
 
         /// <summary>
@@ -2535,7 +2534,7 @@ namespace Chummer
             foreach (TreeNode objNode in treComplexForms.Nodes)
                 objNode.Nodes.Clear();
 
-            objCharacter.Spirits.RemoveAll(x => x.EntityType == SpiritType.Sprite);
+            ((List<Spirit>)objCharacter.Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
             objCharacter.ComplexForms.Clear();
         }
 
@@ -2905,16 +2904,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
         /// <returns></returns>
-        public static List<ListItem> ConstructModularCyberlimbList(Character objCharacter, Cyberware objModularCyberware)
+        public static IList<ListItem> ConstructModularCyberlimbList(Character objCharacter, Cyberware objModularCyberware)
         {
-            List<ListItem> lstReturn = new List<ListItem>();
-
-            ListItem liMount = new ListItem
+            List<ListItem> lstReturn = new List<ListItem>
             {
-                Value = "None",
-                Name = LanguageManager.GetString("String_None")
+                new ListItem("None", LanguageManager.GetString("String_None"))
             };
-            lstReturn.Add(liMount);
 
             foreach (Cyberware objLoopCyberware in objCharacter.Cyberware.GetAllDescendants(x => x.Children))
             {
@@ -2925,17 +2920,12 @@ namespace Chummer
                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
                     if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
                     {
-                        liMount = new ListItem
-                        {
-                            Value = objLoopCyberware.InternalId
-                        };
                         string strName = string.Empty;
                         if (objLoopCyberware.Parent != null)
                             strName = objLoopCyberware.Parent.DisplayName;
                         else
                             strName = objLoopCyberware.DisplayName;
-                        liMount.Name = strName;
-                        lstReturn.Add(liMount);
+                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                     }
                 }
             }
@@ -2952,17 +2942,12 @@ namespace Chummer
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
                             if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
                             {
-                                liMount = new ListItem
-                                {
-                                    Value = objLoopCyberware.InternalId
-                                };
                                 string strName = objLoopVehicle.DisplayName + " ";
                                 if (objLoopCyberware.Parent != null)
                                     strName += objLoopCyberware.Parent.DisplayName;
                                 else
                                     strName += objLoopVehicleMod.DisplayName;
-                                liMount.Name = strName;
-                                lstReturn.Add(liMount);
+                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                             }
                         }
                     }
@@ -2975,7 +2960,7 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public static List<Grade> GetGradeList(Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions = null)
+        public static IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions = null)
         {
             List<Grade> lstGrades = new List<Grade>();
             string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";

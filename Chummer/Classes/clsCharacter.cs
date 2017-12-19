@@ -86,7 +86,7 @@ namespace Chummer
 
         // General character info.
         private string _strName = string.Empty;
-        private List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
         private string _strSex = string.Empty;
         private string _strAge = string.Empty;
@@ -198,7 +198,7 @@ namespace Chummer
         private string _strPrioritySkills = string.Empty;
         private string _strPriorityResources = string.Empty;
         private string _strPriorityTalent = string.Empty;
-        private List<string> _lstPrioritySkills = new List<string>();
+        private readonly List<string> _lstPrioritySkills = new List<string>();
         private decimal _decMaxNuyen = 0;
         private int _intMaxKarma = 0;
         private int _intContactMultiplier = 0;
@@ -1546,13 +1546,7 @@ namespace Chummer
             // Sort the Powers in alphabetical order.
             foreach (XmlNode objXmlPower in objXmlNodeList)
             {
-                ListItem objGroup = new ListItem()
-                {
-                    Value = objXmlPower["extra"]?.InnerText ?? string.Empty,
-                    Name = objXmlPower["name"]?.InnerText ?? string.Empty
-                };
-
-                lstPowerOrder.Add(objGroup);
+                lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
             }
             SortListItem objSort = new SortListItem();
             lstPowerOrder.Sort(objSort.Compare);
@@ -2832,7 +2826,7 @@ namespace Chummer
             {
                 // <expenses>
                 objWriter.WriteStartElement("expenses");
-                ExpenseEntries.Sort(ExpenseLogEntry.CompareDate);
+                ((List<ExpenseLogEntry>)ExpenseEntries).Sort(ExpenseLogEntry.CompareDate);
                 foreach (ExpenseLogEntry objExpense in ExpenseEntries)
                     objExpense.Print(objWriter, objCulture);
                 // </expenses>
@@ -3391,15 +3385,11 @@ namespace Chummer
 		/// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<Image> Mugshots
+		public IList<Image> Mugshots
         {
             get
             {
                 return _lstMugshots;
-            }
-            set
-            {
-                _lstMugshots = value;
             }
         }
 
@@ -3733,15 +3723,11 @@ namespace Chummer
         /// <summary>
         /// Character's list of priority bonus skills.
         /// </summary>
-        public List<string> PriorityBonusSkillList
+        public IList<string> PriorityBonusSkillList
         {
             get
             {
                 return _lstPrioritySkills;
-            }
-            set
-            {
-                _lstPrioritySkills = value;
             }
         }
 
@@ -5179,8 +5165,8 @@ namespace Chummer
             {
                 //TODO: Global option assignation
                 return 3;
-                }
             }
+        }
 #endregion
 #region Matrix
 #region AR
@@ -5807,7 +5793,7 @@ namespace Chummer
         /// <summary>
         /// Improvements.
         /// </summary>
-        public List<Improvement> Improvements
+        public IList<Improvement> Improvements
         {
             get
             {
@@ -5818,7 +5804,7 @@ namespace Chummer
         /// <summary>
         /// Gear.
         /// </summary>
-        public List<MentorSpirit> MentorSpirits
+        public IList<MentorSpirit> MentorSpirits
         {
             get
             {
@@ -5829,7 +5815,7 @@ namespace Chummer
         /// <summary>
         /// Contacts and Enemies.
         /// </summary>
-        public List<Contact> Contacts
+        public IList<Contact> Contacts
         {
             get
             {
@@ -5840,7 +5826,7 @@ namespace Chummer
         /// <summary>
         /// Spirits and Sprites.
         /// </summary>
-        public List<Spirit> Spirits
+        public IList<Spirit> Spirits
         {
             get
             {
@@ -5851,7 +5837,7 @@ namespace Chummer
         /// <summary>
         /// Magician Spells.
         /// </summary>
-        public List<Spell> Spells
+        public IList<Spell> Spells
         {
             get
             {
@@ -5862,7 +5848,7 @@ namespace Chummer
         /// <summary>
         /// Foci.
         /// </summary>
-        public List<Focus> Foci
+        public IList<Focus> Foci
         {
             get
             {
@@ -5873,7 +5859,7 @@ namespace Chummer
         /// <summary>
         /// Stacked Foci.
         /// </summary>
-        public List<StackedFocus> StackedFoci
+        public IList<StackedFocus> StackedFoci
         {
             get
             {
@@ -5895,7 +5881,7 @@ namespace Chummer
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
-        public List<ComplexForm> ComplexForms
+        public IList<ComplexForm> ComplexForms
         {
             get
             {
@@ -5906,7 +5892,7 @@ namespace Chummer
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
-        public List<AIProgram> AIPrograms
+        public IList<AIProgram> AIPrograms
         {
             get
             {
@@ -5917,7 +5903,7 @@ namespace Chummer
         /// <summary>
         /// Martial Arts.
         /// </summary>
-        public List<MartialArt> MartialArts
+        public IList<MartialArt> MartialArts
         {
             get
             {
@@ -5928,7 +5914,7 @@ namespace Chummer
         /// <summary>
         /// Martial Arts Maneuvers.
         /// </summary>
-        public List<MartialArtManeuver> MartialArtManeuvers
+        public IList<MartialArtManeuver> MartialArtManeuvers
         {
             get
             {
@@ -5939,7 +5925,7 @@ namespace Chummer
         /// <summary>
         /// Limit Modifiers.
         /// </summary>
-        public List<LimitModifier> LimitModifiers
+        public IList<LimitModifier> LimitModifiers
         {
             get
             {
@@ -5950,7 +5936,7 @@ namespace Chummer
         /// <summary>
         /// Armor.
         /// </summary>
-        public List<Armor> Armor
+        public IList<Armor> Armor
         {
             get
             {
@@ -5972,7 +5958,7 @@ namespace Chummer
         /// <summary>
         /// Weapons.
         /// </summary>
-        public List<Weapon> Weapons
+        public IList<Weapon> Weapons
         {
             get
             {
@@ -5983,7 +5969,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyles.
         /// </summary>
-        public List<Lifestyle> Lifestyles
+        public IList<Lifestyle> Lifestyles
         {
             get
             {
@@ -5994,7 +5980,7 @@ namespace Chummer
         /// <summary>
         /// Gear.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {
@@ -6005,7 +5991,7 @@ namespace Chummer
         /// <summary>
         /// Vehicles.
         /// </summary>
-        public List<Vehicle> Vehicles
+        public IList<Vehicle> Vehicles
         {
             get
             {
@@ -6016,7 +6002,7 @@ namespace Chummer
         /// <summary>
         /// Metamagics and Echoes.
         /// </summary>
-        public List<Metamagic> Metamagics
+        public IList<Metamagic> Metamagics
         {
             get
             {
@@ -6027,7 +6013,7 @@ namespace Chummer
         /// <summary>
         /// Enhancements.
         /// </summary>
-        public List<Enhancement> Enhancements
+        public IList<Enhancement> Enhancements
         {
             get
             {
@@ -6038,7 +6024,7 @@ namespace Chummer
         /// <summary>
         /// Arts.
         /// </summary>
-        public List<Art> Arts
+        public IList<Art> Arts
         {
             get
             {
@@ -6049,7 +6035,7 @@ namespace Chummer
         /// <summary>
         /// Critter Powers.
         /// </summary>
-        public List<CritterPower> CritterPowers
+        public IList<CritterPower> CritterPowers
         {
             get
             {
@@ -6060,7 +6046,7 @@ namespace Chummer
         /// <summary>
         /// Initiation and Submersion Grades.
         /// </summary>
-        public List<InitiationGrade> InitiationGrades
+        public IList<InitiationGrade> InitiationGrades
         {
             get
             {
@@ -6071,7 +6057,7 @@ namespace Chummer
         /// <summary>
         /// Expenses (Karma and Nuyen).
         /// </summary>
-        public List<ExpenseLogEntry> ExpenseEntries
+        public IList<ExpenseLogEntry> ExpenseEntries
         {
             get
             {
@@ -6082,7 +6068,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public List<Quality> Qualities
+        public IList<Quality> Qualities
         {
             get
             {
@@ -6092,7 +6078,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public List<LifestyleQuality> LifestyleQualities
+        public IList<LifestyleQuality> LifestyleQualities
         {
             get
             {
@@ -6103,7 +6089,7 @@ namespace Chummer
         /// <summary>
         /// Life modules
         /// </summary>
-        //public List<LifeModule> LifeModules
+        //public IList<LifeModule> LifeModules
         //{
         //    get { return _lstLifeModules; }
         //}
@@ -6111,7 +6097,7 @@ namespace Chummer
         /// <summary>
         /// Locations.
         /// </summary>
-        public List<string> GearLocations
+        public IList<string> GearLocations
         {
             get
             {
@@ -6122,7 +6108,7 @@ namespace Chummer
         /// <summary>
         /// Armor Bundles.
         /// </summary>
-        public List<string> ArmorLocations
+        public IList<string> ArmorLocations
         {
             get
             {
@@ -6133,7 +6119,7 @@ namespace Chummer
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public List<string> VehicleLocations
+        public IList<string> VehicleLocations
         {
             get
             {
@@ -6144,7 +6130,7 @@ namespace Chummer
         /// <summary>
         /// Weapon Locations.
         /// </summary>
-        public List<string> WeaponLocations
+        public IList<string> WeaponLocations
         {
             get
             {
@@ -6155,7 +6141,7 @@ namespace Chummer
         /// <summary>
         /// Improvement Groups.
         /// </summary>
-        public List<string> ImprovementGroups
+        public IList<string> ImprovementGroups
         {
             get
             {
@@ -6166,7 +6152,7 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public List<CalendarWeek> Calendar
+        public IList<CalendarWeek> Calendar
         {
             get
             {
@@ -6177,7 +6163,7 @@ namespace Chummer
         /// <summary>
         /// List of internal IDs that need their improvements re-applied.
         /// </summary>
-        public List<string> InternalIdsNeedingReapplyImprovements
+        public IList<string> InternalIdsNeedingReapplyImprovements
         {
             get
             {
@@ -7544,7 +7530,7 @@ namespace Chummer
         /// Convert a string to a CharacterBuildMethod.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public CharacterBuildMethod ConvertToCharacterBuildMethod(string strValue)
+        public static CharacterBuildMethod ConvertToCharacterBuildMethod(string strValue)
         {
             switch (strValue)
             {
@@ -7652,7 +7638,7 @@ namespace Chummer
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
         /// </summary>
-        public List<Character> LinkedCharacters
+        public IList<Character> LinkedCharacters
         {
             get
             {
@@ -8387,7 +8373,7 @@ namespace Chummer
         /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
         /// </summary>
         /// <param name="strInput"></param>
-        public string TranslatedBookList(string strInput)
+        public static string TranslatedBookList(string strInput)
         {
             string strReturn = string.Empty;
             strInput = strInput.TrimEnd(';');
@@ -8602,8 +8588,8 @@ namespace Chummer
         }
 
         //I also think this prevents GC. But there is no good way to do it...
-        internal event Action<List<Improvement>> SkillImprovementEvent;
-        internal event Action<List<Improvement>> AttributeImprovementEvent;
+        internal event Action<ICollection<Improvement>> SkillImprovementEvent;
+        internal event Action<ICollection<Improvement>> AttributeImprovementEvent;
 
         //List of events that might be able to affect skills. Made quick to prevent an infinite recursion somewhere related to adding an expense so it might be shaved down.
         public static readonly HashSet<Improvement.ImprovementType> SkillRelatedImprovements = new HashSet<Improvement.ImprovementType> {
@@ -8686,7 +8672,7 @@ namespace Chummer
         //Ugly, ugly done, but we cannot get events out of it today
         // FUTURE REFACTOR HERE
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        internal void ImprovementHook(List<Improvement> _lstTransaction)
+        internal void ImprovementHook(ICollection<Improvement> _lstTransaction)
         {
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {

@@ -26,7 +26,7 @@ namespace Chummer
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
+        private readonly List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
 
         #region Control Events
         public frmSelectOptionalPower()
@@ -99,13 +99,10 @@ namespace Chummer
         /// <param name="strValue">Single Power to display.</param>
         public void SinglePower(string strValue)
         {
-            List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem
+            List<ListItem> lstItems = new List<ListItem>
             {
-                Value = strValue,
-                Name = strValue
+                new ListItem(strValue, strValue)
             };
-            lstItems.Add(objItem);
             cboPower.BeginUpdate();
             cboPower.DataSource = null;
             cboPower.ValueMember = "Value";

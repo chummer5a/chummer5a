@@ -31,7 +31,7 @@ namespace Chummer
 {
     public partial class frmGMDashboard : Form
     {
-        private frmInitiative frmInitative;
+        private readonly frmInitiative frmInitative;
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
 
         #region Singleton

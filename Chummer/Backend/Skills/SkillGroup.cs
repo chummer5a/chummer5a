@@ -448,7 +448,7 @@ namespace Chummer.Skills
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements)
+        private void OnImprovementEvent(ICollection<Improvement> improvements)
         {
             _cachedFreeBase = int.MinValue;
             _cachedFreeLevels = int.MinValue;
@@ -634,7 +634,7 @@ namespace Chummer.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public List<Skill> SkillList
+        public IList<Skill> SkillList
         {
             get
             {

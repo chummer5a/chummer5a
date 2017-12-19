@@ -39,7 +39,7 @@ namespace Chummer
         private bool _blnSkipUpdate = false;
         private static string _strSelectCategory = string.Empty;
 
-        readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+        private readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain = false;
 
@@ -47,7 +47,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private string _strLimitToCategories = string.Empty;
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private List<VehicleMod> _lstMods;
 
         #region Control Events
@@ -91,24 +91,15 @@ namespace Chummer
             {
                 if (string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == objXmlCategory.InnerText))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlCategory.InnerText,
-                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                    };
-                    _lstCategory.Add(objItem);
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -393,11 +384,11 @@ namespace Chummer
         /// <summary>
         /// Currently Installed Accessories
         /// </summary>
-        public List<VehicleMod> InstalledMods
+        public IList<VehicleMod> InstalledMods
         {
             set
             {
-                _lstMods = value;
+                _lstMods = (List<VehicleMod>)value;
             }
         }
         #endregion
@@ -502,12 +493,7 @@ namespace Chummer
 
                 if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlMod["id"].InnerText,
-                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                    };
-                    lstMods.Add(objItem);
+                    lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }
             }
             SortListItem objSort = new SortListItem();

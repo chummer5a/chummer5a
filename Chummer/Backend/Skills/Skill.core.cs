@@ -288,7 +288,7 @@ namespace Chummer.Skills
             return RelevantImprovements(x => x.AddToRating == AddToRating)?.Sum(x => x.Value) ?? 0;
         }
 
-        private List<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        private IList<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
             if (string.IsNullOrWhiteSpace(Name))
                 return null;
@@ -484,8 +484,7 @@ namespace Chummer.Skills
                 if (objMySkillGroup != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
-                    List<Skill> objMySkillGroupSkills = objMySkillGroup.SkillList;
-                    foreach (Skill objSkillGroupMember in objMySkillGroupSkills)
+                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
                     {
                         if (objSkillGroupMember != this)
                         {
@@ -583,8 +582,7 @@ namespace Chummer.Skills
                 if (objMySkillGroup != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
-                    List<Skill> objMySkillGroupSkills = objMySkillGroup.SkillList;
-                    foreach (Skill objSkillGroupMember in objMySkillGroupSkills)
+                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
                     {
                         if (objSkillGroupMember != this)
                         {

@@ -368,7 +368,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public List<Weapon> Weapons
+        public IList<Weapon> Weapons
         {
             get
             {

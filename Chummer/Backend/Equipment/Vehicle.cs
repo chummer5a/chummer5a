@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
                         if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
                         {
                             w.Weapons.Add(objWeapon);
-                            w.Weapons.AddRange(objSubWeapons);
+                            ((List<Weapon>)w.Weapons).AddRange(objSubWeapons);
                             foreach (TreeNode objModNode in objNode.Nodes)
                             {
                                 if (objModNode.Tag.ToString() == w.InternalId)
@@ -400,7 +400,7 @@ namespace Chummer.Backend.Equipment
                             if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                             {
                                 objMod.Weapons.Add(objWeapon);
-                                objMod.Weapons.AddRange(objSubWeapons);
+                                ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                 foreach (TreeNode objModNode in objNode.Nodes)
                                 {
                                     if (objModNode.Tag.ToString() == objMod.InternalId)
@@ -425,7 +425,7 @@ namespace Chummer.Backend.Equipment
                                 if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
-                                    objMod.Weapons.AddRange(objSubWeapons);
+                                    ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                     foreach (TreeNode objModNode in objNode.Nodes)
                                     {
                                         if (objModNode.Tag.ToString() == objMod.InternalId)
@@ -1283,7 +1283,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public List<VehicleMod> Mods
+        public IList<VehicleMod> Mods
         {
             get
             {
@@ -1294,7 +1294,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {
@@ -1305,9 +1305,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public List<Weapon> Weapons => _lstWeapons;
+        public IList<Weapon> Weapons => _lstWeapons;
 
-        public List<WeaponMount> WeaponMounts
+        public IList<WeaponMount> WeaponMounts
         {
             get
             {
@@ -1455,7 +1455,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public List<string> Locations
+        public IList<string> Locations
         {
             get
             {

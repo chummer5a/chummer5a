@@ -44,11 +44,7 @@ namespace Chummer
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                ListItem objAmmo = new ListItem
-                {
-                    Value = objGear.InternalId,
-                    Name = objGear.DisplayNameShort
-                };
+                ListItem objAmmo = new ListItem(objGear.InternalId, objGear.DisplayNameShort);
                 objAmmo.Name += " x" + objGear.Quantity.ToString();
                 if (objGear.Parent != null)
                 {

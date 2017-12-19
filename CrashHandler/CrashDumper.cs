@@ -101,7 +101,7 @@ namespace CrashHandler
 			_startSendEvent.Set();
 		}
 
-		private string GenerateFolderName()
+		private static string GenerateFolderName()
 		{
 			return $"chummer_crash_{DateTime.UtcNow.ToFileTimeUtc()}";
 		}
@@ -302,7 +302,7 @@ namespace CrashHandler
             return objReturn;
         }
 
-		private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
+		private static byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
 		{
 			byte[] encrypted;
             // Create the streams used for encryption.

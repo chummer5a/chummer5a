@@ -221,18 +221,11 @@ namespace Chummer
 
             foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
             {
-                bool add = (!chkLimitList.Checked ||
-                               (chkLimitList.Checked &&
-                                Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false,
-                                    _objCharacter, null,
-                                    null, _objQualityDocument, string.Empty, _strLocalName)));
-                if (!add) continue;
-                ListItem objItem = new ListItem
+                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
                 {
-                    Value = objXmlMetamagic["name"].InnerText,
-                    Name = objXmlMetamagic["translate"]?.InnerText ?? objXmlMetamagic["name"].InnerText
-                };
-                lstArts.Add(objItem);
+                    string strName = objXmlMetamagic["name"].InnerText;
+                    lstArts.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
+                }
             }
             SortListItem objSort = new SortListItem();
             lstArts.Sort(objSort.Compare);

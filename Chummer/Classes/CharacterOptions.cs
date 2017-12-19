@@ -987,7 +987,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
             if (objRegistryResult != null)
             {
-                if (decimal.TryParse(objRegistryResult.ToString(), out decimal decTemp))
+                if (decimal.TryParse(objRegistryResult.ToString(), System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                     decStorage = decTemp;
                 _objBaseChummerKey.DeleteValue(strDecName);
             }
@@ -1768,7 +1768,7 @@ namespace Chummer
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public List<string> CustomDataDirectoryNames
+        public IList<string> CustomDataDirectoryNames
         {
             get
             {

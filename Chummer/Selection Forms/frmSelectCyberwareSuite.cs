@@ -30,12 +30,12 @@ namespace Chummer
     {
         private string _strSelectedSuite = string.Empty;
         private decimal _decCharacterESSModifier = 1.0m;
-        private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
-        private string _strType = "cyberware";
-        private Character _objCharacter;
+        private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
+        private readonly string _strType = "cyberware";
+        private readonly Character _objCharacter;
         private decimal _decCost = 0;
 
-        List<Cyberware> _lstCyberware = new List<Cyberware>();
+        private readonly List<Cyberware> _lstCyberware = new List<Cyberware>();
 
         private readonly XmlDocument _objXmlDocument = null;
 
@@ -88,7 +88,7 @@ namespace Chummer
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            List<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter.Options);
+            IList<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter.Options);
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
@@ -184,7 +184,7 @@ namespace Chummer
         /// Convert the grade string found in the file to the name of the Grade found in the Cyberware.xml file.
         /// </summary>
         /// <param name="strValue">Grade from the Cyberware Suite.</param>
-        private string CyberwareGradeName(string strValue)
+        private static string CyberwareGradeName(string strValue)
         {
             switch (strValue)
             {

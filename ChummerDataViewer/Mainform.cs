@@ -193,7 +193,7 @@ namespace ChummerDataViewer
 
 		}
 
-		private bool TextFilter(CrashReport report, string search)
+		private static bool TextFilter(CrashReport report, string search)
 		{
 			if (report.Guid.ToString().Contains(search)) return true;
 

@@ -10,7 +10,7 @@ namespace Chummer
 {
     public interface IHasMugshots
     {
-        List<Image> Mugshots { get; }
+        IList<Image> Mugshots { get; }
         Image MainMugshot { get; set; }
         int MainMugshotIndex { get; set; }
 

@@ -210,12 +210,7 @@ namespace Chummer
                         Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
                     {
                         string strName = objXmlMetamagic["name"]?.InnerText ?? string.Empty;
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strName,
-                            Name = objXmlMetamagic["translate"]?.InnerText ?? strName
-                        };
-                        lstMetamagics.Add(objItem);
+                        lstMetamagics.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
                     }
                 }
             }

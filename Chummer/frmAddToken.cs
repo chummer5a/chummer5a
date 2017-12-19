@@ -31,9 +31,9 @@ namespace Chummer
     public partial class frmAddToken : Form
     {
         // used when the user has filled out the information
-        private InitiativeUserControl parentControl;
+        private readonly InitiativeUserControl parentControl;
         private Character _character;
-        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         public frmAddToken(InitiativeUserControl init)

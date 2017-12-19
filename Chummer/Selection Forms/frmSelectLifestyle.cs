@@ -64,10 +64,7 @@ namespace Chummer
             List<ListItem> lstLifestyle = (from XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]")
                 let strLifeStyleName = objXmlLifestyle["name"]?.InnerText
                 where !string.IsNullOrEmpty(strLifeStyleName) && strLifeStyleName != "ID ERROR. Re-add life style to fix" && _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText)
-                select new ListItem
-                {
-                    Value = strLifeStyleName, Name = objXmlLifestyle["translate"]?.InnerText ?? strLifeStyleName
-                }).ToList();
+                select new ListItem(strLifeStyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifeStyleName)).ToList();
             cboLifestyle.BeginUpdate();
             cboLifestyle.ValueMember = "Value";
             cboLifestyle.DisplayMember = "Name";
@@ -380,7 +377,7 @@ namespace Chummer
         /// Sort the contents of a TreeView alphabetically.
         /// </summary>
         /// <param name="treTree">TreeView to sort.</param>
-        private void SortTree(TreeView treTree)
+        private static void SortTree(TreeView treTree)
         {
             List<TreeNode> lstNodes = new List<TreeNode>();
             foreach (TreeNode objNode in treTree.Nodes)

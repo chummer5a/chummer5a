@@ -299,7 +299,7 @@ namespace Chummer
         /// <summary>
         /// The Enhancements currently applied to the Power.
         /// </summary>
-        public List<Enhancement> Enhancements { get; } = new List<Enhancement>();
+        public IList<Enhancement> Enhancements { get; } = new List<Enhancement>();
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -492,7 +492,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_displayPoints))
                     return _displayPoints;
                 else
-                    return PowerPoints.ToString("G29");
+                    return PowerPoints.ToString("G29", GlobalOptions.CultureInfo);
             }
             set { _displayPoints = value; }
         }

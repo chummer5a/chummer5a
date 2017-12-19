@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmCreatePACKSKit : Form
     {
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Control Events
         public frmCreatePACKSKit(Character objCharacter)

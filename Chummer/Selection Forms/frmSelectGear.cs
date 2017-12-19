@@ -40,7 +40,7 @@ namespace Chummer
         private int _intCostMultiplier = 1;
 
         private string _strAllowedCategories = string.Empty;
-        private XmlNode _objParentNode = null;
+        private readonly XmlNode _objParentNode = null;
         private decimal _decMaximumCapacity = -1;
         private bool _blnAddAgain = false;
         private static string _strSelectCategory = string.Empty;
@@ -53,7 +53,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
@@ -136,12 +136,8 @@ namespace Chummer
                 }
                 if (!_lstCategory.Select(x => x.Value).Contains(strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strCategory,
-                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory
-                    };
-                    _lstCategory.Add(objItem);
+                    string strInnerText = strCategory;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                 }
             }
 
@@ -150,12 +146,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -1088,7 +1079,7 @@ namespace Chummer
             }
         }
 
-        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
@@ -1124,7 +1115,7 @@ namespace Chummer
             return BuildGearList(_objXmlDocument.SelectNodes("/chummer/gears/gear[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private List<ListItem> BuildGearList(XmlNodeList objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private IList<ListItem> BuildGearList(XmlNodeList objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XmlNode objXmlGear in objXmlGearList)
@@ -1158,23 +1149,18 @@ namespace Chummer
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                     Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        // When searching, Category needs to be added to the Value so we can identify the English Category name.
-                        Value = objXmlGear["name"].InnerText + "^" + objXmlGear["category"].InnerText,
-                        Name = objXmlGear["translate"]?.InnerText ?? objXmlGear["name"].InnerText
-                    };
+                    string strName = objXmlGear["name"].InnerText;
+                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
+                    ListItem objItem = new ListItem(strName + "^" + objXmlGear["category"].InnerText, objXmlGear["translate"]?.InnerText ?? strName);
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
-                        if (objXmlGear["category"] != null)
+                        string strCategory = objXmlGear["category"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strCategory))
                         {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlGear["category"].InnerText);
-
-                            if (objFoundItem != null)
-                            {
+                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                            if (!string.IsNullOrEmpty(objFoundItem.Name))
                                 objItem.Name += " [" + objFoundItem.Name + "]";
-                            }
                         }
                     }
                     lstGears.Add(objItem);
@@ -1203,14 +1189,10 @@ namespace Chummer
         public void AddCategory(string strCategories)
         {
             string[] strCategoryList = strCategories.Split(',');
+            XmlNode objXmlCategoryList = _objXmlDocument.SelectSingleNode("/chummer/categories");
             foreach (string strCategory in strCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = strCategory,
-                    Name = strCategory
-                };
-                _lstCategory.Add(objItem);
+                _lstCategory.Add(new ListItem(strCategory, objXmlCategoryList.SelectSingleNode("category[text() = \"" + strCategory + "\"]")?.Attributes?["translate"]?.InnerText ?? strCategory));
             }
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;

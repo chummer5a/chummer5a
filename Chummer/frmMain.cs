@@ -48,8 +48,8 @@ namespace Chummer
         private frmOmae _frmOmae;
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
-        private List<Character> _lstCharacters = new List<Character>();
-        private List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
+        private readonly List<Character> _lstCharacters = new List<Character>();
+        private readonly List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion = string.Empty;
@@ -657,7 +657,7 @@ namespace Chummer
     //        }
         }
 
-        private bool IsVisibleOnAnyScreen()
+        private static bool IsVisibleOnAnyScreen()
         {
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
@@ -1111,16 +1111,14 @@ namespace Chummer
             }
         }
 
-        public List<Character> OpenCharacters
+        public IList<Character> OpenCharacters
         {
             get { return _lstCharacters; }
-            set { _lstCharacters = value; }
         }
 
-        public List<CharacterShared> OpenCharacterForms
+        public IList<CharacterShared> OpenCharacterForms
         {
             get { return _lstOpenCharacterForms; }
-            set { _lstOpenCharacterForms = value; }
         }
         #endregion
 

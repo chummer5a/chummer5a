@@ -103,7 +103,7 @@ namespace Chummer
         /// Convert a string to a KarmaExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
+        public static KarmaExpenseType ConvertToKarmaExpenseType(string strValue)
         {
             return Enum.TryParse(strValue, out KarmaExpenseType result) ? result : KarmaExpenseType.ManualAdd;
         }
@@ -112,7 +112,7 @@ namespace Chummer
         /// Convert a string to a NuyenExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
+        public static NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
         {
             return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
         }
@@ -302,7 +302,7 @@ namespace Chummer
         /// Convert a string to an ExpenseType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ExpenseType ConvertToExpenseType(string strValue)
+        public static ExpenseType ConvertToExpenseType(string strValue)
         {
             switch (strValue)
             {
@@ -351,7 +351,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("expense");
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("date", _datDate.ToString("s"));
+            objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
             objWriter.WriteElementString("type", _objExpenseType.ToString());

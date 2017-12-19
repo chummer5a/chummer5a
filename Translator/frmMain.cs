@@ -18,7 +18,7 @@ namespace Translator
         private readonly BackgroundWorker _workerDataProcessor = new BackgroundWorker();
         private readonly BackgroundWorker _workerStringsProcessor = new BackgroundWorker();
         private string _strLanguageToLoad = string.Empty;
-        private List<frmTranslate> _lstOpenTranslateWindows = new List<frmTranslate>();
+        private static readonly List<frmTranslate> _lstOpenTranslateWindows = new List<frmTranslate>();
 
         public frmMain()
         {
@@ -5271,7 +5271,7 @@ namespace Translator
         #endregion Data Processing
 
         #region Properties
-        public List<frmTranslate> OpenTranslateWindows
+        public IList<frmTranslate> OpenTranslateWindows
         {
             get
             {

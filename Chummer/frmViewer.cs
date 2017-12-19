@@ -38,8 +38,8 @@ namespace Chummer
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
         private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
-        private BackgroundWorker _workerRefresher = new BackgroundWorker();
-        private BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
+        private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
+        private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
 
         #region Control Events
         public frmViewer()
@@ -272,63 +272,60 @@ namespace Chummer
         {
             // Write the Character information to a MemoryStream so we don't need to create any files.
             MemoryStream objStream = new MemoryStream();
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8);
-
-            // Begin the document.
-            objWriter.WriteStartDocument();
-
-            // </characters>
-            objWriter.WriteStartElement("characters");
-
-            foreach (Character objCharacter in _lstCharacters)
+            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
             {
+
+                // Begin the document.
+                objWriter.WriteStartDocument();
+
+                // </characters>
+                objWriter.WriteStartElement("characters");
+
+                foreach (Character objCharacter in _lstCharacters)
+                {
+                    if (_workerRefresher.CancellationPending)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+#if DEBUG
+                    objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture);
+#else
+                    objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
+#endif
+                }
+
+                // </characters>
+                objWriter.WriteEndElement();
                 if (_workerRefresher.CancellationPending)
                 {
                     e.Cancel = true;
-                    objWriter.Close();
                     return;
                 }
-#if DEBUG
-                objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture);
-#else
-                objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
-#endif
+
+                // Finish the document and flush the Writer and Stream.
+                objWriter.WriteEndDocument();
+                objWriter.Flush();
+
+                // Read the stream.
+                StreamReader objReader = new StreamReader(objStream);
+                objStream.Position = 0;
+                XmlDocument objCharacterXML = new XmlDocument();
+
+                // Put the stream into an XmlDocument and send it off to the Viewer.
+                string strXML = objReader.ReadToEnd();
+                if (_workerRefresher.CancellationPending)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                objCharacterXML.LoadXml(strXML);
+
+                if (_workerRefresher.CancellationPending)
+                    e.Cancel = true;
+                else
+                    _objCharacterXML = objCharacterXML;
             }
-
-            // </characters>
-            objWriter.WriteEndElement();
-            if (_workerRefresher.CancellationPending)
-            {
-                e.Cancel = true;
-                objWriter.Close();
-                return;
-            }
-
-            // Finish the document and flush the Writer and Stream.
-            objWriter.WriteEndDocument();
-            objWriter.Flush();
-
-            // Read the stream.
-            StreamReader objReader = new StreamReader(objStream);
-            objStream.Position = 0;
-            XmlDocument objCharacterXML = new XmlDocument();
-
-            // Put the stream into an XmlDocument and send it off to the Viewer.
-            string strXML = objReader.ReadToEnd();
-            if (_workerRefresher.CancellationPending)
-            {
-                e.Cancel = true;
-                objWriter.Close();
-                return;
-            }
-            objCharacterXML.LoadXml(strXML);
-
-            objWriter.Close();
-
-            if (_workerRefresher.CancellationPending)
-                e.Cancel = true;
-            else
-                _objCharacterXML = objCharacterXML;
         }
 
         private void FinishRefresh(object sender, RunWorkerCompletedEventArgs e)
@@ -511,7 +508,7 @@ namespace Chummer
             }
         }
 
-        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 
@@ -520,13 +517,7 @@ namespace Chummer
             XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
             foreach (XmlNode sheet in sheets)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText,
-                    Name = sheet["name"].InnerText
-                };
-
-                lstSheets.Add(objItem);
+                lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText, sheet["name"].InnerText));
             }
 
             return lstSheets;
@@ -542,22 +533,14 @@ namespace Chummer
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
             // (hidden because they are partial templates that cannot be used on their own).
-            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath);
-
-            foreach (string fileName in fileNames)
+            foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = Path.Combine("omae", fileName),
-                    Name = menuMainOmae + ": " + fileName
-                };
-
-                items.Add(objItem);
+                items.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
             }
 
             return items;
         }
-        private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             var names = new List<string>();
 
@@ -571,7 +554,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());
@@ -611,13 +594,7 @@ namespace Chummer
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                 if (GetXslFilesFromLocalDirectory(strLanguageCode).Count > 0)
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strLanguageCode,
-                        Name = node.InnerText
-                    };
-
-                    lstLanguages.Add(objItem);
+                    lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
                 }
             }
 

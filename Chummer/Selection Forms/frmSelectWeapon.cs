@@ -41,7 +41,7 @@ namespace Chummer
         private XmlNodeList _objXmlCategoryList;
         private readonly XmlDocument _objXmlDocument = null;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectWeapon(Character objCharacter)
@@ -87,44 +87,29 @@ namespace Chummer
             if (_strLimitToCategories.Length > 0)
             {
                 // Populate the Category list.
-                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-                if (objXmlNodeList != null)
-                    foreach (XmlNode objXmlCategory in objXmlNodeList)
-                    {
-                        foreach (ListItem objItem in from strCategory in _strLimitToCategories where strCategory == objXmlCategory.InnerText select new ListItem())
-                        {
-                            objItem.Value = objXmlCategory.InnerText;
-                            objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                            _lstCategory.Add(objItem);
-                        }
-                    }
+                foreach (XmlNode objXmlCategory in _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                {
+                    string strInnerText = objXmlCategory.InnerText;
+                    if (_strLimitToCategories.Contains(strInnerText))
+                        _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
             }
             else
             {
                 _objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 
-                if (_objXmlCategoryList != null)
-                    foreach (XmlNode objXmlCategory in _objXmlCategoryList)
-                    {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlCategory.InnerText,
-                            Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                        };
-                        _lstCategory.Add(objItem);
-                    }
+                foreach (XmlNode objXmlCategory in _objXmlCategoryList)
+                {
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -359,12 +344,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlWeapon["id"]?.InnerText,
-                        Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText
-                    };
-                    lstWeapons.Add(objItem);
+                    lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);

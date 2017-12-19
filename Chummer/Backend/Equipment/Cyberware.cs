@@ -91,7 +91,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions)
         {
-            List<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacterOptions);
+            IList<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacterOptions);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)
@@ -1784,7 +1784,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {

@@ -45,7 +45,7 @@ namespace Chummer
         private int round;
         private bool _finishedCombatTurn;
         private int totalChummersWithNoInit;
-        private Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         /// <summary>

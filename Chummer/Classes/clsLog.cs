@@ -30,8 +30,8 @@ namespace Chummer
 {
     static class Log
     {
-        private static StreamWriter logWriter;
-        private static StringBuilder stringBuilder;  //This will break in case of multithreading
+        private static readonly StreamWriter logWriter;
+        private static readonly StringBuilder stringBuilder;  //This will break in case of multithreading
         private static bool logEnabled = false;
         static Log()
         {

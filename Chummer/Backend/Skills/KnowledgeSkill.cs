@@ -13,8 +13,8 @@ namespace Chummer.Skills
         private static readonly Dictionary<string, string> CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribtue
         private static readonly Dictionary<string, string> NameCategoryMap = new Dictionary<string, string>();  //names to their category
 
-        public static List<ListItem> DefaultKnowledgeSkillCatagories { get; }
-        public static List<ListItem> KnowledgeTypes { get; }  //Load the (possible translated) types of kno skills (Academic, Street...)
+        public static IList<ListItem> DefaultKnowledgeSkillCatagories { get; }
+        public static IList<ListItem> KnowledgeTypes { get; }  //Load the (possible translated) types of kno skills (Academic, Street...)
 
         static KnowledgeSkill()
         {
@@ -54,7 +54,7 @@ namespace Chummer.Skills
             DefaultKnowledgeSkillCatagories = DefaultKnowledgeSkillCatagories.OrderBy(x => x.Name).ToList();
         }
 
-        public static List<ListItem> KnowledgeSkillsWithCategory(params string[] categories)
+        public static IList<ListItem> KnowledgeSkillsWithCategory(params string[] categories)
         {
             HashSet<string> set = new HashSet<string>(categories);
 
@@ -67,7 +67,7 @@ namespace Chummer.Skills
         }
 
         private string _translated; //non english name, if present
-        private List<ListItem> _knowledgeSkillCatagories;
+        private readonly List<ListItem> _knowledgeSkillCatagories;
         private string _type;
         public bool ForcedName { get; }
 
@@ -85,15 +85,9 @@ namespace Chummer.Skills
             ForcedName = true;
         }
 
-        public List<ListItem> KnowledgeSkillCatagories
+        public IList<ListItem> KnowledgeSkillCatagories
         {
             get { return _knowledgeSkillCatagories ?? DefaultKnowledgeSkillCatagories; }
-            set
-            {
-                _knowledgeSkillCatagories = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(CustomSkillCatagories));
-            }
         }
 
         public bool CustomSkillCatagories
@@ -128,7 +122,8 @@ namespace Chummer.Skills
                 XmlNodeList list = XmlManager.Load("skills.xml").SelectNodes($"chummer/knowledgeskills/skill[name = \"{name}\"]/specs/spec");
                 foreach (XmlNode node in list)
                 {
-                    SuggestedSpecializations.Add(ListItem.AutoXml(node.InnerText, node));
+                    string strInnerText = node.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
 
                 SortListItem objSort = new SortListItem();
