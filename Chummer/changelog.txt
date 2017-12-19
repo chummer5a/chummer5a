@@ -60,7 +60,7 @@ Data Changes:
 - Fixed Berserker's Rage being eligible for a PP discount under The Spiritual Way. Part of #2180.
 - Fixed a crash caused by a typo in Thundercloud Morgan's weapon mounts. Fixes #2183.
 - Fixed being able to change the spirit category of Summoning, Binding, and Banishing foci.
-
+- The Spiritual Way now allows discounting the following powers that were previously missed: Heightened Concentration, Spirit Ram, Nimble Fingers, Metabolic Control, Magic Sense, Kinesics Mastery, Traceless Walk, Pain Resistance, Improved Physical Attribute.
 New Strings:
 
 - Menu_Main_Translator
