@@ -93,6 +93,8 @@ namespace Chummer
             // Populate the MRU list.
             PopulateMRUToolstripMenu();
 
+            Program.MainForm = this;
+
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
             {

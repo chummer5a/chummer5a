@@ -15198,6 +15198,35 @@ namespace Chummer
                     RefreshSelectedGear();
                     if (chkVehicleHomeNode.Checked)
                         RefreshSelectedVehicle();
+                    if (chkCyberwareHomeNode.Checked)
+                        RefreshSelectedCyberware();
+                    ScheduleCharacterUpdate();
+
+                    IsDirty = true;
+                }
+            }
+        }
+
+        private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+            string strGuid = treCyberware.SelectedNode?.Tag.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strGuid))
+            {
+                IHasMatrixAttributes objCommlink = CommonFunctions.FindCyberwareGear(strGuid, CharacterObject.Cyberware);
+                if (objCommlink == null)
+                {
+                    objCommlink = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
+                }
+                if (objCommlink != null)
+                {
+                    objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
+                    RefreshSelectedCyberware();
+                    if (chkVehicleHomeNode.Checked)
+                        RefreshSelectedVehicle();
+                    if (chkGearHomeNode.Checked)
+                        RefreshSelectedGear();
                     ScheduleCharacterUpdate();
 
                     IsDirty = true;
@@ -15393,7 +15422,7 @@ namespace Chummer
             PopulateGearList();
         }
 
-        private void chkActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -15404,9 +15433,75 @@ namespace Chummer
                 IHasMatrixAttributes objSelectedCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.DeepWhere(x => x.Children, x => x.IsCommlink));
                 if (objSelectedCommlink != null)
                 {
-                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkActiveCommlink.Checked);
-
+                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+                    if (chkVehicleActiveCommlink.Checked)
+                        RefreshSelectedVehicle();
+                    if (chkCyberwareActiveCommlink.Checked)
+                        RefreshSelectedCyberware();
                     RefreshSelectedGear();
+                    ScheduleCharacterUpdate();
+
+                    IsDirty = true;
+                }
+            }
+        }
+
+
+        private void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+
+            // Attempt to locate the selected piece of Gear.
+            if (treCyberware.SelectedNode != null)
+            {
+                string strGuid = treCyberware.SelectedNode.Tag.ToString();
+                IHasMatrixAttributes objSelectedCommlink = CommonFunctions.DeepFindById(strGuid, CharacterObject.Cyberware);
+                if (objSelectedCommlink == null)
+                {
+                    objSelectedCommlink = CommonFunctions.FindCyberwareGear(strGuid, CharacterObject.Cyberware);
+                }
+                if (objSelectedCommlink != null)
+                {
+                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+                    if (chkVehicleActiveCommlink.Checked)
+                        RefreshSelectedVehicle();
+                    if (chkGearActiveCommlink.Checked)
+                        RefreshSelectedGear();
+                    RefreshSelectedCyberware();
+                    ScheduleCharacterUpdate();
+
+                    IsDirty = true;
+                }
+            }
+        }
+
+        private void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+
+            // Attempt to locate the selected piece of Gear.
+            if (treVehicles.SelectedNode != null)
+            {
+                string strGuid = treVehicles.SelectedNode.Tag.ToString();
+                IHasMatrixAttributes objSelectedCommlink = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
+                if (objSelectedCommlink == null)
+                {
+                    objSelectedCommlink = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strGuid);
+                    if (objSelectedCommlink == null)
+                    {
+                        objSelectedCommlink = CommonFunctions.FindVehicleCyberware(strGuid, CharacterObject.Vehicles);
+                    }
+                }
+                if (objSelectedCommlink != null)
+                {
+                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+                    if (chkGearActiveCommlink.Checked)
+                        RefreshSelectedGear();
+                    if (chkCyberwareActiveCommlink.Checked)
+                        RefreshSelectedCyberware();
+                    RefreshSelectedVehicle();
                     ScheduleCharacterUpdate();
 
                     IsDirty = true;
@@ -16073,6 +16168,8 @@ namespace Chummer
                     RefreshSelectedVehicle();
                     if (chkGearHomeNode.Checked)
                         RefreshSelectedGear();
+                    if (chkCyberwareHomeNode.Checked)
+                        RefreshSelectedCyberware();
                     ScheduleCharacterUpdate();
 
                     IsDirty = true;
@@ -19003,6 +19100,9 @@ namespace Chummer
             cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null;
             cmdCyberwareChangeMount.Visible = false;
 
+            chkCyberwareActiveCommlink.Visible = false;
+            chkCyberwareHomeNode.Visible = false;
+
             if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
             {
                 lblCyberwareName.Text = string.Empty;
@@ -19021,8 +19121,7 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 return;
             }
-            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(),
-                CharacterObject.Cyberware);
+            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
             // Locate the selected piece of Cyberware.
             if (objCyberware != null)
             {
@@ -19105,6 +19204,15 @@ namespace Chummer
                     lblCyberDataProcessingLabel.Visible = true;
                     lblCyberFirewallLabel.Visible = true;
                     objCyberware.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
+
+                    chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
+                    chkCyberwareActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                    if (CharacterObject.Metatype == "A.I.")
+                    {
+                        chkCyberwareHomeNode.Visible = true;
+                        chkCyberwareHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                    }
                 }
                 else
                 {
@@ -19160,6 +19268,15 @@ namespace Chummer
                     }
 
                     objGear.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
+
+                    chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
+                    chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                    if (CharacterObject.Metatype == "A.I.")
+                    {
+                        chkCyberwareHomeNode.Visible = true;
+                        chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                    }
 
                     lblCyberDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                     lblCyberDeviceRating.Visible = true;
@@ -19900,8 +20017,8 @@ namespace Chummer
                 cmdGearReduceQty.Enabled = false;
                 chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped");
                 chkGearEquipped.Visible = false;
-                chkActiveCommlink.Enabled = false;
-                chkActiveCommlink.Checked = false;
+                chkGearActiveCommlink.Enabled = false;
+                chkGearActiveCommlink.Checked = false;
                 cmdGearSplitQty.Enabled = false;
                 cmdGearMergeQty.Enabled = false;
                 cmdGearMoveToVehicle.Enabled = false;
@@ -19965,8 +20082,8 @@ namespace Chummer
                     cboGearOverclocker.BeginUpdate();
 
                     lblGearDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
-                    chkActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                    chkActiveCommlink.Enabled = objGear.IsCommlink;
+                    chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                    chkGearActiveCommlink.Enabled = objGear.IsCommlink;
 
                     if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                     {
@@ -20011,7 +20128,7 @@ namespace Chummer
                     {
                         chkGearHomeNode.Visible = true;
                         chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkGearHomeNode.Enabled = chkActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
 
                     if (objGear.MaxRating > 0)
@@ -21172,6 +21289,10 @@ namespace Chummer
             cmdDeleteVehicle.Enabled = treVehicles.SelectedNode != null;
             cmdVehicleCyberwareChangeMount.Visible = false;
 
+            chkVehicleHomeNode.Visible = false;
+            cmdVehicleMoveToInventory.Enabled = false;
+            chkVehicleActiveCommlink.Visible = false;
+
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
             {
                 DisplayVehicleWeaponStats(false);
@@ -21187,8 +21308,6 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 return;
             }
-            chkVehicleHomeNode.Visible = false;
-            cmdVehicleMoveToInventory.Enabled = false;
 
             if (treVehicles.SelectedNode.Level != 0)
             {
@@ -21365,6 +21484,8 @@ namespace Chummer
                 
                 objVehicle.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
+                chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
+                chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
                 if (CharacterObject.Metatype.Contains("A.I.") || CharacterObject.MetatypeCategory == "Protosapients")
                 {
                     chkVehicleHomeNode.Visible = true;
@@ -21499,11 +21620,15 @@ namespace Chummer
 
                         lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                         objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                        chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
+                        chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+
                         if (CharacterObject.Metatype == "A.I.")
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                         }
                     }
                     else
@@ -21698,11 +21823,15 @@ namespace Chummer
 
                     lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                    chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
+                    chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+
                     if (CharacterObject.Metatype == "A.I.")
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
                 }
                 else
@@ -21863,11 +21992,15 @@ namespace Chummer
 
                             lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
                             objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                            chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
+                            chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+
                             if (CharacterObject.Metatype == "A.I.")
                             {
                                 chkVehicleHomeNode.Visible = true;
                                 chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                                chkVehicleHomeNode.Enabled = objCyberware.IsCommlink && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                                chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                             }
 
                             string strBook = CharacterObjectOptions.LanguageBookShort(objCyberware.Source);
@@ -21918,11 +22051,15 @@ namespace Chummer
 
                     lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                    chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
+                    chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+
                     if (CharacterObject.Metatype == "A.I.")
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = objGear.IsCommlink && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                     }
                 }
                 else
@@ -22558,12 +22695,14 @@ namespace Chummer
             tipTooltip.SetToolTip(cmdGearSplitQty, LanguageManager.GetString("Tip_SplitGearQty"));
             tipTooltip.SetToolTip(cmdGearMergeQty, LanguageManager.GetString("Tip_MergeGearQty"));
             tipTooltip.SetToolTip(cmdGearMoveToVehicle, LanguageManager.GetString("Tip_TransferToVehicle"));
-            tipTooltip.SetToolTip(chkActiveCommlink, LanguageManager.GetString("Tip_ActiveCommlink"));
+            tipTooltip.SetToolTip(chkGearActiveCommlink, LanguageManager.GetString("Tip_ActiveCommlink"));
+            tipTooltip.SetToolTip(chkCyberwareActiveCommlink, LanguageManager.GetString("Tip_ActiveCommlink"));
             // Vehicles Tab.
             tipTooltip.SetToolTip(chkVehicleWeaponAccessoryInstalled, LanguageManager.GetString("Tip_WeaponInstalled"));
             tipTooltip.SetToolTip(cmdVehicleGearReduceQty, LanguageManager.GetString("Tip_DecreaseGearQty"));
             tipTooltip.SetToolTip(cmdVehicleMoveToInventory, LanguageManager.GetString("Tip_TransferToInventory"));
             tipTooltip.SetToolTip(cmdRollVehicleWeapon, LanguageManager.GetString("Tip_DiceRoller"));
+            tipTooltip.SetToolTip(chkVehicleActiveCommlink, LanguageManager.GetString("Tip_ActiveCommlink"));
             // Other Info Tab.
             tipTooltip.SetToolTip(lblCMPhysicalLabel, LanguageManager.GetString("Tip_OtherCMPhysical"));
             tipTooltip.SetToolTip(lblCMStunLabel, LanguageManager.GetString("Tip_OtherCMStun"));

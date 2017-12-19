@@ -50,6 +50,7 @@ Application Changes:
 - The amend system for custom data now supports the use of custom XPath filters. This means that a single amending node can now modify multiple nodes based on whatever XPath filters are defined in its xpathfilter attribute. The "Cyberlimbs Cannot Add Headware" custom ruleset in the customdata folder has been updated to use this system, and it now also serves as an example for how to use custom XPath filters for amends.
 - Tabs can now be scrolled through with the mousewheel.
 - Ghetto workaround to allow exotic ranged weapons to buy their own ammunition again in career mode. Super fragile, may break at the drop of a hat.
+- Added "Active Commlink" and "Home Node" checkboxes to the Cyberware tab, and added an "Active Commlink" checkbox to the Vehicles tab.
 
 Data Changes:
 

@@ -119,6 +119,10 @@ namespace Chummer
             {
                 return s_FrmMainForm;
             }
+            set
+            {
+                s_FrmMainForm = value;
+            }
         }
 
         static readonly ExceptionHeatMap s_Heatmap = new ExceptionHeatMap();
