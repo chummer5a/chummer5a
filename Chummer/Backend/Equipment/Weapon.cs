@@ -410,6 +410,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _ammo)
             {
+                if (string.IsNullOrWhiteSpace(clip.AmmoName))
+                {
+                    clip.AmmoName = GetAmmoName(clip.Guid);
+                }
                 clip.Save(objWriter);
             }
             objWriter.WriteEndElement();
@@ -480,7 +484,10 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode node in clipNode.ChildNodes)
                     {
                         Clip LoopClip = Clip.Load(node);
-
+                        if (string.IsNullOrWhiteSpace(LoopClip.AmmoName))
+                        {
+                            LoopClip.AmmoName = GetAmmoName(LoopClip.Guid);
+                        }
                         _ammo.Add(LoopClip);
                     }
                 }
@@ -754,7 +761,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("clips");
             foreach (Clip objClip in _ammo)
             {
-                objClip.AmmoName = GetAmmoName(objClip.Guid);
+                if (string.IsNullOrWhiteSpace(objClip.AmmoName))
+                {
+                    objClip.AmmoName = GetAmmoName(objClip.Guid);
+                }
                 objClip.Save(objWriter);
             }
             objWriter.WriteEndElement();
