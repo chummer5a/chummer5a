@@ -1154,6 +1154,10 @@
       <text>File Name:</text>
     </string>
     <string>
+      <key>Label_Roster_Settings_File</key>
+      <text>Settings File:</text>
+    </string>
+    <string>
       <key>Tab_Roster_Description</key>
       <text>Description</text>
     </string>
@@ -7315,6 +7319,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>MessageTitle_SelectAdvancedLifestyle_LifestyleName</key>
       <text>Lifestyle Name</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_TrustFund</key>
+      <text>Trust Fund</text>
+    </string>
+    <string>
+      <key>Label_SelectAdvancedLifestyle_Tenant</key>
+      <text>Primary Tenant</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Armor Window -->

@@ -63,6 +63,8 @@ namespace Chummer
             this.tsSort = new System.Windows.Forms.ToolStripMenuItem();
             this.tsDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.tsCloseOpenCharacter = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblSettings = new System.Windows.Forms.Label();
+            this.lblSettingsLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -387,13 +389,13 @@ namespace Chummer
             this.tsDelete,
             this.tsCloseOpenCharacter});
             this.cmsRoster.Name = "cmsRoster";
-            this.cmsRoster.Size = new System.Drawing.Size(178, 114);
+            this.cmsRoster.Size = new System.Drawing.Size(178, 92);
             // 
             // tsToggleFav
             // 
             this.tsToggleFav.Image = global::Chummer.Properties.Resources.asterisk_orange;
             this.tsToggleFav.Name = "tsToggleFav";
-            this.tsToggleFav.Size = new System.Drawing.Size(173, 22);
+            this.tsToggleFav.Size = new System.Drawing.Size(177, 22);
             this.tsToggleFav.Tag = "Menu_ToggleFavorite";
             this.tsToggleFav.Text = "&Toggle Favorite";
             this.tsToggleFav.Click += new System.EventHandler(this.tsToggleFav_Click);
@@ -403,7 +405,7 @@ namespace Chummer
             this.tsSort.Enabled = false;
             this.tsSort.Image = global::Chummer.Properties.Resources.page_refresh;
             this.tsSort.Name = "tsSort";
-            this.tsSort.Size = new System.Drawing.Size(173, 22);
+            this.tsSort.Size = new System.Drawing.Size(177, 22);
             this.tsSort.Tag = "Menu_Sort";
             this.tsSort.Text = "&Sort Alphabetically";
             this.tsSort.Click += new System.EventHandler(this.tsSort_Click);
@@ -412,7 +414,7 @@ namespace Chummer
             // 
             this.tsDelete.Image = global::Chummer.Properties.Resources.delete;
             this.tsDelete.Name = "tsDelete";
-            this.tsDelete.Size = new System.Drawing.Size(176, 22);
+            this.tsDelete.Size = new System.Drawing.Size(177, 22);
             this.tsDelete.Tag = "Menu_Delete";
             this.tsDelete.Text = "&Delete from this list";
             this.tsDelete.Click += new System.EventHandler(this.tsDelete_Click);
@@ -425,11 +427,32 @@ namespace Chummer
             this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
+            // lblSettings
+            // 
+            this.lblSettings.AutoSize = true;
+            this.lblSettings.Location = new System.Drawing.Point(304, 190);
+            this.lblSettings.Name = "lblSettings";
+            this.lblSettings.Size = new System.Drawing.Size(33, 13);
+            this.lblSettings.TabIndex = 40;
+            this.lblSettings.Text = "None";
+            // 
+            // lblSettingsLabel
+            // 
+            this.lblSettingsLabel.AutoSize = true;
+            this.lblSettingsLabel.Location = new System.Drawing.Point(208, 190);
+            this.lblSettingsLabel.Name = "lblSettingsLabel";
+            this.lblSettingsLabel.Size = new System.Drawing.Size(67, 13);
+            this.lblSettingsLabel.TabIndex = 39;
+            this.lblSettingsLabel.Tag = "Label_Roster_Settings_File";
+            this.lblSettingsLabel.Text = "Settings File:";
+            // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 552);
+            this.Controls.Add(this.lblSettings);
+            this.Controls.Add(this.lblSettingsLabel);
             this.Controls.Add(this.lblFilePath);
             this.Controls.Add(this.lblFilePathLabel);
             this.Controls.Add(this.lblEssence);
@@ -504,5 +527,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsSort;
         private System.Windows.Forms.ToolStripMenuItem tsDelete;
         private System.Windows.Forms.ToolStripMenuItem tsCloseOpenCharacter;
+        private System.Windows.Forms.Label lblSettings;
+        private System.Windows.Forms.Label lblSettingsLabel;
     }
 }
