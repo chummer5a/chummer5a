@@ -313,7 +313,7 @@ namespace Chummer
                     if (!blnAdd)
                         continue;
                 }
-                ListItem objItem = new ListItem(objXmlProgram["id"].InnerText, objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText);
+                string strDisplayName = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     string strCategory = objXmlProgram["category"]?.InnerText;
@@ -322,11 +322,11 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            objItem.Name += " [" + objFoundItem.Name + "]";
+                            strDisplayName += " [" + objFoundItem.Name + "]";
                         }
                     }
                 }
-                lstPrograms.Add(objItem);
+                lstPrograms.Add(new ListItem(objXmlProgram["id"].InnerText, strDisplayName));
             }
 
             SortListItem objSort = new SortListItem();

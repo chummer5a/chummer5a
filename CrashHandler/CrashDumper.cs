@@ -36,7 +36,7 @@ namespace CrashHandler
 		private readonly IntPtr _exceptionPrt;
 		private readonly uint _threadId;
 		private volatile CrashDumperProgress _progress;
-		private Thread _worker;
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
 		private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
         private string _strLatestDumpName = string.Empty;
 	    
@@ -79,9 +79,13 @@ namespace CrashHandler
 
             CrashLogWriter.WriteLine("Crash working directory is {0}", WorkingDirectory);
             CrashLogWriter.Flush();
+
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += CollectCrashDump;
         }
 
-		private void AttemptDebug(Process process)
+        private void AttemptDebug(Process process)
 		{
 			bool sucess = SafeNativeMethods.DebugActiveProcess(new IntPtr(process.Id));
 
@@ -114,97 +118,92 @@ namespace CrashHandler
 
 		public void StartCollecting()
 		{
-			SetProgress(CrashDumperProgress.Started);
-			_worker = new Thread(WorkerEntryPoint) {IsBackground = true};
-			_worker.Start();
+            if (!_worker.IsBusy)
+                _worker.RunWorkerAsync();
 		}
 
-		private void WorkerEntryPoint()
-		{
+        private void CollectCrashDump(object sender, DoWorkEventArgs e)
+        {
+            SetProgress(CrashDumperProgress.Started);
+            try
+            {
+                Process = Process.GetProcessById(_procId);
 
-		    try
-		    {
-		        Process = Process.GetProcessById(_procId);
+                SetProgress(CrashDumperProgress.Debugger);
+                AttemptDebug(Process);
 
-		        SetProgress(CrashDumperProgress.Debugger);
-		        AttemptDebug(Process);
+                SetProgress(CrashDumperProgress.CreateDmp);
+                if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
+                {
+                    Process.Kill();
+                    SetProgress(CrashDumperProgress.Error);
+                    return;
+                }
 
-		        SetProgress(CrashDumperProgress.CreateDmp);
-		        if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-sucess")))
-		        {
-		            Process.Kill();
-		            SetProgress(CrashDumperProgress.Error);
-		            return;
-		        }
+                SetProgress(CrashDumperProgress.CreateFiles);
+                GetValue();
 
-		        SetProgress(CrashDumperProgress.CreateFiles);
-		        GetValue();
+                SetProgress(CrashDumperProgress.CopyFiles);
+                CopyFiles();
 
-		        SetProgress(CrashDumperProgress.CopyFiles);
-		        CopyFiles();
-
-		        SetProgress(CrashDumperProgress.FinishedCollecting);
+                SetProgress(CrashDumperProgress.FinishedCollecting);
 
                 _startSendEvent.WaitOne();
-                
+
                 CrashLogWriter.WriteLine("Files collected");
                 CrashLogWriter.Flush();
 
-		        SetProgress(CrashDumperProgress.Compressing);
-		        byte[] zip = GetZip();
+                SetProgress(CrashDumperProgress.Compressing);
+                byte[] zip = GetZip();
 
-		        SetProgress(CrashDumperProgress.Encrypting);
+                SetProgress(CrashDumperProgress.Encrypting);
                 byte[] encrypted = Encrypt(zip, out byte[] iv, out byte[] key);
 
                 SetProgress(CrashDumperProgress.Uploading);
-		        string location = Upload(encrypted);
+                string location = Upload(encrypted);
 
                 CrashLogWriter.WriteLine("Files uploaded");
                 CrashLogWriter.Flush();
 
                 SetProgress(CrashDumperProgress.Saving);
-		        Attributes["visible-key"] = MakeStringKey(iv, key);
-		        Attributes["visible-location"] = location;
+                Attributes["visible-key"] = MakeStringKey(iv, key);
+                Attributes["visible-location"] = location;
 
-		        UploadToAws();
+                UploadToAws();
 
                 CrashLogWriter.WriteLine("Key saved");
                 CrashLogWriter.Flush();
 
                 SetProgress(CrashDumperProgress.Cleanup);
-		        if (DoCleanUp)
-		        {
-		            Clean();
+                if (DoCleanUp)
+                {
+                    Clean();
 
                     CrashLogWriter.WriteLine("Cleanup done");
                     CrashLogWriter.Flush();
                 }
 
-		        SetProgress(CrashDumperProgress.FinishedSending);
-		        Process.Kill();
+                SetProgress(CrashDumperProgress.FinishedSending);
+                Process.Kill();
+            }
+            catch (RemoteServiceException rex)
+            {
+                SetProgress(CrashDumperProgress.Error);
 
-		    }
-		    catch (RemoteServiceException rex)
-		    {
-		        SetProgress(CrashDumperProgress.Error);
+                System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message + "\n\nPlease manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
+                Process?.Kill();
+            }
+            catch (Exception ex)
+            {
+                SetProgress(CrashDumperProgress.Error);
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
 
-		        System.Windows.Forms.MessageBox.Show("Upload service had an error.\nReason: " + rex.Message + "\n\nPlease manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
-		        Process?.Kill();
-		        Environment.Exit(-1);
-		    }
-		    catch (Exception ex)
-			{
-			    SetProgress(CrashDumperProgress.Error);
-			    System.Windows.Forms.MessageBox.Show(ex.ToString ());
-
-				Process?.Kill();
-			}
+                Process?.Kill();
+            }
 
             CrashLogWriter.Close();
-		}
-
-		
-
+        }
+        
 		private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
 		{
 

@@ -23,7 +23,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Text;
 
@@ -42,10 +42,10 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private static readonly List<string> _lstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
-        private static readonly string[] _strLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
+        private static readonly List<string> s_LstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
+        private static readonly string[] s_StrLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         private readonly XmlDocument _objMetatypeDocument = null;
         private readonly XmlDocument _objCritterDocument = null;
@@ -96,10 +96,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -183,19 +183,19 @@ namespace Chummer
 
         private string GetMinimumRequirement(string strAllowedLifestyles)
         {
-            if (_strLifestyleSpecific.Contains(strAllowedLifestyles))
+            if (s_StrLifestyleSpecific.Contains(strAllowedLifestyles))
             {
                 return strAllowedLifestyles;
             }
             int intMin = int.MaxValue;
             foreach (string strLifesytle in strAllowedLifestyles.Split(','))
             {
-                if (_lstLifestylesSorted.Contains(strLifesytle) && _lstLifestylesSorted.IndexOf(strLifesytle) < intMin)
+                if (s_LstLifestylesSorted.Contains(strLifesytle) && s_LstLifestylesSorted.IndexOf(strLifesytle) < intMin)
                 {
-                    intMin = _lstLifestylesSorted.IndexOf(strLifesytle);
+                    intMin = s_LstLifestylesSorted.IndexOf(strLifesytle);
                 }
             }
-            return _lstLifestylesSorted[intMin];
+            return s_LstLifestylesSorted[intMin];
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -405,7 +405,7 @@ namespace Chummer
                 return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             _strSelectedQuality = objNode["name"].InnerText;
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
 
             if (!RequirementMet(objNode, true))
                 return;

@@ -96,7 +96,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -239,8 +239,8 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("limit", _strLimit);
 			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", TotalAvail);
-			objWriter.WriteElementString("cost", TotalCost.ToString());
-			objWriter.WriteElementString("owncost", OwnCost.ToString());
+			objWriter.WriteElementString("cost", TotalCost.ToString(_character.Options.NuyenFormat, objCulture));
+			objWriter.WriteElementString("owncost", OwnCost.ToString(_character.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(_strSource));
 			objWriter.WriteElementString("page", Page);
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
@@ -800,7 +800,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayName);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
                 else

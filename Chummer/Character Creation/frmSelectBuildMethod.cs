@@ -166,7 +166,7 @@ namespace Chummer
                     {
                         nudKarma.Value = 800;
                     }
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary").Replace("{0}", nudKarma.Value.ToString());
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary").Replace("{0}", nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudMaxNuyen.Visible = true;
                     nudKarma.Visible = true;
                     nudSumtoTen.Visible = false;
@@ -188,7 +188,7 @@ namespace Chummer
                 else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
                 {
                     nudKarma.Value = 750;
-                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary"), nudKarma.Value.ToString());
+                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary"), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
                     nudSumtoTen.Visible = false;

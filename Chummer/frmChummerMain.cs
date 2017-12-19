@@ -27,7 +27,7 @@ using System.Reflection;
  using System.Windows;
  using System.Windows.Shapes;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
  using Application = System.Windows.Forms.Application;
  using DataFormats = System.Windows.Forms.DataFormats;
  using DragDropEffects = System.Windows.Forms.DragDropEffects;
@@ -43,7 +43,7 @@ using System.ComponentModel;
 
 namespace Chummer
 {
-    public partial class frmMain : Form
+    public partial class frmChummerMain : Form
     {
         private frmOmae _frmOmae;
         private frmDiceRoller _frmRoller;
@@ -55,7 +55,7 @@ namespace Chummer
         private readonly string _strCurrentVersion = string.Empty;
 
         #region Control Events
-        public frmMain()
+        public frmChummerMain()
         {
             InitializeComponent();
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
@@ -92,8 +92,6 @@ namespace Chummer
 
             // Populate the MRU list.
             PopulateMRUToolstripMenu();
-
-            GlobalOptions.MainForm = this;
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -405,7 +403,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -426,7 +424,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -676,7 +674,7 @@ namespace Chummer
                     lstCharacters[i] = objLoopCharacter;
             });
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
+            Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
         private void frmMain_DragEnter(object sender, DragEventArgs e)
@@ -809,7 +807,7 @@ namespace Chummer
                         lstCharacters[i] = objLoopCharacter;
                 });
                 Cursor = Cursors.Default;
-                GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
+                Program.MainForm.OpenCharacterList(lstCharacters);
                 Application.DoEvents();
                 Timekeeper.Finish("load_sum");
                 Timekeeper.Log();
@@ -883,7 +881,7 @@ namespace Chummer
         /// <param name="blnIncludeInMRU">Whether or not the file should appear in the MRU list.</param>
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
+        public Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
         {
             Character objCharacter = null;
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
@@ -931,14 +929,14 @@ namespace Chummer
                     }
                 }
 
-                GlobalOptions.MainForm.OpenCharacters.Add(objCharacter);
+                OpenCharacters.Add(objCharacter);
                 Timekeeper.Start("load_file");
                 blnLoaded = objCharacter.Load();
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
                     objCharacter.Dispose();
-                    GlobalOptions.MainForm.OpenCharacters.Remove(objCharacter);
+                    OpenCharacters.Remove(objCharacter);
                     return null;
                 }
 

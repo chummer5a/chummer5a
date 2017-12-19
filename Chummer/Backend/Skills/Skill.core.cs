@@ -1,13 +1,11 @@
-using Chummer.Backend;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
-using System.Threading.Tasks;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     partial class Skill
     {

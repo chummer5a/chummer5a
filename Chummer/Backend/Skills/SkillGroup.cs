@@ -7,10 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Chummer.Annotations;
-using Chummer.Backend;
 using System.Globalization;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_groupName}")]
     public class SkillGroup : INotifyPropertyChanged

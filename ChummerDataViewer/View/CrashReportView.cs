@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
+using System.Globalization;
 
 namespace ChummerDataViewer
 {
@@ -25,7 +26,7 @@ namespace ChummerDataViewer
 			lblBuildType.Text = report.BuildType;
 			lblGuid.Text = report.Guid.ToString();
 			lblVersion.Text = report.Version.ToString(3);
-			lblDate.Text = report.Timestamp.ToString("d MMM yy");
+			lblDate.Text = report.Timestamp.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
 
 			if (report.StackTrace != null)
 			{

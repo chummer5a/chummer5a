@@ -40,16 +40,16 @@ namespace Chummer
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version _objCachedGitVersion = null;
+        private static Version s_VersionCachedGitVersion = null;
         public static Version CachedGitVersion
         {
             get
             {
-                return _objCachedGitVersion;
+                return s_VersionCachedGitVersion;
             }
             set
             {
-                _objCachedGitVersion = value;
+                s_VersionCachedGitVersion = value;
             }
         }
         public static void DoCacheGitVersion(object sender, EventArgs e)
@@ -150,9 +150,9 @@ namespace Chummer
             }
             // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
-            for (int i = 0; i < GlobalOptions.MainForm.OpenCharacterForms.Count; ++i)
+            for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
             {
-                CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
+                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
@@ -165,7 +165,7 @@ namespace Chummer
                             return;
                         // We saved a character as created, which closed the current form and added a new one
                         // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        else if (!GlobalOptions.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
                             i -= 1;
                     }
                     else if (objResult == DialogResult.Cancel)
@@ -175,16 +175,16 @@ namespace Chummer
                 }
             }
             Log.Info("Restart Chummer");
-            GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
+            Program.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            foreach (CharacterShared objOpenCharacterForm in GlobalOptions.MainForm.OpenCharacterForms)
+            foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
                 arguments += "\"" + objOpenCharacterForm.CharacterObject.FileName + "\" ";
             }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
-            foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)
+            foreach (Form objForm in Program.MainForm.MdiChildren)
             {
                 objForm.Close();
             }

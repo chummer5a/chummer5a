@@ -143,7 +143,6 @@ namespace Chummer
 
         public static Action MRUChanged;
 
-        private static frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
@@ -609,21 +608,6 @@ namespace Chummer
             set
             {
                 _blnOmaeAutoLogin = value;
-            }
-        }
-
-        /// <summary>
-        /// Main application form.
-        /// </summary>
-        public static frmMain MainForm
-        {
-            get
-            {
-                return _frmMainForm;
-            }
-            set
-            {
-                _frmMainForm = value;
             }
         }
 

@@ -40,7 +40,7 @@ namespace Chummer
         private const int RESULT_UNAUTHORIZED = 1;
         private const int RESULT_INVALID_FILE = 2;
 
-        private string _strUserName;
+        private readonly string _strUserName;
 
         #region Control Events
         public frmOmaeUploadLanguage(string strUserName)

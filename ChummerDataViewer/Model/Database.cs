@@ -8,7 +8,7 @@ namespace ChummerDataViewer.Model
 	internal class Database : IDisposable
 	{
 		private readonly object _syncRoot = new object();
-		private DatabasePrivateApi innerApi;
+		private readonly DatabasePrivateApi innerApi;
 
 		private readonly SQLiteConnection _dbConnection;
 		private readonly SQLiteCommand _setKey;
@@ -288,7 +288,7 @@ namespace ChummerDataViewer.Model
 
 		public class DatabasePrivateApi
 		{
-			private Database _db;
+			private readonly Database _db;
 
 			internal DatabasePrivateApi(Database db)
 			{

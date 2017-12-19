@@ -155,7 +155,6 @@
     <Compile Include="Backend\Equipment\Armor.cs" />
     <Compile Include="Backend\Equipment\CapacityStyle.cs" />
     <Compile Include="Backend\Equipment\Cyberware.cs" />
-    <Compile Include="Backend\Equipment\Equipment.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />
     <Compile Include="Backend\Equipment\Grade.cs" />
     <Compile Include="Backend\Equipment\Lifestyle.cs" />
@@ -749,11 +748,11 @@
     <Compile Include="Selection Forms\frmSelectText.Designer.cs">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="frmChummerMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="frmChummerMain.Designer.cs">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectWeaponAccessory.cs">
       <SubType>Form</SubType>
@@ -1122,8 +1121,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectText.resx">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="frmChummerMain.resx">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectWeaponAccessory.resx">

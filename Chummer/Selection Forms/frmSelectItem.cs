@@ -54,7 +54,7 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
-                    ListItem objAmmo = new ListItem(objGear.InternalId, objGear.DisplayNameShort);
+                    string strAmmoName = objGear.DisplayNameShort;
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)
                     {
@@ -66,12 +66,12 @@ namespace Chummer
                         // Remove the trailing comma.
                         strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                         // Append the plugin information to the name.
-                        objAmmo.Name += " [" + strPlugins + "]";
+                        strAmmoName += " [" + strPlugins + "]";
                     }
                     if (objGear.Rating > 0)
-                        objAmmo.Name += " (" + LanguageManager.GetString("String_Rating") + " " + objGear.Rating.ToString() + ")";
-                    objAmmo.Name += " x" + objGear.Quantity.ToString();
-                    lstItems.Add(objAmmo);
+                        strAmmoName += " (" + LanguageManager.GetString("String_Rating") + " " + objGear.Rating.ToString() + ")";
+                    strAmmoName += " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                    lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }
             }
             else if (_strMode == "Vehicles")

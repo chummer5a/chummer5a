@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class DiceRollerControl : UserControl
     {
-        private static readonly Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private static readonly Random s_ObjRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         #region Properties
@@ -156,7 +156,7 @@ namespace Chummer
             {
                 do
                 {
-                    _intModuloTemp = _objRandom.Next();
+                    _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 val = 1 + _intModuloTemp % 6;
@@ -169,7 +169,7 @@ namespace Chummer
                     {
                         do
                         {
-                            _intModuloTemp = _objRandom.Next();
+                            _intModuloTemp = s_ObjRandom.Next();
                         }
                         while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                         val = 1 + _intModuloTemp % 6;
@@ -199,7 +199,7 @@ namespace Chummer
             {
                 do
                 {
-                    _intModuloTemp = _objRandom.Next();
+                    _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;

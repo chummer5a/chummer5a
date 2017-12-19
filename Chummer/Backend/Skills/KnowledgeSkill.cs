@@ -5,13 +5,13 @@ using System.Xml;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     public class KnowledgeSkill : Skill
     {
-        private static readonly TranslatedField<string> _translator = new TranslatedField<string>();
-        private static readonly Dictionary<string, string> CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribtue
-        private static readonly Dictionary<string, string> NameCategoryMap = new Dictionary<string, string>();  //names to their category
+        private static readonly TranslatedField<string> s_Translator = new TranslatedField<string>();
+        private static readonly Dictionary<string, string> s_CategoriesSkillMap = new Dictionary<string, string>();  //Categories to their attribtue
+        private static readonly Dictionary<string, string> s_NameCategoryMap = new Dictionary<string, string>();  //names to their category
 
         public static IList<ListItem> DefaultKnowledgeSkillCatagories { get; }
         public static IList<ListItem> KnowledgeTypes { get; }  //Load the (possible translated) types of kno skills (Academic, Street...)
@@ -38,7 +38,7 @@ namespace Chummer.Skills
 
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    _translator.Add(strSkillName, display);
+                    s_Translator.Add(strSkillName, display);
                 }
 
                 DefaultKnowledgeSkillCatagories.Add(new ListItem(strSkillName, display));
@@ -46,8 +46,8 @@ namespace Chummer.Skills
                 string strCategory = objXmlSkill["category"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strCategory))
                 {
-                    NameCategoryMap[strSkillName] = strCategory;
-                    CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
+                    s_NameCategoryMap[strSkillName] = strCategory;
+                    s_CategoriesSkillMap[strCategory] = objXmlSkill["attribute"]?.InnerText;
                 }
             }
 
@@ -58,7 +58,7 @@ namespace Chummer.Skills
         {
             HashSet<string> set = new HashSet<string>(categories);
 
-            return DefaultKnowledgeSkillCatagories.Where(x => set.Contains(NameCategoryMap[x.Value])).ToList();
+            return DefaultKnowledgeSkillCatagories.Where(x => set.Contains(s_NameCategoryMap[x.Value])).ToList();
         } 
 
         public override bool AllowDelete
@@ -97,13 +97,13 @@ namespace Chummer.Skills
 
         public string WriteableName
         {
-            get { return _translator.Read(Name, ref _translated); }
+            get { return s_Translator.Read(Name, ref _translated); }
             set
             {
                 if (ForcedName)
                     return;
                 string strOriginal = Name;
-                _translator.Write(value, ref strOriginal, ref _translated);
+                s_Translator.Write(value, ref strOriginal, ref _translated);
                 Name = strOriginal;
                 LoadSuggestedSpecializations(Name);
 
@@ -115,7 +115,7 @@ namespace Chummer.Skills
 
         private void LoadSuggestedSpecializations(string name)
         {
-            if (NameCategoryMap.TryGetValue(name, out string strNameValue))
+            if (s_NameCategoryMap.TryGetValue(name, out string strNameValue))
             {
                 SuggestedSpecializations.Clear();
 
@@ -195,7 +195,7 @@ namespace Chummer.Skills
             get { return _type; }
             set
             {
-                if (!CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue)) return;
+                if (!s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue)) return;
                 AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
                 AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
 

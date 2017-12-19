@@ -221,7 +221,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
             {
-                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
+                if (!chkLimitList.Checked || Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
                 {
                     string strName = objXmlMetamagic["name"].InnerText;
                     lstArts.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
@@ -258,7 +258,7 @@ namespace Chummer
             else
                 objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + lstArt.SelectedValue + "\"]");
 
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
+            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, null, null, _objQualityDocument, string.Empty, _strLocalName))
                 return;
 
             DialogResult = DialogResult.OK;

@@ -32,28 +32,11 @@ namespace Chummer
 {
     public static class CommonFunctions
     {
-        #region Enums
-        public enum LogType
-        {
-            Message = 0,
-            Alert = 1,
-            Error = 2,
-            Content = 3,
-            Entering = 4,
-            Exiting = 5,
-        }
-        public enum MentorType
-        {
-            Mentor = 0,
-            Paragon = 1
-        }
-        #endregion
-
         #region XPath Evaluators
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument objXPathNavigatorDocument = new XmlDocument();
-        private static readonly XPathNavigator objXPathNavigator = objXPathNavigatorDocument.CreateNavigator();
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument();
+        private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -63,7 +46,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath)
         {
-            return objXPathNavigator.Evaluate(strXPath);
+            return s_ObjXPathNavigator.Evaluate(strXPath);
         }
 
         /// <summary>
@@ -74,7 +57,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(XPathExpression objXPath)
         {
-            return objXPathNavigator.Evaluate(objXPath);
+            return s_ObjXPathNavigator.Evaluate(objXPath);
         }
         #endregion
 
@@ -3036,14 +3019,6 @@ namespace Chummer
                 Arguments = strParams
             };
             Process.Start(objProgress);
-        }
-        #endregion
-
-        #region Logging Functions
-        [Obsolete("Use Log.Info()")]
-        public static void LogWrite(LogType logType, string strClass, string strLine)
-        {
-            Log.Info(new object[] {logType, strLine}, "LEGACY_LOG_CALL", strClass);
         }
         #endregion
 

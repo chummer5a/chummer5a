@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Annotations;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 // ReSharper disable once CheckNamespace
@@ -360,7 +360,7 @@ namespace Chummer
             }
             set
             {
-                _strPointsPerLevel = value.ToString();
+                _strPointsPerLevel = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -386,7 +386,7 @@ namespace Chummer
             }
             set
             {
-                _strAdeptWayDiscount = value.ToString();
+                _strAdeptWayDiscount = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 

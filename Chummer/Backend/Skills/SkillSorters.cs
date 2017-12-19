@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer.Backend.Skills
 {

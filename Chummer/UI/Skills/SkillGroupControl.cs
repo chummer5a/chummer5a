@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.ComponentModel;
 
 namespace Chummer.UI.Skills

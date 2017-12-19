@@ -27,7 +27,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
@@ -64,9 +64,29 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms. 
         /// </summary>
-        public class TransportWrapper
+        public struct TransportWrapper
         {
-            public Control Control;
+            public Control Control { get; }
+
+            public TransportWrapper(Control objControl)
+            {
+                Control = objControl;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Control.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return Control.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return Control.ToString();
+            }
         }
 
         public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();

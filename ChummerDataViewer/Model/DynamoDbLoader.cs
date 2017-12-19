@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
@@ -11,23 +12,21 @@ namespace ChummerDataViewer.Model
 {
 	class DynamoDbLoader : INotifyThreadStatus, IDisposable
 	{
-		const string DataTable = "ChummerDumpsList";
-		private AmazonDynamoDBClient _client;
-		private readonly Thread _workerThread;
-		private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
+		private const string DataTable = "ChummerDumpsList";
+		private readonly AmazonDynamoDBClient _client;
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+        private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
 
 		public DynamoDbLoader()
 		{
 			_client = new AmazonDynamoDBClient(PersistentState.AWSCredentials, RegionEndpoint.EUCentral1);
-			_workerThread = new Thread(WorkerEntryPrt)
-			{
-				IsBackground = true,
-				Name = "DynamoDB Worker"
-			};
-			_workerThread.Start();
-		}
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPrt;
+            _worker.RunWorkerAsync();
+        }
 
-		private void WorkerEntryPrt()
+		private void WorkerEntryPrt(object sender, DoWorkEventArgs e)
 		{
 			try
 			{

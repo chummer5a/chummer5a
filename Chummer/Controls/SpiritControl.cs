@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -142,12 +142,12 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }
@@ -818,9 +818,9 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile"));
             FileNameChanged(this);
             
-            Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
+            Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         /// <summary>

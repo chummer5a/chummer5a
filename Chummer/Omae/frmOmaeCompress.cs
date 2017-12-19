@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace Chummer
     public partial class frmOmaeCompress : Form
     {
         private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-        private List<string> _lstFiles = new List<string>();
+        private readonly List<string> _lstFiles = new List<string>();
 
         #region Control Events
         public frmOmaeCompress()

@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {

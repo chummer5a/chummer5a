@@ -26,7 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using Chummer.Backend;
@@ -70,7 +70,7 @@ namespace Chummer
         public frmCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
-            GlobalOptions.MainForm.OpenCharacterForms.Add(this);
+            Program.MainForm.OpenCharacterForms.Add(this);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.MAGEnabledChanged += objCharacter_MAGEnabledChanged;
@@ -976,8 +976,8 @@ namespace Chummer
                 Cursor = Cursors.WaitCursor;
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
-                GlobalOptions.MainForm.OpenCharacterForms.Remove(this);
-                GlobalOptions.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
+                Program.MainForm.OpenCharacterForms.Remove(this);
+                Program.MainForm.CharacterRoster.PopulateCharacterList(); // Regenerates character list
                 if (!_blnSkipToolStripRevert)
                     ToolStripManager.RevertMerge("toolStrip");
 
@@ -1065,9 +1065,9 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
+                if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(CharacterObject) && x != CharacterObject))
                 {
-                    GlobalOptions.MainForm.OpenCharacters.Remove(CharacterObject);
+                    Program.MainForm.OpenCharacters.Remove(CharacterObject);
                     CharacterObject.Dispose();
                 }
                 Dispose(true);
@@ -4780,7 +4780,7 @@ namespace Chummer
             if (frmPickVehicle.UsedVehicle)
             {
                 objVehicle.Avail = frmPickVehicle.UsedAvail;
-                objVehicle.Cost = frmPickVehicle.UsedCost.ToString();
+                objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalOptions.InvariantCultureInfo);
             }
             objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
             if (frmPickVehicle.FreeCost)
@@ -4912,7 +4912,7 @@ namespace Chummer
                         XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                         TreeNode objTreeNode = new TreeNode();
                         objRetrofit.Create(objXmlNode, objTreeNode, 0, objVehicle);
-                        objRetrofit.Cost = decCost.ToString();
+                        objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
                         objVehicle.Mods.Add(objRetrofit);
                         treVehicles.SelectedNode.Parent.Nodes.Add(objTreeNode);
 
@@ -6834,7 +6834,7 @@ namespace Chummer
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", objAccessory.DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        objAccessory.Cost = frmPickNumber.SelectedValue.ToString();
+                        objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
                 objWeapon.WeaponAccessories.Add(objAccessory);
@@ -10185,7 +10185,7 @@ namespace Chummer
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.MyXmlNode;
-                    if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject, null, null, objXmlDocument))
+                    if (!Backend.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject, null, null, objXmlDocument))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
                         break;
@@ -13944,8 +13944,8 @@ namespace Chummer
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             if (CharacterObject.PrintWindow != null)
                 CharacterObject.PrintWindow.RefreshCharacters();
-            if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
-                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
+            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
+                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
 
             cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
@@ -15239,9 +15239,9 @@ namespace Chummer
             _blnSkipToolStripRevert = true;
             if (CharacterObject.Save())
             {
-                Character objOpenCharacter = frmMain.LoadCharacter(CharacterObject.FileName);
+                Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Cursor = Cursors.Default;
-                GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }
             else
@@ -17456,7 +17456,7 @@ namespace Chummer
                 if (d - total < 0)
                 {
                     blnValid = false;
-                    strMessage += "\n\t" + LanguageManager.GetString("Message_OverPrototypeLimit").Replace("{0}", (total).ToString()).Replace("{1}", d.ToString());
+                    strMessage += "\n\t" + LanguageManager.GetString("Message_OverPrototypeLimit").Replace("{0}", (total).ToString(GlobalOptions.CultureInfo)).Replace("{1}", d.ToString(GlobalOptions.CultureInfo));
                 }
             }
 
@@ -17956,7 +17956,7 @@ namespace Chummer
                 }
                 if (CharacterObject.Nuyen > 5000)
                 {
-                    if (MessageBox.Show(LanguageManager.GetString("Message_ExtraNuyen").Replace("{0}", CharacterObject.Nuyen.ToString()).Replace("{1}", (5000).ToString()), LanguageManager.GetString("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                    if (MessageBox.Show(LanguageManager.GetString("Message_ExtraNuyen").Replace("{0}", CharacterObject.Nuyen.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo)).Replace("{1}", (5000).ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo)), LanguageManager.GetString("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                         return false;
                 }
                 if (CharacterObjectOptions.CreateBackupOnCareer && chkCharacterCreated.Checked)
@@ -19416,7 +19416,6 @@ namespace Chummer
                     SelectedMetavariant = CharacterObject.Metavariant,
                     SelectedMetatypeCategory = CharacterObject.MetatypeCategory,
                     SelectedTalent = CharacterObject.TalentPriority,
-                    PriorityBonusSkillList = CharacterObject.PriorityBonusSkillList
                 };
                 frmSelectMetatype.ShowDialog(this);
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
@@ -20791,70 +20790,63 @@ namespace Chummer
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
 
-            bool blnAddAgain = false;
-
-            do
+            int intGrade = 0;
+            foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
             {
-                int intGrade = 0;
-                foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
                 {
-                    if (objGrade.InternalId == treMetamagic.SelectedNode.Tag.ToString())
-                    {
-                        intGrade = objGrade.Grade;
-                        break;
-                    }
-                }
-
-                frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
-                frmPickMetamagic.ShowDialog(this);
-
-                // Make sure a value was selected.
-                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
-                {
-                    frmPickMetamagic.Dispose();
+                    intGrade = objGrade.Grade;
                     break;
                 }
-                blnAddAgain = frmPickMetamagic.AddAgain;
-
-                string strMetamagic = frmPickMetamagic.SelectedMetamagic;
-                frmPickMetamagic.Dispose();
-
-                XmlDocument objXmlDocument = null;
-                XmlNode objXmlMetamagic = null;
-
-                TreeNode objNode = new TreeNode();
-                Metamagic objNewMetamagic = new Metamagic(CharacterObject);
-                Improvement.ImprovementSource objSource = 0;
-
-                if (CharacterObject.MAGEnabled)
-                {
-                    objXmlDocument = XmlManager.Load("metamagic.xml");
-                    objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strMetamagic + "\"]");
-                    objSource = Improvement.ImprovementSource.Metamagic;
-                }
-                else
-                {
-                    objXmlDocument = XmlManager.Load("echoes.xml");
-                    objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strMetamagic + "\"]");
-                    objSource = Improvement.ImprovementSource.Echo;
-                }
-
-                objNewMetamagic.Create(objXmlMetamagic, objNode, objSource);
-                objNewMetamagic.Grade = intGrade;
-                objNode.ContextMenuStrip = cmsInitiationNotes;
-                if (objNewMetamagic.InternalId == Guid.Empty.ToString())
-                    continue;
-
-                CharacterObject.Metamagics.Add(objNewMetamagic);
-
-                treMetamagic.SelectedNode.Nodes.Add(objNode);
-                treMetamagic.SelectedNode.Expand();
-
-                ScheduleCharacterUpdate();
-
-                IsDirty = true;
             }
-            while (blnAddAgain);
+
+            frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled ? frmSelectMetamagic.Mode.Echo : frmSelectMetamagic.Mode.Metamagic);
+            frmPickMetamagic.ShowDialog(this);
+
+            // Make sure a value was selected.
+            if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+            {
+                frmPickMetamagic.Dispose();
+                return;
+            }
+
+            string strMetamagic = frmPickMetamagic.SelectedMetamagic;
+            frmPickMetamagic.Dispose();
+
+            XmlDocument objXmlDocument = null;
+            XmlNode objXmlMetamagic = null;
+
+            TreeNode objNode = new TreeNode();
+            Metamagic objNewMetamagic = new Metamagic(CharacterObject);
+            Improvement.ImprovementSource objSource = 0;
+
+            if (CharacterObject.MAGEnabled)
+            {
+                objXmlDocument = XmlManager.Load("metamagic.xml");
+                objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strMetamagic + "\"]");
+                objSource = Improvement.ImprovementSource.Metamagic;
+            }
+            else
+            {
+                objXmlDocument = XmlManager.Load("echoes.xml");
+                objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strMetamagic + "\"]");
+                objSource = Improvement.ImprovementSource.Echo;
+            }
+
+            objNewMetamagic.Create(objXmlMetamagic, objNode, objSource);
+            objNewMetamagic.Grade = intGrade;
+            objNode.ContextMenuStrip = cmsInitiationNotes;
+            if (objNewMetamagic.InternalId == Guid.Empty.ToString())
+                return;
+
+            CharacterObject.Metamagics.Add(objNewMetamagic);
+
+            treMetamagic.SelectedNode.Nodes.Add(objNode);
+            treMetamagic.SelectedNode.Expand();
+
+            ScheduleCharacterUpdate();
+
+            IsDirty = true;
         }
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
@@ -21253,7 +21245,7 @@ namespace Chummer
         private void panContactControl_MouseDown(object sender, MouseEventArgs e)
         {
             Control source = (Control)sender;
-            source.DoDragDrop(new TransportWrapper { Control = source }, DragDropEffects.Move);
+            source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
         private void panEnemies_Click(object sender, EventArgs e)

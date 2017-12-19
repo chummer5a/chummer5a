@@ -207,7 +207,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -2168,7 +2168,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 if (!string.IsNullOrEmpty(strSecondHalf))
                     strReturn += "/" + strSecondHalf;
-                if (decimal.TryParse(strReturn, out decimal decReturn))
+                if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
                 return strReturn;
@@ -2227,7 +2227,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 else
                 {
-                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                         return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }

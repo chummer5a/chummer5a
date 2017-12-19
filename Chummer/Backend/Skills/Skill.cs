@@ -10,12 +10,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Chummer.Annotations;
-using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 using Chummer.Backend.Attributes;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_name} {_base} {_karma}")]
     public partial class Skill : INotifyPropertyChanged

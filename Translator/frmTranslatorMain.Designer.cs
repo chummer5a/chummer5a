@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 namespace Translator
 {
-    public partial class frmMain : Form
+    public partial class frmTranslatorMain : Form
     {
 
         private IContainer components;

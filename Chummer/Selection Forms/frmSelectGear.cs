@@ -25,6 +25,7 @@ using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using System.Threading.Tasks;
 using System.Text;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -43,7 +44,7 @@ namespace Chummer
         private readonly XmlNode _objParentNode = null;
         private decimal _decMaximumCapacity = -1;
         private bool _blnAddAgain = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private bool _blnShowPositiveCapacityOnly = false;
         private bool _blnShowNegativeCapacityOnly = false;
         private bool _blnShowArmorCapacityOnly = false;
@@ -158,10 +159,10 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -854,7 +855,7 @@ namespace Chummer
                         catch (XPathException)
                         {
                             lblCost.Text = objCostNode.InnerText;
-                            if (decimal.TryParse(objCostNode.InnerText, out decimal decTemp))
+                            if (decimal.TryParse(objCostNode.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                             {
                                 decItemCost = decTemp;
                                 lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -1058,7 +1059,7 @@ namespace Chummer
                     {
                         nudRating.Minimum = 1;
                     }
-                    while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -1145,13 +1146,12 @@ namespace Chummer
                     decCostMultiplier *= 0.9m;
                 if (chkHacked.Checked)
                     decCostMultiplier *= 0.1m;
-                if (!blnDoUIUpdate || (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
+                if (!blnDoUIUpdate || (Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    Backend.Shared_Methods.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
+                    Backend.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
                 {
                     string strName = objXmlGear["name"].InnerText;
-                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
-                    ListItem objItem = new ListItem(strName + "^" + objXmlGear["category"].InnerText, objXmlGear["translate"]?.InnerText ?? strName);
+                    string strDisplayName = objXmlGear["translate"]?.InnerText ?? strName;
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
@@ -1160,10 +1160,11 @@ namespace Chummer
                         {
                             ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
                             if (!string.IsNullOrEmpty(objFoundItem.Name))
-                                objItem.Name += " [" + objFoundItem.Name + "]";
+                                strDisplayName += " [" + objFoundItem.Name + "]";
                         }
                     }
-                    lstGears.Add(objItem);
+                    // When searching, Category needs to be added to the Value so we can identify the English Category name.
+                    lstGears.Add(new ListItem(strName + "^" + objXmlGear["category"].InnerText, strDisplayName));
                     if (blnTerminateAfterFirst)
                         break;
                 }
@@ -1226,7 +1227,7 @@ namespace Chummer
 
                 _strSelectedGear = objNode["name"].InnerText;
                 _strSelectedCategory = objNode["category"].InnerText;
-                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _strSelectedCategory;
+                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _strSelectedCategory;
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;

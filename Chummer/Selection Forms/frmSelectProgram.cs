@@ -30,7 +30,6 @@ namespace Chummer
         private string _strSelectedProgram = string.Empty;
 
         private bool _blnAddAgain = false;
-        private string _strLimitCategory = string.Empty;
         private readonly Character _objCharacter;
 
         private readonly XmlDocument _objXmlDocument = null;

@@ -19,7 +19,7 @@ namespace CrashHandler
 
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 		private readonly CrashDumper _dumper;
-		private string _strDefaultUserStory = string.Empty;
+		private readonly string _strDefaultUserStory = string.Empty;
 
 		public frmCrashReporter(CrashDumper dumper)
 		{

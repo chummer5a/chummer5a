@@ -41,7 +41,7 @@ namespace Chummer
     {
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
+        private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
         private Gear _gear;
         private String _attribute;
         private double[] fixedDoubles;

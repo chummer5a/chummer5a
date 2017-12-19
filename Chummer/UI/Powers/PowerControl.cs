@@ -74,7 +74,7 @@ namespace Chummer
             string strPropertyName = propertyChangedEventArgs?.PropertyName;
             if (strPropertyName == nameof(PowerObject.FreeLevels) || strPropertyName == nameof(PowerObject.TotalRating))
             {
-                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
+                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString(GlobalOptions.CultureInfo);
                 tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
                 cmdDelete.Enabled = PowerObject.FreeLevels == 0;
             }

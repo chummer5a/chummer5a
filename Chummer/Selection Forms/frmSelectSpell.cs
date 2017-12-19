@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Shared_Methods;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -36,7 +36,7 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree = false;
         private bool _blnCanTouchOnlySpellBeFree = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
@@ -142,10 +142,10 @@ namespace Chummer
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -438,7 +438,7 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem(objXmlSpell["id"].InnerText, objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText);
+                string strDisplayName = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
                     if (!string.IsNullOrEmpty(strSpellCategory))
@@ -446,11 +446,11 @@ namespace Chummer
                         ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strSpellCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
-                            objItem.Name += " [" + objFoundItem.Name + "]";
+                            strDisplayName += " [" + objFoundItem.Name + "]";
                         }
                     }
                 }
-                lstSpellItems.Add(objItem);
+                lstSpellItems.Add(new ListItem(objXmlSpell["id"].InnerText, strDisplayName));
             }
 
             SortListItem objSort = new SortListItem();
@@ -473,7 +473,7 @@ namespace Chummer
                 return;
             _strSelectedSpell = strSelectedItem;
             XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + _strSelectedSpell + "\"]");
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlSpell?["category"]?.InnerText ?? string.Empty;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlSpell?["category"]?.InnerText ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
             DialogResult = DialogResult.OK;
         }

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -27,7 +27,7 @@ namespace Chummer
         private int intBuildMethod = 0;
         private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = false;
-        private List<string> _lstPrioritySkills = new List<string>();
+        private readonly List<string> _lstPrioritySkills = null;
 
         #region Character Events
         private void objCharacter_MAGEnabledChanged(object sender)
@@ -186,10 +186,6 @@ namespace Chummer
             {
                 return _lstPrioritySkills;
             }
-            set
-            {
-                _lstPrioritySkills = (List<string>) value;
-            }
         }
 
         public string SelectedMetavariant
@@ -224,6 +220,8 @@ namespace Chummer
             _objCharacter.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             _objCharacter.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             _objCharacter.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
+
+            _lstPrioritySkills = new List<string>(objCharacter?.PriorityBonusSkillList);
         }
 
         private void frmPriorityMetatype_FormClosed(object sender, FormClosedEventArgs e)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,21 +16,19 @@ namespace ChummerDataViewer.Model
 	{
 		public event StatusChangedEvent StatusChanged;
 		public string Name => "DownloaderWorker";
-		private Thread _thread;
-		private AutoResetEvent resetEvent = new AutoResetEvent(false);
-		private ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+		private readonly AutoResetEvent resetEvent = new AutoResetEvent(false);
+		private readonly ConcurrentBag<DownloadTask> _queue = new ConcurrentBag<DownloadTask>();
 
 		public DownloaderWorker()
 		{
-			_thread = new Thread(WorkerEntryPoint)
-			{
-				IsBackground = true,
-				Name = "DownloaderWorker"
-			};
-			_thread.Start();
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPoint;
+			_worker.RunWorkerAsync();
 		}
 
-		private void WorkerEntryPoint()
+		private void WorkerEntryPoint(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
@@ -49,7 +48,6 @@ namespace ChummerDataViewer.Model
 					{
 						OnStatusChanged(new StatusChangedEventArgs("Idle"));
 						resetEvent.WaitOne(15000);  //in case i fuck something up
-
 					}
 				}
 			}
@@ -129,7 +127,7 @@ namespace ChummerDataViewer.Model
 			StatusChanged?.Invoke(this, args);
 		}
 
-		public void Enqueue(Guid guid, string url, string key, string destinationPath)
+		public void Enqueue(Guid guid, Uri url, string key, string destinationPath)
 		{
 			_queue.Add(new DownloadTask(guid, url, key, destinationPath));
 			resetEvent.Set();
@@ -138,11 +136,11 @@ namespace ChummerDataViewer.Model
 		private struct DownloadTask
 		{
 			public Guid ReportGuid;
-			public string Url;
+			public Uri Url;
 			public string Key;
 			public string DestinationPath;
 
-			public DownloadTask(Guid reportGuid, string url, string key, string destinationPath)
+			public DownloadTask(Guid reportGuid, Uri url, string key, string destinationPath)
 			{
 				Url = url;
 				Key = key;

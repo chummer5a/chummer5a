@@ -30,7 +30,7 @@ namespace Chummer
     {
         private string _strSelectedKit = string.Empty;
         private bool _blnAddAgain = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
 
         // Not readonly because content can change while form is up
@@ -77,10 +77,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -913,7 +913,7 @@ namespace Chummer
         {
             get
             {
-                return _strSelectCategory;
+                return s_StrSelectCategory;
             }
         }
         #endregion
@@ -926,7 +926,7 @@ namespace Chummer
         {
             string[] objSelectedKit = lstKits.SelectedValue.ToString().Split('<');
             _strSelectedKit = objSelectedKit[0];
-            _strSelectCategory = objSelectedKit[1];
+            s_StrSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
         }
 

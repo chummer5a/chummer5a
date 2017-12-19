@@ -29,19 +29,19 @@ namespace Chummer
     {
         private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
         private readonly Character _objCharacter = new Character();
-        private List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
+        private readonly string _strUserName;
         private string _strCharacterName = string.Empty;
         private string _strMetatype = string.Empty;
         private string _strMetavariant = string.Empty;
         private string _strQualities = string.Empty;
-        private int _intCharacterID = 0;
-        private int _intCharacterType = 0;
+        private readonly int _intCharacterID = 0;
+        private readonly int _intCharacterType = 0;
         private int _intCreated = 0;
 
         #region Control Events

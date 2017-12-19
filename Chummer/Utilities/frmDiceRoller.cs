@@ -25,13 +25,13 @@ namespace Chummer
 {
     public partial class frmDiceRoller : Form
     {
-        private readonly frmMain _frmMain;
+        private readonly frmChummerMain _frmMain;
         private List<ListItem> _lstResults = new List<ListItem>(40);
         private Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         #region Control Events
-        public frmDiceRoller(frmMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)
+        public frmDiceRoller(frmChummerMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);

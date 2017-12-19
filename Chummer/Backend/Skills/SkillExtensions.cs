@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     public static class SkillExtensions
     {

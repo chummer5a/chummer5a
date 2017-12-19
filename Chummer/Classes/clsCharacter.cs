@@ -30,7 +30,7 @@ using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Reflection;
 using Chummer.Backend.Attributes;
 using System.Globalization;
@@ -103,7 +103,7 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
-        public static string[] LimbStrings = { "skull", "torso", "arm", "leg" };
+        public static readonly string[] LimbStrings = { "skull", "torso", "arm", "leg" };
 
         // AI Home Node
         private IHasMatrixAttributes _objHomeNode = null;
@@ -204,8 +204,8 @@ namespace Chummer
         private int _intContactMultiplier = 0;
 
         // Lists.
-        private List<string> _lstSources = new List<string>();
-        private List<string> _lstCustomDataDirectoryNames = new List<string>();
+        private readonly List<string> _lstSources = new List<string>();
+        private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
         private List<Improvement> _lstImprovements = new List<Improvement>();
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
         private List<Contact> _lstContacts = new List<Contact>();
@@ -223,7 +223,7 @@ namespace Chummer
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private List<Quality> _lstQualities = new List<Quality>();
-        private List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
+        private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
         private List<Gear> _lstGear = new List<Gear>();
         private List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -2865,8 +2865,8 @@ namespace Chummer
                 _frmPrintView.Activate();
             }
             _frmPrintView.RefreshCharacters();
-            if (GlobalOptions.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
-                GlobalOptions.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
+            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
+                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
         }
 
         /// <summary>
@@ -8403,7 +8403,7 @@ namespace Chummer
 #endregion
 
         //Can't be at improvementmanager due reasons
-        private Lazy<Stack<string>> _pushtext = new Lazy<Stack<string>>();
+        private readonly Lazy<Stack<string>> _pushtext = new Lazy<Stack<string>>();
         private bool _blnAmbidextrous;
 
         /// <summary>

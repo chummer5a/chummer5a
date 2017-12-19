@@ -34,8 +34,8 @@ namespace Chummer
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
-        private int _intDataID = 0;
+        private readonly string _strUserName;
+        private readonly int _intDataID = 0;
 
         #region Control Events
         public frmOmaeUploadData(string strUserName, int intDataID = 0, string strDescription = "", string strName = "")

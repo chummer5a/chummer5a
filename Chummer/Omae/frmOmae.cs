@@ -44,11 +44,11 @@ namespace Chummer
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
         private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-        private List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
         private bool _blnLoggedIn = false;
         private string _strUserName = string.Empty;
-        private readonly frmMain _frmMain;
+        private readonly frmChummerMain _frmMain;
         private OmaeMode _objMode = OmaeMode.Character;
 
         #region Helper Methods
@@ -254,7 +254,7 @@ namespace Chummer
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             Cursor = Cursors.WaitCursor;
-                            Character objOpenCharacter = frmMain.LoadCharacter(strFullPath);
+                            Character objOpenCharacter = Program.MainForm.LoadCharacter(strFullPath);
                             Cursor = Cursors.Default;
                             _frmMain.OpenCharacter(objOpenCharacter);
                         }
@@ -426,7 +426,7 @@ namespace Chummer
         #endregion
 
         #region Control Events
-        public frmOmae(frmMain frmMainForm)
+        public frmOmae(frmChummerMain frmMainForm)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);

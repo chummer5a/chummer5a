@@ -70,7 +70,7 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
+                if (Backend.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
                 {
                     lstAdvantage.Add(new ListItem(strAdvantageName, objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName));
                 }

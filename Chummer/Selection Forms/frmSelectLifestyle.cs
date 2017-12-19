@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 using System.Xml.XPath;
+using System.Globalization;
 
 namespace Chummer
 {
@@ -102,11 +103,11 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlOption["cost"]?.InnerText ?? string.Empty;
-                    if (!decimal.TryParse(strCost, out decimal decCost))
+                    if (!decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decCost))
                     {
                         try
                         {
-                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost));
+                            decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                         }
                         catch (XPathException)
                         {
@@ -316,11 +317,11 @@ namespace Chummer
                     XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode($"/chummer/qualities/quality[id = \"{objNode.Tag}\"]");
                     if (!string.IsNullOrEmpty(objXmlQuality["cost"]?.InnerText))
                     {
-                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, out decimal decLoopCost))
+                        if (!decimal.TryParse(objXmlQuality["cost"].InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decLoopCost))
                         {
                             try
                             {
-                                decLoopCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objXmlQuality["cost"].InnerText));
+                                decLoopCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(objXmlQuality["cost"].InnerText), GlobalOptions.InvariantCultureInfo);
                             }
                             catch (XPathException)
                             {

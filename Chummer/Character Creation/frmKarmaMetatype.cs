@@ -24,7 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Text;
 

@@ -28,7 +28,7 @@ namespace Chummer
     /// </summary>
     public struct ListItem
     {
-        public static ListItem Blank = new ListItem(string.Empty, string.Empty);
+        public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
         public ListItem(string strValue, string strName)
         {
@@ -39,12 +39,27 @@ namespace Chummer
         /// <summary>
         /// Value.
         /// </summary>
-        public string Value;
+        public string Value { get; }
 
         /// <summary>
         /// Name.
         /// </summary>
-        public string Name;
+        public string Name { get; }
+
+        public override bool Equals(object obj)
+        {
+            return Value.Equals(obj.ToString());
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 
     #region Sorting Classes
@@ -53,13 +68,13 @@ namespace Chummer
     /// </summary>
     public class SortByName : IComparer
     {
-        private static readonly char[] chrBrackets = { '[', ']' };
+        private static readonly char[] s_LstBrackets = { '[', ']' };
         public int Compare(object objX, object objY)
         {
             TreeNode tx = objX as TreeNode;
             TreeNode ty = objY as TreeNode;
 
-            return string.Compare(tx.Text.FastEscape(chrBrackets), ty.Text.FastEscape(chrBrackets));
+            return string.Compare(tx.Text.FastEscape(s_LstBrackets), ty.Text.FastEscape(s_LstBrackets));
         }
     }
 
@@ -110,7 +125,7 @@ namespace Chummer
             _objObjectCompare = new CaseInsensitiveComparer();
         }
 
-        private static readonly char[] chrCurrencyTrim = { '¥', ',', ' ' };
+        private static readonly char[] s_LstCurrencyTrim = { '¥', ',', ' ' };
         public int Compare(object x, object y)
         {
             int compareResult;
@@ -125,7 +140,7 @@ namespace Chummer
             if (_intColumnToSort == 0)
                 compareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
             else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape(chrCurrencyTrim)), Convert.ToInt32(strY.FastEscape(chrCurrencyTrim)));
+                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape(s_LstCurrencyTrim)), Convert.ToInt32(strY.FastEscape(s_LstCurrencyTrim)));
             else
                 compareResult = _objObjectCompare.Compare(strX, strY);
 

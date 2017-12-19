@@ -5,17 +5,16 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
-using Chummer.Backend;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     public class SkillsSection : INotifyPropertyChanged
     {
         private readonly Character _character;
         private readonly Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
-        private readonly static List<Skill> _skillBackupList = new List<Skill>();
+        private readonly static List<Skill> s_LstSkillBackups = new List<Skill>();
 
         public SkillsSection(Character character)
         {
@@ -103,7 +102,7 @@ namespace Chummer.Skills
                 {
                     Skill skill = Skills[i];
                     _skillValueBackup[skill.SkillId] = skill;
-                    _skillBackupList.Add(skill);
+                    s_LstSkillBackups.Add(skill);
                     Skills.RemoveAt(i);
                     SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name);
                     
@@ -612,14 +611,14 @@ namespace Chummer.Skills
                 string strSkillName = objXmlSkill["name"]?.InnerText ?? string.Empty;
                 lstSkillOrder.Add(new ListItem(strSkillName, objXmlSkill["translate"]?.InnerText ?? strSkillName));
                 //TODO: read from backup
-                if (_skillBackupList.Count > 0)
+                if (s_LstSkillBackups.Count > 0)
                 {
                     Skill objSkill =
-                        _skillBackupList.FirstOrDefault(s => s.SkillId == Guid.Parse(objXmlSkill["id"].InnerText));
+                        s_LstSkillBackups.FirstOrDefault(s => s.SkillId == Guid.Parse(objXmlSkill["id"].InnerText));
                     if (objSkill != null)
                     {
                         dicSkills.Add(objSkill.Name,objSkill);
-                        _skillBackupList.Remove(objSkill);
+                        s_LstSkillBackups.Remove(objSkill);
                     }
                 }
                 else

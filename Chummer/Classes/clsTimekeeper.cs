@@ -28,25 +28,25 @@ namespace Chummer
 {
     static class Timekeeper
     {
-        static Stopwatch time = new Stopwatch();
-        private static readonly ConcurrentDictionary<String, TimeSpan> Starts = new ConcurrentDictionary<string, TimeSpan>(); 
-        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> Statistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
+        private static readonly Stopwatch s_Time = new Stopwatch();
+        private static readonly ConcurrentDictionary<String, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>(); 
+        private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
         static Timekeeper ()
         {
-            time.Start();
+            s_Time.Start();
         }
 
         public static void Start(string taskname)
         {
-            Starts.TryAdd(taskname, time.Elapsed);
+            s_DictionaryStarts.TryAdd(taskname, s_Time.Elapsed);
         }
 
         public static TimeSpan Elapsed(string taskname)
         {
-            if (Starts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
+            if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
             {
-                return time.Elapsed - objStartTimeSpan;
+                return s_Time.Elapsed - objStartTimeSpan;
             }
             else
             {
@@ -56,22 +56,22 @@ namespace Chummer
 
         public static TimeSpan Finish(string taskname)
         {
-            if (Starts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
+            if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
             {
-                TimeSpan final = time.Elapsed - objStartTimeSpan;
+                TimeSpan final = s_Time.Elapsed - objStartTimeSpan;
 
                 string logentry = $"Task \"{taskname}\" finished in {final}";
                 Chummer.Log.Info(logentry);
 
                 Debug.WriteLine(logentry);
 
-                if (Statistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
+                if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
                 {
-                    Statistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
+                    s_DictionaryStatistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
                 }
                 else
                 {
-                    Statistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
+                    s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
                 }
 
                 return final;
@@ -87,7 +87,7 @@ namespace Chummer
         {
             StringBuilder sb = new StringBuilder("Time statistics\n");
 
-            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in Statistics)
+            foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
                 sb.AppendLine($"\t{keyValuePair.Key}({keyValuePair.Value.Item2}) = {keyValuePair.Value.Item1}");
             }

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Skills;
-using Chummer.Skills;
 using Chummer.UI.Shared;
 using Chummer.Backend.Attributes;
 

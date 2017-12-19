@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -793,7 +793,7 @@ namespace Chummer
         private int CalculatedBP()
         {
             int intReturn = _intBP;
-            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.Shared_Methods.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
+            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
             {
                 if (Type == QualityType.Positive)
                 {
@@ -1063,7 +1063,7 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
+            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
                 */
         }
@@ -1419,11 +1419,11 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5"))
                 {
-                    Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     if (objOpenCharacter != null)
                         _objLinkedCharacter = objOpenCharacter;
                     else
-                        _objLinkedCharacter = frmMain.LoadCharacter(strFile, string.Empty, false, false);
+                        _objLinkedCharacter = Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1432,9 +1432,9 @@ namespace Chummer
             {
                 if (_objOldLinkedCharacter != null)
                 {
-                    if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
-                        GlobalOptions.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
+                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.Dispose();
                     }
                 }
@@ -5089,7 +5089,7 @@ namespace Chummer
             SaveMugshots(objWriter);
 
             /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
+            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
                 */
 
@@ -5584,11 +5584,11 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5"))
                 {
-                    Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     if (objOpenCharacter != null)
                         _objLinkedCharacter = objOpenCharacter;
                     else
-                        _objLinkedCharacter = frmMain.LoadCharacter(strFile, string.Empty, false, false);
+                        _objLinkedCharacter = Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -5597,9 +5597,9 @@ namespace Chummer
             {
                 if (_objOldLinkedCharacter != null)
                 {
-                    if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
-                        GlobalOptions.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
+                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.Dispose();
                     }
                 }

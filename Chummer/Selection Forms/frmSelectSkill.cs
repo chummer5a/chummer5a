@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Linq;
 using Chummer.Classes;
 using System.Text;

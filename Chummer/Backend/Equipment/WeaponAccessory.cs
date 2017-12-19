@@ -114,7 +114,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -945,7 +945,7 @@ namespace Chummer.Backend.Equipment
                 string strCost = string.Empty;
                 string strCostExpression = _strCost;
 
-                strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString());
+                strCost = strCostExpression.Replace("Weapon Cost", _objParent.Cost.ToString(GlobalOptions.InvariantCultureInfo));
                 strCost = strCost.Replace("Rating", _intRating.ToString());
                 decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo) * _objParent.CostMultiplier;
 

@@ -81,7 +81,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
+                if (!chkLimitList.Checked || Backend.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode
