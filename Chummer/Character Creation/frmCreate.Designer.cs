@@ -55,10 +55,10 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
             System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
             System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
             System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Armor");
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Gear");
             System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -5602,10 +5602,10 @@ namespace Chummer
             this.tabStreetGearTabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabStreetGearTabs.Controls.Add(this.tabLifestyle);
+            this.tabStreetGearTabs.Controls.Add(this.tabGear);
             this.tabStreetGearTabs.Controls.Add(this.tabArmor);
             this.tabStreetGearTabs.Controls.Add(this.tabWeapons);
-            this.tabStreetGearTabs.Controls.Add(this.tabGear);
+            this.tabStreetGearTabs.Controls.Add(this.tabLifestyle);
             this.tabStreetGearTabs.Location = new System.Drawing.Point(3, 3);
             this.tabStreetGearTabs.Name = "tabStreetGearTabs";
             this.tabStreetGearTabs.SelectedIndex = 0;
@@ -5757,11 +5757,11 @@ namespace Chummer
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(6, 36);
             this.treLifestyles.Name = "treLifestyles";
-            treeNode22.Name = "nodLifestylesRoot";
-            treeNode22.Tag = "Node_SelectedLifestyles";
-            treeNode22.Text = "Selected Lifestyles";
+            treeNode25.Name = "nodLifestylesRoot";
+            treeNode25.Tag = "Node_SelectedLifestyles";
+            treeNode25.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode25});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
             this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -7037,6 +7037,7 @@ namespace Chummer
             // chkActiveCommlink
             // 
             this.chkActiveCommlink.AutoSize = true;
+            this.chkActiveCommlink.Enabled = false;
             this.chkActiveCommlink.Location = new System.Drawing.Point(310, 276);
             this.chkActiveCommlink.Name = "chkActiveCommlink";
             this.chkActiveCommlink.Size = new System.Drawing.Size(104, 17);
@@ -7044,7 +7045,6 @@ namespace Chummer
             this.chkActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkActiveCommlink.Text = "Active Commlink";
             this.chkActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkActiveCommlink.Enabled = false;
             this.chkActiveCommlink.CheckedChanged += new System.EventHandler(this.chkActiveCommlink_CheckedChanged);
             // 
             // chkCommlinks
@@ -7364,11 +7364,11 @@ namespace Chummer
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(6, 36);
             this.treGear.Name = "treGear";
-            treeNode25.Name = "nodGearRoot";
-            treeNode25.Tag = "Node_SelectedGear";
-            treeNode25.Text = "Selected Gear";
+            treeNode22.Name = "nodGearRoot";
+            treeNode22.Tag = "Node_SelectedGear";
+            treeNode22.Text = "Selected Gear";
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
+            treeNode22});
             this.treGear.ShowNodeToolTips = true;
             this.treGear.Size = new System.Drawing.Size(295, 540);
             this.treGear.TabIndex = 49;
