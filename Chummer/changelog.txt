@@ -48,6 +48,8 @@ Application Changes:
 - Multiple languages can be translated at the same time using Translator, and it now supports cancellation of Create and Rebuild operations.
 - Altered the format of entries in ranges.xml so that they conform to a similar format as other data types (their names are now stored in "name" nodes instead of "category" nodes). This also fixes issues with the Translator incorrectly loading and saving range entries.
 - The amend system for custom data now supports the use of custom XPath filters. This means that a single amending node can now modify multiple nodes based on whatever XPath filters are defined in its xpathfilter attribute. The "Cyberlimbs Cannot Add Headware" custom ruleset in the customdata folder has been updated to use this system, and it now also serves as an example for how to use custom XPath filters for amends.
+- Tabs can now be scrolled through with the mousewheel.
+- Ghetto workaround to allow exotic ranged weapons to buy their own ammunition again in career mode. Super fragile, may break at the drop of a hat.
 
 Data Changes:
 
@@ -59,7 +61,7 @@ Data Changes:
 - Fixed Berserker's Rage being eligible for a PP discount under The Spiritual Way. Part of #2180.
 - Fixed a crash caused by a typo in Thundercloud Morgan's weapon mounts. Fixes #2183.
 - Fixed being able to change the spirit category of Summoning, Binding, and Banishing foci.
-
+- The Spiritual Way now allows discounting the following powers that were previously missed: Heightened Concentration, Spirit Ram, Nimble Fingers, Metabolic Control, Magic Sense, Kinesics Mastery, Traceless Walk, Pain Resistance, Improved Physical Attribute.
 New Strings:
 
 - Menu_Main_Translator

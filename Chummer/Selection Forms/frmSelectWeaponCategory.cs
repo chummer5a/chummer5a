@@ -56,7 +56,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                if (WeaponType != null)
+                if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
                 {
                     if (objXmlCategory.Attributes["type"] == null)
                         continue;

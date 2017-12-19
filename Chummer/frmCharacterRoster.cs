@@ -240,6 +240,8 @@ namespace Chummer
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
+                var s = objXmlSourceNode["settings"]?.InnerText;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", s)) ? LanguageManager.GetString("MessageTitle_FileNotFound") : s;
                 string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
@@ -318,6 +320,7 @@ namespace Chummer
                 lblCharacterAlias.Text = objCache.CharacterAlias;
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
+                lblSettings.Text = objCache.SettingsFile;
                 tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">"));
                 picMugshot.Image = objCache.Mugshot;
             }
@@ -336,6 +339,7 @@ namespace Chummer
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
                 tipTooltip.SetToolTip(lblFilePath, string.Empty);
+                lblSettings.Text = String.Empty;;
                 picMugshot.Image = null;
             }
             picMugshot_SizeChanged(null, EventArgs.Empty);
@@ -368,6 +372,7 @@ namespace Chummer
             lblCharacterAliasLabel.Left = tabCharacterText.Left;
             lblEssenceLabel.Left = tabCharacterText.Left;
             lblFilePathLabel.Left = tabCharacterText.Left;
+            lblSettingsLabel.Left = tabCharacterText.Left;
             intWidth = lblPlayerNameLabel.Right;
             if (lblCareerKarmaLabel.Right > intWidth)
             {
@@ -401,6 +406,7 @@ namespace Chummer
             lblMetatype.Left = intWidth;
             lblCharacterName.Left = intWidth;
             lblFilePath.Left = intWidth;
+            lblSettings.Left = intWidth;
         }
 
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
@@ -576,6 +582,7 @@ namespace Chummer
             internal string Essence { get; set; }
             internal Image Mugshot { get; set; }
             internal bool Created { get; set; }
+            public string SettingsFile { get; set; }
         }
         #endregion
 

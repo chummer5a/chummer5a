@@ -3307,6 +3307,7 @@ namespace Chummer
             this.tabCharacterTabs.Size = new System.Drawing.Size(868, 637);
             this.tabCharacterTabs.TabIndex = 33;
             this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
+            this.tabCharacterTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabCommon
             // 
@@ -5612,6 +5613,7 @@ namespace Chummer
             this.tabStreetGearTabs.Size = new System.Drawing.Size(858, 605);
             this.tabStreetGearTabs.TabIndex = 87;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
+            this.tabStreetGearTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabLifestyle
             // 
@@ -8920,6 +8922,7 @@ namespace Chummer
             this.tabPeople.SelectedIndex = 0;
             this.tabPeople.Size = new System.Drawing.Size(854, 605);
             this.tabPeople.TabIndex = 94;
+            this.tabPeople.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabContacts
             // 
@@ -9158,6 +9161,7 @@ namespace Chummer
             this.tabInfo.SelectedIndex = 0;
             this.tabInfo.Size = new System.Drawing.Size(193, 637);
             this.tabInfo.TabIndex = 50;
+            this.tabInfo.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabBPSummary
             // 

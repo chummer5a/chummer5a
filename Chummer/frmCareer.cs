@@ -14337,9 +14337,27 @@ namespace Chummer
 
             nudQualityLevel_UpdateValue(objQuality);
         }
-#endregion
 
-#region Additional Cyberware Tab Control Events
+        private void tabControl_MouseWheel(object sender, MouseEventArgs e)
+        {
+            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
+            //allow wrapping back to first/last tab item based on scroll direction
+            var tabControl = (sender as TabControl);
+            if (e.Location.Y <= tabControl.ItemSize.Height)
+            {
+                var scrollAmount = e.Delta;
+                var selectedTabIndex = tabControl.SelectedIndex;
+
+                if ((selectedTabIndex == tabControl.TabCount - 1 && scrollAmount < 0) ||
+                    (selectedTabIndex == 0 && scrollAmount > 0))
+                    return;
+
+                tabControl.SelectedIndex = scrollAmount < 0 ? selectedTabIndex + 1 : selectedTabIndex - 1;
+            }
+        }
+        #endregion
+
+        #region Additional Cyberware Tab Control Events
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
@@ -20596,12 +20614,18 @@ namespace Chummer
             // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
             if (n != null)
             {
-                if (objStackWith == null && treGear.SelectedNode.Level > 0)
+                if (treGear.SelectedNode != null)
                 {
-                    if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objNewGear.PluginCapacity < 0)
+                    if (objStackWith == null && treGear.SelectedNode.Level > 0)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
+                        if (CharacterObjectOptions.EnforceCapacity &&
+                            objSelectedGear.CapacityRemaining - objNewGear.PluginCapacity < 0)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"),
+                                LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            return false;
+                        }
                     }
                 }
             }

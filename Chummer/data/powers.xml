@@ -224,6 +224,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -449,6 +450,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -512,6 +514,7 @@
           <oneof>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -920,6 +923,7 @@
           <oneof>
             <quality>The Artist's Way</quality>
             <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -993,6 +997,7 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1072,6 +1077,7 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1198,6 +1204,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1380,6 +1387,7 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
