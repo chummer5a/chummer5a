@@ -20711,12 +20711,18 @@ namespace Chummer
             // This is wrapped in a try statement since the character may not have a piece of Gear selected and has clicked the Buy Additional Ammo button for a Weapon.
             if (n != null)
             {
-                if (objStackWith == null && treGear.SelectedNode.Level > 0)
+                if (treGear.SelectedNode != null)
                 {
-                    if (CharacterObjectOptions.EnforceCapacity && objSelectedGear.CapacityRemaining - objNewGear.PluginCapacity < 0)
+                    if (objStackWith == null && treGear.SelectedNode.Level > 0)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
+                        if (CharacterObjectOptions.EnforceCapacity &&
+                            objSelectedGear.CapacityRemaining - objNewGear.PluginCapacity < 0)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_CapacityReached"),
+                                LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+                            return false;
+                        }
                     }
                 }
             }
