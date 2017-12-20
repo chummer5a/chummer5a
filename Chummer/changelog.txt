@@ -51,6 +51,7 @@ Application Changes:
 - Tabs can now be scrolled through with the mousewheel.
 - Ghetto workaround to allow exotic ranged weapons to buy their own ammunition again in career mode. Super fragile, may break at the drop of a hat.
 - Added "Active Commlink" and "Home Node" checkboxes to the Cyberware tab, and added an "Active Commlink" checkbox to the Vehicles tab.
+- Fixed a bug where player names would not show up in the character roster. Fixes #2195.
 
 Data Changes:
 

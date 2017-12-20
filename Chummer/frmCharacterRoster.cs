@@ -235,7 +235,7 @@ namespace Chummer
                 objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
                 objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;
                 objCache.Metatype = objXmlSourceNode["metatype"]?.InnerText;
-                objCache.PlayerName = objXmlSourceNode["player"]?.InnerText;
+                objCache.PlayerName = objXmlSourceNode["playername"]?.InnerText;
                 objCache.CharacterName = objXmlSourceNode["name"]?.InnerText;
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
