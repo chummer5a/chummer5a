@@ -151,8 +151,29 @@ namespace Chummer
             _characterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
-            _characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
-            _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
+            string strLimbCount = cboLimbCount.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strLimbCount))
+            {
+                _characterOptions.LimbCount = 6;
+                _characterOptions.ExcludeLimbSlot = string.Empty;
+            }
+            else
+            {
+                int intSeparatorIndex = strLimbCount.IndexOf('<');
+                if (intSeparatorIndex == -1)
+                {
+                    _characterOptions.LimbCount = Convert.ToInt32(strLimbCount);
+                    _characterOptions.ExcludeLimbSlot = string.Empty;
+                }
+                else
+                {
+                    _characterOptions.LimbCount = Convert.ToInt32(strLimbCount.Substring(0, intSeparatorIndex));
+                    if (intSeparatorIndex + 1 < strLimbCount.Length)
+                        _characterOptions.ExcludeLimbSlot = strLimbCount.Substring(intSeparatorIndex + 1);
+                    else
+                        _characterOptions.ExcludeLimbSlot = string.Empty;
+                }
+            }
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             _characterOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
 
@@ -711,12 +732,6 @@ namespace Chummer
             }
         }
 
-        private void SetDefaultValueForLimbCount()
-        {
-            string strDefaultValue = _characterOptions.LimbCount+"/"+_characterOptions.ExcludeLimbSlot;
-                cboLimbCount.SelectedValue = strDefaultValue;
-        }
-
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
@@ -814,7 +829,11 @@ namespace Chummer
             nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
             nudNuyenDecimalsMinimum.Value = intNuyenDecimalPlacesAlways;
 
-            SetDefaultValueForLimbCount();
+            string strLimbSlot = _characterOptions.LimbCount.ToString();
+            if (!string.IsNullOrEmpty(_characterOptions.ExcludeLimbSlot))
+                strLimbSlot += '<' + _characterOptions.ExcludeLimbSlot;
+            cboLimbCount.SelectedValue = strLimbSlot;
+
             PopulateKarmaFields();
         }
 
@@ -1072,7 +1091,7 @@ namespace Chummer
             {
                 string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strExclude))
-                    strExclude = '/' + strExclude;
+                    strExclude = '<' + strExclude;
                 lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, LanguageManager.GetString(objXmlNode["name"].InnerText)));
             }
 
