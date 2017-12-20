@@ -2541,7 +2541,6 @@ namespace Chummer
         private string _strName = string.Empty;
         private Guid _guiGearId;
         private int _intRating;
-        internal string DisplayName;
 
         #region Constructor, Create, Save, and Load Methods
         public Focus(Character objCharacter)
@@ -2583,6 +2582,8 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Focus in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString();
+
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Foci's name.
@@ -4990,7 +4991,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
-        private string _strUnique;
+        private string _strUnique = Guid.NewGuid().ToString();
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
@@ -5493,15 +5494,10 @@ namespace Chummer
         /// <summary>
         /// Unique ID for this contact
         /// </summary>
-        public String GUID
+        public string GUID
         {
             get
             {
-                if (_strUnique == null)
-                {
-                    _strUnique = Guid.NewGuid().ToString();
-                }
-
                 return _strUnique;
             }
         }

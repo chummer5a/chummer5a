@@ -1647,7 +1647,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(_strForceGrade) && _strForceGrade != _objGrade.Name)
                 {
-                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                    return ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter.Options);
                 }
                 return _objGrade;
             }
@@ -2239,7 +2239,7 @@ namespace Chummer.Backend.Equipment
             
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (_strForceGrade == "None")
+            if (ForceGrade == "None")
             {
                 decESSMultiplier = 1.0m;
                 decTotalESSMultiplier = 1.0m;

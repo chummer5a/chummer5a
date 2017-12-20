@@ -207,7 +207,7 @@ namespace ChummerDataViewer
 		}
 	}
 
-	internal class CrashReportTimeStampFilter : IComparer<CrashReport>
+	public sealed class CrashReportTimeStampFilter : IComparer<CrashReport>
 	{
 		public int Compare(CrashReport x, CrashReport y)
 		{

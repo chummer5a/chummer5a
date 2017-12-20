@@ -3360,7 +3360,7 @@ namespace Chummer.Backend.Equipment
             return _ammo[clip];
         }
 
-        private class Clip
+        private sealed class Clip
         {
             internal Guid Guid { get; set; }
             internal int Ammo { get; set; }

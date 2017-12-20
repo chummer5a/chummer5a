@@ -17,7 +17,7 @@ namespace Chummer.Backend.Attributes
 	    private Dictionary<string, BindingSource> _bindings = new Dictionary<string, BindingSource>(AttributeStrings.Length);
 		private readonly Character _character;
 		private CharacterAttrib.AttributeCategory _attributeCategory = CharacterAttrib.AttributeCategory.Standard;
-	    public Action<object> AttributeCategoryChanged;
+	    public Action<object> AttributeCategoryChanged { get; set; }
 
         #region Constructor, Save, Load, Print Methods
         public AttributeSection(Character character)

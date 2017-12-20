@@ -175,7 +175,7 @@ namespace Chummer
 
 	    public decimal Markup => nudMarkup.Value;
 
-	    public bool AllowDiscounts = false;
+	    public bool AllowDiscounts { get; set; } = false;
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             UpdateInfo();

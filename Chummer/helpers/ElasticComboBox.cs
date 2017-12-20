@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    internal class ElasticComboBox : ComboBox
+    public sealed class ElasticComboBox : ComboBox
     {
         private readonly ToolTip _tt;
         private readonly Graphics _objGraphics;

@@ -64,7 +64,7 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms. 
         /// </summary>
-        public struct TransportWrapper
+        protected struct TransportWrapper
         {
             public Control Control { get; }
 

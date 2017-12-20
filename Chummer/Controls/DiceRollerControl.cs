@@ -33,7 +33,16 @@ namespace Chummer
         private int _intModuloTemp = 0;
 
         #region Properties
-        public enum EdgeUses { None, PushTheLimit, SecondChance, SeizeTheInit, Blitz, CloseCall, DeadManTrigger }
+        private enum EdgeUses
+        {
+            None = 0,
+            PushTheLimit,
+            SecondChance,
+            SeizeTheInit,
+            Blitz,
+            CloseCall,
+            DeadManTrigger,
+        }
 
         /// <summary>
         /// The threshold that the character needs in order to pass
@@ -88,7 +97,7 @@ namespace Chummer
         /// <summary>
         /// What the character is using for it's edge case
         /// </summary>
-        public EdgeUses EdgeUse 
+        private EdgeUses EdgeUse 
         {
             get
             {

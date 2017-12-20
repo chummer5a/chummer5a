@@ -5,7 +5,7 @@ using Chummer.Properties;
 
 namespace Chummer.Datastructures
 {
-    class TranslatedField<T> where T : class
+    public sealed class TranslatedField<T> where T : class
     {
         private readonly Dictionary<T, T> _translate = new Dictionary<T, T>();
         private readonly Dictionary<T, T> _back = new Dictionary<T, T>();

@@ -37,7 +37,7 @@ namespace Chummer
     /// <c>Expressions are evaluated in the order of expression NOT as defined
     /// by mathematics. That means "1 + 0 * 10" evaluates to 10</c> <i>so far</i>
     /// </summary>
-    class ParameterAttribute
+    public sealed class ParameterAttribute
     {
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded

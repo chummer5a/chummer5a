@@ -247,31 +247,31 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
         Version _verSavedVersion = new Version();
         // Events.
-        public Action<object> HomeNodeChanged;
-        public Action<object> AdeptTabEnabledChanged;
-        public Action<object> AmbidextrousChanged;
-        public Action<object> CritterTabEnabledChanged;
-        public Action<object> MAGEnabledChanged;
-        public Action<object> BlackMarketEnabledChanged;
-        public Action<object> BornRichChanged;
-        public Action<object> CharacterNameChanged;
-        public Action<object> ErasedChanged;
-        public Action<object> ExConChanged;
-        public Action<object> FameChanged;
-        public Action<object> FriendsInHighPlacesChanged;
-        public Action<object> InitiationTabEnabledChanged;
-        public Action<object> LightningReflexesChanged;
-        public Action<object> MadeManChanged;
-        public Action<object> MagicianTabEnabledChanged;
-        public Action<object> OverclockerChanged;
-        public Action<object> PrototypeTranshumanChanged;
-        public Action<object> RESEnabledChanged;
-        public Action<object> DEPEnabledChanged;
-        public Action<object> RestrictedGearChanged;
-        public Action<object> TechnomancerTabEnabledChanged;
-        public Action<object> AdvancedProgramsTabEnabledChanged;
-        public Action<object> CyberwareTabDisabledChanged;
-        public Action<object> TrustFundChanged;
+        public Action<object> HomeNodeChanged { get; set; }
+        public Action<object> AdeptTabEnabledChanged { get; set; }
+        public Action<object> AmbidextrousChanged { get; set; }
+        public Action<object> CritterTabEnabledChanged { get; set; }
+        public Action<object> MAGEnabledChanged { get; set; }
+        public Action<object> BlackMarketEnabledChanged { get; set; }
+        public Action<object> BornRichChanged { get; set; }
+        public Action<object> CharacterNameChanged { get; set; }
+        public Action<object> ErasedChanged { get; set; }
+        public Action<object> ExConChanged { get; set; }
+        public Action<object> FameChanged { get; set; }
+        public Action<object> FriendsInHighPlacesChanged { get; set; }
+        public Action<object> InitiationTabEnabledChanged { get; set; }
+        public Action<object> LightningReflexesChanged { get; set; }
+        public Action<object> MadeManChanged { get; set; }
+        public Action<object> MagicianTabEnabledChanged { get; set; }
+        public Action<object> OverclockerChanged { get; set; }
+        public Action<object> PrototypeTranshumanChanged { get; set; }
+        public Action<object> RESEnabledChanged { get; set; }
+        public Action<object> DEPEnabledChanged { get; set; }
+        public Action<object> RestrictedGearChanged { get; set; }
+        public Action<object> TechnomancerTabEnabledChanged { get; set; }
+        public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
+        public Action<object> CyberwareTabDisabledChanged { get; set; }
+        public Action<object> TrustFundChanged { get; set; }
 
         private frmViewer _frmPrintView;
 

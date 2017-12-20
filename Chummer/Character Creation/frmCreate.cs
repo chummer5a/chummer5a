@@ -13563,7 +13563,7 @@ namespace Chummer
             lblSkillGroupsBP.Text = s;
         }
 
-        public void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
+        private void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
         {
             if (IsDirty || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -13742,7 +13742,7 @@ namespace Chummer
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
+        private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
             // TODO: Databind as much of this as possible
             if (_blnLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
@@ -15971,7 +15971,7 @@ namespace Chummer
                 return;
             }
 
-            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObject.Options.NuyenFormat) + '¥';
+            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo);
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + objLifestyle.Multiplier.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             string strBook = CharacterObjectOptions.LanguageBookShort(objLifestyle.Source);
@@ -21551,7 +21551,7 @@ namespace Chummer
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
-        public void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
+        private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
             string strMessage = LanguageManager.GetString("Message_KarmaValue") + "\n";
 

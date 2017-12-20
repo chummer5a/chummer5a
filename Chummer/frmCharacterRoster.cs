@@ -564,7 +564,7 @@ namespace Chummer
         /// <summary>
         /// Caches a subset of a full character's properties for loading purposes. 
         /// </summary>
-        private class CharacterCache
+        private sealed class CharacterCache
         {
             internal string FilePath { get; set; }
             internal string FileName { get; set; }

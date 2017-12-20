@@ -832,10 +832,9 @@ namespace Chummer.Backend.Skills
                 {
                     middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup")}\n";
                 }
-                if (!String.IsNullOrEmpty(_strNotes))
+                if (!string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.WordWrap(_strNotes, 100);
-                    strReturn = LanguageManager.GetString("Label_Notes") + " " + _strNotes + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes") + " " + CommonFunctions.WordWrap(_strNotes, 100) + "\n\n";
                 }
 
                 strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page")} {Page}";

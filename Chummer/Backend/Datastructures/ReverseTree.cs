@@ -7,7 +7,7 @@ namespace Chummer.Datastructures
     /// This class is for multiple objects that depend on one or more child objects
     /// When changing the child, this will allow easily fetching every impacted parrent
     /// </summary>
-    internal class ReverseTree<T> : IEnumerable<T>
+    public sealed class ReverseTree<T> : IEnumerable<T>
     {
         private readonly T _self;
         private ReverseTree<T> _parent;

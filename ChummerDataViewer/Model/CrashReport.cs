@@ -7,7 +7,7 @@ namespace ChummerDataViewer.Model
 {
 	public class CrashReport
 	{
-		public EventHandler ProgressChanged;
+		public EventHandler ProgressChanged { get; set; }
 
 		private readonly Database.DatabasePrivateApi _database;
 		private readonly string _key;

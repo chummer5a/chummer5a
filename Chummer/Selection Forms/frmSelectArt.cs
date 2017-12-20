@@ -49,9 +49,9 @@ namespace Chummer
         public enum Mode
         {
             Art = 0,
-            Enhancement = 1,
-            Enchantment = 2,
-            Ritual = 3,
+            Enhancement,
+            Enchantment,
+            Ritual,
         }
 
         public frmSelectArt(Character objCharacter, Mode objWindowMode)

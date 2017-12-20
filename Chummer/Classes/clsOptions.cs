@@ -141,7 +141,7 @@ namespace Chummer
         static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
         static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
 
-        public static Action MRUChanged;
+        public static Action MRUChanged { get; set; }
 
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";

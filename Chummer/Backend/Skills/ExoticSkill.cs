@@ -8,7 +8,7 @@ using Chummer.Datastructures;
 
 namespace Chummer.Backend.Skills
 { 
-    class ExoticSkill : Skill
+    public sealed class ExoticSkill : Skill
     {
         private static readonly TranslatedField<string> s_SpecificTranslator = new TranslatedField<string>();
         private string _specific;

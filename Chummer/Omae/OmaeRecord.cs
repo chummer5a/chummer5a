@@ -25,9 +25,9 @@ namespace Chummer
     public partial class OmaeRecord : UserControl
     {
         // Events.
-        public Action<object> OmaeDownloadClicked;
-        public Action<object> OmaePostUpdateClicked;
-        public Action<object> OmaeDeleteClicked;
+        public Action<object> OmaeDownloadClicked { get; set; }
+        public Action<object> OmaePostUpdateClicked { get; set; }
+        public Action<object> OmaeDeleteClicked { get; set; }
 
         private readonly int _intCharacterID = 0;
         private readonly string _strCharacterName = string.Empty;

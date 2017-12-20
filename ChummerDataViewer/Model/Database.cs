@@ -5,7 +5,7 @@ using System.IO;
 
 namespace ChummerDataViewer.Model
 {
-	internal class Database : IDisposable
+    public class Database : IDisposable
 	{
 		private readonly object _syncRoot = new object();
 		private readonly DatabasePrivateApi innerApi;
@@ -286,20 +286,20 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		public class DatabasePrivateApi
+		public sealed class DatabasePrivateApi
 		{
-			private readonly Database _db;
+            private readonly Database _db;
 
-			internal DatabasePrivateApi(Database db)
+            public DatabasePrivateApi(Database db)
 			{
 				_db = db;
 			}
 
-			internal void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
+            public void SetZipFileLocation(Guid guid, string filePath) => _db.SetZipFileLocation(guid, filePath);
 
-			public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
+            public void SetStackTrace(Guid guid, string exception) => _db.SetStackTrace(guid, exception);
 
-			public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
+            public void SetUserStory(Guid guid, string userstory) => _db.SetUserStory(guid, userstory);
 		}
 
 		

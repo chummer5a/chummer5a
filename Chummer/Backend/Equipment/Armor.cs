@@ -664,15 +664,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strO == "0")
-                {
-                    _strO = string.Empty;
-                }
                 return _strO;
             }
             set
             {
-                _strO = value;
+                if (value == "0")
+                    _strO = string.Empty;
+                else
+                    _strO = value;
             }
         }
 

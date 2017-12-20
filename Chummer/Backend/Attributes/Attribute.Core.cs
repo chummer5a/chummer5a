@@ -144,8 +144,8 @@ namespace Chummer.Backend.Attributes
         public enum AttributeCategory
         {
             Standard = 0,
-            Special = 1,
-            Shapeshifter = 2
+            Special,
+            Shapeshifter
         }
 
         #region Properties

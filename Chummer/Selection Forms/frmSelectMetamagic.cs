@@ -46,7 +46,7 @@ namespace Chummer
         public enum Mode
         {
             Metamagic = 0,
-            Echo = 1,
+            Echo,
         }
 
         #region Control Events

@@ -34,12 +34,12 @@ namespace Chummer
         private readonly Spirit _objSpirit;
 
         // Events.
-        public Action<object> ServicesOwedChanged;
-        public Action<object> ForceChanged;
-        public Action<object> BoundChanged;
-        public Action<object> FetteredChanged;
-        public Action<object> DeleteSpirit;
-        public Action<object> FileNameChanged;
+        public Action<object> ServicesOwedChanged { get; set; }
+        public Action<object> ForceChanged { get; set; }
+        public Action<object> BoundChanged { get; set; }
+        public Action<object> FetteredChanged { get; set; }
+        public Action<object> DeleteSpirit { get; set; }
+        public Action<object> FileNameChanged { get; set; }
 
         #region Control Events
         public SpiritControl(Spirit objSpirit)

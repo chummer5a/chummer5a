@@ -671,7 +671,7 @@ namespace Chummer.Backend.Skills
 
         public enum FilterOptions
         {
-            All,
+            All = 0,
             NonSpecial,
             Magician,
             Sorcery,
@@ -682,7 +682,7 @@ namespace Chummer.Backend.Skills
             Explorer,
             Technomancer,
             Spellcasting,
-            Name
+            Name,
         }
 
         internal void ForceProperyChangedNotificationAll(string name)

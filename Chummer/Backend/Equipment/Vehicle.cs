@@ -51,7 +51,6 @@ namespace Chummer.Backend.Equipment
         private string _strAltCategory = string.Empty;
         private string _strAltPage = string.Empty;
         private List<string> _lstLocations = new List<string>();
-        private bool _blnDealerConnectionDiscount = false;
         private bool _blnBlackMarketDiscount = false;
         private string _strParentID = string.Empty;
 
@@ -484,7 +483,6 @@ namespace Chummer.Backend.Equipment
                 foreach (WeaponMount wm in WeaponMounts)
                     CommonFunctions.CreateWeaponMountTreeNode(wm, mountsNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleGear, cmsVehicleWeaponMount);
             }
-            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -765,9 +763,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount);
-
-
+            
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
@@ -804,7 +800,6 @@ namespace Chummer.Backend.Equipment
                     _lstLocations.Add(objXmlLocation.InnerText);
                 }
             }
-            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -1485,7 +1480,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnDealerConnectionDiscount = UpdateDealerConnectionDiscount();
+                return UpdateDealerConnectionDiscount();
             }
         }
 

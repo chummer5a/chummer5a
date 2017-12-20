@@ -59,10 +59,10 @@ namespace Chummer
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private readonly List<ListItem> _lstGrade = new List<ListItem>();
 
-        public enum Mode
+        private enum Mode
         {
             Cyberware = 0,
-            Bioware = 1,
+            Bioware,
         }
 
         #region Control Events
@@ -519,7 +519,7 @@ namespace Chummer
         /// <summary>
         /// Set the window's Mode to Cyberware or Bioware.
         /// </summary>
-        public Mode WindowMode
+        private Mode WindowMode
         {
             get
             {
@@ -649,7 +649,7 @@ namespace Chummer
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
         /// </summary>
-        public Cyberware CyberwareParent;
+        public Cyberware CyberwareParent { get; set; }
         #endregion
 
         #region Methods

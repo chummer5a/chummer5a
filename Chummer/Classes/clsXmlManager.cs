@@ -33,7 +33,7 @@ namespace Chummer
         /// <summary>
         /// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.
         /// </summary>
-        private class XmlReference
+        private sealed class XmlReference
         {
             /// <summary>
             /// Date/Time stamp on the XML file.

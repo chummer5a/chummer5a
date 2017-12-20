@@ -5378,7 +5378,7 @@ namespace Chummer.Classes
     }
 
     [Serializable]
-    internal class AbortedException : Exception
+    public sealed class AbortedException : Exception
     {
     }
 }

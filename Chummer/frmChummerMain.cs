@@ -40,6 +40,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Net;
 
 namespace Chummer
 {
@@ -75,7 +76,7 @@ namespace Chummer
 #if !DEBUG
             _workerVersionUpdateChecker.WorkerReportsProgress = false;
             _workerVersionUpdateChecker.WorkerSupportsCancellation = false;
-            _workerVersionUpdateChecker.DoWork += Utils.DoCacheGitVersion;
+            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
             _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
             Application.Idle += IdleUpdateCheck;
             _workerVersionUpdateChecker.RunWorkerAsync();
@@ -203,7 +204,82 @@ namespace Chummer
             }
         }
 
-        public void CheckForUpdate(object sender, EventArgs e)
+        private static void DoCacheGitVersion(object sender, EventArgs e)
+        {
+            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+            if (GlobalOptions.PreferNightlyBuilds)
+            {
+                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
+            }
+            HttpWebRequest request = null;
+            try
+            {
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            if (request == null)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+            request.Accept = "application/json";
+            // Get the response.
+
+            HttpWebResponse response = null;
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException)
+            {
+            }
+
+            // Get the stream containing content returned by the server.
+            Stream dataStream = response?.GetResponseStream();
+            if (dataStream == null)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            Version verLatestVersion = null;
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+
+            string responseFromServer = reader.ReadToEnd();
+            string[] stringSeparators = new string[] { "," };
+            string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
+            if (!string.IsNullOrEmpty(line))
+            {
+                string strVersion = line.Substring(line.IndexOf(':') + 1);
+                if (strVersion.Contains('}'))
+                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
+                strVersion = strVersion.FastEscape('\"');
+                // Adds zeroes if minor and/or build version are missing
+                while (strVersion.Count(x => x == '.') < 2)
+                {
+                    strVersion = strVersion + ".0";
+                }
+                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
+            }
+            // Cleanup the streams and the response.
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+
+            Utils.CachedGitVersion = verLatestVersion;
+            return;
+        }
+
+        private void CheckForUpdate(object sender, EventArgs e)
         {
             if (Utils.GitUpdateAvailable() > 0)
             {
@@ -221,7 +297,7 @@ namespace Chummer
         }
 
         private readonly Stopwatch IdleUpdateCheck_StopWatch = Stopwatch.StartNew();
-        public void IdleUpdateCheck(object sender, EventArgs e)
+        private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
             if (IdleUpdateCheck_StopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)

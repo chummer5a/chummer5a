@@ -36,14 +36,14 @@ namespace Chummer
         private readonly int _intFullHeight = 156;
 
         // Events.
-        public Action<object> ConnectionRatingChanged;
-        public Action<object> GroupStatusChanged;
-        public Action<object> LoyaltyRatingChanged;
-        public Action<object> FreeRatingChanged;
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
-        public Action<object> BlackmailChanged;
-        public Action<object> FamilyChanged;
+        public Action<object> ConnectionRatingChanged { get; set; }
+        public Action<object> GroupStatusChanged { get; set; }
+        public Action<object> LoyaltyRatingChanged { get; set; }
+        public Action<object> FreeRatingChanged { get; set; }
+        public Action<object> DeleteContact { get; set; }
+        public Action<object> FileNameChanged { get; set; }
+        public Action<object> BlackmailChanged { get; set; }
+        public Action<object> FamilyChanged { get; set; }
 
         #region Control Events
         public ContactControl(Contact objContact)

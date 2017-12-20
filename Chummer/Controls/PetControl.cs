@@ -30,8 +30,8 @@ namespace Chummer
         private readonly Contact _objContact;
 
         // Events.
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
+        public Action<object> DeleteContact { get; set; }
+        public Action<object> FileNameChanged { get; set; }
 
         #region Control Events
         public PetControl(Contact objContact)

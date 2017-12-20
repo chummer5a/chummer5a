@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Chummer.Backend.Powers
 {
-    class PowerSorter : IComparer<Power>
+    public sealed class PowerSorter : IComparer<Power>
     {
         private readonly Comparison<Power> _comparison;
         

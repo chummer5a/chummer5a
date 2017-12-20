@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Chummer.Debugging
 {
-    class ExceptionHeatMap
+    public sealed class ExceptionHeatMap
     {
         Dictionary<string, int> _map = new Dictionary<string, int>();
 

@@ -24,7 +24,7 @@ namespace CrashHandler
 		public Dictionary<string, string> PretendFiles => _pretendFiles;
 		public Dictionary<string, string> Attributes => _attributes;
 		public CrashDumperProgress Progress => _progress;
-		internal Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
+		public Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged { get; set; }
 		public string WorkingDirectory { get; }
 		public Process Process { get; private set; }
 		public bool DoCleanUp { get; set; } = true;
@@ -504,7 +504,7 @@ namespace CrashHandler
     }
 
     [Serializable]
-    internal class RemoteServiceException : Exception
+    public sealed class RemoteServiceException : Exception
     {
         public RemoteServiceException(string toString) : base(toString)
         {

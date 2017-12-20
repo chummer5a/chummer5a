@@ -59,8 +59,8 @@ namespace Chummer
         private readonly ListViewColumnSorter _lvwKarmaColumnSorter;
         private readonly ListViewColumnSorter _lvwNuyenColumnSorter;
 
-        public Action<object> DiceRollerOpened;
-        public Action<Chummer.Character, int> DiceRollerOpenedInt;
+        public Action<object> DiceRollerOpened { get; set; }
+        public Action<Character, int> DiceRollerOpenedInt { get; set; }
 
         #region Form Events
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -18312,7 +18312,7 @@ namespace Chummer
             }
         }
 
-        public void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
+        private void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
         {
             if (IsDirty || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -18493,7 +18493,7 @@ namespace Chummer
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        public void UpdateCharacterInfo(object sender = null, EventArgs e = null)
+        private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
         {
             if (_blnLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;

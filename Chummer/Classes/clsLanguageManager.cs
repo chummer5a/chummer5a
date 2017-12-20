@@ -34,7 +34,7 @@ namespace Chummer
         /// <summary>
         /// An individual language string.
         /// </summary>
-        public struct LanguageString
+        private struct LanguageString
         {
             /// <summary>
             /// String's unique Key.
