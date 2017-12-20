@@ -11184,7 +11184,7 @@ namespace Chummer
                 }
                 if (objCommlink != null)
                 {
-                    objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
+                    objCommlink.SetHomeNode(CharacterObject, chkCyberwareHomeNode.Checked);
                     RefreshSelectedCyberware();
                     if (chkVehicleHomeNode.Checked)
                         RefreshSelectedVehicle();
@@ -11255,7 +11255,7 @@ namespace Chummer
                 }
                 if (objSelectedCommlink != null)
                 {
-                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
                     if (chkVehicleActiveCommlink.Checked)
                         RefreshSelectedVehicle();
                     if (chkGearActiveCommlink.Checked)
@@ -11288,7 +11288,7 @@ namespace Chummer
                 }
                 if (objSelectedCommlink != null)
                 {
-                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+                    objSelectedCommlink.SetActiveCommlink(CharacterObject, chkVehicleActiveCommlink.Checked);
                     if (chkGearActiveCommlink.Checked)
                         RefreshSelectedGear();
                     if (chkCyberwareActiveCommlink.Checked)
