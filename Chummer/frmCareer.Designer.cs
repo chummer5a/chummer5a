@@ -13914,7 +13914,7 @@ namespace Chummer
 
         #endregion
 
-        internal System.Windows.Forms.StatusStrip StatusStrip;
+        private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.TabControl tabInfo;
@@ -14203,7 +14203,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsAddTechniqueNotes;
         private System.Windows.Forms.TabPage tabDefences;
         private System.Windows.Forms.Label lblCounterspellingDiceLabel;
-        internal System.Windows.Forms.NumericUpDown nudCounterspellingDice;
+        private System.Windows.Forms.NumericUpDown nudCounterspellingDice;
         private System.Windows.Forms.Label lbllSpellDefenceManipPhysical;
         private System.Windows.Forms.Label lbllSpellDefenceManipPhysicalLabel;
         private System.Windows.Forms.Label lblSpellDefenceManipMental;

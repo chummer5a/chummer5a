@@ -34,11 +34,11 @@ namespace Chummer.Classes
             Rollback = rollback;
         }
 
-        public string SourceName;
-        public string ForcedValue;
-        public string LimitSelection;
-        public string SelectedValue;
-        public string SelectedTarget = string.Empty;
+        public string SourceName { get; set; } = string.Empty;
+        public string ForcedValue { get; set; } = string.Empty;
+        public string LimitSelection { get; set; } = string.Empty;
+        public string SelectedValue { get; set; } = string.Empty;
+        public string SelectedTarget { get; set; } = string.Empty;
 
         private readonly Improvement.ImprovementSource _objImprovementSource;
         private readonly string _strUnique;

@@ -59,8 +59,7 @@ namespace Chummer
                 string strName = objXmlSkill["name"].InnerText;
                 lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstSkills.Sort(objSort.Compare);
+            lstSkills.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";

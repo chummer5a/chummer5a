@@ -9,7 +9,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Lifestyle.
     /// </summary>
-    public class Lifestyle : INamedItemWithGuidAndNode
+    public class Lifestyle : IItemWithGuid, INamedItem, IItemWithNode
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;

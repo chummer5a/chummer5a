@@ -276,8 +276,7 @@ namespace Chummer
                     {
                         lstItems.Add(new ListItem(objXmlPriority["value"].InnerText, objXmlPriority["translate"]?.InnerText ?? objXmlPriority["name"].InnerText));
                     }
-                    SortListItem objPrioritySort = new SortListItem();
-                    lstItems.Sort(objPrioritySort.Compare);
+                    lstItems.Sort(CompareListItems.CompareNames);
                     switch (objXmlPriorityCategory.InnerText)
                     {
                         case "Heritage":
@@ -409,9 +408,8 @@ namespace Chummer
                 new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]")?["translate"]?.InnerText ?? "Possession"),
                 new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]")?["translate"]?.InnerText ?? "Inhabitation")
             };
-
-            SortListItem objSortPossession = new SortListItem();
-            lstMethods.Sort(objSortPossession.Compare);
+            
+            lstMethods.Sort(CompareListItems.CompareNames);
             cboPossessionMethod.BeginUpdate();
             cboPossessionMethod.ValueMember = "Value";
             cboPossessionMethod.DisplayMember = "Name";
@@ -1649,9 +1647,8 @@ namespace Chummer
                 }
                 lstTalent.Add(new ListItem(objXmlPriorityTalent["value"].InnerText, objXmlPriorityTalent["translate"]?.InnerText ?? objXmlPriorityTalent["name"].InnerText));
             }
-
-            SortListItem objSort = new SortListItem();
-            lstTalent.Sort(objSort.Compare);
+            
+            lstTalent.Sort(CompareListItems.CompareNames);
             int intOldSelectedIndex = cboTalents.SelectedIndex;
             int intOldDataSourceSize = cboTalents.Items.Count;
             cboTalents.BeginUpdate();
@@ -1691,8 +1688,7 @@ namespace Chummer
                     lstMetatype.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMetatype.Sort(objSort.Compare);
+            lstMetatype.Sort(CompareListItems.CompareNames);
             int intOldSelectedIndex = lstMetatypes.SelectedIndex;
             int intOldDataSourceSize = lstMetatypes.Items.Count;
             lstMetatypes.BeginUpdate();
@@ -1778,9 +1774,8 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
-
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            
+            _lstCategory.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";

@@ -63,49 +63,62 @@ namespace Chummer
     }
 
     #region Sorting Classes
-    /// <summary>
-    /// Sort TreeNodes in alphabetical order, ignoring [].
-    /// </summary>
-    public class SortByName : IComparer
+    public static class CompareTreeNodes
     {
         private static readonly char[] s_LstBrackets = { '[', ']' };
-        public int Compare(object objX, object objY)
-        {
-            TreeNode tx = objX as TreeNode;
-            TreeNode ty = objY as TreeNode;
 
+        /// <summary>
+        /// Sort TreeNodes in alphabetical order, ignoring [].
+        /// </summary>
+        public static int CompareText(TreeNode tx, TreeNode ty)
+        {
+            if (tx == null)
+            {
+                if (ty == null)
+                    return 0;
+                else
+                    return -1;
+            }
+            else if (ty == null)
+                return 1;
             return string.Compare(tx.Text.FastEscape(s_LstBrackets), ty.Text.FastEscape(s_LstBrackets));
         }
-    }
 
-    /// <summary>
-    /// Sort ListViewItems in reverse chronological order.
-    /// </summary>
-    public class SortByDate : IComparer
-    {
-        public int Compare(object objX, object objY)
+        public class TextComparer : IComparer
         {
-            ListViewItem lx = objX as ListViewItem;
-            ListViewItem ly = objY as ListViewItem;
-
+            public int Compare(object x, object y)
+            {
+                return CompareText(x as TreeNode, y as TreeNode);
+            }
+        }
+    }
+    
+    public class CompareListViewItems
+    {
+        /// <summary>
+        /// Sort ListViewItems in reverse chronological order.
+        /// </summary>
+        public int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
+        {
+            if (lx == null)
+            {
+                if (ly == null)
+                    return 0;
+                else
+                    return -1;
+            }
+            else if (ly == null)
+                return 1;
             return DateTime.Compare(DateTime.Parse(ly.Text, GlobalOptions.CultureInfo), DateTime.Parse(lx.Text, GlobalOptions.CultureInfo));
         }
     }
 
-    /// <summary>
-    /// Sort ListItems by Name in alphabetical order.
-    /// </summary>
-    public class SortListItem : IComparer
+    public static class CompareListItems
     {
-        public int Compare(object objX, object objY)
-        {
-            ListItem lx = (ListItem)objX;
-            ListItem ly = (ListItem)objY;
-
-            return string.Compare(lx.Name, ly.Name);
-        }
-
-        public int Compare(ListItem objX, ListItem objY)
+        /// <summary>
+        /// Sort ListItems by Name in alphabetical order.
+        /// </summary>
+        public static int CompareNames(ListItem objX, ListItem objY)
         {
             return string.Compare(objX.Name, objY.Name);
         }
@@ -118,16 +131,14 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        private readonly CaseInsensitiveComparer _objObjectCompare;
-
-        public ListViewColumnSorter()
-        {
-            _objObjectCompare = new CaseInsensitiveComparer();
-        }
+        private readonly CaseInsensitiveComparer _objObjectCompare = new CaseInsensitiveComparer();
 
         private static readonly char[] s_LstCurrencyTrim = { '¥', ',', ' ' };
         public int Compare(object x, object y)
         {
+            if (_objOrderOfSort == SortOrder.None)
+                return 0;
+
             int compareResult;
 
             // Cast the objects to be compared to ListViewItem objects
@@ -147,10 +158,7 @@ namespace Chummer
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return compareResult;
-            else if (_objOrderOfSort == SortOrder.Descending)
-                return (-compareResult);
-            else
-                return 0;
+            return (-compareResult);
         }
 
         /// <summary>

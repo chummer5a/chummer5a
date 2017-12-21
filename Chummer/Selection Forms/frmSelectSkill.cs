@@ -253,9 +253,8 @@ namespace Chummer
                 DialogResult = DialogResult.Cancel;
                 return;
             }
-
-            SortListItem objSort = new SortListItem();
-            lstSkills.Sort(objSort.Compare);
+            
+            lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
             cboSkill.ValueMember = "Value";
             cboSkill.DisplayMember = "Name";

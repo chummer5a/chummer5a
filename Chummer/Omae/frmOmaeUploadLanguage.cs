@@ -27,8 +27,6 @@ namespace Chummer
 {
     public partial class frmOmaeUploadLanguage : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
@@ -108,7 +106,7 @@ namespace Chummer
             byte[] bytFile = File.ReadAllBytes(txtFilePath.Text);
             string strFileName = Path.GetFileName(txtFilePath.Text);
 
-            translationSoapClient objService = _objOmaeHelper.GetTranslationService();
+            translationSoapClient objService = OmaeHelper.GetTranslationService();
             try
             {
                 int intResult = objService.UploadLanguage(_strUserName, strFileName, bytFile);

@@ -41,7 +41,7 @@ namespace Chummer
         IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
     }
 
-    static class MatrixAttributes
+    public static class MatrixAttributes
     {
         public static readonly string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
 

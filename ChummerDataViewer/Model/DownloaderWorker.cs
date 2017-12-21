@@ -135,12 +135,12 @@ namespace ChummerDataViewer.Model
 
 		private struct DownloadTask
 		{
-			public Guid ReportGuid;
-			public Uri Url;
-			public string Key;
-			public string DestinationPath;
+			public Guid ReportGuid { get; }
+			public Uri Url { get; }
+            public string Key { get; }
+            public string DestinationPath { get; }
 
-			public DownloadTask(Guid reportGuid, Uri url, string key, string destinationPath)
+            public DownloadTask(Guid reportGuid, Uri url, string key, string destinationPath)
 			{
 				Url = url;
 				Key = key;

@@ -627,8 +627,7 @@ namespace Chummer.Backend.Skills
                     dicSkills.Add(strSkillName, objSkill);
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstSkillOrder.Sort(objSort.Compare);
+            lstSkillOrder.Sort(CompareListItems.CompareNames);
 
             // Second pass, retrieve the Skills in the order they're presented in the list.
             foreach (ListItem objItem in lstSkillOrder)

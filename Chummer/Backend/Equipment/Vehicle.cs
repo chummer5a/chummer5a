@@ -13,7 +13,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle.
     /// </summary>
-    public class Vehicle : INamedItemWithGuidAndNode, IHasMatrixAttributes
+    public class Vehicle : IItemWithGuid, INamedItem, IItemWithNode, IHasMatrixAttributes
     {
         private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;

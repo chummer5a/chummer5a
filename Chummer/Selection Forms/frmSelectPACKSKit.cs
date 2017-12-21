@@ -63,8 +63,7 @@ namespace Chummer
                 string strInnerText = objXmlCategory.InnerText;
                 _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
@@ -117,8 +116,7 @@ namespace Chummer
                 // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
                 lstKit.Add(new ListItem(objXmlPack["name"].InnerText + '<' + objXmlPack["category"].InnerText, objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText));
             }
-            SortListItem objSort = new SortListItem();
-            lstKit.Sort(objSort.Compare);
+            lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
             lstKits.DataSource = null;
             lstKits.ValueMember = "Value";

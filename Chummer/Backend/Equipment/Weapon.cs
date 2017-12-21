@@ -15,7 +15,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A Weapon.
     /// </summary>
-    public class Weapon : INamedParentWithGuidAndNode<Weapon>
+    public class Weapon : IHasChildren<Weapon>, INamedItem, IItemWithGuid, IItemWithNode
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;

@@ -227,8 +227,7 @@ namespace Chummer
                     lstArts.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstArts.Sort(objSort.Compare);
+            lstArts.Sort(CompareListItems.CompareNames);
             lstArt.BeginUpdate();
             lstArt.DataSource = null;
             lstArt.ValueMember = "Value";

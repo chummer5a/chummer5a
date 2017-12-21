@@ -89,7 +89,7 @@ namespace Chummer
             }
         }
 
-        public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();
+        public Stopwatch Autosave_StopWatch { get; } = Stopwatch.StartNew();
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>

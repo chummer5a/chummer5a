@@ -376,8 +376,7 @@ namespace Chummer
                 string strName = objXmlTradition["name"].InnerText;
                 lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstTraditions.Sort(objSort.Compare);
+            lstTraditions.Sort(CompareListItems.CompareNames);
             lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
             cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
@@ -396,8 +395,7 @@ namespace Chummer
                 string strName = objXmlDrain["name"].InnerText;
                 lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
             }
-            SortListItem objDrainSort = new SortListItem();
-            lstDrainAttributes.Sort(objDrainSort.Compare);
+            lstDrainAttributes.Sort(CompareListItems.CompareNames);
             cboDrain.BeginUpdate();
             cboDrain.ValueMember = "Value";
             cboDrain.DisplayMember = "Name";
@@ -424,8 +422,7 @@ namespace Chummer
                     lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
                 }
             }
-            SortListItem objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+            lstSpirit.Sort(CompareListItems.CompareNames);
 
             List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
             cboSpiritCombat.BeginUpdate();
@@ -473,7 +470,7 @@ namespace Chummer
                 string strName = objXmlTradition["name"].InnerText;
                 lstStreams.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
-            lstStreams.Sort(objSort.Compare);
+            lstStreams.Sort(CompareListItems.CompareNames);
             cboStream.BeginUpdate();
             cboStream.ValueMember = "Value";
             cboStream.DisplayMember = "Name";
@@ -494,7 +491,7 @@ namespace Chummer
 
                 lstAttributeCategories.Add(new ListItem("Standard", node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText));
 
-				lstAttributeCategories.Sort(objSort.Compare);
+				lstAttributeCategories.Sort(CompareListItems.CompareNames);
 				cboAttributeCategory.BeginUpdate();
 				cboAttributeCategory.ValueMember = "Value";
 				cboAttributeCategory.DisplayMember = "Name";
@@ -1442,8 +1439,7 @@ namespace Chummer
                     new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")),
                     new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight"))
                 };
-                SortListItem objSortHand = new SortListItem();
-                lstPrimaryArm.Sort(objSortHand.Compare);
+                lstPrimaryArm.Sort(CompareListItems.CompareNames);
                 cboPrimaryArm.Enabled = true;
             }
 

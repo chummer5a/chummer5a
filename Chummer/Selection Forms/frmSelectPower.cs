@@ -231,8 +231,7 @@ namespace Chummer
                 string strName = objXmlPower["name"].InnerText;
                 lstPower.Add(new ListItem(strName, objXmlPower["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstPower.Sort(objSort.Compare);
+            lstPower.Sort(CompareListItems.CompareNames);
             lstPowers.BeginUpdate();
             lstPowers.DataSource = null;
             lstPowers.ValueMember = "Value";

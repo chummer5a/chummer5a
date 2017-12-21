@@ -1200,9 +1200,8 @@ namespace Chummer
 
                 lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
             }
-
-            SortListItem objSort = new SortListItem();
-            lstLanguages.Sort(objSort.Compare);
+            
+            lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";
@@ -1260,7 +1259,7 @@ namespace Chummer
             return lstSheets;
         }
 
-        private IList<ListItem> GetXslFilesFromOmaeDirectory()
+        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
             var items = new List<ListItem>();
 

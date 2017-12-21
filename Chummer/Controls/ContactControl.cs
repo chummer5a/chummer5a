@@ -673,16 +673,15 @@ namespace Chummer
                         lstMetatypes.Add(new ListItem(strMetavariantName, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName));
                 }
             }
-
-            SortListItem objContactSort = new SortListItem();
-            lstCategories.Sort(objContactSort.Compare);
-            lstMetatypes.Sort(objContactSort.Compare);
-            lstSexes.Sort(objContactSort.Compare);
-            lstAges.Sort(objContactSort.Compare);
-            lstPersonalLives.Sort(objContactSort.Compare);
-            lstTypes.Sort(objContactSort.Compare);
-            lstHobbiesVices.Sort(objContactSort.Compare);
-            lstPreferredPayments.Sort(objContactSort.Compare);
+            
+            lstCategories.Sort(CompareListItems.CompareNames);
+            lstMetatypes.Sort(CompareListItems.CompareNames);
+            lstSexes.Sort(CompareListItems.CompareNames);
+            lstAges.Sort(CompareListItems.CompareNames);
+            lstPersonalLives.Sort(CompareListItems.CompareNames);
+            lstTypes.Sort(CompareListItems.CompareNames);
+            lstHobbiesVices.Sort(CompareListItems.CompareNames);
+            lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
             cboContactRole.BeginUpdate();
             cboContactRole.ValueMember = "Value";

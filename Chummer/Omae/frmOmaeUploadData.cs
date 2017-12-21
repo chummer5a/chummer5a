@@ -28,8 +28,6 @@ namespace Chummer
 {
     public partial class frmOmaeUploadData : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
@@ -206,7 +204,7 @@ namespace Chummer
                     strFilesIncluded += objNode.Text + ",";
                 }
             }
-            byte[] bytFile = _objOmaeHelper.CompressMutiple(lstFiles);
+            byte[] bytFile = OmaeHelper.CompressMutiple(lstFiles);
 
             // Make sure the file doesn't exceed 250K in size (256,000 bytes).
             if (bytFile.Length > 256000)
@@ -216,7 +214,7 @@ namespace Chummer
             }
 
             // Upload the file.
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
                 cmdUpload.Enabled = false;
@@ -244,7 +242,7 @@ namespace Chummer
             if (blnSuccess)
                 DialogResult = DialogResult.OK;
 
-            //_objOmaeHelper.DecompressMultiple(bytFile);
+            //OmaeHelper.DecompressMultiple(bytFile);
         }
         #endregion
 

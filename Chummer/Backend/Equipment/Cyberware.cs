@@ -14,7 +14,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Cyberware.
     /// </summary>
-    public class Cyberware : INamedParentWithGuidAndNode<Cyberware>, IHasMatrixAttributes
+    public class Cyberware : IHasChildren<Cyberware>, INamedItem, IItemWithGuid, IItemWithNode, IHasMatrixAttributes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;

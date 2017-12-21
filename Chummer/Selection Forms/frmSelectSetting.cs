@@ -49,8 +49,7 @@ namespace Chummer
 
                 lstSettings.Add(new ListItem(Path.GetFileName(strFileName), objXmlDocument.SelectSingleNode("/settings/name").InnerText));
             }
-            SortListItem objSort = new SortListItem();
-            lstSettings.Sort(objSort.Compare);
+            lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
             cboSetting.ValueMember = "Value";
             cboSetting.DisplayMember = "Name";

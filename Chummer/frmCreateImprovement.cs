@@ -52,9 +52,8 @@ namespace Chummer
             if (objXmlImprovementList != null)
                 lstTypes.AddRange(from XmlNode objXmlImprovement in objXmlImprovementList
                     select new ListItem(objXmlImprovement["id"]?.InnerText, Name = objXmlImprovement["translate"]?.InnerText ?? objXmlImprovement["name"]?.InnerText));
-
-            SortListItem objSort = new SortListItem();
-            lstTypes.Sort(objSort.Compare);
+            
+            lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
             cboImprovemetType.ValueMember = "Value";
             cboImprovemetType.DisplayMember = "Name";

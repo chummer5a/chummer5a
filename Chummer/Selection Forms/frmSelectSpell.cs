@@ -128,8 +128,7 @@ namespace Chummer
                     continue;
                 _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
@@ -156,7 +155,7 @@ namespace Chummer
             BuildSpellList();
         }
 
-        private void lstSpells_AfterSelect(object sender, EventArgs e)
+        private void lstSpells_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateSpellInfo();
         }
@@ -452,9 +451,8 @@ namespace Chummer
                 }
                 lstSpellItems.Add(new ListItem(objXmlSpell["id"].InnerText, strDisplayName));
             }
-
-            SortListItem objSort = new SortListItem();
-            lstSpellItems.Sort(objSort.Compare);
+            
+            lstSpellItems.Sort(CompareListItems.CompareNames);
             lstSpells.BeginUpdate();
             lstSpells.DataSource = null;
             lstSpells.ValueMember = "Value";

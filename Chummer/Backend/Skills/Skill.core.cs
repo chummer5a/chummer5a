@@ -313,7 +313,7 @@ namespace Chummer.Backend.Skills
                             }
                             break;
                         case Improvement.ImprovementType.SkillGroup:
-                            if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                            if (objImprovement.ImprovedName == _strGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
                                 lstReturn.Add(objImprovement);
                             break;
                         case Improvement.ImprovementType.SkillCategory:
@@ -334,7 +334,7 @@ namespace Chummer.Backend.Skills
                                 lstReturn.Add(objImprovement);
                             break;
                         case Improvement.ImprovementType.EnhancedArticulation:
-                            if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+                            if (_strCategory == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
                                 lstReturn.Add(objImprovement);
                             break;
                     }
@@ -756,7 +756,7 @@ namespace Chummer.Backend.Skills
 
             return _cachedFreeKarma = (from improvement in CharacterObject.Improvements
                 where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-                      && improvement.ImprovedName == _name
+                      && improvement.ImprovedName == _strName
                 select improvement.Value).Sum(); //TODO change to ImpManager.ValueOf?
         }
 
@@ -771,7 +771,7 @@ namespace Chummer.Backend.Skills
             if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;
             return _cachedFreeBase = (from improvement in CharacterObject.Improvements
                 where improvement.ImproveType == Improvement.ImprovementType.SkillBase
-                      && improvement.ImprovedName == _name
+                      && improvement.ImprovedName == _strName
                 select improvement.Value).Sum();
         }
 

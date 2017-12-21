@@ -225,7 +225,6 @@ namespace Chummer
             TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
             if (lstTreeViewNodes == null)
                 return;
-            SortByName objSort = new SortByName();
             for (int i = 0; i < lstTreeViewNodes.Count; ++i)
             {
                 TreeNode objLoopNode = lstTreeViewNodes[i];
@@ -233,7 +232,7 @@ namespace Chummer
                 TreeNode[] lstNodes = new TreeNode[objLoopNodeChildren.Count];
                 objLoopNodeChildren.CopyTo(lstNodes, 0);
                 objLoopNodeChildren.Clear();
-                Array.Sort(lstNodes, objSort.Compare);
+                Array.Sort(lstNodes, CompareTreeNodes.CompareText);
                 objLoopNodeChildren.AddRange(lstNodes);
 
                 objLoopNode.Expand();

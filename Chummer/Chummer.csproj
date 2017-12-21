@@ -260,7 +260,6 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="controllers\clsDashboardController.cs" />
     <Compile Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

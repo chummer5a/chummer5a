@@ -58,10 +58,20 @@ namespace Chummer
             BuildComplexFormList();
         }
 
-        private void trePrograms_AfterSelect(object sender, TreeViewEventArgs e)
+        private void lstPrograms_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string strSelectedComplexFormId = lstPrograms.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedComplexFormId))
+            {
+                lblDuration.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                lblFV.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+                return;
+            }
+
             // Display the Program information.
-            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + trePrograms.SelectedNode.Tag + "\"]");
+            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + strSelectedComplexFormId + "\"]");
             if (objXmlProgram != null)
             {
                 string strDuration = objXmlProgram["duration"].InnerText;
@@ -86,15 +96,15 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null)
+            if (lstPrograms.SelectedValue != null)
             {
                 AcceptForm();
             }
         }
 
-        private void trePrograms_DoubleClick(object sender, EventArgs e)
+        private void lstPrograms_DoubleClick(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null)
+            if (lstPrograms.SelectedValue != null)
             {
                 AcceptForm();
             }
@@ -118,28 +128,26 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (trePrograms.SelectedNode == null)
+            if (lstPrograms.SelectedIndex == -1)
             {
-                if (trePrograms.Nodes.Count > 0)
-                    trePrograms.SelectedNode = trePrograms.Nodes[0];
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = 0;
             }
             if (e.KeyCode == Keys.Down)
             {
-                if (trePrograms.SelectedNode != null)
-                {
-                    trePrograms.SelectedNode = trePrograms.SelectedNode.NextVisibleNode;
-                    if (trePrograms.SelectedNode == null)
-                        trePrograms.SelectedNode = trePrograms.Nodes[0];
-                }
+                int intNewIndex = lstPrograms.SelectedIndex + 1;
+                if (intNewIndex >= lstPrograms.Items.Count)
+                    intNewIndex = 0;
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = intNewIndex;
             }
             if (e.KeyCode == Keys.Up)
             {
-                if (trePrograms.SelectedNode != null)
-                {
-                    trePrograms.SelectedNode = trePrograms.SelectedNode.PrevVisibleNode;
-                    if (trePrograms.SelectedNode == null && trePrograms.Nodes.Count > 0)
-                        trePrograms.SelectedNode = trePrograms.Nodes[trePrograms.Nodes.Count - 1].LastNode;
-                }
+                int intNewIndex = lstPrograms.SelectedIndex - 1;
+                if (intNewIndex <= 0)
+                    intNewIndex = lstPrograms.Items.Count - 1;
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = intNewIndex;
             }
         }
 
@@ -197,17 +205,18 @@ namespace Chummer
 
             // Populate the Program list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + "]");
-            trePrograms.Nodes.Clear();
-            trePrograms.TreeViewNodeSorter = new SortByName();
+
+            List<ListItem> lstComplexFormItems = new List<ListItem>();
             foreach (XmlNode objXmlProgram in objXmlNodeList)
             {
+                string strName = objXmlProgram["name"]?.InnerText ?? string.Empty;
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                 if (blnCheckForOptional)
                 {
                     bool blnAdd = false;
                     foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
                     {
-                        if (objXmlForm.InnerText == objXmlProgram["name"].InnerText)
+                        if (objXmlForm.InnerText == strName)
                         {
                             blnAdd = true;
                             break;
@@ -217,13 +226,16 @@ namespace Chummer
                         continue;
                 }
 
-                TreeNode nodProgram = new TreeNode
-                {
-                    Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText,
-                    Tag = objXmlProgram["id"].InnerText
-                };
-                trePrograms.Nodes.Add(nodProgram);
+                lstComplexFormItems.Add(new ListItem(objXmlProgram["id"].InnerText, objXmlProgram["translate"]?.InnerText ?? strName));
             }
+
+            lstComplexFormItems.Sort(CompareListItems.CompareNames);
+            lstPrograms.BeginUpdate();
+            lstPrograms.DataSource = null;
+            lstPrograms.ValueMember = "Value";
+            lstPrograms.DisplayMember = "Name";
+            lstPrograms.DataSource = lstComplexFormItems;
+            lstPrograms.EndUpdate();
         }
 
         /// <summary>
@@ -231,7 +243,10 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedProgram = trePrograms.SelectedNode.Tag.ToString();
+            string strSelectedItem = lstPrograms.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedItem))
+                return;
+            _strSelectedProgram = strSelectedItem;
             DialogResult = DialogResult.OK;
         }
 

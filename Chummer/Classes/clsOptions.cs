@@ -136,7 +136,7 @@ namespace Chummer
     /// <summary>
     /// Global Options. A single instance class since Options are common for all characters, reduces execution time and memory usage.
     /// </summary>
-    public sealed class GlobalOptions
+    public static class GlobalOptions
     {
         static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
         static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
@@ -175,7 +175,7 @@ namespace Chummer
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
-        private static readonly HashSet<SourcebookInfo> _lstSourcebookInfo = new HashSet<SourcebookInfo>();
+        private static HashSet<SourcebookInfo> _lstSourcebookInfo = null;
         private static bool _blnUseLogging = false;
         private static string _strCharacterRosterPath;
 
@@ -275,7 +275,7 @@ namespace Chummer
             switch (_strLanguage)
             {
                 case "en-us2":
-                    _strLanguage = GlobalOptions.DefaultLanguage;
+                    _strLanguage = DefaultLanguage;
                     break;
                 case "de":
                     _strLanguage = "de-de";
@@ -377,45 +377,6 @@ namespace Chummer
                         };
                         _lstCustomDataDirectoryInfo.Add(objCustomDataDirectory);
                     }
-                }
-            }
-
-            // Retrieve the SourcebookInfo objects.
-            XmlDocument objXmlDocument = XmlManager.Load("books.xml");
-            foreach (XmlNode objXmlBook in objXmlDocument.SelectNodes("/chummer/books/book"))
-            {
-                if (objXmlBook["code"] != null && objXmlBook["hide"] == null)
-                {
-                    SourcebookInfo objSource = new SourcebookInfo
-                    {
-                        Code = objXmlBook["code"].InnerText
-                    };
-                    string strTemp = string.Empty;
-
-                    try
-                    {
-                        LoadStringFromRegistry(ref strTemp, objXmlBook["code"].InnerText, "Sourcebook");
-                        if (!string.IsNullOrEmpty(strTemp))
-                        {
-
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (strParts.Length > 1)
-                            {
-                                if (int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
-                            }
-                        }
-                    }
-                    catch (System.Security.SecurityException)
-                    {
-
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-
-                    }
-                    _lstSourcebookInfo.Add(objSource);
                 }
             }
         }
@@ -750,6 +711,52 @@ namespace Chummer
         {
             get
             {
+                // We need to generate _lstSourcebookInfo outside of the constructor to avoid initialization cycles
+                if (_lstSourcebookInfo == null)
+                {
+                    _lstSourcebookInfo = new HashSet<SourcebookInfo>();
+                    // Retrieve the SourcebookInfo objects.
+                    foreach (XmlNode objXmlBook in XmlManager.Load("books.xml")?.SelectNodes("/chummer/books/book"))
+                    {
+                        if (objXmlBook["hide"] == null)
+                        {
+                            string strCode = objXmlBook["code"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strCode))
+                            {
+                                SourcebookInfo objSource = new SourcebookInfo
+                                {
+                                    Code = strCode
+                                };
+                                string strTemp = string.Empty;
+
+                                try
+                                {
+                                    LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook");
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                    {
+
+                                        string[] strParts = strTemp.Split('|');
+                                        objSource.Path = strParts[0];
+                                        if (strParts.Length > 1)
+                                        {
+                                            if (int.TryParse(strParts[1], out int intTmp))
+                                                objSource.Offset = intTmp;
+                                        }
+                                    }
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+
+                                }
+                                _lstSourcebookInfo.Add(objSource);
+                            }
+                        }
+                    }
+                }
                 return _lstSourcebookInfo;
             }
         }

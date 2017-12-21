@@ -42,8 +42,7 @@ namespace Chummer
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
-
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
+        
         private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
         private bool _blnLoggedIn = false;
@@ -143,7 +142,7 @@ namespace Chummer
         /// </summary>
         public bool GetCharacterTypes()
         {
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
             try
             {
@@ -154,7 +153,7 @@ namespace Chummer
                 // Flush the output.
                 objWriter.Flush();
 
-                XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
+                XmlDocument objXmlDocument = OmaeHelper.XmlDocumentFromStream(objStream);
 
                 // Close everything now that we're done.
                 objWriter.Close();
@@ -191,7 +190,7 @@ namespace Chummer
                 cmdUploadLanguage.Visible = false;
             else
             {
-                translationSoapClient objService = _objOmaeHelper.GetTranslationService();
+                translationSoapClient objService = OmaeHelper.GetTranslationService();
                 try
                 {
                     cmdUploadLanguage.Visible = objService.CanUploadLanguage(_strUserName);
@@ -210,7 +209,7 @@ namespace Chummer
         {
             // Setup the web service.
             OmaeRecord objRecord = (OmaeRecord)sender;
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
             if (_objMode == OmaeMode.Character)
             {
@@ -249,7 +248,7 @@ namespace Chummer
                         }
 
                         // Decompress the byte array and write it to a file.
-                        bytFile = _objOmaeHelper.Decompress(bytFile);
+                        bytFile = OmaeHelper.Decompress(bytFile);
                         File.WriteAllBytes(strFullPath, bytFile);
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
@@ -288,7 +287,7 @@ namespace Chummer
                         }
 
                         // Decompress the byte array and write it to a file.
-                        _objOmaeHelper.DecompressNPCs(bytFile);
+                        OmaeHelper.DecompressNPCs(bytFile);
                         MessageBox.Show(LanguageManager.GetString("Message_Omae_NPCPackDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (EndpointNotFoundException)
@@ -312,7 +311,7 @@ namespace Chummer
                     }
 
                     // Decompress the byte array and write it to a file.
-                    _objOmaeHelper.DecompressDataFile(bytFile, objRecord.CharacterID.ToString());
+                    OmaeHelper.DecompressDataFile(bytFile, objRecord.CharacterID.ToString());
                     // Show a message saying everything is done.
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDownloaded"), LanguageManager.GetString("MessageTitle_Omae_DataDownloaded"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -341,7 +340,7 @@ namespace Chummer
                     }
 
                     // Decompress the byte array and write it to a file.
-                    _objOmaeHelper.DecompressCharacterSheet(bytFile);
+                    OmaeHelper.DecompressCharacterSheet(bytFile);
                     // Show a message saying everything is done.
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDownloaded"), LanguageManager.GetString("MessageTitle_Omae_SheetDownloaded"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -385,7 +384,7 @@ namespace Chummer
 
                 // Delete the character.
                 OmaeRecord objRecord = (OmaeRecord) sender;
-                omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+                omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteCharacter(objRecord.CharacterID))
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDeleted"), LanguageManager.GetString("MessageTitle_Omae_DeleteCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -400,7 +399,7 @@ namespace Chummer
 
                 // Delete the data.
                 OmaeRecord objRecord = (OmaeRecord)sender;
-                omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+                omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteDataFile(objRecord.CharacterID))
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_DataDeleted"), LanguageManager.GetString("MessageTitle_Omae_DeleteData"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -415,7 +414,7 @@ namespace Chummer
 
                 // Delete the data.
                 OmaeRecord objRecord = (OmaeRecord)sender;
-                omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+                omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
                 if (objService.DeleteSheet(objRecord.CharacterID))
                     MessageBox.Show(LanguageManager.GetString("Message_Omae_SheetDeleted"), LanguageManager.GetString("MessageTitle_Omae_DeleteData"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -448,7 +447,7 @@ namespace Chummer
             if (GlobalOptions.OmaeAutoLogin)
             {
                 chkAutoLogin.Checked = true;
-                txtPassword.Text = _objOmaeHelper.Base64Decode(GlobalOptions.OmaePassword);
+                txtPassword.Text = OmaeHelper.Base64Decode(GlobalOptions.OmaePassword);
                 cmdLogin_Click(sender, e);
             }
 
@@ -484,10 +483,10 @@ namespace Chummer
                 return;
             }
 
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
-                int intResult = objService.RegisterUser(txtUserName.Text, _objOmaeHelper.Base64Encode(txtPassword.Text));
+                int intResult = objService.RegisterUser(txtUserName.Text, OmaeHelper.Base64Encode(txtPassword.Text));
 
                 if (intResult == 0)
                 {
@@ -523,10 +522,10 @@ namespace Chummer
                 return;
             }
 
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
-                bool blnResult = objService.Login(txtUserName.Text, _objOmaeHelper.Base64Encode(txtPassword.Text));
+                bool blnResult = objService.Login(txtUserName.Text, OmaeHelper.Base64Encode(txtPassword.Text));
 
                 if (blnResult)
                 {
@@ -542,8 +541,8 @@ namespace Chummer
                     objRegistry.SetValue("omaeusername", txtUserName.Text);
                     if (chkAutoLogin.Checked)
                     {
-                        GlobalOptions.OmaePassword = _objOmaeHelper.Base64Encode(txtPassword.Text);
-                        objRegistry.SetValue("omaepassword", _objOmaeHelper.Base64Encode(txtPassword.Text));
+                        GlobalOptions.OmaePassword = OmaeHelper.Base64Encode(txtPassword.Text);
+                        objRegistry.SetValue("omaepassword", OmaeHelper.Base64Encode(txtPassword.Text));
                         GlobalOptions.OmaeAutoLogin = chkAutoLogin.Checked;
                         objRegistry.SetValue("omaeautologin", chkAutoLogin.Checked.ToString());
                     }
@@ -608,7 +607,7 @@ namespace Chummer
 
         private void cmdSearch_Click(object sender, EventArgs e)
         {
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
 
             // Clear the current contents of the Omae Panel. Detach the events before clearing it.
             foreach (OmaeRecord objRecord in panOmae.Controls.OfType<OmaeRecord>())
@@ -649,7 +648,7 @@ namespace Chummer
                     // Flush the output.
                     objWriter.Flush();
 
-                    XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
+                    XmlDocument objXmlDocument = OmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
@@ -699,7 +698,7 @@ namespace Chummer
                     // Flush the output.
                     objWriter.Flush();
 
-                    XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
+                    XmlDocument objXmlDocument = OmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
@@ -749,7 +748,7 @@ namespace Chummer
                     // Flush the output.
                     objWriter.Flush();
 
-                    XmlDocument objXmlDocument = _objOmaeHelper.XmlDocumentFromStream(objStream);
+                    XmlDocument objXmlDocument = OmaeHelper.XmlDocumentFromStream(objStream);
 
                     // Close everything now that we're done.
                     objWriter.Close();
@@ -824,7 +823,7 @@ namespace Chummer
 
         private void cmdPasswordReset_Click(object sender, EventArgs e)
         {
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             if (!objService.ResetPassword(txtUserName.Text))
                 MessageBox.Show(LanguageManager.GetString("Message_Omae_PasswordNoEmail"), LanguageManager.GetString("MessageTitle_Omae_PasswordReset"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
@@ -896,11 +895,10 @@ namespace Chummer
 
         private void cmdCompressData_Click(object sender, EventArgs e)
         {
-            OmaeHelper objHelper = new OmaeHelper();
             foreach (string strFile in Directory.GetFiles(Path.Combine(Application.StartupPath, "data"), "*.xml"))
             {
                 byte[] bytFile = File.ReadAllBytes(strFile);
-                bytFile = objHelper.Compress(bytFile);
+                bytFile = OmaeHelper.Compress(bytFile);
                 File.WriteAllBytes(strFile.Replace(".xml", ".zip"), bytFile);
             }
 

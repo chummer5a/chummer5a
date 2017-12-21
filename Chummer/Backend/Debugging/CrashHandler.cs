@@ -14,7 +14,7 @@ using System.Security;
 
 namespace Chummer.Backend.Debugging
 {
-    public sealed class CrashHandler
+    public static class CrashHandler
     {
         [SuppressUnmanagedCodeSecurity]
         private static class SafeNativeMethods
@@ -30,11 +30,11 @@ namespace Chummer.Backend.Debugging
                 AddDefaultInfo();
             }
 
-            public List<string> capturefiles = new List<string>();
-            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            public Dictionary<string, string> attributes = new Dictionary<string, string>();
-            public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = SafeNativeMethods.GetCurrentThreadId();
+            private List<string> capturefiles = new List<string>();
+            private Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            private Dictionary<string, string> attributes = new Dictionary<string, string>();
+            private int processid = Process.GetCurrentProcess().Id;
+            private uint threadId = SafeNativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {

@@ -386,8 +386,7 @@ namespace Chummer
             treTree.Nodes.Clear();
             try
             {
-                SortByName objSort = new SortByName();
-                lstNodes.Sort(objSort.Compare);
+                lstNodes.Sort(CompareTreeNodes.CompareText);
             }
             catch (ArgumentException)
             {

@@ -1548,8 +1548,7 @@ namespace Chummer
             {
                 lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
             }
-            SortListItem objSort = new SortListItem();
-            lstPowerOrder.Sort(objSort.Compare);
+            lstPowerOrder.Sort(CompareListItems.CompareNames);
 
             foreach (ListItem objItem in lstPowerOrder)
             {

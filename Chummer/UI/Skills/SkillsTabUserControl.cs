@@ -199,7 +199,21 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortAttributeName"),
                     new SkillSorter((x, y) => string.Compare(x.Attribute, y.Attribute, StringComparison.Ordinal))),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupName"),
-                    new SkillSorter((x, y) => string.Compare(y.SkillGroup, x.SkillGroup, StringComparison.Ordinal))),
+                    new SkillSorter((x, y) =>
+                    {
+                        string strXGroup = x.SkillGroup;
+                        string strYGroup = y.SkillGroup;
+                        if (string.IsNullOrEmpty(strXGroup))
+                        {
+                            if (string.IsNullOrEmpty(strYGroup))
+                                return 0;
+                            else
+                                return -1;
+                        }
+                        else if (string.IsNullOrEmpty(strYGroup))
+                            return 1;
+                        return string.Compare(x.SkillGroup, y.SkillGroup, StringComparison.Ordinal);
+                    })),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortGroupRating"),
                     new SkillSortBySkillGroup()),
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory"),

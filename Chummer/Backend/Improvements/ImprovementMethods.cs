@@ -22,7 +22,7 @@ using Chummer.Classes;
 
 namespace Chummer
 {
-    public class ImprovementMethods
+    public static class ImprovementMethods
     {
         /// <summary>
         /// Gets an AddImprovementCollection function based on its name.

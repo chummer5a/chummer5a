@@ -29,7 +29,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public sealed class LanguageManager
+    public static class LanguageManager
     {
         /// <summary>
         /// An individual language string.

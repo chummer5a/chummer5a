@@ -40,44 +40,4 @@ namespace Chummer
     {
         IList<T> Children { get; }
     }
-
-    public interface INamedItemWithNode : INamedItem, IItemWithNode
-    {
-    }
-
-    public interface INamedItemWithGuid : IItemWithGuid, INamedItem
-    {
-    }
-
-    public interface IItemWithGuidAndNode : IItemWithGuid, IItemWithNode
-    {
-    }
-
-    public interface INamedItemWithGuidAndNode : INamedItemWithGuid, IItemWithGuidAndNode, INamedItemWithNode
-    {
-    }
-
-    public interface INamedParent<T> : IHasChildren<T>, INamedItem
-    {
-    }
-
-    public interface IParentWithNode<T> : IHasChildren<T>, IItemWithNode
-    {
-    }
-
-    public interface IParentWithGuidAndNode<T> : IParentWithNode<T>, INamedItemWithGuidAndNode
-    {
-    }
-
-    public interface INamedParentWithNode<T> : IHasChildren<T>, INamedItemWithNode
-    {
-    }
-
-    public interface INamedParentWithGuid<T> : INamedParent<T>, INamedItemWithGuid, INamedItemWithNode
-    {
-    }
-
-    public interface INamedParentWithGuidAndNode<T> : INamedParentWithGuid<T>, INamedParentWithNode<T>, IParentWithGuidAndNode<T>, IParentWithNode<T>, INamedItemWithGuidAndNode
-    {
-    }
 }

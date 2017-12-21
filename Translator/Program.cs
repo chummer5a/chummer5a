@@ -5,7 +5,7 @@ using System.Windows.Forms;
 [assembly: CLSCompliant(true)]
 namespace Translator
 {
-    internal static class Program
+    static class Program
     {
         private static frmTranslatorMain s_FrmMain = null;
         [STAThread]

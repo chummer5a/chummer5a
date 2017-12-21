@@ -82,7 +82,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T FindByIdWithNameCheck<T>(string strGuid, IEnumerable<T> lstHaystack) where T : INamedItemWithGuid
+        public static T FindByIdWithNameCheck<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IItemWithGuid, INamedItem
         {
             if (strGuid == Guid.Empty.ToString())
             {
@@ -97,7 +97,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : INamedParentWithGuid<T>
+        public static T DeepFindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, INamedItem, IItemWithGuid
         {
             if (strGuid == Guid.Empty.ToString())
             {
@@ -112,7 +112,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strName">Name of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindByName<T>(string strName, IEnumerable<T> lstHaystack) where T : INamedParentWithGuid<T>
+        public static T DeepFindByName<T>(string strName, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, INamedItem, IItemWithGuid
         {
             if (string.IsNullOrEmpty(strName))
             {

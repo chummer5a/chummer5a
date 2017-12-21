@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectProgram
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.trePrograms = new System.Windows.Forms.TreeView();
+            this.lstPrograms = new System.Windows.Forms.ListBox();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
@@ -45,16 +45,14 @@
             this.lblFVLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // trePrograms
+            // lstPrograms
             // 
-            this.trePrograms.FullRowSelect = true;
-            this.trePrograms.HideSelection = false;
-            this.trePrograms.Location = new System.Drawing.Point(12, 12);
-            this.trePrograms.Name = "trePrograms";
-            this.trePrograms.Size = new System.Drawing.Size(241, 430);
-            this.trePrograms.TabIndex = 6;
-            this.trePrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePrograms_AfterSelect);
-            this.trePrograms.DoubleClick += new System.EventHandler(this.trePrograms_DoubleClick);
+            this.lstPrograms.Location = new System.Drawing.Point(12, 12);
+            this.lstPrograms.Name = "trePrograms";
+            this.lstPrograms.Size = new System.Drawing.Size(241, 430);
+            this.lstPrograms.TabIndex = 6;
+            this.lstPrograms.SelectedIndexChanged += new System.EventHandler(this.lstPrograms_SelectedIndexChanged);
+            this.lstPrograms.DoubleClick += new System.EventHandler(this.lstPrograms_DoubleClick);
             // 
             // cmdOK
             // 
@@ -221,7 +219,7 @@
             this.Controls.Add(this.lblTarget);
             this.Controls.Add(this.lblTargetLabel);
             this.Controls.Add(this.cmdOK);
-            this.Controls.Add(this.trePrograms);
+            this.Controls.Add(this.lstPrograms);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -238,7 +236,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TreeView trePrograms;
+        private System.Windows.Forms.ListBox lstPrograms;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblTargetLabel;
         private System.Windows.Forms.Label lblTarget;

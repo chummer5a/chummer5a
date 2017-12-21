@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A specific piece of Armor.
     /// </summary>
-    public class Armor : INamedItemWithGuidAndNode
+    public class Armor : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;

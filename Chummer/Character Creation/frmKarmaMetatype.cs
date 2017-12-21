@@ -163,9 +163,8 @@ namespace Chummer
                     }
                 }
             }
-
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            
+            _lstCategory.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
@@ -205,9 +204,8 @@ namespace Chummer
                 new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]")?["translate"]?.InnerText ?? "Possession"),
                 new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]")?["translate"]?.InnerText ?? "Inhabitation")
             };
-
-            SortListItem objSortPossession = new SortListItem();
-            lstMethods.Sort(objSortPossession.Compare);
+            
+            lstMethods.Sort(CompareListItems.CompareNames);
             cboPossessionMethod.BeginUpdate();
             cboPossessionMethod.ValueMember = "Value";
             cboPossessionMethod.DisplayMember = "Name";
@@ -1004,8 +1002,7 @@ namespace Chummer
                 string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
                 lstMetatype.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstMetatype.Sort(objSort.Compare);
+            lstMetatype.Sort(CompareListItems.CompareNames);
             lstMetatypes.BeginUpdate();
             lstMetatypes.DataSource = null;
             lstMetatypes.ValueMember = "Value";

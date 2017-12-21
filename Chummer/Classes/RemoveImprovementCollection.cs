@@ -6,7 +6,7 @@ using System.Text;
 namespace Chummer.Classes
 {
     //Might in the future be used as part of ImprovementManager (clsImprovement.cs at time of writing)
-    public sealed class RemoveImprovementCollection
+    public static class RemoveImprovementCollection
     {
     }
 }

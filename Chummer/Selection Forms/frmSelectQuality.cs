@@ -32,8 +32,6 @@ namespace Chummer
 {
     public partial class frmSelectQuality : Form
     {
-        public int buildPos = 0;
-        public int buildNeg = 0;
         private string _strSelectedQuality = string.Empty;
         private bool _blnAddAgain = false;
         private bool _blnLoading = true;
@@ -407,8 +405,7 @@ namespace Chummer
                     lstQuality.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstQuality.Sort(objSort.Compare);
+            lstQuality.Sort(CompareListItems.CompareNames);
             lstQualities.BeginUpdate();
             lstQualities.DataSource = null;
             lstQualities.ValueMember = "Value";

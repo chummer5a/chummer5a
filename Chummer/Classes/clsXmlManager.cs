@@ -28,7 +28,7 @@ using System.Windows.Forms;
 namespace Chummer
 {
     // ReSharper disable InconsistentNaming
-    public sealed class XmlManager
+    public static class XmlManager
     {
         /// <summary>
         /// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.

@@ -523,7 +523,7 @@ namespace Chummer
             return lstSheets;
         }
 
-        private List<ListItem> GetXslFilesFromOmaeDirectory()
+        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
             var items = new List<ListItem>();
 
@@ -597,9 +597,8 @@ namespace Chummer
                     lstLanguages.Add(new ListItem(strLanguageCode, node.InnerText));
                 }
             }
-
-            SortListItem objSort = new SortListItem();
-            lstLanguages.Sort(objSort.Compare);
+            
+            lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";

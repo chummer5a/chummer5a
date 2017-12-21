@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle Modification.
     /// </summary>
-    public class VehicleMod : INamedItemWithGuidAndNode
+    public class VehicleMod : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;

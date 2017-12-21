@@ -10259,11 +10259,11 @@ namespace Chummer
         }
         #endregion
 
-        internal System.Windows.Forms.StatusStrip StatusStrip;
-        internal System.Windows.Forms.ToolStripStatusLabel tssBPLabel;
-        internal System.Windows.Forms.ToolStripStatusLabel tssBP;
-        internal System.Windows.Forms.ToolStripStatusLabel tssBPRemainLabel;
-        internal System.Windows.Forms.ToolStripStatusLabel tssBPRemain;
+        private System.Windows.Forms.StatusStrip StatusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel tssBPLabel;
+        private System.Windows.Forms.ToolStripStatusLabel tssBP;
+        private System.Windows.Forms.ToolStripStatusLabel tssBPRemainLabel;
+        private System.Windows.Forms.ToolStripStatusLabel tssBPRemain;
         private System.Windows.Forms.Label lblAttributes;
         private System.Windows.Forms.Label lblNuyen;
         private System.Windows.Forms.NumericUpDown nudNuyen;
@@ -10965,7 +10965,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSpellDefenceIndirectDodge;
         private System.Windows.Forms.Label lblSpellDefenceIndirectDodgeLabel;
         private System.Windows.Forms.Label lblCounterspellingDiceLabel;
-        internal System.Windows.Forms.NumericUpDown nudCounterspellingDice;
+        private System.Windows.Forms.NumericUpDown nudCounterspellingDice;
         private System.Windows.Forms.Label lbllSpellDefenceManipPhysical;
         private System.Windows.Forms.Label lbllSpellDefenceManipPhysicalLabel;
         private System.Windows.Forms.Label lblSpellDefenceManipMental;
