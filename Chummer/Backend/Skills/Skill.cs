@@ -515,7 +515,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return _blnDefault && RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault)?.Count == 0;
+                return _blnDefault && RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault).Count == 0;
             }
             set
             {
@@ -637,7 +637,7 @@ namespace Chummer.Backend.Skills
                     //TODO translate (could not find it in lang file, did not check old source)
                 }
 
-                IList<Improvement> lstRelevantImprovements = RelevantImprovements() ?? new List<Improvement>();
+                IList<Improvement> lstRelevantImprovements = RelevantImprovements();
 
                 StringBuilder s;
                 if (CyberwareRating() > TotalBaseRating)

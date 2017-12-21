@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Skills
 {
-    partial class SkillControl2
+    public sealed partial class SkillControl2
     {
         /// <summary> 
         /// Required designer variable.

@@ -1065,7 +1065,7 @@ namespace Chummer
             {
                 new ListItem("Karma", LanguageManager.GetString("String_Karma")),
                 new ListItem("Priority", LanguageManager.GetString("String_Priority")),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen"))
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen")),
             };
 
             if (GlobalOptions.LifeModuleEnabled)

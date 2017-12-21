@@ -283,60 +283,61 @@ namespace Chummer.Backend.Skills
         protected int Bonus(bool AddToRating)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == AddToRating)?.Sum(x => x.Value) ?? 0;
+            return RelevantImprovements(x => x.AddToRating == AddToRating).Sum(x => x.Value);
         }
 
         private IList<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
-            if (string.IsNullOrWhiteSpace(Name))
-                return null;
             List<Improvement> lstReturn = new List<Improvement>();
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (!string.IsNullOrWhiteSpace(Name))
             {
-                if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    switch (objImprovement.ImproveType)
+                    if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
                     {
-                        case Improvement.ImprovementType.Skill:
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.Skill:
 
-                            if (IsExoticSkill)
-                            {
-                                var s = (ExoticSkill)this;
-                                if (objImprovement.ImprovedName == $"{Name} ({s.Specific})")
+                                if (IsExoticSkill)
+                                {
+                                    var s = (ExoticSkill)this;
+                                    if (objImprovement.ImprovedName == $"{Name} ({s.Specific})")
+                                    {
+                                        lstReturn.Add(objImprovement);
+                                    }
+                                }
+                                else if (objImprovement.ImprovedName == Name)
                                 {
                                     lstReturn.Add(objImprovement);
                                 }
-                            }
-                            else if (objImprovement.ImprovedName == Name)
-                            {
-                                lstReturn.Add(objImprovement);
-                            }
-                            break;
-                        case Improvement.ImprovementType.SkillGroup:
-                            if (objImprovement.ImprovedName == _strGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SkillCategory:
-                            if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SkillAttribute:
-                            if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.BlockSkillDefault:
-                            if (objImprovement.ImprovedName == SkillGroup)
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SwapSkillAttribute:
-                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                            if (objImprovement.Target == Name)
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.EnhancedArticulation:
-                            if (_strCategory == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
-                                lstReturn.Add(objImprovement);
-                            break;
+                                break;
+                            case Improvement.ImprovementType.SkillGroup:
+                                if (objImprovement.ImprovedName == _strGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == Name)
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (_strCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                        }
                     }
                 }
             }

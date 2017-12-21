@@ -93,12 +93,12 @@ namespace Chummer
         }
     }
     
-    public class CompareListViewItems
+    public static class CompareListViewItems
     {
         /// <summary>
         /// Sort ListViewItems in reverse chronological order.
         /// </summary>
-        public int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
+        public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
         {
             if (lx == null)
             {

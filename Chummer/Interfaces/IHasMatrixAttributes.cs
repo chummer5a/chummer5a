@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,8 @@ namespace Chummer
 
     public static class MatrixAttributes
     {
-        public static readonly string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
+        private static readonly string[] s_LstMatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
+        public static ReadOnlyCollection<string> MatrixAttributeStrings { get { return Array.AsReadOnly(s_LstMatrixAttributeStrings); } }
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker

@@ -273,7 +273,7 @@ namespace Chummer
                     string strWeaponName = objWeapon.DisplayName;
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     int intAccuracy = objWeapon.TotalAccuracy;
-                    string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
+                    string strDamage = objWeapon.CalculatedDamage();
                     string strAP = objWeapon.TotalAP;
                     if (strAP == "-")
                         strAP = "0";

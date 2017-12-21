@@ -25,7 +25,7 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUpload : Form
+    public sealed partial class frmOmaeUpload : Form
     {
         private readonly Character _objCharacter = new Character();
         private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();

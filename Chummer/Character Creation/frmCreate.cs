@@ -3134,8 +3134,8 @@ namespace Chummer
                     objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                     if (objXmlNode != null)
                     {
+                        objWeapon.ParentVehicle = null;
                         objWeapon.Load(objXmlNode, true);
-                        objWeapon.VehicleMounted = false;
 
                         CharacterObject.Weapons.Add(objWeapon);
 
@@ -3301,8 +3301,8 @@ namespace Chummer
                 objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                 if (objXmlNode != null)
                 {
+                    objWeapon.ParentVehicle = objVehicle;
                     objWeapon.Load(objXmlNode, true);
-                    objWeapon.VehicleMounted = true;
 
                     // Weapons can only be added to Vehicle Mods that support them (Weapon Mounts and Mechanical Arms).
                     foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
@@ -4351,16 +4351,20 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode.Level == 0)
+            TreeNode objSelectedNode = treArmor.SelectedNode;
+            if (objSelectedNode == null)
+                return;
+
+            if (objSelectedNode.Level == 0)
             {
-                if (treArmor.SelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
+                if (objSelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
                     return;
 
                 if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteArmorLocation")))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Armor parent node.
-                foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
+                foreach (TreeNode objNode in objSelectedNode.Nodes)
                 {
                     Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objNode.Tag.ToString(), CharacterObject.Armor);
 
@@ -4415,12 +4419,51 @@ namespace Chummer
                 }
 
                 // Remove the Location from the character, then remove the selected node.
-                CharacterObject.ArmorLocations.Remove(treArmor.SelectedNode.Text);
-                treArmor.SelectedNode.Remove();
+                CharacterObject.ArmorLocations.Remove(objSelectedNode.Text);
+                objSelectedNode.Remove();
                 return;
             }
+            else
+            {
+                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                if (objArmor != null)
+                {
+                    CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles);
+                    CharacterObject.Armor.Remove(objArmor);
+                    objSelectedNode.Remove();
+                }
+                else
+                {
+                    ArmorMod objMod = CommonFunctions.FindArmorMod(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                    if (objMod != null)
+                    {
+                        CommonFunctions.DeleteArmorMod(CharacterObject, objMod, treWeapons, treVehicles);
+                        objMod.Parent.ArmorMods.Remove(objMod);
+                        objSelectedNode.Remove();
+                    }
+                    else
+                    {
+                        Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), CharacterObject.Armor, out objArmor, out objMod);
+                        if (objGear != null)
+                        {
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
 
-            CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles);
+                            Gear objGearParent = objGear.Parent;
+                            if (objGearParent != null)
+                            {
+                                objGearParent.Children.Remove(objGear);
+                                objGearParent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objMod != null)
+                                objMod.Gear.Remove(objGear);
+                            else if (objArmor != null)
+                                objArmor.Gear.Remove(objGear);
+
+                            objSelectedNode.Remove();
+                        }
+                    }
+                }
+            }
             ScheduleCharacterUpdate();
             RefreshSelectedArmor();
 
@@ -7147,7 +7190,7 @@ namespace Chummer
             dynamic wm = CommonFunctions.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out Vehicle v);
             if (wm == null)
             {
-                wm = CommonFunctions.FindVehicleMod(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+                wm = CommonFunctions.FindVehicleMod(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out v);
                 if (wm != null)
                 {
                     if (!wm.Name.StartsWith("Mechanical Arm") && !wm.Name.Contains("Drone Arm"))
@@ -7183,6 +7226,7 @@ namespace Chummer
 
                 List<TreeNode> lstNodes = new List<TreeNode>();
                 Weapon objWeapon = new Weapon(CharacterObject);
+                objWeapon.ParentVehicle = v;
                 objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -7190,7 +7234,6 @@ namespace Chummer
                 {
                     objWeapon.Cost = 0;
                 }
-                objWeapon.VehicleMounted = true;
 
                 wm.Weapons.Add(objWeapon);
 
@@ -7331,6 +7374,7 @@ namespace Chummer
 
             List<TreeNode> lstNodes = new List<TreeNode>();
             Weapon objWeapon = new Weapon(CharacterObject);
+            objWeapon.ParentVehicle = objSelectedWeapon.ParentVehicle;
             objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSelectedWeapon.UnderbarrelWeapons, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -7338,7 +7382,7 @@ namespace Chummer
             {
                 objWeapon.Cost = 0;
             }
-            objWeapon.VehicleMounted = true;
+            
             objWeapon.Parent = objSelectedWeapon;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
             if (objSelectedWeapon.AllowAccessory == false)
@@ -8984,7 +9028,6 @@ namespace Chummer
 
                 foreach (Weapon objWeapon in objWeapons)
                 {
-                    objWeapon.VehicleMounted = true;
                     objVehicle.Weapons.Add(objWeapon);
                 }
 
@@ -13835,12 +13878,12 @@ namespace Chummer
                 tabPowerUc.MissingDatabindingsWorkaround();
             }
 
-            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).Value);
             }
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
@@ -14517,16 +14560,6 @@ namespace Chummer
                 if (objWeapon.IncludedInWeapon || objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || !string.IsNullOrEmpty(objWeapon.ParentID))
                     cmdDeleteWeapon.Enabled = false;
 
-                // If this is a Cyberweapon, grab the STR of the limb.
-                int intUseSTR = 0;
-                if (objWeapon.Cyberware)
-                {
-                    if (objWeapon.Cyberware)
-                    {
-                        intUseSTR = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.WeaponID == objWeapon.InternalId)?.TotalStrength ?? 0;
-                    }
-                }
-
                 lblWeaponName.Text = objWeapon.DisplayNameShort;
                 lblWeaponCategory.Text = objWeapon.DisplayCategory;
                 string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source);
@@ -14553,7 +14586,7 @@ namespace Chummer
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
-                lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
+                lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                 lblWeaponRC.Text = objWeapon.TotalRC;
                 lblWeaponAP.Text = objWeapon.TotalAP;
@@ -15273,12 +15306,12 @@ namespace Chummer
             _blnSkipRefresh = false;
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public override void UpdateWindowTitle(bool blnCanSkip)
+        public override string FormMode
         {
-            UpdateWindowTitle(LanguageManager.GetString("Title_CreateNewCharacter"), blnCanSkip);
+            get
+            {
+                return LanguageManager.GetString("Title_CreateNewCharacter");
+            }
         }
 
         /// <summary>
@@ -19192,8 +19225,8 @@ namespace Chummer
                             XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
                             if (objXmlWeaponNode == null)
                                 continue;
+                            objWeapon.ParentVehicle = objVehicle;
                             objWeapon.Create(objXmlWeaponNode, lstWeaponNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSubWeapons, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
-                            objWeapon.VehicleMounted = true;
 
                             // Find the first Weapon Mount in the Vehicle.
                             foreach (VehicleMod objMod in objVehicle.Mods)
@@ -21430,7 +21463,7 @@ namespace Chummer
 
         private void nudCounterspellingDice_Changed(object sender, EventArgs e)
         {
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);

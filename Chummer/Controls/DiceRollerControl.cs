@@ -101,8 +101,8 @@ namespace Chummer
         {
             get
             {
-                return (EdgeUses)cboEdgeUse.SelectedItem == default(EdgeUses) ? EdgeUses.None :
-                (EdgeUses)cboEdgeUse.SelectedItem;
+                EdgeUses eSelectedItem = (EdgeUses)cboEdgeUse.SelectedItem;
+                return eSelectedItem == default(EdgeUses) ? EdgeUses.None : eSelectedItem;
             }
             set
             {

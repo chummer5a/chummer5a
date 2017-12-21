@@ -22,7 +22,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class OmaeRecord : UserControl
+    public sealed partial class OmaeRecord : UserControl
     {
         // Events.
         public Action<object> OmaeDownloadClicked { get; set; }

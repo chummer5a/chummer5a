@@ -44,7 +44,7 @@ using System.Net;
 
 namespace Chummer
 {
-    public partial class frmChummerMain : Form
+    public sealed partial class frmChummerMain : Form
     {
         private frmOmae _frmOmae;
         private frmDiceRoller _frmRoller;
@@ -155,11 +155,10 @@ namespace Chummer
             );
             Timekeeper.Finish("cache_load");
 
-            frmCharacterRoster frmCharacter = new frmCharacterRoster
+            _frmCharacterRoster = new frmCharacterRoster
             {
                 MdiParent = this
             };
-            _frmCharacterRoster = frmCharacter;
 
             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
             string[] strArgs = Environment.GetCommandLineArgs();
@@ -191,8 +190,8 @@ namespace Chummer
             }
             OpenCharacterList(lstCharactersToLoad);
 
-            frmCharacter.WindowState = FormWindowState.Maximized;
-            frmCharacter.Show();
+            _frmCharacterRoster.WindowState = FormWindowState.Maximized;
+            _frmCharacterRoster.Show();
         }
 
         private readonly frmCharacterRoster _frmCharacterRoster;
@@ -516,7 +515,7 @@ namespace Chummer
             }
         }
 
-        private void frmMain_MdiChildActivate(object sender, EventArgs e)
+        private void frmChummerMain_MdiChildActivate(object sender, EventArgs e)
         {
             // If there are no child forms, hide the tab control.
             if (ActiveMdiChild != null)
@@ -705,7 +704,7 @@ namespace Chummer
             }
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void frmChummerMain_Load(object sender, EventArgs e)
         {
             if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
             {
@@ -738,7 +737,7 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private void frmMain_DragDrop(object sender, DragEventArgs e)
+        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
             Cursor = Cursors.WaitCursor;
             // Open each file that has been dropped into the window.
@@ -755,7 +754,7 @@ namespace Chummer
             Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
-        private void frmMain_DragEnter(object sender, DragEventArgs e)
+        private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -1198,7 +1197,7 @@ namespace Chummer
         }
         #endregion
 
-        private void frmMain_Closing(object sender, FormClosingEventArgs e)
+        private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)

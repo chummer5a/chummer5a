@@ -25,7 +25,7 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUploadSheet : Form
+    public sealed partial class frmOmaeUploadSheet : Form
     {
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;

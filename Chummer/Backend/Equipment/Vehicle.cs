@@ -338,7 +338,7 @@ namespace Chummer.Backend.Equipment
                         objGearNode.ContextMenuStrip = cmsVehicleGear;
 
                         foreach (Weapon objWeapon in objWeapons)
-                            objWeapon.VehicleMounted = true;
+                            objWeapon.ParentVehicle = this;
 
                         _lstGear.Add(objGear);
 
@@ -361,10 +361,10 @@ namespace Chummer.Backend.Equipment
 
                     List<Weapon> objSubWeapons = new List<Weapon>();
                     XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                    objWeapon.ParentVehicle = this;
                     objWeapon.Create(objXmlWeaponNode, lstWeaponNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSubWeapons, cmsVehicleWeaponAccessoryGear);
                     objWeapon.ParentID = InternalId;
                     objWeapon.Cost = 0;
-                    objWeapon.VehicleMounted = true;
 
                     // Find the first free Weapon Mount in the Vehicle.
                     foreach (WeaponMount w in _lstWeaponMounts)
@@ -751,13 +751,8 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode nodChild in nodChildren)
                 {
                     Weapon objWeapon = new Weapon(_objCharacter);
+                    objWeapon.ParentVehicle = this;
                     objWeapon.Load(nodChild, blnCopy);
-                    objWeapon.VehicleMounted = true;
-                    if (objWeapon.UnderbarrelWeapons.Count > 0)
-                    {
-                        foreach (Weapon objUnderbarrel in objWeapon.UnderbarrelWeapons)
-                            objUnderbarrel.VehicleMounted = true;
-                    }
                     _lstWeapons.Add(objWeapon);
                 }
             }

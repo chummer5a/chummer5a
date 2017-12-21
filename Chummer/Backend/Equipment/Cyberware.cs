@@ -279,6 +279,7 @@ namespace Chummer.Backend.Equipment
 
                     List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
                     Weapon objGearWeapon = new Weapon(objCharacter);
+                    objGearWeapon.ParentVehicle = ParentVehicle;
                     objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons);
                     objGearWeapon.ParentID = InternalId;
                     foreach (TreeNode objLoopNode in lstGearWeaponNodes)

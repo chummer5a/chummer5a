@@ -11,7 +11,7 @@ using Chummer.Backend.Attributes;
 namespace Chummer.UI.Skills
 {
     [DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
-    public partial class SkillControl2 : UserControl
+    public sealed partial class SkillControl2 : UserControl
     {
         private readonly Skill _skill;
         private readonly Font _normal;

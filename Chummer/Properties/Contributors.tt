@@ -5,11 +5,15 @@
 <#@ import namespace="System.Net" #>
 <#@ import namespace="System.Web.Script.Serialization" #>
 <#@ output extension=".cs" #>
+using System;
+using System.Collections.ObjectModel;
+
 namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static readonly string[] Usernames = {
+        public static ReadOnlyCollection<string> Usernames { get { return Array.AsReadOnly(_lstUsernames); } }
+        private static readonly string[] _lstUsernames = {
 <#
     try
     {

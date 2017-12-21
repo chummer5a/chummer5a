@@ -28,7 +28,7 @@ namespace Chummer
     /// This class allows you to cordinate multiple controls in a group and fire
     /// an event when the mouse leaves that group
     /// </summary>
-    public class HoverDisplayCordinator
+    public class HoverDisplayCoordinator
     {
         //List of controls in the group. A n-tree might do this faster
         private readonly List<Control> _controls;
@@ -45,7 +45,7 @@ namespace Chummer
         /// <summary>
         /// Create a new HoverDisplayCordinator
         /// </summary>
-        public HoverDisplayCordinator()
+        public HoverDisplayCoordinator()
         {
             _controls = new List<Control>();
         }
@@ -54,7 +54,7 @@ namespace Chummer
         /// Create a new HoverDisplayCordinator
         /// </summary>
         /// <param name="collection">A collection of controls to include</param>
-        public HoverDisplayCordinator(IEnumerable<Control> collection)
+        public HoverDisplayCoordinator(IEnumerable<Control> collection)
         {
             _controls = new List<Control>(collection);
         }

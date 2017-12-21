@@ -467,23 +467,21 @@ namespace Chummer
                     return;
                 }
             }
-
-            Dictionary<string, string> dicParams = new Dictionary<string, string>
+            
+            PdfDocument objPdfDocument = new PdfDocument
             {
-                { "encoding", "UTF-8" },
-                { "dpi", "300" },
-                { "margin-top", "13" },
-                { "margin-bottom", "19" },
-                { "margin-left", "13" },
-                { "margin-right", "13" },
-                { "image-quality", "100" },
-                { "print-media-type", "" }
+                Html = webBrowser1.DocumentText
             };
-            PdfConvert.ConvertHtmlToPdf(new PdfDocument
-            {
-                Html = webBrowser1.DocumentText,
-                ExtraParams = dicParams
-            }, new PdfConvertEnvironment
+            objPdfDocument.ExtraParams.Add("encoding", "UTF-8");
+            objPdfDocument.ExtraParams.Add("dpi", "300");
+            objPdfDocument.ExtraParams.Add("margin-top", "13");
+            objPdfDocument.ExtraParams.Add("margin-bottom", "19");
+            objPdfDocument.ExtraParams.Add("margin-left", "13");
+            objPdfDocument.ExtraParams.Add("margin-right", "13");
+            objPdfDocument.ExtraParams.Add("image-quality", "100");
+            objPdfDocument.ExtraParams.Add("print-media-type", "");
+
+            PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
             {
                 WkHtmlToPdfPath = Path.Combine(Application.StartupPath,"wkhtmltopdf.exe"),
                 Timeout = 60000,

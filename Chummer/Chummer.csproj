@@ -192,7 +192,7 @@
     <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
-    <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
+    <Compile Include="Classes\clsHoverDisplayCoordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
     <Compile Include="Classes\clsExpenses.cs" />
     <Compile Include="Classes\clsLanguageManager.cs" />

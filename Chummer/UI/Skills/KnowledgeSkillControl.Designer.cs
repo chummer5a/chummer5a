@@ -1,6 +1,6 @@
 namespace Chummer.UI.Skills
 {
-    partial class KnowledgeSkillControl
+    public sealed partial class KnowledgeSkillControl
     {
         /// <summary> 
         /// Required designer variable.

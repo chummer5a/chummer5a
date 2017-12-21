@@ -3505,7 +3505,7 @@ namespace Chummer
 
         private void nudCounterspellingDice_Changed(object sender, EventArgs e)
         {
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
@@ -4485,16 +4485,21 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode.Level == 0)
+            TreeNode objSelectedNode = treArmor.SelectedNode;
+
+            if (objSelectedNode == null)
+                return;
+
+            if (objSelectedNode.Level == 0)
             {
-                if (treArmor.SelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
+                if (objSelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
                     return;
 
                 if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteArmorLocation")))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Armor parent node.
-                foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
+                foreach (TreeNode objNode in objSelectedNode.Nodes)
                 {
                     Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objNode.Tag.ToString(), CharacterObject.Armor);
 
@@ -4549,12 +4554,54 @@ namespace Chummer
                 }
 
                 // Remove the Location from the character, then remove the selected node.
-                CharacterObject.ArmorLocations.Remove(treArmor.SelectedNode.Text);
-                treArmor.SelectedNode.Remove();
-                return;
+                CharacterObject.ArmorLocations.Remove(objSelectedNode.Text);
+                objSelectedNode.Remove();
+            }
+            else
+            {
+                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteArmor")))
+                    return;
+
+                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                if (objArmor != null)
+                {
+                    CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles);
+                    CharacterObject.Armor.Remove(objArmor);
+                    objSelectedNode.Remove();
+                }
+                else
+                {
+                    ArmorMod objMod = CommonFunctions.FindArmorMod(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                    if (objMod != null)
+                    {
+                        CommonFunctions.DeleteArmorMod(CharacterObject, objMod, treWeapons, treVehicles);
+                        objMod.Parent.ArmorMods.Remove(objMod);
+                        objSelectedNode.Remove();
+                    }
+                    else
+                    {
+                        Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), CharacterObject.Armor, out objArmor, out objMod);
+                        if (objGear != null)
+                        {
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+
+                            Gear objGearParent = objGear.Parent;
+                            if (objGearParent != null)
+                            {
+                                objGearParent.Children.Remove(objGear);
+                                objGearParent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objMod != null)
+                                objMod.Gear.Remove(objGear);
+                            else if (objArmor != null)
+                                objArmor.Gear.Remove(objGear);
+
+                            objSelectedNode.Remove();
+                        }
+                    }
+                }
             }
 
-            CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles);
             ScheduleCharacterUpdate();
             RefreshSelectedArmor();
 
@@ -5907,7 +5954,7 @@ namespace Chummer
             CharacterObject.Nuyen -= decAmount;
 
             ExpenseUndo objUndo = new ExpenseUndo();
-            objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, objLifestyle.Name);
+            objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, objLifestyle.InternalId);
             objExpense.Undo = objUndo;
 
             objLifestyle.Months += 1;
@@ -6557,7 +6604,7 @@ namespace Chummer
 
                 treVehicles.SelectedNode.Remove();
                 treWeapons.Nodes[0].Nodes.Add(objNode);
-                objWeapon.VehicleMounted = false;
+                objWeapon.ParentVehicle = null;
                 objNode.Expand();
             }
             else
@@ -8932,9 +8979,22 @@ namespace Chummer
 
         private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
+            TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure that a Weapon Mount has been selected.
             // Attempt to locate the selected VehicleMod.
-            WeaponMount wm = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles, out Vehicle v);
+            dynamic wm = CommonFunctions.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out Vehicle v);
+            if (wm == null)
+            {
+                wm = CommonFunctions.FindVehicleMod(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out v);
+                if (wm != null)
+                {
+                    if (!wm.Name.StartsWith("Mechanical Arm") && !wm.Name.Contains("Drone Arm"))
+                    {
+                        wm = null;
+                    }
+                }
+            }
+
             if (wm == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotAddWeapon"), LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8944,12 +9004,12 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = AddWeaponToWeaponMount(wm);
+                blnAddAgain = AddWeaponToWeaponMount(wm, v);
             }
             while (blnAddAgain);
         }
 
-        private bool AddWeaponToWeaponMount(WeaponMount wm)
+        private bool AddWeaponToWeaponMount(WeaponMount wm, Vehicle objVehicle)
         {
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject)
             {
@@ -8967,8 +9027,8 @@ namespace Chummer
 
             List<TreeNode> lstNodes = new List<TreeNode>();
             Weapon objWeapon = new Weapon(CharacterObject);
+            objWeapon.ParentVehicle = objVehicle;
             objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
-            objWeapon.VehicleMounted = true;
 
             decimal decCost = objWeapon.TotalCost;
             // Apply a markup if applicable.
@@ -9061,7 +9121,7 @@ namespace Chummer
                         CharacterObject.Nuyen -= decCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponAccessory, frmPickVehicleMod.WeaponMount.InternalId);
+                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeaponMount, frmPickVehicleMod.WeaponMount.InternalId);
                         objExpense.Undo = objUndo;
                     }
                 }
@@ -9242,9 +9302,9 @@ namespace Chummer
 
             List<TreeNode> lstNodes = new List<TreeNode>();
             Weapon objWeapon = new Weapon(CharacterObject);
+            objWeapon.ParentVehicle = objSelectedWeapon.ParentVehicle;
             objWeapon.Create(objXmlWeapon, lstNodes, cmsWeapon, cmsWeaponAccessory, objSelectedWeapon.UnderbarrelWeapons, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-            objWeapon.VehicleMounted = true;
             objWeapon.Parent = objSelectedWeapon;
             if (objSelectedWeapon.AllowAccessory == false)
                 objWeapon.AllowAccessory = false;
@@ -10141,7 +10201,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = objArmor.TotalCost * frmSell.SellPercent;
-                    decAmount += CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
+                    decAmount += CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor") + " " + objArmor.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10164,7 +10224,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = (decOriginal - objMod.Parent.TotalCost) * frmSell.SellPercent;
-                        decAmount += CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += CommonFunctions.DeleteArmorMod(CharacterObject, objMod, treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod") + " " + objMod.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10194,7 +10254,7 @@ namespace Chummer
                         else
                             decNewCost = objArmor.TotalCost;
                         decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                        decAmount += CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10226,7 +10286,7 @@ namespace Chummer
                     else
                         decNewCost = objArmor.TotalCost;
                     decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                    decAmount += CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles) * frmSell.SellPercent;
+                    decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear") + " " + objGear.DisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -11557,7 +11617,10 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Message_UndoNoHistory"), LanguageManager.GetString("MessageTitle_NoUndoHistory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            else if (objEntry.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
+
+            string strUndoId = objEntry.Undo.ObjectId;
+
+            if (objEntry.Undo.KarmaType == KarmaExpenseType.ImproveInitiateGrade)
             {
                 // Get the grade of the item we're undoing and make sure it's the highest grade
                 int intMaxGrade = 0;
@@ -11567,7 +11630,7 @@ namespace Chummer
                 }
                 foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                 {
-                    if (objGrade.InternalId == objEntry.Undo.ObjectId)
+                    if (objGrade.InternalId == strUndoId)
                     {
                         if (objGrade.Grade < intMaxGrade)
                         {
@@ -11589,73 +11652,98 @@ namespace Chummer
             switch (objEntry.Undo.NuyenType)
             {
                 case NuyenExpenseType.AddCyberware:
-                    // Locate the Cyberware that was added.
-                    //int intOldPenalty = 0;
-                    //int intNewPenalty = 0;
-                    Cyberware objAddCyberware = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objEntry.Undo.ObjectId);
-                    if (objAddCyberware != null)
                     {
-                        CommonFunctions.DeleteCyberware(CharacterObject, objAddCyberware, treWeapons, treVehicles);
-
-                        // Determine the character's Essence penalty before removing the Cyberware.
-                        //intOldPenalty = _objCharacter.EssencePenalty;
-                        // Remove the Cyberware.
-                        if (objAddCyberware.Parent == null)
-                            CharacterObject.Cyberware.Remove(objAddCyberware);
+                        // Locate the Cyberware that was added.
+                        VehicleMod objVehicleMod = null;
+                        Cyberware objCyberware = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Cyberware);
+                        TreeNode objNode = null;
+                        if (objCyberware == null)
+                        {
+                            objCyberware = CommonFunctions.FindVehicleCyberware(strUndoId, CharacterObject.Vehicles, out objVehicleMod);
+                            if (objCyberware != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        }
                         else
-                            objAddCyberware.Parent.Children.Remove(objAddCyberware);
-                        // Determine the character's Essence penalty after removing the Cyberware.
-                        //intNewPenalty = _objCharacter.EssencePenalty;
+                            objNode = CommonFunctions.FindNode(strUndoId, treCyberware);
+                        if (objCyberware != null)
+                        {
+                            CommonFunctions.DeleteCyberware(CharacterObject, objCyberware, treWeapons, treVehicles);
 
-                        // Restore the character's MAG/RES if they have it.
-                        //if (!_objCharacter.OverrideSpecialAttributeEssenceLoss && !_objCharacter.OverrideSpecialAttributeEssenceLoss)
-                        //{
-                        //    if (intOldPenalty != intNewPenalty)
-                        //    {
-                        //        if (_objCharacter.MAGEnabled)
-                        //            _objCharacter.MAG.Value += (intOldPenalty - intNewPenalty);
-                        //        if (_objCharacter.RESEnabled)
-                        //            _objCharacter.RES.Value += (intOldPenalty - intNewPenalty);
-                        //    }
-                        //}
+                            // Remove the Cyberware.
+                            if (objCyberware.Parent != null)
+                                objCyberware.Parent.Children.Remove(objCyberware);
+                            else if (objVehicleMod != null)
+                                objVehicleMod.Cyberware.Remove(objCyberware);
+                            else
+                                CharacterObject.Cyberware.Remove(objCyberware);
 
-                        // Remove the item from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treCyberware)?.Remove();
+                            // Remove the item from the Tree.
+                            objNode?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddGear:
-                    // Locate the Gear that was added.
-                    //If the gear was already deleted manually we will not be able to locate it here
-                    Gear objGear = CommonFunctions.DeepFindById(objEntry.Undo.ObjectId, CharacterObject.Gear);
-                    if (objGear == null)
-                        break;
-                    objGear.Quantity -= objEntry.Undo.Qty;
-                    TreeNode objAddGearNode = CommonFunctions.FindNode(objGear.InternalId, treGear);
-
-                    if (objGear.Quantity <= 0)
                     {
-                        if (objGear.Parent != null)
+                        // Locate the Gear that was added.
+                        //If the gear was already deleted manually we will not be able to locate it here
+                        Gear objGear = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Gear);
+                        TreeNode objNode = null;
+                        Vehicle objVehicle = null;
+                        WeaponAccessory objWeaponAccessory = null;
+                        Cyberware objCyberware = null;
+                        if (objGear != null)
                         {
-                            objGear.Parent.Children.Remove(objGear);
-                            objGear.Parent.RefreshMatrixAttributeArray();
+                            objNode = CommonFunctions.FindNode(objGear.InternalId, treGear);
                         }
                         else
-                            CharacterObject.Gear.Remove(objGear);
+                        {
+                            objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles);
+                            if (objGear != null)
+                                objNode = CommonFunctions.FindNode(objGear.InternalId, treVehicles);
+                            else
+                                break;
+                        }
+                        objGear.Quantity -= objEntry.Undo.Qty;
 
-                        CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
-                        objAddGearNode.Remove();
-                    }
-                    else
-                    {
-                        objAddGearNode.Text = objGear.DisplayName;
-                    }
+                        if (objGear.Quantity <= 0)
+                        {
+                            if (objGear.Parent != null)
+                            {
+                                objGear.Parent.Children.Remove(objGear);
+                                objGear.Parent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objWeaponAccessory != null)
+                            {
+                                objWeaponAccessory.Gear.Remove(objGear);
+                            }
+                            else if (objCyberware != null)
+                            {
+                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.RefreshMatrixAttributeArray();
+                            }
+                            else if (objVehicle != null)
+                            {
+                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.RefreshMatrixAttributeArray();
+                            }
+                            else
+                                CharacterObject.Gear.Remove(objGear);
 
-                    CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objNode?.Remove();
+                        }
+                        else if (objNode != null)
+                        {
+                            objNode.Text = objGear.DisplayName;
+                        }
+
+                        CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                    }
                     break;
                 case NuyenExpenseType.AddVehicle:
                     {
                         // Locate the Vehicle that was added.
-                        Vehicle objVehicle = CommonFunctions.FindById(objEntry.Undo.ObjectId, CharacterObject.Vehicles);
+                        Vehicle objVehicle = CommonFunctions.FindById(strUndoId, CharacterObject.Vehicles);
                         if (objVehicle != null)
                         {
                             foreach (Gear objLoopGear in objVehicle.Gear)
@@ -11688,331 +11776,439 @@ namespace Chummer
                             // Remove the Vehicle.
                             CharacterObject.Vehicles.Remove(objVehicle);
 
-                            CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
+                            CommonFunctions.FindNode(strUndoId, treVehicles)?.Remove();
                         }
                     }
                     break;
                 case NuyenExpenseType.AddVehicleMod:
-                    // Locate the Vehicle Mod that was added.
-                    Vehicle objAddVehicleModVehicle = null;
-                    VehicleMod objAddVehicleMod = CommonFunctions.FindVehicleMod(objEntry.Undo.ObjectId, CharacterObject.Vehicles, out objAddVehicleModVehicle);
-                    if (objAddVehicleMod != null)
                     {
-                        // Check for Improved Sensor bonus.
-                        if (objAddVehicleMod.Bonus?["improvesensor"] != null || (objAddVehicleMod.WirelessOn && objAddVehicleMod.WirelessBonus?["improvesensor"] != null))
+                        // Locate the Vehicle Mod that was added.
+                        VehicleMod objVehicleMod = CommonFunctions.FindVehicleMod(strUndoId, CharacterObject.Vehicles, out Vehicle objVehicle);
+                        if (objVehicleMod != null)
                         {
-                            ChangeVehicleSensor(objAddVehicleModVehicle, false);
-                        }
+                            // Check for Improved Sensor bonus.
+                            if (objVehicleMod.Bonus?["improvesensor"] != null || (objVehicleMod.WirelessOn && objVehicleMod.WirelessBonus?["improvesensor"] != null))
+                            {
+                                ChangeVehicleSensor(objVehicle, false);
+                            }
 
-                        foreach (Weapon objLoopWeapon in objAddVehicleMod.Weapons)
-                        {
-                            CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
-                        }
-                        foreach (Cyberware objLoopCyberware in objAddVehicleMod.Cyberware)
-                        {
-                            CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
-                        }
+                            foreach (Weapon objLoopWeapon in objVehicleMod.Weapons)
+                            {
+                                CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                            }
+                            foreach (Cyberware objLoopCyberware in objVehicleMod.Cyberware)
+                            {
+                                CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
+                            }
 
-                        // Remove the Vehicle Mod.
-                        objAddVehicleModVehicle.Mods.Remove(objAddVehicleMod);
+                            // Remove the Vehicle Mod.
+                            objVehicle.Mods.Remove(objVehicleMod);
 
-                        // Remove the Vehicle Mod from the tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
+                            // Remove the Vehicle Mod from the tree.
+                            CommonFunctions.FindNode(strUndoId, treVehicles)?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddVehicleGear:
-                    // Locate the Gear that was added.
-                    Vehicle objAddVehicleGearVehicle = null;
-                    WeaponAccessory objAddVehicleGearWeaponAccessory = null;
-                    Cyberware objAddVehicleGearCyberware = null;
-                    Gear objAddVehicleGear = CommonFunctions.FindVehicleGear(objEntry.Undo.ObjectId, CharacterObject.Vehicles, out objAddVehicleGearVehicle, out objAddVehicleGearWeaponAccessory, out objAddVehicleGearCyberware);
-                    if (objAddVehicleGear != null)
                     {
-                        // Deduct the Qty from the Gear.
-                        objAddVehicleGear.Quantity -= objEntry.Undo.Qty;
-                        TreeNode objAddVehicleGearNode = CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles.Nodes[0]);
-
-                        // Remove the Gear if its Qty has been reduced to 0.
-                        if (objAddVehicleGear.Quantity <= 0)
+                        // Locate the Gear that was added.
+                        Vehicle objVehicle = null;
+                        WeaponAccessory objWeaponAccessory = null;
+                        Cyberware objCyberware = null;
+                        TreeNode objNode = null;
+                        Gear objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
+                        if (objGear == null)
                         {
-                            if (objAddVehicleGear.Parent == null)
+                            objGear = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Gear);
+                            if (objGear == null)
                             {
-                                if (objAddVehicleGearWeaponAccessory != null)
-                                    objAddVehicleGearWeaponAccessory.Gear.Remove(objAddVehicleGear);
-                                else if (objAddVehicleGearCyberware != null)
-                                    objAddVehicleGearCyberware.Gear.Remove(objAddVehicleGear);
+                                objGear = CommonFunctions.FindCyberwareGear(strUndoId, CharacterObject.Cyberware, out objCyberware);
+                                if (objGear == null)
+                                {
+                                    objGear = CommonFunctions.FindWeaponGear(strUndoId, CharacterObject.Weapons, out objWeaponAccessory);
+                                    if (objGear != null)
+                                        objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
+                                }
                                 else
-                                    objAddVehicleGearVehicle.Gear.Remove(objAddVehicleGear);
+                                    objNode = CommonFunctions.FindNode(strUndoId, treCyberware);
                             }
                             else
-                            {
-                                objAddVehicleGear.Parent.Children.Remove(objAddVehicleGear);
-                                objAddVehicleGear.Parent.RefreshMatrixAttributeArray();
-                            }
-
-                            CommonFunctions.DeleteGear(CharacterObject, objAddVehicleGear, treWeapons, treVehicles);
-                            objAddVehicleGearNode.Remove();
+                                objNode = CommonFunctions.FindNode(strUndoId, treGear);
                         }
                         else
+                            objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        if (objGear != null)
                         {
-                            objAddVehicleGearNode.Text = objAddVehicleGear.DisplayName;
+                            // Deduct the Qty from the Gear.
+                            objGear.Quantity -= objEntry.Undo.Qty;
+
+                            // Remove the Gear if its Qty has been reduced to 0.
+                            if (objGear.Quantity <= 0)
+                            {
+                                if (objGear.Parent != null)
+                                {
+                                    objGear.Parent.Children.Remove(objGear);
+                                    objGear.Parent.RefreshMatrixAttributeArray();
+                                }
+                                else if (objWeaponAccessory != null)
+                                    objWeaponAccessory.Gear.Remove(objGear);
+                                else if (objCyberware != null)
+                                    objCyberware.Gear.Remove(objGear);
+                                else if (objVehicle != null)
+                                    objVehicle.Gear.Remove(objGear);
+                                else
+                                    CharacterObject.Gear.Remove(objGear);
+
+                                CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                objNode?.Remove();
+                            }
+                            else if (objNode != null)
+                            {
+                                objNode.Text = objGear.DisplayName;
+                            }
                         }
                     }
                     break;
                 case NuyenExpenseType.AddVehicleWeapon:
-                    // Locate the Weapon that was added.
-                    Weapon objAddVehicleWeapon = CommonFunctions.FindVehicleWeapon(objEntry.Undo.ObjectId, CharacterObject.Vehicles, out Vehicle objAddVehicleWeaponVehicle, out WeaponMount wm, out VehicleMod vm);
-                    if (objAddVehicleWeapon != null)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objAddVehicleWeapon, treWeapons, treVehicles);
-
-                        // Remove the Weapon.
-                        if (wm != null)
-                            wm.Weapons.Remove(objAddVehicleWeapon);
+                        // Locate the Weapon that was added.
+                        Weapon objWeapon = CommonFunctions.FindVehicleWeapon(strUndoId, CharacterObject.Vehicles, out Vehicle objVehicle, out WeaponMount objWeaponMount, out VehicleMod objVehicleMod);
+                        TreeNode objNode = null;
+                        if (objWeapon == null)
+                        {
+                            objWeapon = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Weapons);
+                            if (objWeapon != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
+                        }
                         else
-                            objAddVehicleWeaponVehicle.Weapons.Remove(objAddVehicleWeapon);
+                            objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        if (objWeapon != null)
+                        {
+                            CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
 
-                        // Remove the Weapon from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
+                            // Remove the Weapon.
+                            if (objWeapon.Parent != null)
+                                objWeapon.Parent.Children.Remove(objWeapon);
+                            else if (objWeaponMount != null)
+                                objWeaponMount.Weapons.Remove(objWeapon);
+                            else if (objVehicleMod != null)
+                                objVehicleMod.Weapons.Remove(objWeapon);
+                            else if (objVehicle != null)
+                                objVehicle.Weapons.Remove(objWeapon);
+                            else
+                                CharacterObject.Weapons.Remove(objWeapon);
+
+                            // Remove the Weapon from the Tree.
+                            objNode?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddVehicleWeaponAccessory:
-                    // Locate the Weapon Accessory that was added.
-                    Weapon objAddVehicleWeaponAccessoryWeapon = null;
-                    WeaponAccessory objAddVehicleWeaponAccessory = CommonFunctions.FindVehicleWeaponAccessory(objEntry.Undo.ObjectId, CharacterObject.Vehicles, out objAddVehicleWeaponAccessoryWeapon);
-                    if (objAddVehicleWeaponAccessory != null)
                     {
-                        // Remove the Weapon Accessory.
-                        objAddVehicleWeaponAccessoryWeapon.WeaponAccessories.Remove(objAddVehicleWeaponAccessory);
+                        // Locate the Weapon Accessory that was added.
+                        WeaponAccessory objWeaponAccessory = CommonFunctions.FindVehicleWeaponAccessory(strUndoId, CharacterObject.Vehicles, out Weapon objWeapon);
+                        TreeNode objNode = null;
+                        if (objWeaponAccessory == null)
+                        {
+                            objWeaponAccessory = CommonFunctions.FindWeaponAccessory(strUndoId, CharacterObject.Weapons, out objWeapon);
+                            if (objWeapon != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
+                        }
+                        else
+                            objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        if (objWeaponAccessory != null)
+                        {
+                            // Remove the Weapon Accessory.
+                            objWeapon.WeaponAccessories.Remove(objWeaponAccessory);
 
-                        foreach(Gear objLoopGear in objAddVehicleWeaponAccessory.Gear)
-                            CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                            foreach (Gear objLoopGear in objWeaponAccessory.Gear)
+                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
 
-                        // Remove the Weapon Accessory from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles)?.Remove();
+                            // Remove the Weapon Accessory from the Tree.
+                            objNode?.Remove();
+                        }
+                    }
+                    break;
+                case NuyenExpenseType.AddVehicleWeaponMount:
+                    {
+                        WeaponMount objWeaponMount = CommonFunctions.FindVehicleWeaponMount(strUndoId, CharacterObject.Vehicles, out Vehicle objVehicle);
+                        if (objWeaponMount != null)
+                        {
+                            objVehicle.WeaponMounts.Remove(objWeaponMount);
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                                CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                            CommonFunctions.FindNode(strUndoId, treVehicles)?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddArmor:
-                    // Locate the Armor that was added.
-                    Armor objAddArmor = CommonFunctions.FindByIdWithNameCheck(objEntry.Undo.ObjectId, CharacterObject.Armor);
-
-                    if (objAddArmor != null)
                     {
-                        // Remove the Improvements for any child items.
-                        foreach (ArmorMod objMod in objAddArmor.ArmorMods)
+                        // Locate the Armor that was added.
+                        Armor objArmor = CommonFunctions.FindByIdWithNameCheck(strUndoId, CharacterObject.Armor);
+
+                        if (objArmor != null)
                         {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                            CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles);
 
-                            // Remove the Cyberweapon created by the Mod if applicable.
-                            if (objMod.WeaponID != Guid.Empty.ToString())
-                            {
-                                // Remove the Weapons from the Character.
-                                List<string> lstNodesToRemoveIds = new List<string>();
-                                foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objMod.InternalId))
-                                {
-                                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                    CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
-                                    // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                    if (objWeapon.Parent != null)
-                                        objWeapon.Parent.UnderbarrelWeapons.Remove(objWeapon);
-                                    else
-                                        CharacterObject.Weapons.Remove(objWeapon);
-                                }
-                                foreach (string strNodeId in lstNodesToRemoveIds)
-                                {
-                                    // Remove the Weapons from the TreeView.
-                                    CommonFunctions.FindNode(strNodeId, treWeapons)?.Remove();
-                                }
-                            }
+                            // Remove the Armor from the character.
+                            CharacterObject.Armor.Remove(objArmor);
+
+                            // Remove the Armor from the Tree.
+                            CommonFunctions.FindNode(strUndoId, treArmor)?.Remove();
                         }
-                        foreach (Gear objLoopGear in objAddArmor.Gear)
-                        {
-                            CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
-                        }
-
-                        // Remove the Improvements for the Armor.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objAddArmor.InternalId);
-
-                        // Remove the Armor from the character.
-                        CharacterObject.Armor.Remove(objAddArmor);
-
-                        // Remove the Armor from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treArmor)?.Remove();
                     }
-
                     break;
                 case NuyenExpenseType.AddArmorMod:
-                    // Locate the Armor Mod that was added.
-                    ArmorMod objAddArmorMod = CommonFunctions.FindArmorMod(objEntry.Undo.ObjectId, CharacterObject.Armor);
-                    if (objAddArmorMod != null)
                     {
-                        // Remove the Improtements for the Armor Mod.
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objAddArmorMod.InternalId);
-
-                        // Remove the Armor Mod from the Armor.
-                        objAddArmorMod.Parent?.ArmorMods.Remove(objAddArmorMod);
-
-                        // Remove the Cyberweapon created by the Mod if applicable.
-                        if (objAddArmorMod.WeaponID != Guid.Empty.ToString())
+                        // Locate the Armor Mod that was added.
+                        ArmorMod objArmorMod = CommonFunctions.FindArmorMod(strUndoId, CharacterObject.Armor);
+                        if (objArmorMod != null)
                         {
-                            // Remove the Weapons from the Character.
-                            List<string> lstNodesToRemoveIds = new List<string>();
-                            foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objAddArmorMod.InternalId))
-                            {
-                                lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    CharacterObject.Weapons.Remove(objWeapon);
-                            }
-                            foreach (string strNodeId in lstNodesToRemoveIds)
-                            {
-                                // Remove the Weapons from the TreeView.
-                                CommonFunctions.FindNode(strNodeId, treWeapons)?.Remove();
-                            }
-                        }
+                            CommonFunctions.DeleteArmorMod(CharacterObject, objArmorMod, treWeapons, treVehicles);
 
-                        // Remove the Armor Mod from the Tree.
-                        CommonFunctions.FindNode(objAddArmorMod.InternalId, treArmor.Nodes[0])?.Remove();
+                            // Remove the Armor Mod from the Armor.
+                            objArmorMod.Parent?.ArmorMods.Remove(objArmorMod);
+
+                            // Remove the Armor Mod from the Tree.
+                            CommonFunctions.FindNode(objArmorMod.InternalId, treArmor)?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddWeapon:
-                    // Locate the Weapon that was added.
-                    Weapon objAddWeapon = CommonFunctions.DeepFindById(objEntry.Undo.ObjectId, CharacterObject.Weapons);
-                    if (objAddWeapon != null)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objAddWeapon, treWeapons, treVehicles);
-                        // Remove the Weapn from the character.
-                        if (objAddWeapon.Parent != null)
-                            objAddWeapon.Parent.Children.Remove(objAddWeapon);
+                        // Locate the Weapon that was added.
+                        Weapon objWeapon = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Weapons);
+                        Vehicle objVehicle = null;
+                        WeaponMount objWeaponMount = null;
+                        VehicleMod objVehicleMod = null;
+                        TreeNode objNode = null;
+                        if (objWeapon == null)
+                        {
+                            objWeapon = CommonFunctions.FindVehicleWeapon(strUndoId, CharacterObject.Vehicles, out objVehicle, out objWeaponMount, out objVehicleMod);
+                            if (objWeapon != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        }
                         else
-                            CharacterObject.Weapons.Remove(objAddWeapon);
+                            objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
+                        if (objWeapon != null)
+                        {
+                            CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
 
-                        // Remove the Weapon from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treWeapons.Nodes[0])?.Remove();
+                            // Remove the Weapn from the character.
+                            if (objWeapon.Parent != null)
+                                objWeapon.Parent.Children.Remove(objWeapon);
+                            else if (objWeaponMount != null)
+                                objWeaponMount.Weapons.Remove(objWeapon);
+                            else if (objVehicleMod != null)
+                                objVehicleMod.Weapons.Remove(objWeapon);
+                            else if (objVehicle != null)
+                                objVehicle.Weapons.Remove(objWeapon);
+                            else
+                                CharacterObject.Weapons.Remove(objWeapon);
+
+                            // Remove the Weapon from the Tree.
+                            objNode?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddWeaponAccessory:
-                    // Locate the Weapon Accessory that was added.
-                    WeaponAccessory objAddWeaponAccessory = CommonFunctions.FindWeaponAccessory(objEntry.Undo.ObjectId, CharacterObject.Weapons);
-                    if (objAddWeaponAccessory != null)
                     {
-                        // Remove the Weapon Accessory.
-                        objAddWeaponAccessory.Parent.WeaponAccessories.Remove(objAddWeaponAccessory);
-
-                        foreach (Gear objLoopGear in objAddWeaponAccessory.Gear)
+                        // Locate the Weapon Accessory that was added.
+                        WeaponAccessory objWeaponAccessory = CommonFunctions.FindWeaponAccessory(strUndoId, CharacterObject.Weapons, out Weapon objWeapon);
+                        TreeNode objNode = null;
+                        if (objWeaponAccessory == null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                            objWeaponAccessory = CommonFunctions.FindVehicleWeaponAccessory(strUndoId, CharacterObject.Vehicles, out objWeapon);
+                            if (objWeapon != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
                         }
+                        else
+                            objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
+                        if (objWeaponAccessory != null)
+                        {
+                            // Remove the Weapon Accessory.
+                            objWeapon.WeaponAccessories.Remove(objWeaponAccessory);
 
-                        // Remove the Weapon Accessory from the tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treWeapons.Nodes[0])?.Remove();
+                            foreach (Gear objLoopGear in objWeaponAccessory.Gear)
+                            {
+                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                            }
+
+                            // Remove the Weapon Accessory from the tree.
+                            objNode?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.IncreaseLifestyle:
-                    // Locate the Lifestyle that was increased.
-                    foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
                     {
-                        if (objLifestyle.Name == objEntry.Undo.ObjectId)
+                        // Locate the Lifestyle that was increased.
+                        Lifestyle objLifestyle = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strUndoId);
+                        if (objLifestyle != null)
                         {
                             objLifestyle.Months -= 1;
                             RefreshSelectedLifestyle();
-                            break;
                         }
                     }
                     break;
                 case NuyenExpenseType.AddArmorGear:
-                    // Locate the Armor Gear that was added.
-                    Armor objFoundArmor = null;
-                    ArmorMod objFoundArmorMod = null;
-                    Gear objAddArmorGear = CommonFunctions.FindArmorGear(objEntry.Undo.ObjectId, CharacterObject.Armor, out objFoundArmor, out objFoundArmorMod);
-                    if (objAddArmorGear != null)
                     {
-                        // Deduct the Qty from the Gear.
-                        objAddArmorGear.Quantity -= objEntry.Undo.Qty;
-                        TreeNode objNode = CommonFunctions.FindNode(objEntry.Undo.ObjectId, treWeapons.Nodes[0]);
-                        if (objNode != null)
+                        // Locate the Armor Gear that was added.
+                        Gear objGear = CommonFunctions.FindArmorGear(strUndoId, CharacterObject.Armor, out Armor objArmor, out ArmorMod objArmorMod);
+                        if (objGear != null)
                         {
-                            // Remove the Node if its Qty has been reduced to 0.
-                            if (objAddArmorGear.Quantity <= 0)
-                                objNode.Remove();
-                            else
-                                objNode.Text = objAddArmorGear.DisplayName;
-                        }
+                            // Deduct the Qty from the Gear.
+                            objGear.Quantity -= objEntry.Undo.Qty;
+                            TreeNode objNode = CommonFunctions.FindNode(strUndoId, treArmor);
 
-                        // Remove the Gear if its Qty has been reduced to 0.
-                        if (objAddArmorGear.Quantity <= 0)
-                        {
-                            // Remove any Improvements created by the Gear.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objAddArmorGear.InternalId);
-                            if (objFoundArmorMod != null)
-                                objFoundArmorMod.Gear.Remove(objAddArmorGear);
-                            else
-                                objFoundArmor.Gear.Remove(objAddArmorGear);
+                            // Remove the Gear if its Qty has been reduced to 0.
+                            if (objGear.Quantity <= 0)
+                            {
+                                CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
 
-                            // Remove any Weapons created by the Gear.
-                            List<string> lstNodesToRemoveIds = new List<string>();
-                            foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objAddArmorGear.InternalId))
-                            {
-                                lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
-                                // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
-                                if (objWeapon.Parent != null)
-                                    objWeapon.Parent.Children.Remove(objWeapon);
-                                else
-                                    CharacterObject.Weapons.Remove(objWeapon);
+                                if (objGear.Parent != null)
+                                {
+                                    objGear.Parent.Children.Remove(objGear);
+                                    objGear.Parent.RefreshMatrixAttributeArray();
+                                }
+                                else if (objArmorMod != null)
+                                    objArmorMod.Gear.Remove(objGear);
+                                else if (objArmor != null)
+                                    objArmor.Gear.Remove(objGear);
+
+                                objNode?.Remove();
                             }
-                            foreach (string strNodeId in lstNodesToRemoveIds)
-                            {
-                                // Remove the Weapons from the TreeView.
-                                CommonFunctions.FindNode(strNodeId, treWeapons)?.Remove();
-                            }
+                            else if (objNode != null)
+                                objNode.Text = objGear.DisplayName;
                         }
                     }
                     break;
                 case NuyenExpenseType.AddVehicleModCyberware:
-                    // Locate the Cyberware that was added.
-                    VehicleMod objAddVehicleModCyberwareMod = null;
-                    Cyberware objAddVehicleModCyberware = CommonFunctions.FindVehicleCyberware(objEntry.Undo.ObjectId, CharacterObject.Vehicles, out objAddVehicleModCyberwareMod);
-                    if (objAddVehicleModCyberware != null)
                     {
-                        CommonFunctions.DeleteCyberware(CharacterObject, objAddVehicleModCyberware, treWeapons, treVehicles);
-                        // Remove the Cyberware.
-                        objAddVehicleModCyberwareMod.Cyberware.Remove(objAddVehicleModCyberware);
+                        // Locate the Cyberware that was added.
+                        Cyberware objCyberware = CommonFunctions.FindVehicleCyberware(strUndoId, CharacterObject.Vehicles, out VehicleMod objVehicleMod);
+                        TreeNode objNode = null;
+                        if (objCyberware == null)
+                        {
+                            objCyberware = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Cyberware);
+                            if (objCyberware != null)
+                                objNode = CommonFunctions.FindNode(strUndoId, treCyberware);
+                        }
+                        else
+                            objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
+                        if (objCyberware != null)
+                        {
+                            CommonFunctions.DeleteCyberware(CharacterObject, objCyberware, treWeapons, treVehicles);
+                            // Remove the Cyberware.
+                            if (objCyberware.Parent != null)
+                            {
+                                objCyberware.Parent.Children.Remove(objCyberware);
+                                objCyberware.Parent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objVehicleMod != null)
+                                objVehicleMod.Cyberware.Remove(objCyberware);
+                            else
+                                CharacterObject.Cyberware.Remove(objCyberware);
 
-                        // Remove the Cyberware from the Tree.
-                        CommonFunctions.FindNode(objEntry.Undo.ObjectId, treVehicles.Nodes[0])?.Remove();
+                            // Remove the Cyberware from the Tree.
+                            objNode?.Remove();
+                        }
                     }
                     break;
                 case NuyenExpenseType.AddCyberwareGear:
-                    // Locate the Gear that was added.
-                    Cyberware objFoundCyberware = null;
-                    Gear objFoundGear = CommonFunctions.FindCyberwareGear(objEntry.Undo.ObjectId, CharacterObject.Cyberware.GetAllDescendants(x => x.Children), out objFoundCyberware);
-                    CommonFunctions.DeleteGear(CharacterObject, objFoundGear, treWeapons, treVehicles);
-                    if (objFoundGear.Parent == null)
-                        objFoundCyberware.Gear.Remove(objFoundGear);
-                    else
                     {
-                        objFoundGear.Parent.Children.Remove(objFoundGear);
-                        objFoundGear.Parent.RefreshMatrixAttributeArray();
+                        // Locate the Gear that was added.
+                        TreeNode objNode = null;
+                        Gear objGear = CommonFunctions.FindCyberwareGear(strUndoId, CharacterObject.Cyberware, out Cyberware objCyberware);
+                        Vehicle objVehicle = null;
+                        WeaponAccessory objWeaponAccessory = null;
+                        if (objGear == null)
+                        {
+                            objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
+                            if (objGear == null)
+                            {
+                                objGear = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Gear);
+                                if (objGear != null)
+                                    objNode = CommonFunctions.FindNode(objGear.InternalId, treGear);
+                            }
+                            else
+                                objNode = CommonFunctions.FindNode(objGear.InternalId, treVehicles);
+                        }
+                        else
+                            objNode = CommonFunctions.FindNode(objGear.InternalId, treCyberware);
+                        if (objGear != null)
+                        {
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+
+                            if (objGear.Parent != null)
+                            {
+                                objGear.Parent.Children.Remove(objGear);
+                                objGear.Parent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objWeaponAccessory != null)
+                                objWeaponAccessory.Gear.Remove(objGear);
+                            else if (objCyberware != null)
+                            {
+                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.RefreshMatrixAttributeArray();
+                            }
+                            else if (objVehicle != null)
+                            {
+                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.RefreshMatrixAttributeArray();
+                            }
+                            else
+                                CharacterObject.Gear.Remove(objGear);
+
+                            objNode?.Remove();
+                        }
                     }
-                    CommonFunctions.FindNode(objFoundGear.InternalId, treCyberware)?.Remove();
                     break;
                 case NuyenExpenseType.AddWeaponGear:
-                    // Locate the Gear that was added.
-                    WeaponAccessory objFoundAccessory = null;
-                    Gear objFoundAccGear = CommonFunctions.FindWeaponGear(objEntry.Undo.ObjectId, CharacterObject.Weapons, out objFoundAccessory);
-                    CommonFunctions.DeleteGear(CharacterObject, objFoundAccGear, treWeapons, treVehicles);
-                    if (objFoundAccGear.Parent == null)
-                        objFoundAccessory.Gear.Remove(objFoundAccGear);
-                    else
                     {
-                        objFoundAccGear.Parent.Children.Remove(objFoundAccGear);
-                        objFoundAccGear.Parent.RefreshMatrixAttributeArray();
+                        // Locate the Gear that was added.
+                        Gear objGear = CommonFunctions.FindWeaponGear(strUndoId, CharacterObject.Weapons, out WeaponAccessory objWeaponAccessory);
+                        TreeNode objNode = null;
+                        Vehicle objVehicle = null;
+                        Cyberware objCyberware = null;
+                        if (objGear == null)
+                        {
+                            objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
+                            if (objGear == null)
+                            {
+                                objGear = CommonFunctions.DeepFindById(strUndoId, CharacterObject.Gear);
+                                if (objGear != null)
+                                    objNode = CommonFunctions.FindNode(objGear.InternalId, treGear);
+                            }
+                            else
+                                objNode = CommonFunctions.FindNode(objGear.InternalId, treVehicles);
+                        }
+                        else
+                            objNode = CommonFunctions.FindNode(objGear.InternalId, treWeapons);
+                        if (objGear != null)
+                        {
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            if (objGear.Parent != null)
+                            {
+                                objGear.Parent.Children.Remove(objGear);
+                                objGear.Parent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objWeaponAccessory != null)
+                                objWeaponAccessory.Gear.Remove(objGear);
+                            else if (objCyberware != null)
+                            {
+                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.RefreshMatrixAttributeArray();
+                            }
+                            else if (objVehicle != null)
+                            {
+                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.RefreshMatrixAttributeArray();
+                            }
+                            else
+                                CharacterObject.Gear.Remove(objGear);
+                            objNode?.Remove();
+                        }
                     }
-                    CommonFunctions.FindNode(objFoundAccGear.InternalId, treWeapons)?.Remove();
                     break;
                 case NuyenExpenseType.ManualAdd:
                 case NuyenExpenseType.ManualSubtract:
@@ -13041,7 +13237,7 @@ namespace Chummer
 
                 foreach (Weapon objWeapon in objWeapons)
                 {
-                    objWeapon.VehicleMounted = true;
+                    objWeapon.ParentVehicle = objVehicle;
                     objVehicle.Weapons.Add(objWeapon);
                 }
 
@@ -15331,7 +15527,7 @@ namespace Chummer
             // Remove the Weapon from the character and add it to the Vehicle Mod.
             CharacterObject.Weapons.Remove(objWeapon);
             objMod.Weapons.Add(objWeapon);
-            objWeapon.VehicleMounted = true;
+            objWeapon.ParentVehicle = objVehicle;
             objWeapon.Location = string.Empty;
 
             // Move the TreeNode to the Vehicle Mod.
@@ -18682,12 +18878,12 @@ namespace Chummer
                 tabPowerUc.MissingDatabindingsWorkaround();
             }
 
-            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).Value);
             }
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
@@ -19529,13 +19725,6 @@ namespace Chummer
                     cboWeaponAmmo.Enabled = false;
                 }
 
-                // If this is a Cyberweapon, grab the STR of the limb.
-                int intUseSTR = 0;
-                if (objWeapon.Cyberware)
-                {
-                    intUseSTR = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.WeaponID == objWeapon.InternalId)?.TotalStrength ?? 0;
-                }
-
                 // Show the Weapon Ranges.
                 lblWeaponRangeMain.Text = objWeapon.Range;
                 lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
@@ -19552,7 +19741,7 @@ namespace Chummer
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
-                lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
+                lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                 lblWeaponRC.Text = objWeapon.TotalRC;
                 lblWeaponAP.Text = objWeapon.TotalAP;
@@ -19595,17 +19784,10 @@ namespace Chummer
                             treWeapons.SelectedNode.ForeColor = SystemColors.GrayText;
                     }
 
-                    // If this is a Cyberweapon, grab the STR of the limb.
-                    int intUseSTR = 0;
-                    if (objWeapon.Cyberware)
-                    {
-                        intUseSTR = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.WeaponID == objWeapon.InternalId)?.TotalStrength ?? 0;
-                    }
-
                     lblWeaponAvail.Text = objWeapon.TotalAvail;
                     lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
-                    lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
+                    lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                     lblWeaponRC.Text = objWeapon.TotalRC;
                     lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                     lblWeaponAP.Text = objWeapon.TotalAP;
@@ -20206,12 +20388,12 @@ namespace Chummer
             _blnSkipRefresh = false;
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public override void UpdateWindowTitle(bool blnCanSkip)
+        public override string FormMode
         {
-            UpdateWindowTitle(LanguageManager.GetString("Title_CareerMode"), blnCanSkip);
+            get
+            {
+                return LanguageManager.GetString("Title_CareerMode");
+            }
         }
 
         /// <summary>

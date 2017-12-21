@@ -48,8 +48,8 @@ namespace Codaxy.WkHtmlToPdf
         public String FooterCenter { get; set; }
         public String FooterRight { get; set; }
         public object State { get; set; }
-        public Dictionary<String, String> Cookies { get; set; }
-        public Dictionary<String, String> ExtraParams { get; set; }
+        public Dictionary<String, String> Cookies { get; } = new Dictionary<string, string>();
+        public Dictionary<String, String> ExtraParams { get; } = new Dictionary<string, string>();
         public String HeaderFontSize { get; set; }
         public String FooterFontSize { get; set; }
         public String HeaderFontName { get; set; }
@@ -64,22 +64,22 @@ namespace Codaxy.WkHtmlToPdf
         public bool Debug { get; set; }
     }
 
-    public class PdfConvert
+    public static class PdfConvert
     {
-        static PdfConvertEnvironment _e;
+        static PdfConvertEnvironment s_E;
 
         public static PdfConvertEnvironment Environment
         {
             get
             {
-                if (_e == null)
-                    _e = new PdfConvertEnvironment
+                if (s_E == null)
+                    s_E = new PdfConvertEnvironment
                     {
                         TempFolderPath = Path.GetTempPath(),
                         WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
                         Timeout = 60000
                     };
-                return _e;
+                return s_E;
             }
         }
 
@@ -189,13 +189,11 @@ namespace Codaxy.WkHtmlToPdf
                 paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
 
-            if (document.ExtraParams != null)
-                foreach (var extraParam in document.ExtraParams)
-                    paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
+            foreach (var extraParam in document.ExtraParams)
+                paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
 
-            if (document.Cookies != null)
-                foreach (var cookie in document.Cookies)
-                    paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
+            foreach (var cookie in document.Cookies)
+                paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
 
             paramsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, outputPdfFilePath);
 
