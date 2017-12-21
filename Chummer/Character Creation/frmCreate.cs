@@ -18605,11 +18605,11 @@ namespace Chummer
                         objLifestyle.Source = "SR5";
                         objLifestyle.Page = "373";
                         objLifestyle.Comforts = Convert.ToInt32(objXmlLifestyle["comforts"].InnerText);
-                        objLifestyle.ComfortsEntertainment = Convert.ToInt32(objXmlLifestyle["comfortsentertainment"].InnerText);
                         objLifestyle.Security = Convert.ToInt32(objXmlLifestyle["security"].InnerText);
-                        objLifestyle.SecurityEntertainment = Convert.ToInt32(objXmlLifestyle["securityentertainment"].InnerText);
                         objLifestyle.Area = Convert.ToInt32(objXmlLifestyle["area"].InnerText);
-                        objLifestyle.AreaEntertainment = Convert.ToInt32(objXmlLifestyle["areaentertainment"].InnerText);
+                        objLifestyle.BaseComforts = Convert.ToInt32(objXmlLifestyle["comfortsminimum"].InnerText);
+                        objLifestyle.BaseSecurity = Convert.ToInt32(objXmlLifestyle["securityminimum"].InnerText);
+                        objLifestyle.BaseArea = Convert.ToInt32(objXmlLifestyle["areaminimum"].InnerText);
 
                         foreach (LifestyleQuality objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
                             objLifestyle.LifestyleQualities.Add(objXmlQuality);

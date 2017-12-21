@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -67,6 +67,7 @@
             this.lblQualitySourceLabel = new System.Windows.Forms.Label();
             this.lblQualityCost = new System.Windows.Forms.Label();
             this.lblQualityCostLabel = new System.Windows.Forms.Label();
+            this.chkPrimaryTenant = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -371,22 +372,22 @@
             // 
             this.treLifestyleQualities.Location = new System.Drawing.Point(1, 36);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode17.Name = "nodPositiveLifestyleQualities";
-            treeNode17.Tag = "Label_SummaryPositiveQualities";
-            treeNode17.Text = "Positive Qualities";
-            treeNode18.Name = "nodNegativeLifestyleQualities";
-            treeNode18.Tag = "Label_SummaryNegativeQualities";
-            treeNode18.Text = "Negative Qualities";
-            treeNode19.Name = "nodLifestyleEntertainments";
-            treeNode19.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode19.Text = "Entertainments";
-            treeNode20.Name = "nodFreeMatrixGrids";
-            treeNode20.Text = "Free Matrix Grids";
+            treeNode1.Name = "nodPositiveLifestyleQualities";
+            treeNode1.Tag = "Label_SummaryPositiveQualities";
+            treeNode1.Text = "Positive Qualities";
+            treeNode2.Name = "nodNegativeLifestyleQualities";
+            treeNode2.Tag = "Label_SummaryNegativeQualities";
+            treeNode2.Text = "Negative Qualities";
+            treeNode3.Name = "nodLifestyleEntertainments";
+            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodFreeMatrixGrids";
+            treeNode4.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18,
-            treeNode19,
-            treeNode20});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
             this.treLifestyleQualities.Size = new System.Drawing.Size(249, 286);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
@@ -467,6 +468,17 @@
             this.lblQualityCostLabel.Tag = "Label_Cost";
             this.lblQualityCostLabel.Text = "Cost:";
             // 
+            // chkPrimaryTenant
+            // 
+            this.chkPrimaryTenant.AutoSize = true;
+            this.chkPrimaryTenant.Location = new System.Drawing.Point(423, 248);
+            this.chkPrimaryTenant.Name = "chkPrimaryTenant";
+            this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
+            this.chkPrimaryTenant.TabIndex = 74;
+            this.chkPrimaryTenant.Text = "Primary Tenant";
+            this.chkPrimaryTenant.UseVisualStyleBackColor = true;
+            this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.chkPrimaryTenant_CheckedChanged);
+            // 
             // frmSelectLifestyleAdvanced
             // 
             this.AcceptButton = this.cmdOK;
@@ -474,6 +486,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(572, 342);
+            this.Controls.Add(this.chkPrimaryTenant);
             this.Controls.Add(this.lblQualityCost);
             this.Controls.Add(this.lblQualityCostLabel);
             this.Controls.Add(this.lblQualityLp);
@@ -594,5 +607,6 @@
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityCost;
         private System.Windows.Forms.Label lblQualityCostLabel;
+        private System.Windows.Forms.CheckBox chkPrimaryTenant;
     }
 }

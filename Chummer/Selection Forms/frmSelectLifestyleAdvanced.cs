@@ -195,9 +195,19 @@ namespace Chummer
             {
                 nudRoommates.Value = 0;
             }
+
             nudRoommates.Enabled = !chkTrustFund.Checked;
-            CalculateValues();
+
+            if (!_blnSkipRefresh)
+                CalculateValues();
         }
+
+        private void chkPrimaryTenant_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnSkipRefresh)
+                CalculateValues();
+        }
+
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -348,11 +358,18 @@ namespace Chummer
 
         private void nudPercentage_ValueChanged(object sender, EventArgs e)
         {
-            CalculateValues();
+            if (!_blnSkipRefresh)
+                CalculateValues();
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
+            if (!_blnSkipRefresh)
+
+                if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
+                {
+                    chkPrimaryTenant.Checked = true;
+                }
             CalculateValues();
         }
 
@@ -474,13 +491,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyle that was created in the dialogue.
         /// </summary>
-        public Lifestyle SelectedLifestyle
-        {
-            get
-            {
-                return _objLifestyle;
-            }
-        }
+        public Lifestyle SelectedLifestyle => _objLifestyle;
 
         /// <summary>
         /// Type of Lifestyle to create.
@@ -517,6 +528,7 @@ namespace Chummer
             _objLifestyle.Security = decimal.ToInt32(nudSecurity.Value);
             _objLifestyle.TrustFund = chkTrustFund.Checked;
             _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
+            _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
@@ -541,10 +553,10 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private decimal CalculateValues()
+        private void CalculateValues()
         {
             if (_blnSkipRefresh)
-                return 0;
+                return;
 
             int intLP = 0;
             decimal decBaseNuyen = 0;
@@ -588,9 +600,9 @@ namespace Chummer
                 intLP -= objQuality.LP;
                 intMultiplier += objQuality.Multiplier;
                 intMultiplierBaseOnly += objQuality.BaseMultiplier;
-                intMaxArea += objQuality.AreaCost;
-                intMaxComfort += objQuality.ComfortCost;
-                intMaxSec += objQuality.SecurityCost;
+                intMaxArea += objQuality.AreaMaximum;
+                intMaxComfort += objQuality.ComfortMaximum;
+                intMaxSec += objQuality.SecurityMaximum;
                 intMinArea += objQuality.AreaMinimum;
                 intMinComfort += objQuality.ComfortMinimum;
                 intMinSec += objQuality.SecurityMinimum;
@@ -638,8 +650,8 @@ namespace Chummer
             Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", nudArea.Maximum.ToString(GlobalOptions.CultureInfo));
 
             //calculate the total LP
-            objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/lifestylePoints/lifestylePoint[name = \"" + strBaseLifestyle + "\"]");
-            intLP += Convert.ToInt32(objXmlNode?["amount"]?.InnerText);
+            objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
+            intLP += Convert.ToInt32(objXmlNode?["lp"]?.InnerText);
             intLP -= intComfortsValue - intMinComfort;
             intLP -= intAreaValue - intMinArea;
             intLP -= intSecurityValue - intMinSec;
@@ -673,13 +685,14 @@ namespace Chummer
             }
             decNuyen += decExtraCostAssets + (decExtraCostAssets * (intMultiplier / 100.0m));
             decNuyen *= nudPercentage.Value / 100.0m;
-            decNuyen /= (intRoommatesValue + 1.0m);
+            if (!chkPrimaryTenant.Checked)
+            {
+                decNuyen /= intRoommatesValue + 1.0m;
+            }
             decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m)); ;
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
-            return decNuyen;
         }
 
         /// <summary>
@@ -727,5 +740,6 @@ namespace Chummer
             //cboBaseLifestyle.Left = intLeft + 6;
         }
         #endregion
+
     }
 }
