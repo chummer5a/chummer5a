@@ -1665,6 +1665,7 @@
     <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml" />
     <Content Include="data\sheets.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

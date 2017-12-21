@@ -888,14 +888,14 @@
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>5</accuracy>
+      <accuracy>7</accuracy>
       <reach>0</reach>
-      <damage>11P</damage>
-      <ap>-2</ap>
-      <mode>SA/BF</mode>
+      <damage>14P</damage>
+      <ap>-4</ap>
+      <mode>SA</mode>
       <rc>0</rc>
       <ammo>18(c)</ammo>
-      <avail>8R</avail>
+      <avail>5R</avail>
       <cost>2800</cost>
       <source>GH3</source>
       <page>32</page>
