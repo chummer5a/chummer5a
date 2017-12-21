@@ -82,28 +82,22 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
 
 #if !DEBUG
-        AppDomain.CurrentDomain.UnhandledException += (o, e) =>
-        {
-            if (e.ExceptionObject is Exception ex)
-                CrashHandler.WebMiniDumpHandler(ex);
+                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+                {
+                    if (e.ExceptionObject is Exception ex)
+                        CrashHandler.WebMiniDumpHandler(ex);
 
-            //main.Hide();
-            //main.ShowInTaskbar = false;
-        };
+                    //main.Hide();
+                    //main.ShowInTaskbar = false;
+                };
 #endif
 
                 sw.TaskEnd("Startup");
-                if (LanguageManager.Loaded)
-                {
-                    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                    s_FrmMainForm = new frmChummerMain();
-                    Application.Run(s_FrmMainForm);
-                }
-                else
-                {
-                    Application.Exit();
-                }
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
+                s_FrmMainForm = new frmChummerMain();
+                Application.Run(s_FrmMainForm);
 
                 Log.Info(s_Heatmap.GenerateInfo());
             }

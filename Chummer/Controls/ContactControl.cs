@@ -664,8 +664,14 @@ namespace Chummer
             }
             foreach (XmlNode objXmlNode in XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype"))
             {
-                string strName = objXmlNode.InnerText;
-                lstMetatypes.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+                string strName = objXmlNode["name"].InnerText;
+                lstMetatypes.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
+                foreach (XmlNode objXmlMetavariantNode in objXmlNode.SelectNodes("metavariants/metavariant"))
+                {
+                    string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
+                    if (!lstMetatypes.Any(x => x.Name == strMetavariantName))
+                        lstMetatypes.Add(new ListItem(strMetavariantName, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName));
+                }
             }
 
             SortListItem objContactSort = new SortListItem();
