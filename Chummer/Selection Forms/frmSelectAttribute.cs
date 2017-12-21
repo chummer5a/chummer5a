@@ -18,6 +18,7 @@
  */
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -26,7 +27,7 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private List<ListItem> _lstAttributes = new List<ListItem>();
+        private readonly List<ListItem> _lstAttributes = null;
 
         #region Control Events
         public frmSelectAttribute()
@@ -35,42 +36,18 @@ namespace Chummer
             LanguageManager.Load(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
-            ListItem objBOD = new ListItem();
-            ListItem objAGI = new ListItem();
-            ListItem objREA = new ListItem();
-            ListItem objSTR = new ListItem();
-            ListItem objCHA = new ListItem();
-            ListItem objINT = new ListItem();
-            ListItem objLOG = new ListItem();
-            ListItem objWIL = new ListItem();
-            ListItem objEDG = new ListItem();
-            objBOD.Value = "BOD";
-            objBOD.Name = LanguageManager.GetString("String_AttributeBODShort");
-            objAGI.Value = "AGI";
-            objAGI.Name = LanguageManager.GetString("String_AttributeAGIShort");
-            objREA.Value = "REA";
-            objREA.Name = LanguageManager.GetString("String_AttributeREAShort");
-            objSTR.Value = "STR";
-            objSTR.Name = LanguageManager.GetString("String_AttributeSTRShort");
-            objCHA.Value = "CHA";
-            objCHA.Name = LanguageManager.GetString("String_AttributeCHAShort");
-            objINT.Value = "INT";
-            objINT.Name = LanguageManager.GetString("String_AttributeINTShort");
-            objLOG.Value = "LOG";
-            objLOG.Name = LanguageManager.GetString("String_AttributeLOGShort");
-            objWIL.Value = "WIL";
-            objWIL.Name = LanguageManager.GetString("String_AttributeWILShort");
-            objEDG.Value = "EDG";
-            objEDG.Name = LanguageManager.GetString("String_AttributeEDGShort");
-            _lstAttributes.Add(objBOD);
-            _lstAttributes.Add(objAGI);
-            _lstAttributes.Add(objREA);
-            _lstAttributes.Add(objSTR);
-            _lstAttributes.Add(objCHA);
-            _lstAttributes.Add(objINT);
-            _lstAttributes.Add(objLOG);
-            _lstAttributes.Add(objWIL);
-            _lstAttributes.Add(objEDG);
+            _lstAttributes = new List<ListItem>
+            {
+                new ListItem("BOD", LanguageManager.GetString("String_AttributeBODShort")),
+                new ListItem("AGI", LanguageManager.GetString("String_AttributeAGIShort")),
+                new ListItem("REA", LanguageManager.GetString("String_AttributeREAShort")),
+                new ListItem("STR", LanguageManager.GetString("String_AttributeSTRShort")),
+                new ListItem("CHA", LanguageManager.GetString("String_AttributeCHAShort")),
+                new ListItem("INT", LanguageManager.GetString("String_AttributeINTShort")),
+                new ListItem("LOG", LanguageManager.GetString("String_AttributeLOGShort")),
+                new ListItem("WIL", LanguageManager.GetString("String_AttributeWILShort")),
+                new ListItem("EDG", LanguageManager.GetString("String_AttributeEDGShort"))
+            };
 
             cboAttribute.BeginUpdate();
             cboAttribute.ValueMember = "Value";
@@ -157,12 +134,7 @@ namespace Chummer
         /// </summary>
         public void AddMAG()
         {
-            ListItem objMAG = new ListItem
-            {
-                Value = "MAG",
-                Name = LanguageManager.GetString("String_AttributeMAGShort")
-            };
-            _lstAttributes.Add(objMAG);
+            _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort")));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -176,12 +148,7 @@ namespace Chummer
         /// </summary>
         public void AddMAGAdept()
         {
-            ListItem objMAG = new ListItem
-            {
-                Value = "MAGAdept",
-                Name = LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"
-            };
-            _lstAttributes.Add(objMAG);
+            _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -195,12 +162,7 @@ namespace Chummer
         /// </summary>
         public void AddRES()
         {
-            ListItem objRES = new ListItem
-            {
-                Value = "RES",
-                Name = LanguageManager.GetString("String_AttributeRESShort")
-            };
-            _lstAttributes.Add(objRES);
+            _lstAttributes.Add(new ListItem("RES", LanguageManager.GetString("String_AttributeRESShort")));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -214,12 +176,7 @@ namespace Chummer
         /// </summary>
         public void AddDEP()
         {
-            ListItem objDEP = new ListItem
-            {
-                Value = "DEP",
-                Name = LanguageManager.GetString("String_AttributeDEPShort")
-            };
-            _lstAttributes.Add(objDEP);
+            _lstAttributes.Add(new ListItem("DEP", LanguageManager.GetString("String_AttributeDEPShort")));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -234,13 +191,10 @@ namespace Chummer
         /// <param name="strValue">Single Attribute to display.</param>
         public void SingleAttribute(string strValue)
         {
-            List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem
+            List<ListItem> lstItems = new List<ListItem>
             {
-                Value = strValue,
-                Name = strValue
+                new ListItem(strValue, strValue)
             };
-            lstItems.Add(objItem);
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -253,17 +207,26 @@ namespace Chummer
         /// Limit the list to a few Attributes.
         /// </summary>
         /// <param name="strValue">List of Attributes.</param>
-        public void LimitToList(IEnumerable<string> strValue)
+        public void LimitToList(IEnumerable<string> strValue, Character objCharacter)
         {
             _lstAttributes.Clear();
             foreach (string strAttribute in strValue)
             {
-                ListItem objItem = new ListItem
+                if (strAttribute == "MAGAdept")
                 {
-                    Value = strAttribute,
-                    Name = LanguageManager.GetString("String_Attribute" + strAttribute + "Short")
-                };
-                _lstAttributes.Add(objItem);
+                    if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
+                    {
+                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
+                    }
+                    if (!_lstAttributes.Any(x => x.Value == "MAG"))
+                        _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort")));
+                }
+                else
+                {
+                    _lstAttributes.Add(new ListItem(strAttribute, LanguageManager.GetString("String_Attribute" + strAttribute + "Short")));
+                    if (strAttribute == "MAG" && objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept && !_lstAttributes.Any(x => x.Value == "MAGAdept"))
+                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
+                }
             }
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;

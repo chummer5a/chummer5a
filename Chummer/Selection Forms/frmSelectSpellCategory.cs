@@ -54,12 +54,8 @@ namespace Chummer
 
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";

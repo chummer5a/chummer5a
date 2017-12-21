@@ -146,7 +146,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
                 else
@@ -778,7 +778,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {

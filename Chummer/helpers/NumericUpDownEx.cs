@@ -22,10 +22,10 @@ namespace Chummer
     public class NumericUpDownEx : NumericUpDown
     {
         // reference to the underlying TextBox control
-        private TextBox _textbox;
+        private readonly TextBox _textbox;
 
         // reference to the underlying UpDownButtons control
-        private Control _upDownButtons;
+        private readonly Control _upDownButtons;
 
         // default value that will be used when incrementing via mousewheel
         private int _intMouseIncrement = 1;

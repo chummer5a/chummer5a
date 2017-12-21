@@ -12,7 +12,7 @@ namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
-        public PropertyChangedEventHandler ChildPropertyChanged;
+        public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
 

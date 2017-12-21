@@ -43,7 +43,7 @@ namespace Chummer
 
     static class MatrixAttributes
     {
-        public static string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
+        public static readonly string[] MatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker

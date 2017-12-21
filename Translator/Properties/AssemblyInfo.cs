@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,11 +8,11 @@ using System.Runtime.Versioning;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyFileVersion("0.0.5.103")]
+[assembly: AssemblyFileVersion("5.196.0.0")]
 [assembly: AssemblyProduct("Translator")]
 [assembly: AssemblyTitle("Translator")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyVersion("0.0.5.103")]
+[assembly: AssemblyVersion("5.196.0.0")]
 [assembly: CompilationRelaxations(8)]
 [assembly: ComVisible(false)]
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]

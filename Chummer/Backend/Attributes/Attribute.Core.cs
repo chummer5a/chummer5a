@@ -144,8 +144,8 @@ namespace Chummer.Backend.Attributes
         public enum AttributeCategory
         {
             Standard = 0,
-            Special = 1,
-            Shapeshifter = 2
+            Special,
+            Shapeshifter
         }
 
         #region Properties
@@ -1305,7 +1305,7 @@ namespace Chummer.Backend.Attributes
 		/// </summary>
 		/// <param name="strValue">String value to convert.</param>
 		/// <param name="strAbbrev">Linked attribute abbreviation.</param>
-		public AttributeCategory ConvertToAttributeCategory(string strAbbrev)
+		public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
 		{
 			switch (strAbbrev)
 			{
@@ -1325,7 +1325,7 @@ namespace Chummer.Backend.Attributes
 		/// Convert a string to an Attribute Category.
 		/// </summary>
 		/// <param name="strValue">String value to convert.</param>
-		public AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
+		public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
 		{
 			//If a value does exist, test whether it belongs to a shapeshifter form.
 			switch (strValue)
@@ -1431,7 +1431,7 @@ namespace Chummer.Backend.Attributes
             }
         }
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements)
+        private void OnImprovementEvent(ICollection<Improvement> improvements)
         {
             bool blnHasAugmented = false;
             if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.Augmented != 0))

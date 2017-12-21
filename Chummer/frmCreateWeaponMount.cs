@@ -14,7 +14,7 @@ namespace Chummer
 		private readonly List<object> _lstControl;
 		private readonly List<object> _lstSize;
 		private bool _loading = true;
-	    private Vehicle _vehicle;
+	    private readonly Vehicle _vehicle;
 	    private readonly Character _objCharacter;
 		private XmlDocument _xmlDoc;
 
@@ -44,11 +44,7 @@ namespace Chummer
                     bool add = !(node["optionaldrone"] != null && !_vehicle.IsDrone);
                     if (add)
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = node["id"].InnerText,
-                            Name = node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText
-                        };
+                        ListItem objItem = new ListItem(node["id"].InnerText, node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText);
                         switch (node["category"].InnerText)
                         {
                             case "Visibility":
@@ -179,7 +175,7 @@ namespace Chummer
 
 	    public decimal Markup => nudMarkup.Value;
 
-	    public bool AllowDiscounts = false;
+	    public bool AllowDiscounts { get; set; } = false;
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             UpdateInfo();

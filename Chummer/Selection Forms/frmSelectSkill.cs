@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Linq;
 using Chummer.Classes;
 using System.Text;
@@ -37,7 +37,7 @@ namespace Chummer
         private string _strLimitToSkill = string.Empty;
         private string _strLimitToCategories = string.Empty;
         private string _strForceSkill = string.Empty;
-        private string _strSourceName = string.Empty;
+        private readonly string _strSourceName = string.Empty;
         private bool _blnKnowledgeSkill = false;
         private int _intMinimumRating = 0;
         private int _intMaximumRating = int.MaxValue;
@@ -155,12 +155,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strXmlSkillName,
-                        Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName
-                    };
-                    lstSkills.Add(objItem);
+                    lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
                 }
 
                 // Add in any Exotic Skills the character has.
@@ -190,17 +185,10 @@ namespace Chummer
 
                         if (blnAddSkill)
                         {
-                            ListItem objItem = new ListItem
-                            {
-                                Value = objExoticSkill.Name + " (" + objExoticSkill.Specific + ")"
-                            };
                             // Use the translated Exotic Skill name if available.
-                            XmlNode objXmlSkill =
-                                _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
-                            objItem.Name = objXmlSkill["translate"] != null
-                                ? objXmlSkill["translate"].InnerText + " (" + objExoticSkill.DisplaySpecialization + ")"
-                                : objExoticSkill.Name + " (" + objExoticSkill.DisplaySpecialization + ")";
-                            lstSkills.Add(objItem);
+                            XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
+                            lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ")",
+                                (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + " (" + objExoticSkill.DisplaySpecialization + ")"));
                         }
                     }
                 }
@@ -237,23 +225,13 @@ namespace Chummer
                     {
                         string strXmlSkillName = objXmlSkill["name"].InnerText;
                         dicSkillXmlFound[strXmlSkillName] = true;
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strXmlSkillName,
-                            Name = objXmlSkill["translate"]?.InnerText ?? strXmlSkillName
-                        };
-                        lstSkills.Add(objItem);
+                        lstSkills.Add(new ListItem(strXmlSkillName, objXmlSkill["translate"]?.InnerText ?? strXmlSkillName));
                     }
                     foreach (KeyValuePair<string, bool> objLoopEntry in dicSkillXmlFound)
                     {
                         if (!objLoopEntry.Value)
                         {
-                            ListItem objItem = new ListItem
-                            {
-                                Value = objLoopEntry.Key,
-                                Name = objLoopEntry.Key
-                            };
-                            lstSkills.Add(objItem);
+                            lstSkills.Add(new ListItem(objLoopEntry.Key, objLoopEntry.Key));
                         }
                     }
                 }
@@ -262,16 +240,10 @@ namespace Chummer
                     // Instead of showing all available Active Skills, show a list of Knowledge Skills that the character currently has.
                     foreach (KnowledgeSkill objKnow in _objCharacter.SkillsSection.KnowledgeSkills)
                     {
-                        if (objKnow.Rating < _intMinimumRating || objKnow.Rating > _intMaximumRating)
+                        if (objKnow.Rating >= _intMinimumRating && objKnow.Rating < _intMaximumRating)
                         {
-                            continue;
+                            lstSkills.Add(new ListItem(objKnow.Name, objKnow.DisplayName));
                         }
-                        ListItem objSkill = new ListItem
-                        {
-                            Value = objKnow.Name,
-                            Name = objKnow.DisplayName
-                        };
-                        lstSkills.Add(objSkill);
                     }
                 }
             }

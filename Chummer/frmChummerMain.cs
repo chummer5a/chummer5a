@@ -27,7 +27,7 @@ using System.Reflection;
  using System.Windows;
  using System.Windows.Shapes;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
  using Application = System.Windows.Forms.Application;
  using DataFormats = System.Windows.Forms.DataFormats;
  using DragDropEffects = System.Windows.Forms.DragDropEffects;
@@ -40,22 +40,23 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Net;
 
 namespace Chummer
 {
-    public partial class frmMain : Form
+    public partial class frmChummerMain : Form
     {
         private frmOmae _frmOmae;
         private frmDiceRoller _frmRoller;
         private frmUpdate _frmUpdate;
-        private List<Character> _lstCharacters = new List<Character>();
-        private List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
+        private readonly List<Character> _lstCharacters = new List<Character>();
+        private readonly List<CharacterShared> _lstOpenCharacterForms = new List<CharacterShared>();
         private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion = string.Empty;
 
         #region Control Events
-        public frmMain()
+        public frmChummerMain()
         {
             InitializeComponent();
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
@@ -75,7 +76,7 @@ namespace Chummer
 #if !DEBUG
             _workerVersionUpdateChecker.WorkerReportsProgress = false;
             _workerVersionUpdateChecker.WorkerSupportsCancellation = false;
-            _workerVersionUpdateChecker.DoWork += Utils.DoCacheGitVersion;
+            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
             _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
             Application.Idle += IdleUpdateCheck;
             _workerVersionUpdateChecker.RunWorkerAsync();
@@ -93,7 +94,7 @@ namespace Chummer
             // Populate the MRU list.
             PopulateMRUToolstripMenu();
 
-            GlobalOptions.MainForm = this;
+            Program.MainForm = this;
 
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -203,7 +204,82 @@ namespace Chummer
             }
         }
 
-        public void CheckForUpdate(object sender, EventArgs e)
+        private static void DoCacheGitVersion(object sender, EventArgs e)
+        {
+            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
+            if (GlobalOptions.PreferNightlyBuilds)
+            {
+                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
+            }
+            HttpWebRequest request = null;
+            try
+            {
+                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
+                request = objTemp as HttpWebRequest;
+            }
+            catch (System.Security.SecurityException)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            if (request == null)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+            request.Accept = "application/json";
+            // Get the response.
+
+            HttpWebResponse response = null;
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException)
+            {
+            }
+
+            // Get the stream containing content returned by the server.
+            Stream dataStream = response?.GetResponseStream();
+            if (dataStream == null)
+            {
+                Utils.CachedGitVersion = null;
+                return;
+            }
+            Version verLatestVersion = null;
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+
+            string responseFromServer = reader.ReadToEnd();
+            string[] stringSeparators = new string[] { "," };
+            string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
+            if (!string.IsNullOrEmpty(line))
+            {
+                string strVersion = line.Substring(line.IndexOf(':') + 1);
+                if (strVersion.Contains('}'))
+                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
+                strVersion = strVersion.FastEscape('\"');
+                // Adds zeroes if minor and/or build version are missing
+                while (strVersion.Count(x => x == '.') < 2)
+                {
+                    strVersion = strVersion + ".0";
+                }
+                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
+            }
+            // Cleanup the streams and the response.
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+
+            Utils.CachedGitVersion = verLatestVersion;
+            return;
+        }
+
+        private void CheckForUpdate(object sender, EventArgs e)
         {
             if (Utils.GitUpdateAvailable() > 0)
             {
@@ -221,7 +297,7 @@ namespace Chummer
         }
 
         private readonly Stopwatch IdleUpdateCheck_StopWatch = Stopwatch.StartNew();
-        public void IdleUpdateCheck(object sender, EventArgs e)
+        private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
             if (IdleUpdateCheck_StopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)
@@ -405,7 +481,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -426,7 +502,7 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             Character objOpenCharacter = LoadCharacter(strFileName);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -657,7 +733,7 @@ namespace Chummer
     //        }
         }
 
-        private bool IsVisibleOnAnyScreen()
+        private static bool IsVisibleOnAnyScreen()
         {
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
@@ -676,7 +752,7 @@ namespace Chummer
                     lstCharacters[i] = objLoopCharacter;
             });
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
+            Program.MainForm.OpenCharacterList(lstCharacters);
         }
 
         private void frmMain_DragEnter(object sender, DragEventArgs e)
@@ -809,7 +885,7 @@ namespace Chummer
                         lstCharacters[i] = objLoopCharacter;
                 });
                 Cursor = Cursors.Default;
-                GlobalOptions.MainForm.OpenCharacterList(lstCharacters);
+                Program.MainForm.OpenCharacterList(lstCharacters);
                 Application.DoEvents();
                 Timekeeper.Finish("load_sum");
                 Timekeeper.Log();
@@ -883,7 +959,7 @@ namespace Chummer
         /// <param name="blnIncludeInMRU">Whether or not the file should appear in the MRU list.</param>
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
+        public Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true)
         {
             Character objCharacter = null;
             if (File.Exists(strFileName) && strFileName.EndsWith("chum5"))
@@ -931,14 +1007,14 @@ namespace Chummer
                     }
                 }
 
-                GlobalOptions.MainForm.OpenCharacters.Add(objCharacter);
+                OpenCharacters.Add(objCharacter);
                 Timekeeper.Start("load_file");
                 blnLoaded = objCharacter.Load();
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
                     objCharacter.Dispose();
-                    GlobalOptions.MainForm.OpenCharacters.Remove(objCharacter);
+                    OpenCharacters.Remove(objCharacter);
                     return null;
                 }
 
@@ -1111,16 +1187,14 @@ namespace Chummer
             }
         }
 
-        public List<Character> OpenCharacters
+        public IList<Character> OpenCharacters
         {
             get { return _lstCharacters; }
-            set { _lstCharacters = value; }
         }
 
-        public List<CharacterShared> OpenCharacterForms
+        public IList<CharacterShared> OpenCharacterForms
         {
             get { return _lstOpenCharacterForms; }
-            set { _lstOpenCharacterForms = value; }
         }
         #endregion
 

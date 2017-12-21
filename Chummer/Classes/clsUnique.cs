@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -115,7 +115,7 @@ namespace Chummer
         /// Convert a string to a QualityType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public QualityType ConvertToQualityType(string strValue)
+        public static QualityType ConvertToQualityType(string strValue)
         {
             switch (strValue)
             {
@@ -793,7 +793,7 @@ namespace Chummer
         private int CalculatedBP()
         {
             int intReturn = _intBP;
-            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.Shared_Methods.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
+            if (_nodDiscounts?["value"] != null && _nodDiscounts.HasChildNodes && Backend.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
             {
                 if (Type == QualityType.Positive)
                 {
@@ -1015,7 +1015,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Character _objLinkedCharacter;
 
-        private List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -1023,7 +1023,7 @@ namespace Chummer
         /// Convert a string to a SpiritType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public SpiritType ConvertToSpiritType(string strValue)
+        public static SpiritType ConvertToSpiritType(string strValue)
         {
             switch (strValue)
             {
@@ -1063,7 +1063,7 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
+            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
                 */
         }
@@ -1216,7 +1216,7 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
+        private static void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
@@ -1419,11 +1419,11 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5"))
                 {
-                    Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     if (objOpenCharacter != null)
                         _objLinkedCharacter = objOpenCharacter;
                     else
-                        _objLinkedCharacter = frmMain.LoadCharacter(strFile, string.Empty, false, false);
+                        _objLinkedCharacter = Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1432,9 +1432,9 @@ namespace Chummer
             {
                 if (_objOldLinkedCharacter != null)
                 {
-                    if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
-                        GlobalOptions.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
+                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.Dispose();
                     }
                 }
@@ -1457,7 +1457,7 @@ namespace Chummer
         /// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<Image> Mugshots
+		public IList<Image> Mugshots
         {
             get
             {
@@ -1465,13 +1465,6 @@ namespace Chummer
                     return LinkedCharacter.Mugshots;
                 else
                     return _lstMugshots;
-            }
-            set
-            {
-                if (LinkedCharacter != null)
-                    LinkedCharacter.Mugshots = value;
-                else
-                    _lstMugshots = value;
             }
         }
 
@@ -2544,11 +2537,10 @@ namespace Chummer
     public class Focus : INamedItemWithGuid
     {
         private Guid _guiID;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private string _strName = string.Empty;
         private Guid _guiGearId;
         private int _intRating;
-        internal string DisplayName;
 
         #region Constructor, Create, Save, and Load Methods
         public Focus(Character objCharacter)
@@ -2591,6 +2583,8 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString();
 
+        public string DisplayName { get; set; }
+
         /// <summary>
         /// Foci's name.
         /// </summary>
@@ -2629,7 +2623,7 @@ namespace Chummer
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
@@ -2825,10 +2819,9 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get => _lstGear;
-            set => _lstGear = value;
         }
         #endregion
     }
@@ -4388,7 +4381,7 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public List<MartialArtAdvantage> Advantages => _lstAdvantages;
+        public IList<MartialArtAdvantage> Advantages => _lstAdvantages;
         public IList<MartialArtAdvantage> Children => Advantages;
 
         /// <summary>
@@ -4998,7 +4991,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
-        private string _strUnique;
+        private string _strUnique = Guid.NewGuid().ToString();
 
         private int _intConnection = 1;
         private int _intLoyalty = 1;
@@ -5019,14 +5012,14 @@ namespace Chummer
         private Color _objColour;
         private bool _blnFree;
         private bool _blnIsGroup;
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private bool _blnMadeMan;
         private bool _blnBlackmail;
         private bool _blnFamily;
         private bool _readonly;
         private bool _blnForceLoyalty;
 
-        private List<Image> _lstMugshots = new List<Image>();
+        private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
         
         public event PropertyChangedEventHandler PropertyChanged;
@@ -5036,7 +5029,7 @@ namespace Chummer
         /// Convert a string to a ContactType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public ContactType ConvertToContactType(string strValue)
+        public static ContactType ConvertToContactType(string strValue)
         {
             switch (strValue)
             {
@@ -5097,7 +5090,7 @@ namespace Chummer
             SaveMugshots(objWriter);
 
             /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
+            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
                 LinkedCharacter.Save();
                 */
 
@@ -5501,15 +5494,10 @@ namespace Chummer
         /// <summary>
         /// Unique ID for this contact
         /// </summary>
-        public String GUID
+        public string GUID
         {
             get
             {
-                if (_strUnique == null)
-                {
-                    _strUnique = Guid.NewGuid().ToString();
-                }
-
                 return _strUnique;
             }
         }
@@ -5592,11 +5580,11 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5"))
                 {
-                    Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                     if (objOpenCharacter != null)
                         _objLinkedCharacter = objOpenCharacter;
                     else
-                        _objLinkedCharacter = frmMain.LoadCharacter(strFile, string.Empty, false, false);
+                        _objLinkedCharacter = Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         _objCharacter.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -5605,9 +5593,9 @@ namespace Chummer
             {
                 if (_objOldLinkedCharacter != null)
                 {
-                    if (!GlobalOptions.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
+                    if (!Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(_objOldLinkedCharacter) && x != _objOldLinkedCharacter))
                     {
-                        GlobalOptions.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
+                        Program.MainForm.OpenCharacters.Remove(_objOldLinkedCharacter);
                         _objOldLinkedCharacter.Dispose();
                     }
                 }
@@ -5639,7 +5627,7 @@ namespace Chummer
         /// <summary>
 		/// Character's portraits encoded using Base64.
 		/// </summary>
-		public List<Image> Mugshots
+		public IList<Image> Mugshots
         {
             get
             {
@@ -5647,13 +5635,6 @@ namespace Chummer
                     return LinkedCharacter.Mugshots;
                 else
                     return _lstMugshots;
-            }
-            set
-            {
-                if (LinkedCharacter != null)
-                    LinkedCharacter.Mugshots = value;
-                else
-                    _lstMugshots = value;
             }
         }
 

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Shared_Methods;
+using Chummer.Backend;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -229,12 +229,7 @@ namespace Chummer
                     continue;
 
                 string strName = objXmlPower["name"].InnerText;
-                ListItem objItem = new ListItem
-                {
-                    Value = strName,
-                    Name = objXmlPower["translate"]?.InnerText ?? strName
-                };
-                lstPower.Add(objItem);
+                lstPower.Add(new ListItem(strName, objXmlPower["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstPower.Sort(objSort.Compare);

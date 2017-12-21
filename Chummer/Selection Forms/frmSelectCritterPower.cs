@@ -29,7 +29,7 @@ namespace Chummer
     {
         private string _strSelectedPower = string.Empty;
         private int _intSelectedRating = 0;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private decimal _decPowerPoints = 0.0m;
         private bool _blnAddAgain = false;
 
@@ -37,7 +37,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlCritterDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectCritterPower(Character objCharacter)
@@ -69,12 +69,8 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
 
             // Remove Optional Powers if the Critter does not have access to them.
@@ -182,12 +178,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -198,11 +189,11 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
-            else if (cboCategory.Items.Contains(_strSelectCategory))
+            else if (cboCategory.Items.Contains(s_StrSelectCategory))
             {
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
             }
 
             if (cboCategory.SelectedIndex == -1)
@@ -474,7 +465,7 @@ namespace Chummer
 
             if (nudCritterPowerRating.Enabled)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
-            _strSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
+            s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = trePowers.SelectedNode.Tag.ToString();
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.

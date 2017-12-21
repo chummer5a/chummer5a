@@ -34,7 +34,6 @@ namespace Chummer
         private Mode _objMode = Mode.Metamagic;
         private string _strNode = "metamagic";
         private string _strRoot = "metamagics";
-        private bool _blnAddAgain = false;
 
         private readonly Character _objCharacter;
 
@@ -47,7 +46,7 @@ namespace Chummer
         public enum Mode
         {
             Metamagic = 0,
-            Echo = 1,
+            Echo,
         }
 
         #region Control Events
@@ -131,17 +130,6 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
-        /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
-
-        /// <summary>
         /// Set the window's Mode to Cyberware or Bioware.
         /// </summary>
         public Mode WindowMode
@@ -207,15 +195,10 @@ namespace Chummer
                 foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                 {
                     if (!chkLimitList.Checked ||
-                        Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
+                        Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
                     {
                         string strName = objXmlMetamagic["name"]?.InnerText ?? string.Empty;
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strName,
-                            Name = objXmlMetamagic["translate"]?.InnerText ?? strName
-                        };
-                        lstMetamagics.Add(objItem);
+                        lstMetamagics.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
                     }
                 }
             }
@@ -249,8 +232,9 @@ namespace Chummer
                 : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
             string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic");
-            if (!Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
+            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
                 return;
+            
             DialogResult = DialogResult.OK;
         }
 

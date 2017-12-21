@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Amazon;
@@ -9,32 +11,33 @@ using Amazon.DynamoDBv2.Model;
 
 namespace ChummerDataViewer.Model
 {
-	class DynamoDbLoader : INotifyThreadStatus, IDisposable
+	public class DynamoDbLoader : INotifyThreadStatus, IDisposable
 	{
-		const string DataTable = "ChummerDumpsList";
-		private AmazonDynamoDBClient _client;
-		private readonly Thread _workerThread;
-		private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
+		private const string DataTable = "ChummerDumpsList";
+		private readonly AmazonDynamoDBClient _client;
+		private readonly BackgroundWorker _worker = new BackgroundWorker();
+        private readonly WaitDurationProvider _backoff = new WaitDurationProvider();
 
 		public DynamoDbLoader()
 		{
 			_client = new AmazonDynamoDBClient(PersistentState.AWSCredentials, RegionEndpoint.EUCentral1);
-			_workerThread = new Thread(WorkerEntryPrt)
-			{
-				IsBackground = true,
-				Name = "DynamoDB Worker"
-			};
-			_workerThread.Start();
-		}
+            _worker.WorkerReportsProgress = false;
+            _worker.WorkerSupportsCancellation = false;
+            _worker.DoWork += WorkerEntryPrt;
+            _worker.RunWorkerAsync();
+        }
 
-		private void WorkerEntryPrt()
+        private Stopwatch _objTimeoutStopwatch = Stopwatch.StartNew();
+        private int _intCurrentTimeout = 0;
+		private void WorkerEntryPrt(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
-
 				OnStatusChanged(new StatusChangedEventArgs("Connecting"));
 				while (true)
 				{
+                    if (_objTimeoutStopwatch.ElapsedMilliseconds < _intCurrentTimeout)
+                        continue;
 					try
 					{
 						//Scan 10 items. If middle of scan, pick up there
@@ -57,11 +60,9 @@ namespace ChummerDataViewer.Model
 
 							//And sleep for exponential backoff
 							int timeout = _backoff.GetSeconds();
-							OnStatusChanged(new StatusChangedEventArgs($"No data. Retrying in {TimeSpan.FromSeconds(timeout)}"));
-							for (int i = timeout - 1; i >= 0; i--)
-							{
-								Thread.Sleep(1000);
-							}
+							OnStatusChanged(new StatusChangedEventArgs($"No data. Retrying in {TimeSpan.FromSeconds(timeout)}."));
+                            _intCurrentTimeout = timeout * 1000;
+                            _objTimeoutStopwatch.Restart();
 							continue;
 						}
 
@@ -108,23 +109,18 @@ namespace ChummerDataViewer.Model
 					catch (InternalServerErrorException)
 					{
 						int timeout = _backoff.GetSeconds();
-						for (int i = timeout - 1; i >= 0; i--)
-						{
-							OnStatusChanged(new StatusChangedEventArgs($"Internal server error, retrying in {i} seconds"));
-							Thread.Sleep(1000);
-						}
+                        OnStatusChanged(new StatusChangedEventArgs($"Internal server error, retrying in {TimeSpan.FromSeconds(timeout)}."));
+                        _intCurrentTimeout = timeout * 1000;
+                        _objTimeoutStopwatch.Restart();
 					}
 					catch (ProvisionedThroughputExceededException)
 					{
 						int timeout = _backoff.GetSeconds();
-						for (int i = timeout - 1; i >= 0; i--)
-						{
-							OnStatusChanged(new StatusChangedEventArgs($"Too fast, retrying in {i} seconds"));
-							Thread.Sleep(1000);
-						}
+                        OnStatusChanged(new StatusChangedEventArgs($"Too fast,  retrying in {TimeSpan.FromSeconds(timeout)}."));
+                        _intCurrentTimeout = timeout * 1000;
+                        _objTimeoutStopwatch.Restart();
 					}
 				}
-
 			}
 #if DEBUG
 			catch(StackOverflowException ex)
@@ -213,7 +209,7 @@ namespace ChummerDataViewer.Model
         #endregion
     }
 
-	internal class WaitDurationProvider
+    public sealed class WaitDurationProvider
 	{
 		private int _time = 1;
 
@@ -237,15 +233,15 @@ namespace ChummerDataViewer.Model
 		}
 	}
 
-	internal interface INotifyThreadStatus
+    public interface INotifyThreadStatus
 	{
 		event StatusChangedEvent StatusChanged;
 		string Name { get; }
 	}
 
-	internal delegate void StatusChangedEvent(INotifyThreadStatus sender, StatusChangedEventArgs args);
+    public delegate void StatusChangedEvent(INotifyThreadStatus sender, StatusChangedEventArgs args);
 
-	internal class StatusChangedEventArgs : EventArgs
+    public sealed class StatusChangedEventArgs : EventArgs
 	{
 		public StatusChangedEventArgs(string status, dynamic attachedData = null)
 		{

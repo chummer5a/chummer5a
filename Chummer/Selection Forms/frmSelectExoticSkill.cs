@@ -56,12 +56,8 @@ namespace Chummer
             XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[exotic = \"Yes\"]");
             foreach (XmlNode objXmlSkill in objXmlSkillList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlSkill["name"].InnerText,
-                    Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
-                };
-                lstSkills.Add(objItem);
+                string strName = objXmlSkill["name"].InnerText;
+                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstSkills.Sort(objSort.Compare);
@@ -129,22 +125,13 @@ namespace Chummer
                                                  "s\" or useskill = \"" + cboCategory.SelectedValue.ToString() + "\") and (" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlWeapon in objXmlWeaponList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlWeapon["name"].InnerText,
-                    Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"].InnerText
-                };
-
-                lstSkillSpecialisations.Add(objItem);
+                string strName = objXmlWeapon["name"].InnerText;
+                lstSkillSpecialisations.Add(new ListItem(strName, objXmlWeapon["translate"]?.InnerText ?? strName));
             }
             foreach (XmlNode objXmlSpecialization in objXmlSelectedSkill)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlSpecialization.InnerText,
-                    Name = objXmlSpecialization["translate"]?.InnerText ?? objXmlSpecialization.InnerText
-                };
-                lstSkillSpecialisations.Add(objItem);
+                string strInnerText = objXmlSpecialization.InnerText;
+                lstSkillSpecialisations.Add(new ListItem(strInnerText, objXmlSpecialization.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             cboSkillSpecialisations.BeginUpdate();
             cboSkillSpecialisations.ValueMember = "Value";

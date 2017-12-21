@@ -3,14 +3,14 @@ using System.Linq;
 using System.Xml;
 using Chummer.Datastructures;
 
-namespace Chummer
+namespace Chummer.Backend.Skills
 {
     /// <summary>
     /// Type of Specialization
     /// </summary>
     public class SkillSpecialization
     {
-        private static TranslatedField<string> _translator = new TranslatedField<string>();
+        private static readonly TranslatedField<string> s_Translator = new TranslatedField<string>();
 
         private Guid _guiID;
         private string _name;
@@ -30,7 +30,7 @@ namespace Chummer
                     string strTranslate = node.Attributes?["translate"]?.InnerText;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
-                        _translator.Add(node.InnerText, strTranslate);
+                        s_Translator.Add(node.InnerText, strTranslate);
                     }
                 }
             }
@@ -38,7 +38,7 @@ namespace Chummer
 
         public SkillSpecialization(string strName, bool free)
         {
-            _translator.Write(strName, ref _name, ref _translated);
+            s_Translator.Write(strName, ref _name, ref _translated);
             _guiID = Guid.NewGuid();
             _free = free;
         }
@@ -99,7 +99,7 @@ namespace Chummer
         /// </summary>
         public string DisplayName
         {
-            get { return _translator.Read(_name, ref _translated); }
+            get { return s_Translator.Read(_name, ref _translated); }
         }
 
         /// <summary>

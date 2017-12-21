@@ -14,18 +14,16 @@ using System.Security;
 
 namespace Chummer.Backend.Debugging
 {
-
-
-    internal class CrashHandler
+    public sealed class CrashHandler
     {
         [SuppressUnmanagedCodeSecurity]
-        internal static class SafeNativeMethods
+        private static class SafeNativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
             internal static extern uint GetCurrentThreadId();
         }
 
-        private class DumpData
+        private sealed class DumpData
         {
             public DumpData()
             {

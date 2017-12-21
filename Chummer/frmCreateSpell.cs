@@ -29,7 +29,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
         private bool _blnLoading = false;
         private bool _blnSkipRefresh = false;
-        private Spell _objSpell;
+        private readonly Spell _objSpell;
 
         #region Control Events
         public frmCreateSpell(Character objCharacter)
@@ -52,12 +52,8 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             cboCategory.BeginUpdate();
             cboType.BeginUpdate();
@@ -69,20 +65,10 @@ namespace Chummer
             cboCategory.SelectedIndex = 0;
 
             // Populate the list of Spell Types.
-            ListItem itmPhysical = new ListItem
-            {
-                Value = "P",
-                Name = LanguageManager.GetString("String_DescPhysical")
-            };
-            ListItem itmMana = new ListItem
-            {
-                Value = "M",
-                Name = LanguageManager.GetString("String_DescMana")
-            };
             List<ListItem> lstTypes = new List<ListItem>
             {
-                itmPhysical,
-                itmMana
+                new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
+                new ListItem("M", LanguageManager.GetString("String_DescMana"))
             };
             cboType.ValueMember = "Value";
             cboType.DisplayMember = "Name";
@@ -90,20 +76,10 @@ namespace Chummer
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
-            ListItem itmTouch = new ListItem
-            {
-                Value = "T",
-                Name = LanguageManager.GetString("String_SpellRangeTouchLong")
-            };
-            ListItem itmLOS = new ListItem
-            {
-                Value = "LOS",
-                Name = LanguageManager.GetString("String_SpellRangeLineOfSight")
-            };
             List<ListItem> lstRanges = new List<ListItem>
             {
-                itmTouch,
-                itmLOS
+                new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
+                new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
             };
             cboRange.ValueMember = "Value";
             cboRange.DisplayMember = "Name";
@@ -111,26 +87,11 @@ namespace Chummer
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
-            ListItem itmInstant = new ListItem
-            {
-                Value = "I",
-                Name = LanguageManager.GetString("String_SpellDurationInstantLong")
-            };
-            ListItem itmPermanent = new ListItem
-            {
-                Value = "P",
-                Name = LanguageManager.GetString("String_SpellDurationPermanentLong")
-            };
-            ListItem itmSustained = new ListItem
-            {
-                Value = "S",
-                Name = LanguageManager.GetString("String_SpellDurationSustainedLong")
-            };
             List<ListItem> lstDurations = new List<ListItem>
             {
-                itmInstant,
-                itmPermanent,
-                itmSustained
+                new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")),
+                new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
+                new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
             };
             cboDuration.ValueMember = "Value";
             cboDuration.DisplayMember = "Name";

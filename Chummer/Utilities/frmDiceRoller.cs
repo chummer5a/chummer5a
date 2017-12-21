@@ -25,13 +25,13 @@ namespace Chummer
 {
     public partial class frmDiceRoller : Form
     {
-        private readonly frmMain _frmMain;
+        private readonly frmChummerMain _frmMain;
         private List<ListItem> _lstResults = new List<ListItem>(40);
         private Random _objRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         #region Control Events
-        public frmDiceRoller(frmMain frmMainForm, List<Quality> lstQualities = null, int intDice = 1)
+        public frmDiceRoller(frmChummerMain frmMainForm, ICollection<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
@@ -45,29 +45,11 @@ namespace Chummer
             }
             MoveControls();
 
-            ListItem itmStandard = new ListItem
-            {
-                Value = "Standard",
-                Name = LanguageManager.GetString("String_DiceRoller_Standard")
-            };
-
-            ListItem itmLarge = new ListItem
-            {
-                Value = "Large",
-                Name = LanguageManager.GetString("String_DiceRoller_Large")
-            };
-
-            ListItem itmReallyLarge = new ListItem
-            {
-                Value = "ReallyLarge",
-                Name = LanguageManager.GetString("String_DiceRoller_ReallyLarge")
-            };
-
             List<ListItem> lstMethod = new List<ListItem>
             {
-                itmStandard,
-                itmLarge,
-                itmReallyLarge
+                new ListItem("Standard", LanguageManager.GetString("String_DiceRoller_Standard")),
+                new ListItem("Large", LanguageManager.GetString("String_DiceRoller_Large")),
+                new ListItem("ReallyLarge", LanguageManager.GetString("String_DiceRoller_ReallyLarge"))
             };
 
             cboMethod.BeginUpdate();
@@ -127,8 +109,7 @@ namespace Chummer
             _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                ListItem objBubbleDieItem = new ListItem(intResult.ToString(), intResult.ToString());
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intResult.ToString(), intResult.ToString()));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -162,8 +143,7 @@ namespace Chummer
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")"));
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intBubbleDieResult <= intGlitchMin)
@@ -296,8 +276,7 @@ namespace Chummer
 
             foreach (int intLoopResult in lstRandom)
             {
-                ListItem objBubbleDieItem = new ListItem(intLoopResult.ToString(), intLoopResult.ToString());
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intLoopResult.ToString(), intLoopResult.ToString()));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -326,8 +305,7 @@ namespace Chummer
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                ListItem objBubbleDieItem = new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
-                _lstResults.Add(objBubbleDieItem);
+                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(), LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")"));
                 if (cboMethod.SelectedValue.ToString() == "Standard" || cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intBubbleDieResult <= intGlitchMin)
@@ -388,7 +366,7 @@ namespace Chummer
         /// <summary>
         /// List of Qualities the character has to determine whether or not they have Gremlins and at which Rating.
         /// </summary>
-        public List<Quality> Qualities
+        public IEnumerable<Quality> Qualities
         {
             set
             {

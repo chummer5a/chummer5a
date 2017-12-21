@@ -72,11 +72,11 @@ namespace Chummer.UI.Powers
 
             parts.TaskEnd("MakePowerDisplay()");
 
-            _dropDownList = GenerateDropdownFilter();
+            _dropDownList = (List<Tuple<string, Predicate<Power>>>)GenerateDropdownFilter();
 
             parts.TaskEnd("GenerateDropDown()");
 
-            _sortList = GenerateSortList();
+            _sortList = (List<Tuple<string, IComparer<Power>>>)GenerateSortList();
 
             parts.TaskEnd("GenerateSortList()");
 
@@ -112,7 +112,7 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
-        private List<Tuple<string, IComparer<Power>>> GenerateSortList()
+        private static IList<Tuple<string, IComparer<Power>>> GenerateSortList()
         {
             List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
             {
@@ -129,7 +129,7 @@ namespace Chummer.UI.Powers
             return ret;
         }
         
-        private List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static IList<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {

@@ -141,9 +141,8 @@ namespace Chummer
         static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
         static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
 
-        public static Action MRUChanged;
+        public static Action MRUChanged { get; set; }
 
-        private static frmMain _frmMainForm;
         private static readonly RegistryKey _objBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Rating greater 0)";
@@ -176,12 +175,12 @@ namespace Chummer
         // PDF information.
         private static string _strPDFAppPath = string.Empty;
         private static string _strPDFParameters = string.Empty;
-        private static HashSet<SourcebookInfo> _lstSourcebookInfo = new HashSet<SourcebookInfo>();
+        private static readonly HashSet<SourcebookInfo> _lstSourcebookInfo = new HashSet<SourcebookInfo>();
         private static bool _blnUseLogging = false;
         private static string _strCharacterRosterPath;
 
         // Custom Data Directory information.
-        private static List<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfo = new List<CustomDataDirectoryInfo>();
+        private static readonly List<CustomDataDirectoryInfo> _lstCustomDataDirectoryInfo = new List<CustomDataDirectoryInfo>();
 
         #region Constructor
         /// <summary>
@@ -613,21 +612,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Main application form.
-        /// </summary>
-        public static frmMain MainForm
-        {
-            get
-            {
-                return _frmMainForm;
-            }
-            set
-            {
-                _frmMainForm = value;
-            }
-        }
-
-        /// <summary>
         /// Language.
         /// </summary>
         public static string Language
@@ -768,10 +752,6 @@ namespace Chummer
             {
                 return _lstSourcebookInfo;
             }
-            set
-            {
-                _lstSourcebookInfo = value;
-            }
         }
 
         /// <summary>
@@ -782,10 +762,6 @@ namespace Chummer
             get
             {
                 return _lstCustomDataDirectoryInfo;
-            }
-            set
-            {
-                _lstCustomDataDirectoryInfo = value;
             }
         }
 
@@ -905,7 +881,7 @@ namespace Chummer
         /// Add a list of files to the beginning of the most recently used characters.
         /// </summary>
         /// <param name="lstFilesToAdd">Names of the files to add (files added in reverse order).</param>
-        public static void AddToMRUList(List<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        public static void AddToMRUList(IEnumerable<string> lstFilesToAdd, string strMRUType = "mru", bool blnDoMRUChanged = true)
         {
             bool blnAnyChange = false;
             List<string> strFiles = ReadMRUList(strMRUType);
@@ -947,7 +923,7 @@ namespace Chummer
         /// Remove a list of files from the most recently used characters.
         /// </summary>
         /// <param name="lstFilesToRemove">Names of the files to remove.</param>
-        public static void RemoveFromMRUList(List<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
+        public static void RemoveFromMRUList(IEnumerable<string> lstFilesToRemove, string strMRUType = "mru", bool blnDoMRUChanged = true)
         {
             List<string> strFiles = ReadMRUList(strMRUType);
             bool blnAnyChange = false;

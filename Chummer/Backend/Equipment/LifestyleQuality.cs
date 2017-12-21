@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a LifestyleQualityType.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public QualityType ConvertToLifestyleQualityType(string strValue)
+        public static QualityType ConvertToLifestyleQualityType(string strValue)
         {
             switch (strValue)
             {
@@ -61,7 +61,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
 #if DEBUG
-        public QualitySource ConvertToLifestyleQualitySource(string strValue)
+        public static QualitySource ConvertToLifestyleQualitySource(string strValue)
         {
             switch (strValue)
             {
@@ -251,14 +251,11 @@ namespace Chummer.Backend.Equipment
                 if (objLifestyleQualityNode == null)
                 {
                     var lstQualities = new List<ListItem>();
-                    lstQualities.AddRange(
-                             from XmlNode objNode in
-                             objXmlDocument.SelectNodes("/chummer/qualities/quality")
-                             select new ListItem
-                             {
-                                 Value = objNode["name"].InnerText,
-                                 Name = objNode["translate"]?.InnerText ?? objNode["name"].InnerText
-                             });
+                    foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/qualities/quality"))
+                    {
+                        string strName = objNode["name"].InnerText;
+                        lstQualities.Add(new ListItem(strName, objNode["translate"]?.InnerText ?? strName));
+                    }
                     var frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
@@ -592,7 +589,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Free || FreeByLifestyle)
                     return 0;
-                if (!decimal.TryParse(_strCost, out decimal decReturn))
+                if (!decimal.TryParse(_strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                 {
                     try
                     {

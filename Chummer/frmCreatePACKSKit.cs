@@ -23,13 +23,13 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
     public partial class frmCreatePACKSKit : Form
     {
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
 
         #region Control Events
         public frmCreatePACKSKit(Character objCharacter)
@@ -459,9 +459,9 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                     {
                         // This is an Advanced Lifestyle, so write out its properties.
-                        objWriter.WriteElementString("cost", objLifestyle.Cost.ToString());
+                        objWriter.WriteElementString("cost", objLifestyle.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo));
                         objWriter.WriteElementString("dice", objLifestyle.Dice.ToString());
-                        objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString());
+                        objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo));
                         objWriter.WriteElementString("baselifestyle", objLifestyle.BaseLifestyle);
                         if (objLifestyle.LifestyleQualities.Count > 0)
                         {
@@ -735,7 +735,7 @@ namespace Chummer
                     if (objGear.Rating > 0)
                         objWriter.WriteElementString("rating", objGear.Rating.ToString());
                     if (objGear.Quantity != 1)
-                        objWriter.WriteElementString("qty", objGear.Quantity.ToString());
+                        objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
                     if (objGear.Children.Count > 0)
                         WriteGear(objWriter, objGear.Children);
                     // </gear>

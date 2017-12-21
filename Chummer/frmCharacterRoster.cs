@@ -15,7 +15,7 @@ namespace Chummer
     {
         List<CharacterCache> _lstCharacterCache = new List<CharacterCache>();
         private object _lstCharacterCacheLock = new object();
-        HtmlToolTip tipTooltip = new HtmlToolTip();
+        private readonly HtmlToolTip tipTooltip = new HtmlToolTip();
 
         public frmCharacterRoster()
         {
@@ -97,7 +97,7 @@ namespace Chummer
             }
 
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            foreach (CharacterShared objCharacterForm in GlobalOptions.MainForm.OpenCharacterForms)
+            foreach (CharacterShared objCharacterForm in Program.MainForm.OpenCharacterForms)
             {
                 string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
@@ -235,7 +235,7 @@ namespace Chummer
                 objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
                 objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;
                 objCache.Metatype = objXmlSourceNode["metatype"]?.InnerText;
-                objCache.PlayerName = objXmlSourceNode["player"]?.InnerText;
+                objCache.PlayerName = objXmlSourceNode["playername"]?.InnerText;
                 objCache.CharacterName = objXmlSourceNode["name"]?.InnerText;
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
@@ -295,7 +295,7 @@ namespace Chummer
                 strBuildMethod = "Unknown build method";
             string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
-            if (GlobalOptions.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
+            if (Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
                 strReturn = "* " + strReturn;
             return strReturn;
         }
@@ -434,12 +434,12 @@ namespace Chummer
                     string strFile = _lstCharacterCache[intIndex]?.FilePath;
                     if (!string.IsNullOrEmpty(strFile))
                     {
-                        Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                         Cursor = Cursors.WaitCursor;
-                        if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                        if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                         {
-                            objOpenCharacter = frmMain.LoadCharacter(strFile);
-                            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                            objOpenCharacter = Program.MainForm.LoadCharacter(strFile);
+                            Program.MainForm.OpenCharacter(objOpenCharacter);
                             objSelectedNode.Text = CalculatedName(_lstCharacterCache[intIndex]);
                         }
                         Cursor = Cursors.Default;
@@ -564,7 +564,7 @@ namespace Chummer
         /// <summary>
         /// Caches a subset of a full character's properties for loading purposes. 
         /// </summary>
-        private class CharacterCache
+        private sealed class CharacterCache
         {
             internal string FilePath { get; set; }
             internal string FileName { get; set; }
@@ -665,13 +665,13 @@ namespace Chummer
             if (intIndex < 0 || intIndex >= _lstCharacterCache.Count) return;
             var strFile = _lstCharacterCache[intIndex]?.FilePath;
             if (string.IsNullOrEmpty(strFile)) return;
-            var objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            var objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
             Cursor = Cursors.WaitCursor;
             if (objOpenCharacter != null)
             {
-                GlobalOptions.MainForm.OpenCharacters.Remove(objOpenCharacter);
-                GlobalOptions.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
-                GlobalOptions.MainForm.CharacterRoster.PopulateCharacterList();
+                Program.MainForm.OpenCharacters.Remove(objOpenCharacter);
+                Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                Program.MainForm.CharacterRoster.PopulateCharacterList();
                 objOpenCharacter.Dispose();
             }
             Cursor = Cursors.Default;

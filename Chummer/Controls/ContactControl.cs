@@ -30,20 +30,20 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private string _strContactRole;
-        private bool _blnEnemy = false;
+        private readonly bool _blnEnemy = false;
         private bool _loading = true;
-        private int _intLowHeight = 25;
-        private int _intFullHeight = 156;
+        private readonly int _intLowHeight = 25;
+        private readonly int _intFullHeight = 156;
 
         // Events.
-        public Action<object> ConnectionRatingChanged;
-        public Action<object> GroupStatusChanged;
-        public Action<object> LoyaltyRatingChanged;
-        public Action<object> FreeRatingChanged;
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
-        public Action<object> BlackmailChanged;
-        public Action<object> FamilyChanged;
+        public Action<object> ConnectionRatingChanged { get; set; }
+        public Action<object> GroupStatusChanged { get; set; }
+        public Action<object> LoyaltyRatingChanged { get; set; }
+        public Action<object> FreeRatingChanged { get; set; }
+        public Action<object> DeleteContact { get; set; }
+        public Action<object> FileNameChanged { get; set; }
+        public Action<object> BlackmailChanged { get; set; }
+        public Action<object> FamilyChanged { get; set; }
 
         #region Control Events
         public ContactControl(Contact objContact)
@@ -190,12 +190,12 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objContact.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }
@@ -593,118 +593,80 @@ namespace Chummer
 
 
             // Read the list of Categories from the XML file.
-            List<ListItem> lstCategories = new List<ListItem>();
-            List<ListItem> lstMetatypes = new List<ListItem>();
-            List<ListItem> lstSexes = new List<ListItem>();
-            List<ListItem> lstAges = new List<ListItem>();
-            List<ListItem> lstPersonalLives = new List<ListItem>();
-            List<ListItem> lstTypes = new List<ListItem>();
-            List<ListItem> lstPreferredPayments = new List<ListItem>();
-            List<ListItem> lstHobbiesVices = new List<ListItem>();
-
-            ListItem objBlank = new ListItem
+            List<ListItem> lstCategories = new List<ListItem>
             {
-                Value = string.Empty,
-                Name = string.Empty
+                ListItem.Blank
             };
-            lstCategories.Add(objBlank);
-            lstMetatypes.Add(objBlank);
-            lstSexes.Add(objBlank);
-            lstAges.Add(objBlank);
-            lstPersonalLives.Add(objBlank);
-            lstTypes.Add(objBlank);
-            lstPreferredPayments.Add(objBlank);
-            lstHobbiesVices.Add(objBlank);
+            List<ListItem> lstMetatypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstSexes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstAges = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPersonalLives = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstTypes = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstPreferredPayments = new List<ListItem>
+            {
+                ListItem.Blank
+            };
+            List<ListItem> lstHobbiesVices = new List<ListItem>
+            {
+                ListItem.Blank
+            };
 
             XmlDocument objXmlDocument = XmlManager.Load("contacts.xml");
-            XmlNodeList objXmlNodeList = objXmlDocument.SelectNodes("/chummer/contacts/contact");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstCategories.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/sexes/sex");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstSexes.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/ages/age");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstAges.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/personallives/personallife");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstPersonalLives.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/types/type");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstTypes.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/preferredpayments/preferredpayment");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstPreferredPayments.Add(objItem);
-                }
-            objXmlNodeList = objXmlDocument.SelectNodes("/chummer/hobbiesvices/hobbyvice");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode.InnerText,
-                        Name = objXmlNode.Attributes?["translate"]?.InnerText ?? objXmlNode.InnerText
-                    };
-                    lstHobbiesVices.Add(objItem);
-                }
-            objXmlNodeList = XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype");
-            if (objXmlNodeList != null)
-                foreach (XmlNode objXmlNode in objXmlNodeList)
-                {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlNode["name"].InnerText,
-                        Name = objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText
-                    };
-                    lstMetatypes.Add(objItem);
-                }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/contacts/contact"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstCategories.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/sexes/sex"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstSexes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/ages/age"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstAges.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/personallives/personallife"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstPersonalLives.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/types/type"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstTypes.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/preferredpayments/preferredpayment"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstPreferredPayments.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in objXmlDocument.SelectNodes("/chummer/hobbiesvices/hobbyvice"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstHobbiesVices.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
+            foreach (XmlNode objXmlNode in XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype"))
+            {
+                string strName = objXmlNode.InnerText;
+                lstMetatypes.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
+            }
 
             SortListItem objContactSort = new SortListItem();
             lstCategories.Sort(objContactSort.Compare);

@@ -44,11 +44,11 @@ namespace Chummer
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
         private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-        private List<ListItem> _lstCharacterTypes = new List<ListItem>();
+        private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
         private bool _blnLoggedIn = false;
         private string _strUserName = string.Empty;
-        private readonly frmMain _frmMain;
+        private readonly frmChummerMain _frmMain;
         private OmaeMode _objMode = OmaeMode.Character;
 
         #region Helper Methods
@@ -57,28 +57,12 @@ namespace Chummer
         /// </summary>
         public void PopulateSortOrder()
         {
-            List<ListItem> lstSort = new List<ListItem>();
-
-            ListItem objName = new ListItem
+            List<ListItem> lstSort = new List<ListItem>
             {
-                Value = "0",
-                Name = "Name"
+                new ListItem("0", LanguageManager.GetString("String_Name")),
+                new ListItem("1", "Most Recent"),
+                new ListItem("2", "Most Downloaded")
             };
-            lstSort.Add(objName);
-
-            ListItem objDate = new ListItem
-            {
-                Value = "1",
-                Name = "Most Recent"
-            };
-            lstSort.Add(objDate);
-
-            ListItem objPopular = new ListItem
-            {
-                Value = "2",
-                Name = "Most Downloaded"
-            };
-            lstSort.Add(objPopular);
 
             cboSortOrder.DataSource = lstSort;
             cboSortOrder.ValueMember = "Value";
@@ -90,28 +74,12 @@ namespace Chummer
         /// </summary>
         public void PopulateMode()
         {
-            List<ListItem> lstMode = new List<ListItem>();
-
-            ListItem objAny = new ListItem
+            List<ListItem> lstMode = new List<ListItem>
             {
-                Value = "-1",
-                Name = "Any Mode"
+                new ListItem("-1", "Any Mode"),
+                new ListItem("0", "Create Mode"),
+                new ListItem("1", "Career Mode")
             };
-            lstMode.Add(objAny);
-
-            ListItem objCreate = new ListItem
-            {
-                Value = "0",
-                Name = "Create Mode"
-            };
-            lstMode.Add(objCreate);
-
-            ListItem objCareer = new ListItem
-            {
-                Value = "1",
-                Name = "Career Mode"
-            };
-            lstMode.Add(objCareer);
 
             cboFilterMode.DataSource = lstMode;
             cboFilterMode.ValueMember = "Value";
@@ -153,7 +121,7 @@ namespace Chummer
         /// Remove unsafe path characters from the file name.
         /// </summary>
         /// <param name="strValue">File name to parse.</param>
-        private string FileSafe(string strValue)
+        private static string FileSafe(string strValue)
         {
             return strValue.FastEscape(" _/:*?<>|\\".ToCharArray());
         }
@@ -194,37 +162,11 @@ namespace Chummer
                 // Stuff all of the items into a ListItem List.
                 foreach (XmlNode objNode in objXmlDocument.SelectNodes("/types/type"))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objNode["id"].InnerText,
-                        Name = objNode["name"].InnerText
-                    };
-                    _lstCharacterTypes.Add(objItem);
+                    _lstCharacterTypes.Add(new ListItem(objNode["id"].InnerText, objNode["name"].InnerText));
                 }
-
-                // Add an item for Official NPCs.
-                ListItem objNPC = new ListItem
-                {
-                    Value = "4",
-                    Name = "Official NPC Packs"
-                };
-                _lstCharacterTypes.Add(objNPC);
-
-                // Add an item for Custom Data.
-                ListItem objData = new ListItem
-                {
-                    Value = "data",
-                    Name = "Data"
-                };
-                _lstCharacterTypes.Add(objData);
-
-                // Add an item for Character Sheets.
-                ListItem objSheets = new ListItem
-                {
-                    Value = "sheets",
-                    Name = "Character Sheets"
-                };
-                _lstCharacterTypes.Add(objSheets);
+                _lstCharacterTypes.Add(new ListItem("4", "Official NPC Packs"));
+                _lstCharacterTypes.Add(new ListItem("data", "Data"));
+                _lstCharacterTypes.Add(new ListItem("sheets", "Character Sheets"));
 
                 cboCharacterTypes.Items.Clear();
                 cboCharacterTypes.DataSource = _lstCharacterTypes;
@@ -312,7 +254,7 @@ namespace Chummer
                         if (MessageBox.Show(LanguageManager.GetString("Message_Omae_CharacterDownloaded"), LanguageManager.GetString("MessageTitle_Omae_CharacterDownloaded"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
                             Cursor = Cursors.WaitCursor;
-                            Character objOpenCharacter = frmMain.LoadCharacter(strFullPath);
+                            Character objOpenCharacter = Program.MainForm.LoadCharacter(strFullPath);
                             Cursor = Cursors.Default;
                             _frmMain.OpenCharacter(objOpenCharacter);
                         }
@@ -484,7 +426,7 @@ namespace Chummer
         #endregion
 
         #region Control Events
-        public frmOmae(frmMain frmMainForm)
+        public frmOmae(frmChummerMain frmMainForm)
         {
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);

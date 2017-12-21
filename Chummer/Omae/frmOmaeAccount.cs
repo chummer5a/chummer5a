@@ -24,7 +24,7 @@ namespace Chummer
 {
     public partial class frmOmaeAccount : Form
     {
-        private string _strUserName = string.Empty;
+        private readonly string _strUserName = string.Empty;
         private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
 
         #region Control Events

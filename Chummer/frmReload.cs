@@ -44,24 +44,19 @@ namespace Chummer
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                ListItem objAmmo = new ListItem
-                {
-                    Value = objGear.InternalId,
-                    Name = objGear.DisplayNameShort
-                };
-                objAmmo.Name += " x" + objGear.Quantity.ToString();
+                string strName = objGear.DisplayNameShort + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Parent != null)
                 {
                     if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort))
                     {
-                        objAmmo.Name += " (" + objGear.Parent.DisplayNameShort;
+                        strName += " (" + objGear.Parent.DisplayNameShort;
                         if (!string.IsNullOrEmpty(objGear.Parent.Location))
-                            objAmmo.Name += " @ " + objGear.Parent.Location;
-                        objAmmo.Name += ")";
+                            strName += " @ " + objGear.Parent.Location;
+                        strName += ")";
                     }
                 }
                 else if (!string.IsNullOrEmpty(objGear.Location))
-                    objAmmo.Name += " (" + objGear.Location + ")";
+                    strName += " (" + objGear.Location + ")";
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
@@ -73,9 +68,9 @@ namespace Chummer
                     // Remove the trailing comma.
                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                     // Append the plugin information to the name.
-                    objAmmo.Name += " [" + strPlugins + "]";
+                    strName += " [" + strPlugins + "]";
                 }
-                lstAmmo.Add(objAmmo);
+                lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }
 
             // Populate the lists.

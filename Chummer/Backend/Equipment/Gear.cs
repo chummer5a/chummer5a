@@ -207,7 +207,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -468,15 +468,11 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            ListItem objItem = new ListItem
-                            {
-                                Value = objChoiceNode["name"]?.InnerText ?? string.Empty
-                            };
-                            string strName = LanguageManager.GetString(objItem.Value, false);
-                            if (string.IsNullOrEmpty(strName))
-                                strName = LanguageManager.TranslateExtra(objItem.Value);
-                            objItem.Name = strName;
-                            lstGears.Add(objItem);
+                            string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
+                            string strDisplayName = LanguageManager.GetString(strName, false);
+                            if (string.IsNullOrEmpty(strDisplayName))
+                                strDisplayName = LanguageManager.TranslateExtra(strName);
+                            lstGears.Add(new ListItem(strName, strDisplayName));
                         }
 
                         if (lstGears.Count <= 0)
@@ -999,26 +995,18 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Begin Print the object's XML to the XmlWriter.
+        /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void PrintBegin(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
         {
             objWriter.WriteStartElement("gear");
-        }
 
-        /// <summary>
-        /// Core code to Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void PrintInner(XmlTextWriter objWriter, CultureInfo objCulture)
-        {
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
-            {
                 objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("Label_BondedFoci") + ")");
-            }
             else
                 objWriter.WriteElementString("name", DisplayNameShort);
+
             objWriter.WriteElementString("name_english", _strName);
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", _strCategory);
@@ -1074,26 +1062,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
-        }
-
-        /// <summary>
-        /// End Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void PrintEnd(XmlTextWriter objWriter)
-        {
             objWriter.WriteEndElement();
-        }
-
-        /// <summary>
-        /// Print the object's XML to the XmlWriter.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
-        {
-            PrintBegin(objWriter);
-            PrintInner(objWriter, objCulture);
-            PrintEnd(objWriter);
         }
         #endregion
 
@@ -2199,7 +2168,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 if (!string.IsNullOrEmpty(strSecondHalf))
                     strReturn += "/" + strSecondHalf;
-                if (decimal.TryParse(strReturn, out decimal decReturn))
+                if (decimal.TryParse(strReturn, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                     return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                 // Just a straight Capacity, so return the value.
                 return strReturn;
@@ -2258,7 +2227,7 @@ namespace Chummer.Backend.Equipment
                     return "0";
                 else
                 {
-                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                         return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }

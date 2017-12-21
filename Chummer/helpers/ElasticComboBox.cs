@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    internal class ElasticComboBox : ComboBox
+    public sealed class ElasticComboBox : ComboBox
     {
         private readonly ToolTip _tt;
         private readonly Graphics _objGraphics;
@@ -102,7 +102,9 @@ namespace Chummer
             float fltMaxItemWidth = Width;
             foreach (var objItem in Items)
             {
-                string strItemText = (objItem as ListItem)?.Name ?? GetItemText(objItem);
+                string strItemText = ((ListItem)objItem).Name;
+                if (string.IsNullOrEmpty(strItemText))
+                    strItemText = GetItemText(objItem);
                 float fltLoopItemWidth = _objGraphics.MeasureString(strItemText, Font).Width;
                 if (fltLoopItemWidth > fltMaxItemWidth)
                     fltMaxItemWidth = fltLoopItemWidth;

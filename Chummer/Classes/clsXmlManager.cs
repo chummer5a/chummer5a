@@ -33,7 +33,7 @@ namespace Chummer
         /// <summary>
         /// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.
         /// </summary>
-        private class XmlReference
+        private sealed class XmlReference
         {
             /// <summary>
             /// Date/Time stamp on the XML file.
@@ -56,18 +56,18 @@ namespace Chummer
             public XmlDocument XmlContent { get; set; } = new XmlDocument();
         }
 
-        private static readonly HashSet<XmlReference> _lstXmlDocuments = new HashSet<XmlReference>();
-        private static object _lstXmlDocumentsLock = new object();
-        private static readonly List<string> _lstDataDirectories = new List<string>();
+        private static readonly HashSet<XmlReference> s_LstXmlDocuments = new HashSet<XmlReference>();
+        private static readonly object s_LstXmlDocumentsLock = new object();
+        private static readonly List<string> s_LstDataDirectories = new List<string>();
 
         #region Constructor
         static XmlManager()
         {
             LanguageManager.Load(GlobalOptions.Language, null);
-            _lstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
+            s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
-                _lstDataDirectories.Add(objCustomDataDirectory.Path);
+                s_LstDataDirectories.Add(objCustomDataDirectory.Path);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Chummer
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
-            foreach (string strDirectory in _lstDataDirectories)
+            foreach (string strDirectory in s_LstDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
                 if (File.Exists(strPath))
@@ -101,15 +101,15 @@ namespace Chummer
 
             // Look to see if this XmlDocument is already loaded.
             XmlReference objReference = null;
-            lock (_lstXmlDocumentsLock)
+            lock (s_LstXmlDocumentsLock)
             {
-                objReference = _lstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
+                objReference = s_LstXmlDocuments.FirstOrDefault(x => x.FileName == strFileName);
                 if (objReference == null || blnLoadFile)
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     objReference = new XmlReference();
                     blnLoadFile = true;
-                    _lstXmlDocuments.Add(objReference);
+                    s_LstXmlDocuments.Add(objReference);
                 }
                 // The file was found in the List, so check the last write time.
                 else if (datDate != objReference.FileDate)
@@ -143,7 +143,7 @@ namespace Chummer
                 // Load any override data files the user might have. Do not attempt this if we're loading the Improvements file.
                 if (strFileName != "improvements.xml")
                 {
-                    foreach (string strLoopPath in _lstDataDirectories)
+                    foreach (string strLoopPath in s_LstDataDirectories)
                     {
                         foreach (string strFile in Directory.GetFiles(strLoopPath, "override*_" + strFileName))
                         {

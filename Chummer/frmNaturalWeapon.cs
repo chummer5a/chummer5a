@@ -48,51 +48,25 @@ namespace Chummer
             List<ListItem> lstSkills = new List<ListItem>();
             foreach (XmlNode objXmlSkill in _objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Combat Active\"]"))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlSkill["name"].InnerText,
-                    Name = objXmlSkill["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
-                };
-                lstSkills.Add(objItem);
+                string strName = objXmlSkill["name"].InnerText;
+                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
             }
 
-            List<ListItem> lstDVBase = new List<ListItem>();
-            ListItem objHalfStrength = new ListItem
+            List<ListItem> lstDVBase = new List<ListItem>
             {
-                Value = "(STR/2)",
-                Name = "(" + _objCharacter.STR.DisplayAbbrev + "/2)"
+                new ListItem("(STR/2)", "(" + _objCharacter.STR.DisplayAbbrev + "/2)"),
+                new ListItem("(STR)", "(" + _objCharacter.STR.DisplayAbbrev + ")")
             };
-            lstDVBase.Add(objHalfStrength);
-            ListItem objStrength = new ListItem
+            for (int i = 1; i <= 20; ++i)
             {
-                Value = "(STR)",
-                Name = $"({_objCharacter.STR.DisplayAbbrev})"
-            };
-            lstDVBase.Add(objStrength);
-            for (int i = 1; i <= 20; i++)
-            {
-                ListItem objItem = new ListItem
-                {
-                    Value = i.ToString(),
-                    Name = i.ToString()
-                };
-                lstDVBase.Add(objItem);
+                lstDVBase.Add(new ListItem(i.ToString(), i.ToString()));
             }
 
-            List<ListItem> lstDVType = new List<ListItem>();
-            ListItem objDVPhysical = new ListItem
+            List<ListItem> lstDVType = new List<ListItem>
             {
-                Value = "P",
-                Name = LanguageManager.GetString("String_DamagePhysical")
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
             };
-            lstDVType.Add(objDVPhysical);
-
-            ListItem objDVStun = new ListItem
-            {
-                Value = "S",
-                Name = LanguageManager.GetString("String_DamageStun")
-            };
-            lstDVType.Add(objDVStun);
 
             // Bind the Lists to the ComboBoxes.
             cboSkill.BeginUpdate();

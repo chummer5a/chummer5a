@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -34,12 +34,12 @@ namespace Chummer
         private readonly Spirit _objSpirit;
 
         // Events.
-        public Action<object> ServicesOwedChanged;
-        public Action<object> ForceChanged;
-        public Action<object> BoundChanged;
-        public Action<object> FetteredChanged;
-        public Action<object> DeleteSpirit;
-        public Action<object> FileNameChanged;
+        public Action<object> ServicesOwedChanged { get; set; }
+        public Action<object> ForceChanged { get; set; }
+        public Action<object> BoundChanged { get; set; }
+        public Action<object> FetteredChanged { get; set; }
+        public Action<object> DeleteSpirit { get; set; }
+        public Action<object> FileNameChanged { get; set; }
 
         #region Control Events
         public SpiritControl(Spirit objSpirit)
@@ -142,12 +142,12 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objSpirit.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }
@@ -469,59 +469,40 @@ namespace Chummer
             List<ListItem> lstCritters = new List<ListItem>();
             if (strTradition == "Custom")
             {
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(_objSpirit.CharacterObject.SpiritCombat))
+                string strSpiritCombat = _objSpirit.CharacterObject.SpiritCombat;
+                string strSpiritDetection = _objSpirit.CharacterObject.SpiritDetection;
+                string strSpiritHealth = _objSpirit.CharacterObject.SpiritHealth;
+                string strSpiritIllusion = _objSpirit.CharacterObject.SpiritIllusion;
+                string strSpiritManipulation = _objSpirit.CharacterObject.SpiritManipulation;
+
+                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritCombat))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + _objSpirit.CharacterObject.SpiritCombat + "\"]");
-                    ListItem objCombat = new ListItem
-                    {
-                        Value = _objSpirit.CharacterObject.SpiritCombat,
-                        Name = objXmlCritterNode?["translate"]?.InnerText ?? _objSpirit.CharacterObject.SpiritCombat
-                    };
-                    lstCritters.Add(objCombat);
+                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]");
+                    lstCritters.Add(new ListItem(strSpiritCombat, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritCombat));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(_objSpirit.CharacterObject.SpiritDetection))
+                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritDetection))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + _objSpirit.CharacterObject.SpiritDetection + "\"]");
-                    ListItem objDetection = new ListItem
-                    {
-                        Value = _objSpirit.CharacterObject.SpiritDetection,
-                        Name = objXmlCritterNode?["translate"]?.InnerText ?? _objSpirit.CharacterObject.SpiritDetection
-                    };
-                    lstCritters.Add(objDetection);
+                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]");
+                    lstCritters.Add(new ListItem(strSpiritDetection, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritDetection));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(_objSpirit.CharacterObject.SpiritHealth))
+                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritHealth))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + _objSpirit.CharacterObject.SpiritHealth + "\"]");
-                    ListItem objHealth = new ListItem
-                    {
-                        Value = _objSpirit.CharacterObject.SpiritHealth,
-                        Name = objXmlCritterNode?["translate"]?.InnerText ?? _objSpirit.CharacterObject.SpiritHealth
-                    };
-                    lstCritters.Add(objHealth);
+                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]");
+                    lstCritters.Add(new ListItem(strSpiritHealth, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritHealth));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(_objSpirit.CharacterObject.SpiritIllusion))
+                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritIllusion))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + _objSpirit.CharacterObject.SpiritIllusion + "\"]");
-                    ListItem objIllusion = new ListItem
-                    {
-                        Value = _objSpirit.CharacterObject.SpiritIllusion,
-                        Name = objXmlCritterNode?["translate"]?.InnerText ?? _objSpirit.CharacterObject.SpiritIllusion
-                    };
-                    lstCritters.Add(objIllusion);
+                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]");
+                    lstCritters.Add(new ListItem(strSpiritIllusion, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritIllusion));
                 }
 
-                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(_objSpirit.CharacterObject.SpiritManipulation))
+                if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritManipulation))
                 {
-                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + _objSpirit.CharacterObject.SpiritManipulation + "\"]");
-                    ListItem objManipulation = new ListItem
-                    {
-                        Value = _objSpirit.CharacterObject.SpiritManipulation,
-                        Name = objXmlCritterNode?["translate"]?.InnerText ?? _objSpirit.CharacterObject.SpiritManipulation
-                    };
-                    lstCritters.Add(objManipulation);
+                    XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]");
+                    lstCritters.Add(new ListItem(strSpiritManipulation, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritManipulation));
                 }
             }
             else
@@ -532,13 +513,7 @@ namespace Chummer
                     if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritName))
                     {
                         XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strSpiritName,
-                            Name = objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName
-                        };
-
-                        lstCritters.Add(objItem);
+                        lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
                     }
                 }
             }
@@ -550,12 +525,8 @@ namespace Chummer
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.AddSprite)
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objImprovement.ImprovedName,
-                            Name = objImprovement.ImprovedName
-                        };
-                        lstCritters.Add(objItem);
+                        XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + objImprovement.ImprovedName + "\"]");
+                        lstCritters.Add(new ListItem(objImprovement.ImprovedName, objXmlCritterNode?["translate"]?.InnerText ?? objImprovement.ImprovedName));
                     }
                 }
             }
@@ -564,12 +535,7 @@ namespace Chummer
             if (_objSpirit.CharacterObject.MAGEnabled)
             {
                 XmlNode objXmlCritterNode = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"Ally Spirit\"]");
-                ListItem objItem = new ListItem
-                {
-                    Value = "Ally Spirit",
-                    Name = objXmlCritterNode["translate"]?.InnerText ?? "Ally Spirit"
-                };
-                lstCritters.Add(objItem);
+                lstCritters.Add(new ListItem("Ally Spirit", objXmlCritterNode?["translate"]?.InnerText ?? "Ally Spirit"));
             }
 
             cboSpiritName.BeginUpdate();
@@ -852,9 +818,9 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile"));
             FileNameChanged(this);
             
-            Character objOpenCharacter = frmMain.LoadCharacter(strOpenFile);
+            Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
             Cursor = Cursors.Default;
-            GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+            Program.MainForm.OpenCharacter(objOpenCharacter);
         }
 
         /// <summary>
@@ -864,7 +830,7 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        public string ExpressionToString(string strIn, int intForce, int intOffset)
+        public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 0;
             string strForce = intForce.ToString();
@@ -882,11 +848,8 @@ namespace Chummer
                 if (intValue < 1)
                     intValue = 1;
             }
-            else
-            {
-                if (intValue < 0)
-                    intValue = 0;
-            }
+            else if (intValue < 0)
+                intValue = 0;
             return intValue.ToString();
         }
         #endregion

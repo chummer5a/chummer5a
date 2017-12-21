@@ -28,8 +28,8 @@ namespace Chummer
     public partial class frmCreateCyberwareSuite : Form
     {
         private readonly Character _objCharacter;
-        private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
-        private string _strType = "cyberware";
+        private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
+        private readonly string _strType = "cyberware";
 
         #region Control Events
         public frmCreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource)

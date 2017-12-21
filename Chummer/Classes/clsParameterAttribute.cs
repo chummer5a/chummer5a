@@ -37,11 +37,11 @@ namespace Chummer
     /// <c>Expressions are evaluated in the order of expression NOT as defined
     /// by mathematics. That means "1 + 0 * 10" evaluates to 10</c> <i>so far</i>
     /// </summary>
-    class ParameterAttribute
+    public sealed class ParameterAttribute
     {
          //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
+        private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
         private Gear _gear;
         private String _attribute;
         private double[] fixedDoubles;
@@ -76,7 +76,7 @@ namespace Chummer
                 List<double> lstValues = new List<double>();
                 foreach (Match objMatch in m2)
                 {
-                    if (double.TryParse(objMatch.Groups[1].Value, out double dblValue))
+                    if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))
                         lstValues.Add(dblValue);
                 }
                 fixedDoubles = lstValues.ToArray();

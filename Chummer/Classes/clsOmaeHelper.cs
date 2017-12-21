@@ -224,7 +224,7 @@ namespace Chummer
         /// Compress multiple files to a byte array.
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
-        public byte[] CompressMutiple(List<string> lstFiles)
+        public byte[] CompressMutiple(IEnumerable<string> lstFiles)
         {
             MemoryStream objStream = new MemoryStream();
             Package objPackage = Package.Open(objStream, FileMode.Create, FileAccess.ReadWrite);
@@ -246,7 +246,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstFiles">List of files to compress.</param>
         /// <param name="strDestination">File to compress to.</param>
-        public void CompressMutipleToFile(List<string> lstFiles, string strDestination)
+        public void CompressMutipleToFile(IEnumerable<string> lstFiles, string strDestination)
         {
             Package objPackage = Package.Open(strDestination, FileMode.Create, FileAccess.ReadWrite);
 

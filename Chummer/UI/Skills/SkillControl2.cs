@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
@@ -270,7 +270,8 @@ namespace Chummer.UI.Skills
             List<ListItem> lstAttributeItems = new List<ListItem>();
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
-                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
+                if (strLoopAttribute != "MAGAdept")
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
             }
 
             cboSelectAttribute.BeginUpdate();

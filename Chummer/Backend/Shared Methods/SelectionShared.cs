@@ -1,6 +1,6 @@
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,9 +12,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 
-namespace Chummer.Backend.Shared_Methods
+namespace Chummer.Backend
 {
-    internal class SelectionShared
+    public sealed class SelectionShared
     {
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>
@@ -864,7 +864,7 @@ namespace Chummer.Backend.Shared_Methods
                 }
                 catch (XPathException)
                 {
-                    if (decimal.TryParse(objCostNode.InnerText, out decimal decTemp))
+                    if (decimal.TryParse(objCostNode.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                     {
                         decCost = decTemp;
                     }

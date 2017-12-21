@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    internal class LabelWithToolTip : Label
+    public sealed class LabelWithToolTip : Label
     {
         private readonly ToolTip _tt;
 

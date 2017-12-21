@@ -30,13 +30,13 @@ namespace Chummer
     {
         private string _strSelectedKit = string.Empty;
         private bool _blnAddAgain = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
 
         // Not readonly because content can change while form is up
         private XmlDocument _objXmlDocument = null;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectPACKSKit(Character objCharacter)
@@ -60,24 +60,15 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[not(hide)]");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -86,10 +77,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -123,13 +114,8 @@ namespace Chummer
             XmlNodeList objXmlPacksList = _objXmlDocument.SelectNodes("/chummer/packs/pack[" + strFilter + "]");
             foreach (XmlNode objXmlPack in objXmlPacksList)
             {
-                ListItem objItem = new ListItem
-                {
-                    // Separator is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
-                    Value = objXmlPack["name"].InnerText + '<' + objXmlPack["category"].InnerText,
-                    Name = objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText
-                };
-                lstKit.Add(objItem);
+                // Separator "<" is a hack because XML does not like it when the '<' character is used in element contents, so we can safely assume that it will never show up.
+                lstKit.Add(new ListItem(objXmlPack["name"].InnerText + '<' + objXmlPack["category"].InnerText, objXmlPack["translate"]?.InnerText ?? objXmlPack["name"].InnerText));
             }
             SortListItem objSort = new SortListItem();
             lstKit.Sort(objSort.Compare);
@@ -923,11 +909,11 @@ namespace Chummer
         /// <summary>
         /// Category that was selected in the dialogue.
         /// </summary>
-        public string SelectedCategory
+        public static string SelectedCategory
         {
             get
             {
-                return _strSelectCategory;
+                return s_StrSelectCategory;
             }
         }
         #endregion
@@ -940,7 +926,7 @@ namespace Chummer
         {
             string[] objSelectedKit = lstKits.SelectedValue.ToString().Split('<');
             _strSelectedKit = objSelectedKit[0];
-            _strSelectCategory = objSelectedKit[1];
+            s_StrSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
         }
 

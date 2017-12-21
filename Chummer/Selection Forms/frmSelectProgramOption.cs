@@ -28,7 +28,7 @@ namespace Chummer
         private string _strSelectedOption = string.Empty;
         private string _strProgramName = string.Empty;
         private string _strProgramCategory = string.Empty;
-        private List<string> _lstTags = new List<string>();
+        private readonly List<string> _lstTags = new List<string>();
 
         private bool _blnAddAgain = false;
 
@@ -68,12 +68,8 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlOption["name"].InnerText,
-                    Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText
-                };
-                lstOption.Add(objItem);
+                string strName = objXmlOption["name"].InnerText;
+                lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstOption.Sort(objSort.Compare);
@@ -158,15 +154,11 @@ namespace Chummer
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public List<string> ProgramTags
+        public IList<string> ProgramTags
         {
             get
             {
                 return _lstTags;
-            }
-            set
-            {
-                _lstTags = value;
             }
         }
 

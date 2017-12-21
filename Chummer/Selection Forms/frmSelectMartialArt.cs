@@ -69,15 +69,10 @@ namespace Chummer
                 XmlNode objXmlQuality = objXmlArt["quality"];
                 if (_blnShowQualities != (objXmlQuality != null))
                     continue;
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
+                if (Backend.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
                 {
                     string strName = objXmlArt["name"].InnerText;
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strName,
-                        Name = objXmlArt["translate"]?.InnerText ?? strName
-                    };
-                    lstMartialArt.Add(objItem);
+                    lstMartialArt.Add(new ListItem(strName, objXmlArt["translate"]?.InnerText ?? strName));
                 }
             }
             SortListItem objSort = new SortListItem();

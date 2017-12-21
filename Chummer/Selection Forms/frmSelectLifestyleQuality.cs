@@ -23,7 +23,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Text;
 
@@ -41,11 +41,11 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument = null;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
-        private List<string> _lstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
-        private string[] _strLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private static readonly List<string> s_LstLifestylesSorted = new List<string>(new string[] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
+        private static readonly string[] s_StrLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         private readonly XmlDocument _objMetatypeDocument = null;
         private readonly XmlDocument _objCritterDocument = null;
@@ -80,12 +80,7 @@ namespace Chummer
                 string strCategory = objXmlCategory.InnerText;
                 if (BuildQualityList(strCategory, false, true).Count > 0)
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strCategory,
-                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory
-                    };
-                    _lstCategory.Add(objItem);
+                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                 }
             }
             SortListItem objSort = new SortListItem();
@@ -93,12 +88,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -106,10 +96,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -167,7 +157,7 @@ namespace Chummer
                 else
                 {
                     string strCost = objXmlQuality["cost"].InnerText ?? string.Empty;
-                    if (!decimal.TryParse(strCost, out decimal decCost))
+                    if (!decimal.TryParse(strCost, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decCost))
                     {
                         try
                         {
@@ -193,19 +183,19 @@ namespace Chummer
 
         private string GetMinimumRequirement(string strAllowedLifestyles)
         {
-            if (_strLifestyleSpecific.Contains(strAllowedLifestyles))
+            if (s_StrLifestyleSpecific.Contains(strAllowedLifestyles))
             {
                 return strAllowedLifestyles;
             }
             int intMin = int.MaxValue;
             foreach (string strLifesytle in strAllowedLifestyles.Split(','))
             {
-                if (_lstLifestylesSorted.Contains(strLifesytle) && _lstLifestylesSorted.IndexOf(strLifesytle) < intMin)
+                if (s_LstLifestylesSorted.Contains(strLifesytle) && s_LstLifestylesSorted.IndexOf(strLifesytle) < intMin)
                 {
-                    intMin = _lstLifestylesSorted.IndexOf(strLifesytle);
+                    intMin = s_LstLifestylesSorted.IndexOf(strLifesytle);
                 }
             }
-            return _lstLifestylesSorted[intMin];
+            return s_LstLifestylesSorted[intMin];
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -348,7 +338,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private List<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private IList<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
@@ -385,13 +375,7 @@ namespace Chummer
                 {
                     if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strQualityName,
-                            Name = objXmlQuality["translate"]?.InnerText ?? strQualityName
-                        };
-
-                        lstLifestyleQuality.Add(objItem);
+                        lstLifestyleQuality.Add(new ListItem(strQualityName, objXmlQuality["translate"]?.InnerText ?? strQualityName));
                         if (blnTerminateAfterFirst)
                             break;
                     }
@@ -421,7 +405,7 @@ namespace Chummer
                 return;
             XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
             _strSelectedQuality = objNode["name"].InnerText;
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
 
             if (!RequirementMet(objNode, true))
                 return;

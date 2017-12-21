@@ -47,7 +47,7 @@ namespace Chummer
         private readonly string _strAppPath = Application.StartupPath;
         private bool _blnPreferNightly = false;
         private bool _blnIsConnected = true;
-        private bool _blnChangelogDownloaded = false;
+        private readonly bool _blnChangelogDownloaded = false;
         private readonly BackgroundWorker _workerConnectionLoader = new BackgroundWorker();
         private readonly WebClient _clientDownloader = new WebClient();
         private readonly WebClient _clientChangelogDownloader = new WebClient();

@@ -24,7 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Text;
 
@@ -159,12 +159,7 @@ namespace Chummer
                     XmlNode objFirstItem = objXmlDocument.SelectSingleNode(strXPath);
                     if (objFirstItem != null)
                     {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = strInnerText,
-                            Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText
-                        };
-                        _lstCategory.Add(objItem);
+                        _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
             }
@@ -204,24 +199,12 @@ namespace Chummer
             tipTooltip.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit"));
 
             objXmlDocument = XmlManager.Load("critterpowers.xml");
-            XmlNode objXmlPossession = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Possession\"]");
-            XmlNode objXmlInhabitation = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"Inhabitation\"]");
-            List<ListItem> lstMethods = new List<ListItem>();
-
-            ListItem objPossession = new ListItem
+            XmlNode objXmlPowersNode = objXmlDocument.SelectSingleNode("/chummer/powers");
+            List<ListItem> lstMethods = new List<ListItem>
             {
-                Value = "Possession",
-                Name = objXmlPossession["translate"]?.InnerText ?? objXmlPossession["name"].InnerText
+                new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]")?["translate"]?.InnerText ?? "Possession"),
+                new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]")?["translate"]?.InnerText ?? "Inhabitation")
             };
-
-            ListItem objInhabitation = new ListItem
-            {
-                Value = "Inhabitation",
-                Name = objXmlInhabitation["translate"]?.InnerText ?? objXmlInhabitation["name"].InnerText
-            };
-
-            lstMethods.Add(objInhabitation);
-            lstMethods.Add(objPossession);
 
             SortListItem objSortPossession = new SortListItem();
             lstMethods.Sort(objSortPossession.Compare);
@@ -229,7 +212,6 @@ namespace Chummer
             cboPossessionMethod.ValueMember = "Value";
             cboPossessionMethod.DisplayMember = "Name";
             cboPossessionMethod.DataSource = lstMethods;
-            cboPossessionMethod.SelectedIndex = cboPossessionMethod.FindStringExact(objPossession.Name);
             cboPossessionMethod.EndUpdate();
             PopulateMetatypes();
         }
@@ -271,24 +253,17 @@ namespace Chummer
                     lblINI.Text = objXmlMetatype["inimin"].InnerText;
                 }
 
-                List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem
+                List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    Value = "None",
-                    Name = LanguageManager.GetString("String_None")
+                    new ListItem("None", LanguageManager.GetString("String_None"))
                 };
-                lstMetavariants.Add(objNone);
 
                 // Retrieve the list of Metavariants for the selected Metatype.
                 XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
                 foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
                 {
-                    ListItem objMetavariant = new ListItem
-                    {
-                        Value = objXmlMetavariant["name"].InnerText,
-                        Name = objXmlMetavariant["translate"]?.InnerText ?? objXmlMetavariant["name"].InnerText
-                    };
-                    lstMetavariants.Add(objMetavariant);
+                    string strName = objXmlMetavariant["name"].InnerText;
+                    lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
                 }
 
                 cboMetavariant.BeginUpdate();
@@ -328,39 +303,39 @@ namespace Chummer
                     // Build a list of the Metavariant's Positive Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                     {
-                            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                            {
-                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                        {
+                            XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                        strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
-                                    strQualities += " (" + LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-                            }
-                            else
-                            {
-                                strQualities += objXmlQuality.InnerText;
-                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
-                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-                            }
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                        }
+                        else
+                        {
+                            strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                        }
                         strQualities += "\n";
                     }
                     // Build a list of the Metavariant's Negative Qualities.
                     foreach (XmlNode objXmlQuality in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                     {
-                            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                            {
-                                XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
-                            strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
+                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                        {
+                            XmlNode objQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQuality.InnerText + "\"]");
+                        strQualities += objQuality["translate"]?.InnerText ?? objXmlQuality.InnerText;
 
-                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
-                                    strQualities += " (" + LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
-                            }
-                            else
-                            {
-                                strQualities += objXmlQuality.InnerText;
-                            if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
-                                    strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
-                            }
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText) + ")";
+                        }
+                        else
+                        {
+                            strQualities += objXmlQuality.InnerText;
+                        if (!string.IsNullOrEmpty(objXmlQuality.Attributes["select"]?.InnerText))
+                                strQualities += " (" + objXmlQuality.Attributes["select"].InnerText + ")";
+                        }
                         strQualities += "\n";
                     }
                     lblQualities.Text = strQualities;
@@ -368,13 +343,10 @@ namespace Chummer
             else
             {
                 // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>();
-                ListItem objNone = new ListItem
+                List<ListItem> lstMetavariants = new List<ListItem>
                 {
-                    Value = "None",
-                    Name = LanguageManager.GetString("String_None")
+                    new ListItem("None", LanguageManager.GetString("String_None"))
                 };
-                lstMetavariants.Add(objNone);
 
                 cboMetavariant.BeginUpdate();
                 cboMetavariant.ValueMember = "Value";
@@ -991,7 +963,7 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        private string ExpressionToString(string strIn, int intForce, int intOffset)
+        private static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset.ToString();
@@ -1030,12 +1002,7 @@ namespace Chummer
             foreach (XmlNode objXmlMetatype in objXmlMetatypeList)
             {
                 string strName = objXmlMetatype["name"]?.InnerText ?? string.Empty;
-                ListItem objItem = new ListItem
-                {
-                    Value = strName,
-                    Name = objXmlMetatype["translate"]?.InnerText ?? strName
-                };
-                lstMetatype.Add(objItem);
+                lstMetatype.Add(new ListItem(strName, objXmlMetatype["translate"]?.InnerText ?? strName));
             }
             SortListItem objSort = new SortListItem();
             lstMetatype.Sort(objSort.Compare);

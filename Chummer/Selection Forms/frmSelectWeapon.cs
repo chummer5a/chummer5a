@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
+using System.Globalization;
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -36,12 +37,12 @@ namespace Chummer
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
         private string[] _strLimitToCategories = new string[0];
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private XmlNodeList _objXmlCategoryList;
         private readonly XmlDocument _objXmlDocument = null;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectWeapon(Character objCharacter)
@@ -87,44 +88,29 @@ namespace Chummer
             if (_strLimitToCategories.Length > 0)
             {
                 // Populate the Category list.
-                XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-                if (objXmlNodeList != null)
-                    foreach (XmlNode objXmlCategory in objXmlNodeList)
-                    {
-                        foreach (ListItem objItem in from strCategory in _strLimitToCategories where strCategory == objXmlCategory.InnerText select new ListItem())
-                        {
-                            objItem.Value = objXmlCategory.InnerText;
-                            objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                            _lstCategory.Add(objItem);
-                        }
-                    }
+                foreach (XmlNode objXmlCategory in _objXmlDocument.SelectNodes("/chummer/categories/category"))
+                {
+                    string strInnerText = objXmlCategory.InnerText;
+                    if (_strLimitToCategories.Contains(strInnerText))
+                        _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
             }
             else
             {
                 _objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
 
-                if (_objXmlCategoryList != null)
-                    foreach (XmlNode objXmlCategory in _objXmlCategoryList)
-                    {
-                        ListItem objItem = new ListItem
-                        {
-                            Value = objXmlCategory.InnerText,
-                            Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                        };
-                        _lstCategory.Add(objItem);
-                    }
+                foreach (XmlNode objXmlCategory in _objXmlCategoryList)
+                {
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -135,10 +121,10 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -191,11 +177,11 @@ namespace Chummer
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], out decMin);
-                        decimal.TryParse(strValues[1], out decMax);
+                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
+                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMax);
                     }
                     else
-                        decimal.TryParse(strCost.FastEscape('+'), out decMin);
+                        decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
 
                     if (decMax == decimal.MaxValue)
                         lblWeaponCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
@@ -278,7 +264,7 @@ namespace Chummer
                         continue;
                     if (!string.IsNullOrEmpty(objXmlWeapon["extramount"]?.InnerText) && !Mounts.Contains(objXmlWeapon["extramount"].InnerText))
                         continue;
-                    if (!Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+                    if (!Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
                         continue;
 
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -355,16 +341,11 @@ namespace Chummer
                     {
                         blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
                     }
-                    if (blnHide || !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+                    if (blnHide || !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
                     {
                         continue;
                     }
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlWeapon["id"]?.InnerText,
-                        Name = objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText
-                    };
-                    lstWeapons.Add(objItem);
+                    lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
                 SortListItem objSort = new SortListItem();
                 lstWeapons.Sort(objSort.Compare);
@@ -584,7 +565,7 @@ namespace Chummer
                     objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + lstWeapon.SelectedValue + "\"]");
                     if (objNode != null)
                     {
-                        _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                        s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                         _strSelectedWeapon = objNode["id"]?.InnerText;
                         _decMarkup = nudMarkup.Value;
                         _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -608,7 +589,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

@@ -22,9 +22,9 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Shared_Methods;
+using Chummer.Backend;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 using System.Text;
 
@@ -41,9 +41,9 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument = null;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         #region Control Events
         public frmSelectQuality(Character objCharacter)
@@ -69,22 +69,13 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -93,10 +84,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -413,13 +404,7 @@ namespace Chummer
                 if (!chkLimitList.Checked || SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality))
                 {
                     string strName = objXmlQuality["name"].InnerText;
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strName,
-                        Name = objXmlQuality["translate"]?.InnerText ?? strName
-                    };
-
-                    lstQuality.Add(objItem);
+                    lstQuality.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                 }
             }
             SortListItem objSort = new SortListItem();
@@ -459,7 +444,7 @@ namespace Chummer
             if (objNode == null)
                 return;
             _strSelectedQuality = objNode["name"]?.InnerText;
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
                 return;

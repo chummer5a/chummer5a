@@ -34,12 +34,12 @@ namespace Chummer
         private decimal _decMarkup = 0;
 
         private bool _blnAddAgain = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
@@ -78,24 +78,15 @@ namespace Chummer
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -104,10 +95,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -422,23 +413,24 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (Backend.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem { Value = objXmlVehicle["name"]?.InnerText };
-                    objItem.Name = objXmlVehicle["translate"]?.InnerText ?? objItem.Value;
+                    string strName = objXmlVehicle["name"]?.InnerText;
+                    string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? strName;
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
-                        if (objXmlVehicle["category"] != null)
+                        string strCategory = objXmlVehicle["category"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strCategory))
                         {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlVehicle["category"].InnerText);
-                            if (objFoundItem != null)
+                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                            if (!string.IsNullOrEmpty(objFoundItem.Name))
                             {
-                                objItem.Name += " [" + objFoundItem.Name + "]";
+                                strDisplayname += " [" + objFoundItem.Name + "]";
                             }
                         }
                     }
-                    lstVehicles.Add(objItem);
+                    lstVehicles.Add(new ListItem(strName, strDisplayname));
                 }
             }
             SortListItem objSort = new SortListItem();
@@ -472,7 +464,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
             _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
             _decMarkup = nudMarkup.Value;
 

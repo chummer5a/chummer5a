@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer.Backend.Skills
 {
-    class SkillSorter : IComparer<Skill>
+    public sealed class SkillSorter : IComparer<Skill>
     {
         private readonly Comparison<Skill> _comparison;
 
@@ -28,7 +28,7 @@ namespace Chummer.Backend.Skills
         }
     }
 
-    class KnowledgeSkillSorter : IComparer<KnowledgeSkill>
+    public sealed class KnowledgeSkillSorter : IComparer<KnowledgeSkill>
     {
         private readonly Comparison<KnowledgeSkill> _comparison;
 
@@ -50,7 +50,7 @@ namespace Chummer.Backend.Skills
         }
     }
 
-    class SkillSortBySkillGroup : IComparer<Skill>
+    public sealed class SkillSortBySkillGroup : IComparer<Skill>
     {
         /// <summary>
         /// Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.

@@ -37,9 +37,9 @@ namespace Chummer
         private int _intModMultiplier = 1;
         private int _intMarkup = 0;
         private bool _blnSkipUpdate = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
-        readonly string[] _arrCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+        private static readonly string[] s_LstCategories = new string[6] { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
         private string _strAllowedCategories = string.Empty;
         private bool _blnAddAgain = false;
 
@@ -47,7 +47,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private string _strLimitToCategories = string.Empty;
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
         private List<VehicleMod> _lstMods;
 
         #region Control Events
@@ -91,24 +91,15 @@ namespace Chummer
             {
                 if (string.IsNullOrEmpty(_strLimitToCategories) || strValues.Any(value => value == objXmlCategory.InnerText))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlCategory.InnerText,
-                        Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                    };
-                    _lstCategory.Add(objItem);
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -116,10 +107,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             cboCategory.EndUpdate();
 
@@ -157,7 +148,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            _strSelectCategory = string.Empty;
+            s_StrSelectCategory = string.Empty;
             DialogResult = DialogResult.Cancel;
         }
 
@@ -393,11 +384,11 @@ namespace Chummer
         /// <summary>
         /// Currently Installed Accessories
         /// </summary>
-        public List<VehicleMod> InstalledMods
+        public IList<VehicleMod> InstalledMods
         {
             set
             {
-                _lstMods = value;
+                _lstMods = (List<VehicleMod>)value;
             }
         }
         #endregion
@@ -500,14 +491,9 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlMod["id"].InnerText,
-                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                    };
-                    lstMods.Add(objItem);
+                    lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }
             }
             SortListItem objSort = new SortListItem();
@@ -529,7 +515,7 @@ namespace Chummer
             _intSelectedRating = decimal.ToInt32(nudRating.Value);
             _intMarkup = decimal.ToInt32(nudMarkup.Value);
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = cboCategory.SelectedValue.ToString();
+            s_StrSelectCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
 
@@ -560,7 +546,7 @@ namespace Chummer
                 {
                     nudRating.Enabled = true;
                     nudRating.Maximum = 20;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -571,7 +557,7 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -583,7 +569,7 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
-                    while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -596,7 +582,7 @@ namespace Chummer
                     if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
                     {
                         nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
-                        while (nudRating.Maximum > intMinRating && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                         {
                             nudRating.Maximum -= 1;
                         }
@@ -730,7 +716,7 @@ namespace Chummer
 
                 if (objXmlMod["category"].InnerText != null)
                 {
-                    if (_arrCategories.Contains(objXmlMod["category"].InnerText))
+                    if (s_LstCategories.Contains(objXmlMod["category"].InnerText))
                     {
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;

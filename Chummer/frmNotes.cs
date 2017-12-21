@@ -23,8 +23,8 @@ namespace Chummer
 {
     public partial class frmNotes : Form
     {
-        private static int _intWidth = 534;
-        private static int _intHeight = 278;
+        private static int s_IntWidth = 534;
+        private static int s_IntHeight = 278;
         private readonly bool _blnLoading;
 
         #region Control Events
@@ -33,8 +33,8 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.Load(GlobalOptions.Language, this);
             _blnLoading = true;
-            Width = _intWidth;
-            Height = _intHeight;
+            Width = s_IntWidth;
+            Height = s_IntHeight;
             _blnLoading = false;
         }
 
@@ -61,8 +61,8 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            _intWidth = Width;
-            _intHeight = Height;
+            s_IntWidth = Width;
+            s_IntHeight = Height;
         }
         #endregion
 

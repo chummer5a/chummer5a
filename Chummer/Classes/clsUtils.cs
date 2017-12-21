@@ -40,91 +40,17 @@ namespace Chummer
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version _objCachedGitVersion = null;
+        private static Version s_VersionCachedGitVersion = null;
         public static Version CachedGitVersion
         {
             get
             {
-                return _objCachedGitVersion;
+                return s_VersionCachedGitVersion;
             }
             set
             {
-                _objCachedGitVersion = value;
+                s_VersionCachedGitVersion = value;
             }
-        }
-        public static void DoCacheGitVersion(object sender, EventArgs e)
-        {
-            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-            if (GlobalOptions.PreferNightlyBuilds)
-            {
-                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
-            }
-            HttpWebRequest request = null;
-            try
-            {
-                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
-                request = objTemp as HttpWebRequest;
-            }
-            catch (System.Security.SecurityException)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            if (request == null)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-            request.Accept = "application/json";
-            // Get the response.
-
-            HttpWebResponse response = null;
-            try
-            {
-                response = request.GetResponse() as HttpWebResponse;
-            }
-            catch (WebException)
-            {
-            }
-
-            // Get the stream containing content returned by the server.
-            Stream dataStream = response?.GetResponseStream();
-            if (dataStream == null)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            Version verLatestVersion = null;
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
-
-            string responseFromServer = reader.ReadToEnd();
-            string[] stringSeparators = new string[] { "," };
-            string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
-            if (!string.IsNullOrEmpty(line))
-            {
-                string strVersion = line.Substring(line.IndexOf(':') + 1);
-                if (strVersion.Contains('}'))
-                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
-                strVersion = strVersion.FastEscape('\"');
-                // Adds zeroes if minor and/or build version are missing
-                while (strVersion.Count(x => x == '.') < 2)
-                {
-                    strVersion = strVersion + ".0";
-                }
-                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
-            }
-            // Cleanup the streams and the response.
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-
-            CachedGitVersion = verLatestVersion;
-            return;
         }
 
         public static int GitUpdateAvailable()
@@ -150,9 +76,9 @@ namespace Chummer
             }
             // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
-            for (int i = 0; i < GlobalOptions.MainForm.OpenCharacterForms.Count; ++i)
+            for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
             {
-                CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
+                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
@@ -165,7 +91,7 @@ namespace Chummer
                             return;
                         // We saved a character as created, which closed the current form and added a new one
                         // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        else if (!GlobalOptions.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
                             i -= 1;
                     }
                     else if (objResult == DialogResult.Cancel)
@@ -175,16 +101,16 @@ namespace Chummer
                 }
             }
             Log.Info("Restart Chummer");
-            GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
+            Program.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            foreach (CharacterShared objOpenCharacterForm in GlobalOptions.MainForm.OpenCharacterForms)
+            foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
                 arguments += "\"" + objOpenCharacterForm.CharacterObject.FileName + "\" ";
             }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
-            foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)
+            foreach (Form objForm in Program.MainForm.MdiChildren)
             {
                 objForm.Close();
             }

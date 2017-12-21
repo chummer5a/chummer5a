@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,59 +29,57 @@ using Microsoft.Win32;
 
 namespace Chummer
 {
-    class CrashReport
+    public sealed class CrashReportData
     {
-        public static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
+        private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (Debugger.IsAttached) return;
+            if (Debugger.IsAttached)
+                return;
 
-            CrashReport report = new CrashReport(Guid.NewGuid())
-                    .AddDefaultData()
-                    .AddData("exception.txt", e.ExceptionObject.ToString());
+            CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());
 
-                Log.Kill(); //Make sure log object is not used
+            Log.Kill(); //Make sure log object is not used
 
-                try
-                {
-                    string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
-                    report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
-                }
-                catch(Exception ex)
-                {
-                    report.AddData("chummerlog.txt", ex.ToString());
-                }
+            try
+            {
+                string strFile = Path.Combine(Application.StartupPath, "chummerlog.txt");
+                report.AddData("chummerlog.txt", new StreamReader(strFile).BaseStream);
+            }
+            catch(Exception ex)
+            {
+                report.AddData("chummerlog.txt", ex.ToString());
+            }
 
+            //Considering doing some magic with 
+            //Application.OpenForms
+            //And reflection to all savefiles
+            //here
 
-                //Considering doing some magic with 
-                //Application.OpenForms
-                //And reflection to all savefiles
-                //here
-
-                //try to include default settings file
-                try
-                {
-                    string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-                    report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
-                }
-                catch (Exception ex)
-                {
-                    report.AddData("default.xml", ex.ToString());
-                }
+            //try to include default settings file
+            try
+            {
+                string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+                report.AddData("default.xml", new StreamReader(strFilePath).BaseStream);
+            }
+            catch (Exception ex)
+            {
+                report.AddData("default.xml", ex.ToString());
+            }
 
 
-                report.Send();
-                MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
+            report.Send();
+            MessageBox.Show("Crash report sent.\nPlease refer to the crash id " + report.Id);
         }
 
-        private List<KeyValuePair<String, Stream>> values; 
+        private readonly List<KeyValuePair<string, Stream>> values; 
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
         /// </summary>
         public Guid Id { get; private set; }
 
-        private String _subject;
-        public String Subject
+        private string _subject;
+        public string Subject
         {
             get
             {
@@ -90,21 +88,24 @@ namespace Chummer
 
                 return _subject;
             }
-            set { _subject = value; }
+            set
+            {
+                _subject = value;
+            }
         }
 
-        public CrashReport(Guid repordGuid)
+        public CrashReportData(Guid repordGuid)
         {
             Id = repordGuid;
-            values = new List<KeyValuePair<String, Stream>>();
+            values = new List<KeyValuePair<string, Stream>>();
         }
 
-        public CrashReport AddDefaultData()
+        public CrashReportData AddDefaultData()
         {
             return AddData("info.txt", DefaultInfo());
         }
 
-        private String DefaultInfo()
+        private string DefaultInfo()
         {
             StringBuilder report = new StringBuilder();
 
@@ -154,7 +155,7 @@ namespace Chummer
             return report.ToString();
         }
 
-        public CrashReport AddData(String title, String contents)
+        public CrashReportData AddData(String title, String contents)
         {
             //Convert string to stream
             MemoryStream stream = new MemoryStream();
@@ -163,11 +164,10 @@ namespace Chummer
             writer.Flush();
             stream.Position = 0;
 
-            
             return AddData(title, stream);
         }
 
-        public CrashReport AddData(String title, Stream contents)
+        public CrashReportData AddData(String title, Stream contents)
         {
             values.Add(new KeyValuePair<string, Stream>(title, contents));
             return this;

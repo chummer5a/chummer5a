@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using Chummer.Annotations;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 // ReSharper disable once CheckNamespace
@@ -299,7 +299,7 @@ namespace Chummer
         /// <summary>
         /// The Enhancements currently applied to the Power.
         /// </summary>
-        public List<Enhancement> Enhancements { get; } = new List<Enhancement>();
+        public IList<Enhancement> Enhancements { get; } = new List<Enhancement>();
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -360,7 +360,7 @@ namespace Chummer
             }
             set
             {
-                _strPointsPerLevel = value.ToString();
+                _strPointsPerLevel = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -386,7 +386,7 @@ namespace Chummer
             }
             set
             {
-                _strAdeptWayDiscount = value.ToString();
+                _strAdeptWayDiscount = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -492,7 +492,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_displayPoints))
                     return _displayPoints;
                 else
-                    return PowerPoints.ToString("G29");
+                    return PowerPoints.ToString("G29", GlobalOptions.CultureInfo);
             }
             set { _displayPoints = value; }
         }

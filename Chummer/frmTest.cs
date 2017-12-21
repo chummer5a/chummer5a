@@ -27,7 +27,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Skills;
+ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -943,7 +943,7 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        public string ExpressionToString(string strIn, int intForce, int intOffset)
+        public static string ExpressionToString(string strIn, int intForce, int intOffset)
         {
             int intValue = 1;
             string strForce = intForce.ToString();
@@ -961,11 +961,8 @@ namespace Chummer
                 if (intValue < 1)
                     intValue = 1;
             }
-            else
-            {
-                if (intValue < 0)
-                    intValue = 0;
-            }
+            else if (intValue < 0)
+                intValue = 0;
             return intValue.ToString();
         }
     }

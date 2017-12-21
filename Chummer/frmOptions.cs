@@ -151,8 +151,29 @@ namespace Chummer
             _characterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
-            _characterOptions.LimbCount = Convert.ToInt32(cboLimbCount.SelectedValue.ToString().Split('/')[0]);
-            _characterOptions.ExcludeLimbSlot = cboLimbCount.SelectedValue.ToString().Split('/')[1];
+            string strLimbCount = cboLimbCount.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strLimbCount))
+            {
+                _characterOptions.LimbCount = 6;
+                _characterOptions.ExcludeLimbSlot = string.Empty;
+            }
+            else
+            {
+                int intSeparatorIndex = strLimbCount.IndexOf('<');
+                if (intSeparatorIndex == -1)
+                {
+                    _characterOptions.LimbCount = Convert.ToInt32(strLimbCount);
+                    _characterOptions.ExcludeLimbSlot = string.Empty;
+                }
+                else
+                {
+                    _characterOptions.LimbCount = Convert.ToInt32(strLimbCount.Substring(0, intSeparatorIndex));
+                    if (intSeparatorIndex + 1 < strLimbCount.Length)
+                        _characterOptions.ExcludeLimbSlot = strLimbCount.Substring(intSeparatorIndex + 1);
+                    else
+                        _characterOptions.ExcludeLimbSlot = string.Empty;
+                }
+            }
             _characterOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             _characterOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
 
@@ -711,12 +732,6 @@ namespace Chummer
             }
         }
 
-        private void SetDefaultValueForLimbCount()
-        {
-            string strDefaultValue = _characterOptions.LimbCount+"/"+_characterOptions.ExcludeLimbSlot;
-                cboLimbCount.SelectedValue = strDefaultValue;
-        }
-
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
@@ -814,7 +829,11 @@ namespace Chummer
             nudNuyenDecimalsMaximum.Value = intNuyenDecimalPlacesMaximum;
             nudNuyenDecimalsMinimum.Value = intNuyenDecimalPlacesAlways;
 
-            SetDefaultValueForLimbCount();
+            string strLimbSlot = _characterOptions.LimbCount.ToString();
+            if (!string.IsNullOrEmpty(_characterOptions.ExcludeLimbSlot))
+                strLimbSlot += '<' + _characterOptions.ExcludeLimbSlot;
+            cboLimbCount.SelectedValue = strLimbSlot;
+
             PopulateKarmaFields();
         }
 
@@ -1042,38 +1061,17 @@ namespace Chummer
         private void PopulateBuildMethodList()
         {
             // Populate the Build Method list.
-            List<ListItem> lstBuildMethod = new List<ListItem>();
-            ListItem objKarma = new ListItem
+            List<ListItem> lstBuildMethod = new List<ListItem>
             {
-                Value = "Karma",
-                Name = LanguageManager.GetString("String_Karma")
-            };
-
-            ListItem objPriority = new ListItem
-            {
-                Value = "Priority",
-                Name = LanguageManager.GetString("String_Priority")
-            };
-
-            ListItem objSumtoTen = new ListItem
-            {
-                Value = "SumtoTen",
-                Name = LanguageManager.GetString("String_SumtoTen")
+                new ListItem("Karma", LanguageManager.GetString("String_Karma")),
+                new ListItem("Priority", LanguageManager.GetString("String_Priority")),
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen"))
             };
 
             if (GlobalOptions.LifeModuleEnabled)
             {
-                ListItem objLifeModule = new ListItem
-                {
-                    Value = "LifeModule",
-                    Name = LanguageManager.GetString("String_LifeModule")
-                };
-                lstBuildMethod.Add(objLifeModule);
+                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule")));
             }
-
-            lstBuildMethod.Add(objPriority);
-            lstBuildMethod.Add(objKarma);
-            lstBuildMethod.Add(objSumtoTen);
             cboBuildMethod.BeginUpdate();
             cboBuildMethod.ValueMember = "Value";
             cboBuildMethod.DisplayMember = "Name";
@@ -1091,16 +1089,10 @@ namespace Chummer
 
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
-                ListItem objLimbCount = new ListItem();
-                string strExclude = string.Empty;
-                if (objXmlNode["exclude"] != null)
-                {
-                    strExclude = objXmlNode["exclude"].InnerText;
-                }
-                objLimbCount.Value = string.Format("{0}/{1}", objXmlNode["limbcount"].InnerText,
-                    objXmlNode["exclude"].InnerText);
-                objLimbCount.Name = LanguageManager.GetString(objXmlNode["name"].InnerText);
-                lstLimbCount.Add(objLimbCount);
+                string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
+                if (!string.IsNullOrEmpty(strExclude))
+                    strExclude = '<' + strExclude;
+                lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, LanguageManager.GetString(objXmlNode["name"].InnerText)));
             }
 
             cboLimbCount.BeginUpdate();
@@ -1121,15 +1113,11 @@ namespace Chummer
             int intIndex = 0;
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
-                ListItem objPDFArgument = new ListItem
+                string strValue = objXmlNode["value"].InnerText;
+                lstPdfParameters.Add(new ListItem(objXmlNode["value"].InnerText, objXmlNode["name"].InnerText));
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == strValue)
                 {
-                    Name = objXmlNode["name"].InnerText,
-                    Value = objXmlNode["value"].InnerText
-                };
-                lstPdfParameters.Add(objPDFArgument);
-                if (!String.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == objPDFArgument.Value)
-                {
-                    intIndex = lstPdfParameters.IndexOf(objPDFArgument);
+                    intIndex = lstPdfParameters.Count - 1;
                 }
             }
 
@@ -1174,19 +1162,10 @@ namespace Chummer
                 }
 
                 XmlNode node = xmlDocument.SelectSingleNode("/settings/name");
-
                 if (node == null)
                     continue;
 
-                string settingName = node.InnerText;
-
-                ListItem objItem = new ListItem
-                {
-                    Value = Path.GetFileName(filePath),
-                    Name = settingName
-                };
-
-                lstSettings.Add(objItem);
+                lstSettings.Add(new ListItem(Path.GetFileName(filePath), node.InnerText));
             }
 
             cboSetting.BeginUpdate();
@@ -1216,19 +1195,10 @@ namespace Chummer
                 }
 
                 XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
-
                 if (node == null)
                     continue;
 
-                string languageName = node.InnerText;
-
-                ListItem objItem = new ListItem
-                {
-                    Value = Path.GetFileNameWithoutExtension(filePath),
-                    Name = languageName
-                };
-
-                lstLanguages.Add(objItem);
+                lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
             }
 
             SortListItem objSort = new SortListItem();
@@ -1261,7 +1231,7 @@ namespace Chummer
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
         }
 
-        private List<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
+        private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
             List<string> names = new List<string>();
 
@@ -1276,29 +1246,22 @@ namespace Chummer
             return names;
         }
 
-        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private static IList<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
             XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
             XmlDocument manifest = XmlManager.Load("sheets.xml");
-            XmlNodeList sheets = manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]");
-            foreach (XmlNode sheet in sheets)
+            foreach (XmlNode sheet in manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText,
-                    Name = sheet["name"].InnerText
-                };
-
-                lstSheets.Add(objItem);
+                lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, sheet["filename"].InnerText) : sheet["filename"].InnerText, sheet["name"].InnerText));
             }
 
             return lstSheets;
         }
 
-        private List<ListItem> GetXslFilesFromOmaeDirectory()
+        private IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
             var items = new List<ListItem>();
 
@@ -1308,17 +1271,9 @@ namespace Chummer
 
             // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets 
             // (hidden because they are partial templates that cannot be used on their own).
-            List<string> fileNames = ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath);
-
-            foreach (string fileName in fileNames)
+            foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = Path.Combine("omae", fileName),
-                    Name = menuMainOmae + ": " + fileName
-                };
-
-                items.Add(objItem);
+                items.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
             }
 
             return items;
@@ -1326,7 +1281,7 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
+            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory());

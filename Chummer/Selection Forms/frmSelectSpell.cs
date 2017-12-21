@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Shared_Methods;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -36,11 +36,11 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree = false;
         private bool _blnCanTouchOnlySpellBeFree = false;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectSpell(Character objCharacter)
@@ -121,28 +121,19 @@ namespace Chummer
             }
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
-                if (limit.Count != 0 && !limit.Contains(objXmlCategory.InnerText))
+                string strCategory = objXmlCategory.InnerText;
+                if (limit.Count != 0 && !limit.Contains(strCategory))
                     continue;
-                if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != objXmlCategory.InnerText)
+                if (!string.IsNullOrEmpty(_strLimitCategory) && _strLimitCategory != strCategory)
                     continue;
-                ListItem objItem = new ListItem
-                {
-                    Value = objXmlCategory.InnerText,
-                    Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText
-                };
-                _lstCategory.Add(objItem);
+                _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
             }
             SortListItem objSort = new SortListItem();
             _lstCategory.Sort(objSort.Compare);
 
             if (_lstCategory.Count > 0)
             {
-                ListItem objItem = new ListItem
-                {
-                    Value = "Show All",
-                    Name = LanguageManager.GetString("String_ShowAll")
-                };
-                _lstCategory.Insert(0, objItem);
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -151,10 +142,10 @@ namespace Chummer
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = _strSelectCategory;
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -430,11 +421,12 @@ namespace Chummer
             List<ListItem> lstSpellItems = new List<ListItem>();
             foreach (XmlNode objXmlSpell in objXmlNodeList)
             {
+                string strSpellCategory = objXmlSpell["category"]?.InnerText;
                 if (!_blnIgnoreRequirements)
                 {
                     if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                     {
-                        if (!((objXmlSpell["category"].InnerText == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell")) ||
+                        if (!((strSpellCategory == "Rituals" && !objXmlSpell["descriptor"].InnerText.Contains("Spell")) ||
                             (_blnCanTouchOnlySpellBeFree && objXmlSpell["range"].InnerText == "T")))
                             continue;
                     }
@@ -446,20 +438,19 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem
+                string strDisplayName = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
+                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
-                    Value = objXmlSpell["id"].InnerText,
-                    Name = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText
-                };
-                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0 && objXmlSpell["category"] != null)
-                {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlSpell["category"].InnerText);
-                    if (objFoundItem != null)
+                    if (!string.IsNullOrEmpty(strSpellCategory))
                     {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strSpellCategory);
+                        if (!string.IsNullOrEmpty(objFoundItem.Name))
+                        {
+                            strDisplayName += " [" + objFoundItem.Name + "]";
+                        }
                     }
                 }
-                lstSpellItems.Add(objItem);
+                lstSpellItems.Add(new ListItem(objXmlSpell["id"].InnerText, strDisplayName));
             }
 
             SortListItem objSort = new SortListItem();
@@ -482,7 +473,7 @@ namespace Chummer
                 return;
             _strSelectedSpell = strSelectedItem;
             XmlNode objXmlSpell = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + _strSelectedSpell + "\"]");
-            _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlSpell?["category"]?.InnerText ?? string.Empty;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlSpell?["category"]?.InnerText ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
             DialogResult = DialogResult.OK;
         }

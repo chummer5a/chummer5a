@@ -193,7 +193,7 @@ namespace ChummerDataViewer
 
 		}
 
-		private bool TextFilter(CrashReport report, string search)
+		private static bool TextFilter(CrashReport report, string search)
 		{
 			if (report.Guid.ToString().Contains(search)) return true;
 
@@ -207,7 +207,7 @@ namespace ChummerDataViewer
 		}
 	}
 
-	internal class CrashReportTimeStampFilter : IComparer<CrashReport>
+	public sealed class CrashReportTimeStampFilter : IComparer<CrashReport>
 	{
 		public int Compare(CrashReport x, CrashReport y)
 		{

@@ -258,7 +258,7 @@ namespace Chummer
             lblA.Text = objXmlMod["armor"].InnerText;
 
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
-            while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+            while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
             {
                 nudRating.Maximum -= 1;
             }
@@ -324,7 +324,7 @@ namespace Chummer
             else
             {
                 string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString());
+                strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
 
                 // Apply any markup.
                 decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
@@ -398,14 +398,10 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlMod["name"].InnerText,
-                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                    };
-                    lstMods.Add(objItem);
+                    string strName = objXmlMod["name"].InnerText;
+                    lstMods.Add(new ListItem(strName, objXmlMod["translate"]?.InnerText ?? strName));
                 }
             }
             SortListItem objSort = new SortListItem();

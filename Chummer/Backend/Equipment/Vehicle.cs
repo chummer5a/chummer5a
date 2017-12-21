@@ -51,7 +51,6 @@ namespace Chummer.Backend.Equipment
         private string _strAltCategory = string.Empty;
         private string _strAltPage = string.Empty;
         private List<string> _lstLocations = new List<string>();
-        private bool _blnDealerConnectionDiscount = false;
         private bool _blnBlackMarketDiscount = false;
         private string _strParentID = string.Empty;
 
@@ -194,7 +193,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -373,7 +372,7 @@ namespace Chummer.Backend.Equipment
                         if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
                         {
                             w.Weapons.Add(objWeapon);
-                            w.Weapons.AddRange(objSubWeapons);
+                            ((List<Weapon>)w.Weapons).AddRange(objSubWeapons);
                             foreach (TreeNode objModNode in objNode.Nodes)
                             {
                                 if (objModNode.Tag.ToString() == w.InternalId)
@@ -400,7 +399,7 @@ namespace Chummer.Backend.Equipment
                             if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                             {
                                 objMod.Weapons.Add(objWeapon);
-                                objMod.Weapons.AddRange(objSubWeapons);
+                                ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                 foreach (TreeNode objModNode in objNode.Nodes)
                                 {
                                     if (objModNode.Tag.ToString() == objMod.InternalId)
@@ -425,7 +424,7 @@ namespace Chummer.Backend.Equipment
                                 if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
-                                    objMod.Weapons.AddRange(objSubWeapons);
+                                    ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                     foreach (TreeNode objModNode in objNode.Nodes)
                                     {
                                         if (objModNode.Tag.ToString() == objMod.InternalId)
@@ -484,7 +483,6 @@ namespace Chummer.Backend.Equipment
                 foreach (WeaponMount wm in WeaponMounts)
                     CommonFunctions.CreateWeaponMountTreeNode(wm, mountsNode, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleGear, cmsVehicleWeaponMount);
             }
-            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -765,9 +763,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.TryGetBoolFieldQuickly("dealerconnection", ref _blnDealerConnectionDiscount);
-
-
+            
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
@@ -804,7 +800,6 @@ namespace Chummer.Backend.Equipment
                     _lstLocations.Add(objXmlLocation.InnerText);
                 }
             }
-            UpdateDealerConnectionDiscount();
         }
 
         /// <summary>
@@ -1283,7 +1278,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public List<VehicleMod> Mods
+        public IList<VehicleMod> Mods
         {
             get
             {
@@ -1294,7 +1289,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {
@@ -1305,9 +1300,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public List<Weapon> Weapons => _lstWeapons;
+        public IList<Weapon> Weapons => _lstWeapons;
 
-        public List<WeaponMount> WeaponMounts
+        public IList<WeaponMount> WeaponMounts
         {
             get
             {
@@ -1455,7 +1450,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public List<string> Locations
+        public IList<string> Locations
         {
             get
             {
@@ -1485,7 +1480,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnDealerConnectionDiscount = UpdateDealerConnectionDiscount();
+                return UpdateDealerConnectionDiscount();
             }
         }
 
@@ -2383,15 +2378,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public static readonly string[] lstModCategories = { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+        private static readonly string[] s_LstModCategoryStrings = { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
         /// <summary>
         /// Check if the vehicle is over capacity in any category
         /// </summary>
         public bool OverR5Capacity(string strCheckCapacity = "")
         {
-            return !string.IsNullOrEmpty(strCheckCapacity) && lstModCategories.Contains(strCheckCapacity)
+            return !string.IsNullOrEmpty(strCheckCapacity) && s_LstModCategoryStrings.Contains(strCheckCapacity)
                 ? CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity)
-                : lstModCategories.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
+                : s_LstModCategoryStrings.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
         }
 
         /// <summary>

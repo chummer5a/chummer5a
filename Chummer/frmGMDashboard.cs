@@ -25,13 +25,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
     public partial class frmGMDashboard : Form
     {
-        private frmInitiative frmInitative;
+        private readonly frmInitiative frmInitative;
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
 
         #region Singleton

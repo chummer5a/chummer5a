@@ -131,7 +131,7 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
                 else if (objXmlArmorNode["cost"].InnerText.StartsWith("Rating"))
@@ -664,15 +664,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strO == "0")
-                {
-                    _strO = string.Empty;
-                }
                 return _strO;
             }
             set
             {
-                _strO = value;
+                if (value == "0")
+                    _strO = string.Empty;
+                else
+                    _strO = value;
             }
         }
 
@@ -759,7 +758,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                         return decReturn.ToString("0.##", GlobalOptions.CultureInfo);
                     return _strArmorCapacity;
                 }
@@ -809,7 +808,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _strCost = value.ToString();
+                _strCost = value.ToString(GlobalOptions.InvariantCultureInfo);
             }
         }
 
@@ -948,7 +947,7 @@ namespace Chummer.Backend.Equipment
                     string strCostExpression = _strCost;
 
                     string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                    decTotalCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo);
+                    decTotalCost = Convert.ToDecimal((double)CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
@@ -1000,7 +999,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public List<ArmorMod> ArmorMods
+        public IList<ArmorMod> ArmorMods
         {
             get
             {
@@ -1011,7 +1010,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             get
             {
@@ -1073,7 +1072,7 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
-        private static char[] chrAvails = { 'F', 'R' };
+        private static readonly char[] s_LstAvailChars = { 'F', 'R' };
         /// <summary>
         /// Total Availablility of the Armor and its Modifications and Gear.
         /// </summary>
@@ -1195,7 +1194,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (decimal.TryParse(_strArmorCapacity, out decimal decReturn))
+                    if (decimal.TryParse(_strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
                         strReturn = decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
                     else
                         strReturn = _strArmorCapacity;

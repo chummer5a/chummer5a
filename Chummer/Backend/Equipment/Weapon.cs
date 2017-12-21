@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Drawing;
 using Chummer.Backend.Attributes;
 using System.Text;
@@ -90,7 +90,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlWeapon, List<TreeNode> lstNodes, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, List<Weapon> objWeapons, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        public void Create(XmlNode objXmlWeapon, IList<TreeNode> lstNodes, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, IList<Weapon> objWeapons, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
                 _objCachedMyXmlNode = null;
@@ -812,12 +812,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
-        public List<WeaponAccessory> WeaponAccessories => _lstAccessories;
+        public IList<WeaponAccessory> WeaponAccessories => _lstAccessories;
 
         /// <summary>
         /// Underbarrel Weapon.
         /// </summary>
-        public List<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
+        public IList<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
 
         /// <summary>
         /// Children as Underbarrel Weapon.
@@ -3360,7 +3360,7 @@ namespace Chummer.Backend.Equipment
             return _ammo[clip];
         }
 
-        private class Clip
+        private sealed class Clip
         {
             internal Guid Guid { get; set; }
             internal int Ammo { get; set; }

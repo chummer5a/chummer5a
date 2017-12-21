@@ -167,15 +167,10 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
                 {
                     string strName = objXmlAccessory["name"]?.InnerText ?? string.Empty;
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strName,
-                        Name = objXmlAccessory["translate"]?.InnerText ?? strName
-                    };
-                    lstAccessories.Add(objItem);
+                    lstAccessories.Add(new ListItem(strName, objXmlAccessory["translate"]?.InnerText ?? strName));
                 }
                 NextItem:;
             }
@@ -389,11 +384,11 @@ namespace Chummer
         /// <summary>
         /// Currently Installed Accessories
         /// </summary>
-        public List<WeaponAccessory> InstalledAccessories
+        public IList<WeaponAccessory> InstalledAccessories
         {
             set
             {
-                _lstAccessories = value;
+                _lstAccessories = (List<WeaponAccessory>)value;
             }
         }
         #endregion
@@ -444,7 +439,7 @@ namespace Chummer
                 nudRating.Visible = true;
                 lblRatingLabel.Visible = true;
                 nudRating.Maximum = intMaxRating;
-                while (nudRating.Maximum > nudRating.Minimum && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
                 {
                     nudRating.Maximum -= 1;
                 }
@@ -571,11 +566,11 @@ namespace Chummer
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
-                        decimal.TryParse(strValues[0], out decMin);
-                        decimal.TryParse(strValues[1], out decMax);
+                        decimal.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
+                        decimal.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMax);
                     }
                     else
-                        decimal.TryParse(strCost.FastEscape('+'), out decMin);
+                        decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decMin);
 
                     if (decMax == decimal.MaxValue)
                     {

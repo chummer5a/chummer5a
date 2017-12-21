@@ -55,10 +55,10 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
             System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
             System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Gear");
             System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Armor");
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
             System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreate));
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -437,6 +437,8 @@ namespace Chummer
             this.treMetamagic = new System.Windows.Forms.TreeView();
             this.cmdAddMetamagic = new System.Windows.Forms.Button();
             this.tabCyberware = new System.Windows.Forms.TabPage();
+            this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
             this.cmdCyberwareChangeMount = new System.Windows.Forms.Button();
             this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
             this.lblCyberlimbSTR = new System.Windows.Forms.Label();
@@ -484,23 +486,47 @@ namespace Chummer
             this.cmdAddCyberware = new SplitButton();
             this.tabStreetGear = new System.Windows.Forms.TabPage();
             this.tabStreetGearTabs = new System.Windows.Forms.TabControl();
-            this.tabLifestyle = new System.Windows.Forms.TabPage();
-            this.cmdAddLifestyle = new SplitButton();
-            this.lblLifestyleQualities = new System.Windows.Forms.Label();
-            this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
-            this.lblBaseLifestyle = new System.Windows.Forms.Label();
-            this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
-            this.lblLifestyleSource = new System.Windows.Forms.Label();
-            this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleTotalCost = new System.Windows.Forms.Label();
-            this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
-            this.treLifestyles = new System.Windows.Forms.TreeView();
-            this.lblLifestyleCost = new System.Windows.Forms.Label();
-            this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
-            this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
-            this.nudLifestyleMonths = new System.Windows.Forms.NumericUpDown();
+            this.tabGear = new System.Windows.Forms.TabPage();
+            this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
+            this.cboGearFirewall = new System.Windows.Forms.ComboBox();
+            this.cboGearSleaze = new System.Windows.Forms.ComboBox();
+            this.cboGearAttack = new System.Windows.Forms.ComboBox();
+            this.lblGearFirewallLabel = new System.Windows.Forms.Label();
+            this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
+            this.lblGearSleazeLabel = new System.Windows.Forms.Label();
+            this.lblGearAttackLabel = new System.Windows.Forms.Label();
+            this.chkGearActiveCommlink = new System.Windows.Forms.CheckBox();
+            this.chkCommlinks = new System.Windows.Forms.CheckBox();
+            this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
+            this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
+            this.lblGearAP = new System.Windows.Forms.Label();
+            this.lblGearAPLabel = new System.Windows.Forms.Label();
+            this.lblGearDamage = new System.Windows.Forms.Label();
+            this.lblGearDamageLabel = new System.Windows.Forms.Label();
+            this.cmdAddLocation = new System.Windows.Forms.Button();
+            this.chkGearEquipped = new System.Windows.Forms.CheckBox();
+            this.treFoci = new System.Windows.Forms.TreeView();
+            this.lblGearSource = new System.Windows.Forms.Label();
+            this.lblGearSourceLabel = new System.Windows.Forms.Label();
+            this.lblGearDeviceRating = new System.Windows.Forms.Label();
+            this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
+            this.nudGearQty = new System.Windows.Forms.NumericUpDown();
+            this.lblGearQtyLabel = new System.Windows.Forms.Label();
+            this.lblGearCost = new System.Windows.Forms.Label();
+            this.lblGearCostLabel = new System.Windows.Forms.Label();
+            this.lblGearAvail = new System.Windows.Forms.Label();
+            this.lblGearAvailLabel = new System.Windows.Forms.Label();
+            this.lblGearCapacity = new System.Windows.Forms.Label();
+            this.lblGearCapacityLabel = new System.Windows.Forms.Label();
+            this.lblGearCategory = new System.Windows.Forms.Label();
+            this.lblGearCategoryLabel = new System.Windows.Forms.Label();
+            this.lblGearName = new System.Windows.Forms.Label();
+            this.lblGearNameLabel = new System.Windows.Forms.Label();
+            this.nudGearRating = new System.Windows.Forms.NumericUpDown();
+            this.lblGearRatingLabel = new System.Windows.Forms.Label();
+            this.treGear = new System.Windows.Forms.TreeView();
+            this.cmdDeleteGear = new System.Windows.Forms.Button();
+            this.cmdAddGear = new SplitButton();
             this.tabArmor = new System.Windows.Forms.TabPage();
             this.lblArmorFirewall = new System.Windows.Forms.Label();
             this.lblArmorFirewallLabel = new System.Windows.Forms.Label();
@@ -596,48 +622,25 @@ namespace Chummer
             this.lblWeaponRC = new System.Windows.Forms.Label();
             this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
             this.cmdAddWeapon = new SplitButton();
-            this.tabGear = new System.Windows.Forms.TabPage();
-            this.cboGearDataProcessing = new System.Windows.Forms.ComboBox();
-            this.cboGearFirewall = new System.Windows.Forms.ComboBox();
-            this.cboGearSleaze = new System.Windows.Forms.ComboBox();
-            this.cboGearAttack = new System.Windows.Forms.ComboBox();
-            this.lblGearFirewallLabel = new System.Windows.Forms.Label();
-            this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
-            this.lblGearSleazeLabel = new System.Windows.Forms.Label();
-            this.lblGearAttackLabel = new System.Windows.Forms.Label();
-            this.chkActiveCommlink = new System.Windows.Forms.CheckBox();
-            this.chkCommlinks = new System.Windows.Forms.CheckBox();
-            this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
-            this.chkGearHomeNode = new System.Windows.Forms.CheckBox();
-            this.lblGearAP = new System.Windows.Forms.Label();
-            this.lblGearAPLabel = new System.Windows.Forms.Label();
-            this.lblGearDamage = new System.Windows.Forms.Label();
-            this.lblGearDamageLabel = new System.Windows.Forms.Label();
-            this.cmdAddLocation = new System.Windows.Forms.Button();
-            this.chkGearEquipped = new System.Windows.Forms.CheckBox();
-            this.treFoci = new System.Windows.Forms.TreeView();
-            this.lblGearSource = new System.Windows.Forms.Label();
-            this.lblGearSourceLabel = new System.Windows.Forms.Label();
-            this.lblGearDeviceRating = new System.Windows.Forms.Label();
-            this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
-            this.nudGearQty = new System.Windows.Forms.NumericUpDown();
-            this.lblGearQtyLabel = new System.Windows.Forms.Label();
-            this.lblGearCost = new System.Windows.Forms.Label();
-            this.lblGearCostLabel = new System.Windows.Forms.Label();
-            this.lblGearAvail = new System.Windows.Forms.Label();
-            this.lblGearAvailLabel = new System.Windows.Forms.Label();
-            this.lblGearCapacity = new System.Windows.Forms.Label();
-            this.lblGearCapacityLabel = new System.Windows.Forms.Label();
-            this.lblGearCategory = new System.Windows.Forms.Label();
-            this.lblGearCategoryLabel = new System.Windows.Forms.Label();
-            this.lblGearName = new System.Windows.Forms.Label();
-            this.lblGearNameLabel = new System.Windows.Forms.Label();
-            this.nudGearRating = new System.Windows.Forms.NumericUpDown();
-            this.lblGearRatingLabel = new System.Windows.Forms.Label();
-            this.treGear = new System.Windows.Forms.TreeView();
-            this.cmdDeleteGear = new System.Windows.Forms.Button();
-            this.cmdAddGear = new SplitButton();
+            this.tabLifestyle = new System.Windows.Forms.TabPage();
+            this.cmdAddLifestyle = new SplitButton();
+            this.lblLifestyleQualities = new System.Windows.Forms.Label();
+            this.lblLifestyleQualitiesLabel = new System.Windows.Forms.Label();
+            this.lblBaseLifestyle = new System.Windows.Forms.Label();
+            this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleStartingNuyenLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleStartingNuyen = new System.Windows.Forms.Label();
+            this.lblLifestyleSource = new System.Windows.Forms.Label();
+            this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleTotalCost = new System.Windows.Forms.Label();
+            this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
+            this.treLifestyles = new System.Windows.Forms.TreeView();
+            this.lblLifestyleCost = new System.Windows.Forms.Label();
+            this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
+            this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
+            this.nudLifestyleMonths = new System.Windows.Forms.NumericUpDown();
             this.tabVehicles = new System.Windows.Forms.TabPage();
+            this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDicePoolLabel = new System.Windows.Forms.Label();
@@ -940,14 +943,14 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).BeginInit();
             this.tabStreetGear.SuspendLayout();
             this.tabStreetGearTabs.SuspendLayout();
-            this.tabLifestyle.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).BeginInit();
-            this.tabArmor.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
-            this.tabWeapons.SuspendLayout();
             this.tabGear.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).BeginInit();
+            this.tabArmor.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).BeginInit();
+            this.tabWeapons.SuspendLayout();
+            this.tabLifestyle.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).BeginInit();
             this.tabVehicles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudVehicleRating)).BeginInit();
@@ -5051,6 +5054,8 @@ namespace Chummer
             // tabCyberware
             // 
             this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCyberware.Controls.Add(this.chkCyberwareActiveCommlink);
+            this.tabCyberware.Controls.Add(this.chkCyberwareHomeNode);
             this.tabCyberware.Controls.Add(this.cmdCyberwareChangeMount);
             this.tabCyberware.Controls.Add(this.chkPrototypeTranshuman);
             this.tabCyberware.Controls.Add(this.lblCyberlimbSTR);
@@ -5102,6 +5107,32 @@ namespace Chummer
             this.tabCyberware.TabIndex = 4;
             this.tabCyberware.Tag = "Tab_Cyberware";
             this.tabCyberware.Text = "Cyberware and Bioware";
+            // 
+            // chkCyberwareActiveCommlink
+            // 
+            this.chkCyberwareActiveCommlink.AutoSize = true;
+            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(685, 275);
+            this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
+            this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkCyberwareActiveCommlink.TabIndex = 247;
+            this.chkCyberwareActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkCyberwareActiveCommlink.Text = "Active Commlink";
+            this.chkCyberwareActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkCyberwareActiveCommlink.Visible = false;
+            this.chkCyberwareActiveCommlink.CheckedChanged += new System.EventHandler(this.chkCyberwareActiveCommlink_CheckedChanged);
+            // 
+            // chkCyberwareHomeNode
+            // 
+            this.chkCyberwareHomeNode.AutoSize = true;
+            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(593, 275);
+            this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
+            this.chkCyberwareHomeNode.Size = new System.Drawing.Size(83, 17);
+            this.chkCyberwareHomeNode.TabIndex = 246;
+            this.chkCyberwareHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkCyberwareHomeNode.Text = "Home Node";
+            this.chkCyberwareHomeNode.UseVisualStyleBackColor = true;
+            this.chkCyberwareHomeNode.Visible = false;
+            this.chkCyberwareHomeNode.CheckedChanged += new System.EventHandler(this.chkCyberwareHomeNode_CheckedChanged);
             // 
             // cmdCyberwareChangeMount
             // 
@@ -5615,214 +5646,509 @@ namespace Chummer
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
             this.tabStreetGearTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
-            // tabLifestyle
+            // tabGear
             // 
-            this.tabLifestyle.BackColor = System.Drawing.SystemColors.Control;
-            this.tabLifestyle.Controls.Add(this.cmdAddLifestyle);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleQualities);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleQualitiesLabel);
-            this.tabLifestyle.Controls.Add(this.lblBaseLifestyle);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleComfortsLabel);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyenLabel);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyen);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleSource);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleSourceLabel);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleTotalCost);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleCostLabel);
-            this.tabLifestyle.Controls.Add(this.treLifestyles);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleCost);
-            this.tabLifestyle.Controls.Add(this.cmdDeleteLifestyle);
-            this.tabLifestyle.Controls.Add(this.lblLifestyleMonthsLabel);
-            this.tabLifestyle.Controls.Add(this.nudLifestyleMonths);
-            this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
-            this.tabLifestyle.Name = "tabLifestyle";
-            this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(850, 579);
-            this.tabLifestyle.TabIndex = 0;
-            this.tabLifestyle.Tag = "Tab_Lifestyle";
-            this.tabLifestyle.Text = "Lifestyle";
+            this.tabGear.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGear.Controls.Add(this.cboGearDataProcessing);
+            this.tabGear.Controls.Add(this.cboGearFirewall);
+            this.tabGear.Controls.Add(this.cboGearSleaze);
+            this.tabGear.Controls.Add(this.cboGearAttack);
+            this.tabGear.Controls.Add(this.lblGearFirewallLabel);
+            this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
+            this.tabGear.Controls.Add(this.lblGearSleazeLabel);
+            this.tabGear.Controls.Add(this.lblGearAttackLabel);
+            this.tabGear.Controls.Add(this.chkGearActiveCommlink);
+            this.tabGear.Controls.Add(this.chkCommlinks);
+            this.tabGear.Controls.Add(this.cmdCreateStackedFocus);
+            this.tabGear.Controls.Add(this.chkGearHomeNode);
+            this.tabGear.Controls.Add(this.lblGearAP);
+            this.tabGear.Controls.Add(this.lblGearAPLabel);
+            this.tabGear.Controls.Add(this.lblGearDamage);
+            this.tabGear.Controls.Add(this.lblGearDamageLabel);
+            this.tabGear.Controls.Add(this.cmdAddLocation);
+            this.tabGear.Controls.Add(this.chkGearEquipped);
+            this.tabGear.Controls.Add(this.lblFoci);
+            this.tabGear.Controls.Add(this.treFoci);
+            this.tabGear.Controls.Add(this.lblGearSource);
+            this.tabGear.Controls.Add(this.lblGearSourceLabel);
+            this.tabGear.Controls.Add(this.lblGearDeviceRating);
+            this.tabGear.Controls.Add(this.lblGearDeviceRatingLabel);
+            this.tabGear.Controls.Add(this.nudGearQty);
+            this.tabGear.Controls.Add(this.lblGearQtyLabel);
+            this.tabGear.Controls.Add(this.lblGearCost);
+            this.tabGear.Controls.Add(this.lblGearCostLabel);
+            this.tabGear.Controls.Add(this.lblGearAvail);
+            this.tabGear.Controls.Add(this.lblGearAvailLabel);
+            this.tabGear.Controls.Add(this.lblGearCapacity);
+            this.tabGear.Controls.Add(this.lblGearCapacityLabel);
+            this.tabGear.Controls.Add(this.lblGearCategory);
+            this.tabGear.Controls.Add(this.lblGearCategoryLabel);
+            this.tabGear.Controls.Add(this.lblGearName);
+            this.tabGear.Controls.Add(this.lblGearNameLabel);
+            this.tabGear.Controls.Add(this.nudGearRating);
+            this.tabGear.Controls.Add(this.lblGearRatingLabel);
+            this.tabGear.Controls.Add(this.treGear);
+            this.tabGear.Controls.Add(this.cmdDeleteGear);
+            this.tabGear.Controls.Add(this.cmdAddGear);
+            this.tabGear.Location = new System.Drawing.Point(4, 22);
+            this.tabGear.Name = "tabGear";
+            this.tabGear.Size = new System.Drawing.Size(850, 579);
+            this.tabGear.TabIndex = 3;
+            this.tabGear.Tag = "Tab_Gear";
+            this.tabGear.Text = "Gear";
             // 
-            // cmdAddLifestyle
+            // cboGearDataProcessing
             // 
-            this.cmdAddLifestyle.AutoSize = true;
-            this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
-            this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
-            this.cmdAddLifestyle.Name = "cmdAddLifestyle";
-            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
-            this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
-            this.cmdAddLifestyle.TabIndex = 91;
-            this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
-            this.cmdAddLifestyle.Text = "&Add Lifestyle";
-            this.cmdAddLifestyle.UseVisualStyleBackColor = true;
-            this.cmdAddLifestyle.Click += new System.EventHandler(this.cmdAddLifestyle_Click);
+            this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGearDataProcessing.FormattingEnabled = true;
+            this.cboGearDataProcessing.Location = new System.Drawing.Point(621, 163);
+            this.cboGearDataProcessing.Name = "cboGearDataProcessing";
+            this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
+            this.cboGearDataProcessing.TabIndex = 159;
+            this.cboGearDataProcessing.Visible = false;
+            this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
             // 
-            // lblLifestyleQualities
+            // cboGearFirewall
             // 
-            this.lblLifestyleQualities.Location = new System.Drawing.Point(412, 144);
-            this.lblLifestyleQualities.Name = "lblLifestyleQualities";
-            this.lblLifestyleQualities.Size = new System.Drawing.Size(323, 290);
-            this.lblLifestyleQualities.TabIndex = 103;
-            this.lblLifestyleQualities.Text = "[0]";
+            this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGearFirewall.FormattingEnabled = true;
+            this.cboGearFirewall.Location = new System.Drawing.Point(687, 163);
+            this.cboGearFirewall.Name = "cboGearFirewall";
+            this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
+            this.cboGearFirewall.TabIndex = 158;
+            this.cboGearFirewall.Visible = false;
+            this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
             // 
-            // lblLifestyleQualitiesLabel
+            // cboGearSleaze
             // 
-            this.lblLifestyleQualitiesLabel.AutoSize = true;
-            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(412, 128);
-            this.lblLifestyleQualitiesLabel.Name = "lblLifestyleQualitiesLabel";
-            this.lblLifestyleQualitiesLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblLifestyleQualitiesLabel.TabIndex = 102;
-            this.lblLifestyleQualitiesLabel.Tag = "Label_LifestyleQualities";
-            this.lblLifestyleQualitiesLabel.Text = "Qualities:";
+            this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGearSleaze.FormattingEnabled = true;
+            this.cboGearSleaze.Location = new System.Drawing.Point(552, 163);
+            this.cboGearSleaze.Name = "cboGearSleaze";
+            this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
+            this.cboGearSleaze.TabIndex = 157;
+            this.cboGearSleaze.Visible = false;
+            this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
             // 
-            // lblBaseLifestyle
+            // cboGearAttack
             // 
-            this.lblBaseLifestyle.AutoSize = true;
-            this.lblBaseLifestyle.Location = new System.Drawing.Point(361, 128);
-            this.lblBaseLifestyle.Name = "lblBaseLifestyle";
-            this.lblBaseLifestyle.Size = new System.Drawing.Size(19, 13);
-            this.lblBaseLifestyle.TabIndex = 93;
-            this.lblBaseLifestyle.Text = "[0]";
+            this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGearAttack.FormattingEnabled = true;
+            this.cboGearAttack.Location = new System.Drawing.Point(485, 163);
+            this.cboGearAttack.Name = "cboGearAttack";
+            this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
+            this.cboGearAttack.TabIndex = 156;
+            this.cboGearAttack.Visible = false;
+            this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
             // 
-            // lblLifestyleComfortsLabel
+            // lblGearFirewallLabel
             // 
-            this.lblLifestyleComfortsLabel.AutoSize = true;
-            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(307, 128);
-            this.lblLifestyleComfortsLabel.Name = "lblLifestyleComfortsLabel";
-            this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(48, 13);
-            this.lblLifestyleComfortsLabel.TabIndex = 92;
-            this.lblLifestyleComfortsLabel.Tag = "Label_SelectAdvancedLifestyle_Lifestyle";
-            this.lblLifestyleComfortsLabel.Text = "Lifestyle:";
+            this.lblGearFirewallLabel.Location = new System.Drawing.Point(687, 149);
+            this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
+            this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
+            this.lblGearFirewallLabel.TabIndex = 154;
+            this.lblGearFirewallLabel.Tag = "Label_Firewall";
+            this.lblGearFirewallLabel.Text = "Firewall:";
+            this.lblGearFirewallLabel.Visible = false;
             // 
-            // lblLifestyleStartingNuyenLabel
+            // lblGearDataProcessingLabel
             // 
-            this.lblLifestyleStartingNuyenLabel.AutoSize = true;
-            this.lblLifestyleStartingNuyenLabel.Location = new System.Drawing.Point(412, 95);
-            this.lblLifestyleStartingNuyenLabel.Name = "lblLifestyleStartingNuyenLabel";
-            this.lblLifestyleStartingNuyenLabel.Size = new System.Drawing.Size(80, 13);
-            this.lblLifestyleStartingNuyenLabel.TabIndex = 90;
-            this.lblLifestyleStartingNuyenLabel.Tag = "Label_SelectLifestyle_StartingNuyen";
-            this.lblLifestyleStartingNuyenLabel.Text = "Starting Nuyen:";
+            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(621, 149);
+            this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
+            this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
+            this.lblGearDataProcessingLabel.TabIndex = 152;
+            this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
+            this.lblGearDataProcessingLabel.Text = "Data Proc:";
+            this.lblGearDataProcessingLabel.Visible = false;
             // 
-            // lblLifestyleStartingNuyen
+            // lblGearSleazeLabel
             // 
-            this.lblLifestyleStartingNuyen.AutoSize = true;
-            this.lblLifestyleStartingNuyen.Location = new System.Drawing.Point(498, 95);
-            this.lblLifestyleStartingNuyen.Name = "lblLifestyleStartingNuyen";
-            this.lblLifestyleStartingNuyen.Size = new System.Drawing.Size(83, 13);
-            this.lblLifestyleStartingNuyen.TabIndex = 89;
-            this.lblLifestyleStartingNuyen.Text = "[Starting Nuyen]";
+            this.lblGearSleazeLabel.Location = new System.Drawing.Point(552, 149);
+            this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
+            this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
+            this.lblGearSleazeLabel.TabIndex = 150;
+            this.lblGearSleazeLabel.Tag = "Label_Sleaze";
+            this.lblGearSleazeLabel.Text = "Sleaze:";
+            this.lblGearSleazeLabel.Visible = false;
             // 
-            // lblLifestyleSource
+            // lblGearAttackLabel
             // 
-            this.lblLifestyleSource.AutoSize = true;
-            this.lblLifestyleSource.Location = new System.Drawing.Point(359, 95);
-            this.lblLifestyleSource.Name = "lblLifestyleSource";
-            this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
-            this.lblLifestyleSource.TabIndex = 88;
-            this.lblLifestyleSource.Text = "[Source]";
-            this.lblLifestyleSource.Click += new System.EventHandler(this.lblLifestyleSource_Click);
+            this.lblGearAttackLabel.Location = new System.Drawing.Point(485, 149);
+            this.lblGearAttackLabel.Name = "lblGearAttackLabel";
+            this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
+            this.lblGearAttackLabel.TabIndex = 148;
+            this.lblGearAttackLabel.Tag = "Label_Attack";
+            this.lblGearAttackLabel.Text = "Attack:";
+            this.lblGearAttackLabel.Visible = false;
             // 
-            // lblLifestyleSourceLabel
+            // chkGearActiveCommlink
             // 
-            this.lblLifestyleSourceLabel.AutoSize = true;
-            this.lblLifestyleSourceLabel.Location = new System.Drawing.Point(308, 95);
-            this.lblLifestyleSourceLabel.Name = "lblLifestyleSourceLabel";
-            this.lblLifestyleSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblLifestyleSourceLabel.TabIndex = 87;
-            this.lblLifestyleSourceLabel.Tag = "Label_Source";
-            this.lblLifestyleSourceLabel.Text = "Source:";
+            this.chkGearActiveCommlink.AutoSize = true;
+            this.chkGearActiveCommlink.Enabled = false;
+            this.chkGearActiveCommlink.Location = new System.Drawing.Point(310, 276);
+            this.chkGearActiveCommlink.Name = "chkGearActiveCommlink";
+            this.chkGearActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkGearActiveCommlink.TabIndex = 115;
+            this.chkGearActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkGearActiveCommlink.Text = "Active Commlink";
+            this.chkGearActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkGearActiveCommlink.CheckedChanged += new System.EventHandler(this.chkGearActiveCommlink_CheckedChanged);
             // 
-            // lblLifestyleTotalCost
+            // chkCommlinks
             // 
-            this.lblLifestyleTotalCost.AutoSize = true;
-            this.lblLifestyleTotalCost.Location = new System.Drawing.Point(498, 64);
-            this.lblLifestyleTotalCost.Name = "lblLifestyleTotalCost";
-            this.lblLifestyleTotalCost.Size = new System.Drawing.Size(34, 13);
-            this.lblLifestyleTotalCost.TabIndex = 86;
-            this.lblLifestyleTotalCost.Text = "[Cost]";
+            this.chkCommlinks.AutoSize = true;
+            this.chkCommlinks.Location = new System.Drawing.Point(307, 11);
+            this.chkCommlinks.Name = "chkCommlinks";
+            this.chkCommlinks.Size = new System.Drawing.Size(128, 17);
+            this.chkCommlinks.TabIndex = 114;
+            this.chkCommlinks.Tag = "Checkbox_Commlinks";
+            this.chkCommlinks.Text = "Only show Commlinks";
+            this.chkCommlinks.UseVisualStyleBackColor = true;
+            this.chkCommlinks.CheckedChanged += new System.EventHandler(this.chkCommlinks_CheckedChanged);
             // 
-            // lblLifestyleCostLabel
+            // cmdCreateStackedFocus
             // 
-            this.lblLifestyleCostLabel.AutoSize = true;
-            this.lblLifestyleCostLabel.Location = new System.Drawing.Point(307, 36);
-            this.lblLifestyleCostLabel.Name = "lblLifestyleCostLabel";
-            this.lblLifestyleCostLabel.Size = new System.Drawing.Size(66, 13);
-            this.lblLifestyleCostLabel.TabIndex = 85;
-            this.lblLifestyleCostLabel.Tag = "Label_SelectLifestyle_CostPerMonth";
-            this.lblLifestyleCostLabel.Text = "Cost/Month:";
+            this.cmdCreateStackedFocus.AutoSize = true;
+            this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
+            this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
+            this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
+            this.cmdCreateStackedFocus.TabIndex = 109;
+            this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
+            this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
+            this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
+            this.cmdCreateStackedFocus.Visible = false;
+            this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
             // 
-            // treLifestyles
+            // chkGearHomeNode
             // 
-            this.treLifestyles.AllowDrop = true;
-            this.treLifestyles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chkGearHomeNode.AutoSize = true;
+            this.chkGearHomeNode.Location = new System.Drawing.Point(409, 253);
+            this.chkGearHomeNode.Name = "chkGearHomeNode";
+            this.chkGearHomeNode.Size = new System.Drawing.Size(83, 17);
+            this.chkGearHomeNode.TabIndex = 108;
+            this.chkGearHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkGearHomeNode.Text = "Home Node";
+            this.chkGearHomeNode.UseVisualStyleBackColor = true;
+            this.chkGearHomeNode.Visible = false;
+            this.chkGearHomeNode.CheckedChanged += new System.EventHandler(this.chkGearHomeNode_CheckedChanged);
+            // 
+            // lblGearAP
+            // 
+            this.lblGearAP.AutoSize = true;
+            this.lblGearAP.Location = new System.Drawing.Point(451, 189);
+            this.lblGearAP.Name = "lblGearAP";
+            this.lblGearAP.Size = new System.Drawing.Size(19, 13);
+            this.lblGearAP.TabIndex = 107;
+            this.lblGearAP.Text = "[0]";
+            // 
+            // lblGearAPLabel
+            // 
+            this.lblGearAPLabel.AutoSize = true;
+            this.lblGearAPLabel.Location = new System.Drawing.Point(406, 189);
+            this.lblGearAPLabel.Name = "lblGearAPLabel";
+            this.lblGearAPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblGearAPLabel.TabIndex = 106;
+            this.lblGearAPLabel.Tag = "Label_AP";
+            this.lblGearAPLabel.Text = "AP:";
+            // 
+            // lblGearDamage
+            // 
+            this.lblGearDamage.AutoSize = true;
+            this.lblGearDamage.Location = new System.Drawing.Point(371, 189);
+            this.lblGearDamage.Name = "lblGearDamage";
+            this.lblGearDamage.Size = new System.Drawing.Size(19, 13);
+            this.lblGearDamage.TabIndex = 105;
+            this.lblGearDamage.Text = "[0]";
+            // 
+            // lblGearDamageLabel
+            // 
+            this.lblGearDamageLabel.AutoSize = true;
+            this.lblGearDamageLabel.Location = new System.Drawing.Point(307, 189);
+            this.lblGearDamageLabel.Name = "lblGearDamageLabel";
+            this.lblGearDamageLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblGearDamageLabel.TabIndex = 104;
+            this.lblGearDamageLabel.Tag = "Label_Damage";
+            this.lblGearDamageLabel.Text = "Damage:";
+            // 
+            // cmdAddLocation
+            // 
+            this.cmdAddLocation.AutoSize = true;
+            this.cmdAddLocation.Location = new System.Drawing.Point(221, 7);
+            this.cmdAddLocation.Name = "cmdAddLocation";
+            this.cmdAddLocation.Size = new System.Drawing.Size(80, 23);
+            this.cmdAddLocation.TabIndex = 103;
+            this.cmdAddLocation.Tag = "Button_AddLocation";
+            this.cmdAddLocation.Text = "Add Location";
+            this.cmdAddLocation.UseVisualStyleBackColor = true;
+            this.cmdAddLocation.Click += new System.EventHandler(this.cmdAddLocation_Click);
+            // 
+            // chkGearEquipped
+            // 
+            this.chkGearEquipped.AutoSize = true;
+            this.chkGearEquipped.Location = new System.Drawing.Point(310, 253);
+            this.chkGearEquipped.Name = "chkGearEquipped";
+            this.chkGearEquipped.Size = new System.Drawing.Size(71, 17);
+            this.chkGearEquipped.TabIndex = 93;
+            this.chkGearEquipped.Tag = "Checkbox_Equipped";
+            this.chkGearEquipped.Text = "Equipped";
+            this.chkGearEquipped.UseVisualStyleBackColor = true;
+            this.chkGearEquipped.Visible = false;
+            this.chkGearEquipped.CheckedChanged += new System.EventHandler(this.chkGearEquipped_CheckedChanged);
+            // 
+            // treFoci
+            // 
+            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.treLifestyles.HideSelection = false;
-            this.treLifestyles.Location = new System.Drawing.Point(6, 36);
-            this.treLifestyles.Name = "treLifestyles";
-            treeNode25.Name = "nodLifestylesRoot";
-            treeNode25.Tag = "Node_SelectedLifestyles";
-            treeNode25.Text = "Selected Lifestyles";
-            this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
-            this.treLifestyles.ShowNodeToolTips = true;
-            this.treLifestyles.ShowRootLines = false;
-            this.treLifestyles.Size = new System.Drawing.Size(295, 537);
-            this.treLifestyles.TabIndex = 80;
-            this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
-            this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
-            this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
-            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyles_KeyDown);
-            this.treLifestyles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            this.treFoci.CheckBoxes = true;
+            this.treFoci.Location = new System.Drawing.Point(310, 348);
+            this.treFoci.Name = "treFoci";
+            this.treFoci.ShowLines = false;
+            this.treFoci.ShowPlusMinus = false;
+            this.treFoci.ShowRootLines = false;
+            this.treFoci.Size = new System.Drawing.Size(308, 228);
+            this.treFoci.TabIndex = 91;
+            this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
+            this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
+            this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
             // 
-            // lblLifestyleCost
+            // lblGearSource
             // 
-            this.lblLifestyleCost.AutoSize = true;
-            this.lblLifestyleCost.Location = new System.Drawing.Point(379, 36);
-            this.lblLifestyleCost.Name = "lblLifestyleCost";
-            this.lblLifestyleCost.Size = new System.Drawing.Size(34, 13);
-            this.lblLifestyleCost.TabIndex = 84;
-            this.lblLifestyleCost.Text = "[Cost]";
+            this.lblGearSource.AutoSize = true;
+            this.lblGearSource.Location = new System.Drawing.Point(358, 227);
+            this.lblGearSource.Name = "lblGearSource";
+            this.lblGearSource.Size = new System.Drawing.Size(47, 13);
+            this.lblGearSource.TabIndex = 74;
+            this.lblGearSource.Text = "[Source]";
+            this.lblGearSource.Click += new System.EventHandler(this.lblGearSource_Click);
             // 
-            // cmdDeleteLifestyle
+            // lblGearSourceLabel
             // 
-            this.cmdDeleteLifestyle.AutoSize = true;
-            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(107, 7);
-            this.cmdDeleteLifestyle.Name = "cmdDeleteLifestyle";
-            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(80, 23);
-            this.cmdDeleteLifestyle.TabIndex = 81;
-            this.cmdDeleteLifestyle.Tag = "String_Delete";
-            this.cmdDeleteLifestyle.Text = "Delete";
-            this.cmdDeleteLifestyle.UseVisualStyleBackColor = true;
-            this.cmdDeleteLifestyle.Click += new System.EventHandler(this.cmdDeleteLifestyle_Click);
+            this.lblGearSourceLabel.AutoSize = true;
+            this.lblGearSourceLabel.Location = new System.Drawing.Point(307, 227);
+            this.lblGearSourceLabel.Name = "lblGearSourceLabel";
+            this.lblGearSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblGearSourceLabel.TabIndex = 73;
+            this.lblGearSourceLabel.Tag = "Label_Source";
+            this.lblGearSourceLabel.Text = "Source:";
             // 
-            // lblLifestyleMonthsLabel
+            // lblGearDeviceRating
             // 
-            this.lblLifestyleMonthsLabel.AutoSize = true;
-            this.lblLifestyleMonthsLabel.Location = new System.Drawing.Point(354, 64);
-            this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
-            this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
-            this.lblLifestyleMonthsLabel.TabIndex = 83;
-            this.lblLifestyleMonthsLabel.Tag = "Label_LifestyleMonths";
-            this.lblLifestyleMonthsLabel.Text = "Months (100 for Permanent)";
+            this.lblGearDeviceRating.AutoSize = true;
+            this.lblGearDeviceRating.Location = new System.Drawing.Point(406, 164);
+            this.lblGearDeviceRating.Name = "lblGearDeviceRating";
+            this.lblGearDeviceRating.Size = new System.Drawing.Size(19, 13);
+            this.lblGearDeviceRating.TabIndex = 66;
+            this.lblGearDeviceRating.Text = "[0]";
             // 
-            // nudLifestyleMonths
+            // lblGearDeviceRatingLabel
             // 
-            this.nudLifestyleMonths.Enabled = false;
-            this.nudLifestyleMonths.Location = new System.Drawing.Point(310, 62);
-            this.nudLifestyleMonths.Minimum = new decimal(new int[] {
+            this.lblGearDeviceRatingLabel.AutoSize = true;
+            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(307, 164);
+            this.lblGearDeviceRatingLabel.Name = "lblGearDeviceRatingLabel";
+            this.lblGearDeviceRatingLabel.Size = new System.Drawing.Size(78, 13);
+            this.lblGearDeviceRatingLabel.TabIndex = 65;
+            this.lblGearDeviceRatingLabel.Tag = "Label_DeviceRating";
+            this.lblGearDeviceRatingLabel.Text = "Device Rating:";
+            // 
+            // nudGearQty
+            // 
+            this.nudGearQty.Enabled = false;
+            this.nudGearQty.Location = new System.Drawing.Point(368, 126);
+            this.nudGearQty.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudGearQty.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.nudLifestyleMonths.Name = "nudLifestyleMonths";
-            this.nudLifestyleMonths.Size = new System.Drawing.Size(42, 20);
-            this.nudLifestyleMonths.TabIndex = 82;
-            this.nudLifestyleMonths.Value = new decimal(new int[] {
+            this.nudGearQty.Name = "nudGearQty";
+            this.nudGearQty.Size = new System.Drawing.Size(102, 20);
+            this.nudGearQty.TabIndex = 64;
+            this.nudGearQty.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.nudLifestyleMonths.ValueChanged += new System.EventHandler(this.nudLifestyleMonths_ValueChanged);
+            this.nudGearQty.ValueChanged += new System.EventHandler(this.nudGearQty_ValueChanged);
+            // 
+            // lblGearQtyLabel
+            // 
+            this.lblGearQtyLabel.AutoSize = true;
+            this.lblGearQtyLabel.Location = new System.Drawing.Point(307, 128);
+            this.lblGearQtyLabel.Name = "lblGearQtyLabel";
+            this.lblGearQtyLabel.Size = new System.Drawing.Size(26, 13);
+            this.lblGearQtyLabel.TabIndex = 63;
+            this.lblGearQtyLabel.Tag = "Label_Qty";
+            this.lblGearQtyLabel.Text = "Qty:";
+            // 
+            // lblGearCost
+            // 
+            this.lblGearCost.AutoSize = true;
+            this.lblGearCost.Location = new System.Drawing.Point(684, 82);
+            this.lblGearCost.Name = "lblGearCost";
+            this.lblGearCost.Size = new System.Drawing.Size(34, 13);
+            this.lblGearCost.TabIndex = 62;
+            this.lblGearCost.Text = "[Cost]";
+            // 
+            // lblGearCostLabel
+            // 
+            this.lblGearCostLabel.AutoSize = true;
+            this.lblGearCostLabel.Location = new System.Drawing.Point(618, 82);
+            this.lblGearCostLabel.Name = "lblGearCostLabel";
+            this.lblGearCostLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblGearCostLabel.TabIndex = 61;
+            this.lblGearCostLabel.Tag = "Label_Cost";
+            this.lblGearCostLabel.Text = "Cost:";
+            // 
+            // lblGearAvail
+            // 
+            this.lblGearAvail.AutoSize = true;
+            this.lblGearAvail.Location = new System.Drawing.Point(549, 82);
+            this.lblGearAvail.Name = "lblGearAvail";
+            this.lblGearAvail.Size = new System.Drawing.Size(36, 13);
+            this.lblGearAvail.TabIndex = 60;
+            this.lblGearAvail.Text = "[Avail]";
+            // 
+            // lblGearAvailLabel
+            // 
+            this.lblGearAvailLabel.AutoSize = true;
+            this.lblGearAvailLabel.Location = new System.Drawing.Point(482, 82);
+            this.lblGearAvailLabel.Name = "lblGearAvailLabel";
+            this.lblGearAvailLabel.Size = new System.Drawing.Size(33, 13);
+            this.lblGearAvailLabel.TabIndex = 59;
+            this.lblGearAvailLabel.Tag = "Label_Avail";
+            this.lblGearAvailLabel.Text = "Avail:";
+            // 
+            // lblGearCapacity
+            // 
+            this.lblGearCapacity.AutoSize = true;
+            this.lblGearCapacity.Location = new System.Drawing.Point(365, 105);
+            this.lblGearCapacity.Name = "lblGearCapacity";
+            this.lblGearCapacity.Size = new System.Drawing.Size(54, 13);
+            this.lblGearCapacity.TabIndex = 58;
+            this.lblGearCapacity.Text = "[Capacity]";
+            // 
+            // lblGearCapacityLabel
+            // 
+            this.lblGearCapacityLabel.AutoSize = true;
+            this.lblGearCapacityLabel.Location = new System.Drawing.Point(307, 105);
+            this.lblGearCapacityLabel.Name = "lblGearCapacityLabel";
+            this.lblGearCapacityLabel.Size = new System.Drawing.Size(51, 13);
+            this.lblGearCapacityLabel.TabIndex = 57;
+            this.lblGearCapacityLabel.Tag = "Label_Capacity";
+            this.lblGearCapacityLabel.Text = "Capacity:";
+            // 
+            // lblGearCategory
+            // 
+            this.lblGearCategory.AutoSize = true;
+            this.lblGearCategory.Location = new System.Drawing.Point(365, 59);
+            this.lblGearCategory.Name = "lblGearCategory";
+            this.lblGearCategory.Size = new System.Drawing.Size(55, 13);
+            this.lblGearCategory.TabIndex = 56;
+            this.lblGearCategory.Text = "[Category]";
+            // 
+            // lblGearCategoryLabel
+            // 
+            this.lblGearCategoryLabel.AutoSize = true;
+            this.lblGearCategoryLabel.Location = new System.Drawing.Point(307, 59);
+            this.lblGearCategoryLabel.Name = "lblGearCategoryLabel";
+            this.lblGearCategoryLabel.Size = new System.Drawing.Size(52, 13);
+            this.lblGearCategoryLabel.TabIndex = 55;
+            this.lblGearCategoryLabel.Tag = "Label_Category";
+            this.lblGearCategoryLabel.Text = "Category:";
+            // 
+            // lblGearName
+            // 
+            this.lblGearName.AutoSize = true;
+            this.lblGearName.Location = new System.Drawing.Point(365, 36);
+            this.lblGearName.Name = "lblGearName";
+            this.lblGearName.Size = new System.Drawing.Size(41, 13);
+            this.lblGearName.TabIndex = 54;
+            this.lblGearName.Text = "[Name]";
+            // 
+            // lblGearNameLabel
+            // 
+            this.lblGearNameLabel.AutoSize = true;
+            this.lblGearNameLabel.Location = new System.Drawing.Point(307, 36);
+            this.lblGearNameLabel.Name = "lblGearNameLabel";
+            this.lblGearNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblGearNameLabel.TabIndex = 53;
+            this.lblGearNameLabel.Tag = "Label_Name";
+            this.lblGearNameLabel.Text = "Name:";
+            // 
+            // nudGearRating
+            // 
+            this.nudGearRating.Enabled = false;
+            this.nudGearRating.Location = new System.Drawing.Point(368, 80);
+            this.nudGearRating.Maximum = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            this.nudGearRating.Name = "nudGearRating";
+            this.nudGearRating.Size = new System.Drawing.Size(102, 20);
+            this.nudGearRating.TabIndex = 52;
+            this.nudGearRating.ValueChanged += new System.EventHandler(this.nudGearRating_ValueChanged);
+            // 
+            // lblGearRatingLabel
+            // 
+            this.lblGearRatingLabel.AutoSize = true;
+            this.lblGearRatingLabel.Location = new System.Drawing.Point(307, 82);
+            this.lblGearRatingLabel.Name = "lblGearRatingLabel";
+            this.lblGearRatingLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblGearRatingLabel.TabIndex = 51;
+            this.lblGearRatingLabel.Tag = "Label_Rating";
+            this.lblGearRatingLabel.Text = "Rating:";
+            // 
+            // treGear
+            // 
+            this.treGear.AllowDrop = true;
+            this.treGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.treGear.HideSelection = false;
+            this.treGear.Location = new System.Drawing.Point(6, 36);
+            this.treGear.Name = "treGear";
+            treeNode22.Name = "nodGearRoot";
+            treeNode22.Tag = "Node_SelectedGear";
+            treeNode22.Text = "Selected Gear";
+            this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode22});
+            this.treGear.ShowNodeToolTips = true;
+            this.treGear.Size = new System.Drawing.Size(295, 540);
+            this.treGear.TabIndex = 49;
+            this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
+            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
+            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treGear_KeyDown);
+            this.treGear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            // 
+            // cmdDeleteGear
+            // 
+            this.cmdDeleteGear.AutoSize = true;
+            this.cmdDeleteGear.Location = new System.Drawing.Point(92, 7);
+            this.cmdDeleteGear.Name = "cmdDeleteGear";
+            this.cmdDeleteGear.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteGear.TabIndex = 50;
+            this.cmdDeleteGear.Tag = "String_Delete";
+            this.cmdDeleteGear.Text = "Delete";
+            this.cmdDeleteGear.UseVisualStyleBackColor = true;
+            this.cmdDeleteGear.Click += new System.EventHandler(this.cmdDeleteGear_Click);
+            // 
+            // cmdAddGear
+            // 
+            this.cmdAddGear.AutoSize = true;
+            this.cmdAddGear.ContextMenuStrip = this.cmsGearButton;
+            this.cmdAddGear.Location = new System.Drawing.Point(6, 7);
+            this.cmdAddGear.Name = "cmdAddGear";
+            this.cmdAddGear.Size = new System.Drawing.Size(80, 23);
+            this.cmdAddGear.SplitMenuStrip = this.cmsGearButton;
+            this.cmdAddGear.TabIndex = 145;
+            this.cmdAddGear.Tag = "Button_AddGear";
+            this.cmdAddGear.Text = "&Add Gear";
+            this.cmdAddGear.UseVisualStyleBackColor = true;
+            this.cmdAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
             // 
             // tabArmor
             // 
@@ -6901,513 +7227,219 @@ namespace Chummer
             this.cmdAddWeapon.UseVisualStyleBackColor = true;
             this.cmdAddWeapon.Click += new System.EventHandler(this.cmdAddWeapon_Click);
             // 
-            // tabGear
+            // tabLifestyle
             // 
-            this.tabGear.BackColor = System.Drawing.SystemColors.Control;
-            this.tabGear.Controls.Add(this.cboGearDataProcessing);
-            this.tabGear.Controls.Add(this.cboGearFirewall);
-            this.tabGear.Controls.Add(this.cboGearSleaze);
-            this.tabGear.Controls.Add(this.cboGearAttack);
-            this.tabGear.Controls.Add(this.lblGearFirewallLabel);
-            this.tabGear.Controls.Add(this.lblGearDataProcessingLabel);
-            this.tabGear.Controls.Add(this.lblGearSleazeLabel);
-            this.tabGear.Controls.Add(this.lblGearAttackLabel);
-            this.tabGear.Controls.Add(this.chkActiveCommlink);
-            this.tabGear.Controls.Add(this.chkCommlinks);
-            this.tabGear.Controls.Add(this.cmdCreateStackedFocus);
-            this.tabGear.Controls.Add(this.chkGearHomeNode);
-            this.tabGear.Controls.Add(this.lblGearAP);
-            this.tabGear.Controls.Add(this.lblGearAPLabel);
-            this.tabGear.Controls.Add(this.lblGearDamage);
-            this.tabGear.Controls.Add(this.lblGearDamageLabel);
-            this.tabGear.Controls.Add(this.cmdAddLocation);
-            this.tabGear.Controls.Add(this.chkGearEquipped);
-            this.tabGear.Controls.Add(this.lblFoci);
-            this.tabGear.Controls.Add(this.treFoci);
-            this.tabGear.Controls.Add(this.lblGearSource);
-            this.tabGear.Controls.Add(this.lblGearSourceLabel);
-            this.tabGear.Controls.Add(this.lblGearDeviceRating);
-            this.tabGear.Controls.Add(this.lblGearDeviceRatingLabel);
-            this.tabGear.Controls.Add(this.nudGearQty);
-            this.tabGear.Controls.Add(this.lblGearQtyLabel);
-            this.tabGear.Controls.Add(this.lblGearCost);
-            this.tabGear.Controls.Add(this.lblGearCostLabel);
-            this.tabGear.Controls.Add(this.lblGearAvail);
-            this.tabGear.Controls.Add(this.lblGearAvailLabel);
-            this.tabGear.Controls.Add(this.lblGearCapacity);
-            this.tabGear.Controls.Add(this.lblGearCapacityLabel);
-            this.tabGear.Controls.Add(this.lblGearCategory);
-            this.tabGear.Controls.Add(this.lblGearCategoryLabel);
-            this.tabGear.Controls.Add(this.lblGearName);
-            this.tabGear.Controls.Add(this.lblGearNameLabel);
-            this.tabGear.Controls.Add(this.nudGearRating);
-            this.tabGear.Controls.Add(this.lblGearRatingLabel);
-            this.tabGear.Controls.Add(this.treGear);
-            this.tabGear.Controls.Add(this.cmdDeleteGear);
-            this.tabGear.Controls.Add(this.cmdAddGear);
-            this.tabGear.Location = new System.Drawing.Point(4, 22);
-            this.tabGear.Name = "tabGear";
-            this.tabGear.Size = new System.Drawing.Size(850, 579);
-            this.tabGear.TabIndex = 3;
-            this.tabGear.Tag = "Tab_Gear";
-            this.tabGear.Text = "Gear";
+            this.tabLifestyle.BackColor = System.Drawing.SystemColors.Control;
+            this.tabLifestyle.Controls.Add(this.cmdAddLifestyle);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleQualities);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleQualitiesLabel);
+            this.tabLifestyle.Controls.Add(this.lblBaseLifestyle);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleComfortsLabel);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyenLabel);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleStartingNuyen);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleSource);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleSourceLabel);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleTotalCost);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleCostLabel);
+            this.tabLifestyle.Controls.Add(this.treLifestyles);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleCost);
+            this.tabLifestyle.Controls.Add(this.cmdDeleteLifestyle);
+            this.tabLifestyle.Controls.Add(this.lblLifestyleMonthsLabel);
+            this.tabLifestyle.Controls.Add(this.nudLifestyleMonths);
+            this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
+            this.tabLifestyle.Name = "tabLifestyle";
+            this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
+            this.tabLifestyle.Size = new System.Drawing.Size(850, 579);
+            this.tabLifestyle.TabIndex = 0;
+            this.tabLifestyle.Tag = "Tab_Lifestyle";
+            this.tabLifestyle.Text = "Lifestyle";
             // 
-            // cboGearDataProcessing
+            // cmdAddLifestyle
             // 
-            this.cboGearDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGearDataProcessing.FormattingEnabled = true;
-            this.cboGearDataProcessing.Location = new System.Drawing.Point(621, 163);
-            this.cboGearDataProcessing.Name = "cboGearDataProcessing";
-            this.cboGearDataProcessing.Size = new System.Drawing.Size(60, 21);
-            this.cboGearDataProcessing.TabIndex = 159;
-            this.cboGearDataProcessing.Visible = false;
-            this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
+            this.cmdAddLifestyle.AutoSize = true;
+            this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
+            this.cmdAddLifestyle.Location = new System.Drawing.Point(6, 7);
+            this.cmdAddLifestyle.Name = "cmdAddLifestyle";
+            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
+            this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
+            this.cmdAddLifestyle.TabIndex = 91;
+            this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
+            this.cmdAddLifestyle.Text = "&Add Lifestyle";
+            this.cmdAddLifestyle.UseVisualStyleBackColor = true;
+            this.cmdAddLifestyle.Click += new System.EventHandler(this.cmdAddLifestyle_Click);
             // 
-            // cboGearFirewall
+            // lblLifestyleQualities
             // 
-            this.cboGearFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGearFirewall.FormattingEnabled = true;
-            this.cboGearFirewall.Location = new System.Drawing.Point(687, 163);
-            this.cboGearFirewall.Name = "cboGearFirewall";
-            this.cboGearFirewall.Size = new System.Drawing.Size(60, 21);
-            this.cboGearFirewall.TabIndex = 158;
-            this.cboGearFirewall.Visible = false;
-            this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
+            this.lblLifestyleQualities.Location = new System.Drawing.Point(412, 144);
+            this.lblLifestyleQualities.Name = "lblLifestyleQualities";
+            this.lblLifestyleQualities.Size = new System.Drawing.Size(323, 290);
+            this.lblLifestyleQualities.TabIndex = 103;
+            this.lblLifestyleQualities.Text = "[0]";
             // 
-            // cboGearSleaze
+            // lblLifestyleQualitiesLabel
             // 
-            this.cboGearSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGearSleaze.FormattingEnabled = true;
-            this.cboGearSleaze.Location = new System.Drawing.Point(552, 163);
-            this.cboGearSleaze.Name = "cboGearSleaze";
-            this.cboGearSleaze.Size = new System.Drawing.Size(60, 21);
-            this.cboGearSleaze.TabIndex = 157;
-            this.cboGearSleaze.Visible = false;
-            this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
+            this.lblLifestyleQualitiesLabel.AutoSize = true;
+            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(412, 128);
+            this.lblLifestyleQualitiesLabel.Name = "lblLifestyleQualitiesLabel";
+            this.lblLifestyleQualitiesLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblLifestyleQualitiesLabel.TabIndex = 102;
+            this.lblLifestyleQualitiesLabel.Tag = "Label_LifestyleQualities";
+            this.lblLifestyleQualitiesLabel.Text = "Qualities:";
             // 
-            // cboGearAttack
+            // lblBaseLifestyle
             // 
-            this.cboGearAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboGearAttack.FormattingEnabled = true;
-            this.cboGearAttack.Location = new System.Drawing.Point(485, 163);
-            this.cboGearAttack.Name = "cboGearAttack";
-            this.cboGearAttack.Size = new System.Drawing.Size(60, 21);
-            this.cboGearAttack.TabIndex = 156;
-            this.cboGearAttack.Visible = false;
-            this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
+            this.lblBaseLifestyle.AutoSize = true;
+            this.lblBaseLifestyle.Location = new System.Drawing.Point(361, 128);
+            this.lblBaseLifestyle.Name = "lblBaseLifestyle";
+            this.lblBaseLifestyle.Size = new System.Drawing.Size(19, 13);
+            this.lblBaseLifestyle.TabIndex = 93;
+            this.lblBaseLifestyle.Text = "[0]";
             // 
-            // lblGearFirewallLabel
+            // lblLifestyleComfortsLabel
             // 
-            this.lblGearFirewallLabel.Location = new System.Drawing.Point(687, 149);
-            this.lblGearFirewallLabel.Name = "lblGearFirewallLabel";
-            this.lblGearFirewallLabel.Size = new System.Drawing.Size(60, 13);
-            this.lblGearFirewallLabel.TabIndex = 154;
-            this.lblGearFirewallLabel.Tag = "Label_Firewall";
-            this.lblGearFirewallLabel.Text = "Firewall:";
-            this.lblGearFirewallLabel.Visible = false;
+            this.lblLifestyleComfortsLabel.AutoSize = true;
+            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(307, 128);
+            this.lblLifestyleComfortsLabel.Name = "lblLifestyleComfortsLabel";
+            this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(48, 13);
+            this.lblLifestyleComfortsLabel.TabIndex = 92;
+            this.lblLifestyleComfortsLabel.Tag = "Label_SelectAdvancedLifestyle_Lifestyle";
+            this.lblLifestyleComfortsLabel.Text = "Lifestyle:";
             // 
-            // lblGearDataProcessingLabel
+            // lblLifestyleStartingNuyenLabel
             // 
-            this.lblGearDataProcessingLabel.Location = new System.Drawing.Point(621, 149);
-            this.lblGearDataProcessingLabel.Name = "lblGearDataProcessingLabel";
-            this.lblGearDataProcessingLabel.Size = new System.Drawing.Size(60, 13);
-            this.lblGearDataProcessingLabel.TabIndex = 152;
-            this.lblGearDataProcessingLabel.Tag = "Label_DataProcessing";
-            this.lblGearDataProcessingLabel.Text = "Data Proc:";
-            this.lblGearDataProcessingLabel.Visible = false;
+            this.lblLifestyleStartingNuyenLabel.AutoSize = true;
+            this.lblLifestyleStartingNuyenLabel.Location = new System.Drawing.Point(412, 95);
+            this.lblLifestyleStartingNuyenLabel.Name = "lblLifestyleStartingNuyenLabel";
+            this.lblLifestyleStartingNuyenLabel.Size = new System.Drawing.Size(80, 13);
+            this.lblLifestyleStartingNuyenLabel.TabIndex = 90;
+            this.lblLifestyleStartingNuyenLabel.Tag = "Label_SelectLifestyle_StartingNuyen";
+            this.lblLifestyleStartingNuyenLabel.Text = "Starting Nuyen:";
             // 
-            // lblGearSleazeLabel
+            // lblLifestyleStartingNuyen
             // 
-            this.lblGearSleazeLabel.Location = new System.Drawing.Point(552, 149);
-            this.lblGearSleazeLabel.Name = "lblGearSleazeLabel";
-            this.lblGearSleazeLabel.Size = new System.Drawing.Size(60, 13);
-            this.lblGearSleazeLabel.TabIndex = 150;
-            this.lblGearSleazeLabel.Tag = "Label_Sleaze";
-            this.lblGearSleazeLabel.Text = "Sleaze:";
-            this.lblGearSleazeLabel.Visible = false;
+            this.lblLifestyleStartingNuyen.AutoSize = true;
+            this.lblLifestyleStartingNuyen.Location = new System.Drawing.Point(498, 95);
+            this.lblLifestyleStartingNuyen.Name = "lblLifestyleStartingNuyen";
+            this.lblLifestyleStartingNuyen.Size = new System.Drawing.Size(83, 13);
+            this.lblLifestyleStartingNuyen.TabIndex = 89;
+            this.lblLifestyleStartingNuyen.Text = "[Starting Nuyen]";
             // 
-            // lblGearAttackLabel
+            // lblLifestyleSource
             // 
-            this.lblGearAttackLabel.Location = new System.Drawing.Point(485, 149);
-            this.lblGearAttackLabel.Name = "lblGearAttackLabel";
-            this.lblGearAttackLabel.Size = new System.Drawing.Size(60, 13);
-            this.lblGearAttackLabel.TabIndex = 148;
-            this.lblGearAttackLabel.Tag = "Label_Attack";
-            this.lblGearAttackLabel.Text = "Attack:";
-            this.lblGearAttackLabel.Visible = false;
+            this.lblLifestyleSource.AutoSize = true;
+            this.lblLifestyleSource.Location = new System.Drawing.Point(359, 95);
+            this.lblLifestyleSource.Name = "lblLifestyleSource";
+            this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
+            this.lblLifestyleSource.TabIndex = 88;
+            this.lblLifestyleSource.Text = "[Source]";
+            this.lblLifestyleSource.Click += new System.EventHandler(this.lblLifestyleSource_Click);
             // 
-            // chkActiveCommlink
+            // lblLifestyleSourceLabel
             // 
-            this.chkActiveCommlink.AutoSize = true;
-            this.chkActiveCommlink.Enabled = false;
-            this.chkActiveCommlink.Location = new System.Drawing.Point(310, 276);
-            this.chkActiveCommlink.Name = "chkActiveCommlink";
-            this.chkActiveCommlink.Size = new System.Drawing.Size(104, 17);
-            this.chkActiveCommlink.TabIndex = 115;
-            this.chkActiveCommlink.Tag = "Checkbox_ActiveCommlink";
-            this.chkActiveCommlink.Text = "Active Commlink";
-            this.chkActiveCommlink.UseVisualStyleBackColor = true;
-            this.chkActiveCommlink.CheckedChanged += new System.EventHandler(this.chkActiveCommlink_CheckedChanged);
+            this.lblLifestyleSourceLabel.AutoSize = true;
+            this.lblLifestyleSourceLabel.Location = new System.Drawing.Point(308, 95);
+            this.lblLifestyleSourceLabel.Name = "lblLifestyleSourceLabel";
+            this.lblLifestyleSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblLifestyleSourceLabel.TabIndex = 87;
+            this.lblLifestyleSourceLabel.Tag = "Label_Source";
+            this.lblLifestyleSourceLabel.Text = "Source:";
             // 
-            // chkCommlinks
+            // lblLifestyleTotalCost
             // 
-            this.chkCommlinks.AutoSize = true;
-            this.chkCommlinks.Location = new System.Drawing.Point(307, 11);
-            this.chkCommlinks.Name = "chkCommlinks";
-            this.chkCommlinks.Size = new System.Drawing.Size(128, 17);
-            this.chkCommlinks.TabIndex = 114;
-            this.chkCommlinks.Tag = "Checkbox_Commlinks";
-            this.chkCommlinks.Text = "Only show Commlinks";
-            this.chkCommlinks.UseVisualStyleBackColor = true;
-            this.chkCommlinks.CheckedChanged += new System.EventHandler(this.chkCommlinks_CheckedChanged);
+            this.lblLifestyleTotalCost.AutoSize = true;
+            this.lblLifestyleTotalCost.Location = new System.Drawing.Point(498, 64);
+            this.lblLifestyleTotalCost.Name = "lblLifestyleTotalCost";
+            this.lblLifestyleTotalCost.Size = new System.Drawing.Size(34, 13);
+            this.lblLifestyleTotalCost.TabIndex = 86;
+            this.lblLifestyleTotalCost.Text = "[Cost]";
             // 
-            // cmdCreateStackedFocus
+            // lblLifestyleCostLabel
             // 
-            this.cmdCreateStackedFocus.AutoSize = true;
-            this.cmdCreateStackedFocus.Location = new System.Drawing.Point(624, 348);
-            this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
-            this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
-            this.cmdCreateStackedFocus.TabIndex = 109;
-            this.cmdCreateStackedFocus.Tag = "Button_CreateStackedFocus";
-            this.cmdCreateStackedFocus.Text = "Create Stacked Focus";
-            this.cmdCreateStackedFocus.UseVisualStyleBackColor = true;
-            this.cmdCreateStackedFocus.Visible = false;
-            this.cmdCreateStackedFocus.Click += new System.EventHandler(this.cmdCreateStackedFocus_Click);
+            this.lblLifestyleCostLabel.AutoSize = true;
+            this.lblLifestyleCostLabel.Location = new System.Drawing.Point(307, 36);
+            this.lblLifestyleCostLabel.Name = "lblLifestyleCostLabel";
+            this.lblLifestyleCostLabel.Size = new System.Drawing.Size(66, 13);
+            this.lblLifestyleCostLabel.TabIndex = 85;
+            this.lblLifestyleCostLabel.Tag = "Label_SelectLifestyle_CostPerMonth";
+            this.lblLifestyleCostLabel.Text = "Cost/Month:";
             // 
-            // chkGearHomeNode
+            // treLifestyles
             // 
-            this.chkGearHomeNode.AutoSize = true;
-            this.chkGearHomeNode.Location = new System.Drawing.Point(409, 253);
-            this.chkGearHomeNode.Name = "chkGearHomeNode";
-            this.chkGearHomeNode.Size = new System.Drawing.Size(83, 17);
-            this.chkGearHomeNode.TabIndex = 108;
-            this.chkGearHomeNode.Tag = "Checkbox_HomeNode";
-            this.chkGearHomeNode.Text = "Home Node";
-            this.chkGearHomeNode.UseVisualStyleBackColor = true;
-            this.chkGearHomeNode.Visible = false;
-            this.chkGearHomeNode.CheckedChanged += new System.EventHandler(this.chkGearHomeNode_CheckedChanged);
-            // 
-            // lblGearAP
-            // 
-            this.lblGearAP.AutoSize = true;
-            this.lblGearAP.Location = new System.Drawing.Point(451, 189);
-            this.lblGearAP.Name = "lblGearAP";
-            this.lblGearAP.Size = new System.Drawing.Size(19, 13);
-            this.lblGearAP.TabIndex = 107;
-            this.lblGearAP.Text = "[0]";
-            // 
-            // lblGearAPLabel
-            // 
-            this.lblGearAPLabel.AutoSize = true;
-            this.lblGearAPLabel.Location = new System.Drawing.Point(406, 189);
-            this.lblGearAPLabel.Name = "lblGearAPLabel";
-            this.lblGearAPLabel.Size = new System.Drawing.Size(24, 13);
-            this.lblGearAPLabel.TabIndex = 106;
-            this.lblGearAPLabel.Tag = "Label_AP";
-            this.lblGearAPLabel.Text = "AP:";
-            // 
-            // lblGearDamage
-            // 
-            this.lblGearDamage.AutoSize = true;
-            this.lblGearDamage.Location = new System.Drawing.Point(371, 189);
-            this.lblGearDamage.Name = "lblGearDamage";
-            this.lblGearDamage.Size = new System.Drawing.Size(19, 13);
-            this.lblGearDamage.TabIndex = 105;
-            this.lblGearDamage.Text = "[0]";
-            // 
-            // lblGearDamageLabel
-            // 
-            this.lblGearDamageLabel.AutoSize = true;
-            this.lblGearDamageLabel.Location = new System.Drawing.Point(307, 189);
-            this.lblGearDamageLabel.Name = "lblGearDamageLabel";
-            this.lblGearDamageLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblGearDamageLabel.TabIndex = 104;
-            this.lblGearDamageLabel.Tag = "Label_Damage";
-            this.lblGearDamageLabel.Text = "Damage:";
-            // 
-            // cmdAddLocation
-            // 
-            this.cmdAddLocation.AutoSize = true;
-            this.cmdAddLocation.Location = new System.Drawing.Point(221, 7);
-            this.cmdAddLocation.Name = "cmdAddLocation";
-            this.cmdAddLocation.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddLocation.TabIndex = 103;
-            this.cmdAddLocation.Tag = "Button_AddLocation";
-            this.cmdAddLocation.Text = "Add Location";
-            this.cmdAddLocation.UseVisualStyleBackColor = true;
-            this.cmdAddLocation.Click += new System.EventHandler(this.cmdAddLocation_Click);
-            // 
-            // chkGearEquipped
-            // 
-            this.chkGearEquipped.AutoSize = true;
-            this.chkGearEquipped.Location = new System.Drawing.Point(310, 253);
-            this.chkGearEquipped.Name = "chkGearEquipped";
-            this.chkGearEquipped.Size = new System.Drawing.Size(71, 17);
-            this.chkGearEquipped.TabIndex = 93;
-            this.chkGearEquipped.Tag = "Checkbox_Equipped";
-            this.chkGearEquipped.Text = "Equipped";
-            this.chkGearEquipped.UseVisualStyleBackColor = true;
-            this.chkGearEquipped.Visible = false;
-            this.chkGearEquipped.CheckedChanged += new System.EventHandler(this.chkGearEquipped_CheckedChanged);
-            // 
-            // treFoci
-            // 
-            this.treFoci.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.treLifestyles.AllowDrop = true;
+            this.treLifestyles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.treFoci.CheckBoxes = true;
-            this.treFoci.Location = new System.Drawing.Point(310, 348);
-            this.treFoci.Name = "treFoci";
-            this.treFoci.ShowLines = false;
-            this.treFoci.ShowPlusMinus = false;
-            this.treFoci.ShowRootLines = false;
-            this.treFoci.Size = new System.Drawing.Size(308, 228);
-            this.treFoci.TabIndex = 91;
-            this.treFoci.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treFoci_BeforeCheck);
-            this.treFoci.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterCheck);
-            this.treFoci.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treFoci_AfterSelect);
+            this.treLifestyles.HideSelection = false;
+            this.treLifestyles.Location = new System.Drawing.Point(6, 36);
+            this.treLifestyles.Name = "treLifestyles";
+            treeNode25.Name = "nodLifestylesRoot";
+            treeNode25.Tag = "Node_SelectedLifestyles";
+            treeNode25.Text = "Selected Lifestyles";
+            this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode25});
+            this.treLifestyles.ShowNodeToolTips = true;
+            this.treLifestyles.ShowRootLines = false;
+            this.treLifestyles.Size = new System.Drawing.Size(295, 537);
+            this.treLifestyles.TabIndex = 80;
+            this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
+            this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
+            this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
+            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyles_KeyDown);
+            this.treLifestyles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
-            // lblGearSource
+            // lblLifestyleCost
             // 
-            this.lblGearSource.AutoSize = true;
-            this.lblGearSource.Location = new System.Drawing.Point(358, 227);
-            this.lblGearSource.Name = "lblGearSource";
-            this.lblGearSource.Size = new System.Drawing.Size(47, 13);
-            this.lblGearSource.TabIndex = 74;
-            this.lblGearSource.Text = "[Source]";
-            this.lblGearSource.Click += new System.EventHandler(this.lblGearSource_Click);
+            this.lblLifestyleCost.AutoSize = true;
+            this.lblLifestyleCost.Location = new System.Drawing.Point(379, 36);
+            this.lblLifestyleCost.Name = "lblLifestyleCost";
+            this.lblLifestyleCost.Size = new System.Drawing.Size(34, 13);
+            this.lblLifestyleCost.TabIndex = 84;
+            this.lblLifestyleCost.Text = "[Cost]";
             // 
-            // lblGearSourceLabel
+            // cmdDeleteLifestyle
             // 
-            this.lblGearSourceLabel.AutoSize = true;
-            this.lblGearSourceLabel.Location = new System.Drawing.Point(307, 227);
-            this.lblGearSourceLabel.Name = "lblGearSourceLabel";
-            this.lblGearSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblGearSourceLabel.TabIndex = 73;
-            this.lblGearSourceLabel.Tag = "Label_Source";
-            this.lblGearSourceLabel.Text = "Source:";
+            this.cmdDeleteLifestyle.AutoSize = true;
+            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(107, 7);
+            this.cmdDeleteLifestyle.Name = "cmdDeleteLifestyle";
+            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(80, 23);
+            this.cmdDeleteLifestyle.TabIndex = 81;
+            this.cmdDeleteLifestyle.Tag = "String_Delete";
+            this.cmdDeleteLifestyle.Text = "Delete";
+            this.cmdDeleteLifestyle.UseVisualStyleBackColor = true;
+            this.cmdDeleteLifestyle.Click += new System.EventHandler(this.cmdDeleteLifestyle_Click);
             // 
-            // lblGearDeviceRating
+            // lblLifestyleMonthsLabel
             // 
-            this.lblGearDeviceRating.AutoSize = true;
-            this.lblGearDeviceRating.Location = new System.Drawing.Point(406, 164);
-            this.lblGearDeviceRating.Name = "lblGearDeviceRating";
-            this.lblGearDeviceRating.Size = new System.Drawing.Size(19, 13);
-            this.lblGearDeviceRating.TabIndex = 66;
-            this.lblGearDeviceRating.Text = "[0]";
+            this.lblLifestyleMonthsLabel.AutoSize = true;
+            this.lblLifestyleMonthsLabel.Location = new System.Drawing.Point(354, 64);
+            this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
+            this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
+            this.lblLifestyleMonthsLabel.TabIndex = 83;
+            this.lblLifestyleMonthsLabel.Tag = "Label_LifestyleMonths";
+            this.lblLifestyleMonthsLabel.Text = "Months (100 for Permanent)";
             // 
-            // lblGearDeviceRatingLabel
+            // nudLifestyleMonths
             // 
-            this.lblGearDeviceRatingLabel.AutoSize = true;
-            this.lblGearDeviceRatingLabel.Location = new System.Drawing.Point(307, 164);
-            this.lblGearDeviceRatingLabel.Name = "lblGearDeviceRatingLabel";
-            this.lblGearDeviceRatingLabel.Size = new System.Drawing.Size(78, 13);
-            this.lblGearDeviceRatingLabel.TabIndex = 65;
-            this.lblGearDeviceRatingLabel.Tag = "Label_DeviceRating";
-            this.lblGearDeviceRatingLabel.Text = "Device Rating:";
-            // 
-            // nudGearQty
-            // 
-            this.nudGearQty.Enabled = false;
-            this.nudGearQty.Location = new System.Drawing.Point(368, 126);
-            this.nudGearQty.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.nudGearQty.Minimum = new decimal(new int[] {
+            this.nudLifestyleMonths.Enabled = false;
+            this.nudLifestyleMonths.Location = new System.Drawing.Point(310, 62);
+            this.nudLifestyleMonths.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.nudGearQty.Name = "nudGearQty";
-            this.nudGearQty.Size = new System.Drawing.Size(102, 20);
-            this.nudGearQty.TabIndex = 64;
-            this.nudGearQty.Value = new decimal(new int[] {
+            this.nudLifestyleMonths.Name = "nudLifestyleMonths";
+            this.nudLifestyleMonths.Size = new System.Drawing.Size(42, 20);
+            this.nudLifestyleMonths.TabIndex = 82;
+            this.nudLifestyleMonths.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.nudGearQty.ValueChanged += new System.EventHandler(this.nudGearQty_ValueChanged);
-            // 
-            // lblGearQtyLabel
-            // 
-            this.lblGearQtyLabel.AutoSize = true;
-            this.lblGearQtyLabel.Location = new System.Drawing.Point(307, 128);
-            this.lblGearQtyLabel.Name = "lblGearQtyLabel";
-            this.lblGearQtyLabel.Size = new System.Drawing.Size(26, 13);
-            this.lblGearQtyLabel.TabIndex = 63;
-            this.lblGearQtyLabel.Tag = "Label_Qty";
-            this.lblGearQtyLabel.Text = "Qty:";
-            // 
-            // lblGearCost
-            // 
-            this.lblGearCost.AutoSize = true;
-            this.lblGearCost.Location = new System.Drawing.Point(684, 82);
-            this.lblGearCost.Name = "lblGearCost";
-            this.lblGearCost.Size = new System.Drawing.Size(34, 13);
-            this.lblGearCost.TabIndex = 62;
-            this.lblGearCost.Text = "[Cost]";
-            // 
-            // lblGearCostLabel
-            // 
-            this.lblGearCostLabel.AutoSize = true;
-            this.lblGearCostLabel.Location = new System.Drawing.Point(618, 82);
-            this.lblGearCostLabel.Name = "lblGearCostLabel";
-            this.lblGearCostLabel.Size = new System.Drawing.Size(31, 13);
-            this.lblGearCostLabel.TabIndex = 61;
-            this.lblGearCostLabel.Tag = "Label_Cost";
-            this.lblGearCostLabel.Text = "Cost:";
-            // 
-            // lblGearAvail
-            // 
-            this.lblGearAvail.AutoSize = true;
-            this.lblGearAvail.Location = new System.Drawing.Point(549, 82);
-            this.lblGearAvail.Name = "lblGearAvail";
-            this.lblGearAvail.Size = new System.Drawing.Size(36, 13);
-            this.lblGearAvail.TabIndex = 60;
-            this.lblGearAvail.Text = "[Avail]";
-            // 
-            // lblGearAvailLabel
-            // 
-            this.lblGearAvailLabel.AutoSize = true;
-            this.lblGearAvailLabel.Location = new System.Drawing.Point(482, 82);
-            this.lblGearAvailLabel.Name = "lblGearAvailLabel";
-            this.lblGearAvailLabel.Size = new System.Drawing.Size(33, 13);
-            this.lblGearAvailLabel.TabIndex = 59;
-            this.lblGearAvailLabel.Tag = "Label_Avail";
-            this.lblGearAvailLabel.Text = "Avail:";
-            // 
-            // lblGearCapacity
-            // 
-            this.lblGearCapacity.AutoSize = true;
-            this.lblGearCapacity.Location = new System.Drawing.Point(365, 105);
-            this.lblGearCapacity.Name = "lblGearCapacity";
-            this.lblGearCapacity.Size = new System.Drawing.Size(54, 13);
-            this.lblGearCapacity.TabIndex = 58;
-            this.lblGearCapacity.Text = "[Capacity]";
-            // 
-            // lblGearCapacityLabel
-            // 
-            this.lblGearCapacityLabel.AutoSize = true;
-            this.lblGearCapacityLabel.Location = new System.Drawing.Point(307, 105);
-            this.lblGearCapacityLabel.Name = "lblGearCapacityLabel";
-            this.lblGearCapacityLabel.Size = new System.Drawing.Size(51, 13);
-            this.lblGearCapacityLabel.TabIndex = 57;
-            this.lblGearCapacityLabel.Tag = "Label_Capacity";
-            this.lblGearCapacityLabel.Text = "Capacity:";
-            // 
-            // lblGearCategory
-            // 
-            this.lblGearCategory.AutoSize = true;
-            this.lblGearCategory.Location = new System.Drawing.Point(365, 59);
-            this.lblGearCategory.Name = "lblGearCategory";
-            this.lblGearCategory.Size = new System.Drawing.Size(55, 13);
-            this.lblGearCategory.TabIndex = 56;
-            this.lblGearCategory.Text = "[Category]";
-            // 
-            // lblGearCategoryLabel
-            // 
-            this.lblGearCategoryLabel.AutoSize = true;
-            this.lblGearCategoryLabel.Location = new System.Drawing.Point(307, 59);
-            this.lblGearCategoryLabel.Name = "lblGearCategoryLabel";
-            this.lblGearCategoryLabel.Size = new System.Drawing.Size(52, 13);
-            this.lblGearCategoryLabel.TabIndex = 55;
-            this.lblGearCategoryLabel.Tag = "Label_Category";
-            this.lblGearCategoryLabel.Text = "Category:";
-            // 
-            // lblGearName
-            // 
-            this.lblGearName.AutoSize = true;
-            this.lblGearName.Location = new System.Drawing.Point(365, 36);
-            this.lblGearName.Name = "lblGearName";
-            this.lblGearName.Size = new System.Drawing.Size(41, 13);
-            this.lblGearName.TabIndex = 54;
-            this.lblGearName.Text = "[Name]";
-            // 
-            // lblGearNameLabel
-            // 
-            this.lblGearNameLabel.AutoSize = true;
-            this.lblGearNameLabel.Location = new System.Drawing.Point(307, 36);
-            this.lblGearNameLabel.Name = "lblGearNameLabel";
-            this.lblGearNameLabel.Size = new System.Drawing.Size(38, 13);
-            this.lblGearNameLabel.TabIndex = 53;
-            this.lblGearNameLabel.Tag = "Label_Name";
-            this.lblGearNameLabel.Text = "Name:";
-            // 
-            // nudGearRating
-            // 
-            this.nudGearRating.Enabled = false;
-            this.nudGearRating.Location = new System.Drawing.Point(368, 80);
-            this.nudGearRating.Maximum = new decimal(new int[] {
-            6,
-            0,
-            0,
-            0});
-            this.nudGearRating.Name = "nudGearRating";
-            this.nudGearRating.Size = new System.Drawing.Size(102, 20);
-            this.nudGearRating.TabIndex = 52;
-            this.nudGearRating.ValueChanged += new System.EventHandler(this.nudGearRating_ValueChanged);
-            // 
-            // lblGearRatingLabel
-            // 
-            this.lblGearRatingLabel.AutoSize = true;
-            this.lblGearRatingLabel.Location = new System.Drawing.Point(307, 82);
-            this.lblGearRatingLabel.Name = "lblGearRatingLabel";
-            this.lblGearRatingLabel.Size = new System.Drawing.Size(41, 13);
-            this.lblGearRatingLabel.TabIndex = 51;
-            this.lblGearRatingLabel.Tag = "Label_Rating";
-            this.lblGearRatingLabel.Text = "Rating:";
-            // 
-            // treGear
-            // 
-            this.treGear.AllowDrop = true;
-            this.treGear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.treGear.HideSelection = false;
-            this.treGear.Location = new System.Drawing.Point(6, 36);
-            this.treGear.Name = "treGear";
-            treeNode22.Name = "nodGearRoot";
-            treeNode22.Tag = "Node_SelectedGear";
-            treeNode22.Text = "Selected Gear";
-            this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
-            this.treGear.ShowNodeToolTips = true;
-            this.treGear.Size = new System.Drawing.Size(295, 540);
-            this.treGear.TabIndex = 49;
-            this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
-            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
-            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treGear_KeyDown);
-            this.treGear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
-            // 
-            // cmdDeleteGear
-            // 
-            this.cmdDeleteGear.AutoSize = true;
-            this.cmdDeleteGear.Location = new System.Drawing.Point(92, 7);
-            this.cmdDeleteGear.Name = "cmdDeleteGear";
-            this.cmdDeleteGear.Size = new System.Drawing.Size(80, 23);
-            this.cmdDeleteGear.TabIndex = 50;
-            this.cmdDeleteGear.Tag = "String_Delete";
-            this.cmdDeleteGear.Text = "Delete";
-            this.cmdDeleteGear.UseVisualStyleBackColor = true;
-            this.cmdDeleteGear.Click += new System.EventHandler(this.cmdDeleteGear_Click);
-            // 
-            // cmdAddGear
-            // 
-            this.cmdAddGear.AutoSize = true;
-            this.cmdAddGear.ContextMenuStrip = this.cmsGearButton;
-            this.cmdAddGear.Location = new System.Drawing.Point(6, 7);
-            this.cmdAddGear.Name = "cmdAddGear";
-            this.cmdAddGear.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddGear.SplitMenuStrip = this.cmsGearButton;
-            this.cmdAddGear.TabIndex = 145;
-            this.cmdAddGear.Tag = "Button_AddGear";
-            this.cmdAddGear.Text = "&Add Gear";
-            this.cmdAddGear.UseVisualStyleBackColor = true;
-            this.cmdAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
+            this.nudLifestyleMonths.ValueChanged += new System.EventHandler(this.nudLifestyleMonths_ValueChanged);
             // 
             // tabVehicles
             // 
             this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
+            this.tabVehicles.Controls.Add(this.chkVehicleActiveCommlink);
             this.tabVehicles.Controls.Add(this.cmdVehicleCyberwareChangeMount);
             this.tabVehicles.Controls.Add(this.lblVehicleWeaponDicePool);
             this.tabVehicles.Controls.Add(this.lblVehicleWeaponDicePoolLabel);
@@ -7507,6 +7539,19 @@ namespace Chummer
             this.tabVehicles.TabIndex = 7;
             this.tabVehicles.Tag = "Tab_Vehicles";
             this.tabVehicles.Text = "Vehicles & Drones";
+            // 
+            // chkVehicleActiveCommlink
+            // 
+            this.chkVehicleActiveCommlink.AutoSize = true;
+            this.chkVehicleActiveCommlink.Location = new System.Drawing.Point(725, 274);
+            this.chkVehicleActiveCommlink.Name = "chkVehicleActiveCommlink";
+            this.chkVehicleActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkVehicleActiveCommlink.TabIndex = 242;
+            this.chkVehicleActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkVehicleActiveCommlink.Text = "Active Commlink";
+            this.chkVehicleActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkVehicleActiveCommlink.Visible = false;
+            this.chkVehicleActiveCommlink.CheckedChanged += new System.EventHandler(this.chkVehicleActiveCommlink_CheckedChanged);
             // 
             // cmdVehicleCyberwareChangeMount
             // 
@@ -10165,18 +10210,18 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudCyberwareRating)).EndInit();
             this.tabStreetGear.ResumeLayout(false);
             this.tabStreetGearTabs.ResumeLayout(false);
-            this.tabLifestyle.ResumeLayout(false);
-            this.tabLifestyle.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
+            this.tabGear.ResumeLayout(false);
+            this.tabGear.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
             this.tabArmor.ResumeLayout(false);
             this.tabArmor.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudArmorRating)).EndInit();
             this.tabWeapons.ResumeLayout(false);
             this.tabWeapons.PerformLayout();
-            this.tabGear.ResumeLayout(false);
-            this.tabGear.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudGearRating)).EndInit();
+            this.tabLifestyle.ResumeLayout(false);
+            this.tabLifestyle.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLifestyleMonths)).EndInit();
             this.tabVehicles.ResumeLayout(false);
             this.tabVehicles.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVehicleGearQty)).EndInit();
@@ -10716,7 +10761,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsGearName;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleGearNotes;
         private System.Windows.Forms.CheckBox chkCommlinks;
-        private System.Windows.Forms.CheckBox chkActiveCommlink;
+        private System.Windows.Forms.CheckBox chkGearActiveCommlink;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialBPAvailLimit;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialConvertToFreeSprite;
         private System.Windows.Forms.Label lblVehicleWeaponRangeExtreme;
@@ -11040,5 +11085,8 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsWeaponLocationAddWeapon;
         private System.Windows.Forms.ToolStripMenuItem tsGearLocationAddGear;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleLocationAddVehicle;
+        private System.Windows.Forms.CheckBox chkVehicleActiveCommlink;
+        private System.Windows.Forms.CheckBox chkCyberwareActiveCommlink;
+        private System.Windows.Forms.CheckBox chkCyberwareHomeNode;
     }
 }

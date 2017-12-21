@@ -6,11 +6,11 @@ using System.Xml;
 using Chummer;
 using Chummer.Datastructures;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 { 
-    class ExoticSkill : Skill
+    public sealed class ExoticSkill : Skill
     {
-        private static readonly TranslatedField<string> _specificTranslator = new TranslatedField<string>();
+        private static readonly TranslatedField<string> s_SpecificTranslator = new TranslatedField<string>();
         private string _specific;
         private string _translated;
 
@@ -26,7 +26,7 @@ namespace Chummer.Skills
                     if (objLoopNode.TryGetStringFieldQuickly("name", ref strLoopName))
                     {
                         string strLoopTranslate = objLoopNode.Attributes?["translate"]?.InnerText ?? strLoopName;
-                        _specificTranslator.Add(strLoopName, strLoopTranslate);
+                        s_SpecificTranslator.Add(strLoopName, strLoopTranslate);
                     }
                 }
             }
@@ -88,11 +88,11 @@ namespace Chummer.Skills
         public string Specific {
             get
             {
-                return _specificTranslator.Read(_specific, ref _translated);
+                return s_SpecificTranslator.Read(_specific, ref _translated);
             }
             set
             {
-                _specificTranslator.Write(value, ref _specific, ref _translated);
+                s_SpecificTranslator.Write(value, ref _specific, ref _translated);
                 OnPropertyChanged();
             }
         }

@@ -26,7 +26,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    class StoryBuilder
+    public sealed class StoryBuilder
     {
         private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
         private Character _objCharacter;

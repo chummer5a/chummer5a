@@ -33,9 +33,9 @@ namespace Chummer
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
-        private int _intSheetID = 0;
-        private List<string> _lstFiles = new List<string>();
+        private readonly string _strUserName;
+        private readonly int _intSheetID = 0;
+        private readonly List<string> _lstFiles = new List<string>();
 
         #region Control Events
         public frmOmaeUploadSheet(string strUserName, int intSheetID = 0, string strDescription = "", string strName = "")

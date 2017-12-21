@@ -30,8 +30,8 @@ namespace Chummer
         private readonly Contact _objContact;
 
         // Events.
-        public Action<object> DeleteContact;
-        public Action<object> FileNameChanged;
+        public Action<object> DeleteContact { get; set; }
+        public Action<object> FileNameChanged { get; set; }
 
         #region Control Events
         public PetControl(Contact objContact)
@@ -84,12 +84,12 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = GlobalOptions.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
+                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
                 Cursor = Cursors.WaitCursor;
-                if (objOpenCharacter == null || !GlobalOptions.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                 {
-                    objOpenCharacter = frmMain.LoadCharacter(_objContact.LinkedCharacter.FileName);
-                    GlobalOptions.MainForm.OpenCharacter(objOpenCharacter);
+                    objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
+                    Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
                 Cursor = Cursors.Default;
             }

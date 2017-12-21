@@ -11,20 +11,20 @@ using System.Xml;
 
 namespace Translator
 {
-    public partial class frmMain
+    public partial class frmTranslatorMain
     {
-        private static readonly TextInfo _objEnUSTextInfo = (new CultureInfo("en-US", false)).TextInfo;
+        private static readonly TextInfo s_ObjEnUSTextInfo = (new CultureInfo("en-US", false)).TextInfo;
         private static readonly string PATH = Application.StartupPath;
         private readonly BackgroundWorker _workerDataProcessor = new BackgroundWorker();
         private readonly BackgroundWorker _workerStringsProcessor = new BackgroundWorker();
         private string _strLanguageToLoad = string.Empty;
-        private List<frmTranslate> _lstOpenTranslateWindows = new List<frmTranslate>();
+        private static readonly List<frmTranslate> s_LstOpenTranslateWindows = new List<frmTranslate>();
 
-        public frmMain()
+        public frmTranslatorMain()
         {
             InitializeComponent();
 
-            pbProcessProgress.Maximum = lstProcessFunctions.Length + 1;
+            pbProcessProgress.Maximum = s_LstProcessFunctions.Length + 1;
 
             _workerDataProcessor.WorkerReportsProgress = true;
             _workerDataProcessor.WorkerSupportsCancellation = true;
@@ -100,7 +100,7 @@ namespace Translator
                     int intCountryNameIndex = strName.LastIndexOf('(');
                     if (intCountryNameIndex != -1)
                         strName = strName.Substring(0, intCountryNameIndex).Trim();
-                    txtLanguageName.Text = _objEnUSTextInfo.ToTitleCase(strName);
+                    txtLanguageName.Text = s_ObjEnUSTextInfo.ToTitleCase(strName);
                 }
                 catch (CultureNotFoundException)
                 {
@@ -123,7 +123,7 @@ namespace Translator
                     string strName = objSelectedCulture.NativeName;
                     int intCountryNameIndex = strName.LastIndexOf('(');
                     if (intCountryNameIndex != -1)
-                        strName = _objEnUSTextInfo.ToTitleCase(strName.Substring(0, intCountryNameIndex).Trim());
+                        strName = s_ObjEnUSTextInfo.ToTitleCase(strName.Substring(0, intCountryNameIndex).Trim());
                     if (strName != "Unknown Locale")
                         txtLanguageName.Text = strName;
                 }
@@ -224,14 +224,14 @@ namespace Translator
             Cursor = Cursors.AppStarting;
             pbProcessProgress.Value = 0;
 
-            frmTranslate frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
+            frmTranslate frmOpenTranslate = s_LstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
-                _lstOpenTranslateWindows.Remove(frmOpenTranslate);
+                s_LstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _strLanguageToLoad = _objEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
+            _strLanguageToLoad = s_ObjEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
             string[] strArgs = { strLowerCode, _strLanguageToLoad };
 
             if (_workerDataProcessor.IsBusy)
@@ -251,13 +251,13 @@ namespace Translator
                 return;
             Cursor = Cursors.AppStarting;
             string strLanguage = cboLanguages.Text;
-            frmTranslate frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == strLanguage);
+            frmTranslate frmOpenTranslate = s_LstOpenTranslateWindows.FirstOrDefault(x => x.Language == strLanguage);
             if (frmOpenTranslate != null)
                 frmOpenTranslate.Activate();
             else
             {
                 frmOpenTranslate = new frmTranslate(cboLanguages.Text);
-                _lstOpenTranslateWindows.Add(frmOpenTranslate);
+                s_LstOpenTranslateWindows.Add(frmOpenTranslate);
                 frmOpenTranslate.Show();
             }
             Cursor = Cursors.Default;
@@ -273,11 +273,11 @@ namespace Translator
 
             _strLanguageToLoad = cboLanguages.Text;
 
-            frmTranslate frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
+            frmTranslate frmOpenTranslate = s_LstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
-                _lstOpenTranslateWindows.Remove(frmOpenTranslate);
+                s_LstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
             string[] strArgs = { cboLanguages.Text.Substring(cboLanguages.Text.IndexOf('(') + 1, 5).ToLower(), _strLanguageToLoad };
@@ -377,7 +377,7 @@ namespace Translator
 
                 LoadLanguageList();
                 frmTranslate frmOpenTranslate = new frmTranslate(_strLanguageToLoad);
-                _lstOpenTranslateWindows.Add(frmOpenTranslate);
+                s_LstOpenTranslateWindows.Add(frmOpenTranslate);
                 frmOpenTranslate.Show();
             }
 
@@ -509,12 +509,12 @@ namespace Translator
                 xmlRootChummerNode.AppendChild(xmlVersionNode);
             }
 
-            int intFunctionCount = lstProcessFunctions.Length;
+            int intFunctionCount = s_LstProcessFunctions.Length;
             for (int i = 0; i < intFunctionCount; ++i)
             {
                 if (_workerDataProcessor.CancellationPending)
                     break;
-                lstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor);
+                s_LstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor);
                 _workerDataProcessor.ReportProgress(i * 100 / (intFunctionCount));
             }
 
@@ -558,7 +558,7 @@ namespace Translator
         #endregion Methods
 
         #region Data Processing
-        private static readonly Action<XmlDocument, BackgroundWorker>[] lstProcessFunctions =
+        private static readonly Action<XmlDocument, BackgroundWorker>[] s_LstProcessFunctions =
         {
             (x, y) => ProcessArmor(x, y),
             (x, y) => ProcessBioware(x, y),
@@ -5271,11 +5271,11 @@ namespace Translator
         #endregion Data Processing
 
         #region Properties
-        public List<frmTranslate> OpenTranslateWindows
+        public IList<frmTranslate> OpenTranslateWindows
         {
             get
             {
-                return _lstOpenTranslateWindows;
+                return s_LstOpenTranslateWindows;
             }
         }
         #endregion

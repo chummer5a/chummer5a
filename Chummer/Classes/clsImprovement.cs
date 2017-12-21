@@ -28,7 +28,7 @@ using System.Xml.XPath;
 using Chummer.Backend;
 using Chummer.Backend.Equipment;
 using Chummer.Classes;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
 
 namespace Chummer
@@ -712,12 +712,12 @@ namespace Chummer
     public static class ImprovementManager
     {
         // String that will be used to limit the selection in Pick forms.
-        private static string _strLimitSelection = string.Empty;
+        private static string s_StrLimitSelection = string.Empty;
 
-        private static string _strSelectedValue = string.Empty;
-        private static string _strForcedValue = string.Empty;
-        private static readonly List<Improvement> _lstTransaction = new List<Improvement>();
-        private static Dictionary<Tuple<Character, Improvement.ImprovementType>, int> _dictionaryCachedValues = new Dictionary<Tuple<Character, Improvement.ImprovementType>, int>((int)Improvement.ImprovementType.NumImprovementTypes);
+        private static string s_StrSelectedValue = string.Empty;
+        private static string s_StrForcedValue = string.Empty;
+        private static readonly List<Improvement> s_LstTransaction = new List<Improvement>();
+        private static readonly Dictionary<Tuple<Character, Improvement.ImprovementType>, int> s_DictionaryCachedValues = new Dictionary<Tuple<Character, Improvement.ImprovementType>, int>((int)Improvement.ImprovementType.NumImprovementTypes);
         #region Properties
 
         /// <summary>
@@ -726,8 +726,8 @@ namespace Chummer
         /// </summary>
         public static string LimitSelection
         {
-            get { return _strLimitSelection; }
-            set { _strLimitSelection = value; }
+            get { return s_StrLimitSelection; }
+            set { s_StrLimitSelection = value; }
         }
 
         /// <summary>
@@ -735,8 +735,8 @@ namespace Chummer
         /// </summary>
         public static string SelectedValue
         {
-            get { return _strSelectedValue; }
-            set { _strSelectedValue = value; }
+            get { return s_StrSelectedValue; }
+            set { s_StrSelectedValue = value; }
         }
 
         /// <summary>
@@ -744,16 +744,16 @@ namespace Chummer
         /// </summary>
         public static string ForcedValue
         {
-            get { return _strForcedValue; }
-            set { _strForcedValue = value; }
+            get { return s_StrForcedValue; }
+            set { s_StrForcedValue = value; }
         }
 
         public static void ClearCachedValue(Tuple<Character, Improvement.ImprovementType> objImprovementType)
         {
-            if (_dictionaryCachedValues.ContainsKey(objImprovementType))
-                _dictionaryCachedValues[objImprovementType] = int.MinValue;
+            if (s_DictionaryCachedValues.ContainsKey(objImprovementType))
+                s_DictionaryCachedValues[objImprovementType] = int.MinValue;
             else
-                _dictionaryCachedValues.Add(objImprovementType, int.MinValue);
+                s_DictionaryCachedValues.Add(objImprovementType, int.MinValue);
         }
         #endregion
 
@@ -780,7 +780,7 @@ namespace Chummer
 
             // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
             Tuple<Character, Improvement.ImprovementType> objCacheKey = new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovementType);
-            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && _dictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
+            if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName) && blnUnconditionalOnly && s_DictionaryCachedValues.TryGetValue(objCacheKey, out int intCachedValue) && intCachedValue != int.MinValue)
             {
                 return intCachedValue;
             }
@@ -885,10 +885,10 @@ namespace Chummer
             // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
             if (!blnAddToRating && string.IsNullOrEmpty(strImprovedName))
             {
-                if (_dictionaryCachedValues.ContainsKey(objCacheKey))
-                    _dictionaryCachedValues[objCacheKey] = intValue + intCustomValue;
+                if (s_DictionaryCachedValues.ContainsKey(objCacheKey))
+                    s_DictionaryCachedValues[objCacheKey] = intValue + intCustomValue;
                 else
-                    _dictionaryCachedValues.Add(objCacheKey, intValue + intCustomValue);
+                    s_DictionaryCachedValues.Add(objCacheKey, intValue + intCustomValue);
             }
 
             return intValue + intCustomValue;
@@ -984,8 +984,8 @@ namespace Chummer
             {*/
                 if (nodBonus == null)
                 {
-                    _strForcedValue = string.Empty;
-                    _strLimitSelection = string.Empty;
+                    s_StrForcedValue = string.Empty;
+                    s_StrLimitSelection = string.Empty;
                     Log.Exit("CreateImprovements");
                     return true;
                 }
@@ -994,12 +994,12 @@ namespace Chummer
                 if (nodBonus.Attributes?["unique"] != null)
                     strUnique = nodBonus.Attributes["unique"].InnerText;
 
-                _strSelectedValue = string.Empty;
+                s_StrSelectedValue = string.Empty;
 
                 Log.Info(
-                    "_strForcedValue = " + _strForcedValue);
+                    "_strForcedValue = " + s_StrForcedValue);
                 Log.Info(
-                    "_strLimitSelection = " + _strLimitSelection);
+                    "_strLimitSelection = " + s_StrLimitSelection);
 
                 // If no friendly name was provided, use the one from SourceName.
                 if (string.IsNullOrEmpty(strFriendlyName))
@@ -1015,9 +1015,9 @@ namespace Chummer
 
                     if (objCharacter != null)
                     {
-                        if (!string.IsNullOrEmpty(_strForcedValue))
+                        if (!string.IsNullOrEmpty(s_StrForcedValue))
                         {
-                            LimitSelection = _strForcedValue;
+                            LimitSelection = s_StrForcedValue;
                         }
                         else if (objCharacter.Pushtext.Count != 0)
                         {
@@ -1030,7 +1030,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
-                        _strSelectedValue = LimitSelection;
+                        s_StrSelectedValue = LimitSelection;
                     }
                     else
                     {
@@ -1053,7 +1053,7 @@ namespace Chummer
                         return false;
                     }
 
-                    _strSelectedValue = frmPickText.SelectedValue;
+                    s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
                         strSourceName += " (" + SelectedValue + ")";
@@ -1063,7 +1063,7 @@ namespace Chummer
                     // Create the Improvement.
                     Log.Info("Calling CreateImprovement");
 
-                    CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
+                    CreateImprovement(objCharacter, s_StrSelectedValue, objImprovementSource, strSourceName,
                         Improvement.ImprovementType.Text,
                         strUnique);
                 }
@@ -1093,8 +1093,8 @@ namespace Chummer
                 Commit(objCharacter);
                 Log.Info("Returned from Commit");
                 // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-                _strForcedValue = string.Empty;
-                _strLimitSelection = string.Empty;
+                s_StrForcedValue = string.Empty;
+                s_StrLimitSelection = string.Empty;
             /*}
             catch (Exception ex)
             {
@@ -1120,7 +1120,7 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, blnConcatSelectedValue,
+                strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, blnConcatSelectedValue,
                 strFriendlyName, intRating, ValueToInt, Rollback);
 
             Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
@@ -1137,9 +1137,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                _strForcedValue = container.ForcedValue;
-                _strLimitSelection = container.LimitSelection;
-                _strSelectedValue = container.SelectedValue;
+                s_StrForcedValue = container.ForcedValue;
+                s_StrLimitSelection = container.LimitSelection;
+                s_StrSelectedValue = container.SelectedValue;
             }
             else if (bonusNode.ChildNodes.Count == 0)
             {
@@ -1244,7 +1244,7 @@ namespace Chummer
                     case Improvement.ImprovementType.SkillKnowledgeForced:
                         Guid guid = Guid.Parse(objImprovement.ImprovedName);
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-                        objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(skill => skill.Id == guid);
+                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.Id == guid);
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1409,8 +1409,7 @@ namespace Chummer
                             {
                                 string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
                                 // Determine which GradeList to use for the Cyberware.
-                                List<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options);
-                                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == strNewName);
+                                objCyberware.Grade = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options).FirstOrDefault(x => x.Name == strNewName);
                             }
                         }
                         break;
@@ -1632,7 +1631,7 @@ namespace Chummer
                 ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
 
                 // Add the Improvement to the Transaction List.
-                _lstTransaction.Add(objImprovement);
+                s_LstTransaction.Add(objImprovement);
             }
 
             Log.Exit("CreateImprovement");
@@ -1646,8 +1645,8 @@ namespace Chummer
             Log.Enter("Commit");
             // Clear all of the Improvements from the Transaction List.
 
-            objCharacter.ImprovementHook(_lstTransaction);
-            _lstTransaction.Clear();
+            objCharacter.ImprovementHook(s_LstTransaction);
+            s_LstTransaction.Clear();
             Log.Exit("Commit");
         }
 
@@ -1658,13 +1657,13 @@ namespace Chummer
         {
             Log.Enter("Rollback");
             // Remove all of the Improvements that were added.
-            foreach (Improvement objImprovement in _lstTransaction)
+            foreach (Improvement objImprovement in s_LstTransaction)
             {
                 RemoveImprovements(objCharacter, objImprovement.ImproveSource, objImprovement.SourceName);
                 ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
 
-            _lstTransaction.Clear();
+            s_LstTransaction.Clear();
             Log.Exit("Rollback");
         }
 

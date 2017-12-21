@@ -16,11 +16,11 @@ namespace Chummer.UI.Attributes
         public delegate void ValueChangedHandler(Object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
         private readonly CharacterAttrib attribute;
-        private object sender;
+        private readonly object sender;
         private decimal _oldBase;
         private decimal _oldKarma;
-        private Character _objCharacter;
-        private BindingSource _dataSource;
+        private readonly Character _objCharacter;
+        private readonly BindingSource _dataSource;
 
         public AttributeControl(CharacterAttrib attribute)
         {

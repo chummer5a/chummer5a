@@ -27,7 +27,7 @@ namespace Chummer
     public partial class frmSelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private int _intStage;
         private String _strDefaultStageName;
         private XmlDocument _xmlDocument;
@@ -81,7 +81,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
+                if (!chkLimitList.Checked || Backend.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode
@@ -214,11 +214,7 @@ namespace Chummer
                 {
                     List<ListItem> Stages = new List<ListItem>()
                     {
-                        new ListItem()
-                        {
-                            Name = LanguageManager.GetString("String_All"),
-                            Value = "0"
-                        }
+                        new ListItem("0", LanguageManager.GetString("String_All"))
                     };
 
                     XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");
@@ -227,12 +223,7 @@ namespace Chummer
                         XmlAttribute attrib = xnode.Attributes["order"];
                         if (attrib != null)
                         {
-                            ListItem item = new ListItem
-                            {
-                                Name = xnode.InnerText,
-                                Value = xnode.Attributes["order"].Value
-                            };
-                            Stages.Add(item);
+                            Stages.Add(new ListItem(xnode.Attributes["order"].Value, xnode.InnerText));
                         }
                     }
 
@@ -270,10 +261,8 @@ namespace Chummer
                 }
 
                 ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
-                if (selectedItem != null)
-                {
+                if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
-                }
 
             }
             else
