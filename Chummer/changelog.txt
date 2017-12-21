@@ -62,6 +62,8 @@ Data Changes:
 - Fixed a crash caused by a typo in Thundercloud Morgan's weapon mounts. Fixes #2183.
 - Fixed being able to change the spirit category of Summoning, Binding, and Banishing foci.
 - The Spiritual Way now allows discounting the following powers that were previously missed: Heightened Concentration, Spirit Ram, Nimble Fingers, Metabolic Control, Magic Sense, Kinesics Mastery, Traceless Walk, Pain Resistance, Improved Physical Attribute.
+- The Ultimax Carbine has been converted back to using its actual stats from Gun H(e)aven 3, as no official errata has ever been released for it. An amend entry has been added to the SR Missions 1.4 Rules customdata folder, and a separate entry has been added for users that want to treat Missions as official errata for it. Characters that already have this weapon should not be affected, but I'd recommend enabling the rule if you intend to reapply improvements or purchase a new one at some point.
+
 New Strings:
 
 - Menu_Main_Translator
