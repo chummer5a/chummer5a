@@ -404,8 +404,7 @@ namespace Chummer
                     lstMods.Add(new ListItem(strName, objXmlMod["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMods.Sort(objSort.Compare);
+            lstMods.Sort(CompareListItems.CompareNames);
             lstMod.BeginUpdate();
             lstMod.ValueMember = "Value";
             lstMod.DisplayMember = "Name";

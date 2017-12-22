@@ -10,7 +10,7 @@ using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
-    public class LifestyleQuality : INamedItemWithGuidAndNode
+    public class LifestyleQuality : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private Guid _SourceGuid;

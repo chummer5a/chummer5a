@@ -95,8 +95,7 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
             if (_lstCategory.Count > 0)
             {
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
@@ -496,8 +495,7 @@ namespace Chummer
                     lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMods.Sort(objSort.Compare);
+            lstMods.Sort(CompareListItems.CompareNames);
             lstMod.BeginUpdate();
             lstMod.DataSource = null;
             lstMod.ValueMember = "Value";

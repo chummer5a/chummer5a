@@ -1065,7 +1065,7 @@ namespace Chummer
             {
                 new ListItem("Karma", LanguageManager.GetString("String_Karma")),
                 new ListItem("Priority", LanguageManager.GetString("String_Priority")),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen"))
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen")),
             };
 
             if (GlobalOptions.LifeModuleEnabled)
@@ -1200,9 +1200,8 @@ namespace Chummer
 
                 lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.InnerText));
             }
-
-            SortListItem objSort = new SortListItem();
-            lstLanguages.Sort(objSort.Compare);
+            
+            lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";
@@ -1251,7 +1250,6 @@ namespace Chummer
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            XmlDocument objLanguageDocument = LanguageManager.XmlDoc;
             XmlDocument manifest = XmlManager.Load("sheets.xml");
             foreach (XmlNode sheet in manifest.SelectNodes($"/chummer/sheets[@lang='{strLanguage}']/sheet[not(hide)]"))
             {
@@ -1261,7 +1259,7 @@ namespace Chummer
             return lstSheets;
         }
 
-        private IList<ListItem> GetXslFilesFromOmaeDirectory()
+        private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
             var items = new List<ListItem>();
 
@@ -1516,7 +1514,7 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToRaise = null;
-                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
+                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
                 for(;intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {
@@ -1546,7 +1544,7 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToLower = null;
-                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
+                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
                 for (; intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {

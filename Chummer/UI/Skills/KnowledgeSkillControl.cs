@@ -6,7 +6,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer.UI.Skills
 {
-    public partial class KnowledgeSkillControl : UserControl
+    public sealed partial class KnowledgeSkillControl : UserControl
     {
         private readonly KnowledgeSkill _skill;
         public KnowledgeSkillControl(KnowledgeSkill skill)

@@ -35,7 +35,6 @@ namespace Chummer.UI.Shared
             _contents = contents;
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
-            DoubleBuffered = true;
             pnlDisplay.SuspendLayout();
             _contentList = new List<ControlWithMetaData>();
             foreach (TType objLoopTType in _contents)
@@ -53,6 +52,7 @@ namespace Chummer.UI.Shared
 
         private void BindingListDisplay_Load(object sender, EventArgs e)
         {
+            DoubleBuffered = true;
             Application.Idle += ApplicationOnIdle;
         }
 
@@ -289,7 +289,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class ControlWithMetaData
+        private sealed class ControlWithMetaData
         {
             public TType Item { get; }
 
@@ -388,7 +388,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class IndexComparer : IComparer<TType>
+        private sealed class IndexComparer : IComparer<TType>
         {
             private Dictionary<TType, int> _index;
 

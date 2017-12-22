@@ -11,8 +11,8 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Vehicle Modification.
 	/// </summary>
-	public class WeaponMount : INamedItemWithGuid
-	{
+	public class WeaponMount : IItemWithGuid, INamedItem
+    {
 		private Guid _guiID;
 		private decimal _decMarkup;
 		private string _strAvail = string.Empty;
@@ -725,11 +725,6 @@ namespace Chummer.Backend.Equipment
 
     public class WeaponMountOption
     {
-        /// <summary>
-        /// Category of the weapon mount.
-        /// </summary>
-        public string Category;
-
         private readonly Character _objCharacter;
         private string _strAvail;
         private string _strName;
@@ -888,6 +883,11 @@ namespace Chummer.Backend.Equipment
         /// Availability string of the Mount.
         /// </summary>
         public string Avail => _strAvail;
+
+        /// <summary>
+        /// Category of the weapon mount.
+        /// </summary>
+        public string Category => _strCategory;
         #endregion
 
         #region Complex Properties

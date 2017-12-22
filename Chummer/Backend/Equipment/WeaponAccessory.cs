@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Weapon Accessory.
     /// </summary>
-    public class WeaponAccessory : INamedItemWithGuidAndNode
+    public class WeaponAccessory : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;

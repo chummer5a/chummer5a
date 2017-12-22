@@ -1341,15 +1341,6 @@ namespace Chummer.Backend.Attributes
 		#endregion
 
         #region static
-
-        private static readonly Lazy<HashSet<string>> _physicalAttributes =
-            new Lazy<HashSet<string>>(() => new HashSet<string>() { "BOD", "AGI", "REA", "STR" },
-                LazyThreadSafetyMode.PublicationOnly);
-
-        public static HashSet<string> PhysicalAttributes
-        {
-            get { return _physicalAttributes.Value; }
-        }
         //A tree of dependencies. Once some of the properties are changed, 
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies

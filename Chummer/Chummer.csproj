@@ -192,7 +192,7 @@
     <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
-    <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
+    <Compile Include="Classes\clsHoverDisplayCoordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
     <Compile Include="Classes\clsExpenses.cs" />
     <Compile Include="Classes\clsLanguageManager.cs" />
@@ -260,7 +260,6 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="controllers\clsDashboardController.cs" />
     <Compile Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1602,8 +1601,19 @@
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\amend_AdapsinMultiplier_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml" />
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rainforest Carbine Missions Errata\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\ShadowNET Rules\amend_armor.xml">
@@ -3110,12 +3120,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
-    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="data\options.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

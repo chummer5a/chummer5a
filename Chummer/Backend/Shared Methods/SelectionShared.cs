@@ -14,7 +14,7 @@ using System.Xml.XPath;
 
 namespace Chummer.Backend
 {
-    public sealed class SelectionShared
+    public static class SelectionShared
     {
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>

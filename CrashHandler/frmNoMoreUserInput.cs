@@ -10,10 +10,9 @@ using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public partial class frmNoMoreUserInput : Form
+	public sealed partial class frmNoMoreUserInput : Form
 	{
 		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
-
 
 		public frmNoMoreUserInput(CrashDumper dmper)
 		{

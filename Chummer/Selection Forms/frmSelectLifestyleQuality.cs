@@ -31,8 +31,6 @@ namespace Chummer
 {
     public partial class frmSelectLifestyleQuality : Form
     {
-        public int buildPos = 0;
-        public int buildNeg = 0;
         private string _strSelectedQuality = string.Empty;
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
@@ -83,8 +81,7 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
@@ -181,7 +178,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
         }
 
-        private string GetMinimumRequirement(string strAllowedLifestyles)
+        private static string GetMinimumRequirement(string strAllowedLifestyles)
         {
             if (s_StrLifestyleSpecific.Contains(strAllowedLifestyles))
             {
@@ -383,8 +380,7 @@ namespace Chummer
             }
             if (blnDoUIUpdate)
             {
-                SortListItem objSort = new SortListItem();
-                lstLifestyleQuality.Sort(objSort.Compare);
+                lstLifestyleQuality.Sort(CompareListItems.CompareNames);
                 lstLifestyleQualities.BeginUpdate();
                 lstLifestyleQualities.DataSource = null;
                 lstLifestyleQualities.ValueMember = "Value";

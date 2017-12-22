@@ -15,7 +15,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Standard Character Gear.
     /// </summary>
-    public class Gear : INamedParentWithGuidAndNode<Gear>, IHasMatrixAttributes
+    public class Gear : IHasChildren<Gear>, INamedItem, IItemWithGuid, IItemWithNode, IHasMatrixAttributes
     {
         private Guid _guiID;
         private string _SourceGuid;

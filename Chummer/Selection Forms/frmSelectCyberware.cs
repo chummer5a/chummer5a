@@ -118,8 +118,7 @@ namespace Chummer
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
-            chkPrototypeTranshuman.Visible =
-                _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
+            chkPrototypeTranshuman.Visible = _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
 
             PopulateCategories();
             // Select the first Category in the list.
@@ -1061,8 +1060,7 @@ namespace Chummer
             }
             if (blnDoUIUpdate)
             {
-                SortListItem objSort = new SortListItem();
-                lstCyberwares.Sort(objSort.Compare);
+                lstCyberwares.Sort(CompareListItems.CompareNames);
                 lstCyberware.BeginUpdate();
                 lstCyberware.DataSource = null;
                 lstCyberware.ValueMember = "Value";
@@ -1214,9 +1212,8 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
-
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {

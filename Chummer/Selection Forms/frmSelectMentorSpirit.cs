@@ -66,8 +66,7 @@ namespace Chummer
             {
                 lstMentors.Add(new ListItem(objXmlMentor["id"].InnerText, objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText));
             }
-            SortListItem objSort = new SortListItem();
-            lstMentors.Sort(objSort.Compare);
+            lstMentors.Sort(CompareListItems.CompareNames);
             lstMentor.BeginUpdate();
             lstMentor.DataSource = null;
             lstMentor.ValueMember = "Value";

@@ -141,9 +141,8 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                 }
             }
-
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
@@ -1171,8 +1170,7 @@ namespace Chummer
             }
             if (blnDoUIUpdate)
             {
-                SortListItem objSort = new SortListItem();
-                lstGears.Sort(objSort.Compare);
+                lstGears.Sort(CompareListItems.CompareNames);
                 lstGear.BeginUpdate();
                 lstGear.DataSource = null;
                 lstGear.ValueMember = "Value";

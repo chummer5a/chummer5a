@@ -71,8 +71,7 @@ namespace Chummer
                 string strName = objXmlOption["name"].InnerText;
                 lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstOption.Sort(objSort.Compare);
+            lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
             lstOptions.ValueMember = "Value";
             lstOptions.DisplayMember = "Name";

@@ -22,7 +22,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmExpense : Form
+    public sealed partial class frmExpense : Form
     {
         private ExpenseType _objMode = ExpenseType.Karma;
 

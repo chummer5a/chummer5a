@@ -25,9 +25,8 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUpload : Form
+    public sealed partial class frmOmaeUpload : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
         private readonly Character _objCharacter = new Character();
         private readonly List<ListItem> _lstCharacterTypes = new List<ListItem>();
 
@@ -199,7 +198,7 @@ namespace Chummer
             }
 
             // Read the contents of the file into a byte array, the compress it.
-            byte[] bytFile = _objOmaeHelper.Compress(File.ReadAllBytes(txtFilePath.Text));
+            byte[] bytFile = OmaeHelper.Compress(File.ReadAllBytes(txtFilePath.Text));
 
             // Make sure the file doesn't exceed 500K in size (512,000 bytes).
             if (bytFile.Length > 512000)
@@ -208,7 +207,7 @@ namespace Chummer
                 return;
             }
 
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
                 cmdUpload.Enabled = false;

@@ -26,7 +26,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectCyberwareSuite : Form
+    public sealed partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
         private decimal _decCharacterESSModifier = 1.0m;

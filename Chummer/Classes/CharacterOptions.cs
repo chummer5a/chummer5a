@@ -1757,7 +1757,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books
+        public ICollection<string> Books
         {
             get
             {

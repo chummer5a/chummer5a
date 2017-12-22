@@ -75,7 +75,7 @@ namespace Chummer
     /// <summary>
     /// A Quality.
     /// </summary>
-    public class Quality : INamedItemWithGuidAndNode
+    public class Quality : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1000,7 +1000,7 @@ namespace Chummer
     /// <summary>
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
-    public class Spirit : INamedItemWithGuidAndNode, IHasMugshots, INotifyPropertyChanged
+    public class Spirit : IItemWithGuid, INamedItem, IItemWithNode, IHasMugshots, INotifyPropertyChanged
     {
         private Guid _guiId;
         private string _strName = string.Empty;
@@ -1634,7 +1634,7 @@ namespace Chummer
     /// <summary>
     /// A Magician Spell.
     /// </summary>
-    public class Spell : INamedItemWithGuidAndNode
+    public class Spell : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -2534,7 +2534,7 @@ namespace Chummer
     /// <summary>
     /// A Focus.
     /// </summary>
-    public class Focus : INamedItemWithGuid
+    public class Focus : IItemWithGuid, INamedItem
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -2829,7 +2829,7 @@ namespace Chummer
     /// <summary>
     /// A Metamagic or Echo.
     /// </summary>
-    public class Metamagic : INamedItemWithGuidAndNode
+    public class Metamagic : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3113,7 +3113,7 @@ namespace Chummer
     /// <summary>
     /// An Art.
     /// </summary>
-    public class Art : INamedItemWithGuidAndNode
+    public class Art : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3354,7 +3354,7 @@ namespace Chummer
     /// <summary>
     /// An Enhancement.
     /// </summary>
-    public class Enhancement : INamedItemWithGuidAndNode
+    public class Enhancement : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3608,7 +3608,7 @@ namespace Chummer
     /// <summary>
     /// A Technomancer Program or Complex Form.
     /// </summary>
-    public class ComplexForm : INamedItemWithGuidAndNode
+    public class ComplexForm : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -3869,7 +3869,7 @@ namespace Chummer
     /// <summary>
     /// An AI Program or Advanced Program.
     /// </summary>
-    public class AIProgram : INamedItemWithGuidAndNode
+    public class AIProgram : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4151,7 +4151,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt : INamedParentWithGuidAndNode<MartialArtAdvantage>
+    public class MartialArt : IHasChildren<MartialArtAdvantage>, INamedItem, IItemWithGuid, IItemWithNode
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -4409,7 +4409,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Arts Advantage.
     /// </summary>
-    public class MartialArtAdvantage : INamedItemWithGuidAndNode
+    public class MartialArtAdvantage : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4576,7 +4576,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art Maneuver.
     /// </summary>
-    public class MartialArtManeuver : INamedItemWithGuidAndNode
+    public class MartialArtManeuver : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -4777,7 +4777,7 @@ namespace Chummer
     /// <summary>
     /// A Skill Limit Modifier.
     /// </summary>
-    public class LimitModifier : INamedItemWithGuid
+    public class LimitModifier : IItemWithGuid, INamedItem
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -5804,7 +5804,7 @@ namespace Chummer
     /// <summary>
     /// A Critter Power.
     /// </summary>
-    public class CritterPower : INamedItemWithGuidAndNode
+    public class CritterPower : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -6768,7 +6768,7 @@ namespace Chummer
         #endregion
     }
 
-    public class MentorSpirit : INamedItemWithGuidAndNode
+    public class MentorSpirit : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;

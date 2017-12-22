@@ -51,6 +51,15 @@ Application Changes:
 - Tabs can now be scrolled through with the mousewheel.
 - Ghetto workaround to allow exotic ranged weapons to buy their own ammunition again in career mode. Super fragile, may break at the drop of a hat.
 - Added "Active Commlink" and "Home Node" checkboxes to the Cyberware tab, and added an "Active Commlink" checkbox to the Vehicles tab.
+- Fixed a bug where player names would not show up in the character roster. Fixes #2195.
+- Weapons on vehicles/drones that use STR, Physical Limit, and/or AGI for their stats will now properly use attributes based on that vehicle/drone.
+- Fixed issues regarding undoing expenses involving weapon mounts, armor, and/or armor mods.
+- Fixed issues with refunding lifestyle expenses if a character has two or more lifestyles of the same type/level.
+- Added support to use attributes and XPath expressions in a weapon's AP field.
+- Added a label in Create mode that becomes visible when a character has Prototype Transhuman. This label tracks the current amount of essence used up by 'ware marked as Prototype Transhuman. Fixes #1764.
+- Fixed being able to mark 'ware children as Prototype Transhuman independently from the main 'ware itself.
+- Fixed being able to mark Cyberware as Prototype Transhuman.
+- Fixed Essence usage displays in the 'ware tab not properly reflecting the setting for Essence decimals to which to round.
 - Fixed a bug where player names would not show up in the character roster.
 - Cyberware, Gear, Armor and Armor Mod Ratings are now properly bound by their Min and Max Ratings. May cause issues in career mode if you suddenly become Aged with cyberware or something, but eh. Baby steps.
 
@@ -70,6 +79,7 @@ Data Changes:
 New Strings:
 
 - Menu_Main_Translator
+- Label_PrototypeTranshuman
 
 Build 196
 

@@ -31,7 +31,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Armor Modification.
     /// </summary>
-    public class ArmorMod : INamedItemWithGuidAndNode
+    public class ArmorMod : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;

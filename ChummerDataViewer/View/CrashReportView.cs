@@ -12,7 +12,7 @@ using System.Globalization;
 
 namespace ChummerDataViewer
 {
-	public partial class CrashReportView : UserControl
+	public sealed partial class CrashReportView : UserControl
 	{
 		private readonly CrashReport _report;
 		private readonly DownloaderWorker _worker;

@@ -27,7 +27,6 @@ namespace Chummer
 {
     public partial class frmOmaeCompress : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
         private readonly List<string> _lstFiles = new List<string>();
 
         #region Control Events
@@ -40,7 +39,7 @@ namespace Chummer
         {
             _lstFiles.Clear();
             GetDirectories(txtFilePath.Text);
-            _objOmaeHelper.CompressMutipleToFile(_lstFiles, txtDestination.Text);
+            OmaeHelper.CompressMutipleToFile(_lstFiles, txtDestination.Text);
             MessageBox.Show("Done");
         }
         #endregion

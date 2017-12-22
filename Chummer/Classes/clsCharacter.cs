@@ -103,7 +103,8 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
-        public static readonly string[] LimbStrings = { "skull", "torso", "arm", "leg" };
+        private static readonly string[] s_LstLimbStrings = { "skull", "torso", "arm", "leg" };
+        public static ReadOnlyCollection<string> LimbStrings { get { return Array.AsReadOnly(s_LstLimbStrings); } }
 
         // AI Home Node
         private IHasMatrixAttributes _objHomeNode = null;
@@ -1548,8 +1549,7 @@ namespace Chummer
             {
                 lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
             }
-            SortListItem objSort = new SortListItem();
-            lstPowerOrder.Sort(objSort.Compare);
+            lstPowerOrder.Sort(CompareListItems.CompareNames);
 
             foreach (ListItem objItem in lstPowerOrder)
             {
@@ -3377,8 +3377,12 @@ namespace Chummer
             }
             set
             {
-                _strName = value;
-                CharacterNameChanged?.Invoke(this);
+                if (_strName != value)
+                {
+                    _strName = value;
+                    if (CharacterNameChanged != null && string.IsNullOrWhiteSpace(Alias))
+                        CharacterNameChanged.Invoke(this);
+                }
             }
         }
 
@@ -4468,7 +4472,9 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         public CharacterAttrib GetAttribute(string strAttribute)
         {
-	        return AttributeSection.GetAttributeByName(strAttribute);
+            if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Options.MysAdeptSecondMAGAttribute))
+                strAttribute = "MAG";
+            return AttributeSection.GetAttributeByName(strAttribute);
         }
 
         /// <summary>
@@ -7342,7 +7348,11 @@ namespace Chummer
             }
             set
             {
-                _decPrototypeTranshuman = value;
+                if (_decPrototypeTranshuman != value)
+                {
+                    _decPrototypeTranshuman = value;
+                    PrototypeTranshumanChanged?.Invoke(this);
+                }
             }
         }
 

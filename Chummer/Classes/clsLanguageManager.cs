@@ -29,7 +29,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public sealed class LanguageManager
+    public static class LanguageManager
     {
         /// <summary>
         /// An individual language string.
@@ -68,29 +68,15 @@ namespace Chummer
             }
         }
 
-#if DEBUG
-        private static readonly bool s_BlnDebug = false;
-#endif
-        private static string s_StrLanguage = string.Empty;
-        private static readonly ConcurrentDictionary<string, string> s_DictionaryTranslatedText = new ConcurrentDictionary<string, string>();
-        private static readonly bool s_BlnLoaded = false;
-        private static readonly XmlDocument s_XmlStringsDocument = new XmlDocument();
+        private static string s_StrLanguage = GlobalOptions.DefaultLanguage;
+        private static readonly Dictionary<string, string> s_DictionaryTranslatedStrings = new Dictionary<string, string>();
         private static readonly XmlDocument s_XmlDataDocument = new XmlDocument();
 
         #region Constructor
         static LanguageManager()
         {
-#if DEBUG
-            string[] strArgs = Environment.GetCommandLineArgs();
-            if (strArgs.GetUpperBound(0) > 0)
-            {
-                if (strArgs[1] == "/debug")
-                    s_BlnDebug = true;
-            }
-#endif
             if (!Utils.IsRunningInVisualStudio)
             {
-                s_DictionaryTranslatedText.Clear();
                 XmlDocument objEnglishDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
                 if (File.Exists(strFilePath))
@@ -98,47 +84,24 @@ namespace Chummer
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        if (objNode["key"] != null && objNode["text"] != null)
+                        string strKey = objNode["key"]?.InnerText;
+                        string strText = objNode["text"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                         {
-                            if (!s_DictionaryTranslatedText.TryAdd(objNode["key"].InnerText, objNode["text"].InnerText.Replace("\\n", "\n")))
-                            {
+                            if (s_DictionaryTranslatedStrings.ContainsKey(strKey))
                                 Utils.BreakIfDebug();
-                            }
+                            else
+                                s_DictionaryTranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
                         }
                     }
                 }
+                else
+                    MessageBox.Show("Language strings for the default language (en-us) could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            s_BlnLoaded = true;
-        }
-
-        LanguageManager()
-        {
         }
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Whether or not the LanguageManager loaded the default language successfully.
-        /// </summary>
-        public static bool Loaded
-        {
-            get
-            {
-                return s_BlnLoaded;
-            }
-        }
-
-        /// <summary>
-        /// XmlDocument that holds UI translations.
-        /// </summary>
-        public static XmlDocument XmlDoc
-        {
-            get
-            {
-                return s_XmlStringsDocument;
-            }
-        }
-
         /// <summary>
         /// XmlDocument that holds item name translations.
         /// </summary>
@@ -170,16 +133,18 @@ namespace Chummer
                     objLanguageDocument.Load(strFilePath);
                     if (objLanguageDocument != null)
                     {
-                        s_XmlStringsDocument.Load(strFilePath);
                         foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
                         {
                             // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
                             // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                            if (objNode["text"] != null && objNode["key"] != null)
+                            string strKey = objNode["key"]?.InnerText;
+                            string strText = objNode["text"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                             {
-                                string strKey = objNode["key"].InnerText;
-                                if (s_DictionaryTranslatedText.ContainsKey(strKey))
-                                    s_DictionaryTranslatedText[strKey] = objNode["text"].InnerText.Replace("\\n", "\n");
+                                if (s_DictionaryTranslatedStrings.ContainsKey(strKey))
+                                    s_DictionaryTranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                else
+                                    s_DictionaryTranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
                             }
                         }
                     }
@@ -382,7 +347,7 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static string GetString(string strKey, bool blnReturnError = true)
         {
-            if (s_DictionaryTranslatedText.TryGetValue(strKey, out string strReturn))
+            if (s_DictionaryTranslatedStrings.TryGetValue(strKey, out string strReturn))
             {
                 return strReturn;
             }

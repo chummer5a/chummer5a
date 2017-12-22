@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Vehicle Modification.
     /// </summary>
-    public class VehicleMod : INamedItemWithGuidAndNode
+    public class VehicleMod : IItemWithGuid, INamedItem, IItemWithNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1225,6 +1225,61 @@ namespace Chummer.Backend.Equipment
                 if (_intRating > 0)
                     strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
                 return strReturn;
+            }
+        }
+
+        /// <summary>
+        /// Vehicle arm/leg Strength.
+        /// </summary>
+        public int TotalStrength
+        {
+            get
+            {
+                string strName = Name.ToLower();
+                if (!strName.Contains("arm") && !strName.Contains("leg"))
+                    return 0;
+
+                int intAttribute = Math.Max(Parent.TotalBody, 0);
+                int intBonus = 0;
+
+                foreach (Cyberware objChild in Cyberware)
+                {
+                    // If the limb has Customized Strength, this is its new base value.
+                    if (objChild.Name == "Customized Strength")
+                        intAttribute = objChild.Rating;
+                    // If the limb has Enhanced Strength, this adds to the limb's value.
+                    if (objChild.Name == "Enhanced Strength")
+                        intBonus = objChild.Rating;
+                }
+                return Math.Min(intAttribute + intBonus, Math.Max(Parent.TotalBody * 2, 1));
+            }
+        }
+        
+        /// <summary>
+        /// Vehicle arm/leg Agility.
+        /// </summary>
+        public int TotalAgility
+        {
+            get
+            {
+                string strName = Name.ToLower();
+                if (!strName.Contains("arm") && !strName.Contains("leg"))
+                    return 0;
+
+                int intAttribute = Math.Max(Parent.Pilot, 0);
+                int intBonus = 0;
+
+                foreach (Cyberware objChild in Cyberware)
+                {
+                    // If the limb has Customized Agility, this is its new base value.
+                    if (objChild.Name == "Customized Agility")
+                        intAttribute = objChild.Rating;
+                    // If the limb has Enhanced Agility, this adds to the limb's value.
+                    if (objChild.Name == "Enhanced Agility")
+                        intBonus = objChild.Rating;
+                }
+
+                return Math.Min(intAttribute + intBonus, Math.Max(Parent.Pilot * 2, 1));
             }
         }
 

@@ -1,8 +1,12 @@
+using System;
+using System.Collections.ObjectModel;
+
 namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static readonly string[] Usernames = {
+        public static ReadOnlyCollection<string> Usernames { get { return Array.AsReadOnly(s_LstUsernames); } }
+        private static readonly string[] s_LstUsernames = {
             "Chummer 5 Is Alive<chummer5a>",
             "DelnarErsike",
             "Johannes Elgaard<joha4270>",

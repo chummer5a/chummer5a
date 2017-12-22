@@ -19,16 +19,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Linq;
- using System.Text;
+using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Windows.Forms;
- using System.Xml.Linq;
+using System.Xml.Linq;
 
 namespace Chummer
 {
     // ReSharper disable InconsistentNaming
-    public sealed class XmlManager
+    public static class XmlManager
     {
         /// <summary>
         /// Used to cache XML files so that they do not need to be loaded and translated each time an object wants the file.

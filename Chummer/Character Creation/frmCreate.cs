@@ -53,7 +53,6 @@ namespace Chummer
         private int _intDragLevel = 0;
         private MouseButtons _objDragButton = new MouseButtons();
         private bool _blnDraggingGear = false;
-        public int contactConnection = 0;
         private StoryBuilder _objStoryBuilder;
         private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
         private readonly ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
@@ -409,8 +408,7 @@ namespace Chummer
                 string strName = objXmlTradition["name"].InnerText;
                 lstTraditions.Add(new ListItem(strName, objXmlTradition["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstTraditions.Sort(objSort.Compare);
+            lstTraditions.Sort(CompareListItems.CompareNames);
             lstTraditions.Insert(0, new ListItem("None", LanguageManager.GetString("String_None")));
             cboTradition.BeginUpdate();
             cboTradition.ValueMember = "Value";
@@ -429,8 +427,7 @@ namespace Chummer
                 string strName = objXmlDrain["name"].InnerText;
                 lstDrainAttributes.Add(new ListItem(strName, objXmlDrain["translate"]?.InnerText ?? strName));
             }
-            SortListItem objDrainSort = new SortListItem();
-            lstDrainAttributes.Sort(objDrainSort.Compare);
+            lstDrainAttributes.Sort(CompareListItems.CompareNames);
             cboDrain.BeginUpdate();
             cboDrain.ValueMember = "Value";
             cboDrain.DisplayMember = "Name";
@@ -457,8 +454,7 @@ namespace Chummer
                     lstSpirit.Add(new ListItem(strSpiritName, objXmlSpirit["translate"]?.InnerText ?? strSpiritName));
                 }
             }
-            SortListItem objSpiritSort = new SortListItem();
-            lstSpirit.Sort(objSpiritSort.Compare);
+            lstSpirit.Sort(CompareListItems.CompareNames);
 
             List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
             cboSpiritCombat.BeginUpdate();
@@ -1352,8 +1348,7 @@ namespace Chummer
                 //Create the dropdown for the character's primary arm.
                 lstPrimaryArm.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
                 lstPrimaryArm.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
-                SortListItem objSortHand = new SortListItem();
-                lstPrimaryArm.Sort(objSortHand.Compare);
+                lstPrimaryArm.Sort(CompareListItems.CompareNames);
                 cboPrimaryArm.Enabled = true;
             }
 
@@ -3139,8 +3134,8 @@ namespace Chummer
                     objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                     if (objXmlNode != null)
                     {
+                        objWeapon.ParentVehicle = null;
                         objWeapon.Load(objXmlNode, true);
-                        objWeapon.VehicleMounted = false;
 
                         CharacterObject.Weapons.Add(objWeapon);
 
@@ -3306,8 +3301,8 @@ namespace Chummer
                 objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                 if (objXmlNode != null)
                 {
+                    objWeapon.ParentVehicle = objVehicle;
                     objWeapon.Load(objXmlNode, true);
-                    objWeapon.VehicleMounted = true;
 
                     // Weapons can only be added to Vehicle Mods that support them (Weapon Mounts and Mechanical Arms).
                     foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
@@ -4356,16 +4351,20 @@ namespace Chummer
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode.Level == 0)
+            TreeNode objSelectedNode = treArmor.SelectedNode;
+            if (objSelectedNode == null)
+                return;
+
+            if (objSelectedNode.Level == 0)
             {
-                if (treArmor.SelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
+                if (objSelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor"))
                     return;
 
                 if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteArmorLocation")))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Armor parent node.
-                foreach (TreeNode objNode in treArmor.SelectedNode.Nodes)
+                foreach (TreeNode objNode in objSelectedNode.Nodes)
                 {
                     Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objNode.Tag.ToString(), CharacterObject.Armor);
 
@@ -4420,12 +4419,51 @@ namespace Chummer
                 }
 
                 // Remove the Location from the character, then remove the selected node.
-                CharacterObject.ArmorLocations.Remove(treArmor.SelectedNode.Text);
-                treArmor.SelectedNode.Remove();
+                CharacterObject.ArmorLocations.Remove(objSelectedNode.Text);
+                objSelectedNode.Remove();
                 return;
             }
+            else
+            {
+                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                if (objArmor != null)
+                {
+                    CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles);
+                    CharacterObject.Armor.Remove(objArmor);
+                    objSelectedNode.Remove();
+                }
+                else
+                {
+                    ArmorMod objMod = CommonFunctions.FindArmorMod(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                    if (objMod != null)
+                    {
+                        CommonFunctions.DeleteArmorMod(CharacterObject, objMod, treWeapons, treVehicles);
+                        objMod.Parent.ArmorMods.Remove(objMod);
+                        objSelectedNode.Remove();
+                    }
+                    else
+                    {
+                        Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), CharacterObject.Armor, out objArmor, out objMod);
+                        if (objGear != null)
+                        {
+                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
 
-            CommonFunctions.DeleteArmor(CharacterObject, treArmor, treWeapons, treVehicles);
+                            Gear objGearParent = objGear.Parent;
+                            if (objGearParent != null)
+                            {
+                                objGearParent.Children.Remove(objGear);
+                                objGearParent.RefreshMatrixAttributeArray();
+                            }
+                            else if (objMod != null)
+                                objMod.Gear.Remove(objGear);
+                            else if (objArmor != null)
+                                objArmor.Gear.Remove(objGear);
+
+                            objSelectedNode.Remove();
+                        }
+                    }
+                }
+            }
             ScheduleCharacterUpdate();
             RefreshSelectedArmor();
 
@@ -7152,7 +7190,7 @@ namespace Chummer
             dynamic wm = CommonFunctions.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out Vehicle v);
             if (wm == null)
             {
-                wm = CommonFunctions.FindVehicleMod(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+                wm = CommonFunctions.FindVehicleMod(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles, out v);
                 if (wm != null)
                 {
                     if (!wm.Name.StartsWith("Mechanical Arm") && !wm.Name.Contains("Drone Arm"))
@@ -7188,6 +7226,7 @@ namespace Chummer
 
                 List<TreeNode> lstNodes = new List<TreeNode>();
                 Weapon objWeapon = new Weapon(CharacterObject);
+                objWeapon.ParentVehicle = v;
                 objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -7195,7 +7234,6 @@ namespace Chummer
                 {
                     objWeapon.Cost = 0;
                 }
-                objWeapon.VehicleMounted = true;
 
                 wm.Weapons.Add(objWeapon);
 
@@ -7336,6 +7374,7 @@ namespace Chummer
 
             List<TreeNode> lstNodes = new List<TreeNode>();
             Weapon objWeapon = new Weapon(CharacterObject);
+            objWeapon.ParentVehicle = objSelectedWeapon.ParentVehicle;
             objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSelectedWeapon.UnderbarrelWeapons, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -7343,7 +7382,7 @@ namespace Chummer
             {
                 objWeapon.Cost = 0;
             }
-            objWeapon.VehicleMounted = true;
+            
             objWeapon.Parent = objSelectedWeapon;
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
             if (objSelectedWeapon.AllowAccessory == false)
@@ -8989,7 +9028,6 @@ namespace Chummer
 
                 foreach (Weapon objWeapon in objWeapons)
                 {
-                    objWeapon.VehicleMounted = true;
                     objVehicle.Weapons.Add(objWeapon);
                 }
 
@@ -10396,23 +10434,19 @@ namespace Chummer
             if (!_blnSkipRefresh)
             {
                 // Locate the selected piece of Cyberware.
-                bool blnFound = false;
                 Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
                 if (objCyberware != null)
-                    blnFound = true;
-
-                if (blnFound)
                 {
                     // Update the selected Cyberware Rating.
                     objCyberware.PrototypeTranshuman = chkPrototypeTranshuman.Checked;
+                    RefreshSelectedCyberware();
+                    ScheduleCharacterUpdate();
+
+                    IsDirty = true;
                 }
-
-                RefreshSelectedCyberware();
-                ScheduleCharacterUpdate();
-
-                IsDirty = true;
             }
         }
+
         private void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
             if (!_blnSkipRefresh)
@@ -13766,23 +13800,54 @@ namespace Chummer
 
             lblNuyenTotal.Text = "= " + decNuyen.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
+            int intESSDecimals = CharacterObject.Options.EssenceDecimals;
+            StringBuilder objESSFormat = new StringBuilder("#,0");
+            if (intESSDecimals > 0)
+            {
+                objESSFormat.Append('.');
+                for (int i = 0; i < intESSDecimals; ++i)
+                    objESSFormat.Append('0');
+            }
+            string strESSFormat = objESSFormat.ToString();
+
             decimal decESS = CharacterObject.Essence;
-            decimal decRoundedESS = decimal.Round(decESS, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            decimal decRoundedESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
             if (!CharacterObject.Options.DontRoundEssenceInternally)
                 decESS = decRoundedESS;
-            lblESSMax.Text = decRoundedESS.ToString(GlobalOptions.CultureInfo);
+            lblESSMax.Text = decRoundedESS.ToString(strESSFormat, GlobalOptions.CultureInfo);
             tssEssence.Text = lblESSMax.Text;
 
-            lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
-            lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
-            lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero).ToString(GlobalOptions.CultureInfo);
+            lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+
+            if (CharacterObject.PrototypeTranshuman > 0)
+            {
+                chkPrototypeTranshuman.Visible = true;
+                lblPrototypeTranshumanESSLabel.Visible = true;
+                lblPrototypeTranshumanESS.Visible = true;
+
+                decimal decPrototypeTranshumanESSUsed = 0.0m;
+                foreach (Cyberware objCyberware in CharacterObject.Cyberware.Where(x => x.PrototypeTranshuman))
+                {
+                    decPrototypeTranshumanESSUsed += objCyberware.CalculatedESS(false);
+                }
+
+                lblPrototypeTranshumanESS.Text = decimal.Round(decPrototypeTranshumanESSUsed, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo) + " / " + decimal.Round(CharacterObject.PrototypeTranshuman, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            }
+            else
+            {
+                chkPrototypeTranshuman.Visible = false;
+                lblPrototypeTranshumanESSLabel.Visible = false;
+                lblPrototypeTranshumanESS.Visible = false;
+            }
 
             // Reduce a character's MAG and RES from Essence Loss.
             int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
             int intReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
             decimal decESSMag = CharacterObject.Essence + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
             if (!CharacterObject.Options.DontRoundEssenceInternally)
-                decESSMag = decimal.Round(decESSMag, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+                decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
             int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
 
             // Remove any Improvements from MAG and RES from Essence Loss.
@@ -13840,12 +13905,12 @@ namespace Chummer
                 tabPowerUc.MissingDatabindingsWorkaround();
             }
 
-            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).Value);
             }
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
@@ -14142,7 +14207,7 @@ namespace Chummer
             lblCyberSleazeLabel.Visible = false;
             lblCyberDataProcessingLabel.Visible = false;
             lblCyberFirewallLabel.Visible = false;
-            chkPrototypeTranshuman.Visible = false;
+            chkPrototypeTranshuman.Enabled = false;
             cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null;
             cmdCyberwareChangeMount.Visible = false;
 
@@ -14262,8 +14327,9 @@ namespace Chummer
                     lblCyberDataProcessingLabel.Visible = true;
                     lblCyberFirewallLabel.Visible = true;
                 }
+                else
+                    chkPrototypeTranshuman.Enabled = objCyberware.Parent == null;
 
-                chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman > 0;
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
                 lblCyberwareAvail.Text = objCyberware.TotalAvail;
@@ -14524,16 +14590,6 @@ namespace Chummer
                 if (objWeapon.IncludedInWeapon || objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || !string.IsNullOrEmpty(objWeapon.ParentID))
                     cmdDeleteWeapon.Enabled = false;
 
-                // If this is a Cyberweapon, grab the STR of the limb.
-                int intUseSTR = 0;
-                if (objWeapon.Cyberware)
-                {
-                    if (objWeapon.Cyberware)
-                    {
-                        intUseSTR = CharacterObject.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.WeaponID == objWeapon.InternalId)?.TotalStrength ?? 0;
-                    }
-                }
-
                 lblWeaponName.Text = objWeapon.DisplayNameShort;
                 lblWeaponCategory.Text = objWeapon.DisplayCategory;
                 string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source);
@@ -14547,7 +14603,7 @@ namespace Chummer
                 // Show the Weapon Ranges.
                 lblWeaponRangeMain.Text = objWeapon.Range;
                 lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                 lblWeaponRangeShort.Text = dictionaryRanges["short"];
                 lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                 lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -14560,7 +14616,7 @@ namespace Chummer
                 lblWeaponAvail.Text = objWeapon.TotalAvail;
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
-                lblWeaponDamage.Text = objWeapon.CalculatedDamage(intUseSTR);
+                lblWeaponDamage.Text = objWeapon.CalculatedDamage();
                 lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                 lblWeaponRC.Text = objWeapon.TotalRC;
                 lblWeaponAP.Text = objWeapon.TotalAP;
@@ -14605,7 +14661,7 @@ namespace Chummer
                     // Show the Weapon Ranges.
                     lblWeaponRangeMain.Text = objWeapon.Range;
                     lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -14751,7 +14807,7 @@ namespace Chummer
                         // Show the Weapon Ranges.
                         lblWeaponRangeMain.Text = objSelectedWeapon.Range;
                         lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -15280,12 +15336,12 @@ namespace Chummer
             _blnSkipRefresh = false;
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public override void UpdateWindowTitle(bool blnCanSkip)
+        public override string FormMode
         {
-            UpdateWindowTitle(LanguageManager.GetString("Title_CreateNewCharacter"), blnCanSkip);
+            get
+            {
+                return LanguageManager.GetString("Title_CreateNewCharacter");
+            }
         }
 
         /// <summary>
@@ -16499,7 +16555,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -16613,7 +16669,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -16915,7 +16971,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -19199,8 +19255,8 @@ namespace Chummer
                             XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
                             if (objXmlWeaponNode == null)
                                 continue;
+                            objWeapon.ParentVehicle = objVehicle;
                             objWeapon.Create(objXmlWeaponNode, lstWeaponNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSubWeapons, cmsVehicleWeaponAccessoryGear, blnCreateChildren);
-                            objWeapon.VehicleMounted = true;
 
                             // Find the first Weapon Mount in the Vehicle.
                             foreach (VehicleMod objMod in objVehicle.Mods)
@@ -19926,10 +19982,13 @@ namespace Chummer
             lblCyberwareAvail.Left = lblCyberwareAvailLabel.Left + intWidth + 6;
             lblCyberwareSource.Left = lblCyberwareSourceLabel.Left + intWidth + 6;
 
-            intWidth = lblEssenceHoleESSLabel.Width;
-            lblCyberwareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
-            lblBiowareESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
+            intWidth = Math.Max(lblCyberwareESSLabel.Width, lblEssenceHoleESSLabel.Width);
+            intWidth = Math.Max(intWidth, lblBiowareESSLabel.Width);
+            intWidth = Math.Max(intWidth, lblPrototypeTranshumanESSLabel.Width);
+            lblCyberwareESS.Left = lblCyberwareESSLabel.Left + intWidth + 6;
+            lblBiowareESS.Left = lblBiowareESSLabel.Left + intWidth + 6;
             lblEssenceHoleESS.Left = lblEssenceHoleESSLabel.Left + intWidth + 6;
+            lblPrototypeTranshumanESS.Left = lblPrototypeTranshumanESSLabel.Left + intWidth + 6;
 
             intWidth = Math.Max(lblCyberwareRatingLabel.Width, lblCyberwareCapacityLabel.Width);
             intWidth = Math.Max(intWidth, lblCyberwareCostLabel.Width);
@@ -19945,6 +20004,7 @@ namespace Chummer
             lblCyberFirewall.Left = lblCyberFirewallLabel.Left + lblCyberFirewallLabel.Width + 6;
 
             lblCyberwareRatingLabel.Left = cboCyberwareGrade.Left + cboCyberwareGrade.Width + 16;
+            chkPrototypeTranshuman.Left = lblCyberwareRatingLabel.Left;
             nudCyberwareRating.Left = lblCyberwareRatingLabel.Left + intWidth + 6;
             lblCyberlimbAGILabel.Left = lblCyberwareRatingLabel.Left;
             lblCyberlimbSTRLabel.Left = lblCyberwareRatingLabel.Left;
@@ -21437,7 +21497,7 @@ namespace Chummer
 
         private void nudCounterspellingDice_Changed(object sender, EventArgs e)
         {
-            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Length);
+            Dictionary<string, int> dicAttributeTotalValues = new Dictionary<string, int>(AttributeSection.AttributeStrings.Count);
             foreach (string strAttribute in AttributeSection.AttributeStrings)
             {
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);

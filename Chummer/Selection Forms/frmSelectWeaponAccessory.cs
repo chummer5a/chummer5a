@@ -174,9 +174,8 @@ namespace Chummer
                 }
                 NextItem:;
             }
-
-            SortListItem objSort = new SortListItem();
-            lstAccessories.Sort(objSort.Compare);
+            
+            lstAccessories.Sort(CompareListItems.CompareNames);
             lstAccessory.BeginUpdate();
             lstAccessory.ValueMember = "Value";
             lstAccessory.DisplayMember = "Name";

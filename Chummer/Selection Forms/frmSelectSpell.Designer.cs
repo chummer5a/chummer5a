@@ -57,14 +57,14 @@ namespace Chummer
             this.cboCategory = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // treSpells
+            // lstSpells
             // 
             this.lstSpells.FormattingEnabled = true;
             this.lstSpells.Location = new System.Drawing.Point(12, 36);
             this.lstSpells.Name = "lstSpells";
             this.lstSpells.Size = new System.Drawing.Size(264, 512);
             this.lstSpells.TabIndex = 17;
-            this.lstSpells.SelectedIndexChanged += new System.EventHandler(this.lstSpells_AfterSelect);
+            this.lstSpells.SelectedIndexChanged += new System.EventHandler(this.lstSpells_SelectedIndexChanged);
             this.lstSpells.DoubleClick += new System.EventHandler(this.treSpells_DoubleClick);
             // 
             // lblDescriptorsLabel

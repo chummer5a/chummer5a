@@ -76,8 +76,7 @@ namespace Chummer
                 }
                 NotNewAdvantage:;
             }
-            SortListItem objSort = new SortListItem();
-            lstAdvantage.Sort(objSort.Compare);
+            lstAdvantage.Sort(CompareListItems.CompareNames);
             lstAdvantages.BeginUpdate();
             lstAdvantages.DataSource = null;
             lstAdvantages.ValueMember = "Value";

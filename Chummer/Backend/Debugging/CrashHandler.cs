@@ -12,9 +12,9 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Security;
 
-namespace Chummer.Backend.Debugging
+namespace Chummer.Backend
 {
-    public sealed class CrashHandler
+    public static class CrashHandler
     {
         [SuppressUnmanagedCodeSecurity]
         private static class SafeNativeMethods
@@ -30,11 +30,11 @@ namespace Chummer.Backend.Debugging
                 AddDefaultInfo();
             }
 
-            public List<string> capturefiles = new List<string>();
-            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            public Dictionary<string, string> attributes = new Dictionary<string, string>();
-            public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = SafeNativeMethods.GetCurrentThreadId();
+            private List<string> capturefiles = new List<string>();
+            private Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            private Dictionary<string, string> attributes = new Dictionary<string, string>();
+            private int processid = Process.GetCurrentProcess().Id;
+            private uint threadId = SafeNativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {
@@ -44,9 +44,9 @@ namespace Chummer.Backend.Debugging
                 attributes.Add("visible-build-type",
                     #if DEBUG
                     "DEBUG"
-#else
+                    #else
                     "RELEASE"
-#endif
+                    #endif
                     );
                 attributes.Add("commandline", Environment.CommandLine);
                 attributes.Add("visible-version", Application.ProductVersion);
@@ -107,7 +107,7 @@ namespace Chummer.Backend.Debugging
             }
         }
 
-        internal static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex)
         {
             try
             {

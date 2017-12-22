@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class frmCreateCyberwareSuite : Form
+    public sealed partial class frmCreateCyberwareSuite : Form
     {
         private readonly Character _objCharacter;
         private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;

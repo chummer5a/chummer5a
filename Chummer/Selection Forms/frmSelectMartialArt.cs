@@ -75,8 +75,7 @@ namespace Chummer
                     lstMartialArt.Add(new ListItem(strName, objXmlArt["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMartialArt.Sort(objSort.Compare);
+            lstMartialArt.Sort(CompareListItems.CompareNames);
             lstMartialArts.BeginUpdate();
             lstMartialArts.DataSource = null;
             lstMartialArts.ValueMember = "Value";

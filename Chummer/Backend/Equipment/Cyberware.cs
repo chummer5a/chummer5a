@@ -14,7 +14,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Cyberware.
     /// </summary>
-    public class Cyberware : INamedParentWithGuidAndNode<Cyberware>, IHasMatrixAttributes
+    public class Cyberware : IHasChildren<Cyberware>, INamedItem, IItemWithGuid, IItemWithNode, IHasMatrixAttributes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;
@@ -279,6 +279,7 @@ namespace Chummer.Backend.Equipment
 
                     List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
                     Weapon objGearWeapon = new Weapon(objCharacter);
+                    objGearWeapon.ParentVehicle = ParentVehicle;
                     objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons);
                     objGearWeapon.ParentID = InternalId;
                     foreach (TreeNode objLoopNode in lstGearWeaponNodes)
@@ -1891,8 +1892,16 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrototypeTranshuman
         {
-            get { return _blnPrototypeTranshuman; }
-            set { _blnPrototypeTranshuman = value; }
+            get
+            {
+                return _blnPrototypeTranshuman && _objCharacter.PrototypeTranshuman > 0;
+            }
+            set
+            {
+                _blnPrototypeTranshuman = value;
+                foreach (Cyberware objCyberware in Children)
+                    objCyberware.PrototypeTranshuman = value;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode = null;

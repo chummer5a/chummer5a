@@ -105,8 +105,7 @@ namespace Chummer
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
             {
@@ -274,7 +273,7 @@ namespace Chummer
                     string strWeaponName = objWeapon.DisplayName;
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     int intAccuracy = objWeapon.TotalAccuracy;
-                    string strDamage = objWeapon.CalculatedDamage(_objCharacter.STR.Augmented);
+                    string strDamage = objWeapon.CalculatedDamage();
                     string strAP = objWeapon.TotalAP;
                     if (strAP == "-")
                         strAP = "0";
@@ -347,8 +346,7 @@ namespace Chummer
                     }
                     lstWeapons.Add(new ListItem(objXmlWeapon["id"]?.InnerText, objXmlWeapon["translate"]?.InnerText ?? objXmlWeapon["name"]?.InnerText));
                 }
-                SortListItem objSort = new SortListItem();
-                lstWeapons.Sort(objSort.Compare);
+                lstWeapons.Sort(CompareListItems.CompareNames);
                 lstWeapon.BeginUpdate();
                 lstWeapon.DataSource = null;
                 lstWeapon.ValueMember = "Value";

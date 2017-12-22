@@ -206,8 +206,7 @@ namespace Chummer
             {
                 Utils.BreakIfDebug();
             }
-            SortListItem objSort = new SortListItem();
-            lstMetamagics.Sort(objSort.Compare);
+            lstMetamagics.Sort(CompareListItems.CompareNames);
             lstMetamagic.BeginUpdate();
             lstMetamagic.DataSource = null;
             lstMetamagic.ValueMember = "Value";

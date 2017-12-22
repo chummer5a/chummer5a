@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectLimitModifier : Form
+    public sealed partial class frmSelectLimitModifier : Form
     {
         private string _strReturnName = string.Empty;
         private int _intBonus = 1;

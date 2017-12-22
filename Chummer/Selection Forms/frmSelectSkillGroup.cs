@@ -76,8 +76,7 @@ namespace Chummer
             {
                 lstGroups.Add(new ListItem(_strForceValue, _strForceValue));
             }
-            SortListItem objSort = new SortListItem();
-            lstGroups.Sort(objSort.Compare);
+            lstGroups.Sort(CompareListItems.CompareNames);
             cboSkillGroup.BeginUpdate();
             cboSkillGroup.ValueMember = "Value";
             cboSkillGroup.DisplayMember = "Name";

@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmExpense
+    public sealed partial class frmExpense
     {
         /// <summary>
         /// Required designer variable.
