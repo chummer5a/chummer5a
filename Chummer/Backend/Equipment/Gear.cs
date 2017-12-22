@@ -119,7 +119,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
             objXmlGear.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
             objXmlGear.TryGetStringFieldQuickly("notes", ref _strNotes);
-            _intRating = Math.Max(Math.Min(intRating, _intMaxRating), _intMinRating);
+            _intRating = Math.Max(Math.Min(intRating, MaxRating), MinRating);
             objXmlGear.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             objXmlGear.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
@@ -339,8 +339,8 @@ namespace Chummer.Backend.Equipment
                     {
                         Gear objPlugin1 = new Gear(_objCharacter);
                         TreeNode objPlugin1Node = new TreeNode();
-                        objPlugin1.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Copy Protection\"]"), objPlugin1Node, _intRating, null, null);
-                        if (_intRating == 0)
+                        objPlugin1.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Copy Protection\"]"), objPlugin1Node, Rating, null, null);
+                        if (Rating == 0)
                             objPlugin1.Rating = 1;
                         objPlugin1.Avail = "0";
                         objPlugin1.Cost = "0";
@@ -378,8 +378,8 @@ namespace Chummer.Backend.Equipment
 
                         Gear objPlugin4 = new Gear(_objCharacter);
                         TreeNode objPlugin4Node = new TreeNode();
-                        objPlugin4.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Optimization\" and category = \"Program Options\"]"), objPlugin4Node, _intRating, null, null);
-                        if (_intRating == 0)
+                        objPlugin4.Create(objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"Optimization\" and category = \"Program Options\"]"), objPlugin4Node, Rating, null, null);
+                        if (Rating == 0)
                             objPlugin4.Rating = 1;
                         objPlugin4.Avail = "0";
                         objPlugin4.Cost = "0";
@@ -611,7 +611,7 @@ namespace Chummer.Backend.Equipment
             _strCategory = objGear.Category;
             _intMaxRating = objGear.MaxRating;
             _intMinRating = objGear.MinRating;
-            _intRating = objGear.Rating;
+            Rating = objGear.Rating;
             _decQty = objGear.Quantity;
             _strCapacity = objGear.Capacity;
             _strArmorCapacity = objGear.ArmorCapacity;
@@ -681,7 +681,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
             objWriter.WriteElementString("minrating", _intMinRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("rating", Rating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("qty", _decQty.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("avail", _strAvail);
             if (_decCostFor > 1)
@@ -839,17 +839,17 @@ namespace Chummer.Backend.Equipment
                 XmlNode objNuyenNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
-                    if (_intRating > 0)
+                    if (Rating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
                         objNuyenGear.Create(objNuyenNode, new TreeNode(), 0, new List<Weapon>(), new List<TreeNode>());
                         objNuyenGear.Parent = this;
-                        objNuyenGear.Quantity = _intRating;
+                        objNuyenGear.Quantity = Rating;
                         _objChildren.Add(objNuyenGear);
                     }
                     MyXmlNode.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
                     MyXmlNode.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
-                    _intRating = Math.Max(Math.Min(0, _intMaxRating), _intMinRating);
+                    Rating = Math.Max(Math.Min(0, _intMaxRating), _intMinRating);
                     MyXmlNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
                 }
             }
@@ -1284,17 +1284,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-                // Make sure we don't go over the maximum Rating.
-                if (_intRating > _intMaxRating)
-                    _intRating = _intMaxRating;
-            }
+            get => Math.Max(Math.Min(_intRating, MaxRating), MinRating);
+            set => _intRating = Math.Max(Math.Min(value, MaxRating), MinRating);
         }
 
         /// <summary>
@@ -1353,8 +1344,8 @@ namespace Chummer.Backend.Equipment
                 {
                     string[] strValues = _strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
                     string strCost = "0";
-                    if (_intRating > 0)
-                        strCost = strValues[Math.Min(_intRating, strValues.Length) - 1].Trim("[]".ToCharArray());
+                    if (Rating > 0)
+                        strCost = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                     else
                         strCost = strValues[0].Trim("[]".ToCharArray());
                     return strCost;
@@ -2056,7 +2047,7 @@ namespace Chummer.Backend.Equipment
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpression = strAvailExpression.Substring(0, strAvailExpression.Length - 1);
                 }
-                strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture)))).ToString() + strAvail;
+                strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpression.Replace("Rating", Rating.ToString(CultureInfo.InvariantCulture)))).ToString() + strAvail;
             }
             else
             {
@@ -2141,10 +2132,10 @@ namespace Chummer.Backend.Equipment
                     else if (_strArmorCapacity.StartsWith("FixedValues"))
                     {
                         string[] strValues = _strArmorCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                        strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
+                        strReturn = strValues[Math.Min(Rating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                 }
                 if (strReturn.Contains("Rating"))
                 {
@@ -2156,7 +2147,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                     // This has resulted in a non-whole number, so round it (minimum of 1).
-                    double dblNumber = (double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()));
+                    double dblNumber = (double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()));
                     if (dblNumber < 1)
                         dblNumber = 1;
                     strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -2198,10 +2189,10 @@ namespace Chummer.Backend.Equipment
                     else if (_strArmorCapacity.StartsWith("FixedValues"))
                     {
                         string[] strValues = _strArmorCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                        strReturn = strValues[Math.Min(_intRating, strValues.Length) - 1];
+                        strReturn = strValues[Math.Min(Rating, strValues.Length) - 1];
                     }
                     else
-                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
                     strReturn += "/" + strSecondHalf;
@@ -2216,7 +2207,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                    string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
 
@@ -2246,8 +2237,8 @@ namespace Chummer.Backend.Equipment
                 if (strCostExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCostExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (_intRating > 0)
-                        strCostExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Trim("[]".ToCharArray());
+                    if (Rating > 0)
+                        strCostExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
                 }
 
                 decimal decGearCost = 0;
@@ -2277,7 +2268,7 @@ namespace Chummer.Backend.Equipment
                 StringBuilder objCost = new StringBuilder(strCostExpression.TrimStart('+'));
                 objCost.Replace("Gear Cost", decGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
-                objCost.Replace("Rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
+                objCost.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo));
                 objCost.Replace("Parent Cost", string.IsNullOrEmpty(strParentCost) ? "0" : strParentCost);
 
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -2481,8 +2472,8 @@ namespace Chummer.Backend.Equipment
 
                 if (_decQty != 1.0m || Category == "Currency")
                     strReturn = _decQty.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", GlobalOptions.CultureInfo) + " " + strReturn;
-                if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                if (Rating > 0)
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + Rating + ")";
                 if (!string.IsNullOrEmpty(_strExtra))
                     strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
 

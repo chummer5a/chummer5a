@@ -14273,6 +14273,7 @@ namespace Chummer
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 if (objCyberware.AddToParentESS)
                     lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
+                treCyberware.SelectedNode.Text = objCyberware.DisplayName;
             }
             else
             {
@@ -14347,6 +14348,7 @@ namespace Chummer
                         nudCyberwareRating.Maximum = 0;
                         nudCyberwareRating.Enabled = false;
                     }
+                    treCyberware.SelectedNode.Text = objGear.DisplayName;
                 }
             }
             _blnSkipRefresh = false;

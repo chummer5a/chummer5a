@@ -709,14 +709,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-            }
+            get => Math.Min(_intRating, MaxRating);
+            set => _intRating = Math.Min(value, MaxRating);
         }
 
         /// <summary>

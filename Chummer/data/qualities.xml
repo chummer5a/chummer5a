@@ -10603,7 +10603,7 @@
 	<quality>
 	  <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
 	  <name>It Works If You Work It</name>
-	  <karma>-5</karma>
+	  <karma>5</karma>
 	  <category>Positive</category>
 	  <bonus />
 	  <source>DTR</source>
@@ -10612,7 +10612,7 @@
 	<quality>
 	  <id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
 	  <name>Soul Swallower</name>
-	  <karma>-7</karma>
+	  <karma>7</karma>
 	  <category>Positive</category>
 	  <bonus />
 	  <source>DTR</source>
@@ -10621,7 +10621,7 @@
 	<quality>
 	  <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
 	  <name>Metaviral Attunement</name>
-	  <karma>-5</karma>
+	  <karma>5</karma>
 	  <category>Positive</category>
 	  <bonus>
 	    <selecttext />

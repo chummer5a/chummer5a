@@ -378,7 +378,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                         ImprovementManager.ForcedValue = _strForced;
 
-                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), Bonus, false, _intRating, DisplayNameShort))
+                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), Bonus, false, Rating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -386,7 +386,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
-                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), WirelessBonus, false, _intRating, DisplayNameShort))
+                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), WirelessBonus, false, Rating, DisplayNameShort))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -402,7 +402,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
                         }
-                        if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, _intRating, DisplayNameShort))
+                        if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, Rating, DisplayNameShort))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -1124,9 +1124,9 @@ namespace Chummer.Backend.Equipment
             {
                 string strReturn = DisplayNameShort;
 
-                if (_intRating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
+                if (Rating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
                 {
-                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
+                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + Rating + ")";
                 }
 
                 if (!string.IsNullOrEmpty(_strExtra))
@@ -1460,12 +1460,12 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.ForcedValue = _strForced;
 
                     if (Bonus != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, _intRating, DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, DisplayNameShort);
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
                     if (WirelessBonus != null && WirelessOn)
-                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, _intRating, DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, DisplayNameShort);
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
@@ -1479,7 +1479,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (intCount >= 0 && intCount % 2 == 0)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, _intRating, DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, Rating, DisplayNameShort);
                         }
                     }
                 }
@@ -1538,14 +1538,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
-            set
-            {
-                _intRating = value;
-            }
+            get => Math.Max(Math.Min(_intRating, MaxRating), MinRating);
+            set => _intRating = Math.Max(Math.Min(value, MaxRating), MinRating);
         }
 
         /// <summary>
@@ -1970,7 +1964,7 @@ namespace Chummer.Backend.Equipment
                             strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                         }
                         strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => MinRating.ToString());
-                        strAvailExpr = strAvailExpr.Replace("Rating", _intRating.ToString());
+                        strAvailExpr = strAvailExpr.Replace("Rating", Rating.ToString());
                         return "+" + CommonFunctions.EvaluateInvariantXPath(strAvailExpr).ToString() + strAvail;
                     }
                     else
@@ -1981,7 +1975,7 @@ namespace Chummer.Backend.Equipment
                 if (strBaseAvail.StartsWith("FixedValues"))
                 {
                     string[] strValues = strBaseAvail.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    strBaseAvail = strValues[Math.Min(_intRating, strValues.Length) - 1];
+                    strBaseAvail = strValues[Math.Min(Rating, strValues.Length) - 1];
                 }
                 bool blnCheckGearAvail = strBaseAvail.Contains(" or Gear");
                 strBaseAvail = strBaseAvail.Replace(" or Gear", string.Empty);
@@ -2004,7 +1998,7 @@ namespace Chummer.Backend.Equipment
                         // Remove the trailing character if it is "F" or "R".
                         strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                     }
-                    strCalculated = (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))) + intAvailModifier).ToString() + strAvail;
+                    strCalculated = (Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", Rating.ToString()))) + intAvailModifier).ToString() + strAvail;
                 }
                 else
                 {
@@ -2131,7 +2125,7 @@ namespace Chummer.Backend.Equipment
                         strFirstHalf = strFirstHalf.Substring(1, strFirstHalf.Length - 2);
                     try
                     {
-                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     }
                     catch (XPathException)
                     {
@@ -2151,7 +2145,7 @@ namespace Chummer.Backend.Equipment
                     strSecondHalf = strSecondHalf.Trim("[]".ToArray());
                     try
                     {
-                        strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                        strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
                     }
                     catch (XPathException)
                     {
@@ -2176,7 +2170,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                    strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
+                    strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = "[" + strReturn + "]";
                 }
@@ -2209,12 +2203,12 @@ namespace Chummer.Backend.Equipment
             if (strESS.StartsWith("FixedValues"))
             {
                 string[] strValues = strESS.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                strESS = strValues[Math.Min(_intRating, strValues.Length) - 1];
+                strESS = strValues[Math.Min(Rating, strValues.Length) - 1];
             }
             if (strESS.Contains("Rating"))
             {
                 // If the cost is determined by the Rating, evaluate the expression.
-                strESS = strESS.Replace("Rating", _intRating.ToString());
+                strESS = strESS.Replace("Rating", Rating.ToString());
 
                 decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strESS), GlobalOptions.InvariantCultureInfo);
             }
@@ -2422,8 +2416,8 @@ namespace Chummer.Backend.Equipment
                 if (strCostExpression.StartsWith("FixedValues"))
                 {
                     string[] strValues = strCostExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
-                    if (_intRating > 0)
-                        strCostExpression = strValues[Math.Min(_intRating, strValues.Length) - 1].Trim("[]".ToArray());
+                    if (Rating > 0)
+                        strCostExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToArray());
                 }
 
                 string strParentCost = string.Empty;
@@ -2468,7 +2462,7 @@ namespace Chummer.Backend.Equipment
                     strCostExpression = strCostExpression.Replace("Gear Cost", decTotalGearCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalOptions.InvariantCultureInfo));
                     strCostExpression = strCostExpression.CheapReplace("MinRating", () => MinRating.ToString());
-                    strCostExpression = strCostExpression.Replace("Rating", _intRating.ToString());
+                    strCostExpression = strCostExpression.Replace("Rating", Rating.ToString());
 
                     decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCostExpression).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
