@@ -123,7 +123,7 @@ namespace Chummer
         public static void Load(string strLanguage, object objObject)
         {
             // _strLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-            if (string.IsNullOrEmpty(s_StrLanguage) && strLanguage != GlobalOptions.DefaultLanguage)
+            if (s_StrLanguage != strLanguage && strLanguage != GlobalOptions.DefaultLanguage)
             {
                 s_StrLanguage = strLanguage;
                 XmlDocument objLanguageDocument = new XmlDocument();
