@@ -62,6 +62,7 @@ Application Changes:
 - Fixed Essence usage displays in the 'ware tab not properly reflecting the setting for Essence decimals to which to round.
 - Fixed a bug where player names would not show up in the character roster.
 - Cyberware, Gear, Armor and Armor Mod Ratings are now properly bound by their Min and Max Ratings. May cause issues in career mode if you suddenly become Aged with cyberware or something, but eh. Baby steps.
+- Fixed a crash when adding multiple armor mods a given piece of armor in career mode.
 
 Data Changes:
 

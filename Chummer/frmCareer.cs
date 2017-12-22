@@ -8739,7 +8739,10 @@ namespace Chummer
 
                 treArmor.SelectedNode.Nodes.Add(objNode);
                 treArmor.SelectedNode.Expand();
-                treArmor.SelectedNode = objNode;
+                if (!blnAddAgain)
+                {
+                    treArmor.SelectedNode = objNode;
+                }
 
                 // Add any Weapons created by the Mod.
                 foreach (Weapon objWeapon in lstWeapons)
