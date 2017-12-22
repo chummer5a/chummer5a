@@ -274,18 +274,18 @@ namespace Chummer.Backend.Equipment
                     CostString = strTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
                     LP = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areamaximum", ref intTemp))
+                    AreaMaximum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsmaximum", ref intTemp))
+                    ComfortMaximum = intTemp;
+                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securitymaximum", ref intTemp))
+                    SecurityMaximum = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("area", ref intTemp))
-                    AreaCost = intTemp;
+                    Area = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comforts", ref intTemp))
-                    ComfortCost = intTemp;
+                    Comfort = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("security", ref intTemp))
-                    SecurityCost = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("areaminimum", ref intTemp))
-                    AreaMinimum = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("comfortsminimum", ref intTemp))
-                    ComfortMinimum = intTemp;
-                if (objLifestyleQualityNode.TryGetInt32FieldQuickly("securityminimum", ref intTemp))
-                    SecurityMinimum = intTemp;
+                    Security = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplier", ref intTemp))
                     Multiplier = intTemp;
                 if (objLifestyleQualityNode.TryGetInt32FieldQuickly("multiplierbaseonly", ref intTemp))
@@ -329,32 +329,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
+
         /// <summary>
         /// Source identifier that will be used to identify this Lifestyle Quality in data.
         /// </summary>
-        public string SourceID
-        {
-            get
-            {
-                return _SourceGuid.ToString();
-            }
-        }
+        public string SourceID => _SourceGuid.ToString();
+
         /// <summary>
         /// LifestyleQuality's name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -368,14 +355,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public Lifestyle ParentLifestyle
         {
-            get
-            {
-                return _objParentLifestyle;
-            }
-            set
-            {
-                _objParentLifestyle = value;
-            }
+            get => _objParentLifestyle;
+            set => _objParentLifestyle = value;
         }
 
         /// <summary>
@@ -383,14 +364,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -398,14 +373,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         public string SourceTooltip
@@ -432,10 +401,7 @@ namespace Chummer.Backend.Equipment
 
                 return _strPage;
             }
-            set
-            {
-                _strPage = value;
-            }
+            set => _strPage = value;
         }
 
         /// <summary>
@@ -443,40 +409,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
         /// LifestyleQuality Type.
         /// </summary>
-        public QualityType Type
-        {
-            get
-            {
-                return _objLifestyleQualityType;
-            }
-        }
+        public QualityType Type => _objLifestyleQualityType;
 
         /// <summary>
         /// Source of the LifestyleQuality.
         /// </summary>
         public QualitySource OriginSource
         {
-            get
-            {
-                return _objLifestyleQualitySource;
-            }
-            set
-            {
-                _objLifestyleQualitySource = value;
-            }
+            get => _objLifestyleQualitySource;
+            set => _objLifestyleQualitySource = value;
         }
 
         /// <summary>
@@ -484,14 +432,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int LP
         {
-            get
-            {
-                return Free ? 0 : _intLP;
-            }
-            set
-            {
-                _intLP = value;
-            }
+            get => Free ? 0 : _intLP;
+            set => _intLP = value;
         }
 
         /// <summary>
@@ -555,14 +497,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool AllowPrint
         {
-            get
-            {
-                return _blnPrint;
-            }
-            set
-            {
-                _blnPrint = value;
-            }
+            get => _blnPrint;
+            set => _blnPrint = value;
         }
 
         /// <summary>
@@ -570,14 +506,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -609,8 +539,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CostString
         {
-            get { return _strCost; }
-            set { _strCost = value; }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -618,8 +548,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Free
         {
-            get { return _blnFree || OriginSource == QualitySource.BuiltIn; }
-            set { _blnFree = value; }
+            get => _blnFree || OriginSource == QualitySource.BuiltIn;
+            set => _blnFree = value;
         }
 
         /// <summary>
@@ -643,32 +573,48 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Minimum level of Comfort that's necessary for the Quality to not cost Nuyen.
+        /// Comfort LP is increased/reduced by this Quality. 
         /// </summary>
-        public int ComfortMinimum { get; set; }
+        public int Comfort
+        {
+            get => _comfort;
+            set => _comfort = value;
+        }
 
         /// <summary>
-        /// Comfort LP Cost/Benefit of the Quality.
+        /// Comfort LP maximum is increased/reduced by this Quality. 
         /// </summary>
-        public int ComfortCost { get; set; }
+        public int ComfortMaximum
+        {
+            get => _comfortMaximum;
+            set => _comfortMaximum = value;
+        }
 
         /// <summary>
-        /// Security LP Cost/Benefit of the Quality.
+        /// Security LP value is increased/reduced by this Quality. 
         /// </summary>
-        public int SecurityCost { get; set; }
-        
+        public int SecurityMaximum
+        {
+            get => _securityMaximum;
+            set => _securityMaximum = value;
+        }
+
         /// <summary>
-        /// Minimum level of Security that's necessary for the Quality to not cost Nuyen.
+        /// Security LP value is increased/reduced by this Quality. 
         /// </summary>
-        public int SecurityMinimum { get; set; }
+        public int Security
+        {
+            get => _security;
+            set => _security= value;
+        }
 
         /// <summary>
         /// Percentage by which the quality increases the overall Lifestyle Cost.
         /// </summary>
         public int Multiplier
         {
-            get { return (Free || FreeByLifestyle) ? 0 : _intMultiplier; }
-            set { _intMultiplier = value; }
+            get => (Free || FreeByLifestyle) ? 0 : _intMultiplier;
+            set => _intMultiplier = value;
         }
 
         /// <summary>
@@ -676,8 +622,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int BaseMultiplier
         {
-            get { return (Free || FreeByLifestyle) ? 0 : _intBaseMultiplier; }
-            set { _intBaseMultiplier = value; }
+            get => (Free || FreeByLifestyle) ? 0 : _intBaseMultiplier;
+            set => _intBaseMultiplier = value;
         }
 
         /// <summary>
@@ -688,14 +634,29 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Area/Neighborhood LP Cost/Benefit of the Quality.
         /// </summary>
-        public int AreaCost { get; set; }
+        public int AreaMaximum
+        {
+            get => _areaMaximum;
+            set => _areaMaximum = value;
+        }
 
         /// <summary>
-        /// Minimum level of Area/Neighborhood that's necessary for the Quality to not cost Nuyen.
+        /// Area/Neighborhood minimum is increased/reduced by this Quality. 
         /// </summary>
-        public int AreaMinimum { get; set; }
+        public int Area
+        {
+            get => _area;
+            set => _area = value;
+        }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private int _area;
+        private int _comfort;
+        private int _security;
+        private int _areaMaximum;
+        private int _comfortMaximum;
+        private int _securityMaximum;
+
         public XmlNode MyXmlNode
         {
             get

@@ -48,6 +48,10 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>2</lp>
+      <costforarea>50</costforarea>
+      <costforcomforts>50</costforcomforts>
+      <costforsecurity>50</costforsecurity>
       <multiplier>20</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -60,6 +64,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>2</lp>
       <multiplier>40</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -72,6 +77,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>3</lp>
       <multiplier>60</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -85,6 +91,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>4</lp>
       <multiplier>100</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -99,6 +106,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>6</lp>
       <multiplier>500</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -113,6 +121,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>12</lp>
       <multiplier>1000</multiplier>
       <source>SR5</source>
       <page>369</page>
@@ -126,6 +135,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>4</lp>
       <multiplier>100</multiplier>
       <source>RF</source>
       <page>218</page>
@@ -138,6 +148,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>3</lp>
       <multiplier>0</multiplier>
       <source>RF</source>
       <page>216</page>
@@ -152,6 +163,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>0</lp>
       <multiplier>0</multiplier>
       <increment>day</increment>
       <source>SR5</source>
@@ -167,6 +179,7 @@
         <freegrid select="Local Grid">Grid Subscription</freegrid>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>0</lp>
       <multiplier>0</multiplier>
       <increment>day</increment>
       <source>SR5</source>
@@ -180,49 +193,12 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
+      <lp>2</lp>
       <multiplier>60</multiplier>
       <source>RF</source>
       <page>218</page>
     </lifestyle>
   </lifestyles>
-  <lifestylePoints>
-    <lifestylePoint>
-      <name>Bolt Hole</name>
-      <amount>3</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Street</name>
-      <amount>2</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Squatter</name>
-      <amount>2</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Low</name>
-      <amount>3</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Medium</name>
-      <amount>4</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>High</name>
-      <amount>6</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Luxury</name>
-      <amount>12</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Commercial</name>
-      <amount>4</amount>
-    </lifestylePoint>
-    <lifestylePoint>
-      <name>Traveler</name>
-      <amount>2</amount>
-    </lifestylePoint>
-  </lifestylePoints>
   <comforts>
     <comfort>
       <name>Bolt Hole</name>
