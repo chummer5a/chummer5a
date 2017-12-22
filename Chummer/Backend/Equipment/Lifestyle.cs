@@ -120,11 +120,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("percentage", _decPercentage.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("lifestylename", _strLifestyleName);
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
-            objWriter.WriteElementString("comforts", _intComforts.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("area", _intArea.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("comforts", _intComforts.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("security", _intSecurity.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("basearea", _intBaseArea.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("basecomforts", _intBaseComforts.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("basesecurity", _intBaseSecurity.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("entertainment", _intEntertainment.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("costforearea", _costForArea.ToString(CultureInfo.InvariantCulture));
@@ -183,11 +183,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("multiplier", ref _decMultiplier);
 
             objNode.TryGetInt32FieldQuickly("area", ref _intArea);
-            objNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
             objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
-            objNode.TryGetInt32FieldQuickly("basearea", ref _intArea);
-            objNode.TryGetInt32FieldQuickly("basesecurity", ref _intSecurity);
-            objNode.TryGetInt32FieldQuickly("basecomforts", ref _intComforts);
+            objNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
+            objNode.TryGetInt32FieldQuickly("basearea", ref _intBaseArea);
+            objNode.TryGetInt32FieldQuickly("basecomforts", ref _intBaseComforts);
+            objNode.TryGetInt32FieldQuickly("basesecurity", ref _intBaseSecurity);
             objNode.TryGetInt32FieldQuickly("costforarea", ref _costForArea);
             objNode.TryGetInt32FieldQuickly("costforcomforts", ref _costForComforts);
             objNode.TryGetInt32FieldQuickly("costforsecurity", ref _costForSecurity);
@@ -643,9 +643,44 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal TotalCost => TotalMonthlyCost * _intMonths;
 
-        public int TotalArea => BaseArea + Area + LifestyleQualities.Sum(lq => lq.AreaMinimum + lq.AreaValue);
-        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Sum(lq => lq.ComfortMinimum);
-        public int TotalSecurity => BaseArea + Area + LifestyleQualities.Sum(lq => lq.AreaMinimum + lq.AreaValue);
+        public decimal CostMultiplier
+        {
+            get
+            {
+                decimal d = (Roommates + Area + Comforts + Security) * 10;
+                d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
+                if (_objType == LifestyleType.Standard)
+                   d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
+                d += _lstLifestyleQualities.Sum(lq => lq.Multiplier);
+                return d;
+            }
+        }
+
+        /// <summary>
+        /// Total Area of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public int TotalArea => BaseArea + Area + LifestyleQualities.Sum(lq => lq.Area);
+
+        /// <summary>
+        /// Total Comfort of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public int TotalComforts => BaseComforts + Comforts + LifestyleQualities.Sum(lq => lq.Comfort);
+
+        /// <summary>
+        /// Total Security of the Lifestyle, including all Lifestyle qualities.
+        /// </summary>
+        public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Sum(lq => lq.Security);
+
+        /// <summary>
+        /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
+        /// </summary>
+        public decimal BaseCost => Cost * (CostMultiplier + BaseCostMultiplier / 100);
+
+        /// <summary>
+        /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has. 
+        /// </summary>
+        public decimal BaseCostMultiplier => Convert.ToDecimal(_lstLifestyleQualities.Sum(lq => lq.BaseMultiplier) / 100, GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
@@ -657,12 +692,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += Area * CostForArea;
                 decReturn += Comforts * CostForComforts;
                 decReturn += Security * CostForSecurity;
-                var decMultiplier = Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost), GlobalOptions.InvariantCultureInfo);
-                if (_objType == LifestyleType.Standard)
-                    decMultiplier += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
-                decimal decExtraMultiplierBaseOnly = 0;
 
-                var decBaseCost = Cost;
                 decimal decExtraAssetCost = 0;
                 decimal decContractCost = 0;
                 foreach (var objQuality in _lstLifestyleQualities)
@@ -672,29 +702,18 @@ namespace Chummer.Backend.Equipment
                         decContractCost += objQuality.Cost;
                     else
                         decExtraAssetCost += objQuality.Cost;
-                    //Add the percentage point modifiers from Qualities.
-                    decMultiplier += objQuality.Multiplier;
-                    //Add the percentage point modifiers from Qualities.
-                    decExtraMultiplierBaseOnly += objQuality.BaseMultiplier;
                 }
 
-                decMultiplier += _intRoommates * 10;
-                decMultiplier = 1 + Convert.ToDecimal(decMultiplier / 100, GlobalOptions.InvariantCultureInfo);
-                decExtraMultiplierBaseOnly = Convert.ToDecimal(decExtraMultiplierBaseOnly / 100, GlobalOptions.InvariantCultureInfo);
-
-                var decPercentage = _decPercentage / 100.0m;
-
-                var decBaseLifestyleCost = decBaseCost * (decMultiplier + decExtraMultiplierBaseOnly);
                 if (!_blnTrustFund)
                 {
-                    decReturn += decBaseLifestyleCost;
+                    decReturn += BaseCost;
                 }
-                decReturn += decExtraAssetCost * decMultiplier;
+                decReturn += decExtraAssetCost * CostMultiplier;
                 if (!PrimaryTenant)
                 {
                     decReturn /= _intRoommates + 1.0m;
                 }
-                decReturn *= decPercentage;
+                decReturn *= Percentage /100;
                 decReturn += decContractCost;
                 return decReturn;
             }
