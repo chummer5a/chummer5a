@@ -210,7 +210,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                objNode.TryGetBoolFieldQuickly("primarytenant", ref _blnTrustFund);
+                objNode.TryGetBoolFieldQuickly("primarytenant", ref _primaryTenant);
             }
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -241,23 +241,59 @@ namespace Chummer.Backend.Equipment
             {
                 _objType = ConverToLifestyleType(strtemp);
             }
-            LegacyShim();
+            LegacyShim(objNode);
         }
 
         /// <summary>
         /// Converts old lifestyle structures to new standards. 
         /// </summary>
-        private void LegacyShim()
+        private void LegacyShim(XmlNode n)
         {
-            //Lifestyles would previously store the entire calculated value of their cost as the Cost string. Better to have it be a volatile Complex Property. 
-            if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && !string.IsNullOrWhiteSpace(_strBaseLifestyle))
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property. 
+            if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && n["costforarea"] == null)
             {
                 var objXmlDocument = XmlManager.Load("lifestyles.xml");
                 var objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
-                Cost = Convert.ToInt32(objLifestyleQualityNode?["cost"]?.InnerText);
-                CostForArea = Convert.ToInt32(objLifestyleQualityNode?["costforarea"]?.InnerText);
-                CostForComforts = Convert.ToInt32(objLifestyleQualityNode?["costforcomforts"]?.InnerText);
-                CostForSecurity = Convert.ToInt32(objLifestyleQualityNode?["costforsecurity"]?.InnerText);
+                if (objLifestyleQualityNode?["costforarea"] != null)
+                {
+                    Cost = Convert.ToInt32(objLifestyleQualityNode["cost"]?.InnerText);
+                    CostForArea = Convert.ToInt32(objLifestyleQualityNode["costforarea"]?.InnerText);
+                    CostForComforts = Convert.ToInt32(objLifestyleQualityNode["costforcomforts"]?.InnerText);
+                    CostForSecurity = Convert.ToInt32(objLifestyleQualityNode["costforsecurity"]?.InnerText);
+                }
+
+                int intMinArea = 0;
+                int intMinComfort = 0;
+                int intMinSec = 0;
+
+                // Calculate the limits of the 3 aspects.
+                // Area.
+                XmlNode objXmlNode = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + _strBaseLifestyle + "\"]");
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
+                BaseArea = intMinArea;
+                // Comforts.
+                objXmlNode = objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + _strBaseLifestyle + "\"]");
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
+                BaseComforts = intMinComfort;
+                // Security.
+                objXmlNode = objXmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + _strBaseLifestyle + "\"]");
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
+                BaseSecurity = intMinSec;
+
+                n.TryGetInt32FieldQuickly("area", ref intMinArea);
+                n.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
+                n.TryGetInt32FieldQuickly("security", ref intMinSec);
+
+                // Calculate the cost of Positive Qualities.
+                foreach (LifestyleQuality objQuality in LifestyleQualities)
+                {
+                    intMinArea -= objQuality.Area;
+                    intMinComfort -= objQuality.Comfort;
+                    intMinSec -= objQuality.Security;
+                }
+                Area = Math.Max(intMinArea - BaseArea, 0);
+                Comforts = Math.Max(intMinComfort - BaseComforts, 0);
+                Security = Math.Max(intMinSec - BaseSecurity, 0);
             }
         }
 
@@ -652,7 +688,7 @@ namespace Chummer.Backend.Equipment
                 if (_objType == LifestyleType.Standard)
                    d += Convert.ToDecimal(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost), GlobalOptions.InvariantCultureInfo);
                 d += _lstLifestyleQualities.Sum(lq => lq.Multiplier);
-                return d;
+                return d / 100;
             }
         }
 
@@ -674,7 +710,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base cost of the Lifestyle itself, including all multipliers from Improvements, qualities and upgraded attributes.
         /// </summary>
-        public decimal BaseCost => Cost * (CostMultiplier + BaseCostMultiplier / 100);
+        public decimal BaseCost => Cost * Math.Max(CostMultiplier + BaseCostMultiplier, 1);
 
         /// <summary>
         /// Base Cost Multiplier from any Lifestyle Qualities the Lifestyle has. 
