@@ -56,6 +56,10 @@ Application Changes:
 - Fixed issues regarding undoing expenses involving weapon mounts, armor, and/or armor mods.
 - Fixed issues with refunding lifestyle expenses if a character has two or more lifestyles of the same type/level.
 - Added support to use attributes and XPath expressions in a weapon's AP field.
+- Added a label in Create mode that becomes visible when a character has Prototype Transhuman. This label tracks the current amount of essence used up by 'ware marked as Prototype Transhuman. Fixes #1764.
+- Fixed being able to mark 'ware children as Prototype Transhuman independently from the main 'ware itself.
+- Fixed being able to mark Cyberware as Prototype Transhuman.
+- Fixed Essence usage displays in the 'ware tab not properly reflecting the setting for Essence decimals to which to round.
 
 Data Changes:
 
@@ -73,6 +77,7 @@ Data Changes:
 New Strings:
 
 - Menu_Main_Translator
+- Label_PrototypeTranshuman
 
 Build 196
 

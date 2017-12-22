@@ -7348,7 +7348,11 @@ namespace Chummer
             }
             set
             {
-                _decPrototypeTranshuman = value;
+                if (_decPrototypeTranshuman != value)
+                {
+                    _decPrototypeTranshuman = value;
+                    PrototypeTranshumanChanged?.Invoke(this);
+                }
             }
         }
 

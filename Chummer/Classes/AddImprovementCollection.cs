@@ -2572,7 +2572,6 @@ namespace Chummer.Classes
 
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
             _objCharacter.PrototypeTranshuman = Convert.ToDecimal(bonusNode.InnerText);
-
         }
 
         // Check for Friends In High Places modifiers.

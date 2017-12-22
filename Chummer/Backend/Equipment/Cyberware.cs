@@ -1898,8 +1898,16 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool PrototypeTranshuman
         {
-            get { return _blnPrototypeTranshuman; }
-            set { _blnPrototypeTranshuman = value; }
+            get
+            {
+                return _blnPrototypeTranshuman && _objCharacter.PrototypeTranshuman > 0;
+            }
+            set
+            {
+                _blnPrototypeTranshuman = value;
+                foreach (Cyberware objCyberware in Children)
+                    objCyberware.PrototypeTranshuman = value;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode = null;

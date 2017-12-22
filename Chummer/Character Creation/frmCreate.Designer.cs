@@ -886,6 +886,8 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblPrototypeTranshumanESSLabel = new System.Windows.Forms.Label();
+            this.lblPrototypeTranshumanESS = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -5054,6 +5056,8 @@ namespace Chummer
             // tabCyberware
             // 
             this.tabCyberware.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.tabCyberware.Controls.Add(this.lblPrototypeTranshumanESS);
+            this.tabCyberware.Controls.Add(this.lblPrototypeTranshumanESSLabel);
             this.tabCyberware.Controls.Add(this.chkCyberwareActiveCommlink);
             this.tabCyberware.Controls.Add(this.chkCyberwareHomeNode);
             this.tabCyberware.Controls.Add(this.cmdCyberwareChangeMount);
@@ -5111,7 +5115,7 @@ namespace Chummer
             // chkCyberwareActiveCommlink
             // 
             this.chkCyberwareActiveCommlink.AutoSize = true;
-            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(685, 275);
+            this.chkCyberwareActiveCommlink.Location = new System.Drawing.Point(685, 316);
             this.chkCyberwareActiveCommlink.Name = "chkCyberwareActiveCommlink";
             this.chkCyberwareActiveCommlink.Size = new System.Drawing.Size(104, 17);
             this.chkCyberwareActiveCommlink.TabIndex = 247;
@@ -5124,7 +5128,7 @@ namespace Chummer
             // chkCyberwareHomeNode
             // 
             this.chkCyberwareHomeNode.AutoSize = true;
-            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(593, 275);
+            this.chkCyberwareHomeNode.Location = new System.Drawing.Point(593, 316);
             this.chkCyberwareHomeNode.Name = "chkCyberwareHomeNode";
             this.chkCyberwareHomeNode.Size = new System.Drawing.Size(83, 17);
             this.chkCyberwareHomeNode.TabIndex = 246;
@@ -5150,7 +5154,7 @@ namespace Chummer
             // chkPrototypeTranshuman
             // 
             this.chkPrototypeTranshuman.AutoSize = true;
-            this.chkPrototypeTranshuman.Location = new System.Drawing.Point(598, 57);
+            this.chkPrototypeTranshuman.Location = new System.Drawing.Point(598, 58);
             this.chkPrototypeTranshuman.Name = "chkPrototypeTranshuman";
             this.chkPrototypeTranshuman.Size = new System.Drawing.Size(133, 17);
             this.chkPrototypeTranshuman.TabIndex = 226;
@@ -5204,7 +5208,7 @@ namespace Chummer
             // lblCyberFirewall
             // 
             this.lblCyberFirewall.AutoSize = true;
-            this.lblCyberFirewall.Location = new System.Drawing.Point(752, 304);
+            this.lblCyberFirewall.Location = new System.Drawing.Point(752, 345);
             this.lblCyberFirewall.Name = "lblCyberFirewall";
             this.lblCyberFirewall.Size = new System.Drawing.Size(19, 13);
             this.lblCyberFirewall.TabIndex = 175;
@@ -5214,7 +5218,7 @@ namespace Chummer
             // lblCyberFirewallLabel
             // 
             this.lblCyberFirewallLabel.AutoSize = true;
-            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(705, 304);
+            this.lblCyberFirewallLabel.Location = new System.Drawing.Point(705, 345);
             this.lblCyberFirewallLabel.Name = "lblCyberFirewallLabel";
             this.lblCyberFirewallLabel.Size = new System.Drawing.Size(45, 13);
             this.lblCyberFirewallLabel.TabIndex = 174;
@@ -5225,7 +5229,7 @@ namespace Chummer
             // lblCyberDataProcessing
             // 
             this.lblCyberDataProcessing.AutoSize = true;
-            this.lblCyberDataProcessing.Location = new System.Drawing.Point(680, 304);
+            this.lblCyberDataProcessing.Location = new System.Drawing.Point(680, 345);
             this.lblCyberDataProcessing.Name = "lblCyberDataProcessing";
             this.lblCyberDataProcessing.Size = new System.Drawing.Size(19, 13);
             this.lblCyberDataProcessing.TabIndex = 173;
@@ -5235,7 +5239,7 @@ namespace Chummer
             // lblCyberDataProcessingLabel
             // 
             this.lblCyberDataProcessingLabel.AutoSize = true;
-            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(586, 304);
+            this.lblCyberDataProcessingLabel.Location = new System.Drawing.Point(586, 345);
             this.lblCyberDataProcessingLabel.Name = "lblCyberDataProcessingLabel";
             this.lblCyberDataProcessingLabel.Size = new System.Drawing.Size(88, 13);
             this.lblCyberDataProcessingLabel.TabIndex = 172;
@@ -5246,7 +5250,7 @@ namespace Chummer
             // lblCyberSleaze
             // 
             this.lblCyberSleaze.AutoSize = true;
-            this.lblCyberSleaze.Location = new System.Drawing.Point(561, 304);
+            this.lblCyberSleaze.Location = new System.Drawing.Point(561, 345);
             this.lblCyberSleaze.Name = "lblCyberSleaze";
             this.lblCyberSleaze.Size = new System.Drawing.Size(19, 13);
             this.lblCyberSleaze.TabIndex = 171;
@@ -5256,7 +5260,7 @@ namespace Chummer
             // lblCyberSleazeLabel
             // 
             this.lblCyberSleazeLabel.AutoSize = true;
-            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(514, 304);
+            this.lblCyberSleazeLabel.Location = new System.Drawing.Point(514, 345);
             this.lblCyberSleazeLabel.Name = "lblCyberSleazeLabel";
             this.lblCyberSleazeLabel.Size = new System.Drawing.Size(42, 13);
             this.lblCyberSleazeLabel.TabIndex = 170;
@@ -5267,7 +5271,7 @@ namespace Chummer
             // lblCyberAttack
             // 
             this.lblCyberAttack.AutoSize = true;
-            this.lblCyberAttack.Location = new System.Drawing.Point(489, 304);
+            this.lblCyberAttack.Location = new System.Drawing.Point(489, 345);
             this.lblCyberAttack.Name = "lblCyberAttack";
             this.lblCyberAttack.Size = new System.Drawing.Size(19, 13);
             this.lblCyberAttack.TabIndex = 169;
@@ -5277,7 +5281,7 @@ namespace Chummer
             // lblCyberAttackLabel
             // 
             this.lblCyberAttackLabel.AutoSize = true;
-            this.lblCyberAttackLabel.Location = new System.Drawing.Point(442, 304);
+            this.lblCyberAttackLabel.Location = new System.Drawing.Point(442, 345);
             this.lblCyberAttackLabel.Name = "lblCyberAttackLabel";
             this.lblCyberAttackLabel.Size = new System.Drawing.Size(41, 13);
             this.lblCyberAttackLabel.TabIndex = 168;
@@ -5288,7 +5292,7 @@ namespace Chummer
             // lblCyberDeviceRating
             // 
             this.lblCyberDeviceRating.AutoSize = true;
-            this.lblCyberDeviceRating.Location = new System.Drawing.Point(408, 304);
+            this.lblCyberDeviceRating.Location = new System.Drawing.Point(408, 345);
             this.lblCyberDeviceRating.Name = "lblCyberDeviceRating";
             this.lblCyberDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblCyberDeviceRating.TabIndex = 167;
@@ -5298,7 +5302,7 @@ namespace Chummer
             // lblCyberDeviceRatingLabel
             // 
             this.lblCyberDeviceRatingLabel.AutoSize = true;
-            this.lblCyberDeviceRatingLabel.Location = new System.Drawing.Point(309, 304);
+            this.lblCyberDeviceRatingLabel.Location = new System.Drawing.Point(309, 345);
             this.lblCyberDeviceRatingLabel.Name = "lblCyberDeviceRatingLabel";
             this.lblCyberDeviceRatingLabel.Size = new System.Drawing.Size(78, 13);
             this.lblCyberDeviceRatingLabel.TabIndex = 166;
@@ -5309,7 +5313,7 @@ namespace Chummer
             // lblEssenceHoleESS
             // 
             this.lblEssenceHoleESS.AutoSize = true;
-            this.lblEssenceHoleESS.Location = new System.Drawing.Point(386, 269);
+            this.lblEssenceHoleESS.Location = new System.Drawing.Point(432, 269);
             this.lblEssenceHoleESS.Name = "lblEssenceHoleESS";
             this.lblEssenceHoleESS.Size = new System.Drawing.Size(19, 13);
             this.lblEssenceHoleESS.TabIndex = 61;
@@ -5338,7 +5342,7 @@ namespace Chummer
             // lblBiowareESS
             // 
             this.lblBiowareESS.AutoSize = true;
-            this.lblBiowareESS.Location = new System.Drawing.Point(386, 246);
+            this.lblBiowareESS.Location = new System.Drawing.Point(432, 246);
             this.lblBiowareESS.Name = "lblBiowareESS";
             this.lblBiowareESS.Size = new System.Drawing.Size(19, 13);
             this.lblBiowareESS.TabIndex = 58;
@@ -5347,7 +5351,7 @@ namespace Chummer
             // lblCyberwareESS
             // 
             this.lblCyberwareESS.AutoSize = true;
-            this.lblCyberwareESS.Location = new System.Drawing.Point(386, 223);
+            this.lblCyberwareESS.Location = new System.Drawing.Point(432, 223);
             this.lblCyberwareESS.Name = "lblCyberwareESS";
             this.lblCyberwareESS.Size = new System.Drawing.Size(19, 13);
             this.lblCyberwareESS.TabIndex = 57;
@@ -5376,7 +5380,7 @@ namespace Chummer
             // lblCyberwareSource
             // 
             this.lblCyberwareSource.AutoSize = true;
-            this.lblCyberwareSource.Location = new System.Drawing.Point(387, 151);
+            this.lblCyberwareSource.Location = new System.Drawing.Point(432, 151);
             this.lblCyberwareSource.Name = "lblCyberwareSource";
             this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
             this.lblCyberwareSource.TabIndex = 48;
@@ -5436,9 +5440,9 @@ namespace Chummer
             this.cboCyberwareGrade.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCyberwareGrade.Enabled = false;
             this.cboCyberwareGrade.FormattingEnabled = true;
-            this.cboCyberwareGrade.Location = new System.Drawing.Point(390, 79);
+            this.cboCyberwareGrade.Location = new System.Drawing.Point(435, 79);
             this.cboCyberwareGrade.Name = "cboCyberwareGrade";
-            this.cboCyberwareGrade.Size = new System.Drawing.Size(188, 21);
+            this.cboCyberwareGrade.Size = new System.Drawing.Size(143, 21);
             this.cboCyberwareGrade.TabIndex = 43;
             this.cboCyberwareGrade.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareGrade_SelectedIndexChanged);
             // 
@@ -5474,7 +5478,7 @@ namespace Chummer
             // lblCyberwareAvail
             // 
             this.lblCyberwareAvail.AutoSize = true;
-            this.lblCyberwareAvail.Location = new System.Drawing.Point(387, 128);
+            this.lblCyberwareAvail.Location = new System.Drawing.Point(432, 128);
             this.lblCyberwareAvail.Name = "lblCyberwareAvail";
             this.lblCyberwareAvail.Size = new System.Drawing.Size(36, 13);
             this.lblCyberwareAvail.TabIndex = 39;
@@ -5522,7 +5526,7 @@ namespace Chummer
             // lblCyberwareEssence
             // 
             this.lblCyberwareEssence.AutoSize = true;
-            this.lblCyberwareEssence.Location = new System.Drawing.Point(387, 105);
+            this.lblCyberwareEssence.Location = new System.Drawing.Point(432, 105);
             this.lblCyberwareEssence.Name = "lblCyberwareEssence";
             this.lblCyberwareEssence.Size = new System.Drawing.Size(34, 13);
             this.lblCyberwareEssence.TabIndex = 34;
@@ -5541,7 +5545,7 @@ namespace Chummer
             // lblCyberwareCategory
             // 
             this.lblCyberwareCategory.AutoSize = true;
-            this.lblCyberwareCategory.Location = new System.Drawing.Point(387, 59);
+            this.lblCyberwareCategory.Location = new System.Drawing.Point(432, 59);
             this.lblCyberwareCategory.Name = "lblCyberwareCategory";
             this.lblCyberwareCategory.Size = new System.Drawing.Size(55, 13);
             this.lblCyberwareCategory.TabIndex = 32;
@@ -5560,7 +5564,7 @@ namespace Chummer
             // lblCyberwareName
             // 
             this.lblCyberwareName.AutoSize = true;
-            this.lblCyberwareName.Location = new System.Drawing.Point(387, 36);
+            this.lblCyberwareName.Location = new System.Drawing.Point(432, 36);
             this.lblCyberwareName.Name = "lblCyberwareName";
             this.lblCyberwareName.Size = new System.Drawing.Size(41, 13);
             this.lblCyberwareName.TabIndex = 30;
@@ -10121,6 +10125,25 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
+            // lblPrototypeTranshumanESSLabel
+            // 
+            this.lblPrototypeTranshumanESSLabel.AutoSize = true;
+            this.lblPrototypeTranshumanESSLabel.Location = new System.Drawing.Point(309, 291);
+            this.lblPrototypeTranshumanESSLabel.Name = "lblPrototypeTranshumanESSLabel";
+            this.lblPrototypeTranshumanESSLabel.Size = new System.Drawing.Size(117, 13);
+            this.lblPrototypeTranshumanESSLabel.TabIndex = 248;
+            this.lblPrototypeTranshumanESSLabel.Tag = "Label_PrototypeTranshuman";
+            this.lblPrototypeTranshumanESSLabel.Text = "Prototype Transhuman:";
+            // 
+            // lblPrototypeTranshumanESS
+            // 
+            this.lblPrototypeTranshumanESS.AutoSize = true;
+            this.lblPrototypeTranshumanESS.Location = new System.Drawing.Point(432, 291);
+            this.lblPrototypeTranshumanESS.Name = "lblPrototypeTranshumanESS";
+            this.lblPrototypeTranshumanESS.Size = new System.Drawing.Size(19, 13);
+            this.lblPrototypeTranshumanESS.TabIndex = 249;
+            this.lblPrototypeTranshumanESS.Text = "[0]";
+            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -11088,5 +11111,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkVehicleActiveCommlink;
         private System.Windows.Forms.CheckBox chkCyberwareActiveCommlink;
         private System.Windows.Forms.CheckBox chkCyberwareHomeNode;
+        private System.Windows.Forms.Label lblPrototypeTranshumanESSLabel;
+        private System.Windows.Forms.Label lblPrototypeTranshumanESS;
     }
 }

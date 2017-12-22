@@ -18696,29 +18696,33 @@ namespace Chummer
             if (!CharacterObject.RefreshRedliner())
                 RefreshSelectedCyberware();
 
+            int intESSDecimals = CharacterObject.Options.EssenceDecimals;
+            StringBuilder objESSFormat = new StringBuilder("#,0");
+            if (intESSDecimals > 0)
+            {
+                objESSFormat.Append('.');
+                for (int i = 0; i < intESSDecimals; ++i)
+                    objESSFormat.Append('0');
+            }
+            string strESSFormat = objESSFormat.ToString();
+
             decimal decESS = CharacterObject.Essence;
-            decimal decRoundedESS = decimal.Round(decESS, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+            decimal decRoundedESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
             if (!CharacterObject.Options.DontRoundEssenceInternally)
                 decESS = decRoundedESS;
-            lblESSMax.Text = decRoundedESS.ToString(GlobalOptions.CultureInfo);
+            lblESSMax.Text = decRoundedESS.ToString(strESSFormat, GlobalOptions.CultureInfo);
             tssEssence.Text = lblESSMax.Text;
 
-            lblCyberwareESS.Text =
-                decimal.Round(CharacterObject.CyberwareEssence, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero)
-                    .ToString(GlobalOptions.CultureInfo);
-            lblBiowareESS.Text =
-                decimal.Round(CharacterObject.BiowareEssence, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero)
-                    .ToString(GlobalOptions.CultureInfo);
-            lblEssenceHoleESS.Text =
-                decimal.Round(CharacterObject.EssenceHole, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero)
-                    .ToString(GlobalOptions.CultureInfo);
+            lblCyberwareESS.Text = decimal.Round(CharacterObject.CyberwareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblBiowareESS.Text = decimal.Round(CharacterObject.BiowareEssence, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
+            lblEssenceHoleESS.Text = decimal.Round(CharacterObject.EssenceHole, intESSDecimals, MidpointRounding.AwayFromZero).ToString(strESSFormat, GlobalOptions.CultureInfo);
 
             // Reduce a character's MAG and RES from Essence Loss.
             int intMetatypeMaximumESS = CharacterObject.ESS.MetatypeMaximum;
             int intReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESS));
             decimal decESSMag = CharacterObject.Essence + CharacterObject.EssencePenalty - CharacterObject.EssencePenaltyMAG;
             if (!CharacterObject.Options.DontRoundEssenceInternally)
-                decESSMag = decimal.Round(decESSMag, CharacterObject.Options.EssenceDecimals, MidpointRounding.AwayFromZero);
+                decESSMag = decimal.Round(decESSMag, intESSDecimals, MidpointRounding.AwayFromZero);
             int intMagReduction = intMetatypeMaximumESS - decimal.ToInt32(decimal.Floor(decESSMag));
 
             // Remove any Improvements from MAG and RES from Essence Loss.
