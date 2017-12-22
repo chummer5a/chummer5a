@@ -725,7 +725,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteEndElement();
             }
 
-            Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
+            IDictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
             objWriter.WriteElementString("name", Range);
@@ -3220,7 +3220,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture)
+        public IDictionary<string, string> GetRangeStrings(CultureInfo objCulture)
         {
             int intRangeModifier = RangeBonus + 100;
             int intMin = GetRange("min", false);

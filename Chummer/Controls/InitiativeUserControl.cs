@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class InitiativeUserControl : UserControl
+    public sealed partial class InitiativeUserControl : UserControl
     {
         #region Properties
         /// <summary>

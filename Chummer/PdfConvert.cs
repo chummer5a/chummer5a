@@ -48,8 +48,8 @@ namespace Codaxy.WkHtmlToPdf
         public String FooterCenter { get; set; }
         public String FooterRight { get; set; }
         public object State { get; set; }
-        public Dictionary<String, String> Cookies { get; } = new Dictionary<string, string>();
-        public Dictionary<String, String> ExtraParams { get; } = new Dictionary<string, string>();
+        public IDictionary<String, String> Cookies { get; } = new Dictionary<string, string>();
+        public IDictionary<String, String> ExtraParams { get; } = new Dictionary<string, string>();
         public String HeaderFontSize { get; set; }
         public String FooterFontSize { get; set; }
         public String HeaderFontName { get; set; }

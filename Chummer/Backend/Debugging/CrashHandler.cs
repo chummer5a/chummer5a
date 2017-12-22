@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Security;
 
-namespace Chummer.Backend.Debugging
+namespace Chummer.Backend
 {
     public static class CrashHandler
     {
@@ -44,9 +44,9 @@ namespace Chummer.Backend.Debugging
                 attributes.Add("visible-build-type",
                     #if DEBUG
                     "DEBUG"
-#else
+                    #else
                     "RELEASE"
-#endif
+                    #endif
                     );
                 attributes.Add("commandline", Environment.CommandLine);
                 attributes.Add("visible-version", Application.ProductVersion);
@@ -107,7 +107,7 @@ namespace Chummer.Backend.Debugging
             }
         }
 
-        internal static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex)
         {
             try
             {

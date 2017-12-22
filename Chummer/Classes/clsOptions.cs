@@ -707,7 +707,7 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static HashSet<SourcebookInfo> SourcebookInfo
+        public static ICollection<SourcebookInfo> SourcebookInfo
         {
             get
             {
@@ -764,7 +764,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static List<CustomDataDirectoryInfo> CustomDataDirectoryInfo
+        public static IList<CustomDataDirectoryInfo> CustomDataDirectoryInfo
         {
             get
             {

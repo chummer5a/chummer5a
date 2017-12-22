@@ -289,7 +289,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class ControlWithMetaData
+        private sealed class ControlWithMetaData
         {
             public TType Item { get; }
 
@@ -388,7 +388,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class IndexComparer : IComparer<TType>
+        private sealed class IndexComparer : IComparer<TType>
         {
             private Dictionary<TType, int> _index;
 

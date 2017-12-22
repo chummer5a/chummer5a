@@ -14601,7 +14601,7 @@ namespace Chummer
                 // Show the Weapon Ranges.
                 lblWeaponRangeMain.Text = objWeapon.Range;
                 lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                 lblWeaponRangeShort.Text = dictionaryRanges["short"];
                 lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                 lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -14659,7 +14659,7 @@ namespace Chummer
                     // Show the Weapon Ranges.
                     lblWeaponRangeMain.Text = objWeapon.Range;
                     lblWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                    Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                    IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                     lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -14805,7 +14805,7 @@ namespace Chummer
                         // Show the Weapon Ranges.
                         lblWeaponRangeMain.Text = objSelectedWeapon.Range;
                         lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -16553,7 +16553,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -16667,7 +16667,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -16969,7 +16969,7 @@ namespace Chummer
 
                         lblVehicleWeaponRangeMain.Text = objWeapon.Range;
                         lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange;
-                        Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];

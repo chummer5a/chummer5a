@@ -25,8 +25,7 @@ using System.Linq;
  using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows.Forms;
-﻿using Chummer.Backend.Debugging;
-﻿using Chummer.Debugging;
+﻿using Chummer.Backend;
 
 [assembly: CLSCompliant(true)]
 namespace Chummer

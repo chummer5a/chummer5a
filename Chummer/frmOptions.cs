@@ -1514,7 +1514,7 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToRaise = null;
-                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
+                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
                 for(;intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {
@@ -1544,7 +1544,7 @@ namespace Chummer
             if (objSelectedCustomDataDirectory != null)
             {
                 CustomDataDirectoryInfo objInfoToLower = null;
-                List<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
+                IList<CustomDataDirectoryInfo> lstCustomDataDirectoryInfos = GlobalOptions.CustomDataDirectoryInfo;
                 int intIndex = 0;
                 for (; intIndex < lstCustomDataDirectoryInfos.Count; ++intIndex)
                 {
