@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectItem()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 

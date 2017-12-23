@@ -54,7 +54,7 @@ namespace Chummer
         {
             InitializeComponent();
             UpdateTabs();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             frmInitative = new frmInitiative();
             frmInitative.Hide();
             VisibleChanged += frmGMDashboard_VisibleChanged;

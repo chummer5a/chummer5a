@@ -21,7 +21,7 @@ namespace Chummer
             _objSkill = skill;
             _objCharacter = skill.CharacterObject;
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
             _objXmlDocument = XmlManager.Load("skills.xml");
         }

@@ -31,14 +31,14 @@ namespace Chummer
         public frmSelectCalendarStart()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             nudYear.Value = objWeek.Year;

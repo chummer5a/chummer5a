@@ -225,7 +225,7 @@ namespace Chummer
             else
                 Load("default.xml");
             // Load the language file.
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         /// <summary>

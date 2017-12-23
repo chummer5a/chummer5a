@@ -428,7 +428,7 @@ namespace Chummer
         public frmOmae(frmChummerMain frmMainForm)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _frmMain = frmMainForm;
 
             NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);

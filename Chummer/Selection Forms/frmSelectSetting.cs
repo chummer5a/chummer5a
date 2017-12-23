@@ -32,7 +32,7 @@ namespace Chummer
         public frmSelectSetting()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 

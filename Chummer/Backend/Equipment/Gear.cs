@@ -695,14 +695,14 @@ namespace Chummer.Backend.Equipment
             // Legacy shim
             if (string.IsNullOrEmpty(_strAvail) && (objNode["avail3"] != null || objNode["avail6"] != null || objNode["avail10"] != null))
             {
-                GetNode().TryGetStringFieldQuickly("avail", ref _strAvail);
+                GetNode()?.TryGetStringFieldQuickly("avail", ref _strAvail);
             }
             objNode.TryGetDecFieldQuickly("costfor", ref _decCostFor);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             // Legacy shim
             if (string.IsNullOrEmpty(_strCost) && (objNode["cost3"] != null || objNode["cost6"] != null || objNode["cost10"] != null))
             {
-                GetNode().TryGetStringFieldQuickly("cost", ref _strCost);
+                GetNode()?.TryGetStringFieldQuickly("cost", ref _strCost);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             if (_strExtra == "Hold-Outs")
@@ -769,10 +769,10 @@ namespace Chummer.Backend.Equipment
                         objNuyenGear.Quantity = Rating;
                         _objChildren.Add(objNuyenGear);
                     }
-                    GetNode().TryGetInt32FieldQuickly("rating", ref _intMaxRating);
-                    GetNode().TryGetInt32FieldQuickly("minrating", ref _intMinRating);
+                    GetNode()?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+                    GetNode()?.TryGetInt32FieldQuickly("minrating", ref _intMinRating);
                     Rating = Math.Max(Math.Min(0, _intMaxRating), _intMinRating);
-                    GetNode().TryGetStringFieldQuickly("capacity", ref _strCapacity);
+                    GetNode()?.TryGetStringFieldQuickly("capacity", ref _strCapacity);
                 }
             }
 
@@ -1368,7 +1368,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -1895,18 +1895,31 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
-                return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
-            if (_objCachedMyXmlNode == null)
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
-                if (_objCachedMyXmlNode == null)
+                XmlDocument objDoc = XmlManager.Load("gear.xml", strLanguage);
+                if (objDoc != null)
                 {
-                    _objCachedMyXmlNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(id = \"" + _SourceGuid + "\") or (name = \"" + Name + "\" and category = \"" + Category + "\")]");
+                    if (_objCachedMyXmlNode == null)
+                    {
+                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[(name = \"" + Name + "\")]");
+                        if (_objCachedMyXmlNode == null)
+                        {
+                            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, \"" + Name + "\")]");
+                        }
+                    }
                 }
+                _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
         }
@@ -2359,7 +2372,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>

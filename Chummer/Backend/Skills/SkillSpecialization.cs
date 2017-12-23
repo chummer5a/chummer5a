@@ -80,14 +80,24 @@ namespace Chummer.Backend.Skills
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?.Attributes?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = _objParent?.GetNode()?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = _objParent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
 

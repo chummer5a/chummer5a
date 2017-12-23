@@ -53,7 +53,7 @@ namespace Chummer
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             _objMetatypeDocument = XmlManager.Load("metatypes.xml");

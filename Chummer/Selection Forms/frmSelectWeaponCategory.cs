@@ -36,7 +36,7 @@ namespace Chummer
         public frmSelectWeaponCategory()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("weapons.xml");
         }
 

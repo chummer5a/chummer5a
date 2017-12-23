@@ -57,7 +57,7 @@ namespace Chummer
         public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             _objMetamagicDocument = XmlManager.Load("metamagic.xml");

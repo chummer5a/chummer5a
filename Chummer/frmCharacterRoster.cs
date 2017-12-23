@@ -20,7 +20,7 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             GlobalOptions.MRUChanged += PopulateCharacterList;
             treCharacterList.ItemDrag += treCharacterList_ItemDrag;

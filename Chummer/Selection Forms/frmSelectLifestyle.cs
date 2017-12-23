@@ -43,7 +43,7 @@ namespace Chummer
         public frmSelectLifestyle(Lifestyle objLifestyle, Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             MoveControls();

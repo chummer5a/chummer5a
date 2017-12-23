@@ -65,7 +65,7 @@ namespace Chummer
             Text += " DEBUG BUILD";
 #endif
 
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             /** Dashboard **/
             //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;

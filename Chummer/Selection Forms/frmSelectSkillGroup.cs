@@ -35,7 +35,7 @@ namespace Chummer
         public frmSelectSkillGroup()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 

@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
@@ -163,7 +163,7 @@ namespace Chummer
             }
 
             _selectedId = (string)e.Node.Tag;
-            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable(_selectedId);
+            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
             if (selectedNodeInfo != null)
             {
@@ -190,7 +190,7 @@ namespace Chummer
 
         public XmlNode SelectedNode
         {
-            get { return Quality.GetNodeOverrideable(_selectedId); }
+            get { return Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language)); }
         }
 
         private void treModules_DoubleClick(object sender, EventArgs e)

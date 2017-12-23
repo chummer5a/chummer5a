@@ -33,7 +33,7 @@ namespace Chummer
         public frmSelectAttribute()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
             _lstAttributes = new List<ListItem>

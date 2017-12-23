@@ -77,7 +77,7 @@ namespace Chummer
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.Translate(GlobalOptions.Language, null);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 sw.TaskEnd("languagefreestartup");
 #if !DEBUG
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>

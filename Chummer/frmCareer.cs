@@ -91,7 +91,7 @@ namespace Chummer
 
             GlobalOptions.MRUChanged += DoNothing;
             Program.MainForm.OpenCharacterForms.Add(this);
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
             {
@@ -19229,7 +19229,7 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblCyberwareSource, CharacterObjectOptions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
-                lblCyberwareGrade.Text = objCyberware.Grade.DisplayName;
+                lblCyberwareGrade.Text = objCyberware.Grade.DisplayName(GlobalOptions.Language);
 
                 if (objCyberware.Category.Equals("Cyberlimb"))
                 {

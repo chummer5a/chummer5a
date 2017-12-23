@@ -817,7 +817,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -899,7 +899,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
-            return XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]")?.Attributes?["translate"]?.InnerText ?? AmmoCategory;
+            return XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]")?.Attributes?["translate"]?.InnerText ?? AmmoCategory;
         }
 
         /// <summary>
@@ -1183,7 +1183,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         public Weapon Parent { get; set; } = null;
@@ -1362,10 +1362,20 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
         #endregion

@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             if (objLimitModifier != null)
             {
                 txtName.Text = objLimitModifier.Name;

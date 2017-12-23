@@ -590,7 +590,7 @@ namespace Chummer.Backend.Skills
                 return -1;
             }
 
-            return string.Compare(rhs.DisplayName(GlobalOptions.Language), lhs.DisplayName(GlobalOptions.Language), StringComparison.Ordinal);
+            return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
         public static IList<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")

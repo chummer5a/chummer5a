@@ -56,7 +56,7 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             _objContact = objContact;
@@ -753,7 +753,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.Role), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.Metatype), false,
+            cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.Sex), false,
                 DataSourceUpdateMode.OnPropertyChanged);

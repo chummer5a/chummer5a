@@ -39,7 +39,7 @@ namespace Chummer
         public frmOmaeUploadData(string strUserName, int intDataID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _strUserName = strUserName;
             _intDataID = intDataID;
             txtDescription.Text = strDescription;

@@ -114,8 +114,7 @@ namespace Chummer
                     IsLoaded = false;
             }
         }
-
-        private static string s_StrDefaultLanguage = GlobalOptions.DefaultLanguage;
+        
         private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
         public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages { get => s_DictionaryLanguages; }
         private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
@@ -155,27 +154,26 @@ namespace Chummer
         /// </summary>
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
-        public static void Translate(string strIntoLanguage, object objObject)
+        public static void TranslateWinForm(string strIntoLanguage, object objObject)
         {
-            // s_StrLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-            if (s_StrDefaultLanguage != strIntoLanguage)
-            {
-                s_StrDefaultLanguage = strIntoLanguage;
-                
-                if (strIntoLanguage != GlobalOptions.DefaultLanguage && !s_DictionaryLanguages.ContainsKey(strIntoLanguage))
-                {
-                    LanguageData objNewLanguage = new LanguageData(strIntoLanguage);
-                    if (!objNewLanguage.IsLoaded)
-                    {
-                        MessageBox.Show("Language with code " + strIntoLanguage + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    else
-                        s_DictionaryLanguages.Add(strIntoLanguage, objNewLanguage);
-                }
-            }
+            if (LoadLanguage(strIntoLanguage))
+                UpdateControls(objObject as Control, strIntoLanguage);
+        }
 
-            UpdateControls(objObject as Control, strIntoLanguage);
+        private static bool LoadLanguage(string strLanguage)
+        {
+            if (strLanguage != GlobalOptions.DefaultLanguage && !s_DictionaryLanguages.ContainsKey(strLanguage))
+            {
+                LanguageData objNewLanguage = new LanguageData(strLanguage);
+                if (!objNewLanguage.IsLoaded)
+                {
+                    MessageBox.Show("Language with code " + strLanguage + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                else
+                    s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
+            }
+            return true;
         }
 
         /// <summary>
@@ -289,11 +287,14 @@ namespace Chummer
         public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
             string strReturn;
-            if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            if (LoadLanguage(strLanguage))
             {
-                if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
                 {
-                    return strReturn;
+                    if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
                 }
             }
             if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))
@@ -314,7 +315,7 @@ namespace Chummer
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         public static XmlDocument GetDataDocument(string strLanguage)
         {
-            if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            if (LoadLanguage(strLanguage) && s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
             {
                 return objLanguageData.DataDocument;
             }

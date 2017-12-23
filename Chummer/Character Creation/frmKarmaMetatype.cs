@@ -108,7 +108,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Attach EventHandlers for MAGEnabledChange and RESEnabledChanged since some Metatypes can enable these.
             _objCharacter.MAGEnabledChanged += objCharacter_MAGEnabledChanged;

@@ -37,7 +37,7 @@ namespace Chummer
         public frmPrintMultiple()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             _workerPrinter.WorkerReportsProgress = true;

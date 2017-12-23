@@ -39,7 +39,7 @@ namespace Chummer
             _objOptions = _objCharacter.Options;
             _blnUseCurrentValues = blnUseCurrentValues;
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>

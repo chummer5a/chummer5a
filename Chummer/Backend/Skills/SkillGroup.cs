@@ -362,7 +362,7 @@ namespace Chummer.Backend.Skills
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
-            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml", strLanguage);
             XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
             return objNode?.Attributes?["translate"]?.InnerText;
         }
@@ -385,7 +385,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (string.IsNullOrEmpty(_toolTip))
-                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName(GlobalOptions.Language)));
+                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
                 return _toolTip;
             }
         }

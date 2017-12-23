@@ -81,7 +81,7 @@ namespace Chummer.Backend.Skills
 
             int ratingModifiers = RatingModifiers, dicePoolModifiers = PoolModifiers;
 
-            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
             objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayNameMethod(strLanguageToPrint) ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
@@ -712,7 +712,7 @@ namespace Chummer.Backend.Skills
                         s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort(GlobalOptions.Language));
                         if (cyberware.Grade.Name != "Standard")
                         {
-                            s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
+                            s.AppendFormat("({0}) ", cyberware.Grade.DisplayName(GlobalOptions.Language));
                         }
 
                         int pool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
@@ -758,7 +758,7 @@ namespace Chummer.Backend.Skills
                             s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort(GlobalOptions.Language));
                             if (cyberware.Grade.Name != "Standard")
                             {
-                                s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
+                                s.AppendFormat("({0}) ", cyberware.Grade.DisplayName(GlobalOptions.Language));
                             }
 
                             int intLoopPool = PoolOtherAttribute(Attribute == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
@@ -871,12 +871,20 @@ namespace Chummer.Backend.Skills
             get { return AttributeObject.TotalValue; }
         }
         
-        public string DisplayName(string strLanguage)
+        public string DisplayNameMethod(string strLanguage)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+        }
+
+        public string DisplayName
+        {
+            get
+            {
+                return DisplayNameMethod(GlobalOptions.Language);
+            }
         }
 
         public string DisplayCategory(string strLanguage)
@@ -937,11 +945,19 @@ namespace Chummer.Backend.Skills
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("skills.xml")?.SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml", strLanguage)?.SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
         }

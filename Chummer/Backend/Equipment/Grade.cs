@@ -6,19 +6,20 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
-    public class Grade : IHasName
+    public class Grade : IHasName, IHasXmlNode
     {
         private string _strName = "Standard";
-        private string _strAltName = string.Empty;
         private decimal _decEss = 1.0m;
         private decimal _decCost = 1.0m;
         private int _intAvail = 0;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
+        private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
-        public Grade()
+        public Grade(Improvement.ImprovementSource eSource)
         {
+            _eSource = eSource;
         }
 
         /// <summary>
@@ -28,7 +29,6 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode)
         {
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            objNode.TryGetStringFieldQuickly("translate", ref _strAltName);
             objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
@@ -46,6 +46,24 @@ namespace Chummer.Backend.Equipment
                 else
                     _intDeviceRating = 2;
             }
+        }
+
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
+        public XmlNode GetNode()
+        {
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage)?.SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
+            return _objCachedMyXmlNode;
         }
         #endregion
 
@@ -68,15 +86,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the Grade as it should be displayed in lists.
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltName))
-                    return _strAltName;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return _strName;
-            }
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>

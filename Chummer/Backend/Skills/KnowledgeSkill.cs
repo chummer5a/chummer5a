@@ -128,13 +128,16 @@ namespace Chummer.Backend.Skills
 
             XmlNodeList list = GetNode()?.SelectNodes("specs/spec");
 
-            foreach (XmlNode node in list)
+            if (list != null)
             {
-                string strInnerText = node.InnerText;
-                SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
-            }
+                foreach (XmlNode node in list)
+                {
+                    string strInnerText = node.InnerText;
+                    SuggestedSpecializations.Add(new ListItem(strInnerText, node.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
 
-            SuggestedSpecializations.Sort(CompareListItems.CompareNames);
+                SuggestedSpecializations.Sort(CompareListItems.CompareNames);
+            }
             OnPropertyChanged(nameof(CGLSpecializations));
         }
 
@@ -184,7 +187,7 @@ namespace Chummer.Backend.Skills
             {
                 int intMax = 0;
                 //TODO this works with translate?
-                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language))))
+                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && (x.Extra == Name || x.Extra == DisplayNameMethod(GlobalOptions.Language))))
                 {
                     if (objSkillsoft.Rating > intMax)
                         intMax = objSkillsoft.Rating;

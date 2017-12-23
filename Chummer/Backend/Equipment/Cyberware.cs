@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
         private string _strExtra = string.Empty;
         private Guid _guiWeaponID = Guid.Empty;
         private Guid _guiVehicleID = Guid.Empty;
-        private Grade _objGrade = new Grade();
+        private Grade _objGrade;
         private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
         private List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
@@ -869,7 +869,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
             objWriter.WriteElementString("allowsubsystems", _strAllowSubsystems);
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
-            objWriter.WriteElementString("grade", Grade.DisplayName);
+            objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -1068,7 +1068,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -1085,7 +1085,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(_strExtra))
             {
-                LanguageManager.Translate(GlobalOptions.Language, this);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
                 // Attempt to retrieve the CharacterAttribute name.
                 strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
@@ -1093,7 +1093,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strLocation))
             {
                 string strSide = string.Empty;
-                LanguageManager.Translate(GlobalOptions.Language, this);
+                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
                 if (_strLocation == "Left")
                     strSide = LanguageManager.GetString("String_Improvement_SideLeft", strLanguage);
                 else if (_strLocation == "Right")
@@ -1316,7 +1316,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -1847,14 +1847,21 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
             XmlDocument objDoc = null;
             if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
             {
-                objDoc = XmlManager.Load("bioware.xml");
+                objDoc = XmlManager.Load("bioware.xml", strLanguage);
                 if (objDoc != null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
@@ -1870,7 +1877,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                objDoc = XmlManager.Load("cyberware.xml");
+                objDoc = XmlManager.Load("cyberware.xml", strLanguage);
                 if (objDoc != null)
                 {
                     _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
@@ -1884,6 +1891,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
         #endregion

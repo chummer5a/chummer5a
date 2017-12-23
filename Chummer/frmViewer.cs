@@ -38,6 +38,7 @@ namespace Chummer
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
         private bool _blnLoading = false;
         private CultureInfo _objPrintCulture = GlobalOptions.CultureInfo;
+        private string _strPrintLanguage = GlobalOptions.Language;
         private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
 
@@ -78,7 +79,7 @@ namespace Chummer
             objRegistry.SetValue(AppDomain.CurrentDomain.FriendlyName, 0x1F40, Microsoft.Win32.RegistryValueKind.DWord);
 
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
             {
                 cmsPrintButton,
@@ -286,9 +287,9 @@ namespace Chummer
                         return;
                     }
 #if DEBUG
-                    objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
+                    objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
 #else
-                    objCharacter.PrintToStream(objWriter, _objPrintCulture, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
+                    objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
 #endif
                 }
 
@@ -648,15 +649,17 @@ namespace Chummer
         
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
+            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
             try
             {
-                _objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
+                _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);
             }
             catch (CultureNotFoundException)
             {
             }
             if (_blnLoading)
                 return;
+
             string strOldSelected = _strSelectedSheet;
             // Strip away the language prefix
             if (strOldSelected.Contains(Path.DirectorySeparatorChar))

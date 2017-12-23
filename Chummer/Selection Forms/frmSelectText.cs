@@ -30,7 +30,7 @@ namespace Chummer
         public frmSelectText()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

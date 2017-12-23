@@ -29,7 +29,7 @@ namespace Chummer
         public frmSelectNumber(int intDecimalPlaces = 2)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 

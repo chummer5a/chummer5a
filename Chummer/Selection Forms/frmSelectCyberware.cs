@@ -69,7 +69,7 @@ namespace Chummer
         public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, XmlNode objParentNode = null)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -1164,7 +1164,7 @@ namespace Chummer
                         (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
                         (_objCharacter.AdapsinEnabled || !objGrade.Adapsin))
                     {
-                        _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName));
+                        _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
                     }
                 }
                 cboGrade.BeginUpdate();

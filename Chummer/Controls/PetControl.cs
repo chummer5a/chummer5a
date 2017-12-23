@@ -38,7 +38,7 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             foreach (ToolStripItem objItem in cmsContact.Items)
             {
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
@@ -49,7 +49,7 @@ namespace Chummer
         private void PetControl_Load(object sender, EventArgs e)
         {
             Width = cmdDelete.Left + cmdDelete.Width;
-            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.Metatype), false,
+            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
                 DataSourceUpdateMode.OnPropertyChanged);

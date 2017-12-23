@@ -126,7 +126,7 @@ namespace Chummer.UI.Skills
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                       _skill.DisplayName(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                       _skill.DisplayNameMethod(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;

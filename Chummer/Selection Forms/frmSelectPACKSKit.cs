@@ -42,7 +42,7 @@ namespace Chummer
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the PACKS information.
             _objXmlDocument = XmlManager.Load("packs.xml");

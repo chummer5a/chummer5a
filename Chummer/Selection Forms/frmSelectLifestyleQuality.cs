@@ -52,7 +52,7 @@ namespace Chummer
         public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSelectedLifestyle = strSelectedLifestyle;
 

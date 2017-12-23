@@ -41,7 +41,7 @@ namespace Chummer
         public frmOptions()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
@@ -487,7 +487,7 @@ namespace Chummer
         #region Methods
         private void TranslateForm()
         {
-            LanguageManager.Translate(_strSelectedLanguage, this);
+            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
             PopulateBuildMethodList();
             PopulateLimbCountList();
             SetToolTips();

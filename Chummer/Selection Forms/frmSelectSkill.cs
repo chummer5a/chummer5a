@@ -50,7 +50,7 @@ namespace Chummer
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
@@ -242,7 +242,7 @@ namespace Chummer
                     {
                         if (objKnow.Rating >= _intMinimumRating && objKnow.Rating < _intMaximumRating)
                         {
-                            lstSkills.Add(new ListItem(objKnow.Name, objKnow.DisplayName(GlobalOptions.Language)));
+                            lstSkills.Add(new ListItem(objKnow.Name, objKnow.DisplayNameMethod(GlobalOptions.Language)));
                         }
                     }
                 }

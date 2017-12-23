@@ -44,7 +44,7 @@ namespace Chummer
         public frmOmaeUploadLanguage(string strUserName)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, null);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
             _strUserName = strUserName;
 
             NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);

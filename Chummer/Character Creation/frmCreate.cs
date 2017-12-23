@@ -106,7 +106,7 @@ namespace Chummer
 
             GlobalOptions.MRUChanged += DoNothing;
 
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             ContextMenuStrip[] lstCMSToTranslate = new ContextMenuStrip[]
             {
                 cmsAdvancedLifestyle,
@@ -6153,14 +6153,10 @@ namespace Chummer
                     break;
             }
 
-            XmlNode objXmlDeleteQuality;
+            XmlNode objXmlDeleteQuality = objXmlSelectedQuality;
             if (objSelectedQuality.Type == QualityType.LifeModule)
             {
-                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.QualityId);
-            }
-            else
-            {
-                objXmlDeleteQuality = objXmlSelectedQuality;
+                objXmlDeleteQuality = Quality.GetNodeOverrideable(objSelectedQuality.QualityId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
             }
 
             // Remove any Weapons created by the Quality if applicable.
@@ -17124,7 +17120,7 @@ namespace Chummer
                 else if (!CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
                     continue;
 
-                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName));
+                lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
             }
             cboCyberwareGrade.BeginUpdate();
             //cboCyberwareGrade.DataSource = null;
@@ -21348,7 +21344,7 @@ namespace Chummer
         private void btnCreateBackstory_Click(object sender, EventArgs e)
         {
             if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(CharacterObject);
-            txtBackground.Text = _objStoryBuilder.GetStory();
+            txtBackground.Text = _objStoryBuilder.GetStory(GlobalOptions.Language);
         }
 
         private void nudCounterspellingDice_Changed(object sender, EventArgs e)

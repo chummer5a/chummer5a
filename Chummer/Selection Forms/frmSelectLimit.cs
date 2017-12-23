@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectLimit()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Limits.
             _lstLimits = new List<ListItem>

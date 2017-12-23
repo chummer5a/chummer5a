@@ -309,7 +309,7 @@ namespace Chummer
 
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                strReturn = GetNode()?["translate"]?.InnerText ?? Name;
+                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
             }
 
             return strReturn;
@@ -542,7 +542,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -783,10 +783,20 @@ namespace Chummer
         public string Category { get; set; }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = XmlManager.Load("powers.xml")?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage)?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
 

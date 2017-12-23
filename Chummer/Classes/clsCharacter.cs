@@ -1026,7 +1026,7 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(strMissingBooks))
                 {
-                    string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks));
+                    string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks, GlobalOptions.Language));
                     if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                     {
                         return false;
@@ -6825,7 +6825,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
             {
                 string strReturn = string.Empty;
-                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml");
+                XmlDocument objXmlDocument = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage);
                 XmlNode meta = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
                 XmlNode variant = meta?.SelectSingleNode("metavariants/metavariant[name = \"" + _strMetavariant + "\"]");
                 XmlNode objRunNode = variant?["run"] ?? meta?["run"];
@@ -7051,7 +7051,7 @@ namespace Chummer
                 return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
 
-            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
             if (objXmlNode != null)
             {
                 string strReturn = string.Empty;
@@ -7061,6 +7061,7 @@ namespace Chummer
                     return LanguageManager.GetString("String_ModeSpecial", strLanguage);
                 }
             }
+
             return CalculatedMovement("Swim", false, objCulture);
         }
 
@@ -7075,7 +7076,7 @@ namespace Chummer
                 return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
 
-            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+            XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml", strLanguage).SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
             if (objXmlNode != null)
             {
                 string strReturn = string.Empty;
@@ -8356,7 +8357,7 @@ namespace Chummer
         /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
         /// </summary>
         /// <param name="strInput"></param>
-        public static string TranslatedBookList(string strInput)
+        public static string TranslatedBookList(string strInput, string strLanguage)
         {
             string strReturn = string.Empty;
             strInput = strInput.TrimEnd(';');

@@ -37,7 +37,7 @@ namespace Chummer
         public frmCreateImprovement(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             _objDocument = XmlManager.Load("improvements.xml");

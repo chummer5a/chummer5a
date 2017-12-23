@@ -22,7 +22,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.Translate(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()

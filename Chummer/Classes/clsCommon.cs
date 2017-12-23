@@ -2852,7 +2852,7 @@ namespace Chummer
                 strBookFilter = "[(" + objCharacterOptions.BookXPath() + ")]";
             foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
             {
-                Grade objGrade = new Grade();
+                Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
                 lstGrades.Add(objGrade);
             }

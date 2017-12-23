@@ -32,7 +32,6 @@ namespace Chummer.Backend.Equipment
         private int _intBaseComforts;
         private int _intBaseArea;
         private int _intBaseSecurity;
-        private XmlNode _objCachedMyXmlNode;
         private bool _primaryTenant;
         private int _costForSecurity;
         private int _costForArea;
@@ -419,7 +418,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return BaseLifestyle;
 
-            return GetNode()?["translate"]?.InnerText ?? BaseLifestyle;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? BaseLifestyle;
         }
 
         /// <summary>
@@ -459,7 +458,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -661,10 +660,21 @@ namespace Chummer.Backend.Equipment
             set => _costForSecurity = value;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
         #endregion
