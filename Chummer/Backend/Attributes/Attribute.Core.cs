@@ -24,7 +24,7 @@ namespace Chummer.Backend.Attributes
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;
-        private int _intMetatypeAugMax = 9;
+        private int _intMetatypeAugMax = 10;
         private int _intAugModifier;
         private int _intBase;
         private int _intKarma;
@@ -32,7 +32,6 @@ namespace Chummer.Backend.Attributes
         private readonly Character _objCharacter;
 		private AttributeCategory _enumCategory;
 		private AttributeCategory _enumMetatypeCategory;
-		private string _strDisplayAbbrev;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
