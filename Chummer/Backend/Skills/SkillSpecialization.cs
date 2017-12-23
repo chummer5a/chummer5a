@@ -8,39 +8,20 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public class SkillSpecialization
+    public class SkillSpecialization : IHasName, IHasXmlNode
     {
-        private static readonly TranslatedField<string> s_Translator = new TranslatedField<string>();
-
         private Guid _guiID;
-        private string _name;
-        private string _translated;
-        private readonly bool _free;
+        private string _strName;
+        private readonly bool _strFree;
+        private readonly Skill _objParent;
 
         #region Constructor, Create, Save, Load, and Print Methods
-
-        static SkillSpecialization()
+        public SkillSpecialization(string strName, bool free, Skill objParent)
         {
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlDocument document = XmlManager.Load("skills.xml");
-                XmlNodeList specList = document.SelectNodes("/chummer/*/skill/specs/spec");
-                foreach (XmlNode node in specList)
-                {
-                    string strTranslate = node.Attributes?["translate"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strTranslate))
-                    {
-                        s_Translator.Add(node.InnerText, strTranslate);
-                    }
-                }
-            }
-        }
-
-        public SkillSpecialization(string strName, bool free)
-        {
-            s_Translator.Write(strName, ref _name, ref _translated);
+            _strName = strName;
             _guiID = Guid.NewGuid();
-            _free = free;
+            _strFree = free;
+            _objParent = objParent;
         }
 
         /// <summary>
@@ -51,9 +32,8 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("spec");
             objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("name", _name);
-            if(_translated != null) objWriter.WriteElementString(GlobalOptions.Language, _translated);
-            if(_free) objWriter.WriteElementString("free", string.Empty);
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("free", _strFree.ToString());
             objWriter.WriteEndElement();
         }
 
@@ -61,12 +41,11 @@ namespace Chummer.Backend.Skills
         /// Re-create a saved SkillSpecialization from an XmlNode;
         /// </summary>
         /// <param name = "objNode" > XmlNode to load.</param>
-        public static SkillSpecialization Load(XmlNode objNode)
+        public static SkillSpecialization Load(XmlNode objNode, Skill objParent)
         {
-            return new SkillSpecialization(objNode["name"].InnerText, objNode["free"] != null)
+            return new SkillSpecialization(objNode["name"]?.InnerText, objNode["free"]?.InnerText == bool.TrueString, objParent)
             {
-                _guiID = Guid.Parse(objNode["guid"].InnerText),
-                _translated = objNode[GlobalOptions.Language]?.InnerText
+                _guiID = Guid.Parse(objNode["guid"].InnerText)
             };
         }
 
@@ -74,11 +53,10 @@ namespace Chummer.Backend.Skills
 
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
-
             objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
 
@@ -97,9 +75,20 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get { return s_Translator.Read(_name, ref _translated); }
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+
+            return GetNode()?.Attributes?["translate"]?.InnerText ?? Name;
+        }
+
+        private XmlNode _objCachedMyXmlNode = null;
+        public XmlNode GetNode()
+        {
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = _objParent?.GetNode()?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
+            return _objCachedMyXmlNode;
         }
 
         /// <summary>
@@ -107,7 +96,15 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Name
         {
-            get { return _name; }
+            get { return _strName; }
+            set
+            {
+                if (_strName != value)
+                {
+                    _strName = value;
+                    _objCachedMyXmlNode = null;
+                }
+            }
         }
 
         /// <summary>
@@ -115,7 +112,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public bool Free
         {
-            get { return _free; }
+            get { return _strFree; }
         }
 
         #endregion

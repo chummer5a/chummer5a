@@ -735,14 +735,14 @@ namespace Chummer
                 chkFreeBonus.Enabled = true;
             }
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlSpell["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlSpell["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlSpell["page"].InnerText;
             if (objXmlSpell["altpage"] != null)
                 strPage = objXmlSpell["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(objXmlSpell["source"].InnerText) + " " +
+                _objCharacter.Options.LanguageBookLong(objXmlSpell["source"].InnerText, GlobalOptions.Language) + " " +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion

@@ -327,7 +327,7 @@ namespace Chummer
                 cboGrade.SelectedValue = strForceGrade;
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
                 cboGrade.SelectedIndex = 0;
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlCyberware["page"].InnerText;
             if (objXmlCyberware["altpage"] != null)
             {
@@ -347,7 +347,7 @@ namespace Chummer
             }
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " +
+                _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText, GlobalOptions.Language) + " " +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
             UpdateCyberwareInfo();

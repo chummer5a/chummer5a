@@ -46,11 +46,11 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
             });
             foreach (Skill objSkill in list)
             {
-                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name;
+                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
@@ -104,7 +104,7 @@ namespace Chummer.Backend.Skills
                     _skillValueBackup[skill.SkillId] = skill;
                     s_LstSkillBackups.Add(skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name);
+                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : skill.Name);
                     
                     if (_character.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -122,7 +122,7 @@ namespace Chummer.Backend.Skills
                                 objExistSkill.Base = objNewSkill.Base;
                             if (objNewSkill.Karma > objExistSkill.Karma)
                                 objExistSkill.Karma = objNewSkill.Karma;
-                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
                         });
                     }
                 }
@@ -179,7 +179,7 @@ namespace Chummer.Backend.Skills
                 foreach (Skill skill in loadingSkills)
                 {
                     _skills.Add(skill);
-                    _dicSkills.Add(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name, skill);
+                    _dicSkills.Add(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : skill.Name, skill);
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 
@@ -251,7 +251,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objSkill in unsoredSkills)
                     {
                         _skills.Add(objSkill);
-                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name, objSkill);
+                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name, objSkill);
                     }
 
                     UpdateUndoList(skillNode);
@@ -425,7 +425,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objLoopSkill in GetSkillList(_character, FilterOptions.NonSpecial))
                     {
                         _skills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecialization + ")" : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objLoopSkill.Name, objLoopSkill);
                     }
                 }
                 return _skills;
@@ -578,7 +578,7 @@ namespace Chummer.Backend.Skills
             {
                 if (lhsExoticSkill != null)
                 {
-                    return string.Compare(rhsExoticSkill.Specific ?? string.Empty, lhsExoticSkill.Specific ?? string.Empty, StringComparison.Ordinal);
+                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, StringComparison.Ordinal);
                 }
                 else
                 {
@@ -590,7 +590,7 @@ namespace Chummer.Backend.Skills
                 return -1;
             }
 
-            return string.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
+            return string.Compare(rhs.DisplayName(GlobalOptions.Language), lhs.DisplayName(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
         public static IList<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")

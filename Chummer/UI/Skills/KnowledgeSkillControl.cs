@@ -22,7 +22,7 @@ namespace Chummer.UI.Skills
             cboSpec.BeginUpdate();
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = KnowledgeSkill.KnowledgeTypes;
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language);
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
             if (skill.CharacterObject.Created)
@@ -68,7 +68,7 @@ namespace Chummer.UI.Skills
                         DataSourceUpdateMode.OnPropertyChanged);
                 cboSkill.DisplayMember = nameof(ListItem.Name);
                 cboSkill.ValueMember = nameof(ListItem.Value);
-                cboSkill.DataSource = skill.KnowledgeSkillCatagories;
+                cboSkill.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language);
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -126,7 +126,7 @@ namespace Chummer.UI.Skills
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                       _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                       _skill.DisplayName(GlobalOptions.Language), _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
                     return;

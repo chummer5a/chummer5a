@@ -90,13 +90,13 @@ namespace Chummer
             // Populate the Maneuvers list.
             XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlManeuver["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlManeuver["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlManeuver["page"].InnerText;
             if (objXmlManeuver["altpage"] != null)
                 strPage = objXmlManeuver["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

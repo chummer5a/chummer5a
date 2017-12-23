@@ -439,73 +439,74 @@ namespace Chummer
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
         };
+
         /// <summary>
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        public static string TranslateExtra(string strExtra, string strLanguage)
+        public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (strLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            if (strIntoLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
                 {
                     case "BOD":
-                        strReturn = GetString("String_AttributeBODShort", strLanguage);
+                        strReturn = GetString("String_AttributeBODShort", strIntoLanguage);
                         break;
                     case "AGI":
-                        strReturn = GetString("String_AttributeAGIShort", strLanguage);
+                        strReturn = GetString("String_AttributeAGIShort", strIntoLanguage);
                         break;
                     case "REA":
-                        strReturn = GetString("String_AttributeREAShort", strLanguage);
+                        strReturn = GetString("String_AttributeREAShort", strIntoLanguage);
                         break;
                     case "STR":
-                        strReturn = GetString("String_AttributeSTRShort", strLanguage);
+                        strReturn = GetString("String_AttributeSTRShort", strIntoLanguage);
                         break;
                     case "CHA":
-                        strReturn = GetString("String_AttributeCHAShort", strLanguage);
+                        strReturn = GetString("String_AttributeCHAShort", strIntoLanguage);
                         break;
                     case "INT":
-                        strReturn = GetString("String_AttributeINTShort", strLanguage);
+                        strReturn = GetString("String_AttributeINTShort", strIntoLanguage);
                         break;
                     case "LOG":
-                        strReturn = GetString("String_AttributeLOGShort", strLanguage);
+                        strReturn = GetString("String_AttributeLOGShort", strIntoLanguage);
                         break;
                     case "WIL":
-                        strReturn = GetString("String_AttributeWILShort", strLanguage);
+                        strReturn = GetString("String_AttributeWILShort", strIntoLanguage);
                         break;
                     case "EDG":
-                        strReturn = GetString("String_AttributeEDGShort", strLanguage);
+                        strReturn = GetString("String_AttributeEDGShort", strIntoLanguage);
                         break;
                     case "MAG":
-                        strReturn = GetString("String_AttributeMAGShort", strLanguage);
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strLanguage) + " (" + GetString("String_DescAdept", strLanguage) + ")";
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ")";
                         break;
                     case "RES":
-                        strReturn = GetString("String_AttributeRESShort", strLanguage);
+                        strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
                         break;
                     case "DEP":
-                        strReturn = GetString("String_AttributeDEPShort", strLanguage);
+                        strReturn = GetString("String_AttributeDEPShort", strIntoLanguage);
                         break;
                     case "Physical":
-                        strReturn = GetString("Node_Physical", strLanguage);
+                        strReturn = GetString("Node_Physical", strIntoLanguage);
                         break;
                     case "Mental":
-                        strReturn = GetString("Node_Mental", strLanguage);
+                        strReturn = GetString("Node_Mental", strIntoLanguage);
                         break;
                     case "Social":
-                        strReturn = GetString("Node_Social", strLanguage);
+                        strReturn = GetString("Node_Social", strIntoLanguage);
                         break;
                     case "Left":
-                        strReturn = GetString("String_Improvement_SideLeft", strLanguage);
+                        strReturn = GetString("String_Improvement_SideLeft", strIntoLanguage);
                         break;
                     case "Right":
-                        strReturn = GetString("String_Improvement_SideRight", strLanguage);
+                        strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
@@ -514,7 +515,7 @@ namespace Chummer
                         Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
                             Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
-                            foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1).SelectNodes(objXPathPair.Item2))
+                            foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
                             {
                                 if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
                                 {
@@ -536,6 +537,118 @@ namespace Chummer
             // If no translation could be found, just use whatever we were passed.
             if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("Error finding string for key - "))
                 strReturn = strExtra;
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage)
+        {
+            // If no original could be found, just use whatever we were passed.
+            string strReturn = strExtra;
+
+            // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
+            if (strFromLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            {
+                // Attempt to translate CharacterAttribute names.
+                if (strExtra == GetString("String_AttributeBODShort", strFromLanguage))
+                {
+                    return "BOD";
+                }
+                else if (strExtra == GetString("String_AttributeAGIShort", strFromLanguage))
+                {
+                    return "AGI";
+                }
+                else if (strExtra == GetString("String_AttributeREAShort", strFromLanguage))
+                {
+                    return "REA";
+                }
+                else if (strExtra == GetString("String_AttributeSTRShort", strFromLanguage))
+                {
+                    return "STR";
+                }
+                else if (strExtra == GetString("String_AttributeCHAShort", strFromLanguage))
+                {
+                    return "CHA";
+                }
+                else if (strExtra == GetString("String_AttributeINTShort", strFromLanguage))
+                {
+                    return "INT";
+                }
+                else if (strExtra == GetString("String_AttributeLOGShort", strFromLanguage))
+                {
+                    return "LOG";
+                }
+                else if (strExtra == GetString("String_AttributeWILShort", strFromLanguage))
+                {
+                    return "WIL";
+                }
+                else if (strExtra == GetString("String_AttributeEDGShort", strFromLanguage))
+                {
+                    return "EDG";
+                }
+                else if(strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
+                {
+                    return "MAG";
+                }
+                else if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ")")
+                {
+                    return "MAGAdept";
+                }
+                else if (strExtra == GetString("String_AttributeRESShort", strFromLanguage))
+                {
+                    return "RES";
+                }
+                else if (strExtra == GetString("String_AttributeDEPShort", strFromLanguage))
+                {
+                    return "DEP";
+                }
+                else if (strExtra == GetString("Node_Physical", strFromLanguage))
+                {
+                    return "Physical";
+                }
+                else if (strExtra == GetString("Node_Mental", strFromLanguage))
+                {
+                    return "Mental";
+                }
+                else if (strExtra == GetString("Node_Social", strFromLanguage))
+                {
+                    return "Social";
+                }
+                else if (strExtra == GetString("String_Improvement_SideLeft", strFromLanguage))
+                {
+                    return "Left";
+                }
+                else if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
+                {
+                    return "Right";
+                }
+
+                string strExtraNoQuotes = strExtra.FastEscape('\"');
+
+                object strReturnLock = new object();
+                Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                {
+                    Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
+                    foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                    {
+                        if (objXPathPair.Item4(objNode) == strExtraNoQuotes)
+                        {
+                            string strOriginal = objXPathPair.Item3(objNode);
+                            if (!string.IsNullOrEmpty(strOriginal))
+                            {
+                                lock (strReturnLock)
+                                    strReturn = strOriginal;
+                                state.Stop();
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
 
             return strReturn;
         }

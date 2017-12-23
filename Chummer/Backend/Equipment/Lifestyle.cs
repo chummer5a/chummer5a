@@ -11,7 +11,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Lifestyle.
     /// </summary>
-    public class Lifestyle : IItemWithGuid, INamedItem, IItemWithNode
+    public class Lifestyle : IHasInternalId, IHasName, IHasXmlNode
     {
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -97,7 +97,7 @@ namespace Chummer.Backend.Equipment
             else
                 _objCachedMyXmlNode = null;
 
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID;
         }
 
@@ -336,7 +336,7 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Advanced Lifestyle information if applicable.
             if (!string.IsNullOrEmpty(_strBaseLifestyle))
             {
-                var objXmlAspect = MyXmlNode;
+                XmlNode objXmlAspect = GetNode();
                 if (objXmlAspect != null)
                 {
                     if (objXmlAspect["translate"] != null)
@@ -348,7 +348,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteStartElement("qualities");
 
@@ -413,31 +413,26 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
-                    return _strBaseLifestyle;
-                return MyXmlNode?["translate"]?.InnerText ?? _strBaseLifestyle;
-            }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return BaseLifestyle;
+
+            return GetNode()?["translate"]?.InnerText ?? BaseLifestyle;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                var strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort(strLanguage);
 
-                if (!string.IsNullOrEmpty(_strName))
-                    strReturn += " (\"" + Name + "\")";
+            if (!string.IsNullOrEmpty(Name))
+                strReturn += " (\"" + Name + "\")";
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
@@ -460,7 +455,7 @@ namespace Chummer.Backend.Equipment
                 // Get the translated name if applicable.
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                 {
-                    var objNode = MyXmlNode;
+                    var objNode = GetNode();
                     if (objNode?["altpage"] != null)
                         strReturn = objNode["altpage"].InnerText;
                 }
@@ -669,14 +664,11 @@ namespace Chummer.Backend.Equipment
             set => _costForSecurity = value;
         }
 
-        public XmlNode MyXmlNode
+        public XmlNode GetNode()
         {
-            get
-            {
-                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                    _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
-                return _objCachedMyXmlNode;
-            }
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml")?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+            return _objCachedMyXmlNode;
         }
         #endregion
 

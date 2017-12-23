@@ -21,23 +21,8 @@ using System.Collections.Generic;
 
 namespace Chummer
 {
-    public interface IItemWithGuid
+    public interface IHasInternalId
     {
         string InternalId { get; }
-    }
-
-    public interface INamedItem
-    {
-        string Name { get; set; }
-    }
-
-    public interface IItemWithNode
-    {
-        System.Xml.XmlNode MyXmlNode { get; }
-    }
-
-    public interface IHasChildren<T>
-    {
-        IList<T> Children { get; }
     }
 }

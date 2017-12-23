@@ -31,7 +31,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Armor Modification.
     /// </summary>
-    public class ArmorMod : IItemWithGuid, INamedItem, IItemWithNode
+    public class ArmorMod : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID = Guid.Empty;
         private string _strName = string.Empty;
@@ -55,9 +55,6 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private List<Gear> _lstGear = new List<Gear>();
         private string _strNotes = string.Empty;
-        private string _strAltName = string.Empty;
-        private string _strAltCategory = string.Empty;
-        private string _strAltPage = string.Empty;
         private bool _blnDiscountCost = false;
         private Armor _objParent;
 
@@ -94,20 +91,6 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
 
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objArmorNode = MyXmlNode;
-                if (objArmorNode != null)
-                {
-                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
-                objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
-            }
-
             // Check for a Variable Cost.
             if (blnSkipCost)
                 _strCost = "0";
@@ -143,7 +126,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -157,7 +140,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipCost && !blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -336,19 +319,6 @@ namespace Chummer.Backend.Equipment
                     _lstGear.Add(objGear);
                 }
             }
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objArmorNode = MyXmlNode;
-                if (objArmorNode != null)
-                {
-                    objArmorNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objArmorNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
-                objArmorNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objArmorNode?.Attributes?["translate"]?.InnerText;
-            }
         }
 
         /// <summary>
@@ -358,18 +328,18 @@ namespace Chummer.Backend.Equipment
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("armormod");
-            objWriter.WriteElementString("name", DisplayNameShort);
-            objWriter.WriteElementString("name_english", _strName);
-            objWriter.WriteElementString("category", DisplayCategory);
-            objWriter.WriteElementString("category_english", _strCategory);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
+            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
+            objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("armor", _intA.ToString(objCulture));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
@@ -463,15 +433,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltName))
-                    return _strAltName;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return _strName;
-            }
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -479,7 +446,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort(strLanguage);
 
             if (_intRating > 0)
                 strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + " " + _intRating.ToString() + ")";
@@ -491,15 +458,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public string DisplayCategory
+        public string DisplayCategory(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltCategory))
-                    return _strAltCategory;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
 
-                return _strCategory;
-            }
+            return XmlManager.Load("armor.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -650,15 +614,20 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (!string.IsNullOrEmpty(_strAltPage))
-                    return _strAltPage;
-
                 return _strPage;
             }
             set
             {
                 _strPage = value;
             }
+        }
+
+        public string DisplayPage(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -732,7 +701,7 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _strExtra = value;
+                _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
             }
         }
 
@@ -1019,14 +988,11 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
-        public XmlNode MyXmlNode
+        public XmlNode GetNode()
         {
-            get
-            {
-                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                    _objCachedMyXmlNode = XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
-                return _objCachedMyXmlNode;
-            }
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+            return _objCachedMyXmlNode;
         }
         #endregion
     }

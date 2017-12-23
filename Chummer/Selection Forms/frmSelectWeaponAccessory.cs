@@ -605,12 +605,12 @@ namespace Chummer
             }
 
             string strBookCode = objXmlAccessory["source"]?.InnerText;
-            string strBook = _objCharacter.Options.LanguageBookShort(strBookCode);
+            string strBook = _objCharacter.Options.LanguageBookShort(strBookCode, GlobalOptions.Language);
             string strPage = objXmlAccessory["page"]?.InnerText;
             objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

@@ -262,7 +262,7 @@ namespace Chummer
         {
             int pilotRating = vehicle.Pilot;
 
-            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName(GlobalOptions.Language)));
 
             if (maybeAutoSoft != null)
             {

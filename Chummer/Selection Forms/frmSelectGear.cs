@@ -681,7 +681,7 @@ namespace Chummer
                 else
                     lblGearDeviceRating.Text = string.Empty;
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlGear["source"].InnerText);
+                string strBook = _objCharacter.Options.LanguageBookShort(objXmlGear["source"].InnerText, GlobalOptions.Language);
                 string strPage = objXmlGear["page"].InnerText;
                 if (objXmlGear["altpage"] != null)
                     strPage = objXmlGear["altpage"].InnerText;
@@ -1019,7 +1019,7 @@ namespace Chummer
                     nudRating.Enabled = false;
                 }
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
 

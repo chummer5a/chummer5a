@@ -67,7 +67,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T FindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IItemWithGuid
+        public static T FindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IHasInternalId
         {
             if (strGuid == Guid.Empty.ToString())
             {
@@ -82,7 +82,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T FindByIdWithNameCheck<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IItemWithGuid, INamedItem
+        public static T FindByIdWithNameCheck<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IHasInternalId, IHasName
         {
             if (strGuid == Guid.Empty.ToString())
             {
@@ -97,7 +97,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, INamedItem, IItemWithGuid
+        public static T DeepFindById<T>(string strGuid, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, IHasName, IHasInternalId
         {
             if (strGuid == Guid.Empty.ToString())
             {
@@ -112,7 +112,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strName">Name of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindByName<T>(string strName, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, INamedItem, IItemWithGuid
+        public static T DeepFindByName<T>(string strName, IEnumerable<T> lstHaystack) where T : IHasChildren<T>, IHasName, IHasInternalId
         {
             if (string.IsNullOrEmpty(strName))
             {
@@ -1014,12 +1014,12 @@ namespace Chummer
                 {
                     ImprovementManager.RemoveImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
                     if (objLoopCyberware.Bonus != null)
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                     if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                     if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
                     {
-                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                     }
                     intCyberwaresCount -= 1;
                 }
@@ -1287,7 +1287,7 @@ namespace Chummer
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(objGear.InternalId))
             {
-                XmlNode objNode = objGear.MyXmlNode;
+                XmlNode objNode = objGear.GetNode();
                 if (objNode != null)
                 {
                     if (objGear.Category == "Stacked Focus")
@@ -1308,7 +1308,7 @@ namespace Chummer
                         if (objGear.Bonus != null)
                         {
                             ImprovementManager.ForcedValue = objGear.Extra;
-                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objGear.Extra = ImprovementManager.SelectedValue;
@@ -1320,7 +1320,7 @@ namespace Chummer
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
                         {
                             ImprovementManager.ForcedValue = objGear.Extra;
-                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(objCharacter, eSource, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objGear.Extra = ImprovementManager.SelectedValue;
@@ -1369,7 +1369,7 @@ namespace Chummer
                 objChildNode.ToolTipText = objChild.Notes;
 
                 objNode.Nodes.Add(objChildNode);
-                if (objChild.ParentID != objGear.InternalId || (objGear.MyXmlNode?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
+                if (objChild.ParentID != objGear.InternalId || (objGear.GetNode()?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
                     blnExpandNode = true;
 
                 BuildGearTree(objChild, objChildNode, objMenu);
@@ -1539,7 +1539,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
-                Text = objVehicle.DisplayName,
+                Text = objVehicle.DisplayName(GlobalOptions.Language),
                 Tag = objVehicle.InternalId
             };
             if (!string.IsNullOrEmpty(objVehicle.Notes))
@@ -1670,7 +1670,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
-                Text = wm.DisplayName,
+                Text = wm.DisplayName(GlobalOptions.Language),
                 Tag = wm.InternalId,
                 ContextMenuStrip = cmsVehicleWeaponMount
             };
@@ -1703,7 +1703,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
-                Text = objWeapon.DisplayName,
+                Text = objWeapon.DisplayName(GlobalOptions.Language),
                 Tag = WeaponID ?? objWeapon.InternalId
             };
             if (!string.IsNullOrEmpty(objWeapon.Notes))
@@ -1718,7 +1718,7 @@ namespace Chummer
             {
                 TreeNode objChild = new TreeNode
                 {
-                    Text = objAccessory.DisplayName,
+                    Text = objAccessory.DisplayName(GlobalOptions.Language),
                     Tag = objAccessory.InternalId,
                     ContextMenuStrip = cmsWeaponAccessory
                 };
@@ -2569,9 +2569,9 @@ namespace Chummer
                                 {
                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                    ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                     if (objFociGear.WirelessOn)
-                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort);
+                                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
                                 }
                                 objNode.Checked = true;
                             }
@@ -2686,7 +2686,7 @@ namespace Chummer
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
                             {
-                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                 {
                                     // Clear created improvements
                                     ChangeGearEquippedStatus(objCharacter, objGear, false);
@@ -2696,7 +2696,7 @@ namespace Chummer
                             }
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
                             {
-                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                 {
                                     // Clear created improvements
                                     ChangeGearEquippedStatus(objCharacter, objGear, false);
@@ -2718,7 +2718,7 @@ namespace Chummer
                                         ImprovementManager.ForcedValue = objFociGear.Extra;
                                     if (objGear.Bonus != null)
                                     {
-                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort))
+                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
                                         {
                                             // Clear created improvements
                                             ChangeGearEquippedStatus(objCharacter, objGear, false);
@@ -2728,7 +2728,7 @@ namespace Chummer
                                     }
                                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                     {
-                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort))
+                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                         {
                                             // Clear created improvements
                                             ChangeGearEquippedStatus(objCharacter, objGear, false);
@@ -2823,7 +2823,7 @@ namespace Chummer
                             // Make sure it's not the place where the mount is already occupied (either by us or something else)
                             if (!objLoopCyberware.Children.Any(x => x.PlugsIntoModularMount == objLoopCyberware.HasModularMount))
                             {
-                                string strName = objLoopVehicle.DisplayName + " ";
+                                string strName = objLoopVehicle.DisplayName(GlobalOptions.Language) + " ";
                                 if (objLoopCyberware.Parent != null)
                                     strName += objLoopCyberware.Parent.DisplayName(GlobalOptions.Language);
                                 else
@@ -2893,7 +2893,7 @@ namespace Chummer
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = strTemp[0];
             if (objCharacter != null)
-                strBook = objCharacter.Options.LanguageBookShort(strBook);
+                strBook = objCharacter.Options.LanguageBookShort(strBook, GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath;

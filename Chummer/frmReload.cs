@@ -44,12 +44,12 @@ namespace Chummer
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                string strName = objGear.DisplayNameShort + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Parent != null)
                 {
-                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort))
+                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        strName += " (" + objGear.Parent.DisplayNameShort;
+                        strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
                         if (!string.IsNullOrEmpty(objGear.Parent.Location))
                             strName += " @ " + objGear.Parent.Location;
                         strName += ")";
@@ -63,7 +63,7 @@ namespace Chummer
                     string strPlugins = string.Empty;
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort + ", ";
+                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
                     }
                     // Remove the trailing comma.
                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);

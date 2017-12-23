@@ -14,7 +14,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// A piece of Cyberware.
     /// </summary>
-    public class Cyberware : IHasChildren<Cyberware>, INamedItem, IItemWithGuid, IItemWithNode, IHasMatrixAttributes
+    public class Cyberware : IHasChildren<Cyberware>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes
     {
         private Guid _sourceID = Guid.Empty;
         private Guid _guiID = Guid.Empty;
@@ -52,9 +52,6 @@ namespace Chummer.Backend.Equipment
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
         private int _intEssenceDiscount = 0;
-        private string _strAltName = string.Empty;
-        private string _strAltCategory = string.Empty;
-        private string _strAltPage = string.Empty;
         private string _strForceGrade = string.Empty;
         private bool _blnDiscountCost = false;
         private Vehicle _objParentVehicle = null;
@@ -185,26 +182,6 @@ namespace Chummer.Backend.Equipment
 
             objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                
-                XmlNode objCyberwareNode = MyXmlNode;
-                if (objCyberwareNode != null)
-                {
-                    objCyberwareNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objCyberwareNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                string strXmlFile = "cyberware.xml";
-                if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
-                {
-                    strXmlFile = "bioware.xml";
-                }
-                XmlDocument objXmlDocument = XmlManager.Load(strXmlFile);
-                objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
-            }
-
             // Add Subsytem information if applicable.
             if (objXmlCyberware.InnerXml.Contains("allowsubsystems"))
             {
@@ -252,7 +229,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -336,7 +313,7 @@ namespace Chummer.Backend.Equipment
                 {
                     frmSelectSide frmPickSide = new frmSelectSide
                     {
-                        Description = LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language).Replace("{0}", DisplayNameShort)
+                        Description = LanguageManager.GetString("Label_SelectSide", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language))
                     };
                     string strForcedSide = string.Empty;
                     if (_strForced == "Right" || _strForced == "Left")
@@ -379,7 +356,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                         ImprovementManager.ForcedValue = _strForced;
 
-                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), Bonus, false, Rating, DisplayNameShort))
+                    if (Bonus != null && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -387,7 +364,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
-                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), WirelessBonus, false, Rating, DisplayNameShort))
+                    if (WirelessBonus != null && WirelessOn && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -403,7 +380,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
                         }
-                        if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, Rating, DisplayNameShort))
+                        if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -417,7 +394,7 @@ namespace Chummer.Backend.Equipment
             objNode.Tag = _guiID.ToString();
 
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
-            if (MyXmlNode?["forcegrade"]?.InnerText != "None")
+            if (GetNode()?["forcegrade"]?.InnerText != "None")
             {
                 // Apply the character's Cyberware Essence cost multiplier if applicable.
                 if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
@@ -721,11 +698,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (!objNode.TryGetStringFieldQuickly("hasmodularmount", ref _strHasModularMount))
-                _strHasModularMount = MyXmlNode?["hasmodularmount"]?.InnerText ?? string.Empty;
+                _strHasModularMount = GetNode()?["hasmodularmount"]?.InnerText ?? string.Empty;
             if (!objNode.TryGetStringFieldQuickly("plugsintomodularmount", ref _strPlugsIntoModularMount))
-                _strPlugsIntoModularMount = MyXmlNode?["plugsintomodularmount"]?.InnerText ?? string.Empty;
+                _strPlugsIntoModularMount = GetNode()?["plugsintomodularmount"]?.InnerText ?? string.Empty;
             if (!objNode.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts))
-                _strBlocksMounts = MyXmlNode?["blocksmounts"]?. InnerText ?? string.Empty;
+                _strBlocksMounts = GetNode()?["blocksmounts"]?. InnerText ?? string.Empty;
             objNode.TryGetStringFieldQuickly("forced", ref _strForced);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -734,7 +711,7 @@ namespace Chummer.Backend.Equipment
             if ((Name == "Customized Agility" || Name == "Customized Strength" || Name == "Cyberlimb Customization, Agility (2050)" || Name == "Cyberlimb Customization, Strength (2050)") &&
                 int.TryParse(MaxRatingString, out int intDummy))
             {
-                XmlNode objMyXmlNode = MyXmlNode;
+                XmlNode objMyXmlNode = GetNode();
                 if (objMyXmlNode != null)
                 {
                     objMyXmlNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
@@ -769,7 +746,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Sweep
             if (_strForceGrade != "None" && (_strCategory.StartsWith("Genetech") || _strCategory.StartsWith("Genetic Infusions") || _strCategory.StartsWith("Genemods")))
             {
-                _strForceGrade = MyXmlNode?["forcegrade"].InnerText;
+                _strForceGrade = GetNode()?["forcegrade"].InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
                     _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter.Options);
             }
@@ -780,25 +757,6 @@ namespace Chummer.Backend.Equipment
             if (objNode["vehicleguid"] != null)
             {
                 _guiVehicleID = Guid.Parse(objNode["vehicleguid"].InnerText);
-            }
-
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objCyberwareNode = MyXmlNode;
-                if (objCyberwareNode != null)
-                {
-                    objCyberwareNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objCyberwareNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                string strXmlFile = "cyberware.xml";
-                if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
-                {
-                    strXmlFile = "bioware.xml";
-                }
-                XmlDocument objXmlDocument = XmlManager.Load(strXmlFile);
-                objCyberwareNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objCyberwareNode?.Attributes?["translate"]?.InnerText;
             }
 
             if (objNode.InnerXml.Contains("<cyberware>"))
@@ -834,7 +792,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             else
-                _blnAddToParentESS = MyXmlNode?["addtoparentess"] != null;
+                _blnAddToParentESS = GetNode()?["addtoparentess"] != null;
 
             bool blnIsActive = false;
             if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
@@ -853,30 +811,30 @@ namespace Chummer.Backend.Equipment
             }
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
-                MyXmlNode?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+                GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
-                MyXmlNode?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+                GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
             objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
             if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
-                MyXmlNode?.TryGetStringFieldQuickly("attack", ref _strAttack);
+                GetNode()?.TryGetStringFieldQuickly("attack", ref _strAttack);
             if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
-                MyXmlNode?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                GetNode()?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
             if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
-                MyXmlNode?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                GetNode()?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
-                MyXmlNode?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+                GetNode()?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
             if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
-                MyXmlNode?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+                GetNode()?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
             if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
-                MyXmlNode?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+                GetNode()?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
             if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
-                MyXmlNode?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+                GetNode()?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
             if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
-                MyXmlNode?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+                GetNode()?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
             if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
-                MyXmlNode?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+                GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
-                MyXmlNode?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+                GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
 
             this.RefreshMatrixAttributeArray();
         }
@@ -889,13 +847,13 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("cyberware");
             if (string.IsNullOrWhiteSpace(_strLimbSlot) && _strCategory != "Cyberlimb")
-                objWriter.WriteElementString("name", DisplayNameShort);
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             else
             {
                 int intLimit = (TotalStrength * 2 + _objCharacter.BOD.TotalValue + _objCharacter.REA.TotalValue + 2) / 3;
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + " " + TotalStrength.ToString() + ", " + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + " " + intLimit.ToString() + ")");
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + _objCharacter.AGI.GetDisplayAbbrev(strLanguageToPrint) + " " + TotalAgility.ToString() + ", " + _objCharacter.STR.GetDisplayAbbrev(strLanguageToPrint) + " " + TotalStrength.ToString() + ", " + LanguageManager.GetString("String_LimitPhysicalShort", strLanguageToPrint) + " " + intLimit.ToString() + ")");
             }
-            objWriter.WriteElementString("category", DisplayCategory);
+            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("ess", CalculatedESS().ToString(objCulture));
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
@@ -903,9 +861,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             if (_objCharacter.Options != null)
             {
-                objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
+                objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
             }
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("minrating", MinRating.ToString(objCulture));
             objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
@@ -1105,15 +1063,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltName))
-                    return _strAltName;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return _strName;
-            }
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -1121,7 +1076,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort(strLanguage);
 
             if (Rating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
             {
@@ -1152,15 +1107,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public string DisplayCategory
+        public string DisplayCategory(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltCategory))
-                    return _strAltCategory;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
 
-                return _strCategory;
-            }
+            return XmlManager.Load(SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1359,19 +1311,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltPage))
-                    return _strAltPage;
-
+            if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
-            }
-            set
-            {
-                _strPage = value;
-            }
+
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -1458,12 +1403,12 @@ namespace Chummer.Backend.Equipment
                         ImprovementManager.ForcedValue = _strForced;
 
                     if (Bonus != null)
-                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
                     if (WirelessBonus != null && WirelessOn)
-                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, DisplayNameShort);
+                        ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
                         _strExtra = ImprovementManager.SelectedValue;
 
@@ -1477,7 +1422,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (intCount >= 0 && intCount % 2 == 0)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, Rating, DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId, PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
                         }
                     }
                 }
@@ -1497,12 +1442,12 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId);
                         if (objLoopCyberware.Bonus != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.Bonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                         if (objLoopCyberware.WirelessOn && objLoopCyberware.WirelessBonus != null)
-                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.WirelessBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                         if (intCyberwaresCount > 0 && intCyberwaresCount % 2 == 0)
                         {
-                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                         }
                         intCyberwaresCount -= 1;
                     }
@@ -1902,47 +1847,44 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
-        public XmlNode MyXmlNode
+        public XmlNode GetNode()
         {
-            get
-            {
-                if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
-                    return _objCachedMyXmlNode;
-                XmlDocument objDoc = null;
-                if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
-                {
-                    objDoc = XmlManager.Load("bioware.xml");
-                    if (objDoc != null)
-                    {
-                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
-                        if (_objCachedMyXmlNode == null)
-                        {
-                            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
-                            if (_objCachedMyXmlNode != null)
-                            {
-                                _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    objDoc = XmlManager.Load("cyberware.xml");
-                    if (objDoc != null)
-                    {
-                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
-                        if (_objCachedMyXmlNode == null)
-                        {
-                            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
-                            if (_objCachedMyXmlNode != null)
-                            {
-                                _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
-                            }
-                        }
-                    }
-                }
+            if (_objCachedMyXmlNode != null && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
+            XmlDocument objDoc = null;
+            if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
+            {
+                objDoc = XmlManager.Load("bioware.xml");
+                if (objDoc != null)
+                {
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    if (_objCachedMyXmlNode == null)
+                    {
+                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/biowares/bioware[name = \"" + Name + "\"]");
+                        if (_objCachedMyXmlNode != null)
+                        {
+                            _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
+                        }
+                    }
+                }
             }
+            else
+            {
+                objDoc = XmlManager.Load("cyberware.xml");
+                if (objDoc != null)
+                {
+                    _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = \"" + _sourceID.ToString() + "\" or id = \"" + _sourceID.ToString().ToUpperInvariant() + "\"]");
+                    if (_objCachedMyXmlNode == null)
+                    {
+                        _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + Name + "\"]");
+                        if (_objCachedMyXmlNode != null)
+                        {
+                            _objCachedMyXmlNode.TryGetField("id", Guid.TryParse, out _sourceID);
+                        }
+                    }
+                }
+            }
+            return _objCachedMyXmlNode;
         }
         #endregion
 

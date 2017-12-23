@@ -1706,22 +1706,21 @@ namespace Chummer.Classes
                 {
                     var v = bonusNode.SelectNodes($"./group");
                     types =
-                        KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
+                        KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
 
                 }
                 else if (bonusNode["notgroup"] != null)
                 {
-                    types =
-                        KnowledgeSkill.KnowledgeTypes.Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
+                    types = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
                 }
                 else
                 {
-                    types = KnowledgeSkill.KnowledgeTypes;
+                    types = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language);
                 }
 
                 frmSelectItem select = new frmSelectItem
                 {
-                    DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(types.Select(x => x.Value).ToArray())
+                    DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(GlobalOptions.Language, types.Select(x => x.Value).ToArray())
                 };
 
                 select.ShowDialog();
@@ -4354,7 +4353,7 @@ namespace Chummer.Classes
                 {
                     if ((string.IsNullOrEmpty(strExclude) || objWeapon.WeaponType != strExclude) && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
                     {
-                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName));
+                        lstWeapons.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
                     }
                 }
 
@@ -4729,7 +4728,7 @@ namespace Chummer.Classes
                 // Create the Improvement.
                 Log.Info("Calling CreateImprovement");
                 CreateImprovement(bonusNode["skill"].InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-                SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+                SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true, objSkill);
                 objSkill.Specializations.Add(nspec);
             }
         }
@@ -4767,7 +4766,7 @@ namespace Chummer.Classes
                     Log.Info("Calling CreateImprovement");
                     CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-                    SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true);
+                    SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true, objSkill);
                     objSkill.Specializations.Add(nspec);
                 }
             }

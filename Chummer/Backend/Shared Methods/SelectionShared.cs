@@ -123,7 +123,7 @@ namespace Chummer.Backend
                     }
 
                     // We could set this to a list immediately, but I'd rather the pointer start at null so that no list ends up getting selected for the "default" case below
-                    IEnumerable<INamedItem> objListToCheck = null;
+                    IEnumerable<IHasName> objListToCheck = null;
                     bool blnCheckCyberwareChildren = false;
                     switch (objXmlNode.Name)
                     {
@@ -643,7 +643,7 @@ namespace Chummer.Backend
                         character.Qualities.FirstOrDefault(q => q.Name == strNodeInnerText && q.Name != strIgnoreQuality);
                     if (quality != null)
                     {
-                        name = quality.DisplayNameShort;
+                        name = quality.DisplayNameShort(GlobalOptions.Language);
                         return true;
                     }
                     // ReSharper disable once RedundantIfElseBlock (Suppresses node warning)
@@ -670,7 +670,7 @@ namespace Chummer.Backend
 
                         if (s != null)
                         {
-                            name = s.DisplayName;
+                            name = s.DisplayName(GlobalOptions.Language);
                             if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
                             {
                                 name += $" ({node["spec"].InnerText})";
@@ -692,7 +692,7 @@ namespace Chummer.Backend
                                 s = character.SkillsSection.GetActiveSkill(strNodeName + " (" + node["spec"].InnerText + ")");
                             if (s != null && (node["spec"] == null || s.Specializations.Any(objSpec => objSpec.Name == node["spec"]?.InnerText)) && s.TotalBaseRating >= Convert.ToInt32(node["val"]?.InnerText))
                             {
-                                name = s.DisplayName;
+                                name = s.DisplayName(GlobalOptions.Language);
                                 if (node["spec"] != null && !character.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == s.Name && string.IsNullOrEmpty(objImprovement.Condition)))
                                 {
                                     name += $" ({node["spec"].InnerText})";

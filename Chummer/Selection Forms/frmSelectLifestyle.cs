@@ -195,15 +195,15 @@ namespace Chummer
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + qualityID + "\"]");
             if (objXmlQuality == null) return;
             string strBook = objXmlQuality["altsource"] != null
-                ? _objCharacter.Options.LanguageBookShort(objXmlQuality["altsource"].InnerText)
-                : _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText);
+                ? _objCharacter.Options.LanguageBookShort(objXmlQuality["altsource"].InnerText, GlobalOptions.Language)
+                : _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlQuality["altpage"] != null
-                ? _objCharacter.Options.LanguageBookShort(objXmlQuality["altpage"].InnerText)
-                : _objCharacter.Options.LanguageBookShort(objXmlQuality["page"].InnerText);
+                ? _objCharacter.Options.LanguageBookShort(objXmlQuality["altpage"].InnerText, GlobalOptions.Language)
+                : _objCharacter.Options.LanguageBookShort(objXmlQuality["page"].InnerText, GlobalOptions.Language);
             lblSource.Text = $"{strBook} {strPage}";
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(strBook) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " +
+                _objCharacter.Options.LanguageBookLong(strBook, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " +
                 strPage);
         }
 

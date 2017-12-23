@@ -275,7 +275,7 @@ namespace Chummer.UI.Skills
             List<Tuple<string, IComparer<KnowledgeSkill>>> ret = new List<Tuple<string, IComparer<KnowledgeSkill>>>()
             {
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortAlphabetical", GlobalOptions.Language),
-                    new KnowledgeSkillSorter(KnowledgeSkill.CompareKnowledgeSkills)),
+                    new KnowledgeSkillSorter(SkillsSection.CompareSkills)),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortRating", GlobalOptions.Language),
                     new KnowledgeSkillSorter((x, y) => y.Rating.CompareTo(x.Rating))),
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortDicepool", GlobalOptions.Language),
@@ -467,7 +467,7 @@ namespace Chummer.UI.Skills
             };
             skill.Upgrade();
             ObjCharacter.SkillsSection.Skills.Add(skill);
-            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecialization + ")", skill);
+            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")", skill);
         }
 
         private void UpdateKnoSkillRemaining()
@@ -482,7 +482,7 @@ namespace Chummer.UI.Skills
                 frmSelectItem form = new frmSelectItem
                 {
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill", GlobalOptions.Language),
-                    DropdownItems = KnowledgeSkill.DefaultKnowledgeSkillCatagories
+                    DropdownItems = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language)
                 };
 
                 if (form.ShowDialog() == DialogResult.OK)
@@ -515,7 +515,7 @@ namespace Chummer.UI.Skills
         {
             if (_searchMode)
             {
-                _skills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _skills.Filter(skill => GlobalOptions.CultureInfo.CompareInfo.IndexOf(skill.DisplayName(GlobalOptions.Language), cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
             }
         }
 

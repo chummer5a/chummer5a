@@ -426,7 +426,7 @@ namespace Chummer
             XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strFilter + "]");
 
             // Update the list of Mods based on the selected Category.
-            XmlNode objXmlVehicleNode = _objVehicle.MyXmlNode;
+            XmlNode objXmlVehicleNode = _objVehicle.GetNode();
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XmlNode objXmlMod in objXmlModList)
             {
@@ -757,13 +757,13 @@ namespace Chummer
                 else
                     lblLimit.Text = string.Empty;
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
+                string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);
                 string strPage = objXmlMod["page"].InnerText;
                 if (objXmlMod["altpage"] != null)
                     strPage = objXmlMod["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
             _blnSkipUpdate = false;
         }

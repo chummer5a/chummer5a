@@ -115,8 +115,7 @@ namespace Chummer
         private bool _blnSearchInCategoryOnly = true;
         private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference = false;
-
-        private readonly XmlDocument _objBookDoc = null;
+        
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
 
@@ -227,9 +226,6 @@ namespace Chummer
                 Load("default.xml");
             // Load the language file.
             LanguageManager.Translate(GlobalOptions.Language, this);
-
-            // Load the book information.
-            _objBookDoc = XmlManager.Load("books.xml");
         }
 
         /// <summary>
@@ -1120,11 +1116,11 @@ namespace Chummer
         /// Convert a book code into the full name.
         /// </summary>
         /// <param name="strCode">Book code to convert.</param>
-        public string BookFromCode(string strCode)
+        public string BookFromCode(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["name"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1136,11 +1132,11 @@ namespace Chummer
         /// Book code (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookShort(string strCode = "")
+        public string LanguageBookShort(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["altcode"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1153,11 +1149,11 @@ namespace Chummer
         /// Determine the book's original code by using the alternate code.
         /// </summary>
         /// <param name="strCode">Alternate code to look for.</param>
-        public string BookFromAltCode(string strCode)
+        public string BookFromAltCode(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["code"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1170,11 +1166,11 @@ namespace Chummer
         /// Book name (using the translated version if applicable).
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookLong(string strCode)
+        public string LanguageBookLong(string strCode, string strLanguage)
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (objXmlBook != null)
                 {
                     string strReturn = objXmlBook["translate"]?.InnerText;

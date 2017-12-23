@@ -99,7 +99,7 @@ namespace Chummer
             {
                 if (cboSkillSpecialisations.SelectedValue == null)
                 {
-                    return cboSkillSpecialisations.Text;
+                    return LanguageManager.ReverseTranslateExtra(cboSkillSpecialisations.Text, GlobalOptions.Language);
                 }
                 else
                 {

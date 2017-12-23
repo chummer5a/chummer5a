@@ -8,19 +8,9 @@ namespace Chummer.Backend.Skills
     {
         public static bool HasSpecialization(this Skill skill, string specialization)
         {
-            return skill.Specializations.Any(x => (x.Name == specialization || x.DisplayName == specialization)) && !skill.CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == skill.Name && string.IsNullOrEmpty(objImprovement.Condition));
+            return skill.Specializations.Any(x => (x.Name == specialization || x.DisplayName(GlobalOptions.Language) == specialization)) && !skill.CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == skill.Name && string.IsNullOrEmpty(objImprovement.Condition));
         }
-
-        public static string GetDisplayName(this Skill skill)
-        {
-            return skill.DisplayName;
-        }
-
-        public static string GetDisplayCategory(this Skill skill)
-        {
-            return skill.DisplayCategory;
-        }
-
+        
         public static int TotalCostSp(this IEnumerable<Skill> list)
         {
             return list.Sum(skill => skill.CurrentSpCost());

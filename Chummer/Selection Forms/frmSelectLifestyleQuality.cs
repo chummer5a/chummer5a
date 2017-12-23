@@ -125,7 +125,7 @@ namespace Chummer
             if (chkFree.Checked)
                 lblBP.Text = LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language);
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlQuality["page"].InnerText;
             if (objXmlQuality["altpage"] != null)
                 strPage = objXmlQuality["altpage"].InnerText;
@@ -175,7 +175,7 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
             }
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)
@@ -463,7 +463,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += "\n\t" + objQuality.DisplayNameShort;
+                                        strForbidden += "\n\t" + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;
@@ -475,7 +475,7 @@ namespace Chummer
                                     if (objQuality.Name == objXmlForbidden.InnerText && objQuality.Name != _strIgnoreQuality)
                                     {
                                         blnRequirementForbidden = true;
-                                        strForbidden += "\n\t" + objQuality.DisplayNameShort;
+                                        strForbidden += "\n\t" + objQuality.DisplayNameShort(GlobalOptions.Language);
                                     }
                                 }
                                 break;

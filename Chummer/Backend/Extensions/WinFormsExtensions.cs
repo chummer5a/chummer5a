@@ -123,7 +123,7 @@ namespace Chummer
             {
                 TreeNode newNode = new TreeNode
                 {
-                    Text = input.DisplayName,
+                    Text = input.DisplayName(GlobalOptions.Language),
                     Tag = input.InternalId,
                     ContextMenuStrip = strip
                 };
@@ -135,7 +135,7 @@ namespace Chummer
                 {
                     TreeNode objAdvantageNode = new TreeNode
                     {
-                        Text = objAdvantage.DisplayName,
+                        Text = objAdvantage.DisplayName(GlobalOptions.Language),
                         Tag = objAdvantage.InternalId
                     };
                     newNode.Nodes.Add(objAdvantageNode);

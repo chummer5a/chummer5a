@@ -297,14 +297,14 @@ namespace Chummer
                     string strBook = string.Empty;
                     string strPage = string.Empty;
                     if (objXmlPower["source"] != null)
-                        strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText);
+                        strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
                     if (objXmlPower["page"] != null)
                         strPage = objXmlPower["page"].InnerText;
                     if (objXmlPower["altpage"] != null)
                         strPage = objXmlPower["altpage"].InnerText;
                     lblCritterPowerSource.Text = strBook + " " + strPage;
                     if (objXmlPower["source"] != null)
-                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 

@@ -169,13 +169,13 @@ namespace Chummer
             cboChoice1.EndUpdate();
             cboChoice2.EndUpdate();
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlMentor["page"].InnerText;
             if (objXmlMentor["altpage"] != null)
                 strPage = objXmlMentor["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion
 

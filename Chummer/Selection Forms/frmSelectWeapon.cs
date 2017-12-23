@@ -204,7 +204,7 @@ namespace Chummer
 
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblWeaponAvail.Text);
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlWeapon["source"]?.InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language);
             string strPage = objXmlWeapon["page"]?.InnerText;
             if (objXmlWeapon["altpage"] != null)
                 strPage = objXmlWeapon["altpage"].InnerText;
@@ -229,7 +229,7 @@ namespace Chummer
                 }
             lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
@@ -270,7 +270,7 @@ namespace Chummer
                     objWeapon.Create(objXmlWeapon, null, null, null, null, null, true, false);
 
                     string strID = objWeapon.SourceID.ToString();
-                    string strWeaponName = objWeapon.DisplayName;
+                    string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     int intAccuracy = objWeapon.TotalAccuracy;
                     string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -286,10 +286,10 @@ namespace Chummer
                     {
                         if (strAccessories.Length > 0)
                             strAccessories += "\n";
-                        strAccessories += objAccessory.DisplayName;
+                        strAccessories += objAccessory.DisplayName(GlobalOptions.Language);
                     }
                     string strAvail = objWeapon.TotalAvail(GlobalOptions.Language);
-                    string strSource = objWeapon.Source + " " + objWeapon.Page;
+                    string strSource = objWeapon.Source + " " + objWeapon.DisplayPage(GlobalOptions.Language);
                     decimal decCost = objWeapon.Cost;
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, decCost);

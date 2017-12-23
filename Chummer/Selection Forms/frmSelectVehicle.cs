@@ -369,13 +369,13 @@ namespace Chummer
             }
 
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlVehicle["source"]?.InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language);
             string strPage = objXmlVehicle["page"]?.InnerText;
             if (objXmlVehicle["altpage"] != null)
                 strPage = objXmlVehicle["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void RefreshList()

@@ -12,7 +12,7 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Weapon Accessory.
     /// </summary>
-    public class WeaponAccessory : IItemWithGuid, INamedItem, IItemWithNode
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID = Guid.Empty;
         private readonly Character _objCharacter;
@@ -36,8 +36,6 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private string _strAltName = string.Empty;
-        private string _strAltPage = string.Empty;
         private string _strDicePool = string.Empty;
         private int _intAccuracy = 0;
         private int _intRating = 0;
@@ -111,7 +109,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -206,17 +204,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objAccessoryNode = MyXmlNode;
-                if (objAccessoryNode != null)
-                {
-                    _strAltName = objAccessoryNode["translate"]?.InnerText ?? string.Empty;
-                    _strAltPage = objAccessoryNode["altpage"]?.InnerText ?? string.Empty;
-                }
-            }
-
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
         }
 
@@ -327,15 +315,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objAccessoryNode = MyXmlNode;
-                if (objAccessoryNode != null)
-                {
-                    objAccessoryNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objAccessoryNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-            }
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             objNode.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
             objNode.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
@@ -359,7 +338,7 @@ namespace Chummer.Backend.Equipment
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("accessory");
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
             objWriter.WriteElementString("rc", _strRC);
@@ -368,8 +347,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("accuracy", _intAccuracy.ToString(objCulture));
             if (_lstGear.Count > 0)
             {
@@ -562,26 +541,27 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltName))
-                    return _strAltName;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return _strName;
-            }
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
+            string strReturn = DisplayNameShort(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
             {
-                return DisplayNameShort;
+                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ")";
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -743,19 +723,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltPage))
-                    return _strAltPage;
-
+            if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
-            }
-            set
-            {
-                _strPage = value;
-            }
+
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -1099,14 +1072,11 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
-        public XmlNode MyXmlNode
+        public XmlNode GetNode()
         {
-            get
-            {
-                if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                    _objCachedMyXmlNode = XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
-                return _objCachedMyXmlNode;
-            }
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml")?.SelectSingleNode("/chummer/accessories/accessory[name = \"" + Name + "\"]");
+            return _objCachedMyXmlNode;
         }
         #endregion
     }

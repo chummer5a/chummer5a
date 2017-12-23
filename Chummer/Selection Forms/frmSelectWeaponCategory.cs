@@ -72,7 +72,7 @@ namespace Chummer
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
             {
-                lstCategory.Add(new ListItem("Cyberware", "Cyberware"));
+                lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware", GlobalOptions.Language)));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -126,6 +126,8 @@ namespace Chummer
             set
             {
                 _strForceCategory = value;
+                if (value == "Cyberware")
+                    _strForceCategory = "Cyberweapon";
             }
         }
         #endregion

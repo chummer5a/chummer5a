@@ -127,7 +127,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ")" : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -205,7 +205,7 @@ namespace Chummer.UI.Skills
             if (ParentForm is frmCareer parrent)
             {
                 string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
-                    _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
+                    _skill.DisplayName(GlobalOptions.Language), _skill.Rating + 1, _skill.UpgradeKarmaCost());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;
@@ -256,7 +256,7 @@ namespace Chummer.UI.Skills
             _skill.AddSpecialization(selectForm.SelectedItem);
 
             //TODO turn this into a databinding, but i don't care enough right now
-            lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
+            lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName(GlobalOptions.Language)));
 
             parrent?.ScheduleCharacterUpdate();
         }

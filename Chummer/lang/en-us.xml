@@ -5543,6 +5543,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Wounds</text>
     </string>
     <string>
+      <key>Tip_Skill_Cannot_Default</key>
+      <text>You cannot default in this skill.</text>
+    </string>
+    <string>
       <key>Tip_SkillGroup_Skills</key>
       <text>Skills in this Group:</text>
     </string>

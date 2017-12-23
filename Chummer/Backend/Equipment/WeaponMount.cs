@@ -11,7 +11,7 @@ namespace Chummer.Backend.Equipment
 	/// <summary>
 	/// Vehicle Modification.
 	/// </summary>
-	public class WeaponMount : IItemWithGuid, INamedItem
+	public class WeaponMount : IHasInternalId, IHasName, IHasXmlNode
     {
 		private Guid _guiID;
 		private decimal _decMarkup;
@@ -22,9 +22,6 @@ namespace Chummer.Backend.Equipment
 		private bool _blnInstalled = true;
 		private List<Weapon> _weapons = new List<Weapon>();
 		private string _strNotes = string.Empty;
-		private string _strAltName = string.Empty;
-		private string _strAltCategory = string.Empty;
-		private string _strAltPage = string.Empty;
 		private string _strExtra = string.Empty;
 		private string _strWeaponMountCategories = string.Empty;
 		private bool _blnDiscountCost;
@@ -33,6 +30,7 @@ namespace Chummer.Backend.Equipment
 		private string _strLimit = string.Empty;
 		private int _intSlots = 0;
 		private string _strCost = string.Empty;
+        private string _strSourceId = string.Empty;
 
 		private readonly Vehicle _vehicle;
 	    private readonly Character _character;
@@ -55,6 +53,7 @@ namespace Chummer.Backend.Equipment
         {
             Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
+            objXmlMod.TryGetStringFieldQuickly("id", ref _strSourceId);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -93,7 +92,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -105,21 +104,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objModNode = MyXmlNode;
-                if (objModNode != null)
-                {
-                    objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-                objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
-            }
-
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
         }
 
@@ -131,7 +116,8 @@ namespace Chummer.Backend.Equipment
 		{
 			objWriter.WriteStartElement("weaponmount");
 			objWriter.WriteElementString("guid", _guiID.ToString());
-			objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("sourceid", _strSourceId.ToString());
+            objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limit", _strLimit);
 			objWriter.WriteElementString("slots", _intSlots.ToString());
@@ -178,8 +164,12 @@ namespace Chummer.Backend.Equipment
 			{
 				objNode.TryGetField("guid", Guid.TryParse, out _guiID);
 			}
-			objNode.TryGetStringFieldQuickly("name", ref _strName);
-			objNode.TryGetStringFieldQuickly("category", ref _strCategory);
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (!objNode.TryGetStringFieldQuickly("sourceid", ref _strSourceId))
+            {
+                _strSourceId = XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + _strName + "\"]")?["id"]?.InnerText ?? Guid.NewGuid().ToString();
+            }
+            objNode.TryGetStringFieldQuickly("category", ref _strCategory);
 			objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
 			objNode.TryGetInt32FieldQuickly("slots", ref _intSlots);
 			objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
@@ -211,20 +201,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 			objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
-
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-            {
-                XmlNode objModNode = MyXmlNode;
-                if (objModNode != null)
-                {
-                    objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                    objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-                }
-
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-                objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-                _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
-            }
         }
 
 		/// <summary>
@@ -234,15 +210,15 @@ namespace Chummer.Backend.Equipment
 		public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
 			objWriter.WriteStartElement("mod");
-			objWriter.WriteElementString("name", DisplayNameShort);
-			objWriter.WriteElementString("category", DisplayCategory);
+			objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+			objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
 			objWriter.WriteElementString("limit", _strLimit);
 			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
 			objWriter.WriteElementString("cost", TotalCost.ToString(_character.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_character.Options.NuyenFormat, objCulture));
-			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(_strSource));
-			objWriter.WriteElementString("page", Page);
+			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(Source, strLanguageToPrint));
+			objWriter.WriteElementString("page", Page(strLanguageToPrint));
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
             foreach (Weapon w in _weapons)
@@ -274,7 +250,7 @@ namespace Chummer.Backend.Equipment
             option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["visibility"].InnerText}\" and category = \"Visibility\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
-            t.Text = DisplayName;
+            t.Text = DisplayName(GlobalOptions.Language);
             t.Tag = _guiID.ToString();
         }
         #endregion
@@ -320,15 +296,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Translated Category.
         /// </summary>
-        public string DisplayCategory
+        public string DisplayCategory(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltCategory))
-                    return _strAltCategory;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
 
-                return _strCategory;
-            }
+            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -454,19 +427,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltPage))
-                    return _strAltPage;
-
+            if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
-            }
-            set
-            {
-                _strPage = value;
-            }
+
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -682,45 +648,40 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAltName))
-                    return _strAltName;
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return _strName;
-            }
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
-		/// <summary>
-		/// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
-		/// </summary>
-		public string DisplayName
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public string DisplayName(string strLanguage)
 		{
-			get
-			{
-                string strReturn = $"{DisplayNameShort}";
-                if (WeaponMountOptions.Count > 0)
-                {
-                    strReturn += $" ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName).ToArray())})";
-                }
-                
-                return strReturn;
-			}
-        }
-        public XmlNode MyXmlNode
-        {
-            get
+            string strReturn = DisplayNameShort(strLanguage);
+
+            if (WeaponMountOptions.Count > 0)
             {
-                return XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _guiID.ToString() + "\"]");
+                strReturn += $" ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName(strLanguage)).ToArray())})";
             }
+
+            return strReturn;
         }
 
+        private XmlNode _objCachedMyXmlNode = null;
+        public XmlNode GetNode()
+        {
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _strSourceId + "\"]");
+            return _objCachedMyXmlNode;
+        }
 	    #endregion
     }
 
-    public class WeaponMountOption
+    public class WeaponMountOption : IHasName, IHasXmlNode
     {
         private readonly Character _objCharacter;
         private string _strAvail;
@@ -730,9 +691,6 @@ namespace Chummer.Backend.Equipment
         private string _strCategory;
         private int _intSlots;
         private string _strWeaponMountCategories;
-        private string _strAltName;
-        private string _strAltPage;
-        private string _strAltCategory;
 
         #region Constructor, Create, Save and Load Methods
         public WeaponMountOption(Character objCharacter)
@@ -789,7 +747,7 @@ namespace Chummer.Backend.Equipment
                             intMax = 1000000;
                         frmPickNumber.Minimum = intMin;
                         frmPickNumber.Maximum = intMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -799,25 +757,19 @@ namespace Chummer.Backend.Equipment
                     _strCost = objXmlMod["cost"].InnerText;
             }
             list.Add(this);
-            if (GlobalOptions.Language == "en-us") return;
-            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-            XmlNode objModNode = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString() + "\"]");
-            if (objModNode != null)
-            {
-                objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-            }
-
-            objModNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + _strCategory + "\"]");
-            _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
         }
 
-        public string DisplayName
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                return _strAltName ?? _strName;
-            }
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+
+            return GetNode()?["translate"]?.InnerText ?? Name;
+        }
+
+        public string DisplayName(string strLanguage)
+        {
+            return DisplayNameShort(strLanguage);
         }
 
         /// <summary>
@@ -843,6 +795,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objVehicle">Vehicle that the mod is attached to.</param>
         public void Load(XmlNode objNode, Vehicle objVehicle)
         {
+            _objCachedMyXmlNode = null;
             Guid.TryParse(objNode["id"].InnerText, out _sourceID);
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -850,18 +803,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
-
-            if (GlobalOptions.Language == "en-us") return;
-            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-            XmlNode objModNode = objXmlDocument.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{_sourceID}\"]");
-            if (objModNode != null)
-            {
-                objModNode.TryGetStringFieldQuickly("translate", ref _strAltName);
-                objModNode.TryGetStringFieldQuickly("altpage", ref _strAltPage);
-            }
-
-            objModNode = objXmlDocument.SelectSingleNode($"/chummer/categories/category[. = \"{_strCategory}\"]");
-            _strAltCategory = objModNode?.Attributes?["translate"]?.InnerText;
         }
         #endregion
 
@@ -885,9 +826,26 @@ namespace Chummer.Backend.Equipment
         /// Category of the weapon mount.
         /// </summary>
         public string Category => _strCategory;
+
+        public string Name
+        {
+            get => _strName;
+            set => _strName = value;
+        }
         #endregion
 
         #region Complex Properties
+        /// <summary>
+        /// Display text for the category of the weapon mount.
+        /// </summary>
+        public string DisplayCategory(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Category;
+
+            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+        }
+
         /// <summary>
         /// Total Availability.
         /// </summary>
@@ -924,6 +882,14 @@ namespace Chummer.Backend.Equipment
             strReturn = intAvail.ToString() + strAvailText;
 
             return strReturn;
+        }
+
+        private XmlNode _objCachedMyXmlNode = null;
+        public XmlNode GetNode()
+        {
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml").SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString() + "\"]");
+            return _objCachedMyXmlNode;
         }
         #endregion
     }

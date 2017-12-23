@@ -385,7 +385,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (string.IsNullOrEmpty(_toolTip))
-                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
+                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName(GlobalOptions.Language)));
                 return _toolTip;
             }
         }

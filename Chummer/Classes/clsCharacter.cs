@@ -1267,7 +1267,7 @@ namespace Chummer
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
                         _lstQualities.Add(objQuality);
-                        if (objQuality.MyXmlNode?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
+                        if (objQuality.GetNode()?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
                         if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
@@ -1280,14 +1280,14 @@ namespace Chummer
                             objQuality.Name == "The Warrior's Way") && objQuality.Bonus?.HasChildNodes == false)
                         {
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                            XmlNode objNode = objQuality.MyXmlNode;
+                            XmlNode objNode = objQuality.GetNode();
                             if (objNode != null)
                             {
                                 objQuality.Bonus = objNode["bonus"];
                                 if (objQuality.Bonus != null)
                                 {
                                     ImprovementManager.ForcedValue = objQuality.Extra;
-                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort);
+                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -1308,7 +1308,7 @@ namespace Chummer
                                     if (blnDoFirstLevel)
                                     {
                                         ImprovementManager.ForcedValue = objQuality.Extra;
-                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort);
+                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, false, 1, objQuality.DisplayNameShort(GlobalOptions.Language));
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -1435,7 +1435,7 @@ namespace Chummer
                 {
                     if (LastSavedVersion <= Version.Parse("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                     {
-                        XmlNode objNode = objCyberware.MyXmlNode;
+                        XmlNode objNode = objCyberware.GetNode();
                         if (objNode != null)
                         {
                             objCyberware.Bonus = objNode["bonus"];
@@ -1447,13 +1447,13 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                 if (objCyberware.Bonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                 }
                                 if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort);
+                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, false, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalOptions.Language));
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                 }
@@ -1491,7 +1491,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                 ImprovementManager.ForcedValue = objCyberware.Forced;
-                            ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(this, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
                         }
@@ -1662,14 +1662,14 @@ namespace Chummer
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
 
-                XmlNode objNode = objLivingPersonaQuality.MyXmlNode;
+                XmlNode objNode = objLivingPersonaQuality.GetNode();
                 if (objNode != null)
                 {
                     objLivingPersonaQuality.Bonus = objNode["bonus"];
                     if (objLivingPersonaQuality.Bonus != null)
                     {
                         ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1, objLivingPersonaQuality.DisplayNameShort);
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus, false, 1, objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -1690,7 +1690,7 @@ namespace Chummer
                         if (blnDoFirstLevel)
                         {
                             ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus, false, 1, objLivingPersonaQuality.DisplayNameShort);
+                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId, objLivingPersonaQuality.FirstLevelBonus, false, 1, objLivingPersonaQuality.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -2990,9 +2990,9 @@ namespace Chummer
                     Cyberware objReturnCyberware = Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnCyberware != null)
                     {
-                        string strWareReturn = objReturnCyberware.DisplayNameShort;
+                        string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
                         if (objReturnCyberware.Parent != null)
-                            strWareReturn += " (" + objReturnCyberware.Parent.DisplayNameShort + ")";
+                            strWareReturn += " (" + objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ")";
                         return strWareReturn;
                     }
                     foreach (Vehicle objVehicle in Vehicles)
@@ -3002,11 +3002,11 @@ namespace Chummer
                             objReturnCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnCyberware != null)
                             {
-                                string strWareReturn = objReturnCyberware.DisplayNameShort;
+                                string strWareReturn = objReturnCyberware.DisplayNameShort(strLanguage);
                                 if (objReturnCyberware.Parent != null)
-                                    strWareReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objReturnCyberware.Parent.DisplayNameShort + ")";
+                                    strWareReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objReturnCyberware.Parent.DisplayNameShort(strLanguage) + ")";
                                 else
-                                    strWareReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ")";
+                                    strWareReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ")";
                                 return strWareReturn;
                             }
                         }
@@ -3016,9 +3016,9 @@ namespace Chummer
                     Gear objReturnGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                     if (objReturnGear != null)
                     {
-                        string strGearReturn = objReturnGear.DisplayNameShort;
+                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                         if (objReturnGear.Parent != null)
-                            strGearReturn += " (" + objReturnGear.Parent.DisplayNameShort + ")" ; 
+                            strGearReturn += " (" + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")" ; 
                         return strGearReturn;
                     }
                     foreach (Weapon objWeapon in Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -3028,11 +3028,11 @@ namespace Chummer
                             objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                             if (objReturnGear != null)
                             {
-                                string strGearReturn = objReturnGear.DisplayNameShort;
+                                string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                 if (objReturnGear.Parent != null)
-                                    strGearReturn += " (" + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                    strGearReturn += " (" + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                                 else
-                                    strGearReturn += " (" + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                    strGearReturn += " (" + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ")";
                                 return strGearReturn;
                             }
                         }
@@ -3042,11 +3042,11 @@ namespace Chummer
                         objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
-                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objArmor.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                strGearReturn += " (" + objArmor.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                             else
-                                strGearReturn += " (" + objArmor.DisplayNameShort + ")";
+                                strGearReturn += " (" + objArmor.DisplayNameShort(strLanguage) + ")";
                             return strGearReturn;
                         }
                     }
@@ -3055,11 +3055,11 @@ namespace Chummer
                         objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
-                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objCyberware.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                strGearReturn += " (" + objCyberware.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                             else
-                                strGearReturn += " (" + objCyberware.DisplayNameShort + ")";
+                                strGearReturn += " (" + objCyberware.DisplayNameShort(strLanguage) + ")";
                             return strGearReturn;
                         }
                     }
@@ -3068,11 +3068,11 @@ namespace Chummer
                         objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                         if (objReturnGear != null)
                         {
-                            string strGearReturn = objReturnGear.DisplayNameShort;
+                            string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent != null)
-                                strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                             else
-                                strGearReturn += " (" + objVehicle.DisplayNameShort + ")";
+                                strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ")";
                             return strGearReturn;
                         }
                         foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
@@ -3082,11 +3082,11 @@ namespace Chummer
                                 objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
-                                    string strGearReturn = objReturnGear.DisplayNameShort;
+                                    string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null)
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                                     else
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ")";
                                     return strGearReturn;
                                 }
                             }
@@ -3100,11 +3100,11 @@ namespace Chummer
                                     objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                     if (objReturnGear != null)
                                     {
-                                        string strGearReturn = objReturnGear.DisplayNameShort;
+                                        string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                         if (objReturnGear.Parent != null)
-                                            strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                            strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                                         else
-                                            strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objWeapon.DisplayNameShort + ", " + objAccessory.DisplayNameShort + ")";
+                                            strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objWeapon.DisplayNameShort(strLanguage) + ", " + objAccessory.DisplayNameShort(strLanguage) + ")";
                                         return strGearReturn;
                                     }
                                 }
@@ -3114,11 +3114,11 @@ namespace Chummer
                                 objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == objImprovement.SourceName);
                                 if (objReturnGear != null)
                                 {
-                                    string strGearReturn = objReturnGear.DisplayNameShort;
+                                    string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                                     if (objReturnGear.Parent != null)
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objCyberware.DisplayNameShort + ", " + objReturnGear.Parent.DisplayNameShort + ")";
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objCyberware.DisplayNameShort(strLanguage) + ", " + objReturnGear.Parent.DisplayNameShort(strLanguage) + ")";
                                     else
-                                        strGearReturn += " (" + objVehicle.DisplayNameShort + ", " + objVehicleMod.DisplayNameShort + ", " + objCyberware.DisplayNameShort + ")";
+                                        strGearReturn += " (" + objVehicle.DisplayNameShort(strLanguage) + ", " + objVehicleMod.DisplayNameShort(strLanguage) + ", " + objCyberware.DisplayNameShort(strLanguage) + ")";
                                     return strGearReturn;
                                 }
                             }
@@ -3158,7 +3158,7 @@ namespace Chummer
                     {
                         if (objMetamagic.InternalId == objImprovement.SourceName)
                         {
-                            return objMetamagic.DisplayNameShort;
+                            return objMetamagic.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3167,7 +3167,7 @@ namespace Chummer
                     {
                         if (objArt.InternalId == objImprovement.SourceName)
                         {
-                            return objArt.DisplayNameShort;
+                            return objArt.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3176,7 +3176,7 @@ namespace Chummer
                     {
                         if (objEnhancement.InternalId == objImprovement.SourceName)
                         {
-                            return objEnhancement.DisplayNameShort;
+                            return objEnhancement.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3185,7 +3185,7 @@ namespace Chummer
                     {
                         if (objArmor.InternalId == objImprovement.SourceName)
                         {
-                            return objArmor.DisplayNameShort;
+                            return objArmor.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3196,7 +3196,7 @@ namespace Chummer
                         {
                             if (objMod.InternalId == objImprovement.SourceName)
                             {
-                                return objMod.DisplayNameShort + " (" + objArmor.DisplayNameShort + ")";
+                                return objMod.DisplayNameShort(strLanguage) + " (" + objArmor.DisplayNameShort(strLanguage) + ")";
                             }
                         }
                     }
@@ -3228,7 +3228,7 @@ namespace Chummer
                     {
                         if (objQuality.InternalId == objImprovement.SourceName)
                         {
-                            return objQuality.DisplayNameShort;
+                            return objQuality.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3239,7 +3239,7 @@ namespace Chummer
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {
-                                return objAdvantage.DisplayName;
+                                return objAdvantage.DisplayName(strLanguage);
                             }
                         }
                     }
@@ -3249,7 +3249,7 @@ namespace Chummer
                     {
                         if (objMentorSpirit.InternalId == objImprovement.SourceName)
                         {
-                            return objMentorSpirit.DisplayName;
+                            return objMentorSpirit.DisplayNameShort(strLanguage);
                         }
                     }
                     break;

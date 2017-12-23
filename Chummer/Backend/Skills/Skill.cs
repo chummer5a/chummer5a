@@ -17,7 +17,7 @@ using Chummer.Backend.Attributes;
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_name} {_base} {_karma}")]
-    public partial class Skill : INotifyPropertyChanged
+    public partial class Skill : INotifyPropertyChanged, IHasName, IHasXmlNode
     {
         /// <summary>
         /// Called during save to allow derived classes to save additional infomation required to rebuild state
@@ -34,8 +34,6 @@ namespace Chummer.Backend.Skills
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(); //List of suggested specializations for this skill
-        private readonly string _strTranslatedName = null;
-        private string _strTranslatedCategory = null;
         private bool _blnDefault;
 
         public void WriteTo(XmlTextWriter writer)
@@ -71,7 +69,6 @@ namespace Chummer.Backend.Skills
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            KnowledgeSkill objSkillAsKnowledgeSkill = this as KnowledgeSkill;
             objWriter.WriteStartElement("skill");
 
             int rating = PoolOtherAttribute(AttributeObject.TotalValue);
@@ -84,13 +81,10 @@ namespace Chummer.Backend.Skills
 
             int ratingModifiers = RatingModifiers, dicePoolModifiers = PoolModifiers;
 
-            if (objSkillAsKnowledgeSkill == null)
-                objWriter.WriteElementString("name", DisplayName);
-            else
-                objWriter.WriteElementString("name", objSkillAsKnowledgeSkill.WriteableName);
+            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayNameMethod(strLanguageToPrint) ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
-            objWriter.WriteElementString("skillcategory", DisplayCategory);
+            objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
             objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
             objWriter.WriteElementString("default", Default.ToString());
@@ -104,12 +98,12 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString());
             objWriter.WriteElementString("base", Base.ToString(objCulture));
             objWriter.WriteElementString("karma", Karma.ToString(objCulture));
-            objWriter.WriteElementString("spec", DisplaySpecialization);
+            objWriter.WriteElementString("spec", DisplaySpecializationMethod(strLanguageToPrint));
             objWriter.WriteElementString("attribute", Attribute);
             objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
             objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString(objCulture));
@@ -119,7 +113,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteStartElement("skillspecializations");
             foreach (SkillSpecialization objSpec in Specializations)
             {
-                objSpec.Print(objWriter);
+                objSpec.Print(objWriter, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
 
@@ -209,11 +203,8 @@ namespace Chummer.Backend.Skills
 
             foreach (XmlNode spec in n.SelectNodes("specs/spec"))
             {
-                skill.Specializations.Add(SkillSpecialization.Load(spec));
+                skill.Specializations.Add(SkillSpecialization.Load(spec, skill));
             }
-            XmlNode objCategoryNode = skills.SelectSingleNode($"/chummer/categories/category[. = '{skill.SkillCategory}']");
-
-            skill.DisplayCategory = objCategoryNode?.Attributes?["translate"]?.InnerText ?? skill.SkillCategory;
 
             return skill;
         }
@@ -280,7 +271,7 @@ namespace Chummer.Backend.Skills
 
             var v = from XmlNode node
                 in n.SelectNodes("skillspecializations/skillspecialization")
-                    select SkillSpecialization.Load(node);
+                    select SkillSpecialization.Load(node, skill);
             var q = v.ToList();
             if (q.Count != 0)
             {
@@ -339,7 +330,6 @@ namespace Chummer.Backend.Skills
 
                     s = new Skill(character, n);
                 }
-                s.DisplayCategory = knoNode?.Attributes?["translate"]?.InnerText ?? string.Empty;
             }
 
 
@@ -375,8 +365,6 @@ namespace Chummer.Backend.Skills
                 SkillId = Guid.Parse(n["suid"].InnerText);
             if (n["guid"] != null)
                 Id = Guid.Parse(n["guid"].InnerText);
-
-            _strTranslatedName = n["translate"]?.InnerText;
 
             AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
             
@@ -566,10 +554,25 @@ namespace Chummer.Backend.Skills
             get { return SuggestedSpecializations; }
         }
 
-        private string _cachedStringSpec = null;
-        public virtual string DisplaySpecialization
+        private Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
+        public virtual string DisplaySpecializationMethod(string strLanguage)
         {
-            get { return _cachedStringSpec = _cachedStringSpec ?? string.Join(", ", Specializations.Select(x => x.DisplayName)); }
+            if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+                return strReturn;
+
+            strReturn = string.Join(", ", Specializations.Select(x => x.DisplayName(strLanguage)));
+
+            _cachedStringSpec.Add(strLanguage, strReturn);
+
+            return strReturn;
+        }
+
+        public string DisplaySpecialization
+        {
+            get
+            {
+                return DisplaySpecializationMethod(GlobalOptions.Language);
+            }
         }
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
@@ -587,7 +590,7 @@ namespace Chummer.Backend.Skills
 
                 if (Specializations.Count > 0)
                 {
-                    return Specializations[0].DisplayName;
+                    return Specializations[0].DisplayName(GlobalOptions.Language);
                 }
 
                 return string.Empty;
@@ -610,17 +613,17 @@ namespace Chummer.Backend.Skills
                 }
                 else if (Specializations.Count == 0)
                 {
-                    Specializations.Add(new SkillSpecialization(value, false));
+                    Specializations.Add(new SkillSpecialization(value, false, this));
                 }
                 else
                 {
                     if (Specializations[0].Free)
                     {
-                        Specializations.MergeInto(new SkillSpecialization(value, false), (x, y) => x.Free == y.Free ? 0 : (x.Free ? 1 : -1));
+                        Specializations.MergeInto(new SkillSpecialization(value, false, this), (x, y) => x.Free == y.Free ? 0 : (x.Free ? 1 : -1));
                     }
                     else
                     {
-                        Specializations[0] = new SkillSpecialization(value, false);
+                        Specializations[0] = new SkillSpecialization(value, false, this);
                     }
                 }
             }
@@ -632,8 +635,7 @@ namespace Chummer.Backend.Skills
             {
                 if (!Default && !Leveled)
                 {
-                    return "You cannot default in this skill";
-                    //TODO translate (could not find it in lang file, did not check old source)
+                    return LanguageManager.GetString("Tip_Skill_Cannot_Default", GlobalOptions.Language);
                 }
 
                 IList<Improvement> lstRelevantImprovements = RelevantImprovements();
@@ -707,7 +709,7 @@ namespace Chummer.Backend.Skills
                     foreach (Cyberware cyberware in _character.Cyberware.Where(x => x.Name.Contains(" Arm") || x.Name.Contains(" Hand")))
                     {
                         s.Append("\n");
-                        s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
+                        s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort(GlobalOptions.Language));
                         if (cyberware.Grade.Name != "Standard")
                         {
                             s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
@@ -753,7 +755,7 @@ namespace Chummer.Backend.Skills
                             if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                                 s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
                             s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
-                            s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
+                            s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort(GlobalOptions.Language));
                             if (cyberware.Grade.Name != "Standard")
                             {
                                 s.AppendFormat("({0}) ", cyberware.Grade.DisplayName);
@@ -835,7 +837,7 @@ namespace Chummer.Backend.Skills
                     strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + CommonFunctions.WordWrap(_strNotes, 100) + "\n\n";
                 }
 
-                strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {Page}";
+                strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CharacterObject.Options.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {Page}";
 
                 return strReturn;
             }
@@ -868,21 +870,29 @@ namespace Chummer.Backend.Skills
         {
             get { return AttributeObject.TotalValue; }
         }
-
-        //TODO: Add translation support
-        public string DisplayName
+        
+        public string DisplayName(string strLanguage)
         {
-            get { return _strTranslatedName ?? Name; }
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
-        public string DisplayCategory
+        public string DisplayCategory(string strLanguage)
         {
-            get { return _strTranslatedCategory ?? _strCategory; }
-            set { _strTranslatedCategory = value; }
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return SkillCategory;
+
+            string strReturn = XmlManager.Load("skills.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + SkillCategory + "\"]")?.Attributes?["translate"]?.InnerText;
+
+            return strReturn ?? SkillCategory;
         }
+
         public virtual string DisplayPool
         {
-            get {
+            get
+            {
                 return DisplayOtherAttribue(AttributeObject.TotalValue);
             }
         }
@@ -925,6 +935,17 @@ namespace Chummer.Backend.Skills
                 _cachedWareRating = value;
             }
         }
+
+        private XmlNode _objCachedMyXmlNode = null;
+        public XmlNode GetNode()
+        {
+            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("skills.xml")?.SelectSingleNode("/chummer/" + (IsKnowledgeSkill ? "knowledgeskills" : "skills") + "/skill[id = \"" + SkillId + "\"]");
+            }
+            return _objCachedMyXmlNode;
+        }
+
         /// <summary>
         /// The attributeValue this skill have from Skillwires + Skilljack or Active Hardwires
         /// </summary>
@@ -1062,9 +1083,9 @@ namespace Chummer.Backend.Skills
 
         private void SpecializationsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
         {
-            _cachedStringSpec = null;
+            _cachedStringSpec.Clear();
             OnPropertyChanged(nameof(Specialization));
-            OnPropertyChanged(nameof(DisplaySpecialization));
+            OnPropertyChanged(nameof(DisplaySpecializationMethod));
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]

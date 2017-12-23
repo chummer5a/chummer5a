@@ -84,13 +84,13 @@ namespace Chummer
             // Display the Program information.
             XmlNode objXmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + lstOptions.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlOption["source"].InnerText);
+            string strBook = _objCharacter.Options.LanguageBookShort(objXmlOption["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlOption["page"].InnerText;
             if (objXmlOption["altpage"] != null)
                 strPage = objXmlOption["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlOption["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlOption["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
