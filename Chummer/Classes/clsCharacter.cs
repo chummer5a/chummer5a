@@ -2019,7 +2019,7 @@ namespace Chummer
         public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture)
 #endif
         {
-            string strLanguageToPrint = objCulture.TwoLetterISOLanguageName + '-' + (new RegionInfo(objCulture.LCID)).TwoLetterISORegionName;
+            string strLanguageToPrint = objCulture.TwoLetterISOLanguageName.ToLower() + '-' + (new RegionInfo(objCulture.LCID)).TwoLetterISORegionName.ToLower();
             if (strLanguageToPrint != GlobalOptions.Language)
             {
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage && !LanguageManager.DictionaryLanguages.ContainsKey(strLanguageToPrint))
