@@ -278,42 +278,16 @@ namespace Chummer
 
         private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool isEnabled = cboLanguage.SelectedValue != null && cboLanguage.SelectedValue.ToString() != GlobalOptions.DefaultLanguage;
+            _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage;
+
+            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
             cmdVerify.Enabled = isEnabled;
             cmdVerifyData.Enabled = isEnabled;
-
-            _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage;
 
             if (!blnLoading)
             {
                 Cursor = Cursors.WaitCursor;
-                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
-                // Strip away the language prefix
-                if (strOldSelected.Contains(Path.DirectorySeparatorChar))
-                    strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                PopulateXsltList();
-                if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
-                    cboXSLT.SelectedValue = strOldSelected;
-                else
-                    cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, strOldSelected);
-                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-                if (cboXSLT.SelectedIndex == -1 && cboXSLT.Items.Count > 0)
-                {
-                    if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
-                        cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
-                    else
-                        cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
-                    if (cboXSLT.SelectedIndex == -1)
-                    {
-                        cboXSLT.SelectedIndex = 0;
-                    }
-                }
-                LanguageManager.Translate(_strSelectedLanguage, this);
-                PopulateBuildMethodList();
-                PopulateLimbCountList();
-                PopulateSourcebookTreeView();
-                SetToolTips();
-                MoveControls();
+                TranslateForm();
                 Cursor = Cursors.Default;
             }
             
@@ -511,6 +485,19 @@ namespace Chummer
         #endregion
 
         #region Methods
+        private void TranslateForm()
+        {
+            LanguageManager.Translate(_strSelectedLanguage, this);
+            PopulateBuildMethodList();
+            PopulateLimbCountList();
+            SetToolTips();
+            PopulateSettingsList();
+            PopulateGlobalOptions();
+            PopulateXsltList();
+            PopulatePDFParameters();
+            MoveControls();
+        }
+
         private void MoveControls()
         {
             int intWidth = 0;
@@ -665,21 +652,44 @@ namespace Chummer
             lblKarmaSustainingFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
             lblKarmaWeaponFocusExtra.Left = lblKarmaAlchemicalFocusExtra.Left;
 
-            // Determine where the widest control ends so we can change the window with to accommodate it.
-            intWidth = (from Control objControl in tabGeneral.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
-            intWidth = (from Control objControl in tabKarmaCosts.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
-            intWidth = (from Control objControl in tabOptionalRules.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
-            intWidth = (from Control objControl in tabHouseRules.Controls select objControl.Left + objControl.Width).Concat(new[] {intWidth}).Max();
-
-            // Change the window size.
-            Width = intWidth + 29;
-            Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
-
             intWidth = (from TreeNode objNode in treSourcebook.Nodes select objNode.Bounds.Left * 2 + objNode.Bounds.Width).Concat(new[] { treSourcebook.Width }).Max();
-            treSourcebook.Width = intWidth + 12;
+            treSourcebook.Width = intWidth;
             cmdEnableSourcebooks.Left = treSourcebook.Left;
             cmdEnableSourcebooks.Width = treSourcebook.Width;
             tabControl2.Left = treSourcebook.Right + 6;
+
+            // Determine where the widest control ends so we can change the window with to accommodate it.
+            intWidth = 0;
+            foreach (Control objControl in tabGeneral.Controls)
+            {
+                int intTempWidth = objControl.Left + objControl.Width;
+                if (intTempWidth > intWidth)
+                    intWidth = intTempWidth;
+            }
+            foreach (Control objControl in tabKarmaCosts.Controls)
+            {
+                int intTempWidth = objControl.Left + objControl.Width;
+                if (intTempWidth > intWidth)
+                    intWidth = intTempWidth;
+            }
+            foreach (Control objControl in tabOptionalRules.Controls)
+            {
+                int intTempWidth = objControl.Left + objControl.Width;
+                if (intTempWidth > intWidth)
+                    intWidth = intTempWidth;
+            }
+            foreach (Control objControl in tabHouseRules.Controls)
+            {
+                int intTempWidth = objControl.Left + objControl.Width;
+                if (intTempWidth > intWidth)
+                    intWidth = intTempWidth;
+            }
+
+            // Change the window size.
+            if (intWidth > Width)
+                Width = intWidth;
+            Height = tabControl1.Top + tabControl1.Height + cmdOK.Height + 55;
+
             // Centre the OK button.
             cmdOK.Left = (Width / 2) - (cmdOK.Width / 2);
         }
@@ -1151,11 +1161,21 @@ namespace Chummer
                 }
             }
 
+            string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
+
             cboPDFParameters.BeginUpdate();
             cboPDFParameters.ValueMember = "Value";
             cboPDFParameters.DisplayMember = "Name";
             cboPDFParameters.DataSource = lstPdfParameters;
             cboPDFParameters.SelectedIndex = intIndex;
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+            {
+                cboPDFParameters.SelectedValue = strOldSelected;
+                if (cboPDFParameters.SelectedIndex == -1 && lstPdfParameters.Count > 0)
+                    cboPDFParameters.SelectedIndex = 0;
+            }
+
             cboPDFParameters.EndUpdate();
         }
 
@@ -1198,10 +1218,20 @@ namespace Chummer
                 lstSettings.Add(new ListItem(Path.GetFileName(filePath), node.InnerText));
             }
 
+            string strOldSelected = cboSetting.SelectedValue?.ToString();
+
             cboSetting.BeginUpdate();
             cboSetting.ValueMember = "Value";
             cboSetting.DisplayMember = "Name";
             cboSetting.DataSource = lstSettings;
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+            {
+                cboSetting.SelectedValue = strOldSelected;
+                if (cboSetting.SelectedIndex == -1 && lstSettings.Count > 0)
+                    cboSetting.SelectedIndex = 0;
+            }
+
             cboSetting.EndUpdate();
         }
 
@@ -1315,10 +1345,36 @@ namespace Chummer
                 lstFiles.AddRange(GetXslFilesFromOmaeDirectory(_strSelectedLanguage));
             }
 
+            string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+            // Strip away the language prefix
+            if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+
             cboXSLT.BeginUpdate();
             cboXSLT.ValueMember = "Value";
             cboXSLT.DisplayMember = "Name";
             cboXSLT.DataSource = lstFiles;
+
+            if (!string.IsNullOrEmpty(strOldSelected))
+            {
+                if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
+                    cboXSLT.SelectedValue = strOldSelected;
+                else
+                    cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, strOldSelected);
+                // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
+                if (cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
+                {
+                    if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
+                        cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    else
+                        cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                    if (cboXSLT.SelectedIndex == -1)
+                    {
+                        cboXSLT.SelectedIndex = 0;
+                    }
+                }
+            }
+
             cboXSLT.EndUpdate();
         }
 
