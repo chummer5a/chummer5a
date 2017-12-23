@@ -236,9 +236,11 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Interfaces\IHasChildren.cs" />
     <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
     <Compile Include="Interfaces\IHasMugshots.cs" />
-    <Compile Include="Interfaces\INamedItemWithGuid.cs" />
+    <Compile Include="Interfaces\IHasInternalId.cs" />
+    <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>

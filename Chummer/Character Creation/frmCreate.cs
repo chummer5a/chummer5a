@@ -14466,8 +14466,8 @@ namespace Chummer
                 chkIncludedInWeapon.Checked = false;
 
                 // Show the Weapon Ranges.
-                lblWeaponRangeMain.Text = objWeapon.Range(GlobalOptions.Language);
-                lblWeaponRangeAlternate.Text = objWeapon.AlternateRange(GlobalOptions.Language);
+                lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                 IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                 lblWeaponRangeShort.Text = dictionaryRanges["short"];
                 lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
@@ -14524,8 +14524,8 @@ namespace Chummer
                     chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                     // Show the Weapon Ranges.
-                    lblWeaponRangeMain.Text = objWeapon.Range(GlobalOptions.Language);
-                    lblWeaponRangeAlternate.Text = objWeapon.AlternateRange(GlobalOptions.Language);
+                    lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                    lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                     IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                     lblWeaponRangeShort.Text = dictionaryRanges["short"];
                     lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
@@ -14670,8 +14670,8 @@ namespace Chummer
                     if (objSelectedWeapon != null)
                     {
                         // Show the Weapon Ranges.
-                        lblWeaponRangeMain.Text = objSelectedWeapon.Range(GlobalOptions.Language);
-                        lblWeaponRangeAlternate.Text = objSelectedWeapon.AlternateRange(GlobalOptions.Language);
+                        lblWeaponRangeMain.Text = objSelectedWeapon.DisplayRange(GlobalOptions.Language);
+                        lblWeaponRangeAlternate.Text = objSelectedWeapon.DisplayAlternateRange(GlobalOptions.Language);
                         IDictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
@@ -16411,8 +16411,8 @@ namespace Chummer
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
 
-                        lblVehicleWeaponRangeMain.Text = objWeapon.Range(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                         IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
@@ -16525,8 +16525,8 @@ namespace Chummer
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
 
-                        lblVehicleWeaponRangeMain.Text = objWeapon.Range(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                         IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
@@ -16827,8 +16827,8 @@ namespace Chummer
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
 
-                        lblVehicleWeaponRangeMain.Text = objWeapon.Range(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.AlternateRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
                         IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];

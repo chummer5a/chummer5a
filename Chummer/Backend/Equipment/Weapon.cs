@@ -698,7 +698,7 @@ namespace Chummer.Backend.Equipment
             IDictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
-            objWriter.WriteElementString("name", Range(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("short", dictionaryRanges["short"]);
             objWriter.WriteElementString("medium", dictionaryRanges["medium"]);
             objWriter.WriteElementString("long", dictionaryRanges["long"]);
@@ -708,7 +708,7 @@ namespace Chummer.Backend.Equipment
 
             // <alternateranges>
             objWriter.WriteStartElement("alternateranges");
-            objWriter.WriteElementString("name", AlternateRange(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayAlternateRange(strLanguageToPrint));
             objWriter.WriteElementString("short", dictionaryRanges["alternateshort"]);
             objWriter.WriteElementString("medium", dictionaryRanges["alternatemedium"]);
             objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
@@ -2855,14 +2855,26 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ModificationSlots => _strWeaponSlots;
 
+        public string Range
+        {
+            get => _strRange;
+            set => _strRange = value;
+        }
+
+        public string AlternateRange
+        {
+            get => _strAlternateRange;
+            set => _strAlternateRange = value;
+        }
+
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
-        public string Range(string strLanguage)
+        public string DisplayRange(string strLanguage)
         {
-            string strRange = _strRange;
+            string strRange = Range;
             if (string.IsNullOrWhiteSpace(strRange))
-                strRange = _strCategory;
+                strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
@@ -2887,9 +2899,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The string for the Weapon's Range category (setter is English-only).
         /// </summary>
-        public string AlternateRange(string strLanguage)
+        public string DisplayAlternateRange(string strLanguage)
         {
-            string strRange = _strAlternateRange.Trim();
+            string strRange = AlternateRange.Trim();
             if (!string.IsNullOrEmpty(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
