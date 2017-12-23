@@ -76,10 +76,9 @@ namespace Chummer
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-                sw.TaskEnd("languagefreestartup");
-                LanguageManager.Load(GlobalOptions.Language, null);
                 // Make sure the default language has been loaded before attempting to open the Main Form.
-
+                LanguageManager.Translate(GlobalOptions.Language, null);
+                sw.TaskEnd("languagefreestartup");
 #if !DEBUG
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
                 {

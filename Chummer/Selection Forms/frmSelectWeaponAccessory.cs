@@ -48,7 +48,7 @@ namespace Chummer
         public frmSelectWeaponAccessory(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -534,9 +534,9 @@ namespace Chummer
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     if (strAvail == "R")
-                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                        strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     else if (strAvail == "F")
-                        strAvail = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -610,7 +610,7 @@ namespace Chummer
             objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

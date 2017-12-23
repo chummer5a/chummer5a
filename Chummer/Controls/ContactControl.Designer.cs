@@ -139,7 +139,6 @@ namespace Chummer
             this.tsAttachCharacter});
             this.cmsContact.Name = "cmsContact";
             this.cmsContact.Size = new System.Drawing.Size(172, 70);
-            this.cmsContact.Opening += new System.ComponentModel.CancelEventHandler(this.cmsContact_Opening);
             // 
             // tsContactOpen
             // 

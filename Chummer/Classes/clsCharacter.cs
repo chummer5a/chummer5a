@@ -924,12 +924,12 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning"));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
             catch (System.UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning"));
+                MessageBox.Show(LanguageManager.GetString("Message_Save_Error_Warning", GlobalOptions.Language));
                 blnErrorFree = false;
             }
             objWriter.Close();
@@ -955,7 +955,7 @@ namespace Chummer
                 }
                 catch (XmlException ex)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
@@ -973,8 +973,8 @@ namespace Chummer
             string strGameEdition = objXmlCharacter["gameedition"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strGameEdition) && strGameEdition != "SR5")
             {
-                MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4"),
-                    LanguageManager.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo,
+                MessageBox.Show(LanguageManager.GetString("Message_IncorrectGameVersion_SR4", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo,
                     MessageBoxIcon.Error);
                 return false;
             }
@@ -1026,8 +1026,8 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(strMissingBooks))
                 {
-                    string strMessage = LanguageManager.GetString("Message_MissingSourceBooks").Replace("{0}", TranslatedBookList(strMissingBooks));
-                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    string strMessage = LanguageManager.GetString("Message_MissingSourceBooks", GlobalOptions.Language).Replace("{0}", TranslatedBookList(strMissingBooks));
+                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingSourceBooks_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                     {
                         return false;
                     }
@@ -1050,8 +1050,8 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(strMissingSourceNames))
                 {
-                    string strMessage = LanguageManager.GetString("Message_MissingCustomDataDirectories").Replace("{0}", strMissingSourceNames);
-                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingCustomDataDirectories_Title"), MessageBoxButtons.YesNo) == DialogResult.No)
+                    string strMessage = LanguageManager.GetString("Message_MissingCustomDataDirectories", GlobalOptions.Language).Replace("{0}", strMissingSourceNames);
+                    if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingCustomDataDirectories_Title", GlobalOptions.Language), MessageBoxButtons.YesNo) == DialogResult.No)
                     {
                         return false;
                     }
@@ -1299,7 +1299,7 @@ namespace Chummer
                                     bool blnDoFirstLevel = true;
                                     foreach (Quality objCheckQuality in Qualities)
                                     {
-                                        if (objCheckQuality != objQuality && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.QualityId == objQuality.Extra && objCheckQuality.QualityId == objQuality.SourceName)
+                                        if (objCheckQuality != objQuality && objCheckQuality.QualityId == objQuality.QualityId && objCheckQuality.Extra == objQuality.Extra && objCheckQuality.SourceName == objQuality.SourceName)
                                         {
                                             blnDoFirstLevel = false;
                                             break;
@@ -1681,7 +1681,7 @@ namespace Chummer
                         bool blnDoFirstLevel = true;
                         foreach (Quality objCheckQuality in Qualities)
                         {
-                            if (objCheckQuality != objLivingPersonaQuality && objCheckQuality.QualityId == objLivingPersonaQuality.QualityId && objCheckQuality.QualityId == objLivingPersonaQuality.Extra && objCheckQuality.QualityId == objLivingPersonaQuality.SourceName)
+                            if (objCheckQuality != objLivingPersonaQuality && objCheckQuality.QualityId == objLivingPersonaQuality.QualityId && objCheckQuality.Extra == objLivingPersonaQuality.Extra && objCheckQuality.SourceName == objLivingPersonaQuality.SourceName)
                             {
                                 blnDoFirstLevel = false;
                                 break;
@@ -2019,14 +2019,23 @@ namespace Chummer
         public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture)
 #endif
         {
+            string strLanguageToPrint = objCulture.TwoLetterISOLanguageName.ToLower() + '-' + (new RegionInfo(objCulture.LCID)).TwoLetterISORegionName.ToLower();
+            if (strLanguageToPrint != GlobalOptions.Language)
+            {
+                if (strLanguageToPrint != GlobalOptions.DefaultLanguage && !LanguageManager.DictionaryLanguages.ContainsKey(strLanguageToPrint))
+                {
+                    strLanguageToPrint = GlobalOptions.Language;
+                }
+            }
+
             string strMetatype = string.Empty;
             string strMetavariant = string.Empty;
             // Get the name of the Metatype and Metavariant.
-            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
             XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
             if (objMetatypeNode == null)
             {
-                objMetatypeDoc = XmlManager.Load("critters.xml");
+                objMetatypeDoc = XmlManager.Load("critters.xml", strLanguageToPrint);
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
             }
 
@@ -2058,19 +2067,19 @@ namespace Chummer
             // <metavariant_english />
             objWriter.WriteElementString("metavariant_english", Metavariant);
             // <movement />
-            objWriter.WriteElementString("movement", FullMovement(objCulture));
+            objWriter.WriteElementString("movement", FullMovement(objCulture, strLanguageToPrint));
             // <walk />
-            objWriter.WriteElementString("walk", FullMovement(objCulture));
+            objWriter.WriteElementString("walk", FullMovement(objCulture, strLanguageToPrint));
             // <run />
-            objWriter.WriteElementString("run", FullMovement(objCulture));
+            objWriter.WriteElementString("run", FullMovement(objCulture, strLanguageToPrint));
             // <sprint />
-            objWriter.WriteElementString("sprint", FullMovement(objCulture));
+            objWriter.WriteElementString("sprint", FullMovement(objCulture, strLanguageToPrint));
             // <movementwalk />
-            objWriter.WriteElementString("movementwalk", GetMovement(objCulture));
+            objWriter.WriteElementString("movementwalk", GetMovement(objCulture, strLanguageToPrint));
             // <movementswim />
-            objWriter.WriteElementString("movementswim", GetSwim(objCulture));
+            objWriter.WriteElementString("movementswim", GetSwim(objCulture, strLanguageToPrint));
             // <movementfly />
-            objWriter.WriteElementString("movementfly", GetFly(objCulture));
+            objWriter.WriteElementString("movementfly", GetFly(objCulture, strLanguageToPrint));
 
             // <gameplayoption />
             objWriter.WriteElementString("gameplayoption", GameplayOption);
@@ -2102,15 +2111,15 @@ namespace Chummer
             // <handedness />
             if (Ambidextrous)
             {
-                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Ambidextrous"));
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Ambidextrous", strLanguageToPrint));
             }
             else if (PrimaryArm == "Left")
             {
-                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideLeft"));
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideLeft", strLanguageToPrint));
             }
             else
             {
-                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideRight"));
+                objWriter.WriteElementString("primaryarm", LanguageManager.GetString("String_Improvement_SideRight", strLanguageToPrint));
             }
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
@@ -2118,7 +2127,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Name))
                 objWriter.WriteElementString("name", Name);
             else
-                objWriter.WriteElementString("name", LanguageManager.GetString("String_UnnamedCharacter"));
+                objWriter.WriteElementString("name", LanguageManager.GetString("String_UnnamedCharacter", strLanguageToPrint));
 
             PrintMugshots(objWriter);
 
@@ -2231,7 +2240,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strTraditionName))
             {
                 string strDrainAtt = TraditionDrain;
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml")?.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
+                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
                 if (objXmlTradition != null)
                 {
@@ -2265,11 +2274,11 @@ namespace Chummer
                 objWriter.WriteEndElement();
                 if (MagicTradition == "Draconic")
                 {
-                    objWriter.WriteElementString("spiritcombat", LanguageManager.GetString("String_All"));
-                    objWriter.WriteElementString("spiritdetection", LanguageManager.GetString("String_All"));
-                    objWriter.WriteElementString("spirithealth", LanguageManager.GetString("String_All"));
-                    objWriter.WriteElementString("spiritillusion", LanguageManager.GetString("String_All"));
-                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.GetString("String_All"));
+                    objWriter.WriteElementString("spiritcombat", LanguageManager.GetString("String_All", strLanguageToPrint));
+                    objWriter.WriteElementString("spiritdetection", LanguageManager.GetString("String_All", strLanguageToPrint));
+                    objWriter.WriteElementString("spirithealth", LanguageManager.GetString("String_All", strLanguageToPrint));
+                    objWriter.WriteElementString("spiritillusion", LanguageManager.GetString("String_All", strLanguageToPrint));
+                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.GetString("String_All", strLanguageToPrint));
                 }
                 else if (MagicTradition != "Custom")
                 {
@@ -2333,7 +2342,7 @@ namespace Chummer
 
             // <attributes>
             objWriter.WriteStartElement("attributes");
-	        AttributeSection.Print(objWriter, objCulture);
+	        AttributeSection.Print(objWriter, objCulture, strLanguageToPrint);
 
             // </attributes>
             objWriter.WriteEndElement();
@@ -2398,7 +2407,7 @@ namespace Chummer
 
             // Calculate Initiatives.
             // Initiative.
-            objWriter.WriteElementString("init", GetInitiative(objCulture));
+            objWriter.WriteElementString("init", GetInitiative(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("initdice", InitiativeDice.ToString(objCulture));
             objWriter.WriteElementString("initvalue", InitiativeValue.ToString(objCulture));
             objWriter.WriteElementString("initbonus", Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0).ToString(objCulture));
@@ -2406,28 +2415,28 @@ namespace Chummer
             // Astral Initiative.
             if (MAGEnabled)
             {
-                objWriter.WriteElementString("astralinit", GetAstralInitiative(objCulture));
+                objWriter.WriteElementString("astralinit", GetAstralInitiative(objCulture, strLanguageToPrint));
                 objWriter.WriteElementString("astralinitdice", AstralInitiativeDice.ToString(objCulture));
                 objWriter.WriteElementString("astralinitvalue", AstralInitiativeValue.ToString(objCulture));
             }
 
             // Matrix Initiative (AR).
-            objWriter.WriteElementString("matrixarinit", GetMatrixInitiative(objCulture));
+            objWriter.WriteElementString("matrixarinit", GetMatrixInitiative(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("matrixarinitdice", MatrixInitiativeDice.ToString(objCulture));
             objWriter.WriteElementString("matrixarinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Cold).
-            objWriter.WriteElementString("matrixcoldinit", GetMatrixInitiativeCold(objCulture));
+            objWriter.WriteElementString("matrixcoldinit", GetMatrixInitiativeCold(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("matrixcoldinitdice", MatrixInitiativeDice.ToString(objCulture));
             objWriter.WriteElementString("matrixcoldinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Hot).
-            objWriter.WriteElementString("matrixhotinit", GetMatrixInitiativeHot(objCulture));
+            objWriter.WriteElementString("matrixhotinit", GetMatrixInitiativeHot(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("matrixhotinitdice", MatrixInitiativeDice.ToString(objCulture));
             objWriter.WriteElementString("matrixhotinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Rigger Initiative.
-            objWriter.WriteElementString("riggerinit", GetInitiative(objCulture));
+            objWriter.WriteElementString("riggerinit", GetInitiative(objCulture, strLanguageToPrint));
 
             // <magenabled />
             objWriter.WriteElementString("magenabled", MAGEnabled.ToString());
@@ -2467,21 +2476,21 @@ namespace Chummer
             // <sonicresist />
             objWriter.WriteElementString("sonicresist", SonicResist.ToString(objCulture));
             // <toxincontacttesist />
-            objWriter.WriteElementString("toxincontactresist", ToxinContactResist.ToString(objCulture));
+            objWriter.WriteElementString("toxincontactresist", ToxinContactResist(strLanguageToPrint, objCulture));
             // <toxiningestionresist />
-            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist.ToString(objCulture));
+            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist(strLanguageToPrint, objCulture));
             // <toxininhalationresist />
-            objWriter.WriteElementString("toxininhalationresist", ToxinInhalationResist.ToString(objCulture));
+            objWriter.WriteElementString("toxininhalationresist", ToxinInhalationResist(strLanguageToPrint, objCulture));
             // <toxininjectionresist />
-            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist.ToString(objCulture));
+            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist(strLanguageToPrint, objCulture));
             // <pathogencontactresist />
-            objWriter.WriteElementString("pathogencontactresist", PathogenContactResist.ToString(objCulture));
+            objWriter.WriteElementString("pathogencontactresist", PathogenContactResist(strLanguageToPrint, objCulture));
             // <pathogeningestionresist />
-            objWriter.WriteElementString("pathogeningestionresist", PathogenIngestionResist.ToString(objCulture));
+            objWriter.WriteElementString("pathogeningestionresist", PathogenIngestionResist(strLanguageToPrint, objCulture));
             // <pathogeninhalationresist />
-            objWriter.WriteElementString("pathogeninhalationresist", PathogenInhalationResist.ToString(objCulture));
+            objWriter.WriteElementString("pathogeninhalationresist", PathogenInhalationResist(strLanguageToPrint, objCulture));
             // <pathogeninjectionresist />
-            objWriter.WriteElementString("pathogeninjectionresist", PathogenInjectionResist.ToString(objCulture));
+            objWriter.WriteElementString("pathogeninjectionresist", PathogenInjectionResist(strLanguageToPrint, objCulture));
             // <physiologicaladdictionresistfirsttime />
             objWriter.WriteElementString("physiologicaladdictionresistfirsttime", PhysiologicalAddictionResistFirstTime.ToString(objCulture));
             // <physiologicaladdictionresistalreadyaddicted />
@@ -2531,14 +2540,14 @@ namespace Chummer
 
             // <skills>
             objWriter.WriteStartElement("skills");
-            SkillsSection.Print(objWriter, objCulture);
+            SkillsSection.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
 
             // <contacts>
             objWriter.WriteStartElement("contacts");
             foreach (Contact objContact in Contacts)
             {
-                objContact.Print(objWriter, objCulture);
+                objContact.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </contacts>
             objWriter.WriteEndElement();
@@ -2547,12 +2556,12 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifiersphys");
             foreach (LimitModifier objLimitModifier in LimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Physical"))
             {
-                objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Physical")))
             {
-                string strName = GetObjectName(objImprovement);
+                string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
                 strName += ": ";
@@ -2576,12 +2585,12 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifiersment");
             foreach (LimitModifier objLimitModifier in LimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Mental"))
             {
-                objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Mental")))
             {
-                string strName = GetObjectName(objImprovement);
+                string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
                 strName += ": ";
@@ -2605,12 +2614,12 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifierssoc");
             foreach (LimitModifier objLimitModifier in LimitModifiers.Where(objLimitModifier => objLimitModifier.Limit == "Social"))
             {
-                objLimitModifier.Print(objWriter);
+                objLimitModifier.Print(objWriter, strLanguageToPrint);
             }
             // Populate Limit Modifiers from Improvements
             foreach (Improvement objImprovement in Improvements.Where(objImprovement => (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier && objImprovement.ImprovedName == "Social")))
             {
-                string strName = GetObjectName(objImprovement);
+                string strName = GetObjectName(objImprovement, strLanguageToPrint);
                 if (strName == objImprovement.SourceName)
                     strName = objImprovement.UniqueName;
                 strName += ": ";
@@ -2634,7 +2643,7 @@ namespace Chummer
             objWriter.WriteStartElement("spells");
             foreach (Spell objSpell in Spells)
             {
-                objSpell.Print(objWriter, objCulture);
+                objSpell.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </spells>
             objWriter.WriteEndElement();
@@ -2643,7 +2652,7 @@ namespace Chummer
             objWriter.WriteStartElement("powers");
             foreach (Power objPower in Powers)
             {
-                objPower.Print(objWriter, objCulture);
+                objPower.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </powers>
             objWriter.WriteEndElement();
@@ -2652,7 +2661,7 @@ namespace Chummer
             objWriter.WriteStartElement("spirits");
             foreach (Spirit objSpirit in Spirits)
             {
-                objSpirit.Print(objWriter, objCulture);
+                objSpirit.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </spirits>
             objWriter.WriteEndElement();
@@ -2661,7 +2670,7 @@ namespace Chummer
             objWriter.WriteStartElement("complexforms");
             foreach (ComplexForm objProgram in ComplexForms)
             {
-                objProgram.Print(objWriter);
+                objProgram.Print(objWriter, strLanguageToPrint);
             }
             // </complexforms>
             objWriter.WriteEndElement();
@@ -2670,7 +2679,7 @@ namespace Chummer
             objWriter.WriteStartElement("aiprograms");
             foreach (AIProgram objProgram in AIPrograms)
             {
-                objProgram.Print(objWriter);
+                objProgram.Print(objWriter, strLanguageToPrint);
             }
             // </aiprograms>
             objWriter.WriteEndElement();
@@ -2679,7 +2688,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialarts");
             foreach (MartialArt objMartialArt in MartialArts)
             {
-                objMartialArt.Print(objWriter, objCulture);
+                objMartialArt.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </martialarts>
             objWriter.WriteEndElement();
@@ -2688,7 +2697,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialartmaneuvers");
             foreach (MartialArtManeuver objManeuver in MartialArtManeuvers)
             {
-                objManeuver.Print(objWriter);
+                objManeuver.Print(objWriter, strLanguageToPrint);
             }
             // </martialartmaneuvers>
             objWriter.WriteEndElement();
@@ -2697,7 +2706,7 @@ namespace Chummer
             objWriter.WriteStartElement("armors");
             foreach (Armor objArmor in Armor)
             {
-                objArmor.Print(objWriter, objCulture);
+                objArmor.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </armors>
             objWriter.WriteEndElement();
@@ -2706,7 +2715,7 @@ namespace Chummer
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
             {
-                objWeapon.Print(objWriter, objCulture);
+                objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </weapons>
             objWriter.WriteEndElement();
@@ -2715,13 +2724,10 @@ namespace Chummer
             objWriter.WriteStartElement("cyberwares");
             foreach (Cyberware objCyberware in Cyberware)
             {
-                objCyberware.Print(objWriter, objCulture);
+                objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </cyberwares>
             objWriter.WriteEndElement();
-
-            // Load the Qualities file so we can figure out whether or not each Quality should be printed.
-            XmlManager.Load("qualities.xml");
 
             // <qualities>
             // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -2743,7 +2749,7 @@ namespace Chummer
             {
                 if (strQualitiesToPrint.TryGetValue(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra, out intLoopRating))
                 {
-                    objQuality.Print(objWriter, intLoopRating, objCulture);
+                    objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint);
                     strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
                 }
             }
@@ -2754,7 +2760,7 @@ namespace Chummer
             objWriter.WriteStartElement("lifestyles");
             foreach (Lifestyle objLifestyle in Lifestyles)
             {
-                objLifestyle.Print(objWriter, objCulture);
+                objLifestyle.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </lifestyles>
             objWriter.WriteEndElement();
@@ -2763,7 +2769,7 @@ namespace Chummer
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in Gear)
             {
-                objGear.Print(objWriter, objCulture);
+                objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </gears>
             objWriter.WriteEndElement();
@@ -2772,7 +2778,7 @@ namespace Chummer
             objWriter.WriteStartElement("vehicles");
             foreach (Vehicle objVehicle in Vehicles)
             {
-                objVehicle.Print(objWriter, objCulture);
+                objVehicle.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </vehicles>
             objWriter.WriteEndElement();
@@ -2781,7 +2787,7 @@ namespace Chummer
             objWriter.WriteStartElement("metamagics");
             foreach (Metamagic objMetamagic in Metamagics)
             {
-                objMetamagic.Print(objWriter, objCulture);
+                objMetamagic.Print(objWriter, objCulture, strLanguageToPrint);
             }
             // </metamagics>
             objWriter.WriteEndElement();
@@ -2790,7 +2796,7 @@ namespace Chummer
             objWriter.WriteStartElement("arts");
             foreach (Art objArt in Arts)
             {
-                objArt.Print(objWriter);
+                objArt.Print(objWriter, strLanguageToPrint);
             }
             // </arts>
             objWriter.WriteEndElement();
@@ -2799,7 +2805,7 @@ namespace Chummer
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
-                objEnhancement.Print(objWriter);
+                objEnhancement.Print(objWriter, strLanguageToPrint);
             }
             // </enhancements>
             objWriter.WriteEndElement();
@@ -2808,7 +2814,7 @@ namespace Chummer
             objWriter.WriteStartElement("critterpowers");
             foreach (CritterPower objPower in CritterPowers)
             {
-                objPower.Print(objWriter);
+                objPower.Print(objWriter, strLanguageToPrint);
             }
             // </critterpowers>
             objWriter.WriteEndElement();
@@ -2828,7 +2834,7 @@ namespace Chummer
                 objWriter.WriteStartElement("expenses");
                 ((List<ExpenseLogEntry>)ExpenseEntries).Sort(ExpenseLogEntry.CompareDate);
                 foreach (ExpenseLogEntry objExpense in ExpenseEntries)
-                    objExpense.Print(objWriter, objCulture);
+                    objExpense.Print(objWriter, objCulture, strLanguageToPrint);
                 // </expenses>
                 objWriter.WriteEndElement();
             }
@@ -2974,7 +2980,7 @@ namespace Chummer
         /// Retrieve the name of the Object that created an Improvement.
         /// </summary>
         /// <param name="objImprovement">Improvement to check.</param>
-        public string GetObjectName(Improvement objImprovement)
+        public string GetObjectName(Improvement objImprovement, string strLanguage)
         {
             string strReturn = string.Empty;
             switch (objImprovement.ImproveSource)
@@ -3124,7 +3130,7 @@ namespace Chummer
                     {
                         if (objSpell.InternalId == objImprovement.SourceName)
                         {
-                            return objSpell.DisplayNameShort;
+                            return objSpell.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3133,7 +3139,7 @@ namespace Chummer
                     {
                         if (objPower.InternalId == objImprovement.SourceName)
                         {
-                            return objPower.DisplayNameShort;
+                            return objPower.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3142,7 +3148,7 @@ namespace Chummer
                     {
                         if (objPower.InternalId == objImprovement.SourceName)
                         {
-                            return objPower.DisplayNameShort;
+                            return objPower.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3200,7 +3206,7 @@ namespace Chummer
                     {
                         if (objProgram.InternalId == objImprovement.SourceName)
                         {
-                            return objProgram.DisplayNameShort;
+                            return objProgram.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3209,7 +3215,7 @@ namespace Chummer
                     {
                         if (objProgram.InternalId == objImprovement.SourceName)
                         {
-                            return objProgram.DisplayNameShort;
+                            return objProgram.DisplayNameShort(strLanguage);
                         }
                     }
                     break;
@@ -3249,7 +3255,7 @@ namespace Chummer
                     break;
                 default:
                     if (objImprovement.SourceName == "Armor Encumbrance")
-                        return LanguageManager.GetString("String_ArmorEncumbrance");
+                        return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
                     // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                     if (!string.IsNullOrEmpty(objImprovement.CustomName))
                         return objImprovement.CustomName;
@@ -3522,7 +3528,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -3975,7 +3981,7 @@ namespace Chummer
                     return Alias;
                 if (!string.IsNullOrWhiteSpace(Name))
                     return Name;
-                return LanguageManager.GetString("String_UnnamedCharacter");
+                return LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
         }
 
@@ -5092,15 +5098,15 @@ namespace Chummer
         {
             get
             {
-                return LanguageManager.GetString("String_Initiative")
+                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
                     .Replace("{0}", InitiativeValue.ToString())
                     .Replace("{1}", InitiativeDice.ToString());
             }
         }
 
-        public string GetInitiative(CultureInfo objCulture)
+        public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
-            return LanguageManager.GetString("String_Initiative")
+            return LanguageManager.GetString("String_Initiative", strLanguage)
                     .Replace("{0}", InitiativeValue.ToString(objCulture))
                     .Replace("{1}", InitiativeDice.ToString(objCulture));
         }
@@ -5138,15 +5144,15 @@ namespace Chummer
         {
             get
             {
-                return LanguageManager.GetString("String_Initiative")
+                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
                     .Replace("{0}", AstralInitiativeValue.ToString())
                     .Replace("{1}", AstralInitiativeDice.ToString());
             }
         }
 
-        public string GetAstralInitiative(CultureInfo objCulture)
+        public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            return LanguageManager.GetString("String_Initiative")
+            return LanguageManager.GetString("String_Initiative", strLanguageToPrint)
                     .Replace("{0}", AstralInitiativeValue.ToString(objCulture))
                     .Replace("{1}", AstralInitiativeDice.ToString(objCulture));
         }
@@ -5183,15 +5189,15 @@ namespace Chummer
         {
             get
             {
-                return LanguageManager.GetString("String_Initiative")
+                return LanguageManager.GetString("String_Initiative", GlobalOptions.Language)
                         .Replace("{0}", MatrixInitiativeValue.ToString())
                         .Replace("{1}", MatrixInitiativeDice.ToString());
             }
         }
 
-        public string GetMatrixInitiative(CultureInfo objCulture)
+        public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            return LanguageManager.GetString("String_Initiative")
+            return LanguageManager.GetString("String_Initiative", strLanguageToPrint)
                         .Replace("{0}", MatrixInitiativeValue.ToString(objCulture))
                         .Replace("{1}", MatrixInitiativeDice.ToString(objCulture));
         }
@@ -5256,19 +5262,19 @@ namespace Chummer
                 {
                     return MatrixInitiative;
                 }
-                return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+                return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language)
                         .Replace("{0}", MatrixInitiativeColdValue.ToString())
                         .Replace("{1}", MatrixInitiativeColdDice.ToString());
             }
         }
 
-        public string GetMatrixInitiativeCold(CultureInfo objCulture)
+        public string GetMatrixInitiativeCold(CultureInfo objCulture, string strLanguageToPrint)
         {
             if (_strMetatype == "A.I.")
             {
-                return GetMatrixInitiative(objCulture);
+                return GetMatrixInitiative(objCulture, strLanguageToPrint);
             }
-            return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+            return LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", strLanguageToPrint)
                     .Replace("{0}", MatrixInitiativeColdValue.ToString(objCulture))
                     .Replace("{1}", MatrixInitiativeColdDice.ToString(objCulture));
         }
@@ -5317,20 +5323,20 @@ namespace Chummer
                     return MatrixInitiative;
                 }
                 return
-                    LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+                    LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", GlobalOptions.Language)
                         .Replace("{0}", MatrixInitiativeHotValue.ToString())
                         .Replace("{1}", MatrixInitiativeHotDice.ToString());
             }
         }
 
-        public string GetMatrixInitiativeHot(CultureInfo objCulture)
+        public string GetMatrixInitiativeHot(CultureInfo objCulture, string strLanguageToPrint)
         {
             if (_strMetatype == "A.I.")
             {
-                return GetMatrixInitiative(objCulture);
+                return GetMatrixInitiative(objCulture, strLanguageToPrint);
             }
             return
-                LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative")
+                LanguageManager.GetString(ActiveCommlink == null ? "String_MatrixInitiative" : "String_Initiative", strLanguageToPrint)
                     .Replace("{0}", MatrixInitiativeHotValue.ToString(objCulture))
                     .Replace("{1}", MatrixInitiativeHotDice.ToString(objCulture));
         }
@@ -5473,178 +5479,154 @@ namespace Chummer
         /// <summary>
         /// Resist test to Contact-vector Toxins (BOD + WIL).
         /// </summary>
-        public string ToxinContactResist
+        public string ToxinContactResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinContactImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinContactResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Ingestion-vector Toxins (BOD + WIL).
         /// </summary>
-        public string ToxinIngestionResist
+        public string ToxinIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinIngestionImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinIngestionResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Inhalation-vector Toxins (BOD + WIL).
         /// </summary>
-        public string ToxinInhalationResist
+        public string ToxinInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInhalationImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInhalationResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Injection-vector Toxins (BOD + WIL).
         /// </summary>
-        public string ToxinInjectionResist
+        public string ToxinInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.ToxinInjectionImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.ToxinInjectionResist)).ToString(objCulture);
         }
 
         /// <summary>
         /// Resist test to Contact-vector Pathogens (BOD + WIL).
         /// </summary>
-        public string PathogenContactResist
+        public string PathogenContactResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenContactImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenContactResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Ingestion-vector Pathogens (BOD + WIL).
         /// </summary>
-        public string PathogenIngestionResist
+        public string PathogenIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenIngestionImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenIngestionResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Inhalation-vector Pathogens (BOD + WIL).
         /// </summary>
-        public string PathogenInhalationResist
+        public string PathogenInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInhalationImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInhalationResist)).ToString(objCulture);
         }
         /// <summary>
         /// Resist test to Injection-vector Pathogens (BOD + WIL).
         /// </summary>
-        public string PathogenInjectionResist
+        public string PathogenInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            get
-            {
-                if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
-                    return LanguageManager.GetString("String_Immune");
-                else
-                    return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist)).ToString(GlobalOptions.CultureInfo);
-            }
+            if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.PathogenInjectionImmune))
+                return LanguageManager.GetString("String_Immune", strLanguage);
+            else
+                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PathogenInjectionResist)).ToString(objCulture);
         }
 
         /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are not addicted yet.
         /// </summary>
-        public string PhysiologicalAddictionResistFirstTime
+        public int PhysiologicalAddictionResistFirstTime
         {
             get
             {
-                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime)).ToString(GlobalOptions.CultureInfo);
+                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionFirstTime);
             }
         }
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are not addicted yet.
         /// </summary>
-        public string PsychologicalAddictionResistFirstTime
+        public int PsychologicalAddictionResistFirstTime
         {
             get
             {
-                return (LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime)).ToString(GlobalOptions.CultureInfo);
+                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionFirstTime);
             }
         }
 
         /// <summary>
         /// Resist test to Physiological Addiction (BOD + WIL) if you are already addicted.
         /// </summary>
-        public string PhysiologicalAddictionResistAlreadyAddicted
+        public int PhysiologicalAddictionResistAlreadyAddicted
         {
             get
             {
-                return (BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted)).ToString(GlobalOptions.CultureInfo);
+                return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted);
             }
         }
 
         /// <summary>
         /// Resist test to Psychological Addiction (LOG + WIL) if you are already addicted.
         /// </summary>
-        public string PsychologicalAddictionResistAlreadyAddicted
+        public int PsychologicalAddictionResistAlreadyAddicted
         {
             get
             {
-                return (LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted)).ToString(GlobalOptions.CultureInfo);
+                return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted);
             }
         }
 
         /// <summary>
         /// Dicepool for natural recovery from Stun CM box damage (BOD + WIL).
         /// </summary>
-        public string StunCMNaturalRecovery
+        public int StunCMNaturalRecovery
         {
             get
             {
                 int intReturn = BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StunCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoStunCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence));
-                return intReturn.ToString(GlobalOptions.CultureInfo);
+                return intReturn;
             }
         }
 
         /// <summary>
         /// Dicepool for natural recovery from Physical CM box damage (2 x BOD).
         /// </summary>
-        public string PhysicalCMNaturalRecovery
+        public int PhysicalCMNaturalRecovery
         {
             get
             {
                 int intReturn = 2 * BOD.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.PhysicalCMRecovery);
                 if (Improvements.Any(x => x.Enabled && x.ImproveType == Improvement.ImprovementType.AddESStoPhysicalCMRecovery))
                     intReturn += decimal.ToInt32(decimal.Floor(Essence));
-                return intReturn.ToString(GlobalOptions.CultureInfo);
+                return intReturn;
             }
         }
         #endregion
@@ -5685,9 +5667,9 @@ namespace Chummer
         {
             get
             {
-                string strReturn = $"({LanguageManager.GetString("String_CareerKarma")} ÷ {10 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCredMultiplier)})";
+                string strReturn = $"({LanguageManager.GetString("String_CareerKarma", GlobalOptions.Language)} ÷ {10 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCredMultiplier)})";
                 if (BurntStreetCred != 0)
-                    strReturn += $" - {LanguageManager.GetString("String_BurntStreetCred")}";
+                    strReturn += $" - {LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language)}";
 
                 return strReturn;
             }
@@ -5730,15 +5712,15 @@ namespace Chummer
                 foreach (Improvement objImprovement in _lstImprovements)
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.Notoriety)
-                        objReturn.Append(" + " + GetObjectName(objImprovement) + " (" + objImprovement.Value.ToString() + ")");
+                        objReturn.Append(" + " + GetObjectName(objImprovement, GlobalOptions.Language) + " (" + objImprovement.Value.ToString() + ")");
                 }
 
                 int intEnemies = _lstContacts.Count(x => x.EntityType == ContactType.Enemy);
                 if (intEnemies > 0)
-                    objReturn.Append(" + " + LanguageManager.GetString("Label_SummaryEnemies") + " (" + intEnemies.ToString() + ")");
+                    objReturn.Append(" + " + LanguageManager.GetString("Label_SummaryEnemies", GlobalOptions.Language) + " (" + intEnemies.ToString() + ")");
 
                 if (BurntStreetCred > 0)
-                    objReturn.Append(" - " + LanguageManager.GetString("String_BurntStreetCred") + " (" + (BurntStreetCred / 2).ToString() + ")");
+                    objReturn.Append(" - " + LanguageManager.GetString("String_BurntStreetCred", GlobalOptions.Language) + " (" + (BurntStreetCred / 2).ToString() + ")");
 
                 string strReturn = objReturn.ToString();
 
@@ -5787,7 +5769,7 @@ namespace Chummer
             {
                 if (_objOptions.UseCalculatedPublicAwareness)
                 {
-                    return "(" + LanguageManager.GetString("String_StreetCred") + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.GetString("String_Notoriety") + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
+                    return "(" + LanguageManager.GetString("String_StreetCred", GlobalOptions.Language) + " (" + TotalStreetCred.ToString() + ") + " + LanguageManager.GetString("String_Notoriety", GlobalOptions.Language) + " (" + TotalNotoriety.ToString() + ")) ÷ 3";
                 }
 
                 return string.Empty;
@@ -6847,7 +6829,7 @@ namespace Chummer
         /// <summary>
         /// Character's Movement rate (Culture-dependent).
         /// </summary>
-        public string GetMovement(CultureInfo objCulture)
+        public string GetMovement(CultureInfo objCulture, string strLanguage)
         {
             if (string.IsNullOrWhiteSpace(_strWalk) || string.IsNullOrWhiteSpace(_strRun) || string.IsNullOrWhiteSpace(_strSprint) || string.IsNullOrWhiteSpace(_strMovement) || (MetatypeCategory == "Shapeshifter" && (string.IsNullOrWhiteSpace(_strWalkAlt) || string.IsNullOrWhiteSpace(_strRunAlt) || string.IsNullOrWhiteSpace(_strSprintAlt))))
             {
@@ -6874,7 +6856,7 @@ namespace Chummer
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             if (_strMovement == "Special")
             {
-                return LanguageManager.GetString("String_ModeSpecial");
+                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
 
             return CalculatedMovement("Ground", true, objCulture);
@@ -7070,12 +7052,12 @@ namespace Chummer
         /// <summary>
         /// Character's Swim rate.
         /// </summary>
-        public string GetSwim(CultureInfo objCulture)
+        public string GetSwim(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             if (_strMovement == "Special")
             {
-                return LanguageManager.GetString("String_ModeSpecial");
+                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
 
             XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
@@ -7085,7 +7067,7 @@ namespace Chummer
                 objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
                 if (strReturn == "Special")
                 {
-                    return LanguageManager.GetString("String_ModeSpecial");
+                    return LanguageManager.GetString("String_ModeSpecial", strLanguage);
                 }
             }
             return CalculatedMovement("Swim", false, objCulture);
@@ -7094,12 +7076,12 @@ namespace Chummer
         /// <summary>
         /// Character's Fly rate.
         /// </summary>
-        public string GetFly(CultureInfo objCulture)
+        public string GetFly(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
             if (_strMovement == "Special")
             {
-                return LanguageManager.GetString("String_ModeSpecial");
+                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
             }
 
             XmlNode objXmlNode = XmlManager.Load(_blnIsCritter ? "critters.xml" : "metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
@@ -7109,7 +7091,7 @@ namespace Chummer
                 objXmlNode.TryGetStringFieldQuickly("movement", ref strReturn);
                 if (strReturn == "Special")
                 {
-                    return LanguageManager.GetString("String_ModeSpecial");
+                    return LanguageManager.GetString("String_ModeSpecial", strLanguage);
                 }
             }
 
@@ -7119,18 +7101,18 @@ namespace Chummer
         /// <summary>
         /// Full Movement (Movement, Swim, and Fly) for printouts.
         /// </summary>
-        private string FullMovement(CultureInfo objCulture = null)
+        private string FullMovement(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = string.Empty;
-            string strGroundMovement = GetMovement(objCulture);
-            string strSwimMovement = GetSwim(objCulture);
-            string strFlyMovement = GetFly(objCulture);
+            string strGroundMovement = GetMovement(objCulture, strLanguage);
+            string strSwimMovement = GetSwim(objCulture, strLanguage);
+            string strFlyMovement = GetFly(objCulture, strLanguage);
             if (!string.IsNullOrEmpty(strGroundMovement) && strGroundMovement != "0")
                 strReturn += strGroundMovement + ", ";
             if (!string.IsNullOrEmpty(strSwimMovement) && strSwimMovement != "0")
-                strReturn += LanguageManager.GetString("Label_OtherSwim") + " " + strSwimMovement + ", ";
+                strReturn += LanguageManager.GetString("Label_OtherSwim", strLanguage) + " " + strSwimMovement + ", ";
             if (!string.IsNullOrEmpty(strFlyMovement) && strFlyMovement != "0")
-                strReturn += LanguageManager.GetString("Label_OtherFly") + " " + strFlyMovement + ", ";
+                strReturn += LanguageManager.GetString("Label_OtherFly", strLanguage) + " " + strFlyMovement + ", ";
 
             // Remove the trailing ", ".
             if (!string.IsNullOrEmpty(strReturn))
@@ -7563,23 +7545,23 @@ namespace Chummer
         public string AvailTest(decimal decCost, string strAvail)
         {
             string strReturn;
-            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted")).TrimEnd(LanguageManager.GetString("String_AvailForbidden")), out int intAvail);
+            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).TrimEnd(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language)), out int intAvail);
 
-            if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden"))))
+            if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language))))
             {
                 string strInterval;
                 int intTest = 0;
                 // Determine the interval based on the item's price.
                 if (decCost <= 100.0m)
-                    strInterval = "6 " + LanguageManager.GetString("String_Hours");
+                    strInterval = "6 " + LanguageManager.GetString("String_Hours", GlobalOptions.Language);
                 else if (decCost <= 1000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Day");
+                    strInterval = "1 " + LanguageManager.GetString("String_Day", GlobalOptions.Language);
                 else if (decCost <= 10000.0m)
-                    strInterval = "2 " + LanguageManager.GetString("String_Days");
+                    strInterval = "2 " + LanguageManager.GetString("String_Days", GlobalOptions.Language);
                 else if (decCost <= 100000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Week");
+                    strInterval = "1 " + LanguageManager.GetString("String_Week", GlobalOptions.Language);
                 else
-                    strInterval = "1 " + LanguageManager.GetString("String_Month");
+                    strInterval = "1 " + LanguageManager.GetString("String_Month", GlobalOptions.Language);
 
                 // Find the character's Negotiation total.
                 Skill objSkill = SkillsSection.GetActiveSkill("Negotiation");
@@ -7589,7 +7571,7 @@ namespace Chummer
                 strReturn = intTest.ToString() + " (" + intAvail.ToString() + ", " + strInterval + ")";
             }
             else
-                strReturn = LanguageManager.GetString("String_None");
+                strReturn = LanguageManager.GetString("String_None", GlobalOptions.Language);
 
             return strReturn;
         }

@@ -54,7 +54,7 @@ namespace Chummer
         public frmSelectVehicleMod(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -98,7 +98,7 @@ namespace Chummer
             _lstCategory.Sort(CompareListItems.CompareNames);
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -549,7 +549,7 @@ namespace Chummer
                         nudRating.Maximum -= 1;
                     }
                     nudRating.Minimum = intMinRating;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                 }
                 //Used for the Armor modifications.
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
@@ -561,7 +561,7 @@ namespace Chummer
                     }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Body", GlobalOptions.Language);
                 }
                 //Used for Metahuman Adjustments.
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
@@ -573,7 +573,7 @@ namespace Chummer
                     }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
-                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
+                    lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
                 }
                 else
                 {
@@ -586,14 +586,14 @@ namespace Chummer
                         }
                         nudRating.Minimum = intMinRating;
                         nudRating.Enabled = true;
-                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
+                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     }
                     else
                     {
                         nudRating.Minimum = 0;
                         nudRating.Maximum = 0;
                         nudRating.Enabled = false;
-                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
+                        lblRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
                     }
                 }
 
@@ -618,9 +618,9 @@ namespace Chummer
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.
                     if (strAvail == "R")
-                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                        strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     else if (strAvail == "F")
-                        strAvail = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -719,7 +719,7 @@ namespace Chummer
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
                         lblVehicleCapacity.Text = GetRemainingModCapacity(objXmlMod["category"].InnerText, Convert.ToInt32(lblSlots.Text));
-                        tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.GetString("Tip_RemainingVehicleModCapacity"));
+                        tipTooltip.SetToolTip(lblVehicleCapacityLabel, LanguageManager.GetString("Tip_RemainingVehicleModCapacity", GlobalOptions.Language));
                     }
                     else
                     {
@@ -729,7 +729,7 @@ namespace Chummer
 
                     lblCategory.Text = objXmlMod["category"].InnerText;
                     if (objXmlMod["category"].InnerText == "Weapon Mod")
-                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification");
+                        lblCategory.Text = LanguageManager.GetString("String_WeaponModification", GlobalOptions.Language);
                     // Translate the Category if possible.
                     else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
@@ -763,7 +763,7 @@ namespace Chummer
                     strPage = objXmlMod["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
             _blnSkipUpdate = false;
         }

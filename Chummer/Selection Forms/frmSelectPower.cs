@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Powers information.
@@ -79,7 +79,7 @@ namespace Chummer
             lblPowerPoints.Text = objXmlPower["points"].InnerText;
             if (objXmlPower["levels"]?.InnerText == System.Boolean.TrueString)
             {
-                lblPowerPoints.Text += $" / {LanguageManager.GetString("Label_Power_Level")}";
+                lblPowerPoints.Text += $" / {LanguageManager.GetString("Label_Power_Level", GlobalOptions.Language)}";
             }
             if (objXmlPower["extrapointcost"] != null)
             {
@@ -92,7 +92,7 @@ namespace Chummer
                 strPage = objXmlPower["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -278,10 +278,10 @@ namespace Chummer
 
                 if (!blnRequirementMet)
                 {
-                    string strMessage = LanguageManager.GetString("Message_SelectPower_PowerRequirement");
+                    string strMessage = LanguageManager.GetString("Message_SelectPower_PowerRequirement", GlobalOptions.Language);
                     strMessage += strRequirement;
 
-                    MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectPower_PowerRequirement"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectPower_PowerRequirement", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }

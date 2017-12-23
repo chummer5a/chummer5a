@@ -30,7 +30,7 @@ namespace Chummer
         public frmExpense()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
             DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
@@ -40,14 +40,14 @@ namespace Chummer
             datDate.CustomFormat = strDatePattern;
             datDate.Value = DateTime.Now;
 
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
+            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % 2000 != 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -138,16 +138,16 @@ namespace Chummer
             {
                 if (value == ExpenseType.Nuyen)
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
-                    Text = LanguageManager.GetString("Title_Expense_Nuyen");
-                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen");
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount", GlobalOptions.Language);
+                    Text = LanguageManager.GetString("Title_Expense_Nuyen", GlobalOptions.Language);
+                    chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen", GlobalOptions.Language);
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
                 }
                 else
                 {
-                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount");
-                    Text = LanguageManager.GetString("Title_Expense_Karma");
+                    lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount", GlobalOptions.Language);
+                    Text = LanguageManager.GetString("Title_Expense_Karma", GlobalOptions.Language);
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }

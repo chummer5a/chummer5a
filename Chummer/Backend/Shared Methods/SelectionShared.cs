@@ -53,8 +53,8 @@ namespace Chummer.Backend
                 {
                     if (blnShowMessage)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction").Replace("{0}", strLocalName),
-                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
+                        MessageBox.Show(LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                            LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -65,8 +65,8 @@ namespace Chummer.Backend
             {
                 if (blnShowMessage)
                 {
-                    MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction").Replace("{0}", strLocalName),
-                        LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName),
+                    MessageBox.Show(LanguageManager.GetString("MessageTitle_SelectGeneric_PriorityRestriction", GlobalOptions.Language).Replace("{0}", strLocalName),
+                        LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 return false;
@@ -113,8 +113,8 @@ namespace Chummer.Backend
                         strLimitString = "1";
                     }
 
-                    string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit").Replace("{0}", strLocalName);
-                    string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit").Replace("{0}", strLocalName);
+                    string limitTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
+                    string limitMessage = LanguageManager.GetString("Message_SelectGeneric_Limit", GlobalOptions.Language).Replace("{0}", strLocalName);
 
                     List<string> lstNamesIncludedInLimit = new List<string>();
                     if (objXmlNode["name"] != null)
@@ -263,8 +263,8 @@ namespace Chummer.Backend
                             {
                                 if (blnShowMessage)
                                 {
-                                    string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction").Replace("{0}", strLocalName);
-                                    string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction").Replace("{0}", strLocalName) + name;
+                                    string forbiddenTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName);
+                                    string forbiddenMessage = LanguageManager.GetString("Message_SelectGeneric_Restriction", GlobalOptions.Language).Replace("{0}", strLocalName) + name;
                                     MessageBox.Show(forbiddenMessage, forbiddenTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                                 return false;
@@ -286,7 +286,7 @@ namespace Chummer.Backend
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
-                    StringBuilder objThisRequirement = new StringBuilder("\n" + LanguageManager.GetString("Message_SelectQuality_OneOf"));
+                    StringBuilder objThisRequirement = new StringBuilder("\n" + LanguageManager.GetString("Message_SelectQuality_OneOf", GlobalOptions.Language));
                     XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes;
                     foreach (XmlNode objXmlRequired in objXmlOneOfList)
                     {
@@ -317,7 +317,7 @@ namespace Chummer.Backend
                     {
                         bool blnAllOfMet = true;
                         object blnOneOfMetLock = new object();
-                        StringBuilder objThisRequirement = new StringBuilder("\n" + LanguageManager.GetString("Message_SelectQuality_AllOf"));
+                        StringBuilder objThisRequirement = new StringBuilder("\n" + LanguageManager.GetString("Message_SelectQuality_AllOf", GlobalOptions.Language));
                         XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes;
                         foreach (XmlNode objXmlRequired in objXmlAllOfList)
                         {
@@ -348,8 +348,8 @@ namespace Chummer.Backend
                 {
                     if (blnShowMessage)
                     {
-                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement").Replace("{0}", strLocalName);
-                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement").Replace("{0}", strLocalName) + objRequirement.ToString();
+                        string requiredTitle = LanguageManager.GetString("MessageTitle_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName);
+                        string requiredMessage = LanguageManager.GetString("Message_SelectGeneric_Requirement", GlobalOptions.Language).Replace("{0}", strLocalName) + objRequirement.ToString();
                         MessageBox.Show(requiredMessage, requiredTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     return false;
@@ -405,7 +405,7 @@ namespace Chummer.Backend
                     return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strValue)) >= intNodeVal;
                 case "careerkarma":
                     // Check Career Karma requirement.
-                    name = "\n\t" + LanguageManager.GetString("Message_SelectQuality_RequireKarma")
+                    name = "\n\t" + LanguageManager.GetString("Message_SelectQuality_RequireKarma", GlobalOptions.Language)
                                .Replace("{0}", strNodeInnerText);
                     return character.CareerKarma >= Convert.ToInt32(strNodeInnerText);
                 case "critterpower":
@@ -415,7 +415,7 @@ namespace Chummer.Backend
                         CritterPower critterPower = character.CritterPowers.FirstOrDefault(p => p.Name == strNodeInnerText);
                         if (critterPower != null)
                         {
-                            name = critterPower.DisplayNameShort;
+                            name = critterPower.DisplayNameShort(GlobalOptions.Language);
                             return true;
                         }
                     }
@@ -425,15 +425,15 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("Tab_Critter")})";
+                    name += $" ({LanguageManager.GetString("Tab_Critter", GlobalOptions.Language)})";
                     return false;
                 case "bioware":
                 case "cyberware":
                     {
                         int count = Convert.ToInt32(node.Attributes?["count"]?.InnerText ?? "1");
                         name = node.Name == "cyberware"
-                            ? "\n\t" + LanguageManager.GetString("Label_Cyberware") + strNodeInnerText
-                            : "\n\t" + LanguageManager.GetString("Label_Bioware") + strNodeInnerText;
+                            ? "\n\t" + LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language) + strNodeInnerText
+                            : "\n\t" + LanguageManager.GetString("Label_Bioware", GlobalOptions.Language) + strNodeInnerText;
                         string strWareNodeSelectAttribute = node.Attributes?["select"]?.InnerText ?? string.Empty;
                         return character.Cyberware.DeepCount(x => x.Children, objCyberware =>
                                objCyberware.Name == strNodeInnerText && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
@@ -445,8 +445,8 @@ namespace Chummer.Backend
                         int count = Convert.ToInt32(node.Attributes?["count"]?.InnerText ?? "1");
                         name = null;
                         name += node.Name == "cyberware"
-                            ? "\n\t" + LanguageManager.GetString("Label_Cyberware") + strNodeInnerText
-                            : "\n\t" + LanguageManager.GetString("Label_Bioware") + strNodeInnerText;
+                            ? "\n\t" + LanguageManager.GetString("Label_Cyberware", GlobalOptions.Language) + strNodeInnerText
+                            : "\n\t" + LanguageManager.GetString("Label_Bioware", GlobalOptions.Language) + strNodeInnerText;
                         Improvement.ImprovementSource source = Improvement.ImprovementSource.Cyberware;
                         if (node.Name == "biowarecontains")
                         {
@@ -459,7 +459,7 @@ namespace Chummer.Backend
                 }
                 case "damageresistance":
                     // Damage Resistance must be a particular value.
-                    name = "\n\t" + LanguageManager.GetString("String_DamageResistance");
+                    name = "\n\t" + LanguageManager.GetString("String_DamageResistance", GlobalOptions.Language);
                     return character.BOD.TotalValue + ImprovementManager.ValueOf(character, Improvement.ImprovementType.DamageResistance) >=
                            Convert.ToInt32(strNodeInnerText);
                 case "ess":
@@ -475,8 +475,7 @@ namespace Chummer.Backend
                         {
                             // Essence must be less than the value.
                             name = "\n\t" +
-                                   LanguageManager.GetString(
-                                           "Message_SelectQuality_RequireESSGradeBelow")
+                                   LanguageManager.GetString("Message_SelectQuality_RequireESSGradeBelow", GlobalOptions.Language)
                                        .Replace("{0}", strNodeInnerText)
                                        .Replace("{1}", objEssNodeGradeAttributeText)
                                        .Replace("{2}", decGrade.ToString(CultureInfo.InvariantCulture));
@@ -485,8 +484,7 @@ namespace Chummer.Backend
                         }
                         // Essence must be equal to or greater than the value.
                         name = "\n\t" +
-                               LanguageManager.GetString(
-                                       "Message_SelectQuality_RequireESSGradeAbove")
+                               LanguageManager.GetString("Message_SelectQuality_RequireESSGradeAbove", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
                                    .Replace("{1}", objEssNodeGradeAttributeText)
                                    .Replace("{2}", decGrade.ToString(CultureInfo.InvariantCulture));
@@ -497,8 +495,7 @@ namespace Chummer.Backend
                     {
                         // Essence must be less than the value.
                         name = "\n\t" +
-                               LanguageManager.GetString(
-                                       "Message_SelectQuality_RequireESSBelow")
+                               LanguageManager.GetString("Message_SelectQuality_RequireESSBelow", GlobalOptions.Language)
                                    .Replace("{0}", strNodeInnerText)
                                    .Replace("{1}", character.Essence.ToString(CultureInfo.InvariantCulture));
                         return character.Essence <
@@ -506,8 +503,7 @@ namespace Chummer.Backend
                     }
                     // Essence must be equal to or greater than the value.
                     name = "\n\t" +
-                           LanguageManager.GetString(
-                                   "Message_SelectQuality_RequireESSAbove")
+                           LanguageManager.GetString("Message_SelectQuality_RequireESSAbove", GlobalOptions.Language)
                                .Replace("{0}", strNodeInnerText)
                                .Replace("{1}", character.Essence.ToString(CultureInfo.InvariantCulture));
                     return character.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
@@ -529,7 +525,7 @@ namespace Chummer.Backend
                     return string.IsNullOrEmpty(strResult);
                 case "initiategrade":
                     // Character's initiate grade must be higher than or equal to the required value.
-                    name = "\n\t" + LanguageManager.GetString("String_InitiateGrade") + " >= " + strNodeInnerText;
+                    name = "\n\t" + LanguageManager.GetString("String_InitiateGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
                     return character.InitiateGrade >= Convert.ToInt32(strNodeInnerText);
                 case "martialart":
                     // Character needs a specific Martial Art.
@@ -538,7 +534,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_MartialArt")})";
+                    name += $" ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
                     return character.MartialArts.Any(martialart => martialart.Name == strNodeInnerText);
                 case "martialtechnique":
                     // Character needs a specific Martial Arts technique.
@@ -547,7 +543,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_MartialArt")})";
+                    name += $" ({LanguageManager.GetString("String_MartialArt", GlobalOptions.Language)})";
                     return character.MartialArts.Any(martialart => martialart.Advantages.Any(technique => technique.Name == strNodeInnerText));
                 case "metamagic":
                     XmlNode metamagicDoc = XmlManager.Load("metamagic.xml");
@@ -556,7 +552,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_Metamagic")})";
+                    name += $" ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})";
                     return character.Metamagics.Any(objMetamagic => objMetamagic.Name == strNodeInnerText);
                 case "metamagicart":
                 case "art":
@@ -566,7 +562,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_Art")})";
+                    name += $" ({LanguageManager.GetString("String_Art", GlobalOptions.Language)})";
                     if (character.Options.IgnoreArt)
                     {
                         if (node.Name == "art")
@@ -600,7 +596,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_Metatype")})";
+                    name += $" ({LanguageManager.GetString("String_Metatype", GlobalOptions.Language)})";
                     return strNodeInnerText == character.Metatype;
 
                 case "metatypecategory":
@@ -611,7 +607,7 @@ namespace Chummer.Backend
                     name = nameNode?.Attributes["translate"] != null
                         ? "\n\t" + nameNode.Attributes["translate"]?.InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += LanguageManager.GetString("String_MetatypeCategory");
+                    name += LanguageManager.GetString("String_MetatypeCategory", GlobalOptions.Language);
                     return strNodeInnerText == character.MetatypeCategory;
 
                 case "metavariant":
@@ -622,7 +618,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_Metavariant")})";
+                    name += $" ({LanguageManager.GetString("String_Metavariant", GlobalOptions.Language)})";
                     return strNodeInnerText == character.Metavariant;
 
                 case "power":
@@ -630,7 +626,7 @@ namespace Chummer.Backend
                     Power power = character.Powers.FirstOrDefault(p => p.Name == strNodeInnerText);
                     if (power != null)
                     {
-                        name = power.DisplayNameShort;
+                        name = power.DisplayNameShort(GlobalOptions.Language);
                         return true;
                     }
                     XmlDocument xmlPowers = XmlManager.Load("powers.xml");
@@ -639,7 +635,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("Tab_Adept")})";
+                    name += $" ({LanguageManager.GetString("Tab_Adept", GlobalOptions.Language)})";
                     return false;
 
                 case "quality":
@@ -658,7 +654,7 @@ namespace Chummer.Backend
                         name = nameNode?["translate"] != null
                             ? "\n\t" + nameNode["translate"].InnerText
                             : "\n\t" + strNodeInnerText;
-                        name += $" ({LanguageManager.GetString("String_Quality")})";
+                        name += $" ({LanguageManager.GetString("String_Quality", GlobalOptions.Language)})";
                         return false;
                     }
 
@@ -723,7 +719,7 @@ namespace Chummer.Backend
                     {
                         name += $" {node["val"].InnerText}";
                     }
-                    name += $" ({LanguageManager.GetString("Tab_Skills")})";
+                    name += $" ({LanguageManager.GetString("Tab_Skills", GlobalOptions.Language)})";
                     return false;
 
                 case "skillgrouptotal":
@@ -741,7 +737,7 @@ namespace Chummer.Backend
                                     break;
                                 }
                         name = outString;
-                        name += $" ({LanguageManager.GetString("String_ExpenseSkillGroup")})";
+                        name += $" ({LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)})";
                         return intTotal >= Convert.ToInt32(node["val"].InnerText);
                     }
                 case "spell":
@@ -752,7 +748,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_DescSpell")})";
+                    name += $" ({LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)})";
                     return character.Spells.Any(spell => spell.Name == strNodeInnerText);
                 case "spellcategory":
                     // Check for a specified amount of a particular Spell category.
@@ -762,16 +758,16 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_SpellCategory")})";
+                    name += $" ({LanguageManager.GetString("String_SpellCategory", GlobalOptions.Language)})";
                     return character.Spells.Count(objSpell => objSpell.Category == strNodeName) >= Convert.ToInt32(node["count"].InnerText);
                 case "spelldescriptor":
                     // Check for a specified amount of a particular Spell Descriptor.
-                    name = "\n\t" + LanguageManager.GetString("Label_Descriptors") + " >= " + node["count"].InnerText;
+                    name = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + node["count"].InnerText;
                     return character.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(node["count"].InnerText);
                 case "streetcredvsnotoriety":
                     // Street Cred must be higher than Notoriety.
-                    name = "\n\t" + LanguageManager.GetString("String_StreetCred") + " >= " +
-                           LanguageManager.GetString("String_Notoriety");
+                    name = "\n\t" + LanguageManager.GetString("String_StreetCred", GlobalOptions.Language) + " >= " +
+                           LanguageManager.GetString("String_Notoriety", GlobalOptions.Language);
                     return character.StreetCred >= character.Notoriety;
                 case "tradition":
                     // Character needs a specific Tradition.
@@ -781,7 +777,7 @@ namespace Chummer.Backend
                     name = nameNode["translate"] != null
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
-                    name += $" ({LanguageManager.GetString("String_Tradition")})";
+                    name += $" ({LanguageManager.GetString("String_Tradition", GlobalOptions.Language)})";
                     return character.MagicTradition == strNodeInnerText;
                 default:
                     Utils.BreakIfDebug();

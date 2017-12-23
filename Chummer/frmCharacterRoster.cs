@@ -20,7 +20,7 @@ namespace Chummer
         public frmCharacterRoster()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             GlobalOptions.MRUChanged += PopulateCharacterList;
             treCharacterList.ItemDrag += treCharacterList_ItemDrag;
@@ -40,10 +40,7 @@ namespace Chummer
                 {
                     foreach (ToolStripMenuItem objItem in objCMS.Items.OfType<ToolStripMenuItem>())
                     {
-                        if (objItem.Tag != null)
-                        {
-                            objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                        }
+                        LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                     }
                 }
             }
@@ -60,7 +57,7 @@ namespace Chummer
         private void LoadCharacters()
         {
             List<string> lstFavorites = GlobalOptions.ReadMRUList("stickymru");
-            TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters")) { Tag = "Favourite" };
+            TreeNode objFavouriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavouriteCharacters", GlobalOptions.Language)) { Tag = "Favourite" };
 
             List<string> lstRecents = GlobalOptions.ReadMRUList();
 
@@ -93,7 +90,7 @@ namespace Chummer
             }
             if (lstWatch.Count > 0)
             {
-                objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+                objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder", GlobalOptions.Language)) { Tag = "Watch" };
             }
 
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
@@ -122,7 +119,7 @@ namespace Chummer
             TreeNode objRecentNode = null;
             if (lstRecents.Count > 0)
             {
-                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters")) { Tag = "Recent" };
+                objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters", GlobalOptions.Language)) { Tag = "Recent" };
             }
 
             TreeNode[] lstFavoritesNodes = new TreeNode[lstFavorites.Count];
@@ -241,7 +238,7 @@ namespace Chummer
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
                 var s = objXmlSourceNode["settings"]?.InnerText;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", s)) ? LanguageManager.GetString("MessageTitle_FileNotFound") : s;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", s)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : s;
                 string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
@@ -288,12 +285,12 @@ namespace Chummer
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = LanguageManager.GetString("String_UnnamedCharacter");
+                    strName = LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language);
             }
-            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
+            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, GlobalOptions.Language, false);
             if (string.IsNullOrEmpty(strBuildMethod))
                 strBuildMethod = "Unknown build method";
-            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode");
+            string strCreated = LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode", GlobalOptions.Language);
             string strReturn = $"{strName} ({strBuildMethod} - {strCreated})";
             if (Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == objCache.FilePath))
                 strReturn = "* " + strReturn;

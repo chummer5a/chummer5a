@@ -38,7 +38,7 @@ namespace Chummer
         public frmSelectMartialArtAdvantage(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml");

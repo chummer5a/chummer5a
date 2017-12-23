@@ -48,7 +48,7 @@ namespace Chummer
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -96,7 +96,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -146,7 +146,7 @@ namespace Chummer
 
             lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
             lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
-            lblAvail.Text = objArmor.TotalAvail;
+            lblAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
 
             if (objXmlArmor["rating"] != null)
             {
@@ -416,7 +416,7 @@ namespace Chummer
                             objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
 
                             string strArmorGuid = objArmor.SourceID.ToString();
-                            string strArmorName = objArmor.DisplayName;
+                            string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
                             string strAvail = objArmor.Avail;
@@ -425,13 +425,13 @@ namespace Chummer
                             {
                                 if (strAccessories.Length > 0)
                                     strAccessories += "\n";
-                                strAccessories += objMod.DisplayName;
+                                strAccessories += objMod.DisplayName(GlobalOptions.Language);
                             }
                             foreach (Gear objGear in objArmor.Gear)
                             {
                                 if (strAccessories.Length > 0)
                                     strAccessories += "\n";
-                                strAccessories += objGear.DisplayName;
+                                strAccessories += objGear.DisplayName(GlobalOptions.Language);
                             }
                             string strSource = objArmor.Source + " " + objArmor.Page;
                             decimal decCost = objArmor.Cost;
@@ -610,7 +610,7 @@ namespace Chummer
 
                 tipTooltip.SetToolTip(lblSource,
                     _objCharacter.Options.LanguageBookLong(objXmlArmor["source"]?.InnerText) + " " +
-                    LanguageManager.GetString("String_Page") + " " + strPage);
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
         #endregion

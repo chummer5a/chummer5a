@@ -64,6 +64,7 @@ Application Changes:
 - Cyberware, Gear, Armor and Armor Mod Ratings are now properly bound by their Min and Max Ratings. May cause issues in career mode if you suddenly become Aged with cyberware or something, but eh. Baby steps.
 - Fixed a crash when adding multiple armor mods a given piece of armor in career mode.
 - Fixed a potential crash when loading lifestyles that didn't have their base lifestyle saved properly.
+- Added preliminary support for being able to switch languages without restarting Chummer. This also feeds into character sheets that would be printed in a language different from the one under which Chummer is running. Note that not all strings properly update yet.
 
 Data Changes:
 

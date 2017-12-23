@@ -42,7 +42,7 @@ namespace Chummer
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
@@ -78,7 +78,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -211,7 +211,7 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstAIPrograms.Text))
             {
-                string strRequiresProgram = LanguageManager.GetString("String_None");
+                string strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
                 if (objXmlProgram["require"] != null)
                     strRequiresProgram = objXmlProgram["require"].InnerText;
 
@@ -223,7 +223,7 @@ namespace Chummer
                     strPage = objXmlProgram["altpage"].InnerText;
                 lblSource.Text = strBook + " " + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
 
@@ -380,8 +380,8 @@ namespace Chummer
                     DialogResult = DialogResult.OK;
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement") + strRequiresProgram,
-                        LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement"),
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language) + strRequiresProgram,
+                        LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }

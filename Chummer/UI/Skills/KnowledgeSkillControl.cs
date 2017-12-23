@@ -125,7 +125,7 @@ namespace Chummer.UI.Skills
                 int upgradeKarmaCost = _skill.UpgradeKarmaCost();
 
                 if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                        _skill.DisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
                 if (!parent.ConfirmKarmaExpense(confirmstring))
@@ -164,7 +164,7 @@ namespace Chummer.UI.Skills
                     price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
                 price += intExtraSpecCost; //Spec
 
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
 
                 if (!parrent.ConfirmKarmaExpense(confirmstring))
                     return;

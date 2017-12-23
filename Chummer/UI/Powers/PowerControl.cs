@@ -34,7 +34,7 @@ namespace Chummer
         {
             PowerObject = objPower;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
@@ -136,7 +136,7 @@ namespace Chummer
             if (frmPowerNotes.DialogResult == DialogResult.OK)
                 _objPower.Notes = frmPowerNotes.Notes;
 
-            string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
+            string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
             if (_objPower.Notes != "")
                 strTooltip += "\n\n" + _objPower.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));

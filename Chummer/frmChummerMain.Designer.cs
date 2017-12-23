@@ -150,7 +150,6 @@ namespace Chummer
             this.fileMenu.Size = new System.Drawing.Size(37, 20);
             this.fileMenu.Tag = "Menu_Main_File";
             this.fileMenu.Text = "&File";
-            this.fileMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // newToolStripMenuItem
             // 
@@ -457,7 +456,6 @@ namespace Chummer
             this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
             this.toolsMenu.Text = "&Tools";
-            this.toolsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // mnuToolsDiceRoller
             // 
@@ -531,7 +529,6 @@ namespace Chummer
             this.windowsMenu.Size = new System.Drawing.Size(68, 20);
             this.windowsMenu.Tag = "Menu_Main_Window";
             this.windowsMenu.Text = "&Windows";
-            this.windowsMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // newWindowToolStripMenuItem
             // 
@@ -563,7 +560,6 @@ namespace Chummer
             this.helpMenu.Size = new System.Drawing.Size(44, 20);
             this.helpMenu.Tag = "Menu_Main_Help";
             this.helpMenu.Text = "&Help";
-            this.helpMenu.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // contentsToolStripMenuItem
             // 

@@ -150,7 +150,7 @@ namespace Chummer.Backend.Equipment
                 Free = true;
             }
             objNode.Name = Name;
-            objNode.Text = FormattedDisplayName;
+            objNode.Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
             objNode.Tag = InternalId;
         }
 
@@ -259,8 +259,7 @@ namespace Chummer.Backend.Equipment
                     var frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
-                        Description =
-                        LanguageManager.GetString("String_CannotFindLifestyleQuality").Replace("{0}", _strName)
+                        Description = LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language).Replace("{0}", _strName)
                     };
                     frmSelect.ShowDialog();
                     if (frmSelect.DialogResult == DialogResult.Cancel)
@@ -297,13 +296,13 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (!_blnPrint) return;
             objWriter.WriteStartElement("quality");
             objWriter.WriteElementString("name", DisplayNameShort);
-            objWriter.WriteElementString("formattedname", FormattedDisplayName);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             objWriter.WriteElementString("lp", _intLP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             string strLifestyleQualityType = _objLifestyleQualityType.ToString();
@@ -384,7 +383,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrWhiteSpace(_strTooltipSource)) return _strTooltipSource;
                 XmlDocument objBookDocument = XmlManager.Load("books.xml");
                 XmlNode objXmlBook = objBookDocument.SelectSingleNode("/chummer/books/book[code = \"" + _strSource + "\"]");
-                _strTooltipSource = $"{objXmlBook["name"].InnerText} {LanguageManager.GetString("String_Page")} {Page}";
+                _strTooltipSource = $"{objXmlBook["name"].InnerText} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {Page}";
                 return _strTooltipSource;
             }
         }
@@ -453,43 +452,36 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                string strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort;
 
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    LanguageManager.Load(GlobalOptions.Language, this);
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                }
-                return strReturn;
+            if (!string.IsNullOrEmpty(_strExtra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
+            return strReturn;
         }
 
-        public string FormattedDisplayName
+        public string FormattedDisplayName(CultureInfo objCulture, string strLanguage)
         {
-            get
+            string strReturn = DisplayName(strLanguage);
+
+            if (Multiplier > 0)
             {
-                string strReturn = DisplayName;
-
-                if (Multiplier > 0)
-                {
-                    strReturn += $" [+{Multiplier}%]";
-                }
-                else if (Multiplier < 0)
-                {
-                    strReturn += $" [-{Multiplier}%]";
-                }
-
-                if (Cost > 0)
-                {
-                    strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥]";
-                }
-                return strReturn;
+                strReturn += $" [+{Multiplier}%]";
             }
+            else if (Multiplier < 0)
+            {
+                strReturn += $" [-{Multiplier}%]";
+            }
+
+            if (Cost > 0)
+            {
+                strReturn += " [+" + Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture) + "¥]";
+            }
+            return strReturn;
         }
 
         /// <summary>

@@ -190,7 +190,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -334,7 +334,7 @@ namespace Chummer.Backend.Equipment
                         objGear.Quantity = decQty;
                         objGear.MaxRating = intMaxRating;
                         objGear.ParentID = InternalId;
-                        objGearNode.Text = objGear.DisplayName;
+                        objGearNode.Text = objGear.DisplayName(GlobalOptions.Language);
                         objGearNode.ContextMenuStrip = cmsVehicleGear;
 
                         foreach (Weapon objWeapon in objWeapons)
@@ -476,7 +476,7 @@ namespace Chummer.Backend.Equipment
                 TreeNode mountsNode = new TreeNode()
                 {
                     Tag = "String_WeaponMounts",
-                    Text = LanguageManager.GetString("String_WeaponMounts")
+                    Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
                 };
                 objNode.Nodes.Add(mountsNode);
                 // Weapon Mounts
@@ -801,7 +801,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("vehicle");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -814,7 +814,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
             objWriter.WriteElementString("seats", TotalSeats.ToString(objCulture));
             objWriter.WriteElementString("sensor", CalculatedSensor.ToString(objCulture));
-            objWriter.WriteElementString("avail", CalculatedAvail);
+            objWriter.WriteElementString("avail", CalculatedAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -835,17 +835,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in _lstVehicleMods)
-                objMod.Print(objWriter, objCulture);
+                objMod.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                objGear.Print(objWriter, objCulture);
+                objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
-                objWeapon.Print(objWriter, objCulture);
+                objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -1308,20 +1308,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availablility of the Vehicle.
         /// </summary>
-        public string CalculatedAvail
+        public string CalculatedAvail(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strAvail;
+            string strReturn = _strAvail;
 
-                // Translate the Avail string.
-                if (strReturn.Contains('R'))
-                    strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted"));
-                else if (strReturn.Contains('F'))
-                    strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden"));
+            // Translate the Avail string.
+            if (strReturn.Contains('R'))
+                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted", strLanguage));
+            else if (strReturn.Contains('F'))
+                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden", strLanguage));
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>

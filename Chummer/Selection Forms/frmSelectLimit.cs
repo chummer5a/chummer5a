@@ -37,14 +37,14 @@ namespace Chummer
         public frmSelectLimit()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             // Build the list of Limits.
             _lstLimits = new List<ListItem>
             {
-                new ListItem("Physical", LanguageManager.GetString("Node_Physical")),
-                new ListItem("Mental", LanguageManager.GetString("Node_Mental")),
-                new ListItem("Social", LanguageManager.GetString("Node_Social"))
+                new ListItem("Physical", LanguageManager.GetString("Node_Physical", GlobalOptions.Language)),
+                new ListItem("Mental", LanguageManager.GetString("Node_Mental", GlobalOptions.Language)),
+                new ListItem("Social", LanguageManager.GetString("Node_Social", GlobalOptions.Language))
             };
 
             cboLimit.BeginUpdate();
@@ -113,7 +113,7 @@ namespace Chummer
         {
             List<ListItem> lstItems = new List<ListItem>
             {
-                new ListItem(strValue, LanguageManager.GetString("String_Limit" + strValue + "Short"))
+                new ListItem(strValue, LanguageManager.GetString("String_Limit" + strValue + "Short", GlobalOptions.Language))
             };
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
@@ -132,7 +132,7 @@ namespace Chummer
             _lstLimits.Clear();
             foreach (string strLimit in strValue)
             {
-                _lstLimits.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
+                _lstLimits.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short", GlobalOptions.Language)));
             }
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;

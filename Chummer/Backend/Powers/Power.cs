@@ -34,7 +34,6 @@ namespace Chummer
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints = 0;
-        private string _strDisplayName = string.Empty;
         private string _displayPoints = string.Empty;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -131,7 +130,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = Extra;
-                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     ImprovementManager.ForcedValue = strOldForce;
                     this.Deleting = true;
@@ -251,16 +250,16 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("power");
-            objWriter.WriteElementString("name", DisplayNameShort);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra));
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
             objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
             objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
-            objWriter.WriteElementString("action", DisplayAction);
+            objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             if (CharacterObject.Options.PrintNotes)
@@ -268,7 +267,7 @@ namespace Chummer
             objWriter.WriteStartElement("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
-                objEnhancement.Print(objWriter);
+                objEnhancement.Print(objWriter, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             objWriter.WriteEndElement();
@@ -304,26 +303,16 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = Name;
-                //Cache the displayname the first time it's called. 
-                //TODO: Obsolete if the program ever switches to dynamically changing languages. 
-                if (!string.IsNullOrWhiteSpace(_strDisplayName))
-                {
-                    strReturn = _strDisplayName;
-                }
-                // Get the translated name if applicable.
-                else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    _strDisplayName = MyXmlNode?["translate"]?.InnerText ?? strReturn;
-                    strReturn = _strDisplayName;
-                }
+            string strReturn = Name;
 
-                return strReturn;
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+            {
+                strReturn = MyXmlNode?["translate"]?.InnerText ?? Name;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -333,19 +322,23 @@ namespace Chummer
         {
             get
             {
-                string strReturn = DisplayNameShort;
-
-                if (string.IsNullOrEmpty(Extra)) return strReturn;
-                LanguageManager.Load(GlobalOptions.Language, this);
-                // Attempt to retrieve the CharacterAttribute name.
-                string strTranslateName = LanguageManager.GetString("String_Attribute" + Extra + "Short", false);
-                if (!string.IsNullOrEmpty(strTranslateName))
-                    strReturn += " (" + strTranslateName + ")";
-                else
-                    strReturn += " (" + LanguageManager.TranslateExtra(Extra) + ")";
-
-                return strReturn;
+                return DisplayNameMethod(GlobalOptions.Language);
             }
+        }
+
+        /// <summary>
+        /// The translated name of the Power (Name + any Extra text).
+        /// </summary>
+        public string DisplayNameMethod(string strLanguage)
+        {
+            string strReturn = DisplayNameShort(strLanguage);
+
+            if (string.IsNullOrEmpty(Extra))
+                return strReturn;
+            // Attempt to retrieve the CharacterAttribute name.
+            strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ")";
+
+            return strReturn;
         }
 
         /// <summary>
@@ -650,32 +643,40 @@ namespace Chummer
         {
             get
             {
-                string strReturn = string.Empty;
-
-                switch (_strAction)
-                {
-                    case "Auto":
-                        strReturn = LanguageManager.GetString("String_ActionAutomatic");
-                        break;
-                    case "Free":
-                        strReturn = LanguageManager.GetString("String_ActionFree");
-                        break;
-                    case "Simple":
-                        strReturn = LanguageManager.GetString("String_ActionSimple");
-                        break;
-                    case "Complex":
-                        strReturn = LanguageManager.GetString("String_ActionComplex");
-                        break;
-                    case "Interrupt":
-                        strReturn = LanguageManager.GetString("String_ActionInterrupt");
-                        break;
-                    case "Special":
-                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
-                        break;
-                }
-
-                return strReturn;
+                return DisplayActionMethod(GlobalOptions.Language);
             }
+        }
+
+        /// <summary>
+        /// Translated Action.
+        /// </summary>
+        public string DisplayActionMethod(string strLanguage)
+        {
+            string strReturn = string.Empty;
+
+            switch (_strAction)
+            {
+                case "Auto":
+                    strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
+                    break;
+                case "Free":
+                    strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
+                    break;
+                case "Simple":
+                    strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
+                    break;
+                case "Complex":
+                    strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
+                    break;
+                case "Interrupt":
+                    strReturn = LanguageManager.GetString("String_ActionInterrupt", strLanguage);
+                    break;
+                case "Special":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+                    break;
+            }
+
+            return strReturn;
         }
 
         #endregion
@@ -740,7 +741,7 @@ namespace Chummer
                         {
                             if (objNode.Attributes?["extra"] != null)
                             {
-                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && LanguageManager.TranslateExtra(objQuality.Extra) == objNode.Attributes["extra"].InnerText);
+                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && objQuality.Extra == objNode.Attributes["extra"].InnerText);
                                 if (blnReturn)
                                     break;
                             }
@@ -774,7 +775,7 @@ namespace Chummer
                 if (!Deleting)
                 {
                     ImprovementManager.ForcedValue = Extra;
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort);
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, false, TotalRating, DisplayNameShort(GlobalOptions.Language));
                 }
             }
         }
@@ -806,7 +807,7 @@ namespace Chummer
             string strReturn = $"Rating ({Rating} x {PointsPerLevel})";
             string strModifier = CharacterObject.Improvements
                 .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.AdeptPower && objImprovement.ImprovedName == Name && objImprovement.UniqueName == Extra && objImprovement.Enabled)
-                .Aggregate("", (current, objImprovement) => current + $" + {CharacterObject.GetObjectName(objImprovement)} ({objImprovement.Rating})");
+                .Aggregate("", (current, objImprovement) => current + $" + {CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language)} ({objImprovement.Rating})");
 
             return strReturn + strModifier;
         }

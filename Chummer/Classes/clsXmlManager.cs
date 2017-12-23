@@ -46,6 +46,11 @@ namespace Chummer
             public string FileName { get; set; } = string.Empty;
 
             /// <summary>
+            /// Language of the XML file.
+            /// </summary>
+            public string Language { get; set; } = GlobalOptions.DefaultLanguage;
+
+            /// <summary>
             /// Whether or not the XML file has been successfully checked for duplicate guids.
             /// </summary>
             public bool DuplicatesChecked { get; set; }
@@ -63,7 +68,6 @@ namespace Chummer
         #region Constructor
         static XmlManager()
         {
-            LanguageManager.Load(GlobalOptions.Language, null);
             s_LstDataDirectories.Add(Path.Combine(Application.StartupPath, "data"));
             foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfo.Where(x => x.Enabled))
             {
@@ -79,7 +83,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the XML file to load.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        public static XmlDocument Load(string strFileName, bool blnLoadFile = false)
+        public static XmlDocument Load(string strFileName, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
@@ -97,7 +101,10 @@ namespace Chummer
                 Utils.BreakIfDebug();
                 return null;
             }
+
             DateTime datDate = File.GetLastWriteTime(strPath);
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
 
             // Look to see if this XmlDocument is already loaded.
             XmlReference objReference = null;
@@ -111,10 +118,10 @@ namespace Chummer
                     blnLoadFile = true;
                     s_LstXmlDocuments.Add(objReference);
                 }
-                // The file was found in the List, so check the last write time.
-                else if (datDate != objReference.FileDate)
+                // The file was found in the List, so check the last write time and language.
+                else if (datDate != objReference.FileDate || strLanguage != objReference.Language)
                 {
-                    // The last write time does not match, so it must be reloaded.
+                    // The last write time and/or language does not match, so it must be reloaded.
                     blnLoadFile = true;
                 }
             }
@@ -231,13 +238,14 @@ namespace Chummer
                 }
 
                 // Load the translation file for the current base data file if the selected language is not en-us.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (strLanguage != GlobalOptions.DefaultLanguage)
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
-                    if (LanguageManager.DataDoc != null)
+                    XmlDocument objDataDoc = LanguageManager.GetDataDocument(strLanguage);
+                    if (objDataDoc != null)
                     {
-                        foreach (XmlNode objNode in LanguageManager.DataDoc.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]"))
+                        foreach (XmlNode objNode in objDataDoc?.SelectNodes("/chummer/chummer[@file = \"" + strFileName + "\"]"))
                         {
                             foreach (XmlNode objType in objNode.ChildNodes)
                             {
@@ -378,6 +386,7 @@ namespace Chummer
                 // Cache the merged document and its relevant information.
                 objReference.FileDate = datDate;
                 objReference.FileName = strFileName;
+                objReference.Language = strLanguage;
                 if (GlobalOptions.LiveCustomData)
                     objReference.XmlContent = objDoc.Clone() as XmlDocument;
                 else
@@ -485,7 +494,7 @@ namespace Chummer
                     {
                         string strDuplicatesNames = string.Join("\n", lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
                         MessageBox.Show(
-                            LanguageManager.GetString("Message_DuplicateGuidWarning")
+                            LanguageManager.GetString("Message_DuplicateGuidWarning", strLanguage)
                                 .Replace("{0}", lstDuplicateIDs.Count.ToString())
                                 .Replace("{1}", strFileName)
                                 .Replace("{2}", strDuplicatesNames));
@@ -495,7 +504,7 @@ namespace Chummer
                     {
                         string strMalformedIdNames = string.Join("\n", lstItemsWithMalformedIDs);
                         MessageBox.Show(
-                            LanguageManager.GetString("Message_NonGuidIdWarning")
+                            LanguageManager.GetString("Message_NonGuidIdWarning", strLanguage)
                                 .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
                                 .Replace("{1}", strFileName)
                                 .Replace("{2}", strMalformedIdNames));
@@ -518,15 +527,23 @@ namespace Chummer
         /// <param name="blnHasIdentifier">Whether or not the amending node or any of its children have an identifier element ("id" and/or "name" element). Can safely use a dummy boolean if this is the first call in a recursion.</param>
         private static bool AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath, out bool blnHasIdentifier)
         {
-            // Fetch the old node based on identifiers present in the amending node (id and/or name)
+            blnHasIdentifier = false;
+            // Fetch the old node based on identifiers present in the amending node (id or name)
             string strFilter = string.Empty;
             XmlNode objAmendingNodeId = objAmendingNode["id"];
             if (objAmendingNodeId != null)
-                strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + "\"";
-            XmlNode objAmendingNodeName = objAmendingNode["name"];
-            if (objAmendingNodeName != null && string.IsNullOrEmpty(strFilter))
             {
-                strFilter = "name = \"" + objAmendingNodeName.InnerText.Replace("&amp;", "&") + "\"";
+                strFilter = "id = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                blnHasIdentifier = true;
+            }
+            else
+            {
+                objAmendingNodeId = objAmendingNode["name"];
+                if (objAmendingNodeId != null)
+                {
+                    strFilter = "name = \"" + objAmendingNodeId.InnerText.Replace("&amp;", "&") + '\"';
+                    blnHasIdentifier = true;
+                }
             }
             // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
             XmlNodeList objAmendingNodeExtraIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]");
@@ -534,28 +551,28 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";
-                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + "\"";
+                strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
+                blnHasIdentifier = true;
             }
 
             XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
             string strCustomXPath = objAmendingNodeAttribs?["xpathfilter"]?.InnerText;
+            // We have a custom XPath filter defined for what children to fetch, so add that in.
             if (!string.IsNullOrEmpty(strCustomXPath))
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";
-                strFilter += "(" + strCustomXPath + ")";
+                strFilter += '(' + strCustomXPath + ')';
+                blnHasIdentifier = true;
             }
 
             if (!string.IsNullOrEmpty(strFilter))
-                strFilter = "[" + strFilter + "]";
+                strFilter = '[' + strFilter + ']';
 
-            XmlNodeList objNodesToEdit = null;
+            string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
+            XmlNodeList objNodesToEdit = objDoc.SelectNodes(strNewXPath);
 
-            blnHasIdentifier = (objAmendingNodeId != null || objAmendingNodeName != null || objAmendingNodeExtraIds.Count > 0 || !string.IsNullOrEmpty(strCustomXPath));
-            string strNewXPath = strXPath + "/" + objAmendingNode.Name + strFilter;
-            if (objNodesToEdit == null)
-                objNodesToEdit = objDoc.SelectNodes(strNewXPath);
-
+            // We want to treat nodes that have children elements ("grouping" nodes) differently from those that don't ("data" nodes)
             bool blnHasElementChildren = false;
             if (objAmendingNode.HasChildNodes)
             {
@@ -568,7 +585,9 @@ namespace Chummer
                     }
                 }
             }
+
             bool blnReturn = false;
+            // Loop through any nodes that satisfy the XPath filter (as long as we have some way of identifying them, the node is a grouping node and not a data node, and/or we wish to remove the node)
             if (objNodesToEdit != null && (blnHasIdentifier || blnHasElementChildren || objAmendingNodeAttribs?["remove"]?.InnerText == "yes"))
             {
                 foreach (XmlNode objNodeToEdit in objNodesToEdit)
@@ -591,7 +610,7 @@ namespace Chummer
                                     objNodeToEditAttribs.Append(objNewAttribute);
                             }
                         }
-                        // If the amending node has children elements, run this method on all of its children.
+                        // If the amending node has children elements, run this method on all of its children instead of overwriting raw contents.
                         if (blnHasElementChildren)
                         {
                             foreach (XmlNode objChild in objAmendingNode.ChildNodes)
@@ -606,7 +625,8 @@ namespace Chummer
                                         objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
                                     }
                                 }
-                                blnHasIdentifier = blnHasIdentifier || blnLoopHasIdentifier;
+                                if (blnLoopHasIdentifier)
+                                    blnHasIdentifier = true;
                             }
                         }
                         // If neither the amending node nor the old node has children elements, overwrite the old node with the amending one.

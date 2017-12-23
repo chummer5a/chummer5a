@@ -203,7 +203,7 @@ namespace Chummer.Backend.Skills
 
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
+                $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry(_character);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -262,11 +262,11 @@ namespace Chummer.Backend.Skills
             writer.WriteEndElement();
         }
 
-        internal void Print(XmlWriter objWriter, CultureInfo objCulture)
+        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("skillgroup");
 
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
@@ -349,20 +349,22 @@ namespace Chummer.Backend.Skills
         {
             get { return _groupName; }
         }
-
-        private string _cachedDisplayName = null;
+        
         public string DisplayName
         {
             get
             {
-                if(_cachedDisplayName != null)
-                    return _cachedDisplayName;
-
-                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _cachedDisplayName = Name;
-                XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
-                return _cachedDisplayName = objNode?.Attributes?["translate"]?.InnerText;
+                return DisplayNameMethod(GlobalOptions.Language);
             }
+        }
+
+        public string DisplayNameMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
+            XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
+            return objNode?.Attributes?["translate"]?.InnerText;
         }
 
         public string DisplayRating
@@ -371,7 +373,7 @@ namespace Chummer.Backend.Skills
             {
                 if (_character.Created && !CareerIncrease)
                 {
-                    return LanguageManager.GetString("Label_SkillGroup_Broken");
+                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
                 return SkillList.Min(x => x.TotalBaseRating).ToString();
             }
@@ -383,14 +385,14 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (string.IsNullOrEmpty(_toolTip))
-                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
+                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
                 return _toolTip;
             }
         }
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem"), SkillList.Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
         }
 
         public Guid Id { get; } = Guid.NewGuid();

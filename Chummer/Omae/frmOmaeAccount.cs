@@ -30,7 +30,7 @@ namespace Chummer
         public frmOmaeAccount(string strUserName)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _strUserName = strUserName;
             MoveControls();
         }

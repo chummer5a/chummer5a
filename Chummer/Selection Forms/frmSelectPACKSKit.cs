@@ -42,7 +42,7 @@ namespace Chummer
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the PACKS information.
             _objXmlDocument = XmlManager.Load("packs.xml");
@@ -67,7 +67,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -155,7 +155,7 @@ namespace Chummer
                 switch (objXmlItem.Name)
                 {
                     case "attributes":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Attributes");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Attributes", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlAttribute in objXmlItem.ChildNodes)
                         {
@@ -163,7 +163,7 @@ namespace Chummer
                                 continue;
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + objXmlAttribute.Name.ToUpper() + "Short") + " " + (Convert.ToInt32(objXmlAttribute.InnerText) - (6 - _objCharacter.GetAttribute(objXmlAttribute.Name.ToUpper()).MetatypeMaximum)).ToString()
+                                Text = LanguageManager.GetString("String_Attribute" + objXmlAttribute.Name.ToUpper() + "Short", GlobalOptions.Language) + " " + (Convert.ToInt32(objXmlAttribute.InnerText) - (6 - _objCharacter.GetAttribute(objXmlAttribute.Name.ToUpper()).MetatypeMaximum)).ToString()
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -173,7 +173,7 @@ namespace Chummer
                     case "qualities":
                         objXmlItemDocument = XmlManager.Load("qualities.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Qualities");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Qualities", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         // Positive Qualities.
                         foreach (XmlNode objXmlQuality in objXmlItem.SelectNodes("positive/quality"))
@@ -189,7 +189,7 @@ namespace Chummer
                             };
 
                             if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
+                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -208,17 +208,17 @@ namespace Chummer
                             };
 
                             if (objXmlQuality.Attributes["select"] != null)
-                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText)})";
+                                objChild.Text += $" ({LanguageManager.TranslateExtra(objXmlQuality.Attributes["select"].InnerText, GlobalOptions.Language)})";
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
                         break;
                     case "nuyenbp":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Nuyen");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Nuyen", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         TreeNode objNuyenChild = new TreeNode
                         {
-                            Text = LanguageManager.GetString("String_SelectPACKSKit_StartingNuyenBP") + " " + objXmlItem.InnerText
+                            Text = LanguageManager.GetString("String_SelectPACKSKit_StartingNuyenBP", GlobalOptions.Language) + " " + objXmlItem.InnerText
                         };
                         objParent.Nodes.Add(objNuyenChild);
                         objParent.Expand();
@@ -226,7 +226,7 @@ namespace Chummer
                     case "skills":
                         objXmlItemDocument = XmlManager.Load("skills.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
                         {
@@ -257,7 +257,7 @@ namespace Chummer
                             {
                                 Text = objNode.Attributes["translate"]?.InnerText ?? objXmlSkill["name"].InnerText
                             };
-                            objChild.Text += $" {LanguageManager.GetString("String_SelectPACKSKit_Group")} {objXmlSkill["rating"].InnerText}";
+                            objChild.Text += $" {LanguageManager.GetString("String_SelectPACKSKit_Group", GlobalOptions.Language)} {objXmlSkill["rating"].InnerText}";
 
                             if (objXmlSkill["spec"] != null)
                                 objChild.Text += $" ({objXmlSkill["spec"].InnerText})";
@@ -268,7 +268,7 @@ namespace Chummer
                     case "knowledgeskills":
                         objXmlItemDocument = XmlManager.Load("skills.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_KnowledgeSkills");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_KnowledgeSkills", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSkill in objXmlItem.SelectNodes("skill"))
                         {
@@ -291,11 +291,11 @@ namespace Chummer
                         }
                         break;
                     case "selectmartialart":
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
 
                         int intRating = 1;
-                        string strSelect = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
+                        string strSelect = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt", GlobalOptions.Language);
                         if (objXmlItem.Attributes["select"] != null)
                             strSelect = objXmlItem.Attributes["select"].InnerText;
                         if (objXmlItem.Attributes["rating"] != null)
@@ -303,7 +303,7 @@ namespace Chummer
 
                         TreeNode objMartialArt = new TreeNode
                         {
-                            Text = strSelect + " " + LanguageManager.GetString("String_Rating") + " " + intRating.ToString()
+                            Text = strSelect + " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + intRating.ToString()
                         };
                         objParent.Nodes.Add(objMartialArt);
                         objParent.Expand();
@@ -311,7 +311,7 @@ namespace Chummer
                     case "martialarts":
                         objXmlItemDocument = XmlManager.Load("martialarts.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_MartialArts");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_MartialArts", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlArt in objXmlItem.SelectNodes("martialart"))
                         {
@@ -367,7 +367,7 @@ namespace Chummer
                     case "powers":
                         objXmlItemDocument = XmlManager.Load("powers.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlPower in objXmlItem.SelectNodes("power"))
                         {
@@ -392,7 +392,7 @@ namespace Chummer
                     case "programs":
                         objXmlItemDocument = XmlManager.Load("complexforms.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Programs");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Programs", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlProgram in objXmlItem.SelectNodes("program"))
                         {
@@ -434,7 +434,7 @@ namespace Chummer
                     case "spells":
                         objXmlItemDocument = XmlManager.Load("spells.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spells");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spells", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSpell in objXmlItem.SelectNodes("spell"))
                         {
@@ -456,7 +456,7 @@ namespace Chummer
                         break;
                     case "spirits":
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spirits");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spirits", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlSpirit in objXmlItem.SelectNodes("spirit"))
                         {
@@ -464,7 +464,7 @@ namespace Chummer
                                 continue;
                             TreeNode objChild = new TreeNode
                             {
-                                Text = objXmlSpirit["name"].InnerText + " (" + LanguageManager.GetString("Label_Spirit_Force") + " " + objXmlSpirit["force"].InnerText + ", " + LanguageManager.GetString("Label_Spirit_ServicesOwed") + " " + objXmlSpirit["services"].InnerText + ")"
+                                Text = objXmlSpirit["name"].InnerText + " (" + LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language) + " " + objXmlSpirit["force"].InnerText + ", " + LanguageManager.GetString("Label_Spirit_ServicesOwed", GlobalOptions.Language) + " " + objXmlSpirit["services"].InnerText + ")"
                             };
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
@@ -472,7 +472,7 @@ namespace Chummer
                         break;
                     case "lifestyles":
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Lifestyles");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Lifestyles", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlLifestyle in objXmlItem.SelectNodes("lifestyle"))
                         {
@@ -480,7 +480,7 @@ namespace Chummer
                                 continue;
                             TreeNode objChild = new TreeNode
                             {
-                                Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.GetString("Label_LifestyleMonths"))
+                                Text = string.Format("{0} {1} {2}", objXmlLifestyle["name"].InnerText, objXmlLifestyle["months"].InnerText, LanguageManager.GetString("Label_LifestyleMonths", GlobalOptions.Language))
                             };
 
                             // Check for Qualities.
@@ -503,7 +503,7 @@ namespace Chummer
                     case "cyberwares":
                         objXmlItemDocument = XmlManager.Load("cyberware.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Cyberware");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Cyberware", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlCyberware in objXmlItem.SelectNodes("cyberware"))
                         {
@@ -535,7 +535,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlChild["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlChild["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlChild["rating"].InnerText;
 
                                 foreach (XmlNode objXmlGearNode in objXmlChild.SelectNodes("gears/gear"))
                                     WriteGear(objXmlGearDocument, objXmlGearNode, objChildChild);
@@ -556,7 +556,7 @@ namespace Chummer
                     case "biowares":
                         objXmlItemDocument = XmlManager.Load("bioware.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Bioware");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Bioware", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlBioware in objXmlItem.SelectNodes("bioware"))
                         {
@@ -571,7 +571,7 @@ namespace Chummer
                             };
 
                             if (objXmlBioware["rating"] != null)
-                                objChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlBioware["rating"].InnerText;
+                                objChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlBioware["rating"].InnerText;
                             objChild.Text += " (" + objXmlBioware["grade"].InnerText + ")";
 
                             foreach (XmlNode objXmlGearNode in objXmlBioware.SelectNodes("gears/gear"))
@@ -585,7 +585,7 @@ namespace Chummer
                     case "armors":
                         objXmlItemDocument = XmlManager.Load("armor.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Armor");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Armor", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlArmor in objXmlItem.SelectNodes("armor"))
                         {
@@ -613,7 +613,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlChild["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlChild["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlChild["rating"].InnerText;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -629,7 +629,7 @@ namespace Chummer
                     case "weapons":
                         objXmlItemDocument = XmlManager.Load("weapons.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Weapons");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Weapons", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlWeapon in objXmlItem.SelectNodes("weapon"))
                         {
@@ -657,7 +657,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlAccessory["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlAccessory["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlAccessory["rating"].InnerText;
 
                                 foreach (XmlNode objXmlGearNode in objXmlAccessory.SelectNodes("gears/gear"))
                                     WriteGear(objXmlGearDocument, objXmlGearNode, objChildChild);
@@ -681,7 +681,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlMod["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlMod["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlMod["rating"].InnerText;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -710,7 +710,7 @@ namespace Chummer
                     case "gears":
                         objXmlItemDocument = XmlManager.Load("gear.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Gear");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Gear", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlGear in objXmlItem.SelectNodes("gear"))
                         {
@@ -723,7 +723,7 @@ namespace Chummer
                     case "vehicles":
                         objXmlItemDocument = XmlManager.Load("vehicles.xml");
 
-                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Vehicles");
+                        objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Vehicles", GlobalOptions.Language);
                         treContents.Nodes.Add(objParent);
                         foreach (XmlNode objXmlVehicle in objXmlItem.SelectNodes("vehicle"))
                         {
@@ -751,7 +751,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlMod["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlMod["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlMod["rating"].InnerText;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -780,7 +780,7 @@ namespace Chummer
                                 };
 
                                 if (objXmlWeapon["rating"] != null)
-                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlWeapon["rating"].InnerText;
+                                    objChildChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlWeapon["rating"].InnerText;
                                 objChild.Nodes.Add(objChildChild);
                                 objChild.Expand();
                             }
@@ -820,7 +820,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(lstKits.Text))
                 return;
 
-            if (MessageBox.Show(LanguageManager.GetString("Message_DeletePACKSKit").Replace("{0}", lstKits.Text), LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (MessageBox.Show(LanguageManager.GetString("Message_DeletePACKSKit", GlobalOptions.Language).Replace("{0}", lstKits.Text), LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
             // Delete the selectec custom PACKS Kit.
@@ -947,7 +947,7 @@ namespace Chummer
                 if (objXmlGear["name"].Attributes["select"] != null)
                     objChild.Text += " (" + objXmlGear["name"].Attributes["select"].InnerText + ")";
                 if (objXmlGear["rating"] != null)
-                    objChild.Text += " " + LanguageManager.GetString("String_Rating") + " " + objXmlGear["rating"].InnerText;
+                    objChild.Text += " " + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objXmlGear["rating"].InnerText;
                 if (objXmlGear["qty"] != null)
                     objChild.Text += " x" + objXmlGear["qty"].InnerText;
 

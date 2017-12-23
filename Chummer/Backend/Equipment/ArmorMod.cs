@@ -143,7 +143,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -187,7 +187,7 @@ namespace Chummer.Backend.Equipment
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, false, false, !blnSkipCost && !blnSkipSelectForms);
+                    objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, !blnSkipCost && !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
@@ -232,7 +232,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
         }
 
@@ -355,7 +355,7 @@ namespace Chummer.Backend.Equipment
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("armormod");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -365,7 +365,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armor", _intA.ToString(objCulture));
             objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail);
+            objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -376,10 +376,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in _lstGear)
             {
-                objGear.Print(objWriter, objCulture);
+                objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -477,18 +477,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                string strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort;
 
-                if (_intRating > 0)
-                    strReturn += " (" + LanguageManager.GetString("String_Rating") + " " + _intRating.ToString() + ")";
-                if (!string.IsNullOrEmpty(_strExtra))
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                return strReturn;
-            }
+            if (_intRating > 0)
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + " " + _intRating.ToString() + ")";
+            if (!string.IsNullOrEmpty(_strExtra))
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
+            return strReturn;
         }
 
         /// <summary>
@@ -785,95 +782,92 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availablility of the Gear and its accessories.
         /// </summary>
-        public string TotalAvail
+        public string TotalAvail(string strLanguage)
         {
-            get
+            // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+            if (_strAvail.Contains('+'))
+                return _strAvail;
+
+            string strCalculated;
+
+            if (_strAvail.Contains("Rating"))
             {
-                // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-                if (_strAvail.Contains('+'))
-                    return _strAvail;
+                // If the availability is determined by the Rating, evaluate the expression.
+                string strAvail = string.Empty;
+                string strAvailExpr = _strAvail;
 
-                string strCalculated;
-
-                if (_strAvail.Contains("Rating"))
+                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
                 {
-                    // If the availability is determined by the Rating, evaluate the expression.
-                    string strAvail = string.Empty;
-                    string strAvailExpr = _strAvail;
-
-                    if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
-                    {
-                        strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                        // Remove the trailing character if it is "F" or "R".
-                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                    }
-                    strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))).ToString() + strAvail;
+                    strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
+                    // Remove the trailing character if it is "F" or "R".
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                strCalculated = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", _intRating.ToString()))).ToString() + strAvail;
+            }
+            else
+            {
+                // Just a straight cost, so return the value.
+                if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
+                {
+                    strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                 }
                 else
+                    strCalculated = Convert.ToInt32(_strAvail).ToString();
+            }
+
+            int intAvail;
+            string strAvailText = string.Empty;
+            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
+            {
+                strAvailText = strCalculated.Substring(strCalculated.Length - 1);
+                // Translate the Avail string.
+                if (strAvailText == "R")
+                    strAvailText = LanguageManager.GetString("String_AvailRestricted", strLanguage);
+                else if (strAvailText == "F")
+                    strAvailText = LanguageManager.GetString("String_AvailForbidden", strLanguage);
+                intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
+            }
+            else
+                intAvail = Convert.ToInt32(strCalculated);
+
+            // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
+            foreach (Gear objChild in _lstGear)
+            {
+                if (objChild.Avail.Contains('+') && !objChild.IncludedInParent)
                 {
-                    // Just a straight cost, so return the value.
-                    if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
+                    if (objChild.Avail.Contains("Rating"))
                     {
-                        strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
+                        // If the cost is determined by the Rating, evaluate the expression.
+                        string strAvailExpression = (objChild.Avail);
+
+                        string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
+                        if (strAvailability.EndsWith('R') || strAvailability.EndsWith('F'))
+                        {
+                            if (strAvailText != "F")
+                                strAvailText = objChild.Avail.Substring(strAvailability.Length - 1);
+                            strAvailability = strAvailability.Substring(0, strAvailability.Length - 1);
+                        }
+                        if (strAvailability.StartsWith('+'))
+                            strAvailability = strAvailability.Substring(1);
+                        intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailability));
                     }
                     else
-                        strCalculated = Convert.ToInt32(_strAvail).ToString();
-                }
-
-                int intAvail;
-                string strAvailText = string.Empty;
-                if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
-                {
-                    strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    // Translate the Avail string.
-                    if (strAvailText == "R")
-                        strAvailText = LanguageManager.GetString("String_AvailRestricted");
-                    else if (strAvailText == "F")
-                        strAvailText = LanguageManager.GetString("String_AvailForbidden");
-                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
-                }
-                else
-                    intAvail = Convert.ToInt32(strCalculated);
-
-                // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
-                foreach (Gear objChild in _lstGear)
-                {
-                    if (objChild.Avail.Contains('+') && !objChild.IncludedInParent)
                     {
-                        if (objChild.Avail.Contains("Rating"))
+                        if (objChild.Avail.EndsWith('R') || objChild.Avail.EndsWith('F'))
                         {
-                            // If the cost is determined by the Rating, evaluate the expression.
-                            string strAvailExpression = (objChild.Avail);
-
-                            string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
-                            if (strAvailability.EndsWith('R') || strAvailability.EndsWith('F'))
-                            {
-                                if (strAvailText != "F")
-                                    strAvailText = objChild.Avail.Substring(strAvailability.Length - 1);
-                                strAvailability = strAvailability.Substring(0, strAvailability.Length - 1);
-                            }
-                            if (strAvailability.StartsWith('+'))
-                                strAvailability = strAvailability.Substring(1);
-                            intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailability));
+                            if (strAvailText != "F")
+                                strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
+                            intAvail += Convert.ToInt32(objChild.Avail.Substring(0, objChild.Avail.Length - 1));
                         }
                         else
-                        {
-                            if (objChild.Avail.EndsWith('R') || objChild.Avail.EndsWith('F'))
-                            {
-                                if (strAvailText != "F")
-                                    strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
-                                intAvail += Convert.ToInt32(objChild.Avail.Substring(0, objChild.Avail.Length - 1));
-                            }
-                            else
-                                intAvail += Convert.ToInt32(objChild.Avail);
-                        }
+                            intAvail += Convert.ToInt32(objChild.Avail);
                     }
                 }
-
-                string strReturn = intAvail.ToString() + strAvailText;
-
-                return strReturn;
             }
+
+            string strReturn = intAvail.ToString() + strAvailText;
+
+            return strReturn;
         }
 
         /// <summary>

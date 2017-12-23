@@ -157,15 +157,15 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+		internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
 			foreach (CharacterAttrib att in AttributeList)
 			{
-				att.Print(objWriter, objCulture);
+				att.Print(objWriter, objCulture, strLanguageToPrint);
 			}
 			foreach (CharacterAttrib att in SpecialAttributeList)
 			{
-				att.Print(objWriter, objCulture);
+				att.Print(objWriter, objCulture, strLanguageToPrint);
 			}
 		}
 		#endregion

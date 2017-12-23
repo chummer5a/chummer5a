@@ -58,7 +58,7 @@ namespace Chummer.UI.Skills
         {
             if (ParentForm is frmCareer objParent)
             {
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                     _skillGroup.DisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost());
 
                 if (!objParent.ConfirmKarmaExpense(confirmstring))

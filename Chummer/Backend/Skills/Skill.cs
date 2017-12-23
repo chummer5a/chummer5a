@@ -69,7 +69,7 @@ namespace Chummer.Backend.Skills
 
         }
 
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             KnowledgeSkill objSkillAsKnowledgeSkill = this as KnowledgeSkill;
             objWriter.WriteStartElement("skill");
@@ -88,8 +88,8 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteElementString("name", DisplayName);
             else
                 objWriter.WriteElementString("name", objSkillAsKnowledgeSkill.WriteableName);
-            objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName ?? LanguageManager.GetString("String_None"));
-            objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None"));
+            objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayNameMethod(strLanguageToPrint) ?? LanguageManager.GetString("String_None", strLanguageToPrint));
+            objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory);
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
             objWriter.WriteElementString("grouped", (SkillGroupObject != null && SkillGroupObject.CareerIncrease && SkillGroupObject.Rating > 0).ToString());
@@ -106,7 +106,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", Karma.ToString(objCulture));
             objWriter.WriteElementString("spec", DisplaySpecialization);
             objWriter.WriteElementString("attribute", Attribute);
-            objWriter.WriteElementString("displayattribute", DisplayAttribute);
+            objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source));
@@ -444,21 +444,20 @@ namespace Chummer.Backend.Skills
                 return AttributeObject.Abbrev;
             }
         }
+
         /// <summary>
         /// The translated abbreviation of the linked attribute.
         /// </summary>
+        public string DisplayAttributeMethod(string strLanguage)
+        {
+            return LanguageManager.GetString($"String_Attribute{AttributeObject.Abbrev}Short", strLanguage);
+        }
+
         public string DisplayAttribute
         {
             get
             {
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    return LanguageManager.GetString($"String_Attribute{AttributeObject.Abbrev}Short");
-                }
-                else
-                {
-                    return AttributeObject.Abbrev;
-                }
+                return DisplayAttributeMethod(GlobalOptions.Language);
             }
         }
 
@@ -471,20 +470,20 @@ namespace Chummer.Backend.Skills
             {
                 if (Name.Contains("Flight"))
                 {
-                    string strFlyString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo);
-                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains(LanguageManager.GetString("String_ModeSpecial")))
+                    string strFlyString = CharacterObject.GetFly(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
+                    if (string.IsNullOrEmpty(strFlyString) || strFlyString == "0" || strFlyString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
                         return false;
                 }
                 if (Name.Contains("Swimming"))
                 {
-                    string strSwimString = CharacterObject.GetSwim(GlobalOptions.InvariantCultureInfo);
-                    if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains(LanguageManager.GetString("String_ModeSpecial")))
+                    string strSwimString = CharacterObject.GetSwim(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
+                    if (string.IsNullOrEmpty(strSwimString) || strSwimString == "0" || strSwimString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
                         return false;
                 }
                 if (Name.Contains("Running"))
                 {
-                    string strMovementString = CharacterObject.GetMovement(GlobalOptions.InvariantCultureInfo);
-                    if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial")))
+                    string strMovementString = CharacterObject.GetMovement(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage);
+                    if (string.IsNullOrEmpty(strMovementString) || strMovementString == "0" || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial", GlobalOptions.DefaultLanguage)))
                         return false;
                 }
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
@@ -642,11 +641,11 @@ namespace Chummer.Backend.Skills
                 StringBuilder s;
                 if (CyberwareRating() > TotalBaseRating)
                 {
-                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillsoftRating")} ({CyberwareRating()})");
+                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillsoftRating", GlobalOptions.Language)} ({CyberwareRating()})");
                 }
                 else
                 {
-                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillRating")} ({Rating}");
+                    s = new StringBuilder($"{LanguageManager.GetString("Tip_Skill_SkillRating", GlobalOptions.Language)} ({Rating}");
 
 
                     bool first = true;
@@ -662,7 +661,7 @@ namespace Chummer.Backend.Skills
                         }
 
                         s.Append(" + ");
-                        s.Append(CharacterObject.GetObjectName(source));
+                        s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
                         s.Append(" (");
                         s.Append(source.Value.ToString());
                         s.Append(")");
@@ -682,7 +681,7 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        s.Append($" - {LanguageManager.GetString("Tip_Skill_Defaulting")} (1)");
+                        s.Append($" - {LanguageManager.GetString("Tip_Skill_Defaulting", GlobalOptions.Language)} (1)");
                     }
 
                 }
@@ -690,7 +689,7 @@ namespace Chummer.Backend.Skills
                 foreach (Improvement source in lstRelevantImprovements.Where(x => !x.AddToRating && x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute && x.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute))
                 {
                     s.Append(" + ");
-                    s.Append(CharacterObject.GetObjectName(source));
+                    s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
                     s.Append(" (");
                     s.Append(source.Value.ToString());
                     s.Append(")");
@@ -700,7 +699,7 @@ namespace Chummer.Backend.Skills
                 int wound = WoundModifier;
                 if (wound != 0)
                 {
-                    s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds") + " (" + wound.ToString() + ")");
+                    s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds", GlobalOptions.Language) + " (" + wound.ToString() + ")");
                 }
 
                 if (AttributeObject.Abbrev == "STR" || AttributeObject.Abbrev == "AGI")
@@ -732,7 +731,7 @@ namespace Chummer.Backend.Skills
                     s.Append("\n");
                     if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                         s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
-                    s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute));
+                    s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
 
                     int intLoopAttribute = CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value;
                     int intBasePool = PoolOtherAttribute(intLoopAttribute);
@@ -753,7 +752,7 @@ namespace Chummer.Backend.Skills
                             s.Append("\n");
                             if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                                 s.AppendFormat("{0}: ", objSwapSkillAttribute.Exclude);
-                            s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute));
+                            s.AppendFormat("{0} ", CharacterObject.GetObjectName(objSwapSkillAttribute, GlobalOptions.Language));
                             s.AppendFormat("{0} {1} ", cyberware.Location, cyberware.DisplayNameShort);
                             if (cyberware.Grade.Name != "Standard")
                             {
@@ -786,7 +785,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return string.Format(LanguageManager.GetString("Tip_ImproveItem"), (Rating + 1), UpgradeKarmaCost());
+                return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), (Rating + 1), UpgradeKarmaCost());
             }
         }
 
@@ -816,7 +815,7 @@ namespace Chummer.Backend.Skills
                 if (decSpecCostMultiplier != 1.0m)
                     price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
                 price += intExtraSpecCost; //Spec
-                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization"), price.ToString());
+                return string.Format(LanguageManager.GetString("Tip_Skill_AddSpecialization", GlobalOptions.Language), price.ToString());
             }
         }
 
@@ -829,14 +828,14 @@ namespace Chummer.Backend.Skills
                 string middle = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SkillGroup))
                 {
-                    middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup")}\n";
+                    middle = $"{SkillGroup} {LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)}\n";
                 }
                 if (!string.IsNullOrEmpty(_strNotes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes") + " " + CommonFunctions.WordWrap(_strNotes, 100) + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + CommonFunctions.WordWrap(_strNotes, 100) + "\n\n";
                 }
 
-                strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page")} {Page}";
+                strReturn += $"{this.GetDisplayCategory()}\n{middle}{CharacterObject.Options.LanguageBookLong(Source)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {Page}";
 
                 return strReturn;
             }
@@ -955,8 +954,7 @@ namespace Chummer.Backend.Skills
             {
                 int intMax = 0;
                 //TODO this works with translate?
-                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" &&
-                    (x.Extra == Name || x.Extra == Name + ", " + LanguageManager.GetString("Label_SelectGear_Hacked"))))
+                foreach (Gear objSkillsoft in CharacterObject.Gear.DeepWhere(x => x.Children, x => x.Equipped && x.Category == "Skillsofts" && x.Extra == Name))
                 {
                     if (objSkillsoft.Rating > intMax)
                         intMax = objSkillsoft.Rating;

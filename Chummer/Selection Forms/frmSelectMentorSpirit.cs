@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectMentorSpirit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Mentor information.
             _objXmlDocument = XmlManager.Load(_strXmlFile);
@@ -50,7 +50,7 @@ namespace Chummer
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
         {
             if (_strXmlFile == "paragons.xml")
-                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon");
+                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon", GlobalOptions.Language);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -175,7 +175,7 @@ namespace Chummer
                 strPage = objXmlMentor["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion
 

@@ -57,7 +57,7 @@ namespace Chummer
         public frmSelectArt(Character objCharacter, Mode objWindowMode)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             _objMetamagicDocument = XmlManager.Load("metamagic.xml");
@@ -86,23 +86,23 @@ namespace Chummer
             switch (_objMode)
             {
                 case Mode.Enhancement:
-                    _strLocalName = LanguageManager.GetString("String_Enhancement");
+                    _strLocalName = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                     break;
                 case Mode.Enchantment:
-                    _strLocalName = LanguageManager.GetString("String_Enchantment");
+                    _strLocalName = LanguageManager.GetString("String_Enchantment", GlobalOptions.Language);
                     break;
                 case Mode.Ritual:
-                    _strLocalName = LanguageManager.GetString("String_Ritual");
+                    _strLocalName = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
                     break;
                 case Mode.Art:
-                    _strLocalName = LanguageManager.GetString("String_Art");
+                    _strLocalName = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
             
-            Text = LanguageManager.GetString("Title_SelectGeneric").Replace("{0}", _strLocalName);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList").Replace("{0}", _strLocalName);
+            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", _strLocalName);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", _strLocalName);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -125,7 +125,7 @@ namespace Chummer
             string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
             lblSource.Text = $"{strBook} {strBook}";
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -39,19 +39,19 @@ namespace Chummer
             _objOptions = _objCharacter.Options;
             _blnUseCurrentValues = blnUseCurrentValues;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             // Populate the Build Method list.
             List<ListItem> lstBuildMethod = new List<ListItem>
             {
-                new ListItem("Karma", LanguageManager.GetString("String_Karma")),
-                new ListItem("Priority", LanguageManager.GetString("String_Priority")),
-                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen")),
+                new ListItem("Karma", LanguageManager.GetString("String_Karma", GlobalOptions.Language)),
+                new ListItem("Priority", LanguageManager.GetString("String_Priority", GlobalOptions.Language)),
+                new ListItem("SumtoTen", LanguageManager.GetString("String_SumtoTen", GlobalOptions.Language)),
             };
 
             if (GlobalOptions.LifeModuleEnabled)
             {
-                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule")));
+                lstBuildMethod.Add(new ListItem("LifeModule", LanguageManager.GetString("String_LifeModule", GlobalOptions.Language)));
             }
 
             cboBuildMethod.BeginUpdate();
@@ -85,7 +85,7 @@ namespace Chummer
             cboGamePlay.SelectedValue = strDefault;
             cboGamePlay.EndUpdate();
 
-            toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules"));
+            toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
 
             if (blnUseCurrentValues)
             {
@@ -151,7 +151,7 @@ namespace Chummer
         {
             if (cboBuildMethod.SelectedValue == null)
             {
-                lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary");
+                lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
                 nudKarma.Visible = false;
             }
             else
@@ -166,21 +166,21 @@ namespace Chummer
                     {
                         nudKarma.Value = 800;
                     }
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary").Replace("{0}", nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language).Replace("{0}", nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudMaxNuyen.Visible = true;
                     nudKarma.Visible = true;
                     nudSumtoTen.Visible = false;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "Priority")
                 {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary");
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
                     nudKarma.Visible = false;
                     nudMaxNuyen.Visible = false;
                     nudSumtoTen.Visible = false;
                 }
                 else if (cboBuildMethod.SelectedValue.ToString() == "SumtoTen")
                 {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary");
+                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
                     nudKarma.Visible = false;
                     nudMaxNuyen.Visible = false;
                     nudSumtoTen.Visible = true;
@@ -188,7 +188,7 @@ namespace Chummer
                 else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
                 {
                     nudKarma.Value = 750;
-                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary"), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
                     nudSumtoTen.Visible = false;

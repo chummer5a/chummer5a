@@ -69,7 +69,7 @@ namespace Chummer
         public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, XmlNode objParentNode = null)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -99,7 +99,7 @@ namespace Chummer
         {
             // Update the window title if needed.
             if (_strNode == "bioware")
-                Text = LanguageManager.GetString("Title_SelectCyberware_Bioware");
+                Text = LanguageManager.GetString("Title_SelectCyberware_Bioware", GlobalOptions.Language);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -348,7 +348,7 @@ namespace Chummer
 
             tipTooltip.SetToolTip(lblSource,
                 _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText) + " " +
-                LanguageManager.GetString("String_Page") + " " + strPage);
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
             UpdateCyberwareInfo();
         }
@@ -548,7 +548,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed")} {_decMaximumCapacity:#,0.##}";
+                lblMaximumCapacity.Text = $"{LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language)} {_decMaximumCapacity:#,0.##}";
             }
         }
 
@@ -706,9 +706,9 @@ namespace Chummer
                     strSuffix = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.
                     if (strSuffix == "R")
-                        strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     else if (strSuffix == "F")
-                        strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -1128,10 +1128,10 @@ namespace Chummer
                 if (MaximumCapacity - decCapacity < 0)
                 {
                     MessageBox.Show(
-                        LanguageManager.GetString("Message_OverCapacityLimit")
+                        LanguageManager.GetString("Message_OverCapacityLimit", GlobalOptions.Language)
                             .Replace("{0}", MaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo))
                             .Replace("{1}", decCapacity.ToString("#,0.##", GlobalOptions.CultureInfo)),
-                        LanguageManager.GetString("MessageTitle_OverCapacityLimit"),
+                        LanguageManager.GetString("MessageTitle_OverCapacityLimit", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -1217,7 +1217,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();

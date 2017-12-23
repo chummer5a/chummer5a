@@ -22,7 +22,7 @@ namespace Chummer.UI.Powers
         public PowersTabUserControl()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
         }
 
         public void MissingDatabindingsWorkaround()
@@ -116,11 +116,11 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, IComparer<Power>>> ret = new List<Tuple<string, IComparer<Power>>>()
             {
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortAlphabetical", GlobalOptions.Language),
                     new PowerSorter((x, y) => x.DisplayName.CompareTo(y.DisplayName))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortRating", GlobalOptions.Language),
                     new PowerSorter((x, y) => y.TotalRating.CompareTo(x.TotalRating))),
-                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction"),
+                new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Power_SortAction", GlobalOptions.Language),
                     new PowerSorter((x, y) => y.DisplayAction.CompareTo(x.DisplayAction))),
                 //new Tuple<string, IComparer<Power>>(LanguageManager.GetString("Skill_SortCategory"),
                 //    new PowerSorter((x, y) => x.SkillCategory.CompareTo(y.SkillCategory))),
@@ -133,11 +133,11 @@ namespace Chummer.UI.Powers
         {
             List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"), null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"), power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search", GlobalOptions.Language), null),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll", GlobalOptions.Language), power => true),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", GlobalOptions.Language),
                     power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
+                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero", GlobalOptions.Language),
                     power => power.Rating == 0)
             };
             //TODO: TRANSLATIONS
@@ -147,7 +147,7 @@ namespace Chummer.UI.Powers
                 in XmlManager.Load("powers.xml").SelectNodes("/chummer/categories/category")
                 let displayName = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText
                 select new Tuple<string, Predicate<Power>>(
-                    $"{LanguageManager.GetString("Label_Category")} {displayName}", 
+                    $"{LanguageManager.GetString("Label_Category", GlobalOptions.Language)} {displayName}", 
                     power => power.Category == objNode.InnerText));
 
             return ret;
@@ -248,7 +248,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 
