@@ -1801,7 +1801,7 @@ namespace Chummer
             bool blnHasLifestyle = false;
             foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
             {
-                if (objLifestyle.Name == "Cyberzombie Lifestyle Addition")
+                if (objLifestyle.BaseLifestyle == "Cyberzombie Lifestyle Addition")
                     blnHasLifestyle = true;
             }
             if (!blnHasLifestyle)
@@ -9120,14 +9120,14 @@ namespace Chummer
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_LifestyleName"),
-                DefaultString = objLifestyle.LifestyleName
+                DefaultString = objLifestyle.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objLifestyle.LifestyleName = frmPickText.SelectedValue;
+            objLifestyle.Name = frmPickText.SelectedValue;
             treLifestyles.SelectedNode.Text = objLifestyle.DisplayName;
         }
 

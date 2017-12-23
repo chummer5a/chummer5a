@@ -63,6 +63,7 @@ Application Changes:
 - Fixed a bug where player names would not show up in the character roster.
 - Cyberware, Gear, Armor and Armor Mod Ratings are now properly bound by their Min and Max Ratings. May cause issues in career mode if you suddenly become Aged with cyberware or something, but eh. Baby steps.
 - Fixed a crash when adding multiple armor mods a given piece of armor in career mode.
+- Fixed a potential crash when loading lifestyles that didn't have their base lifestyle saved properly.
 
 Data Changes:
 
@@ -81,6 +82,7 @@ New Strings:
 
 - Menu_Main_Translator
 - Label_PrototypeTranshuman
+- String_CannotFindLifestyle
 
 Build 196
 
