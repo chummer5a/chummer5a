@@ -208,8 +208,7 @@ namespace Chummer.Backend.Equipment
                     var frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
-                        Description =
-                            LanguageManager.GetString("String_CannotFindLifestyle").Replace("{0}", _strName)
+                        Description = LanguageManager.GetString("String_CannotFindLifestyle", GlobalOptions.Language).Replace("{0}", _strName)
                     };
                     frmSelect.ShowDialog();
                     if (frmSelect.DialogResult == DialogResult.Cancel)
