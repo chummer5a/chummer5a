@@ -60,7 +60,7 @@ namespace Chummer
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -146,7 +146,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -371,17 +371,6 @@ namespace Chummer
             UpdateGearInfo();
         }
 
-        private void chkHacked_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkShowOnlyAffordItems.Checked)
-            {
-                string strCurrentSelection = lstGear.SelectedValue.ToString();
-                cboCategory_SelectedIndexChanged(sender, e);
-                lstGear.SelectedValue = strCurrentSelection;
-            }
-            UpdateGearInfo();
-        }
-
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Down)
@@ -520,7 +509,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed") + " " + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + " " + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
             }
         }
 
@@ -573,17 +562,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the item was hacked which reduces the cost to 10% of the original value.
-        /// </summary>
-        public bool Hacked
-        {
-            get
-            {
-                return chkHacked.Checked;
-            }
-        }
-
-        /// <summary>
         /// Whether or not the Gear should stack with others if possible.
         /// </summary>
         public bool Stack
@@ -615,17 +593,6 @@ namespace Chummer
             set
             {
                 _objCapacityStyle = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the item is an Inherent Program for A.I.s.
-        /// </summary>
-        public bool InherentProgram
-        {
-            get
-            {
-                return chkInherentProgram.Checked;
             }
         }
 
@@ -709,29 +676,10 @@ namespace Chummer
                     objXmlGear = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + lstGear.SelectedValue + "\"" + strSelectedCategoryPath + "]");
                 }
 
-                if (_objCharacter.DEPEnabled)
-                {
-                    if ((strCategory == "Matrix Programs" || strCategory == "Skillsofts" || strCategory == "Autosofts" || strCategory == "Autosofts, Agent" || strCategory == "Autosofts, Drone") && _objCharacter.Options.BookEnabled("UN") && !lstGear.SelectedValue.ToString().StartsWith("Suite:"))
-                        chkInherentProgram.Visible = true;
-                    else
-                        chkInherentProgram.Visible = false;
-
-                    chkInherentProgram.Enabled = !chkHacked.Checked;
-                    if (!chkInherentProgram.Enabled)
-                        chkInherentProgram.Checked = false;
-                }
-                else
-                    chkInherentProgram.Visible = false;
-
                 if (objXmlGear["devicerating"] != null)
                     lblGearDeviceRating.Text = objXmlGear["devicerating"].InnerText;
                 else
                     lblGearDeviceRating.Text = string.Empty;
-
-                /*if (objXmlGear["category"].InnerText.EndsWith("Software") || objXmlGear["category"].InnerText.EndsWith("Programs") || objXmlGear["category"].InnerText == "Program Options" || objXmlGear["category"].InnerText.StartsWith("Autosofts") || objXmlGear["category"].InnerText.StartsWith("Skillsoft") || objXmlGear["category"].InnerText == "Program Packages" || objXmlGear["category"].InnerText == "Software Suites")
-                    chkHacked.Visible = true;
-                else
-                    chkHacked.Visible = false;*/
 
                 string strBook = _objCharacter.Options.LanguageBookShort(objXmlGear["source"].InnerText);
                 string strPage = objXmlGear["page"].InnerText;
@@ -779,9 +727,9 @@ namespace Chummer
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     if (strAvail == "R")
-                        strAvail = LanguageManager.GetString("String_AvailRestricted");
+                        strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     else if (strAvail == "F")
-                        strAvail = LanguageManager.GetString("String_AvailForbidden");
+                        strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                     // Remove the trailing character if it is "F" or "R".
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
                 }
@@ -846,8 +794,6 @@ namespace Chummer
                             decCost *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked)
                                 decCost *= 0.9m;
-                            if (chkHacked.Checked)
-                                decCost *= 0.1m;
                             lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             decItemCost = decCost;
                         }
@@ -871,8 +817,6 @@ namespace Chummer
                             decCost *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked)
                                 decCost *= 0.9m;
-                            if (chkHacked.Checked)
-                                decCost *= 0.1m;
                             lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                             decItemCost = decCost;
                         }
@@ -1075,7 +1019,7 @@ namespace Chummer
                     nudRating.Enabled = false;
                 }
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlGear["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
 
@@ -1143,8 +1087,6 @@ namespace Chummer
                 decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                 if (chkBlackMarketDiscount.Checked)
                     decCostMultiplier *= 0.9m;
-                if (chkHacked.Checked)
-                    decCostMultiplier *= 0.1m;
                 if (!blnDoUIUpdate || (Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
                     Backend.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
@@ -1233,9 +1175,6 @@ namespace Chummer
             _decSelectedQty = nudGearQty.Value;
             _decMarkup = nudMarkup.Value;
 
-            if (!chkInherentProgram.Visible || !chkInherentProgram.Enabled)
-                chkInherentProgram.Checked = false;
-
             DialogResult = DialogResult.OK;
         }
 
@@ -1261,7 +1200,6 @@ namespace Chummer
             lblGearDeviceRating.Left = lblGearDeviceRatingLabel.Left + lblGearDeviceRatingLabel.Width + 6;
 
             chkDoItYourself.Left = chkFreeItem.Left + chkFreeItem.Width + 6;
-            chkHacked.Left = chkDoItYourself.Left + chkDoItYourself.Width + 6;
 
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }

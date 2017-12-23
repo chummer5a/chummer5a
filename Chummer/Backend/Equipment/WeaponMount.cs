@@ -93,7 +93,7 @@ namespace Chummer.Backend.Equipment
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -231,14 +231,14 @@ namespace Chummer.Backend.Equipment
 		/// Print the object's XML to the XmlWriter.
 		/// </summary>
 		/// <param name="objWriter">XmlTextWriter to write with.</param>
-		public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+		public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 		{
 			objWriter.WriteStartElement("mod");
 			objWriter.WriteElementString("name", DisplayNameShort);
 			objWriter.WriteElementString("category", DisplayCategory);
 			objWriter.WriteElementString("limit", _strLimit);
 			objWriter.WriteElementString("slots", _intSlots.ToString());
-			objWriter.WriteElementString("avail", TotalAvail);
+			objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
 			objWriter.WriteElementString("cost", TotalCost.ToString(_character.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_character.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", _character.Options.LanguageBookShort(_strSource));
@@ -247,7 +247,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon w in _weapons)
             {
-                w.Print(objWriter, objCulture);
+                w.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
 			if (_character.Options.PrintNotes)
@@ -565,20 +565,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail
+        public string TotalAvail(string strLanguage)
         {
-            get
-            {
-                Tuple<int, string> objAvailPair = TotalAvailPair;
-                string strAvail = objAvailPair.Item2;
-                // Translate the Avail string.
-                if (strAvail == "F")
-                    strAvail = LanguageManager.GetString("String_AvailForbidden");
-                else if (strAvail == "R")
-                    strAvail = LanguageManager.GetString("String_AvailRestricted");
+            Tuple<int, string> objAvailPair = TotalAvailPair;
+            string strAvail = objAvailPair.Item2;
+            // Translate the Avail string.
+            if (strAvail == "F")
+                strAvail = LanguageManager.GetString("String_AvailForbidden", strLanguage);
+            else if (strAvail == "R")
+                strAvail = LanguageManager.GetString("String_AvailRestricted", strLanguage);
 
-                return objAvailPair.Item1.ToString() + strAvail;
-            }
+            return objAvailPair.Item1.ToString() + strAvail;
         }
 
         /// <summary>
@@ -631,7 +628,7 @@ namespace Chummer.Backend.Equipment
 
                     if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
                     {
-                        strAccAvail += wm.TotalAvail;
+                        strAccAvail += wm.TotalAvail(GlobalOptions.DefaultLanguage);
                         if (strAccAvail.EndsWith('F'))
                             strAvail = "F";
                         if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
@@ -792,7 +789,7 @@ namespace Chummer.Backend.Equipment
                             intMax = 1000000;
                         frmPickNumber.Minimum = intMin;
                         frmPickNumber.Maximum = intMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayName);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
@@ -894,42 +891,39 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail
+        public string TotalAvail(string strLanguage)
         {
-            get
+            // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
+
+            string strCalculated = string.Empty;
+            string strReturn = string.Empty;
+
+            // Just a straight cost, so return the value.
+            if (_strAvail.Contains("F") || _strAvail.Contains("R"))
             {
-                // If the Avail contains "+", return the base string and don't try to calculate anything since we're looking at a child component.
-
-                string strCalculated = string.Empty;
-                string strReturn = string.Empty;
-
-                // Just a straight cost, so return the value.
-                if (_strAvail.Contains("F") || _strAvail.Contains("R"))
-                {
-                    strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
-                }
-                else
-                    strCalculated = Convert.ToInt32(_strAvail).ToString();
-
-                int intAvail = 0;
-                string strAvailText = string.Empty;
-                if (strCalculated.Contains("F") || strCalculated.Contains("R"))
-                {
-                    strAvailText = strCalculated.Substring(strCalculated.Length - 1);
-                    intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
-                }
-                else
-                    intAvail = Convert.ToInt32(strCalculated);
-
-                // Translate the Avail string.
-                if (strAvailText == "R")
-                    strAvailText = LanguageManager.GetString("String_AvailRestricted");
-                else if (strAvailText == "F")
-                    strAvailText = LanguageManager.GetString("String_AvailForbidden");
-                strReturn = intAvail.ToString() + strAvailText;
-
-                return strReturn;
+                strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
             }
+            else
+                strCalculated = Convert.ToInt32(_strAvail).ToString();
+
+            int intAvail = 0;
+            string strAvailText = string.Empty;
+            if (strCalculated.Contains("F") || strCalculated.Contains("R"))
+            {
+                strAvailText = strCalculated.Substring(strCalculated.Length - 1);
+                intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
+            }
+            else
+                intAvail = Convert.ToInt32(strCalculated);
+
+            // Translate the Avail string.
+            if (strAvailText == "R")
+                strAvailText = LanguageManager.GetString("String_AvailRestricted", strLanguage);
+            else if (strAvailText == "F")
+                strAvailText = LanguageManager.GetString("String_AvailForbidden", strLanguage);
+            strReturn = intAvail.ToString() + strAvailText;
+
+            return strReturn;
         }
         #endregion
     }

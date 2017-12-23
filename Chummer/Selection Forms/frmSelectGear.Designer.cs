@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectGear
     {
@@ -56,11 +56,9 @@
             this.nudMarkup = new System.Windows.Forms.NumericUpDown();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.chkHacked = new System.Windows.Forms.CheckBox();
             this.chkStack = new System.Windows.Forms.CheckBox();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblTestLabel = new System.Windows.Forms.Label();
-            this.chkInherentProgram = new System.Windows.Forms.CheckBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.chkAerodynamic = new System.Windows.Forms.CheckBox();
             this.chkBlackMarketDiscount = new System.Windows.Forms.CheckBox();
@@ -380,19 +378,6 @@
             this.lblMarkupPercentLabel.TabIndex = 21;
             this.lblMarkupPercentLabel.Text = "%";
             // 
-            // chkHacked
-            // 
-            this.chkHacked.AutoSize = true;
-            this.chkHacked.Location = new System.Drawing.Point(525, 181);
-            this.chkHacked.Name = "chkHacked";
-            this.chkHacked.Size = new System.Drawing.Size(64, 17);
-            this.chkHacked.TabIndex = 18;
-            this.chkHacked.Tag = "Label_SelectGear_Hacked";
-            this.chkHacked.Text = "Hacked";
-            this.chkHacked.UseVisualStyleBackColor = true;
-            this.chkHacked.Visible = false;
-            this.chkHacked.CheckedChanged += new System.EventHandler(this.chkHacked_CheckedChanged);
-            // 
             // chkStack
             // 
             this.chkStack.AutoSize = true;
@@ -424,17 +409,6 @@
             this.lblTestLabel.TabIndex = 6;
             this.lblTestLabel.Tag = "Label_Test";
             this.lblTestLabel.Text = "Test:";
-            // 
-            // chkInherentProgram
-            // 
-            this.chkInherentProgram.AutoSize = true;
-            this.chkInherentProgram.Location = new System.Drawing.Point(525, 128);
-            this.chkInherentProgram.Name = "chkInherentProgram";
-            this.chkInherentProgram.Size = new System.Drawing.Size(107, 17);
-            this.chkInherentProgram.TabIndex = 12;
-            this.chkInherentProgram.Tag = "Label_SelectGear_InherentProgram";
-            this.chkInherentProgram.Text = "Inherent Program";
-            this.chkInherentProgram.UseVisualStyleBackColor = true;
             // 
             // tipTooltip
             // 
@@ -510,11 +484,9 @@
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.chkBlackMarketDiscount);
             this.Controls.Add(this.chkAerodynamic);
-            this.Controls.Add(this.chkInherentProgram);
             this.Controls.Add(this.lblTest);
             this.Controls.Add(this.lblTestLabel);
             this.Controls.Add(this.chkStack);
-            this.Controls.Add(this.chkHacked);
             this.Controls.Add(this.nudMarkup);
             this.Controls.Add(this.lblMarkupLabel);
             this.Controls.Add(this.chkDoItYourself);
@@ -590,11 +562,9 @@
         private System.Windows.Forms.NumericUpDown nudMarkup;
         private System.Windows.Forms.Label lblMarkupLabel;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
-        private System.Windows.Forms.CheckBox chkHacked;
         private System.Windows.Forms.CheckBox chkStack;
         private System.Windows.Forms.Label lblTest;
         private System.Windows.Forms.Label lblTestLabel;
-        private System.Windows.Forms.CheckBox chkInherentProgram;
         private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
         private System.Windows.Forms.CheckBox chkAerodynamic;
         private System.Windows.Forms.CheckBox chkBlackMarketDiscount;

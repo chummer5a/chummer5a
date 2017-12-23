@@ -43,7 +43,7 @@ namespace Chummer
         public frmSelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             _objXmlDocument = XmlManager.Load("critterpowers.xml");
@@ -177,7 +177,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -226,10 +226,10 @@ namespace Chummer
                         switch (objXmlPower["type"].InnerText)
                         {
                             case "M":
-                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
+                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Language);
                                 break;
                             case "P":
-                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical");
+                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
                                 break;
                             default:
                                 lblCritterPowerType.Text = string.Empty;
@@ -242,19 +242,19 @@ namespace Chummer
                         switch (objXmlPower["action"].InnerText)
                         {
                             case "Auto":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic", GlobalOptions.Language);
                                 break;
                             case "Free":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree", GlobalOptions.Language);
                                 break;
                             case "Simple":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple", GlobalOptions.Language);
                                 break;
                             case "Complex":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex", GlobalOptions.Language);
                                 break;
                             case "Special":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial");
+                                lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
                                 break;
                         }
                     }
@@ -262,13 +262,13 @@ namespace Chummer
                     if (objXmlPower["range"] != null)
                     {
                         string strRange = objXmlPower["range"].InnerText;
-                        strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
-                        strRange = strRange.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial"));
-                        strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                        strRange = strRange.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                        strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
-                        strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                        strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
+                        strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language));
+                        strRange = strRange.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language));
+                        strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language));
+                        strRange = strRange.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language));
+                        strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language));
+                        strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ")");
+                        strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
                         lblCritterPowerRange.Text = strRange;
                     }
 
@@ -277,16 +277,16 @@ namespace Chummer
                         switch (objXmlPower["duration"].InnerText)
                         {
                             case "Instant":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Language);
                                 break;
                             case "Sustained":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
                                 break;
                             case "Always":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways", GlobalOptions.Language);
                                 break;
                             case "Special":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
+                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
                                 break;
                             default:
                                 lblCritterPowerDuration.Text = objXmlPower["duration"].InnerText;
@@ -304,7 +304,7 @@ namespace Chummer
                         strPage = objXmlPower["altpage"].InnerText;
                     lblCritterPowerSource.Text = strBook + " " + strPage;
                     if (objXmlPower["source"] != null)
-                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                        tipTooltip.SetToolTip(lblCritterPowerSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 

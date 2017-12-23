@@ -48,7 +48,7 @@ namespace Chummer
         public frmSelectWeapon(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -109,7 +109,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -151,13 +151,13 @@ namespace Chummer
             objWeapon.Create(objXmlWeapon, null, null, null, null, null, true, false);
 
             lblWeaponReach.Text = objWeapon.TotalReach.ToString();
-            lblWeaponDamage.Text = objWeapon.CalculatedDamage();
-            lblWeaponAP.Text = objWeapon.TotalAP;
-            lblWeaponMode.Text = objWeapon.CalculatedMode;
+            lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            lblWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
+            lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
             lblWeaponRC.Text = objWeapon.TotalRC;
-            lblWeaponAmmo.Text = objWeapon.CalculatedAmmo();
+            lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
             lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-            lblWeaponAvail.Text = objWeapon.TotalAvail;
+            lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
 
             decimal decItemCost = 0;
             decimal decCost = 0;
@@ -227,9 +227,9 @@ namespace Chummer
                                 : objXmlItem["name"].InnerText + "\n";
                     }
                 }
-            lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None") : strAccessories;
+            lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
@@ -273,8 +273,8 @@ namespace Chummer
                     string strWeaponName = objWeapon.DisplayName;
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     int intAccuracy = objWeapon.TotalAccuracy;
-                    string strDamage = objWeapon.CalculatedDamage();
-                    string strAP = objWeapon.TotalAP;
+                    string strDamage = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                    string strAP = objWeapon.TotalAP(GlobalOptions.Language);
                     if (strAP == "-")
                         strAP = "0";
                     int.TryParse(objWeapon.TotalRC, out int intRC);
@@ -288,7 +288,7 @@ namespace Chummer
                             strAccessories += "\n";
                         strAccessories += objAccessory.DisplayName;
                     }
-                    string strAvail = objWeapon.TotalAvail;
+                    string strAvail = objWeapon.TotalAvail(GlobalOptions.Language);
                     string strSource = objWeapon.Source + " " + objWeapon.Page;
                     decimal decCost = objWeapon.Cost;
 

@@ -65,7 +65,7 @@ namespace Chummer
             Text += " DEBUG BUILD";
 #endif
 
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             /** Dashboard **/
             //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
@@ -99,20 +99,7 @@ namespace Chummer
             // Set the Tag for each ToolStrip item so it can be translated.
             foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
             {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
-            }
-
-            // ToolStrip Items.
-            foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
-            {
-                foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
-                {
-                    if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
-                }
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
 
             // Attempt to cache all XML files that are used the most.
@@ -542,7 +529,7 @@ namespace Chummer
                     }
                     else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
                     {
-                        tp.Text = LanguageManager.GetString("String_CharacterRoster");
+                        tp.Text = LanguageManager.GetString("String_CharacterRoster", GlobalOptions.Language);
                     }
 
                     tabForms.SelectedTab = tp;
@@ -654,27 +641,12 @@ namespace Chummer
             }
         }
 
-        private void Menu_DropDownOpening(object sender, EventArgs e)
-        {
-            // Translate the items in the menu by finding their Tags in the translation file.
-            foreach (ToolStripMenuItem objItem in ((ToolStripMenuItem)sender).DropDownItems.OfType<ToolStripMenuItem>())
-            {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
-            }
-        }
-
         private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             // Translate the items in the menu by finding their Tags in the translation file.
-            foreach (ToolStripMenuItem objItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+            foreach (ToolStripItem objItem in menuStrip.Items.OfType<ToolStripItem>())
             {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
         }
 
@@ -683,10 +655,9 @@ namespace Chummer
             // ToolStrip Items.
             foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
+                foreach (ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                 }
             }
         }
@@ -696,10 +667,9 @@ namespace Chummer
             // ToolStrip Items.
             foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
             {
-                foreach (ToolStripButton objButton in objToolStrip.Items.OfType<ToolStripButton>())
+                foreach (ToolStripItem objItem in objToolStrip.Items.OfType<ToolStripItem>())
                 {
-                    if (objButton.Tag != null)
-                        objButton.Text = LanguageManager.GetString(objButton.Tag.ToString());
+                    LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
                 }
             }
         }
@@ -780,7 +750,7 @@ namespace Chummer
             string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
             if (!File.Exists(strFilePath))
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Cursor = Cursors.WaitCursor;
                     frmOptions frmOptions = new frmOptions();
@@ -981,7 +951,7 @@ namespace Chummer
                     catch (XmlException ex)
                     {
                         if (blnShowErrors)
-                            MessageBox.Show(LanguageManager.GetString("Message_FailedLoad").Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return null;
                     }
                 }
@@ -1026,7 +996,7 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", strFileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }

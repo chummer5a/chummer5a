@@ -320,7 +320,6 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
-            LanguageManager.Load(GlobalOptions.Language, null);
         }
 
         /// <summary>
@@ -333,8 +332,6 @@ namespace Chummer
         /// <param name="blnRefund">Whether or not this expense is a Karma refund.</param>
         public ExpenseLogEntry Create(decimal decAmount, string strReason, ExpenseType objExpenseType, DateTime datDate, bool blnRefund = false)
         {
-            if (blnRefund)
-                strReason += " (" + LanguageManager.GetString("String_Expense_Refund") + ")";
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
@@ -371,7 +368,8 @@ namespace Chummer
             _guiID = Guid.Parse(objNode["guid"].InnerText);
             _datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
-            objNode.TryGetStringFieldQuickly("reason", ref _strReason);
+            if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
+                _strReason.TrimEnd(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ")");
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
@@ -387,14 +385,14 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
                 objWriter.WriteElementString("date", Date.ToString(objCulture));
                 objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Options.NuyenFormat : "#,0.##", objCulture));
-                objWriter.WriteElementString("reason", Reason);
+                objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
                 objWriter.WriteElementString("type", Type.ToString());
                 objWriter.WriteElementString("refund", Refund.ToString());
                 objWriter.WriteEndElement();
@@ -461,6 +459,17 @@ namespace Chummer
             {
                 _strReason = value;
             }
+        }
+
+        /// <summary>
+        /// The Reason for the Entry expense.
+        /// </summary>
+        public string DisplayReason(string strLanguage)
+        {
+            string strReturn = _strReason;
+            if (_blnRefund)
+                strReturn += " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ")";
+            return strReturn;
         }
 
         /// <summary>

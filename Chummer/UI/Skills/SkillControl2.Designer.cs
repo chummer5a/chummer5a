@@ -73,7 +73,6 @@ namespace Chummer.UI.Skills
             this.tsSkillLabelNotes});
             this.cmsSkillLabel.Name = "cmsWeapon";
             this.cmsSkillLabel.Size = new System.Drawing.Size(106, 26);
-            this.cmsSkillLabel.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsSkillLabelNotes
             // 

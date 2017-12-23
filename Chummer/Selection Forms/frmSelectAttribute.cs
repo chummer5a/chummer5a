@@ -33,20 +33,20 @@ namespace Chummer
         public frmSelectAttribute()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
             _lstAttributes = new List<ListItem>
             {
-                new ListItem("BOD", LanguageManager.GetString("String_AttributeBODShort")),
-                new ListItem("AGI", LanguageManager.GetString("String_AttributeAGIShort")),
-                new ListItem("REA", LanguageManager.GetString("String_AttributeREAShort")),
-                new ListItem("STR", LanguageManager.GetString("String_AttributeSTRShort")),
-                new ListItem("CHA", LanguageManager.GetString("String_AttributeCHAShort")),
-                new ListItem("INT", LanguageManager.GetString("String_AttributeINTShort")),
-                new ListItem("LOG", LanguageManager.GetString("String_AttributeLOGShort")),
-                new ListItem("WIL", LanguageManager.GetString("String_AttributeWILShort")),
-                new ListItem("EDG", LanguageManager.GetString("String_AttributeEDGShort"))
+                new ListItem("BOD", LanguageManager.GetString("String_AttributeBODShort", GlobalOptions.Language)),
+                new ListItem("AGI", LanguageManager.GetString("String_AttributeAGIShort", GlobalOptions.Language)),
+                new ListItem("REA", LanguageManager.GetString("String_AttributeREAShort", GlobalOptions.Language)),
+                new ListItem("STR", LanguageManager.GetString("String_AttributeSTRShort", GlobalOptions.Language)),
+                new ListItem("CHA", LanguageManager.GetString("String_AttributeCHAShort", GlobalOptions.Language)),
+                new ListItem("INT", LanguageManager.GetString("String_AttributeINTShort", GlobalOptions.Language)),
+                new ListItem("LOG", LanguageManager.GetString("String_AttributeLOGShort", GlobalOptions.Language)),
+                new ListItem("WIL", LanguageManager.GetString("String_AttributeWILShort", GlobalOptions.Language)),
+                new ListItem("EDG", LanguageManager.GetString("String_AttributeEDGShort", GlobalOptions.Language))
             };
 
             cboAttribute.BeginUpdate();
@@ -134,7 +134,7 @@ namespace Chummer
         /// </summary>
         public void AddMAG()
         {
-            _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort")));
+            _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language)));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -148,7 +148,7 @@ namespace Chummer
         /// </summary>
         public void AddMAGAdept()
         {
-            _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
+            _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -162,7 +162,7 @@ namespace Chummer
         /// </summary>
         public void AddRES()
         {
-            _lstAttributes.Add(new ListItem("RES", LanguageManager.GetString("String_AttributeRESShort")));
+            _lstAttributes.Add(new ListItem("RES", LanguageManager.GetString("String_AttributeRESShort", GlobalOptions.Language)));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -176,7 +176,7 @@ namespace Chummer
         /// </summary>
         public void AddDEP()
         {
-            _lstAttributes.Add(new ListItem("DEP", LanguageManager.GetString("String_AttributeDEPShort")));
+            _lstAttributes.Add(new ListItem("DEP", LanguageManager.GetString("String_AttributeDEPShort", GlobalOptions.Language)));
             cboAttribute.BeginUpdate();
             cboAttribute.DataSource = null;
             cboAttribute.ValueMember = "Value";
@@ -216,16 +216,16 @@ namespace Chummer
                 {
                     if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
                     {
-                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
+                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
                     }
                     if (!_lstAttributes.Any(x => x.Value == "MAG"))
-                        _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort")));
+                        _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language)));
                 }
                 else
                 {
-                    _lstAttributes.Add(new ListItem(strAttribute, LanguageManager.GetString("String_Attribute" + strAttribute + "Short")));
+                    _lstAttributes.Add(new ListItem(strAttribute, LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language)));
                     if (strAttribute == "MAG" && objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept && !_lstAttributes.Any(x => x.Value == "MAGAdept"))
-                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ")"));
+                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
                 }
             }
             cboAttribute.BeginUpdate();

@@ -1276,7 +1276,7 @@ namespace Chummer
         public static bool ConfirmDelete(Character objCharacter, string strMessage)
         {
             return !objCharacter.Options.ConfirmDelete ||
-                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
         #endregion
@@ -1314,7 +1314,7 @@ namespace Chummer
                                 objGear.Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
                                 if (objGearNode != null)
-                                    objGearNode.Text = objGear.DisplayName;
+                                    objGearNode.Text = objGear.DisplayName(GlobalOptions.Language);
                             }
                         }
                         if (objGear.WirelessOn && objGear.WirelessBonus != null)
@@ -1326,7 +1326,7 @@ namespace Chummer
                                 objGear.Extra = ImprovementManager.SelectedValue;
                                 TreeNode objGearNode = FindNode(objGear.InternalId, treGears);
                                 if (objGearNode != null)
-                                    objGearNode.Text = objGear.DisplayName;
+                                    objGearNode.Text = objGear.DisplayName(GlobalOptions.Language);
                             }
                         }
                     }
@@ -1334,7 +1334,7 @@ namespace Chummer
                 }
                 else
                 {
-                    strOutdatedItems += objGear.DisplayName + "\n";
+                    strOutdatedItems += objGear.DisplayName(GlobalOptions.Language) + "\n";
                 }
             }
             foreach (Gear objChild in objGear.Children)
@@ -1358,7 +1358,7 @@ namespace Chummer
             {
                 TreeNode objChildNode = new TreeNode
                 {
-                    Text = objChild.DisplayName,
+                    Text = objChild.DisplayName(GlobalOptions.Language),
                     Tag = objChild.InternalId,
                     ContextMenuStrip = objMenu
                 };
@@ -1389,7 +1389,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
-                Text = objCyberware.DisplayName,
+                Text = objCyberware.DisplayName(GlobalOptions.Language),
                 Tag = objCyberware.InternalId
             };
             if (!string.IsNullOrEmpty(objCyberware.Notes))
@@ -1409,7 +1409,7 @@ namespace Chummer
             {
                 TreeNode objGearNode = new TreeNode
                 {
-                    Text = objGear.DisplayName,
+                    Text = objGear.DisplayName(GlobalOptions.Language),
                     Tag = objGear.InternalId
                 };
                 if (!string.IsNullOrEmpty(objGear.Notes))
@@ -1442,7 +1442,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
-                Text = objArmor.DisplayName,
+                Text = objArmor.DisplayName(GlobalOptions.Language),
                 Tag = objArmor.InternalId
             };
             if (!string.IsNullOrEmpty(objArmor.Notes))
@@ -1453,7 +1453,7 @@ namespace Chummer
             {
                 TreeNode objChild = new TreeNode
                 {
-                    Text = objMod.DisplayName,
+                    Text = objMod.DisplayName(GlobalOptions.Language),
                     Tag = objMod.InternalId,
                     ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear
                 };
@@ -1466,7 +1466,7 @@ namespace Chummer
                 {
                     TreeNode objChildGear = new TreeNode
                     {
-                        Text = objGear.DisplayName,
+                        Text = objGear.DisplayName(GlobalOptions.Language),
                         Tag = objGear.InternalId
                     };
                     if (!string.IsNullOrEmpty(objGear.Notes))
@@ -1489,7 +1489,7 @@ namespace Chummer
             {
                 TreeNode objChild = new TreeNode
                 {
-                    Text = objGear.DisplayName,
+                    Text = objGear.DisplayName(GlobalOptions.Language),
                     Tag = objGear.InternalId
                 };
                 if (!string.IsNullOrEmpty(objGear.Notes))
@@ -1565,7 +1565,7 @@ namespace Chummer
             {
                 TreeNode objChildNode = new TreeNode
                 {
-                    Text = objMod.DisplayName,
+                    Text = objMod.DisplayName(GlobalOptions.Language),
                     Tag = objMod.InternalId
                 };
                 if (!string.IsNullOrEmpty(objMod.Notes))
@@ -1579,7 +1579,7 @@ namespace Chummer
                 {
                     TreeNode objCyberwareNode = new TreeNode
                     {
-                        Text = objCyberware.DisplayName,
+                        Text = objCyberware.DisplayName(GlobalOptions.Language),
                         Tag = objCyberware.InternalId
                     };
                     if (!string.IsNullOrEmpty(objCyberware.Notes))
@@ -1606,7 +1606,7 @@ namespace Chummer
                 TreeNode mountsNode = new TreeNode
                 {
                     Tag = "String_WeaponMounts",
-                    Text = LanguageManager.GetString("String_WeaponMounts")
+                    Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
                 };
                 objNode.Nodes.Add(mountsNode);
                 // Weapon Mounts
@@ -1622,7 +1622,7 @@ namespace Chummer
             {
                 TreeNode objGearNode = new TreeNode
                 {
-                    Text = objGear.DisplayName,
+                    Text = objGear.DisplayName(GlobalOptions.Language),
                     Tag = objGear.InternalId
                 };
                 if (!string.IsNullOrEmpty(objGear.Notes))
@@ -1733,7 +1733,7 @@ namespace Chummer
                 {
                     TreeNode objGearChild = new TreeNode
                     {
-                        Text = objGear.DisplayName,
+                        Text = objGear.DisplayName(GlobalOptions.Language),
                         Tag = objGear.InternalId
                     };
                     if (!string.IsNullOrEmpty(objGear.Notes))
@@ -1881,7 +1881,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location on the Gear item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language))
                 objGear.Location = string.Empty;
             else
                 objGear.Location = objNewParent.Text;
@@ -1987,7 +1987,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location on the Armor item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
                 objArmor.Location = string.Empty;
             else
                 objArmor.Location = objNewParent.Text;
@@ -2062,7 +2062,7 @@ namespace Chummer
                 objOldParent = objOldParent.Parent;
 
             // Change the Location of the Weapon.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons"))
+            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language))
                 objWeapon.Location = string.Empty;
             else
                 objWeapon.Location = objNewParent.Text;
@@ -2509,7 +2509,7 @@ namespace Chummer
                 List<Focus> removeFoci = new List<Focus>();
                 TreeNode objNode = new TreeNode
                 {
-                    Text = objGear.DisplayName.Replace(LanguageManager.GetString("String_Rating"), LanguageManager.GetString("String_Force")),
+                    Text = objGear.DisplayName(GlobalOptions.Language).Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language)),
                     Tag = objGear.InternalId
                 };
                 foreach (Focus objFocus in objCharacter.Foci)
@@ -2532,7 +2532,7 @@ namespace Chummer
                             if (!blnWarned)
                             {
                                 objNode.Checked = false;
-                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnWarned = true;
                                 break;
                             }
@@ -2557,7 +2557,7 @@ namespace Chummer
                         {
                             TreeNode objNode = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_StackedFocus") + ": " + objStack.Name,
+                                Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + objStack.Name(GlobalOptions.Language),
                                 Tag = objStack.InternalId
                             };
 
@@ -2607,7 +2607,7 @@ namespace Chummer
                 if (objCharacter.Options.FreeSpiritPowerPointsMAG)
                     intPowerPoints = objCharacter.MAG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - decPowerPoints, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", intPowerPoints - decPowerPoints, intPowerPoints);
             }
             else
             {
@@ -2636,7 +2636,7 @@ namespace Chummer
                         intUsed++;
                 }
 
-                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsed, intPowerPoints);
+                strReturn = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", intPowerPoints - intUsed, intPowerPoints);
             }
 
             return strReturn;
@@ -2658,7 +2658,7 @@ namespace Chummer
 
             int intPowerPoints = objCharacter.EDG.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.FreeSpiritPowerPoints);
 
-            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining") + ")", intPowerPoints - intUsedPowerPoints, intPowerPoints);
+            return string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", intPowerPoints - intUsedPowerPoints, intPowerPoints);
         }
 
         /// <summary>
@@ -2789,7 +2789,7 @@ namespace Chummer
         {
             List<ListItem> lstReturn = new List<ListItem>
             {
-                new ListItem("None", LanguageManager.GetString("String_None"))
+                new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
             };
 
             foreach (Cyberware objLoopCyberware in objCharacter.Cyberware.GetAllDescendants(x => x.Children))
@@ -2803,9 +2803,9 @@ namespace Chummer
                     {
                         string strName = string.Empty;
                         if (objLoopCyberware.Parent != null)
-                            strName = objLoopCyberware.Parent.DisplayName;
+                            strName = objLoopCyberware.Parent.DisplayName(GlobalOptions.Language);
                         else
-                            strName = objLoopCyberware.DisplayName;
+                            strName = objLoopCyberware.DisplayName(GlobalOptions.Language);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                     }
                 }
@@ -2825,9 +2825,9 @@ namespace Chummer
                             {
                                 string strName = objLoopVehicle.DisplayName + " ";
                                 if (objLoopCyberware.Parent != null)
-                                    strName += objLoopCyberware.Parent.DisplayName;
+                                    strName += objLoopCyberware.Parent.DisplayName(GlobalOptions.Language);
                                 else
-                                    strName += objLoopVehicleMod.DisplayName;
+                                    strName += objLoopVehicleMod.DisplayName(GlobalOptions.Language);
                                 lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                             }
                         }

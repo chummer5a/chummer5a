@@ -106,7 +106,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     Autosave_StopWatch.Restart();
                     return;
                 }
@@ -145,12 +145,12 @@ namespace Chummer
                 int intWIL = _objCharacter.WIL.TotalValue;
                 string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblPhysical, strCM);
                 strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblStun, strCM);
             }
@@ -171,9 +171,9 @@ namespace Chummer
             lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + intArmorRating.ToString() + ")";
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ")";
                 if (intArmorRating != intTotalArmorRating)
-                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                                        (intTotalArmorRating - intArmorRating).ToString() + ")";
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
@@ -227,13 +227,13 @@ namespace Chummer
                     switch (objLoopImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.PhysicalLimit:
-                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.MentalLimit:
-                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.SocialLimit:
-                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                     }
                 }
@@ -285,7 +285,7 @@ namespace Chummer
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound"));
+                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                 return;
             }
             frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);
@@ -353,7 +353,7 @@ namespace Chummer
             {
                 TreeNode objNode = new TreeNode
                 {
-                    Text = objPower.DisplayName,
+                    Text = objPower.DisplayName(GlobalOptions.Language),
                     Tag = objPower.InternalId,
                     ContextMenuStrip = cmsCritterPowers
                 };
@@ -403,16 +403,16 @@ namespace Chummer
                 }
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra);
                 }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra))
                         continue;
                     TreeNode objNode = new TreeNode
                     {
-                        Text = objQuality.DisplayName,
+                        Text = objQuality.DisplayName(GlobalOptions.Language),
                         Tag = objQuality.InternalId,
                         ContextMenuStrip = cmsQuality
                     };
@@ -463,7 +463,7 @@ namespace Chummer
                             objSelectedNode = objTreeNode;
                         if (objTreeNode.Tag.ToString() == objQuality.InternalId)
                         {
-                            objTreeNode.Text = objQuality.DisplayName;
+                            objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                             goto NextQuality;
                         }
                     }
@@ -805,7 +805,7 @@ namespace Chummer
                 if (intBonusDrain != 0)
                 {
                     intDrain += intBonusDrain;
-                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers") + " (" + intBonusDrain.ToString() + ")");
+                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ")");
                 }
             }
 

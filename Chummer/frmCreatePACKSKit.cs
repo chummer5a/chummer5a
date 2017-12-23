@@ -35,7 +35,7 @@ namespace Chummer
         public frmCreatePACKSKit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
         }
@@ -45,20 +45,20 @@ namespace Chummer
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_KitName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_KitName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_KitName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (string.IsNullOrEmpty(txtFileName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_FileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_FileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
             // Make sure the file name starts with custom and ends with _packs.xml.
             if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_packs.xml"))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName"), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CreatePACKSKit_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace Chummer
                 XmlNodeList objXmlPACKSList = objXmlDocument.SelectNodes("/chummer/packs/pack[name = \"" + txtName.Text + "\" and category = \"Custom\"]");
                 if (objXmlPACKSList.Count > 0)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName").Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName", GlobalOptions.Language).Replace("{0}", txtName.Text).Replace("{1}", strFile.Replace(strCustomPath + Path.DirectorySeparatorChar, string.Empty)), LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -699,7 +699,7 @@ namespace Chummer
             objWriter.WriteEndDocument();
             objWriter.Close();
 
-            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated").Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated", GlobalOptions.Language).Replace("{0}", txtName.Text), LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
         }
 

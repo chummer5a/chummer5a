@@ -46,7 +46,7 @@ namespace Chummer
         public frmSelectVehicle(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
@@ -85,7 +85,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -330,9 +330,9 @@ namespace Chummer
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
                         // Translate the Avail string.
                         if (strSuffix == "R")
-                            strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                            strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                         else if (strSuffix == "F")
-                            strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                            strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                         strAvail = strAvail.Substring(0, strAvail.Length - 1);
                     }
                     if (int.TryParse(strAvail, out int intTmp))
@@ -375,7 +375,7 @@ namespace Chummer
                 strPage = objXmlVehicle["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlVehicle["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void RefreshList()
@@ -457,7 +457,7 @@ namespace Chummer
                 decCost *= decCostModifier;
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.GetString("String_AvailForbidden"), "F");
+                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), "R").Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), "F");
                 _decUsedCost = decCost;
             }
 

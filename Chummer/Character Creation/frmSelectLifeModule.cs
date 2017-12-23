@@ -40,7 +40,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
@@ -214,7 +214,7 @@ namespace Chummer
                 {
                     List<ListItem> Stages = new List<ListItem>()
                     {
-                        new ListItem("0", LanguageManager.GetString("String_All"))
+                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
                     };
 
                     XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");

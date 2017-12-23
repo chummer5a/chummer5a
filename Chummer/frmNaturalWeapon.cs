@@ -37,7 +37,7 @@ namespace Chummer
         public frmNaturalWeapon(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
         }
@@ -64,8 +64,8 @@ namespace Chummer
 
             List<ListItem> lstDVType = new List<ListItem>
             {
-                new ListItem("P", LanguageManager.GetString("String_DamagePhysical")),
-                new ListItem("S", LanguageManager.GetString("String_DamageStun"))
+                new ListItem("P", LanguageManager.GetString("String_DamagePhysical", GlobalOptions.Language)),
+                new ListItem("S", LanguageManager.GetString("String_DamageStun", GlobalOptions.Language))
             };
 
             // Bind the Lists to the ComboBoxes.
@@ -148,7 +148,7 @@ namespace Chummer
             _objWeapon = new Weapon(_objCharacter)
             {
                 Name = txtName.Text,
-                Category = LanguageManager.GetString("Tab_Critter"),
+                Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language),
                 WeaponType = "Melee",
                 Reach = decimal.ToInt32(nudReach.Value),
                 Damage = strDamage,

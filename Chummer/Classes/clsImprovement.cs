@@ -1037,7 +1037,7 @@ namespace Chummer
                     // Display the Select Text window and record the value that was entered.
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText")
+                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
                         .Replace("{0}", strFriendlyName)
                     };
                     frmPickText.ShowDialog();

@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
@@ -117,7 +117,7 @@ namespace Chummer
                 strPage = objXmlArt["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

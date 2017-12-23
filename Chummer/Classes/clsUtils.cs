@@ -68,8 +68,8 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = LanguageManager.GetString(strText);
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
+                string text = LanguageManager.GetString(strText, GlobalOptions.Language);
+                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", GlobalOptions.Language);
 
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
@@ -82,7 +82,7 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges", GlobalOptions.Language).Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", GlobalOptions.Language), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (objResult == DialogResult.Yes)
                     {
                         // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.

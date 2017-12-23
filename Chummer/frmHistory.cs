@@ -28,7 +28,7 @@ namespace Chummer
         public frmHistory()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
         }
 
         private void frmHistory_Load(object sender, EventArgs e)
@@ -40,7 +40,7 @@ namespace Chummer
             }
             catch
             {
-                MessageBox.Show(LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(LanguageManager.GetString("Message_History_FileNotFound", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Close();
                 return;
             }

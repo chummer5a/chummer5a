@@ -2155,7 +2155,6 @@ namespace Chummer
             this.tsMartialArtsNotes});
             this.cmsMartialArts.Name = "cmsWeapon";
             this.cmsMartialArts.Size = new System.Drawing.Size(155, 48);
-            this.cmsMartialArts.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsMartialArtsAddAdvantage
             // 
@@ -2181,7 +2180,6 @@ namespace Chummer
             this.tsCreateSpell});
             this.cmsSpellButton.Name = "cmsSpellButton";
             this.cmsSpellButton.Size = new System.Drawing.Size(137, 26);
-            this.cmsSpellButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsCreateSpell
             // 
@@ -2199,7 +2197,6 @@ namespace Chummer
             this.tsComplexFormNotes});
             this.cmsComplexForm.Name = "cmsComplexForm";
             this.cmsComplexForm.Size = new System.Drawing.Size(137, 48);
-            this.cmsComplexForm.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsAddComplexFormOption
             // 
@@ -2227,7 +2224,6 @@ namespace Chummer
             this.tsCyberwareNotes});
             this.cmsCyberware.Name = "cmsCyberware";
             this.cmsCyberware.Size = new System.Drawing.Size(148, 70);
-            this.cmsCyberware.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsCyberwareAddAsPlugin
             // 
@@ -2262,7 +2258,6 @@ namespace Chummer
             this.tsCyberwareSell});
             this.cmsDeleteCyberware.Name = "cmsCyberware";
             this.cmsDeleteCyberware.Size = new System.Drawing.Size(120, 26);
-            this.cmsDeleteCyberware.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsCyberwareSell
             // 
@@ -2279,7 +2274,6 @@ namespace Chummer
             this.tsAdvancedLifestyle});
             this.cmsLifestyle.Name = "cmsLifestyle";
             this.cmsLifestyle.Size = new System.Drawing.Size(174, 26);
-            this.cmsLifestyle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsAdvancedLifestyle
             // 
@@ -2299,7 +2293,6 @@ namespace Chummer
             this.tsArmorNotes});
             this.cmsArmor.Name = "cmsWeapon";
             this.cmsArmor.Size = new System.Drawing.Size(162, 92);
-            this.cmsArmor.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsAddArmorMod
             // 
@@ -2343,7 +2336,6 @@ namespace Chummer
             this.tsArmorSell});
             this.cmsDeleteArmor.Name = "cmsDeleteArmor";
             this.cmsDeleteArmor.Size = new System.Drawing.Size(120, 26);
-            this.cmsDeleteArmor.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsArmorSell
             // 
@@ -2364,7 +2356,6 @@ namespace Chummer
             this.tsWeaponNotes});
             this.cmsWeapon.Name = "cmsWeapon";
             this.cmsWeapon.Size = new System.Drawing.Size(209, 114);
-            this.cmsWeapon.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsCreateNaturalWeapon
             // 
@@ -2417,7 +2408,6 @@ namespace Chummer
             this.tsWeaponSell});
             this.cmsDeleteWeapon.Name = "cmsDeleteWeapon";
             this.cmsDeleteWeapon.Size = new System.Drawing.Size(120, 26);
-            this.cmsDeleteWeapon.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsWeaponSell
             // 
@@ -2438,7 +2428,6 @@ namespace Chummer
             this.cmsAmmoSuppressiveFire});
             this.cmsAmmoExpense.Name = "cmsAmmoExpense";
             this.cmsAmmoExpense.Size = new System.Drawing.Size(220, 114);
-            this.cmsAmmoExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // cmsAmmoSingleShot
             // 
@@ -2485,7 +2474,6 @@ namespace Chummer
             this.tsGearAddNexus});
             this.cmsGearButton.Name = "cmsGearButton";
             this.cmsGearButton.Size = new System.Drawing.Size(153, 48);
-            this.cmsGearButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsGearButtonAddAccessory
             // 
@@ -2512,7 +2500,6 @@ namespace Chummer
             this.sellItemToolStripMenuItem});
             this.cmsDeleteGear.Name = "cmsDeleteGear";
             this.cmsDeleteGear.Size = new System.Drawing.Size(120, 26);
-            this.cmsDeleteGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // sellItemToolStripMenuItem
             // 
@@ -2535,7 +2522,6 @@ namespace Chummer
             this.tsVehicleAddWeaponMount});
             this.cmsVehicle.Name = "cmsWeapon";
             this.cmsVehicle.Size = new System.Drawing.Size(193, 158);
-            this.cmsVehicle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsVehicleAddMod
             // 
@@ -2566,7 +2552,6 @@ namespace Chummer
             this.tsVehicleAddSensor.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddSensor.Tag = "Menu_Gear";
             this.tsVehicleAddSensor.Text = "&Gear";
-            this.tsVehicleAddSensor.DropDownOpening += new System.EventHandler(this.ContextMenu_DropDownOpening);
             // 
             // tsVehicleAddGear
             // 
@@ -2607,7 +2592,6 @@ namespace Chummer
             this.tsVehicleAddWeapon.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddWeapon.Tag = "Menu_Weapons";
             this.tsVehicleAddWeapon.Text = "&Weapons";
-            this.tsVehicleAddWeapon.DropDownOpening += new System.EventHandler(this.ContextMenu_DropDownOpening);
             // 
             // tsVehicleAddWeaponWeapon
             // 
@@ -2673,7 +2657,6 @@ namespace Chummer
             this.cmsVehicleAmmoSuppressiveFire});
             this.cmdVehicleAmmoExpense.Name = "contextMenuStrip1";
             this.cmdVehicleAmmoExpense.Size = new System.Drawing.Size(220, 114);
-            this.cmdVehicleAmmoExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // cmsVehicleAmmoSingleShot
             // 
@@ -2719,7 +2702,6 @@ namespace Chummer
             this.tsVehicleSell});
             this.cmsDeleteVehicle.Name = "cmsDeleteVehicle";
             this.cmsDeleteVehicle.Size = new System.Drawing.Size(120, 26);
-            this.cmsDeleteVehicle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsVehicleSell
             // 
@@ -3977,7 +3959,6 @@ namespace Chummer
             this.mnuCreateEdit.Tag = "Menu_Main_Edit";
             this.mnuCreateEdit.Text = "&Edit";
             this.mnuCreateEdit.Visible = false;
-            this.mnuCreateEdit.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // mnuEditCopy
             // 
@@ -4006,7 +3987,6 @@ namespace Chummer
             this.mnuCreateSpecial.Size = new System.Drawing.Size(56, 20);
             this.mnuCreateSpecial.Tag = "Menu_Special";
             this.mnuCreateSpecial.Text = "&Special";
-            this.mnuCreateSpecial.DropDownOpening += new System.EventHandler(this.Menu_DropDownOpening);
             // 
             // mnuSpecialAddCyberwareSuite
             // 
@@ -4156,7 +4136,6 @@ namespace Chummer
             this.tsGearNotes});
             this.cmsGear.Name = "cmsWeapon";
             this.cmsGear.Size = new System.Drawing.Size(148, 70);
-            this.cmsGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsGearAddAsPlugin
             // 
@@ -4193,7 +4172,6 @@ namespace Chummer
             this.tsVehicleWeaponNotes});
             this.cmsVehicleWeapon.Name = "cmsWeapon";
             this.cmsVehicleWeapon.Size = new System.Drawing.Size(209, 70);
-            this.cmsVehicleWeapon.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsVehicleAddWeaponAccessoryAlt
             // 
@@ -4229,7 +4207,6 @@ namespace Chummer
             this.tsVehicleGearNotes});
             this.cmsVehicleGear.Name = "cmsWeapon";
             this.cmsVehicleGear.Size = new System.Drawing.Size(148, 48);
-            this.cmsVehicleGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsVehicleGearAddAsPlugin
             // 
@@ -4256,7 +4233,6 @@ namespace Chummer
             this.tsEditKarmaExpense});
             this.cmsUndoKarmaExpense.Name = "contextMenuStrip1";
             this.cmsUndoKarmaExpense.Size = new System.Drawing.Size(149, 48);
-            this.cmsUndoKarmaExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsUndoKarmaExpense
             // 
@@ -4283,7 +4259,6 @@ namespace Chummer
             this.tsEditNuyenExpense});
             this.cmsUndoNuyenExpense.Name = "cmsUndoNuyenExpense";
             this.cmsUndoNuyenExpense.Size = new System.Drawing.Size(149, 48);
-            this.cmsUndoNuyenExpense.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsUndoNuyenExpense
             // 
@@ -4310,7 +4285,6 @@ namespace Chummer
             this.tsArmorGearNotes});
             this.cmsArmorGear.Name = "cmsWeapon";
             this.cmsArmorGear.Size = new System.Drawing.Size(148, 48);
-            this.cmsArmorGear.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsArmorGearAddAsPlugin
             // 
@@ -4336,7 +4310,6 @@ namespace Chummer
             this.tsArmorModNotes});
             this.cmsArmorMod.Name = "cmsArmorMod";
             this.cmsArmorMod.Size = new System.Drawing.Size(106, 26);
-            this.cmsArmorMod.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsArmorModNotes
             // 
@@ -4353,7 +4326,6 @@ namespace Chummer
             this.tsQualityNotes});
             this.cmsQuality.Name = "cmsQuality";
             this.cmsQuality.Size = new System.Drawing.Size(106, 26);
-            this.cmsQuality.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsQualityNotes
             // 
@@ -4370,7 +4342,6 @@ namespace Chummer
             this.tsMartialArtManeuverNotes});
             this.cmsMartialArtManeuver.Name = "cmsMartialArtManeuver";
             this.cmsMartialArtManeuver.Size = new System.Drawing.Size(106, 26);
-            this.cmsMartialArtManeuver.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsMartialArtManeuverNotes
             // 
@@ -4387,7 +4358,6 @@ namespace Chummer
             this.tsSpellNotes});
             this.cmsSpell.Name = "cmsSpell";
             this.cmsSpell.Size = new System.Drawing.Size(106, 26);
-            this.cmsSpell.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsSpellNotes
             // 
@@ -4404,7 +4374,6 @@ namespace Chummer
             this.tsCritterPowersNotes});
             this.cmsCritterPowers.Name = "cmsCritterPowers";
             this.cmsCritterPowers.Size = new System.Drawing.Size(106, 26);
-            this.cmsCritterPowers.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsCritterPowersNotes
             // 
@@ -4426,7 +4395,6 @@ namespace Chummer
             this.tsMetamagicNotes});
             this.cmsMetamagic.Name = "cmsMetamagic";
             this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
-            this.cmsMetamagic.Opening += new System.ComponentModel.CancelEventHandler(this.InitiationContextMenu_Opening);
             // 
             // tsMetamagicAddArt
             // 
@@ -4480,7 +4448,6 @@ namespace Chummer
             this.tsLifestyleNotes});
             this.cmsLifestyleNotes.Name = "cmsLifestyleNotes";
             this.cmsLifestyleNotes.Size = new System.Drawing.Size(153, 70);
-            this.cmsLifestyleNotes.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsEditLifestyle
             // 
@@ -4526,7 +4493,6 @@ namespace Chummer
             this.tsWeaponAccessoryNotes});
             this.cmsWeaponAccessory.Name = "cmsWeaponAccessory";
             this.cmsWeaponAccessory.Size = new System.Drawing.Size(124, 48);
-            this.cmsWeaponAccessory.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsWeaponAccessoryAddGear
             // 
@@ -4552,7 +4518,6 @@ namespace Chummer
             this.tsGearPluginNotes});
             this.cmsGearPlugin.Name = "cmsGearPlugin";
             this.cmsGearPlugin.Size = new System.Drawing.Size(106, 26);
-            this.cmsGearPlugin.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsGearPluginNotes
             // 
@@ -4569,7 +4534,6 @@ namespace Chummer
             this.tsComplexFormPluginNotes});
             this.cmsComplexFormPlugin.Name = "cmsComplexFormPlugin";
             this.cmsComplexFormPlugin.Size = new System.Drawing.Size(106, 26);
-            this.cmsComplexFormPlugin.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsComplexFormPluginNotes
             // 
@@ -13331,7 +13295,6 @@ namespace Chummer
             this.tsBiowareNotes});
             this.cmsBioware.Name = "cmsBioware";
             this.cmsBioware.Size = new System.Drawing.Size(106, 26);
-            this.cmsBioware.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsBiowareNotes
             // 
@@ -13349,7 +13312,6 @@ namespace Chummer
             this.tsAdvancedLifestyleNotes});
             this.cmsAdvancedLifestyle.Name = "cmsAdvancedLifestyle";
             this.cmsAdvancedLifestyle.Size = new System.Drawing.Size(197, 48);
-            this.cmsAdvancedLifestyle.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsEditAdvancedLifestyle
             // 
@@ -13375,7 +13337,6 @@ namespace Chummer
             this.tsGearLocationAddGear});
             this.cmsGearLocation.Name = "cmsGearLocation";
             this.cmsGearLocation.Size = new System.Drawing.Size(167, 48);
-            this.cmsGearLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsGearRenameLocation
             // 
@@ -13418,7 +13379,6 @@ namespace Chummer
             this.tsArmorRenameLocation});
             this.cmsArmorLocation.Name = "cmsGearLocation";
             this.cmsArmorLocation.Size = new System.Drawing.Size(167, 48);
-            this.cmsArmorLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsArmorLocationAddArmor
             // 
@@ -13445,7 +13405,6 @@ namespace Chummer
             this.cmsImprovementLocation.Name = "cmsImprovementLocation";
             this.cmsImprovementLocation.Size = new System.Drawing.Size(167, 26);
             this.cmsImprovementLocation.Tag = "";
-            this.cmsImprovementLocation.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsImprovementRenameLocation
             // 
@@ -13671,7 +13630,6 @@ namespace Chummer
             this.tsAIProgramNotes});
             this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
             this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
-            this.cmsAdvancedProgram.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsAddAdvancedProgramOption
             // 

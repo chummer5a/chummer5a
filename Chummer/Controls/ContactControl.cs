@@ -56,12 +56,17 @@ namespace Chummer
             {
                 chkFree.Visible = false;
             }
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             MoveControls();
 
             _objContact = objContact;
             _strContactRole = _objContact.Role;
             EntityType = _objContact.EntityType;
+
+            foreach (ToolStripItem objItem in cmsContact.Items)
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+            }
         }
 
         private void ContactControl_Load(object sender, EventArgs e)
@@ -217,7 +222,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -243,8 +248,8 @@ namespace Chummer
             _objContact.FileName = openFileDialog.FileName;
             tipTooltip.SetToolTip(imgLink,
                 _objContact.EntityType == ContactType.Enemy
-                    ? LanguageManager.GetString("Tip_Enemy_OpenFile")
-                    : LanguageManager.GetString("Tip_Contact_OpenFile"));
+                    ? LanguageManager.GetString("Tip_Enemy_OpenFile", GlobalOptions.Language)
+                    : LanguageManager.GetString("Tip_Contact_OpenFile", GlobalOptions.Language));
 
             // Set the relative path.
             Uri uriApplication = new Uri(@Application.StartupPath);
@@ -258,14 +263,14 @@ namespace Chummer
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_RemoveCharacterAssociation", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
                 tipTooltip.SetToolTip(imgLink,
                     _objContact.EntityType == ContactType.Enemy
-                        ? LanguageManager.GetString("Tip_Enemy_LinkFile")
-                        : LanguageManager.GetString("Tip_Contact_LinkFile"));
+                        ? LanguageManager.GetString("Tip_Enemy_LinkFile", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
                 FileNameChanged(this);
             }
         }
@@ -281,20 +286,10 @@ namespace Chummer
             if (frmContactNotes.DialogResult == DialogResult.OK)
                 _objContact.Notes = frmContactNotes.Notes;
 
-            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
+            string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += "\n\n" + _objContact.Notes;
             tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
-        }
-        private void cmsContact_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-            {
-                if (objItem.Tag != null)
-                {
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-                }
-            }
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
@@ -383,10 +378,10 @@ namespace Chummer
                 {
                     tipTooltip.SetToolTip(imgLink,
                         !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                            ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
+                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
 
-                    string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
+                    string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objContact.Notes))
                         strTooltip += "\n\n" + _objContact.Notes;
                     tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
@@ -398,10 +393,10 @@ namespace Chummer
                 {
                     tipTooltip.SetToolTip(imgLink,
                         !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                            : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                            ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
+                            : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
 
-                    string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+                    string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objContact.Notes))
                         strTooltip += "\n\n" + _objContact.Notes;
                     tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));

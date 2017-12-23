@@ -43,7 +43,7 @@ namespace Chummer
         public frmSelectLifestyle(Lifestyle objLifestyle, Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             MoveControls();
@@ -91,7 +91,7 @@ namespace Chummer
                 if (nodMultiplier == null)
                 {
                     nodMultiplier = objXmlOption["multiplierbaseonly"];
-                    strBaseString = " " + LanguageManager.GetString("Label_Base");
+                    strBaseString = " " + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
                 }
                 nodOption.Tag = nodOption.Tag = objXmlOption["id"]?.InnerText;
                 if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
@@ -151,7 +151,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             AcceptForm();
@@ -203,7 +203,7 @@ namespace Chummer
             lblSource.Text = $"{strBook} {strPage}";
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(strBook) + " " + LanguageManager.GetString("String_Page") + " " +
+                _objCharacter.Options.LanguageBookLong(strBook) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " +
                 strPage);
         }
 

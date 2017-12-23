@@ -207,7 +207,7 @@ namespace Chummer
                             decMax = 1000000;
                         frmPickNumber.Minimum = decMin;
                         frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost").Replace("{0}", DisplayNameShort);
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort);
                         frmPickNumber.AllowCancel = false;
                         frmPickNumber.ShowDialog();
                         _intBP = decimal.ToInt32(frmPickNumber.SelectedValue);
@@ -291,7 +291,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter);
                     if (objXmlNaturalWeapon["name"] != null)
                         objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                    objWeapon.Category = LanguageManager.GetString("Tab_Critter");
+                    objWeapon.Category = LanguageManager.GetString("Tab_Critter", GlobalOptions.Language);
                     objWeapon.WeaponType = "Melee";
                     if (objXmlNaturalWeapon["reach"] != null)
                         objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText);
@@ -358,7 +358,7 @@ namespace Chummer
             if (objQualitySource == QualitySource.Metatype || objQualitySource == QualitySource.MetatypeRemovable)
                 objNode.ForeColor = SystemColors.GrayText;
 
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = InternalId;
         }
 
@@ -477,7 +477,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (_blnPrint)
             {
@@ -486,11 +486,11 @@ namespace Chummer
                     strRatingString = " " + intRating.ToString(objCulture);
                 string strSourceName = string.Empty;
                 if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = " (" + SourceName + ")";
+                    strSourceName = " (" + GetSourceName(strLanguageToPrint) + ")";
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort);
                 objWriter.WriteElementString("name_english", Name + strRatingString);
-                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra) + strRatingString + strSourceName);
+                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString(objCulture));
                 string strQualityType = _objQualityType.ToString();
                 if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
@@ -581,11 +581,16 @@ namespace Chummer
         /// </summary>
         public string SourceName
         {
-            get
-            {
-                return LanguageManager.TranslateExtra(_strSourceName);
-            }
+            get => _strSourceName;
             set => _strSourceName = value;
+        }
+
+        /// <summary>
+        /// Name of the Improvement that added this quality.
+        /// </summary>
+        public string GetSourceName(string strLanguage)
+        {
+            return LanguageManager.TranslateExtra(_strSourceName, strLanguage);
         }
 
         /// <summary>
@@ -651,25 +656,21 @@ namespace Chummer
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
+            string strReturn = DisplayNameShort;
+
+            if (!string.IsNullOrEmpty(_strExtra))
             {
-                string strReturn = DisplayNameShort;
-
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    LanguageManager.Load(GlobalOptions.Language, this);
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                }
-
-                int intLevels = Levels;
-                if (intLevels > 1)
-                    strReturn += " " + intLevels.ToString(GlobalOptions.CultureInfo);
-                
-                return strReturn;
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
+
+            int intLevels = Levels;
+            if (intLevels > 1)
+                strReturn += " " + intLevels.ToString(GlobalOptions.CultureInfo);
+
+            return strReturn;
         }
 
         /// <summary>
@@ -1098,12 +1099,12 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             // Translate the Critter name if applicable.
             string strName = _strName;
             XmlNode objXmlCritterNode = MyXmlNode;
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText;
             }
@@ -1411,7 +1412,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -1440,7 +1441,7 @@ namespace Chummer
                 }
                 if (_objLinkedCharacter != null)
                 {
-                    if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
+                    if (string.IsNullOrEmpty(_strCritterName) && CritterName != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
                         _strCritterName = CritterName;
                 }
                 PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
@@ -1592,7 +1593,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -1696,7 +1697,7 @@ namespace Chummer
             ImprovementManager.ForcedValue = strForcedValue;
             if (objXmlSpellNode["bonus"] != null)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString(), objXmlSpellNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -1753,7 +1754,7 @@ namespace Chummer
             }
 
             //TreeNode objNode = new TreeNode();
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
 
             //return objNode;
@@ -1840,29 +1841,29 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("spell");
             if (_blnLimited)
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("String_SpellLimited") + ")");
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("String_SpellLimited", strLanguageToPrint) + ")");
             else if (_blnAlchemical)
-                objWriter.WriteElementString("name", DisplayNameShort + " (" + LanguageManager.GetString("String_SpellAlchemical") + ")");
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint) + ")");
             else
-                objWriter.WriteElementString("name", DisplayNameShort);
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("descriptors", DisplayDescriptors);
+            objWriter.WriteElementString("descriptors", DisplayDescriptors(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", DisplayType);
-            objWriter.WriteElementString("range", DisplayRange);
-            objWriter.WriteElementString("damage", DisplayDamage);
-            objWriter.WriteElementString("duration", DisplayDuration);
-            objWriter.WriteElementString("dv", DisplayDV);
+            objWriter.WriteElementString("type", DisplayType(strLanguageToPrint));
+            objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
+            objWriter.WriteElementString("damage", DisplayDamage(strLanguageToPrint));
+            objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
+            objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
             objWriter.WriteElementString("alchemy", Alchemical.ToString());
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -1912,118 +1913,115 @@ namespace Chummer
         /// <summary>
         /// Translated Descriptors.
         /// </summary>
-        public string DisplayDescriptors
+        public string DisplayDescriptors(string strLanguage)
         {
-            get
+            StringBuilder objReturn = new StringBuilder();
+
+            string[] strDescriptorsIn = _strDescriptors.Split(',');
+            foreach (string strDescriptor in strDescriptorsIn)
             {
-                StringBuilder objReturn = new StringBuilder();
-
-                string[] strDescriptorsIn = _strDescriptors.Split(',');
-                foreach (string strDescriptor in strDescriptorsIn)
+                switch (strDescriptor.Trim())
                 {
-                    switch (strDescriptor.Trim())
-                    {
-                        case "Active":
-                            objReturn.Append(LanguageManager.GetString("String_DescActive"));
-                            break;
-                        case "Adept":
-                            objReturn.Append(LanguageManager.GetString("String_DescAdept"));
-                            break;
-                        case "Alchemical Preparation":
-                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
-                            break;
-                        case "Anchored":
-                            objReturn.Append(LanguageManager.GetString("String_DescAnchored"));
-                            break;
-                        case "Area":
-                            objReturn.Append(LanguageManager.GetString("String_DescArea"));
-                            break;
-                        case "Blood":
-                            objReturn.Append(LanguageManager.GetString("String_DescBlood"));
-                            break;
-                        case "Contractual":
-                            objReturn.Append(LanguageManager.GetString("String_DescContractual"));
-                            break;
-                        case "Direct":
-                            objReturn.Append(LanguageManager.GetString("String_DescDirect"));
-                            break;
-                        case "Directional":
-                            objReturn.Append(LanguageManager.GetString("String_DescDirectional"));
-                            break;
-                        case "Elemental":
-                            objReturn.Append(LanguageManager.GetString("String_DescElemental")) ;
-                            break;
-                        case "Environmental":
-                            objReturn.Append(LanguageManager.GetString("String_DescEnvironmental"));
-                            break;
-                        case "Geomancy":
-                            objReturn.Append(LanguageManager.GetString("String_DescGeomancy"));
-                            break;
-                        case "Indirect":
-                            objReturn.Append(LanguageManager.GetString("String_DescIndirect"));
-                            break;
-                        case "Mana":
-                            objReturn.Append(LanguageManager.GetString("String_DescMana"));
-                            break;
-                        case "Material Link":
-                            objReturn.Append(LanguageManager.GetString("String_DescMaterialLink"));
-                            break;
-                        case "Mental":
-                            objReturn.Append(LanguageManager.GetString("String_DescMental"));
-                            break;
-                        case "Minion":
-                            objReturn.Append(LanguageManager.GetString("String_DescMinion"));
-                            break;
-                        case "Multi-Sense":
-                            objReturn.Append(LanguageManager.GetString("String_DescMultiSense"));
-                            break;
-                        case "Negative":
-                            objReturn.Append(LanguageManager.GetString("String_DescNegative"));
-                            break;
-                        case "Obvious":
-                            objReturn.Append(LanguageManager.GetString("String_DescObvious"));
-                            break;
-                        case "Organic Link":
-                            objReturn.Append(LanguageManager.GetString("String_DescOrganicLink"));
-                            break;
-                        case "Passive":
-                            objReturn.Append(LanguageManager.GetString("String_DescPassive"));
-                            break;
-                        case "Physical":
-                            objReturn.Append(LanguageManager.GetString("String_DescPhysical"));
-                            break;
-                        case "Psychic":
-                            objReturn.Append(LanguageManager.GetString("String_DescPsychic"));
-                            break;
-                        case "Realistic":
-                            objReturn.Append(LanguageManager.GetString("String_DescRealistic"));
-                            break;
-                        case "Single-Sense":
-                            objReturn.Append(LanguageManager.GetString("String_DescSingleSense"));
-                            break;
-                        case "Touch":
-                            objReturn.Append(LanguageManager.GetString("String_DescTouch"));
-                            break;
-                        case "Spell":
-                            objReturn.Append(LanguageManager.GetString("String_DescSpell"));
-                            break;
-                        case "Spotter":
-                            objReturn.Append(LanguageManager.GetString("String_DescSpotter"));
-                            break;
-                    }
-                    objReturn.Append(", ");
+                    case "Active":
+                        objReturn.Append(LanguageManager.GetString("String_DescActive", strLanguage));
+                        break;
+                    case "Adept":
+                        objReturn.Append(LanguageManager.GetString("String_DescAdept", strLanguage));
+                        break;
+                    case "Alchemical Preparation":
+                        objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
+                        break;
+                    case "Anchored":
+                        objReturn.Append(LanguageManager.GetString("String_DescAnchored", strLanguage));
+                        break;
+                    case "Area":
+                        objReturn.Append(LanguageManager.GetString("String_DescArea", strLanguage));
+                        break;
+                    case "Blood":
+                        objReturn.Append(LanguageManager.GetString("String_DescBlood", strLanguage));
+                        break;
+                    case "Contractual":
+                        objReturn.Append(LanguageManager.GetString("String_DescContractual", strLanguage));
+                        break;
+                    case "Direct":
+                        objReturn.Append(LanguageManager.GetString("String_DescDirect", strLanguage));
+                        break;
+                    case "Directional":
+                        objReturn.Append(LanguageManager.GetString("String_DescDirectional", strLanguage));
+                        break;
+                    case "Elemental":
+                        objReturn.Append(LanguageManager.GetString("String_DescElemental", strLanguage));
+                        break;
+                    case "Environmental":
+                        objReturn.Append(LanguageManager.GetString("String_DescEnvironmental", strLanguage));
+                        break;
+                    case "Geomancy":
+                        objReturn.Append(LanguageManager.GetString("String_DescGeomancy", strLanguage));
+                        break;
+                    case "Indirect":
+                        objReturn.Append(LanguageManager.GetString("String_DescIndirect", strLanguage));
+                        break;
+                    case "Mana":
+                        objReturn.Append(LanguageManager.GetString("String_DescMana", strLanguage));
+                        break;
+                    case "Material Link":
+                        objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
+                        break;
+                    case "Mental":
+                        objReturn.Append(LanguageManager.GetString("String_DescMental", strLanguage));
+                        break;
+                    case "Minion":
+                        objReturn.Append(LanguageManager.GetString("String_DescMinion", strLanguage));
+                        break;
+                    case "Multi-Sense":
+                        objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
+                        break;
+                    case "Negative":
+                        objReturn.Append(LanguageManager.GetString("String_DescNegative", strLanguage));
+                        break;
+                    case "Obvious":
+                        objReturn.Append(LanguageManager.GetString("String_DescObvious", strLanguage));
+                        break;
+                    case "Organic Link":
+                        objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
+                        break;
+                    case "Passive":
+                        objReturn.Append(LanguageManager.GetString("String_DescPassive", strLanguage));
+                        break;
+                    case "Physical":
+                        objReturn.Append(LanguageManager.GetString("String_DescPhysical", strLanguage));
+                        break;
+                    case "Psychic":
+                        objReturn.Append(LanguageManager.GetString("String_DescPsychic", strLanguage));
+                        break;
+                    case "Realistic":
+                        objReturn.Append(LanguageManager.GetString("String_DescRealistic", strLanguage));
+                        break;
+                    case "Single-Sense":
+                        objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
+                        break;
+                    case "Touch":
+                        objReturn.Append(LanguageManager.GetString("String_DescTouch", strLanguage));
+                        break;
+                    case "Spell":
+                        objReturn.Append(LanguageManager.GetString("String_DescSpell", strLanguage));
+                        break;
+                    case "Spotter":
+                        objReturn.Append(LanguageManager.GetString("String_DescSpotter", strLanguage));
+                        break;
                 }
-
-                // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
-                if (_blnExtended)
-                    objReturn.Append(LanguageManager.GetString("String_DescExtendedArea") + ", ");
-
-                // Remove the trailing comma.
-                if (objReturn.Length >= 2)
-                    objReturn.Length -= 2;
-
-                return objReturn.ToString();
+                objReturn.Append(", ");
             }
+
+            // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
+            if (_blnExtended)
+                objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ", ");
+
+            // Remove the trailing comma.
+            if (objReturn.Length >= 2)
+                objReturn.Length -= 2;
+
+            return objReturn.ToString();
         }
 
         /// <summary>
@@ -2061,43 +2059,37 @@ namespace Chummer
         /// <summary>
         /// Translated Type.
         /// </summary>
-        public string DisplayType
+        public string DisplayType(string strLanguage)
         {
-            get
+            string strReturn = string.Empty;
+
+            switch (_strType)
             {
-                string strReturn = string.Empty;
-
-                switch (_strType)
-                {
-                    case "M":
-                        strReturn = LanguageManager.GetString("String_SpellTypeMana");
-                        break;
-                    default:
-                        strReturn = LanguageManager.GetString("String_SpellTypePhysical");
-                        break;
-                }
-
-                return strReturn;
+                case "M":
+                    strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
         /// Translated Drain Value.
         /// </summary>
-        public string DisplayDV
+        public string DisplayDV(string strLanguage)
         {
-            get
-            {
-                string strReturn = DV.Replace('/', '÷');
-                strReturn = strReturn.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
-                strReturn = strReturn.CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"));
-                strReturn = strReturn.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
-                strReturn = strReturn.CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"));
-                strReturn = strReturn.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"));
-                strReturn = strReturn.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
+            string strReturn = DV.Replace('/', '÷');
+            strReturn = strReturn.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", strLanguage));
+            strReturn = strReturn.CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage", strLanguage));
+            strReturn = strReturn.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", strLanguage));
+            strReturn = strReturn.CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage));
+            strReturn = strReturn.CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage));
+            strReturn = strReturn.CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage));
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
@@ -2107,7 +2099,7 @@ namespace Chummer
         {
             get
             {
-                string strTip = LanguageManager.GetString("Tip_SpellDrainBase");
+                string strTip = LanguageManager.GetString("Tip_SpellDrainBase", GlobalOptions.Language);
                 int intMAG = _objCharacter.MAG.TotalValue;
 
                 if (_objCharacter.AdeptEnabled && _objCharacter.MagicianEnabled)
@@ -2135,20 +2127,20 @@ namespace Chummer
                         // Drain cannot be lower than 2.
                         if (intDV < 2)
                             intDV = 2;
-                        strTip += "\n   " + LanguageManager.GetString("String_Force") + " " + i.ToString() + ": " + intDV.ToString();
+                        strTip += "\n   " + LanguageManager.GetString("String_Force", GlobalOptions.Language) + " " + i.ToString() + ": " + intDV.ToString();
                     }
                     else
                     {
-                        strTip = LanguageManager.GetString("Tip_SpellDrainSeeDescription");
+                        strTip = LanguageManager.GetString("Tip_SpellDrainSeeDescription", GlobalOptions.Language);
                         break;
                     }
                 }
                 if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
                 {
-                    strTip += $"\n {LanguageManager.GetString("Label_Bonus")}";
+                    strTip += $"\n {LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
                     strTip = _objCharacter.Improvements
                         .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category))
-                        .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp)} ({imp.Value:0;-0;0})");
+                        .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
                 }
 
                 return strTip;
@@ -2167,20 +2159,17 @@ namespace Chummer
         /// <summary>
         /// Translated Range.
         /// </summary>
-        public string DisplayRange
+        public string DisplayRange(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strRange;
-                strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
+            string strReturn = _strRange;
+            strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguage));
+            strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage));
+            strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage));
+            strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage));
+            strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ")");
+            strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
@@ -2195,27 +2184,24 @@ namespace Chummer
         /// <summary>
         /// Translated Damage.
         /// </summary>
-        public string DisplayDamage
+        public string DisplayDamage(string strLanguage)
         {
-            get
+            string strReturn = string.Empty;
+
+            switch (_strDamage)
             {
-                string strReturn = string.Empty;
-
-                switch (_strDamage)
-                {
-                    case "P":
-                        strReturn = LanguageManager.GetString("String_DamagePhysical");
-                        break;
-                    case "S":
-                        strReturn = LanguageManager.GetString("String_DamageStun");
-                        break;
-                    default:
-                        strReturn = string.Empty;
-                        break;
-                }
-
-                return strReturn;
+                case "P":
+                    strReturn = LanguageManager.GetString("String_DamagePhysical", strLanguage);
+                    break;
+                case "S":
+                    strReturn = LanguageManager.GetString("String_DamageStun", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_None", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -2230,27 +2216,30 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public string DisplayDuration
+        public string DisplayDuration(string strLanguage)
         {
-            get
+            string strReturn = string.Empty;
+
+            switch (_strDuration)
             {
-                string strReturn = string.Empty;
-
-                switch (_strDuration)
-                {
-                    case "P":
-                        strReturn = LanguageManager.GetString("String_SpellDurationPermanent");
-                        break;
-                    case "S":
-                        strReturn = LanguageManager.GetString("String_SpellDurationSustained");
-                        break;
-                    default:
-                        strReturn = LanguageManager.GetString("String_SpellDurationInstant");
-                        break;
-                }
-
-                return strReturn;
+                case "P":
+                    strReturn = LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
+                    break;
+                case "S":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
+                    break;
+                case "I":
+                    strReturn = LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
+                    break;
+                case "Special":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_None", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -2375,43 +2364,35 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                if (!string.IsNullOrEmpty(_strAltName))
-                    strReturn = _strAltName;
+            string strReturn = _strName;
+            if (!string.IsNullOrEmpty(_strAltName))
+                strReturn = _strAltName;
 
-                if (_blnExtended)
-                    strReturn += ", " + LanguageManager.GetString("String_SpellExtended");
+            if (_blnExtended)
+                strReturn += ", " + LanguageManager.GetString("String_SpellExtended", strLanguage);
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists.
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
+            string strReturn = DisplayNameShort(strLanguage);
+
+            if (_blnLimited)
+                strReturn += " (" + LanguageManager.GetString("String_SpellLimited", strLanguage) + ")";
+            if (_blnAlchemical)
+                strReturn += " (" + LanguageManager.GetString("String_SpellAlchemical", strLanguage) + ")";
+            if (!string.IsNullOrEmpty(_strExtra))
             {
-                LanguageManager.Load(GlobalOptions.Language, this);
-
-                string strReturn = DisplayNameShort;
-
-                if (_blnLimited)
-                    strReturn += " (" + LanguageManager.GetString("String_SpellLimited") + ")";
-                if (_blnAlchemical)
-                    strReturn += " (" + LanguageManager.GetString("String_SpellAlchemical") + ")";
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                }
-                return strReturn;
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
+            return strReturn;
         }
 
         /// <summary>
@@ -2506,7 +2487,7 @@ namespace Chummer
                     strReturn = objSkill.GetDisplayName() + " (" + intPool.ToString() + ")";
                     // Add any Specialization bonus if applicable.
                     if (objSkill.HasSpecialization(_strCategory))
-                        strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization") + ": " + DisplayCategory + " (2)";
+                        strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + ": " + DisplayCategory + " (2)";
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -2800,20 +2781,17 @@ namespace Chummer
         /// <summary>
         /// Stacked Focus Name.
         /// </summary>
-        public string Name
+        public string Name(string strLanguage)
         {
-            get
-            {
-                string strReturn = string.Empty;
-                foreach (Gear objGear in _lstGear)
-                    strReturn += objGear.DisplayName + ", ";
+            string strReturn = string.Empty;
+            foreach (Gear objGear in _lstGear)
+                strReturn += objGear.DisplayName(strLanguage) + ", ";
 
-                // Remove the trailing comma.
-                if (!string.IsNullOrEmpty(strReturn))
-                    strReturn = strReturn.Substring(0, strReturn.Length - 2);
+            // Remove the trailing comma.
+            if (!string.IsNullOrEmpty(strReturn))
+                strReturn = strReturn.Substring(0, strReturn.Length - 2);
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
@@ -2885,13 +2863,11 @@ namespace Chummer
                     _objCachedMyXmlNode = null;
                 }
             }
-
-            LanguageManager.Load(GlobalOptions.Language, null);
-
+            
             if (_objCharacter.SubmersionGrade > 0)
-                objNode.Text = LanguageManager.GetString("Label_Echo") + " " + DisplayName;
+                objNode.Text = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + DisplayName;
             else
-                objNode.Text = LanguageManager.GetString("Label_Metamagic") + " " + DisplayName;
+                objNode.Text = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -2943,7 +2919,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("metamagic");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -3160,7 +3136,7 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
 
-            objNode.Text = LanguageManager.GetString("Label_Art") + " " + DisplayName;
+            objNode.Text = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -3209,7 +3185,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -3405,7 +3381,7 @@ namespace Chummer
                 }
             }
 
-            objNode.Text = LanguageManager.GetString("Label_Enhancement") + " " + DisplayName;
+            objNode.Text = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + DisplayName;
             objNode.Tag = _guiID.ToString();
         }
 
@@ -3454,7 +3430,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("enhancement");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -3705,10 +3681,10 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("complexform");
-            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("duration", _strDuration);
             objWriter.WriteElementString("fv", _strFV);
@@ -3753,24 +3729,21 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
+            string strReturn = _strName;
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    string strExtra = _strExtra;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                        strExtra = LanguageManager.TranslateExtra(_strExtra);
-                    strReturn += " (" + strExtra + ")";
-                }
-                return strReturn;
+            if (!string.IsNullOrEmpty(_strExtra))
+            {
+                string strExtra = _strExtra;
+                if (strLanguage != GlobalOptions.DefaultLanguage)
+                    strExtra = LanguageManager.TranslateExtra(_strExtra, strLanguage);
+                strReturn += " (" + strExtra + ")";
             }
+            return strReturn;
         }
 
         /// <summary>
@@ -3780,8 +3753,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = DisplayNameShort;
-                return strReturn;
+                return DisplayNameShort(GlobalOptions.Language);
             }
         }
 
@@ -3900,7 +3872,7 @@ namespace Chummer
         {
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            _strRequiresProgram = LanguageManager.GetString("String_None");
+            _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
             _boolCanDelete = boolCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -3968,13 +3940,13 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("aiprogram");
-            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None"))
-                objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None"));
+            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None", strLanguageToPrint))
+                objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
@@ -4017,24 +3989,21 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
+            string strReturn = _strName;
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    string strExtra = _strExtra;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                        strExtra = LanguageManager.TranslateExtra(_strExtra);
-                    strReturn += " (" + strExtra + ")";
-                }
-                return strReturn;
+            if (!string.IsNullOrEmpty(_strExtra))
+            {
+                string strExtra = _strExtra;
+                if (strLanguage != GlobalOptions.DefaultLanguage)
+                    strExtra = LanguageManager.TranslateExtra(_strExtra, strLanguage);
+                strReturn += " (" + strExtra + ")";
             }
+            return strReturn;
         }
 
         /// <summary>
@@ -4044,13 +4013,7 @@ namespace Chummer
         {
             get
             {
-                string strReturn = DisplayNameShort;
-
-                if (!string.IsNullOrWhiteSpace(_strExtra))
-                {
-                    strReturn += $" ({LanguageManager.TranslateExtra(_strExtra)})";
-                }
-                return strReturn;
+                return DisplayNameShort(GlobalOptions.Language);
             }
         }
 
@@ -4253,7 +4216,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -4265,7 +4228,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialartadvantages");
             foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
             {
-                objAdvantage.Print(objWriter);
+                objAdvantage.Print(objWriter, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
@@ -4486,7 +4449,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialartadvantage");
             objWriter.WriteElementString("name", DisplayName);
@@ -4642,7 +4605,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialartmaneuver");
             objWriter.WriteElementString("name", DisplayNameShort);
@@ -4867,7 +4830,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("limitmodifier");
             objWriter.WriteElementString("name", DisplayName);
@@ -5152,7 +5115,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", Name);
@@ -5170,7 +5133,7 @@ namespace Chummer
             objWriter.WriteElementString("preferredpayment", PreferredPayment);
             objWriter.WriteElementString("hobbiesvice", HobbiesVice);
             objWriter.WriteElementString("personallife", PersonalLife);
-            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString()));
+            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString(), strLanguageToPrint));
             objWriter.WriteElementString("forceloyalty", ForceLoyalty.ToString());
             objWriter.WriteElementString("blackmail", Blackmail.ToString());
             objWriter.WriteElementString("family", Family.ToString());
@@ -5572,7 +5535,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound").Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_FileNotFound", GlobalOptions.Language).Replace("{0}", FileName), LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             if (!blnError)
@@ -5601,7 +5564,7 @@ namespace Chummer
                 }
                 if (_objLinkedCharacter != null)
                 {
-                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter"))
+                    if (string.IsNullOrEmpty(_strName) && Name != LanguageManager.GetString("String_UnnamedCharacter", GlobalOptions.Language))
                         _strName = Name;
                     if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
                         _strAge = Age;
@@ -5762,7 +5725,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -5848,7 +5811,7 @@ namespace Chummer
             if (_nodBonus != null)
             {
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString(), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -5875,7 +5838,7 @@ namespace Chummer
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
             // Create the TreeNode for the new item.
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
         }
 
@@ -5936,18 +5899,18 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("critterpower");
-            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory);
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", DisplayType);
-            objWriter.WriteElementString("action", DisplayAction);
-            objWriter.WriteElementString("range", DisplayRange);
-            objWriter.WriteElementString("duration", DisplayDuration);
+            objWriter.WriteElementString("type", DisplayType(strLanguageToPrint));
+            objWriter.WriteElementString("action", DisplayAction(strLanguageToPrint));
+            objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
+            objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             if (_objCharacter.Options.PrintNotes)
@@ -6006,43 +5969,30 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                    strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
+            string strReturn = _strName;
 
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    string strExtra = _strExtra;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                        strExtra = LanguageManager.TranslateExtra(_strExtra);
-                    strReturn += " (" + strExtra + ")";
-                }
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                strReturn = MyXmlNode?["translate"]?.InnerText ?? _strName;
 
-                return MyXmlNode?["translate"]?.InnerText ?? _strName;
-            }
+            return strReturn;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                string strReturn = DisplayNameShort;
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    LanguageManager.Load(GlobalOptions.Language, this);
-                    // Attempt to retrieve the CharacterAttribute name.
-                        strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                    }
+            string strReturn = DisplayNameShort(strLanguage);
 
-                return strReturn;
+            if (!string.IsNullOrEmpty(_strExtra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6130,27 +6080,24 @@ namespace Chummer
         /// <summary>
         /// Translated Type.
         /// </summary>
-        public string DisplayType
+        public string DisplayType(string strLanguage)
         {
-            get
+            string strReturn = string.Empty;
+
+            switch (_strType)
             {
-                string strReturn = string.Empty;
-
-                switch (_strType)
-                {
-                    case "M":
-                        strReturn = LanguageManager.GetString("String_SpellTypeMana");
-                        break;
-                    case "P":
-                        strReturn = LanguageManager.GetString("String_SpellTypePhysical");
-                        break;
-                    default:
-                        strReturn = string.Empty;
-                        break;
-                }
-
-                return strReturn;
+                case "M":
+                    strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
+                    break;
+                case "P":
+                    strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_None", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6165,33 +6112,33 @@ namespace Chummer
         /// <summary>
         /// Translated Action.
         /// </summary>
-        public string DisplayAction
+        public string DisplayAction(string strLanguage)
         {
-            get
+            string strReturn = string.Empty;
+
+            switch (_strAction)
             {
-                string strReturn = string.Empty;
-
-                switch (_strAction)
-                {
-                    case "Auto":
-                        strReturn = LanguageManager.GetString("String_ActionAutomatic");
-                        break;
-                    case "Free":
-                        strReturn = LanguageManager.GetString("String_ActionFree");
-                        break;
-                    case "Simple":
-                        strReturn = LanguageManager.GetString("String_ActionSimple");
-                        break;
-                    case "Complex":
-                        strReturn = LanguageManager.GetString("String_ActionComplex");
-                        break;
-                    case "Special":
-                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
-                        break;
-                }
-
-                return strReturn;
+                case "Auto":
+                    strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
+                    break;
+                case "Free":
+                    strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
+                    break;
+                case "Simple":
+                    strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
+                    break;
+                case "Complex":
+                    strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
+                    break;
+                case "Special":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+                    break;
+                default:
+                    strReturn = LanguageManager.GetString("String_None", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6206,21 +6153,19 @@ namespace Chummer
         /// <summary>
         /// Translated Range.
         /// </summary>
-        public string DisplayRange
+        public string DisplayRange(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strRange;
-                strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"));
-                strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial"));
-                strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"));
-                strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"));
-                strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"));
-                strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ")");
-                strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
+            string strReturn = _strRange;
 
-                return strReturn;
-            }
+            strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguage));
+            strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguage));
+            strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage));
+            strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage));
+            strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage));
+            strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ")");
+            strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6235,33 +6180,27 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public string DisplayDuration
+        public string DisplayDuration(string strLanguage)
         {
-            get
+            string strReturn = _strDuration;
+
+            switch (_strDuration)
             {
-                string strReturn;
-
-                switch (_strDuration)
-                {
-                    case "Instant":
-                        strReturn = LanguageManager.GetString("String_SpellDurationInstantLong");
-                        break;
-                    case "Sustained":
-                        strReturn = LanguageManager.GetString("String_SpellDurationSustained");
-                        break;
-                    case "Always":
-                        strReturn = LanguageManager.GetString("String_SpellDurationAlways");
-                        break;
-                    case "Special":
-                        strReturn = LanguageManager.GetString("String_SpellDurationSpecial");
-                        break;
-                    default:
-                        strReturn = _strDuration;
-                        break;
-                }
-
-                return strReturn;
+                case "Instant":
+                    strReturn = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguage);
+                    break;
+                case "Sustained":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
+                    break;
+                case "Always":
+                    strReturn = LanguageManager.GetString("String_SpellDurationAlways", strLanguage);
+                    break;
+                case "Special":
+                    strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+                    break;
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6467,43 +6406,38 @@ namespace Chummer
         /// <summary>
         /// Text to display in the Initiation Grade list.
         /// </summary>
-        public string Text
+        public string Text(string strLanguage)
         {
-            get
+            string strReturn = LanguageManager.GetString("String_Grade", strLanguage) + " " + _intGrade.ToString();
+            if (_blnGroup || _blnOrdeal)
             {
-                LanguageManager.Load(GlobalOptions.Language, this);
-
-                string strReturn = LanguageManager.GetString("String_Grade") + " " + _intGrade.ToString();
-                if (_blnGroup || _blnOrdeal)
+                strReturn += " (";
+                if (_blnGroup)
                 {
-                    strReturn += " (";
-                    if (_blnGroup)
-                    {
-                        if (_blnTechnomancer)
-                            strReturn += LanguageManager.GetString("String_Network");
-                        else
-                            strReturn += LanguageManager.GetString("String_Group");
-                        if (_blnOrdeal || _blnSchooling)
-                            strReturn += ", ";
-                    }
-                    if (_blnOrdeal)
-                    {
-                        if (_blnTechnomancer)
-                            strReturn += LanguageManager.GetString("String_Task");
-                        else
-                            strReturn += LanguageManager.GetString("String_Ordeal");
-                        if (_blnSchooling)
-                            strReturn += ", ";
-                    }
-                    if (_blnSchooling)
-                    {
-                        strReturn += LanguageManager.GetString("String_Schooling");
-                    }
-                    strReturn += ")";
+                    if (_blnTechnomancer)
+                        strReturn += LanguageManager.GetString("String_Network", strLanguage);
+                    else
+                        strReturn += LanguageManager.GetString("String_Group", strLanguage);
+                    if (_blnOrdeal || _blnSchooling)
+                        strReturn += ", ";
                 }
-
-                return strReturn;
+                if (_blnOrdeal)
+                {
+                    if (_blnTechnomancer)
+                        strReturn += LanguageManager.GetString("String_Task", strLanguage);
+                    else
+                        strReturn += LanguageManager.GetString("String_Ordeal", strLanguage);
+                    if (_blnSchooling)
+                        strReturn += ", ";
+                }
+                if (_blnSchooling)
+                {
+                    strReturn += LanguageManager.GetString("String_Schooling", strLanguage);
+                }
+                strReturn += ")";
             }
+
+            return strReturn;
         }
 
         /// <summary>
@@ -6739,13 +6673,10 @@ namespace Chummer
         /// <summary>
         /// Month and Week to display.
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                string strReturn = LanguageManager.GetString("String_WeekDisplay").Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
-                return strReturn;
-            }
+            string strReturn = LanguageManager.GetString("String_WeekDisplay", strLanguage).Replace("{0}", _intYear.ToString()).Replace("{1}", Month.ToString()).Replace("{2}", MonthWeek.ToString());
+            return strReturn;
         }
 
         /// <summary>
@@ -6995,7 +6926,7 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter, int intRating)
+        public void Print(XmlTextWriter objWriter, int intRating, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("mentorspirit");
             objWriter.WriteElementString("name", DisplayName);
@@ -7003,7 +6934,7 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("advantage", Advantage);
             objWriter.WriteElementString("disadvantage", Disadvantage);
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra));
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(_strSource));
             objWriter.WriteElementString("page", Page);
             objWriter.WriteElementString("mentormask", MentorMask.ToString());
@@ -7051,21 +6982,17 @@ namespace Chummer
         /// <summary>
         /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
         /// </summary>
-        public string DisplayAdvantage
+        public string DisplayAdvantage(string strLanguage)
         {
-            get
+            string strReturn = _strAdvantage;
+
+            if (!string.IsNullOrEmpty(_strExtra))
             {
-                string strReturn = _strAdvantage;
-
-                if (!string.IsNullOrEmpty(_strExtra))
-                {
-                    LanguageManager.Load(GlobalOptions.Language, this);
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += " (" + LanguageManager.TranslateExtra(_strExtra) + ")";
-                }
-
-                return strReturn;
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
             }
+
+            return strReturn;
         }
 
         /// <summary>

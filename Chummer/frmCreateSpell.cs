@@ -36,7 +36,7 @@ namespace Chummer
         {
             _objSpell = new Spell(objCharacter);
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("spells.xml");
             MoveControls();
         }
@@ -67,8 +67,8 @@ namespace Chummer
             // Populate the list of Spell Types.
             List<ListItem> lstTypes = new List<ListItem>
             {
-                new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
-                new ListItem("M", LanguageManager.GetString("String_DescMana"))
+                new ListItem("P", LanguageManager.GetString("String_DescPhysical", GlobalOptions.Language)),
+                new ListItem("M", LanguageManager.GetString("String_DescMana", GlobalOptions.Language))
             };
             cboType.ValueMember = "Value";
             cboType.DisplayMember = "Name";
@@ -78,8 +78,8 @@ namespace Chummer
             // Populate the list of Ranges.
             List<ListItem> lstRanges = new List<ListItem>
             {
-                new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
-                new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
+                new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong", GlobalOptions.Language)),
+                new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language))
             };
             cboRange.ValueMember = "Value";
             cboRange.DisplayMember = "Name";
@@ -89,9 +89,9 @@ namespace Chummer
             // Populate the list of Durations.
             List<ListItem> lstDurations = new List<ListItem>
             {
-                new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")),
-                new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
-                new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
+                new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Language)),
+                new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong", GlobalOptions.Language)),
+                new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong", GlobalOptions.Language))
             };
             cboDuration.ValueMember = "Value";
             cboDuration.DisplayMember = "Name";
@@ -440,88 +440,88 @@ namespace Chummer
             {
                 case "Detection":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_DetectionSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_DetectionSpell1", GlobalOptions.Language);
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_DetectionSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_DetectionSpell2", GlobalOptions.Language);
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_DetectionSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_DetectionSpell3", GlobalOptions.Language);
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_DetectionSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_DetectionSpell4", GlobalOptions.Language);
                     chkModifier5.Tag = "+0";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_DetectionSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_DetectionSpell5", GlobalOptions.Language);
                     chkModifier6.Tag = "+0";
-                    chkModifier6.Text = LanguageManager.GetString("Checkbox_DetectionSpell6");
+                    chkModifier6.Text = LanguageManager.GetString("Checkbox_DetectionSpell6", GlobalOptions.Language);
                     chkModifier7.Tag = "+1";
-                    chkModifier7.Text = LanguageManager.GetString("Checkbox_DetectionSpell7");
+                    chkModifier7.Text = LanguageManager.GetString("Checkbox_DetectionSpell7", GlobalOptions.Language);
                     chkModifier8.Tag = "+1";
-                    chkModifier8.Text = LanguageManager.GetString("Checkbox_DetectionSpell8");
+                    chkModifier8.Text = LanguageManager.GetString("Checkbox_DetectionSpell8", GlobalOptions.Language);
                     chkModifier9.Tag = "+2";
-                    chkModifier9.Text = LanguageManager.GetString("Checkbox_DetectionSpell9");
+                    chkModifier9.Text = LanguageManager.GetString("Checkbox_DetectionSpell9", GlobalOptions.Language);
                     chkModifier10.Tag = "+4";
-                    chkModifier10.Text = LanguageManager.GetString("Checkbox_DetectionSpell10");
+                    chkModifier10.Text = LanguageManager.GetString("Checkbox_DetectionSpell10", GlobalOptions.Language);
                     chkModifier11.Tag = "+1";
-                    chkModifier11.Text = LanguageManager.GetString("Checkbox_DetectionSpell11");
+                    chkModifier11.Text = LanguageManager.GetString("Checkbox_DetectionSpell11", GlobalOptions.Language);
                     chkModifier12.Tag = "+2";
-                    chkModifier12.Text = LanguageManager.GetString("Checkbox_DetectionSpell12");
+                    chkModifier12.Text = LanguageManager.GetString("Checkbox_DetectionSpell12", GlobalOptions.Language);
                     chkModifier13.Tag = "+4";
-                    chkModifier13.Text = LanguageManager.GetString("Checkbox_DetectionSpell13");
+                    chkModifier13.Text = LanguageManager.GetString("Checkbox_DetectionSpell13", GlobalOptions.Language);
                     chkModifier14.Tag = "+2";
-                    chkModifier14.Text = LanguageManager.GetString("Checkbox_DetectionSpell14");
+                    chkModifier14.Text = LanguageManager.GetString("Checkbox_DetectionSpell14", GlobalOptions.Language);
                     break;
                 case "Health":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_HealthSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_HealthSpell1", GlobalOptions.Language);
                     chkModifier2.Tag = "+4";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_HealthSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_HealthSpell2", GlobalOptions.Language);
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_HealthSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_HealthSpell3", GlobalOptions.Language);
                     chkModifier4.Tag = "+2";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_HealthSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_HealthSpell4", GlobalOptions.Language);
                     chkModifier5.Tag = "-2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_HealthSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_HealthSpell5", GlobalOptions.Language);
                     break;
                 case "Illusion":
                     chkModifier1.Tag = "-1";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_IllusionSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_IllusionSpell1", GlobalOptions.Language);
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_IllusionSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_IllusionSpell2", GlobalOptions.Language);
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_IllusionSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_IllusionSpell3", GlobalOptions.Language);
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_IllusionSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_IllusionSpell4", GlobalOptions.Language);
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_IllusionSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_IllusionSpell5", GlobalOptions.Language);
                     break;
                 case "Manipulation":
                     chkModifier1.Tag = "-2";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_ManipulationSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_ManipulationSpell1", GlobalOptions.Language);
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_ManipulationSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_ManipulationSpell2", GlobalOptions.Language);
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_ManipulationSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_ManipulationSpell3", GlobalOptions.Language);
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_ManipulationSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_ManipulationSpell4", GlobalOptions.Language);
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_ManipulationSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_ManipulationSpell5", GlobalOptions.Language);
                     chkModifier6.Tag = "+2";
-                    chkModifier6.Text = LanguageManager.GetString("Checkbox_ManipulationSpell6");
+                    chkModifier6.Text = LanguageManager.GetString("Checkbox_ManipulationSpell6", GlobalOptions.Language);
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier6.Top - 1;
                     break;
                 default:
                     // Combat.
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_CombatSpell1");
+                    chkModifier1.Text = LanguageManager.GetString("Checkbox_CombatSpell1", GlobalOptions.Language);
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_CombatSpell2");
+                    chkModifier2.Text = LanguageManager.GetString("Checkbox_CombatSpell2", GlobalOptions.Language);
                     chkModifier3.Tag = "+2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_CombatSpell3");
+                    chkModifier3.Text = LanguageManager.GetString("Checkbox_CombatSpell3", GlobalOptions.Language);
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier3.Top - 1;
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_CombatSpell4");
+                    chkModifier4.Text = LanguageManager.GetString("Checkbox_CombatSpell4", GlobalOptions.Language);
                     chkModifier5.Tag = "-1";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_CombatSpell5");
+                    chkModifier5.Text = LanguageManager.GetString("Checkbox_CombatSpell5", GlobalOptions.Language);
                     break;
             }
 
@@ -609,7 +609,7 @@ namespace Chummer
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = "(" + LanguageManager.GetString("String_SpellDamageValue") + ")";
+                strBase = "(" + LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language) + ")";
             }
             else
             {
@@ -623,8 +623,8 @@ namespace Chummer
             if (intDV == 0)
                 strDV = string.Empty;
             lblDV.Text = (strBase + strDV).Replace('/', '÷');
-            lblDV.Text = lblDV.Text.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"));
-            lblDV.Text = lblDV.Text.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
+            lblDV.Text = lblDV.Text.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", GlobalOptions.Language));
+            lblDV.Text = lblDV.Text.CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language));
 
             return strBase + strDV;
         }
@@ -640,7 +640,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';
-                strMessage += LanguageManager.GetString("Message_SpellName");
+                strMessage += LanguageManager.GetString("Message_SpellName", GlobalOptions.Language);
             }
 
             // Make sure a Restricted value if the field is enabled.
@@ -648,7 +648,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += '\n';
-                strMessage += LanguageManager.GetString("Message_SpellRestricted");
+                strMessage += LanguageManager.GetString("Message_SpellRestricted", GlobalOptions.Language);
             }
 
             // Make sure the Spell has met all of its requirements.
@@ -659,7 +659,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1", GlobalOptions.Language);
                 }
 
                 // Either Physical damage or Stun damage must be selected.
@@ -667,7 +667,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2", GlobalOptions.Language);
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Detection")
@@ -677,7 +677,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1", GlobalOptions.Language);
                 }
 
                 // Either Active or Passive must be selected.
@@ -685,7 +685,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2", GlobalOptions.Language);
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Health")
@@ -699,7 +699,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1", GlobalOptions.Language);
                 }
 
                 // Either Single-Sense or Multi-Sense must be selected.
@@ -707,7 +707,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2", GlobalOptions.Language);
                 }
             }
             else if (cboCategory.SelectedValue.ToString() == "Manipulation")
@@ -717,7 +717,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
+                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1", GlobalOptions.Language);
                 }
 
                 // Either Minor Change or Major Change must be selected.
@@ -725,14 +725,14 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strMessage))
                         strMessage += '\n';
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
+                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2", GlobalOptions.Language);
                 }
             }
 
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                MessageBox.Show(strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(strMessage, LanguageManager.GetString("Title_CreateSpell", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

@@ -47,7 +47,7 @@ namespace Chummer
         public frmSelectQuality(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             MoveControls();
@@ -73,7 +73,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
             }
 
             cboCategory.BeginUpdate();
@@ -94,7 +94,7 @@ namespace Chummer
             if (_objCharacter.MetageneticLimit == 0)
                 chkNotMetagenetic.Checked = true;
 
-            lblBPLabel.Text = LanguageManager.GetString("Label_Karma");
+            lblBPLabel.Text = LanguageManager.GetString("Label_Karma", GlobalOptions.Language);
             _blnLoading = false;
             BuildQualityList();
         }
@@ -159,7 +159,7 @@ namespace Chummer
                 strPage = objXmlQuality["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"]?.InnerText) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -443,7 +443,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
-            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality")))
+            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                 return;
             DialogResult = DialogResult.OK;
         }

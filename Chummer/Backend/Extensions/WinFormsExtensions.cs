@@ -151,7 +151,7 @@ namespace Chummer
             if (treView == null)
                 return;
             TreeNode nodeToAddTo = treView.Nodes[(int)input.Type];
-            string strName = input.DisplayName;
+            string strName = input.DisplayName(GlobalOptions.Language);
             if (!nodeToAddTo.Nodes.ContainsKey(strName))
             {
                 TreeNode newNode = new TreeNode
@@ -179,7 +179,7 @@ namespace Chummer
                 return;
             TreeNode objNode = new TreeNode
             {
-                Text = input.DisplayName,
+                Text = input.DisplayName(GlobalOptions.Language),
                 Tag = input.InternalId,
                 ContextMenuStrip = strip
             };

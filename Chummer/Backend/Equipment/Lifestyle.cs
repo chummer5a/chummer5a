@@ -302,7 +302,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture info that is used for conversion of decimals.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("lifestyle");
             objWriter.WriteElementString("name", Name);
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (var objQuality in _lstLifestyleQualities)
                 {
-                    objQuality.Print(objWriter, objCulture);
+                    objQuality.Print(objWriter, objCulture, strLanguageToPrint);
                 }
             }
             // Retrieve the free Grids for the Advanced Lifestyle if applicable.
@@ -349,7 +349,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (var objQuality in FreeGrids)
                 {
-                    var strThisQuality = objQuality.DisplayName;
+                    var strThisQuality = objQuality.DisplayName(strLanguageToPrint);
                     objWriter.WriteElementString("quality", strThisQuality);
                 }
             }

@@ -40,7 +40,7 @@ namespace Chummer
         {
             _objCharacterXML = objCharacterXML;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -139,7 +139,7 @@ namespace Chummer
             objFile.Close();
 
             SaveFileDialog1.Filter = strExtension.ToUpper() + "|*." + strExtension;
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
+            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml", GlobalOptions.Language);
             SaveFileDialog1.ShowDialog();
             string strSaveFile = SaveFileDialog1.FileName;
 

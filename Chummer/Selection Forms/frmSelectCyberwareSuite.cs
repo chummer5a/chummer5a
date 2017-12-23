@@ -44,19 +44,19 @@ namespace Chummer
         {
             InitializeComponent();
             _objSource = objSource;
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
-                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite", GlobalOptions.Language);
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite", GlobalOptions.Language);
             }
 
             _objCharacter = objCharacter;
-            _objXmlDocument = XmlManager.Load(_strType + ".xml", true);
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", string.Empty, true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -268,7 +268,7 @@ namespace Chummer
             for (int i = 0; i <= intDepth; i++)
                 strSpace += "   ";
                 
-            lblCyberware.Text += strSpace + objCyberware.DisplayName + "\n";
+            lblCyberware.Text += strSpace + objCyberware.DisplayName(GlobalOptions.Language) + "\n";
 
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objPlugin, intDepth + 1);

@@ -56,7 +56,7 @@ namespace Chummer
         {
             Log.Info("frmUpdate");
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _strCurrentVersion = $"{_objCurrentVersion.Major}.{_objCurrentVersion.Minor}.{_objCurrentVersion.Build}";
             _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
@@ -91,7 +91,7 @@ namespace Chummer
             {
                 Log.Info("More than one instance, exiting");
                 if (!_blnSilentMode && !_blnSilentCheck)
-                    MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances"), LanguageManager.GetString("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(LanguageManager.GetString("Message_Update_MultipleInstances", GlobalOptions.Language), LanguageManager.GetString("Title_Update", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Log.Info("frmUpdate_Load");
                 Close();
             }
@@ -144,7 +144,7 @@ namespace Chummer
                 return;
             bool blnChummerVersionGotten = true;
             {
-                LatestVersion = LanguageManager.GetString("String_No_Update_Found");
+                LatestVersion = LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language);
                 string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
                 if (_blnPreferNightly)
                 {
@@ -264,11 +264,11 @@ namespace Chummer
             }
             if (!blnChummerVersionGotten)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 _blnIsConnected = false;
                 e.Cancel = true;
             }
-            else if (LatestVersion != LanguageManager.GetString("String_No_Update_Found"))
+            else if (LatestVersion != LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language))
             {
                 if (File.Exists(_strTempUpdatePath))
                 {
@@ -297,14 +297,14 @@ namespace Chummer
                     }
                     catch (WebException)
                     {
-                        MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         _blnIsConnected = false;
                         e.Cancel = true;
                     }
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     _blnIsConnected = false;
                     e.Cancel = true;
                 }
@@ -376,9 +376,9 @@ namespace Chummer
         {
             string strLatestVersion = LatestVersion.Trim().TrimStart("Nightly-v");
             lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6;
-            if (strLatestVersion == LanguageManager.GetString("String_No_Update_Found").Trim())
+            if (strLatestVersion == LanguageManager.GetString("String_No_Update_Found", GlobalOptions.Language).Trim())
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("Warning_Update_CouldNotConnect");
+                lblUpdaterStatus.Text = LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language);
                 cmdUpdate.Enabled = false;
                 return;
             }
@@ -387,20 +387,20 @@ namespace Chummer
 
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Update_Available").Replace("{0}", strLatestVersion).Replace("{1}", _strCurrentVersion);
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Update_Available", GlobalOptions.Language).Replace("{0}", strLatestVersion).Replace("{1}", _strCurrentVersion);
             }
             else
             {
-                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date").Replace("{0}", _strCurrentVersion).Replace("{1}", LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable")).Replace("{2}", strLatestVersion);
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date", GlobalOptions.Language).Replace("{0}", _strCurrentVersion).Replace("{1}", LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable", GlobalOptions.Language)).Replace("{2}", strLatestVersion);
                 if (intResult < 0)
                 {
-                    cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");
+                    cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date", GlobalOptions.Language);
                     cmdRestart.Enabled = false;
                 }
-                cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
+                cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += " " + LanguageManager.GetString("String_Nightly_Changelog_Warning");
+                lblUpdaterStatus.Text += " " + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)
@@ -453,8 +453,8 @@ namespace Chummer
         private void cmdCleanReinstall_Click(object sender, EventArgs e)
         {
             Log.Info("cmdCleanReinstall_Click");
-            if (MessageBox.Show(LanguageManager.GetString("Message_Updater_CleanReinstallPrompt"),
-                LanguageManager.GetString("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show(LanguageManager.GetString("Message_Updater_CleanReinstallPrompt", GlobalOptions.Language),
+                LanguageManager.GetString("MessageTitle_Updater_CleanReinstallPrompt", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempPath))
             {
@@ -499,17 +499,17 @@ namespace Chummer
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 return false;
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strBackupZipPath));
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strBackupZipPath));
                 return false;
             }
             return true;
@@ -543,19 +543,19 @@ namespace Chummer
                         }
                         catch (IOException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
                         catch (NotSupportedException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + Path.GetFileName(strLoopPath));
+                            MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + Path.GetFileName(strLoopPath));
                             blnDoRestart = false;
                             break;
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                             blnDoRestart = false;
                             break;
                         }
@@ -565,17 +565,17 @@ namespace Chummer
             }
             catch (IOException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
                 blnDoRestart = false;
             }
             catch (NotSupportedException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + "\n\n" + strZipPath);
+                MessageBox.Show(LanguageManager.GetString("Message_File_Cannot_Be_Accessed", GlobalOptions.Language) + "\n\n" + strZipPath);
                 blnDoRestart = false;
             }
             catch (UnauthorizedAccessException)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 blnDoRestart = false;
             }
             if (blnDoRestart)
@@ -625,7 +625,7 @@ namespace Chummer
             catch (WebException)
             {
                 // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
-                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect"), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Warning_Update_CouldNotConnect", GlobalOptions.Language), "Chummer5", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cmdUpdate.Enabled = true;
             }
         }
@@ -647,16 +647,16 @@ namespace Chummer
         private void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted");
-            cmdUpdate.Text = LanguageManager.GetString("Button_Redownload");
+            cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             cmdUpdate.Enabled = true;
-            if (cmdRestart.Text != LanguageManager.GetString("Button_Up_To_Date"))
+            if (cmdRestart.Text != LanguageManager.GetString("Button_Up_To_Date", GlobalOptions.Language))
                 cmdRestart.Enabled = true;
             cmdCleanReinstall.Enabled = true;
             Log.Exit("wc_DownloadExeFileCompleted");
             if (_blnSilentMode)
             {
-                string text = LanguageManager.GetString("Message_Update_CloseForms");
-                string caption = LanguageManager.GetString("Title_Update");
+                string text = LanguageManager.GetString("Message_Update_CloseForms", GlobalOptions.Language);
+                string caption = LanguageManager.GetString("Title_Update", GlobalOptions.Language);
 
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {

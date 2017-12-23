@@ -43,7 +43,7 @@ namespace Chummer
         public frmSelectLifestyleAdvanced(Lifestyle objLifestyle, Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _objLifestyle = objLifestyle;
             MoveControls();
@@ -63,7 +63,7 @@ namespace Chummer
             foreach (TreeNode objNode in treLifestyleQualities.Nodes)
             {
                 if (objNode.Tag != null)
-                    objNode.Text = LanguageManager.GetString(objNode.Tag.ToString());
+                    objNode.Text = LanguageManager.GetString(objNode.Tag.ToString(), GlobalOptions.Language);
             }
 
             // Populate the Advanced Lifestyle ComboBoxes.
@@ -90,7 +90,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.FormattedDisplayName,
+                        Text = objQuality.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes
                     };
@@ -122,7 +122,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.FormattedDisplayName,
+                        Text = objQuality.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes,
                         ForeColor = SystemColors.GrayText
@@ -156,9 +156,9 @@ namespace Chummer
             }
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", (nudComforts.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
-            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
-            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language).Replace("{0}", (nudComforts.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language).Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language).Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
 
             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlAspect?["source"] != null && objXmlAspect["page"] != null)
@@ -173,7 +173,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             AcceptForm();
@@ -342,7 +342,7 @@ namespace Chummer
                             _objCharacter.Pushtext.Push(push);
                         }
                         objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn, objNode);
-                        objNode.Text = objQuality.DisplayName;
+                        objNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                         treLifestyleQualities.Nodes[3].Nodes.Add(objNode);
                         treLifestyleQualities.Nodes[3].Expand();
                         _objLifestyle.FreeGrids.Add(objQuality);
@@ -638,9 +638,9 @@ namespace Chummer
 
             _blnSkipRefresh = false;
             //set the Labels for current/maximum
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language).Replace("{0}", (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language).Replace("{0}", (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language).Replace("{0}", (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
 
             //calculate the total LP
             objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");

@@ -68,68 +68,18 @@ namespace Chummer
             }
         }
 
-        private static string s_StrLanguage = GlobalOptions.DefaultLanguage;
-        private static readonly Dictionary<string, string> s_DictionaryTranslatedStrings = new Dictionary<string, string>();
-        private static readonly XmlDocument s_XmlDataDocument = new XmlDocument();
-
-        #region Constructor
-        static LanguageManager()
+        public class LanguageData
         {
-            if (!Utils.IsRunningInVisualStudio)
-            {
-                XmlDocument objEnglishDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
-                if (File.Exists(strFilePath))
-                {
-                    objEnglishDocument.Load(strFilePath);
-                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
-                    {
-                        string strKey = objNode["key"]?.InnerText;
-                        string strText = objNode["text"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
-                        {
-                            if (s_DictionaryTranslatedStrings.ContainsKey(strKey))
-                                Utils.BreakIfDebug();
-                            else
-                                s_DictionaryTranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
-                        }
-                    }
-                }
-                else
-                    MessageBox.Show("Language strings for the default language (en-us) could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        #endregion
+            public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
+            public XmlDocument DataDocument { get; } = new XmlDocument();
+            public bool IsLoaded { get; private set; } = true;
 
-        #region Properties
-        /// <summary>
-        /// XmlDocument that holds item name translations.
-        /// </summary>
-        public static XmlDocument DataDoc
-        {
-            get
+            public LanguageData(string strLanguage)
             {
-                return s_XmlDataDocument;
-            }
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Load the selected XML file and its associated custom file.
-        /// </summary>
-        /// <param name="strLanguage">Language to Load.</param>
-        /// <param name="objObject">Object to translate after loading the data.</param>
-        public static void Load(string strLanguage, object objObject)
-        {
-            // _strLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-            if (s_StrLanguage != strLanguage && strLanguage != GlobalOptions.DefaultLanguage)
-            {
-                s_StrLanguage = strLanguage;
-                XmlDocument objLanguageDocument = new XmlDocument();
                 string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
+                    XmlDocument objLanguageDocument = new XmlDocument();
                     objLanguageDocument.Load(strFilePath);
                     if (objLanguageDocument != null)
                     {
@@ -141,136 +91,174 @@ namespace Chummer
                             string strText = objNode["text"]?.InnerText;
                             if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                             {
-                                if (s_DictionaryTranslatedStrings.ContainsKey(strKey))
-                                    s_DictionaryTranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                if (TranslatedStrings.ContainsKey(strKey))
+                                    TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
                                 else
-                                    s_DictionaryTranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                    TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
                             }
                         }
                     }
                     else
-                    {
-                        MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                        IsLoaded = false;
                 }
                 else
-                {
-                    MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                    IsLoaded = false;
 
                 // Check to see if the data translation file for the selected language exists.
                 string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
                 if (File.Exists(strDataPath))
                 {
-                    s_XmlDataDocument.Load(strDataPath);
+                    DataDocument.Load(strDataPath);
+                }
+                else
+                    IsLoaded = false;
+            }
+        }
+
+        private static string s_StrDefaultLanguage = GlobalOptions.DefaultLanguage;
+        private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
+        public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages { get => s_DictionaryLanguages; }
+        private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
+
+        #region Constructor
+        static LanguageManager()
+        {
+            if (!Utils.IsRunningInVisualStudio)
+            {
+                XmlDocument objEnglishDocument = new XmlDocument();
+                string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
+                if (File.Exists(strFilePath))
+                {
+                    objEnglishDocument.Load(strFilePath);
+                    foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
+                    {
+                        string strKey = objNode["key"]?.InnerText;
+                        string strText = objNode["text"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                        {
+                            if (s_DictionaryEnglishStrings.ContainsKey(strKey))
+                                Utils.BreakIfDebug();
+                            else
+                                s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                        }
+                    }
+                }
+                else
+                    MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// Translate an object int a specified language.
+        /// </summary>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
+        /// <param name="objObject">Object to translate.</param>
+        public static void Translate(string strIntoLanguage, object objObject)
+        {
+            // s_StrLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
+            if (s_StrDefaultLanguage != strIntoLanguage)
+            {
+                s_StrDefaultLanguage = strIntoLanguage;
+                
+                if (strIntoLanguage != GlobalOptions.DefaultLanguage && !s_DictionaryLanguages.ContainsKey(strIntoLanguage))
+                {
+                    LanguageData objNewLanguage = new LanguageData(strIntoLanguage);
+                    if (!objNewLanguage.IsLoaded)
+                    {
+                        MessageBox.Show("Language with code " + strIntoLanguage + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                        s_DictionaryLanguages.Add(strIntoLanguage, objNewLanguage);
                 }
             }
 
-            // If the object is a Form, call the UpdateForm method to provide its translations.
-            if (objObject is Form objForm)
-                UpdateForm(objForm);
-
-            // If the object is a UserControl, call the UpdateUserControl method to provide its translations.
-            if (objObject is UserControl objUserControl)
-                UpdateUserControl(objUserControl);
+            UpdateControls(objObject as Control, strIntoLanguage);
         }
 
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
         /// <param name="objParent">Control container to translate.</param>
-        private static void UpdateControls(Control objParent)
+        private static void UpdateControls(Control objParent, string strIntoLanguage)
         {
             if (objParent == null)
                 return;
+
+            if (objParent is Form frmForm)
+            {
+                // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
+                // Update the Form itself.
+                string strControlTag = frmForm.Tag?.ToString();
+                if (!string.IsNullOrEmpty(strControlTag))
+                    frmForm.Text = GetString(strControlTag, strIntoLanguage);
+
+                // update any menu strip items that have tags
+                if (frmForm.MainMenuStrip != null)
+                    foreach (ToolStripMenuItem tssItem in frmForm.MainMenuStrip.Items)
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+            }
+
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-
-            foreach (Label lblLabel in objParent.Controls.OfType<Label>())
+            foreach (Control objChild in objParent.Controls)
             {
-                if (!string.IsNullOrEmpty(lblLabel.Tag?.ToString()))
+                if (objChild as Label != null || objChild as Button != null || objChild as CheckBox != null)
                 {
-                    lblLabel.Text = GetString(lblLabel.Tag.ToString());
+                    string strControlTag = objChild.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag))
+                        objChild.Text = GetString(strControlTag, strIntoLanguage);
                 }
-            }
-            foreach (Button cmdButton in objParent.Controls.OfType<Button>())
-            {
-                if (!string.IsNullOrEmpty(cmdButton.Tag?.ToString()))
+                else if (objChild is ToolStrip tssStrip)
                 {
-                    cmdButton.Text = GetString(cmdButton.Tag.ToString());
-                }
-            }
-            foreach (CheckBox chkCheckbox in objParent.Controls.OfType<CheckBox>())
-            {
-                if (!string.IsNullOrEmpty(chkCheckbox.Tag?.ToString()))
-                {
-                    chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
-                }
-            }
-            foreach (ListView lstList in objParent.Controls.OfType<ListView>())
-            {
-                foreach (ColumnHeader objHeader in lstList.Columns)
-                {
-                    if (!string.IsNullOrEmpty(objHeader.Tag?.ToString()))
+                    foreach (ToolStripItem tssItem in tssStrip.Items)
                     {
-                        objHeader.Text = GetString(objHeader.Tag.ToString());
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
                     }
                 }
-            }
-
-            // Run through any Panels on the container.
-            foreach (Panel objPanel in objParent.Controls.OfType<Panel>())
-            {
-                UpdateControls(objPanel);
-            }
-
-            // Run through any Tabs on the container.
-            foreach (TabControl objTabControl in objParent.Controls.OfType<TabControl>())
-            {
-                foreach (TabPage tabPage in objTabControl.TabPages)
+                else if (objChild is ListView lstList)
                 {
-                    if (!string.IsNullOrEmpty(tabPage.Tag?.ToString()))
+                    foreach (ColumnHeader objHeader in lstList.Columns)
                     {
-                        tabPage.Text = GetString(tabPage.Tag.ToString());
+                        string strControlTag = objHeader.Tag?.ToString();
+                        if (!string.IsNullOrEmpty(strControlTag))
+                            objHeader.Text = GetString(strControlTag, strIntoLanguage);
                     }
-
-                    UpdateControls(tabPage);
                 }
-            }
-
-            // Run through everything in any SplitContainers.
-            foreach (SplitContainer objSplitControl in objParent.Controls.OfType<SplitContainer>())
-            {
-                for (int i = 1; i <= 2; i++)
+                else if (objChild is TabControl objTabControl)
                 {
-                    SplitterPanel objSplitPanel;
-                    if (i == 1)
-                        objSplitPanel = objSplitControl.Panel1;
-                    else
-                        objSplitPanel = objSplitControl.Panel2;
-
-                    UpdateControls(objSplitPanel);
-                }
-            }
-
-            // Run through any FlowLayoutPanels on the container.
-            foreach (FlowLayoutPanel objContainer in objParent.Controls.OfType<FlowLayoutPanel>())
-            {
-                UpdateControls(objContainer);
-            }
-
-            foreach (TreeView treTree in objParent.Controls.OfType<TreeView>())
-            {
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Level == 0)
+                    foreach (TabPage tabPage in objTabControl.TabPages)
                     {
-                        if (objNode.Tag != null)
+                        string strControlTag = tabPage.Tag?.ToString();
+                        if (!string.IsNullOrEmpty(strControlTag))
+                            tabPage.Text = GetString(strControlTag, strIntoLanguage);
+
+                        UpdateControls(tabPage, strIntoLanguage);
+                    }
+                }
+                else if (objChild is SplitContainer objSplitControl)
+                {
+                    UpdateControls(objSplitControl.Panel1, strIntoLanguage);
+                    UpdateControls(objSplitControl.Panel2, strIntoLanguage);
+                }
+                else if (objChild as Panel != null)
+                {
+                    UpdateControls(objChild, strIntoLanguage);
+                }
+                else if (objChild is TreeView treTree)
+                {
+                    foreach (TreeNode objNode in treTree.Nodes)
+                    {
+                        if (objNode.Level == 0)
                         {
-                            if (objNode.Tag.ToString().StartsWith("Node_"))
+                            string strControlTag = objNode.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag))
                             {
-                                objNode.Text = GetString(objNode.Tag.ToString());
+                                if (strControlTag.StartsWith("Node_"))
+                                {
+                                    objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                }
                             }
                         }
                     }
@@ -279,65 +267,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Translate the contents of a UserControl.
-        /// </summary>
-        /// <param name="objControl">UserControl to translate.</param>
-        private static void UpdateUserControl(UserControl objControl)
-        {
-            UpdateControls(objControl);
-        }
-
-        /// <summary>
-        /// Translate the contents of a Form.
-        /// </summary>
-        /// <param name="objForm">Form to translate.</param>
-        private static void UpdateForm(Form objForm)
-        {
-            // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-            // Update the Form itself.
-            if (objForm.Tag != null)
-            {
-                objForm.Text = GetString(objForm.Tag.ToString());
-            }
-
-            // update any menu strip items that have tags
-            if (objForm.MainMenuStrip != null)
-            {
-                foreach (ToolStripMenuItem objItem in objForm.MainMenuStrip.Items)
-                    SetMenuItemsRecursively(objItem);
-            }
-
-            // Run through any StatusStrips.
-            foreach (ToolStrip objStrip in objForm.Controls.OfType<ToolStrip>())
-            {
-                foreach (ToolStripStatusLabel tssLabel in objStrip.Items.OfType<ToolStripStatusLabel>())
-                {
-                    if (tssLabel.Tag != null)
-                        tssLabel.Text = GetString(tssLabel.Tag.ToString());
-                }
-            }
-
-            // Handle control over to the method that handles translating all of the other Controls.
-            UpdateControls(objForm);
-        }
-
-        /// <summary>
         /// Loads the proper language from the language file for every menu item recursively
         /// </summary>
-        /// <param name="objItem"></param>
-        private static void SetMenuItemsRecursively(ToolStripDropDownItem objItem)
+        /// <param name="tssItem"></param>
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
         {
-            if (objItem.DropDownItems.Count == 0)
-                return; // we have no more drop down items to pull
-            if (objItem.Tag != null)
-                objItem.Text = GetString(objItem.Tag.ToString());
+            string strControlTag = tssItem.Tag?.ToString();
+            if (!string.IsNullOrEmpty(strControlTag))
+                tssItem.Text = GetString(strControlTag, strIntoLanguage);
 
-            foreach (ToolStripDropDownItem objRecursiveItem in objItem.DropDownItems.OfType<ToolStripDropDownItem>())
-            {
-                SetMenuItemsRecursively(objRecursiveItem);
-                if (objItem.Tag != null)
-                    objItem.Text = GetString(objItem.Tag.ToString());
-            }
+            if (tssItem is ToolStripDropDownItem tssDropDownItem)
+                foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage);
         }
 
         /// <summary>
@@ -345,9 +286,17 @@ namespace Chummer
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
-        public static string GetString(string strKey, bool blnReturnError = true)
+        public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
-            if (s_DictionaryTranslatedStrings.TryGetValue(strKey, out string strReturn))
+            string strReturn;
+            if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            {
+                if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                {
+                    return strReturn;
+                }
+            }
+            if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))
             {
                 return strReturn;
             }
@@ -356,6 +305,20 @@ namespace Chummer
                 return string.Empty;
             }
             return "Error finding string for key - " + strKey;
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        public static XmlDocument GetDataDocument(string strLanguage)
+        {
+            if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            {
+                return objLanguageData.DataDocument;
+            }
+            return null;
         }
 
         /// <summary>
@@ -371,7 +334,7 @@ namespace Chummer
                 {
                     // Load the English version.
                     XmlDocument objEnglishDocument = new XmlDocument();
-                    string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
+                    string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
@@ -480,69 +443,69 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        public static string TranslateExtra(string strExtra)
+        public static string TranslateExtra(string strExtra, string strLanguage)
         {
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (s_StrLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            if (strLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
                 {
                     case "BOD":
-                        strReturn = GetString("String_AttributeBODShort");
+                        strReturn = GetString("String_AttributeBODShort", strLanguage);
                         break;
                     case "AGI":
-                        strReturn = GetString("String_AttributeAGIShort");
+                        strReturn = GetString("String_AttributeAGIShort", strLanguage);
                         break;
                     case "REA":
-                        strReturn = GetString("String_AttributeREAShort");
+                        strReturn = GetString("String_AttributeREAShort", strLanguage);
                         break;
                     case "STR":
-                        strReturn = GetString("String_AttributeSTRShort");
+                        strReturn = GetString("String_AttributeSTRShort", strLanguage);
                         break;
                     case "CHA":
-                        strReturn = GetString("String_AttributeCHAShort");
+                        strReturn = GetString("String_AttributeCHAShort", strLanguage);
                         break;
                     case "INT":
-                        strReturn = GetString("String_AttributeINTShort");
+                        strReturn = GetString("String_AttributeINTShort", strLanguage);
                         break;
                     case "LOG":
-                        strReturn = GetString("String_AttributeLOGShort");
+                        strReturn = GetString("String_AttributeLOGShort", strLanguage);
                         break;
                     case "WIL":
-                        strReturn = GetString("String_AttributeWILShort");
+                        strReturn = GetString("String_AttributeWILShort", strLanguage);
                         break;
                     case "EDG":
-                        strReturn = GetString("String_AttributeEDGShort");
+                        strReturn = GetString("String_AttributeEDGShort", strLanguage);
                         break;
                     case "MAG":
-                        strReturn = GetString("String_AttributeMAGShort");
+                        strReturn = GetString("String_AttributeMAGShort", strLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort") + " (" + GetString("String_DescAdept") + ")";
+                        strReturn = GetString("String_AttributeMAGShort", strLanguage) + " (" + GetString("String_DescAdept", strLanguage) + ")";
                         break;
                     case "RES":
-                        strReturn = GetString("String_AttributeRESShort");
+                        strReturn = GetString("String_AttributeRESShort", strLanguage);
                         break;
                     case "DEP":
-                        strReturn = GetString("String_AttributeDEPShort");
+                        strReturn = GetString("String_AttributeDEPShort", strLanguage);
                         break;
                     case "Physical":
-                        strReturn = GetString("Node_Physical");
+                        strReturn = GetString("Node_Physical", strLanguage);
                         break;
                     case "Mental":
-                        strReturn = GetString("Node_Mental");
+                        strReturn = GetString("Node_Mental", strLanguage);
                         break;
                     case "Social":
-                        strReturn = GetString("Node_Social");
+                        strReturn = GetString("Node_Social", strLanguage);
                         break;
                     case "Left":
-                        strReturn = GetString("String_Improvement_SideLeft");
+                        strReturn = GetString("String_Improvement_SideLeft", strLanguage);
                         break;
                     case "Right":
-                        strReturn = GetString("String_Improvement_SideRight");
+                        strReturn = GetString("String_Improvement_SideRight", strLanguage);
                         break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');

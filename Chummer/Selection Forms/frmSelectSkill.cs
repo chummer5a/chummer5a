@@ -50,7 +50,7 @@ namespace Chummer
         #region Control Events
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.Translate(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _strSourceName = strSource;
             InitializeComponent();
@@ -249,7 +249,7 @@ namespace Chummer
             }
             if (lstSkills.Count <= 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed").Replace("{0}", _strSourceName));
+                MessageBox.Show(LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed", GlobalOptions.Language).Replace("{0}", _strSourceName));
                 DialogResult = DialogResult.Cancel;
                 return;
             }
@@ -342,7 +342,7 @@ namespace Chummer
         {
             set
             {
-                _strForceSkill = value.Replace(", " + LanguageManager.GetString("Label_SelectGear_Hacked"), string.Empty);
+                _strForceSkill = value;
             }
         }
 
