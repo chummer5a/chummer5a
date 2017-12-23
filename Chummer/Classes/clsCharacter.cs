@@ -2031,11 +2031,11 @@ namespace Chummer
             string strMetatype = string.Empty;
             string strMetavariant = string.Empty;
             // Get the name of the Metatype and Metavariant.
-            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml", strLanguageToPrint);
             XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
             if (objMetatypeNode == null)
             {
-                objMetatypeDoc = XmlManager.Load("critters.xml");
+                objMetatypeDoc = XmlManager.Load("critters.xml", strLanguageToPrint);
                 objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + Metatype + "\"]");
             }
 
@@ -2240,7 +2240,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strTraditionName))
             {
                 string strDrainAtt = TraditionDrain;
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml")?.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
+                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
                 if (objXmlTradition != null)
                 {
@@ -2728,9 +2728,6 @@ namespace Chummer
             }
             // </cyberwares>
             objWriter.WriteEndElement();
-
-            // Load the Qualities file so we can figure out whether or not each Quality should be printed.
-            XmlManager.Load("qualities.xml");
 
             // <qualities>
             // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
