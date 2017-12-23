@@ -2339,6 +2339,11 @@ namespace Chummer.Backend.Equipment
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
                 return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
+            catch (InvalidCastException)
+            {
+                // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
+                return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+            }
 
             if (intAP == 0)
                 return "-";

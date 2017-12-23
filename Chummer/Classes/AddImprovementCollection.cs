@@ -282,7 +282,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            SelectedValue = frmPickItem.SelectedItem;
+            SelectedValue = frmPickItem.SelectedName;
             if (_blnConcatSelectedValue)
                 SourceName += " (" + SelectedValue + ")";
 
@@ -1475,7 +1475,7 @@ namespace Chummer.Classes
 
             int count = 0;
             //Black magic LINQ to cast content of list to another type
-            List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList select new ListItem(x.Name, (count++).ToString()));
+            List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList select new ListItem(count++.ToString(), x.Name));
 
             String strPrice = nodSelect?.InnerText ?? string.Empty;
 

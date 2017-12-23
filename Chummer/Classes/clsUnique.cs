@@ -5227,7 +5227,11 @@ namespace Chummer
             }
         }
 
-        public bool IsGroupOrMadeMan => IsGroup || MadeMan;
+        public bool IsGroupOrMadeMan
+        {
+            get => IsGroup || MadeMan;
+            set => IsGroup = value;
+        }
 
         public bool LoyaltyEnabled => !IsGroup && !ForceLoyalty;
 
