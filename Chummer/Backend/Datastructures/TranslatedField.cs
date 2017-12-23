@@ -9,6 +9,20 @@ namespace Chummer.Datastructures
     {
         private readonly Dictionary<T, T> _translate = new Dictionary<T, T>();
         private readonly Dictionary<T, T> _back = new Dictionary<T, T>();
+        private readonly string _strLanguage = string.Empty;
+
+        public TranslatedField(string strLanguage)
+        {
+            _strLanguage = strLanguage;
+        }
+
+        public string Language
+        {
+            get
+            {
+                return _strLanguage;
+            }
+        }
 
         public void Add(T orginal, T translated)
         {
@@ -28,7 +42,7 @@ namespace Chummer.Datastructures
         {
             //TODO: should probably make sure Language don't change before restart
             //I feel that stuff could break in other cases
-            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+            if (_strLanguage == GlobalOptions.DefaultLanguage)
             {
                 return orginal;
             }
@@ -47,7 +61,7 @@ namespace Chummer.Datastructures
 
         public void Write(T value, ref T orginal, ref T translated)
         {
-            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+            if (_strLanguage == GlobalOptions.DefaultLanguage)
             {
                 if (orginal != null && value != null)
                 {

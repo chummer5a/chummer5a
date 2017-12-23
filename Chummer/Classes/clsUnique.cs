@@ -471,9 +471,9 @@ namespace Chummer
                 objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", _intBP.ToString(objCulture));
                 string strQualityType = _objQualityType.ToString();
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
-                    XmlNode objNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
+                    XmlNode objNode = XmlManager.Load("qualities.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
                     strQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
@@ -2858,7 +2858,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("grade", _intGrade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -2957,25 +2957,13 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode != null)
-                    {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -3115,7 +3103,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -3204,25 +3192,13 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode != null)
-                    {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -3353,7 +3329,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -3442,25 +3418,13 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode != null)
-                    {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -3589,7 +3553,7 @@ namespace Chummer
             objWriter.WriteElementString("fv", _strFV);
             objWriter.WriteElementString("target", _strTarget);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -3695,24 +3659,13 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode?["altpage"] != null)
-                    {
-                        strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -3834,7 +3787,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -3875,16 +3828,16 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            string strReturn = _strName;
+            string strReturn = Name;
             // Get the translated name if applicable.
             if (strLanguage != GlobalOptions.DefaultLanguage)
-                strReturn = GetNode()?["translate"]?.InnerText ?? _strName;
+                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
 
-            if (!string.IsNullOrEmpty(_strExtra))
+            if (!string.IsNullOrEmpty(Extra))
             {
-                string strExtra = _strExtra;
+                string strExtra = Extra;
                 if (strLanguage != GlobalOptions.DefaultLanguage)
-                    strExtra = LanguageManager.TranslateExtra(_strExtra, strLanguage);
+                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
                 strReturn += " (" + strExtra + ")";
             }
             return strReturn;
@@ -3940,24 +3893,13 @@ namespace Chummer
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode?["altpage"] != null)
-                    {
-                        strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -3975,10 +3917,20 @@ namespace Chummer
         public bool IsAdvancedProgram => _boolIsAdvancedProgram;
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = XmlManager.Load("programs.xml")?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("programs.xml", strLanguage)?.SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
         #endregion
@@ -4095,7 +4047,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("cost", _intKarmaCost.ToString(objCulture));
             objWriter.WriteStartElement("martialartadvantages");
@@ -4161,25 +4113,13 @@ namespace Chummer
         /// <summary>
         /// Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode != null)
-                    {
-                        if (objNode["altpage"] != null)
-                            strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -4426,7 +4366,7 @@ namespace Chummer
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.Text = DisplayName;
+            objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
         }
 
@@ -4468,10 +4408,10 @@ namespace Chummer
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("martialartmaneuver");
-            objWriter.WriteElementString("name", DisplayNameShort);
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -4501,36 +4441,23 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort
+        public string DisplayNameShort(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strName;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode?["translate"] != null)
-                    {
-                        strReturn = objNode["translate"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
 
-                return strReturn;
-            }
+            return GetNode()?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
+        public string DisplayName(string strLanguage)
         {
-            get
-            {
-                string strReturn = DisplayNameShort;
+            string strReturn = DisplayNameShort(strLanguage);
 
-                return strReturn;
-            }
+            return strReturn;
         }
 
         /// <summary>
@@ -4545,24 +4472,13 @@ namespace Chummer
         /// <summary>
         /// Page.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode?["altpage"] != null)
-                    {
-                        strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -5773,7 +5689,7 @@ namespace Chummer
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteEndElement();
@@ -5877,24 +5793,13 @@ namespace Chummer
         /// <summary>
         /// Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get
-            {
-                string strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    XmlNode objNode = GetNode();
-                    if (objNode?["altpage"] != null)
-                    {
-                        strReturn = objNode["altpage"].InnerText;
-                    }
-                }
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                return _strPage;
 
-                return strReturn;
-            }
-            set => _strPage = value;
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>

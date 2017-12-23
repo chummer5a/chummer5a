@@ -698,7 +698,7 @@ namespace Chummer.Backend.Equipment
             IDictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
             objWriter.WriteStartElement("ranges");
-            objWriter.WriteElementString("name", Range);
+            objWriter.WriteElementString("name", Range(strLanguageToPrint));
             objWriter.WriteElementString("short", dictionaryRanges["short"]);
             objWriter.WriteElementString("medium", dictionaryRanges["medium"]);
             objWriter.WriteElementString("long", dictionaryRanges["long"]);
@@ -708,7 +708,7 @@ namespace Chummer.Backend.Equipment
 
             // <alternateranges>
             objWriter.WriteStartElement("alternateranges");
-            objWriter.WriteElementString("name", AlternateRange);
+            objWriter.WriteElementString("name", AlternateRange(strLanguageToPrint));
             objWriter.WriteElementString("short", dictionaryRanges["alternateshort"]);
             objWriter.WriteElementString("medium", dictionaryRanges["alternatemedium"]);
             objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
@@ -2856,67 +2856,59 @@ namespace Chummer.Backend.Equipment
         public string ModificationSlots => _strWeaponSlots;
 
         /// <summary>
-        /// The string for the Weapon's Range category (setter is English-only).
+        /// The string for the Weapon's Range category
         /// </summary>
-        public string Range
+        public string Range(string strLanguage)
         {
-            get
+            string strRange = _strRange;
+            if (string.IsNullOrWhiteSpace(strRange))
+                strRange = _strCategory;
+            if (!string.IsNullOrWhiteSpace(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                string strRange = _strRange;
-                if (string.IsNullOrWhiteSpace(strRange))
-                    strRange = _strCategory;
-                if (!string.IsNullOrWhiteSpace(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
+                XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
+                XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
+                if (xmlTranslateNode != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
-                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
-                    XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
-                    if (xmlTranslateNode != null)
-                    {
-                        strRange = xmlTranslateNode.InnerText;
-                    }
-                    else
-                    {
-                        objXmlDocument = XmlManager.Load("weapons.xml");
-                        objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
-                        xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
-                        if (xmlTranslateNode != null)
-                            strRange = xmlTranslateNode.InnerText;
-                    }
+                    strRange = xmlTranslateNode.InnerText;
                 }
-                return strRange;
+                else
+                {
+                    objXmlDocument = XmlManager.Load("weapons.xml", strLanguage);
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
+                    xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
+                    if (xmlTranslateNode != null)
+                        strRange = xmlTranslateNode.InnerText;
+                }
             }
-            set => _strRange = value;
+            return strRange;
         }
 
         /// <summary>
         /// The string for the Weapon's Range category (setter is English-only).
         /// </summary>
-        public string AlternateRange
+        public string AlternateRange(string strLanguage)
         {
-            get
+            string strRange = _strAlternateRange.Trim();
+            if (!string.IsNullOrEmpty(strRange) && strLanguage != GlobalOptions.DefaultLanguage)
             {
-                string strRange = _strAlternateRange.Trim();
-                if (!string.IsNullOrEmpty(strRange) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                XmlDocument objXmlDocument = XmlManager.Load("ranges.xml", strLanguage);
+                XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
+                XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
+                if (xmlTranslateNode != null)
                 {
-                    XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
-                    XmlNode objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = \"" + strRange + "\"]");
-                    XmlNode xmlTranslateNode = objXmlCategoryNode?["translate"];
-                    if (xmlTranslateNode != null)
-                    {
-                        strRange = xmlTranslateNode.InnerText;
-                    }
-                    else
-                    {
-                        objXmlDocument = XmlManager.Load("weapons.xml");
-                        objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
-                        xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
-                        if (xmlTranslateNode != null)
-                            strRange = xmlTranslateNode.InnerText;
-                    }
+                    strRange = xmlTranslateNode.InnerText;
                 }
-                return strRange;
+                else
+                {
+                    objXmlDocument = XmlManager.Load("weapons.xml", strLanguage);
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strRange + "\"]");
+                    xmlTranslateNode = objXmlCategoryNode?.Attributes?["translate"];
+                    if (xmlTranslateNode != null)
+                        strRange = xmlTranslateNode.InnerText;
+                }
             }
-            set => _strAlternateRange = value;
+            return strRange;
         }
 
         /// <summary>

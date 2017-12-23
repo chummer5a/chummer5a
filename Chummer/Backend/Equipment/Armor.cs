@@ -810,7 +810,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return _strPage;
 
-            return GetNode()?["altpage"]?.InnerText ?? _strPage;
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>
@@ -1288,7 +1288,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Name;
 
-            return GetNode()?["translate"]?.InnerText ?? Name;
+            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
         /// <summary>
@@ -1323,10 +1323,20 @@ namespace Chummer.Backend.Equipment
         }
 
         private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
         public XmlNode GetNode()
         {
-            if (_objCachedMyXmlNode == null || GlobalOptions.LiveCustomData)
-                _objCachedMyXmlNode = XmlManager.Load("armor.xml")?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("armor.xml", strLanguage)?.SelectSingleNode("/chummer/armors/armor[name = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
             return _objCachedMyXmlNode;
         }
         #endregion

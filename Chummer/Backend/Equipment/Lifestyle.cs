@@ -349,7 +349,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
             objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", Page);
+            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
 
             // Retrieve the Qualities for the Advanced Lifestyle if applicable.
@@ -449,20 +449,17 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Page
         {
-            get
-            {
-                var strReturn = _strPage;
-                // Get the translated name if applicable.
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                {
-                    var objNode = GetNode();
-                    if (objNode?["altpage"] != null)
-                        strReturn = objNode["altpage"].InnerText;
-                }
-
-                return strReturn;
-            }
+            get => _strPage;
             set => _strPage = value;
+        }
+
+        public string DisplayPage(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode()?["altpage"]?.InnerText ?? _strPage;
         }
 
         /// <summary>

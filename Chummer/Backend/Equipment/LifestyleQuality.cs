@@ -286,11 +286,11 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lp", _intLP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             string strLifestyleQualityType = _objLifestyleQualityType.ToString();
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
+                XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml", strLanguageToPrint);
 
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
+                XmlNode objNode = objXmlDocument?.SelectSingleNode("/chummer/categories/category[. = \"" + strLifestyleQualityType + "\"]");
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);

@@ -286,9 +286,9 @@ namespace Chummer
                         return;
                     }
 #if DEBUG
-                    objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture);
+                    objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
 #else
-                    objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo);
+                    objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
 #endif
                 }
 
@@ -650,7 +650,7 @@ namespace Chummer
         {
             try
             {
-                _objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue.ToString());
+                _objPrintCulture = CultureInfo.GetCultureInfo(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
             }
             catch (CultureNotFoundException)
             {
@@ -663,25 +663,28 @@ namespace Chummer
                 strOldSelected = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
             _blnLoading = true;
             PopulateXsltList();
-            string strNewLanguage = cboLanguage.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
-                _strSelectedSheet = strOldSelected;
-            else
-                _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+            string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
+            if (strNewLanguage == strOldSelected)
+            {
+                if (strNewLanguage == GlobalOptions.DefaultLanguage)
+                    _strSelectedSheet = strOldSelected;
+                else
+                    _strSelectedSheet = Path.Combine(strNewLanguage, strOldSelected);
+            }
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
             if (cboXSLT.SelectedIndex == -1)
             {
                 int intNameIndex = -1;
-                if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
+                if (strNewLanguage == GlobalOptions.DefaultLanguage)
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
                 else
-                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                    intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(strNewLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
                 if (intNameIndex != -1)
                     cboXSLT.SelectedIndex = intNameIndex;
                 else if (cboXSLT.Items.Count > 0)
                 {
-                    if (string.IsNullOrEmpty(strNewLanguage) || strNewLanguage == GlobalOptions.DefaultLanguage)
+                    if (strNewLanguage == GlobalOptions.DefaultLanguage)
                         _strSelectedSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
                     else
                         _strSelectedSheet = Path.Combine(strNewLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);

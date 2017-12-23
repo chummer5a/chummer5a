@@ -2014,20 +2014,11 @@ namespace Chummer
         /// <param name="objStream">MemoryStream to use.</param>
         /// <param name="objWriter">XmlTextWriter to write to.</param>
 #if DEBUG
-        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture)
+        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 #else
-        public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
 #endif
         {
-            string strLanguageToPrint = objCulture.TwoLetterISOLanguageName.ToLower() + '-' + (new RegionInfo(objCulture.LCID)).TwoLetterISORegionName.ToLower();
-            if (strLanguageToPrint != GlobalOptions.Language)
-            {
-                if (strLanguageToPrint != GlobalOptions.DefaultLanguage && !LanguageManager.DictionaryLanguages.ContainsKey(strLanguageToPrint))
-                {
-                    strLanguageToPrint = GlobalOptions.Language;
-                }
-            }
-
             string strMetatype = string.Empty;
             string strMetavariant = string.Empty;
             // Get the name of the Metatype and Metavariant.
