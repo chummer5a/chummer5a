@@ -2491,12 +2491,6 @@
           <cyberware>Bone Lacing (Aluminum)</cyberware>
           <cyberware>Bone Lacing (Titanium)</cyberware>
           <bioware>Bone Density Augmentation</bioware>
-          <cyberware>Obvious Full Arm</cyberware>
-          <cyberware>Obvious Lower Arm</cyberware>
-          <cyberware>Obvious Hand</cyberware>
-          <cyberware>SyntheticFull Arm</cyberware>
-          <cyberware>Synthetic Lower Arm</cyberware>
-          <cyberware>Synthetic Hand</cyberware>
         </oneof>
       </forbidden>
       <source>CF</source>
