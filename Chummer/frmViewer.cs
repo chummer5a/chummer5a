@@ -288,7 +288,7 @@ namespace Chummer
 #if DEBUG
                     objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
 #else
-                    objCharacter.PrintToStream(objWriter, GlobalOptions.CultureInfo, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
+                    objCharacter.PrintToStream(objWriter, _objPrintCulture, cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language);
 #endif
                 }
 
