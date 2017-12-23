@@ -13283,14 +13283,14 @@ namespace Chummer
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_LifestyleName", GlobalOptions.Language),
-                DefaultString = objLifestyle.LifestyleName
+                DefaultString = objLifestyle.Name
             };
             frmPickText.ShowDialog(this);
 
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objLifestyle.LifestyleName = frmPickText.SelectedValue;
+            objLifestyle.Name = frmPickText.SelectedValue;
             treLifestyles.SelectedNode.Text = objLifestyle.DisplayName;
 
             IsDirty = true;

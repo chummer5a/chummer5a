@@ -7585,6 +7585,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>String_CannotFindLifestyleQuality</key>
       <text>The quality {0} could not be found. Please select the appropriate quality from the below list.</text>
     </string>
+    <string>
+      <key>String_CannotFindLifestyle</key>
+      <text>The base lifestyle name for lifestyle {0} could not be found. Please select the appropriate name from the below list.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Lifestyle Window -->
     <string>
