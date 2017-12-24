@@ -1491,6 +1491,13 @@ namespace Chummer.Backend.Equipment
                             intUseAGI = _objCharacter.AGI.TotalValue;
                     }
                 }
+                else if (ParentVehicle == null)
+                {
+                    if (intUseSTR == 0)
+                        intUseSTR = _objCharacter.STR.TotalValue;
+                    if (intUseAGI == 0)
+                        intUseAGI = _objCharacter.AGI.TotalValue;
+                }
 
                 if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
@@ -2305,6 +2312,13 @@ namespace Chummer.Backend.Equipment
                             intUseAGIBase = _objCharacter.AGI.TotalBase;
                     }
                 }
+                else if (ParentVehicle == null)
+                {
+                    if (intUseSTR == 0)
+                        intUseSTR = _objCharacter.STR.TotalValue;
+                    if (intUseAGI == 0)
+                        intUseAGI = _objCharacter.AGI.TotalValue;
+                }
 
                 if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
@@ -2540,6 +2554,11 @@ namespace Chummer.Backend.Equipment
                             intUseSTR = _objCharacter.STR.TotalValue;
                     }
                 }
+                else if (ParentVehicle == null)
+                {
+                    if (intUseSTR == 0)
+                        intUseSTR = _objCharacter.STR.TotalValue;
+                }
 
                 if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
@@ -2684,6 +2703,13 @@ namespace Chummer.Backend.Equipment
                             if (intUseAGIBase == 0)
                                 intUseAGIBase = _objCharacter.AGI.TotalBase;
                         }
+                    }
+                    else if (ParentVehicle == null)
+                    {
+                        if (intUseSTR == 0)
+                            intUseSTR = _objCharacter.STR.TotalValue;
+                        if (intUseAGI == 0)
+                            intUseAGI = _objCharacter.AGI.TotalValue;
                     }
 
                     if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
@@ -3019,6 +3045,13 @@ namespace Chummer.Backend.Equipment
                         if (intUseAGI == 0)
                             intUseAGI = _objCharacter.AGI.TotalValue;
                     }
+                }
+                else if (ParentVehicle == null)
+                {
+                    if (intUseSTR == 0)
+                        intUseSTR = _objCharacter.STR.TotalValue;
+                    if (intUseAGI == 0)
+                        intUseAGI = _objCharacter.AGI.TotalValue;
                 }
 
                 if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
