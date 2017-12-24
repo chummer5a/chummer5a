@@ -2464,13 +2464,13 @@ namespace Chummer.Backend.Equipment
                         {
                             lstLoopRCGroup = lstRCDeployGroups;
                         }
-                        while (lstLoopRCGroup.Count < objAccessory.RCGroup - 1)
+                        while (lstLoopRCGroup.Count < objAccessory.RCGroup)
                         {
                             lstLoopRCGroup.Add(new Tuple<string, int>(string.Empty, 0));
                         }
-                        if (lstLoopRCGroup[objAccessory.RCGroup].Item2 < intItemRC)
+                        if (lstLoopRCGroup[objAccessory.RCGroup - 1].Item2 < intItemRC)
                         {
-                            lstLoopRCGroup[objAccessory.RCGroup] = new Tuple<string, int>(objAccessory.DisplayName(GlobalOptions.Language), intItemRC);
+                            lstLoopRCGroup[objAccessory.RCGroup - 1] = new Tuple<string, int>(objAccessory.DisplayName(GlobalOptions.Language), intItemRC);
                         }
                     }
                     else
