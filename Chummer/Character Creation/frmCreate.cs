@@ -4684,7 +4684,7 @@ namespace Chummer
         private void cmdDeleteLifestyle_Click(object sender, EventArgs e)
         {
             // Delete the selected Lifestyle.
-            if (treLifestyles.SelectedNode.Level > 0)
+            if (treLifestyles.SelectedNode != null && treLifestyles.SelectedNode.Level > 0)
             {
                 if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)))
                     return;
