@@ -10867,7 +10867,7 @@
       <damage>7P</damage>
       <ap>-</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>28(c)</ammo>
       <avail>6R</avail>
       <cost>700</cost>
