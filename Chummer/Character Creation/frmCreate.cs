@@ -15950,7 +15950,7 @@ namespace Chummer
             lblVehicleWeaponDamage.Visible = blnDisplay;
             lblVehicleWeaponMode.Visible = blnDisplay;
             lblVehicleWeaponAmmo.Visible = blnDisplay;
-
+            lblVehicleWeaponAccuracy.Visible = blnDisplay;
             lblVehicleWeaponRangeShort.Visible = blnDisplay;
             lblVehicleWeaponRangeMedium.Visible = blnDisplay;
             lblVehicleWeaponRangeLong.Visible = blnDisplay;
@@ -15960,6 +15960,7 @@ namespace Chummer
             lblVehicleWeaponCategoryLabel.Visible = blnDisplay;
             lblVehicleWeaponAPLabel.Visible = blnDisplay;
             lblVehicleWeaponDamageLabel.Visible = blnDisplay;
+            lblVehicleWeaponAccuracyLabel.Visible = blnDisplay;
             lblVehicleWeaponModeLabel.Visible = blnDisplay;
             lblVehicleWeaponAmmoLabel.Visible = blnDisplay;
             lblVehicleWeaponRangeLabel.Visible = blnDisplay;
@@ -16403,6 +16404,7 @@ namespace Chummer
                         lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                         lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -16517,6 +16519,7 @@ namespace Chummer
                         lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                         lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -16819,6 +16822,7 @@ namespace Chummer
                         lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                         lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                         lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                         lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
                         lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
@@ -20006,7 +20010,7 @@ namespace Chummer
             lblVehicleWeaponName.Left = lblVehicleWeaponNameLabel.Left + intWidth + 6;
             lblVehicleWeaponCategory.Left = lblVehicleWeaponCategoryLabel.Left + intWidth + 6;
             lblVehicleWeaponDamage.Left = lblVehicleWeaponDamageLabel.Left + intWidth + 6;
-
+            lblVehicleWeaponAccuracy.Left = lblVehicleWeaponAccuracyLabel.Left + intWidth + 6;
             intWidth = Math.Max(lblVehicleAccelLabel.Width, lblVehicleBodyLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleCostLabel.Width);
             intWidth = Math.Max(intWidth, lblVehicleProtectionLabel.Width);

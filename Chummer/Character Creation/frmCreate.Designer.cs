@@ -437,6 +437,8 @@ namespace Chummer
             this.treMetamagic = new System.Windows.Forms.TreeView();
             this.cmdAddMetamagic = new System.Windows.Forms.Button();
             this.tabCyberware = new System.Windows.Forms.TabPage();
+            this.lblPrototypeTranshumanESS = new System.Windows.Forms.Label();
+            this.lblPrototypeTranshumanESSLabel = new System.Windows.Forms.Label();
             this.chkCyberwareActiveCommlink = new System.Windows.Forms.CheckBox();
             this.chkCyberwareHomeNode = new System.Windows.Forms.CheckBox();
             this.cmdCyberwareChangeMount = new System.Windows.Forms.Button();
@@ -886,8 +888,8 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblPrototypeTranshumanESSLabel = new System.Windows.Forms.Label();
-            this.lblPrototypeTranshumanESS = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -5082,6 +5084,25 @@ namespace Chummer
             this.tabCyberware.Tag = "Tab_Cyberware";
             this.tabCyberware.Text = "Cyberware and Bioware";
             // 
+            // lblPrototypeTranshumanESS
+            // 
+            this.lblPrototypeTranshumanESS.AutoSize = true;
+            this.lblPrototypeTranshumanESS.Location = new System.Drawing.Point(432, 291);
+            this.lblPrototypeTranshumanESS.Name = "lblPrototypeTranshumanESS";
+            this.lblPrototypeTranshumanESS.Size = new System.Drawing.Size(19, 13);
+            this.lblPrototypeTranshumanESS.TabIndex = 249;
+            this.lblPrototypeTranshumanESS.Text = "[0]";
+            // 
+            // lblPrototypeTranshumanESSLabel
+            // 
+            this.lblPrototypeTranshumanESSLabel.AutoSize = true;
+            this.lblPrototypeTranshumanESSLabel.Location = new System.Drawing.Point(309, 291);
+            this.lblPrototypeTranshumanESSLabel.Name = "lblPrototypeTranshumanESSLabel";
+            this.lblPrototypeTranshumanESSLabel.Size = new System.Drawing.Size(117, 13);
+            this.lblPrototypeTranshumanESSLabel.TabIndex = 248;
+            this.lblPrototypeTranshumanESSLabel.Tag = "Label_PrototypeTranshuman";
+            this.lblPrototypeTranshumanESSLabel.Text = "Prototype Transhuman:";
+            // 
             // chkCyberwareActiveCommlink
             // 
             this.chkCyberwareActiveCommlink.AutoSize = true;
@@ -7413,6 +7434,8 @@ namespace Chummer
             // tabVehicles
             // 
             this.tabVehicles.BackColor = System.Drawing.SystemColors.Control;
+            this.tabVehicles.Controls.Add(this.lblVehicleWeaponAccuracyLabel);
+            this.tabVehicles.Controls.Add(this.lblVehicleWeaponAccuracy);
             this.tabVehicles.Controls.Add(this.chkVehicleActiveCommlink);
             this.tabVehicles.Controls.Add(this.cmdVehicleCyberwareChangeMount);
             this.tabVehicles.Controls.Add(this.lblVehicleWeaponDicePool);
@@ -7562,7 +7585,7 @@ namespace Chummer
             // lblVehicleWeaponRangeAlternate
             // 
             this.lblVehicleWeaponRangeAlternate.AutoSize = true;
-            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(416, 395);
+            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(413, 424);
             this.lblVehicleWeaponRangeAlternate.Name = "lblVehicleWeaponRangeAlternate";
             this.lblVehicleWeaponRangeAlternate.Size = new System.Drawing.Size(90, 13);
             this.lblVehicleWeaponRangeAlternate.TabIndex = 238;
@@ -7572,7 +7595,7 @@ namespace Chummer
             // lblVehicleWeaponRangeMain
             // 
             this.lblVehicleWeaponRangeMain.AutoSize = true;
-            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(416, 377);
+            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(413, 406);
             this.lblVehicleWeaponRangeMain.Name = "lblVehicleWeaponRangeMain";
             this.lblVehicleWeaponRangeMain.Size = new System.Drawing.Size(71, 13);
             this.lblVehicleWeaponRangeMain.TabIndex = 237;
@@ -7581,7 +7604,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponAlternateRangeExtreme
             // 
-            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(736, 395);
+            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(733, 424);
             this.lblVehicleWeaponAlternateRangeExtreme.Name = "lblVehicleWeaponAlternateRangeExtreme";
             this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponAlternateRangeExtreme.TabIndex = 236;
@@ -7590,7 +7613,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponAlternateRangeLong
             // 
-            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(666, 395);
+            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(663, 424);
             this.lblVehicleWeaponAlternateRangeLong.Name = "lblVehicleWeaponAlternateRangeLong";
             this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponAlternateRangeLong.TabIndex = 235;
@@ -7599,7 +7622,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponAlternateRangeMedium
             // 
-            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(596, 395);
+            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(593, 424);
             this.lblVehicleWeaponAlternateRangeMedium.Name = "lblVehicleWeaponAlternateRangeMedium";
             this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponAlternateRangeMedium.TabIndex = 234;
@@ -7608,7 +7631,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponAlternateRangeShort
             // 
-            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(526, 395);
+            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(523, 424);
             this.lblVehicleWeaponAlternateRangeShort.Name = "lblVehicleWeaponAlternateRangeShort";
             this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponAlternateRangeShort.TabIndex = 233;
@@ -7855,7 +7878,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponRangeExtreme
             // 
-            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(736, 377);
+            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(733, 406);
             this.lblVehicleWeaponRangeExtreme.Name = "lblVehicleWeaponRangeExtreme";
             this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponRangeExtreme.TabIndex = 150;
@@ -7864,7 +7887,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponRangeLong
             // 
-            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(666, 377);
+            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(663, 406);
             this.lblVehicleWeaponRangeLong.Name = "lblVehicleWeaponRangeLong";
             this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponRangeLong.TabIndex = 149;
@@ -7873,7 +7896,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponRangeMedium
             // 
-            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(596, 377);
+            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(593, 406);
             this.lblVehicleWeaponRangeMedium.Name = "lblVehicleWeaponRangeMedium";
             this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponRangeMedium.TabIndex = 148;
@@ -7882,7 +7905,7 @@ namespace Chummer
             // 
             // lblVehicleWeaponRangeShort
             // 
-            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(526, 377);
+            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(523, 406);
             this.lblVehicleWeaponRangeShort.Name = "lblVehicleWeaponRangeShort";
             this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(64, 13);
             this.lblVehicleWeaponRangeShort.TabIndex = 147;
@@ -7892,7 +7915,7 @@ namespace Chummer
             // lblVehicleWeaponRangeExtremeLabel
             // 
             this.lblVehicleWeaponRangeExtremeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(738, 358);
+            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(735, 387);
             this.lblVehicleWeaponRangeExtremeLabel.Name = "lblVehicleWeaponRangeExtremeLabel";
             this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(63, 13);
             this.lblVehicleWeaponRangeExtremeLabel.TabIndex = 146;
@@ -7903,7 +7926,7 @@ namespace Chummer
             // lblVehicleWeaponRangeLongLabel
             // 
             this.lblVehicleWeaponRangeLongLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(675, 358);
+            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(672, 387);
             this.lblVehicleWeaponRangeLongLabel.Name = "lblVehicleWeaponRangeLongLabel";
             this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(49, 13);
             this.lblVehicleWeaponRangeLongLabel.TabIndex = 145;
@@ -7914,7 +7937,7 @@ namespace Chummer
             // lblVehicleWeaponRangeMediumLabel
             // 
             this.lblVehicleWeaponRangeMediumLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(598, 358);
+            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(595, 387);
             this.lblVehicleWeaponRangeMediumLabel.Name = "lblVehicleWeaponRangeMediumLabel";
             this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(62, 13);
             this.lblVehicleWeaponRangeMediumLabel.TabIndex = 144;
@@ -7925,7 +7948,7 @@ namespace Chummer
             // lblVehicleWeaponRangeShortLabel
             // 
             this.lblVehicleWeaponRangeShortLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(534, 358);
+            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(531, 387);
             this.lblVehicleWeaponRangeShortLabel.Name = "lblVehicleWeaponRangeShortLabel";
             this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(50, 13);
             this.lblVehicleWeaponRangeShortLabel.TabIndex = 143;
@@ -7936,7 +7959,7 @@ namespace Chummer
             // lblVehicleWeaponRangeLabel
             // 
             this.lblVehicleWeaponRangeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(436, 358);
+            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(433, 387);
             this.lblVehicleWeaponRangeLabel.Name = "lblVehicleWeaponRangeLabel";
             this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(39, 13);
             this.lblVehicleWeaponRangeLabel.TabIndex = 142;
@@ -10094,24 +10117,24 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
-            // lblPrototypeTranshumanESSLabel
+            // lblVehicleWeaponAccuracyLabel
             // 
-            this.lblPrototypeTranshumanESSLabel.AutoSize = true;
-            this.lblPrototypeTranshumanESSLabel.Location = new System.Drawing.Point(309, 291);
-            this.lblPrototypeTranshumanESSLabel.Name = "lblPrototypeTranshumanESSLabel";
-            this.lblPrototypeTranshumanESSLabel.Size = new System.Drawing.Size(117, 13);
-            this.lblPrototypeTranshumanESSLabel.TabIndex = 248;
-            this.lblPrototypeTranshumanESSLabel.Tag = "Label_PrototypeTranshuman";
-            this.lblPrototypeTranshumanESSLabel.Text = "Prototype Transhuman:";
+            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(417, 356);
+            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
+            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
+            this.lblVehicleWeaponAccuracyLabel.TabIndex = 243;
+            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
+            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
             // 
-            // lblPrototypeTranshumanESS
+            // lblVehicleWeaponAccuracy
             // 
-            this.lblPrototypeTranshumanESS.AutoSize = true;
-            this.lblPrototypeTranshumanESS.Location = new System.Drawing.Point(432, 291);
-            this.lblPrototypeTranshumanESS.Name = "lblPrototypeTranshumanESS";
-            this.lblPrototypeTranshumanESS.Size = new System.Drawing.Size(19, 13);
-            this.lblPrototypeTranshumanESS.TabIndex = 249;
-            this.lblPrototypeTranshumanESS.Text = "[0]";
+            this.lblVehicleWeaponAccuracy.AutoSize = true;
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(486, 356);
+            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
+            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
+            this.lblVehicleWeaponAccuracy.TabIndex = 244;
+            this.lblVehicleWeaponAccuracy.Text = "[Accuracy]";
             // 
             // frmCreate
             // 
@@ -11082,5 +11105,7 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkCyberwareHomeNode;
         private System.Windows.Forms.Label lblPrototypeTranshumanESSLabel;
         private System.Windows.Forms.Label lblPrototypeTranshumanESS;
+        private System.Windows.Forms.Label lblVehicleWeaponAccuracyLabel;
+        private System.Windows.Forms.Label lblVehicleWeaponAccuracy;
     }
 }

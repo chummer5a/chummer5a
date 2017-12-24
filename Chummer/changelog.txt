@@ -65,6 +65,7 @@ Application Changes:
 - Fixed a crash when adding multiple armor mods a given piece of armor in career mode.
 - Fixed a potential crash when loading lifestyles that didn't have their base lifestyle saved properly.
 - Added preliminary support for being able to switch languages without restarting Chummer. This also feeds into character sheets that would be printed in a language different from the one under which Chummer is running. Note that not all strings properly update yet.
+- Added a basic system for management of vehicle-based firing modes. 
 
 Data Changes:
 
@@ -87,7 +88,12 @@ New Strings:
 - Label_PrototypeTranshuman
 - String_CannotFindLifestyle
 - Tip_Skill_Cannot_Default
-
+- Label_FiringMode
+- Enum_Skill
+- Enum_GunneryCommandDevice
+- Enum_RemoteOperated
+- Enum_DogBrain
+- Enum_ManualOperation
 Build 196
 
 Application Changes:

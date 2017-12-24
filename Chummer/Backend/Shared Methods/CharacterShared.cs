@@ -246,19 +246,19 @@ namespace Chummer
             lblAstral.Text = _objCharacter.LimitAstral.ToString();
         }
 
-        private readonly Lazy<Skill> _gunneryCached;
+        private static Lazy<Skill> _gunneryCached;
 
-        protected int MountedGunManualOperationDicePool(/*Weapon weapon*/)
+        public static int MountedGunManualOperationDicePool(Weapon weapon)
         {
             return _gunneryCached.Value.Pool;
         }
 
-        protected int MountedGunCommandDeviceDicePool(/*Weapon weapon*/)
+        public static int MountedGunCommandDeviceDicePool(Character objCharacter)
         {
-            return _gunneryCached.Value.PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+            return _gunneryCached.Value.PoolOtherAttribute(objCharacter.LOG.TotalValue);
         }
 
-        protected int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
+        public static int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
         {
             int pilotRating = vehicle.Pilot;
 

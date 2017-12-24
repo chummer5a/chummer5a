@@ -4587,6 +4587,32 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>String_WeaponMounts</key>
       <text>Weapon Mounts</text>
     </string>
+    <string>
+      <key>Label_FiringMode</key>
+      <text>Firing Mode:</text>
+    </string>
+    <!-- Region Firing Mode Enums-->
+    <!-- End Region -->
+    <string>
+      <key>Enum_Skill</key>
+      <text>Character Skill</text>
+    </string>
+    <string>
+      <key>Enum_GunneryCommandDevice</key>
+      <text>Command Device - Gunnery[AGI]</text>
+    </string>
+    <string>
+      <key>Enum_RemoteOperated</key>
+      <text>Remote Operation - Gunnery[LOG]</text>
+    </string>
+    <string>
+      <key>Enum_DogBrain</key>
+      <text>Drone-Controlled</text>
+    </string>
+    <string>
+      <key>Enum_ManualOperation</key>
+      <text>Manual Operation</text>
+    </string>
     <!-- End Region-->
     <!-- Region Character Info Tab -->
     <string>

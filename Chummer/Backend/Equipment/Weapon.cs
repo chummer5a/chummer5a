@@ -69,6 +69,10 @@ namespace Chummer.Backend.Equipment
         private string _strParentID = string.Empty;
         private bool _blnAllowAccessory = true;
 
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+        private FiringMode _firingMode;
+
         private readonly Character _objCharacter;
         private string _mount;
         private string _extraMount;
@@ -390,7 +394,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammo", _strAmmo);
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
-
+            objWriter.WriteElementString("firingmode",_firingMode.ToString());
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _ammo)
             {
@@ -513,6 +517,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
+            if (objNode["firingmode"] != null)
+                _firingMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
@@ -795,7 +801,6 @@ namespace Chummer.Backend.Equipment
         /// Children as Underbarrel Weapon.
         /// </summary>
         public IList<Weapon> Children => UnderbarrelWeapons;
-
         /// <summary>
         /// Whether or not this Weapon is an Underbarrel Weapon.
         /// </summary>
@@ -1360,9 +1365,6 @@ namespace Chummer.Backend.Equipment
                 return _sourceID;
             }
         }
-
-        private XmlNode _objCachedMyXmlNode = null;
-        private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
         {
@@ -3237,42 +3239,67 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string GetDicePool(CultureInfo objCulture)
         {
-            Skill objSkill = Skill;
-
+            var extra = string.Empty;
             int intDicePool = 0;
-            int intSmartlinkBonus = 0;
-            int intDicePoolModifier = 0;
-
-            foreach (Gear objGear in _objCharacter.Gear)
+            int intDicePoolModifier = _lstAccessories.Where(a => a.Installed).Sum(a => a.DicePool);
+            switch (_firingMode)
             {
-                if (objGear.InternalId == AmmoLoaded)
-                {
-                    if (objGear.WeaponBonus != null)
+                //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
+                case FiringMode.DogBrain:
+                    intDicePool = CharacterShared.MountedGunDogBrainDicePool(this, ParentVehicle);
+                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
+                        where objGear.InternalId == AmmoLoaded
+                        where objGear.WeaponBonus?["pool"] != null
+                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
+                    break;
+                case FiringMode.GunneryCommandDevice:
+                    intDicePool = CharacterShared.MountedGunCommandDeviceDicePool(_objCharacter);
+                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
+                        where objGear.InternalId == AmmoLoaded
+                        where objGear.WeaponBonus?["pool"] != null
+                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
+                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
+                    break;
+                case FiringMode.RemoteOperated:
+                    intDicePool = CharacterShared.MountedGunCommandDeviceDicePool(_objCharacter);
+                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
+                        where objGear.InternalId == AmmoLoaded
+                        where objGear.WeaponBonus?["pool"] != null
+                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
+                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
+                    break;
+                case FiringMode.ManualOperation:
+                    intDicePool = CharacterShared.MountedGunManualOperationDicePool(this);
+                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
+                        where objGear.InternalId == AmmoLoaded
+                        where objGear.WeaponBonus?["pool"] != null
+                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
+                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
+                    break;
+                case FiringMode.Skill:
+                    Skill objSkill = Skill;
+                    if (objSkill != null)
                     {
-                        if (objGear.WeaponBonus["pool"] != null)
-                            intDicePoolModifier += Convert.ToInt32(objGear.WeaponBonus["pool"].InnerText);
+                        intDicePool = objSkill.Pool;
                     }
-                }
-            }
+                    intDicePoolModifier = (from objGear in _objCharacter.Gear
+                        where objGear.InternalId == AmmoLoaded
+                        where objGear.WeaponBonus?["pool"] != null
+                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
+                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
 
-            if (objSkill != null)
-            {
-                intDicePool = objSkill.Pool;
+                    // If the character has a Specialization, include it in the Dice Pool string.
+                    if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
+                    {
+                        if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
+                            extra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ")";
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category))
-            {
-                intDicePoolModifier += objImprovement.Value;
-            }
-
-            int intRating = intDicePool + intSmartlinkBonus + intDicePoolModifier;
-            string strReturn = intRating.ToString(objCulture);
-
-            // If the character has a Specialization, include it in the Dice Pool string.
-            if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
-            {
-                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
-                    strReturn += " (" + (intRating + 2).ToString(objCulture) + ")";
-            }
+            var intRating = (intDicePool + intDicePoolModifier).ToString(objCulture);
+            var strReturn = $"{intRating}{extra}";
 
             return strReturn;
         }
@@ -3615,6 +3642,48 @@ namespace Chummer.Backend.Equipment
             private set { _extraMount = value; }
         }
 
+        /// <summary>
+        /// Method used to fire the Weapon. If not vehicle mounted, always returns Skill.
+        /// </summary>
+        public FiringMode FireMode
+        {
+            get => ParentVehicle == null ? FiringMode.Skill : _firingMode;
+            set => _firingMode = value;
+        }
+
+        public enum FiringMode
+        {
+            Skill,
+            GunneryCommandDevice,
+            RemoteOperated,
+            DogBrain,
+            ManualOperation
+        }
+
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Convert a string to a Firing Mode.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public FiringMode ConvertToFiringMode(string strValue)
+        {
+            switch (strValue)
+            {
+                case "DogBrain":
+                    return FiringMode.DogBrain;
+                case "GunneryCommandDevice":
+                    return FiringMode.GunneryCommandDevice;
+                case "RemoteOperated":
+                    return FiringMode.RemoteOperated;
+                case "ManualOperation":
+                    return FiringMode.ManualOperation;
+                default:
+                    return FiringMode.Skill;
+            }
+        }
         #endregion
 
         private Clip GetClip(int clip)
