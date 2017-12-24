@@ -994,8 +994,8 @@ namespace Chummer
                 int intResult = verCurrentversion.CompareTo(_verSavedVersion);
                 if (intResult == -1)
                 {
-                    string strMessage = LanguageManager.GetString("Message_OutdatedChummerSave").Replace("{0}", _verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
-                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_IncorrectGameVersion"), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    string strMessage = LanguageManager.GetString("Message_OutdatedChummerSave", GlobalOptions.Language).Replace("{0}", _verSavedVersion.ToString()).Replace("{1}", verCurrentversion.ToString());
+                    DialogResult result = MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_IncorrectGameVersion", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 
                     if (result != DialogResult.Yes)
                     {
