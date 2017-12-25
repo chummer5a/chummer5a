@@ -47,6 +47,11 @@ namespace Chummer.Backend.Equipment
         private bool _blnDowngrade;
         private string _strCapacity = string.Empty;
 
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+        private string _strAmmoReplace;
+        private int _intAmmoBonus;
+
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -87,6 +92,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("pilot", ref _intPilot);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
+            objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
+            objXmlMod.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
             // Add Subsytem information if applicable.
             if (objXmlMod.InnerXml.Contains("subsystems"))
             {
@@ -184,6 +191,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("subsystems", _strSubsystems);
             objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
+            objWriter.WriteElementString("ammobonus", _intAmmoBonus.ToString());
+            objWriter.WriteElementString("ammoreplace", _strAmmoReplace);
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstVehicleWeapons)
                 objWeapon.Save(objWriter);
@@ -242,6 +251,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
             objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
+            objNode.TryGetInt32FieldQuickly("ammobonus", ref _intAmmoBonus);
+            objNode.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objNode.TryGetStringFieldQuickly("subsystems", ref _strSubsystems);
             // Legacy Shims
             if (Name.StartsWith("Gecko Tips (Bod"))
@@ -336,42 +347,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public IList<Weapon> Weapons
-        {
-            get
-            {
-                return _lstVehicleWeapons;
-            }
-        }
+        public IList<Weapon> Weapons => _lstVehicleWeapons;
 
-        public IList<Cyberware> Cyberware
-        {
-            get
-            {
-                return _lstCyberware;
-            }
-        }
+        public IList<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString();
-            }
-        }
+        public string InternalId => _guiID.ToString();
 
         /// <summary>
         /// Name.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return _strName;
-            }
+            get => _strName;
             set
             {
                 if (_strName != value)
@@ -398,14 +388,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Category
         {
-            get
-            {
-                return _strCategory;
-            }
-            set
-            {
-                _strCategory = value;
-            }
+            get => _strCategory;
+            set => _strCategory = value;
         }
 
         /// <summary>
@@ -413,14 +397,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string WeaponMountCategories
         {
-            set
-            {
-                _strWeaponMountCategories = value;
-            }
-            get
-            {
-                return _strWeaponMountCategories; 
-            }
+            set => _strWeaponMountCategories = value;
+            get => _strWeaponMountCategories;
         }
 
         /// <summary>
@@ -428,14 +406,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Limit
         {
-            get
-            {
-                return _strLimit;
-            }
-            set
-            {
-                _strLimit = value;
-            }
+            get => _strLimit;
+            set => _strLimit = value;
         }
 
         /// <summary>
@@ -443,14 +415,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Slots
         {
-            get
-            {
-                return _strSlots;
-            }
-            set
-            {
-                _strSlots = value;
-            }
+            get => _strSlots;
+            set => _strSlots = value;
         }
 
         /// <summary>
@@ -458,10 +424,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get
-            {
-                return _intRating;
-            }
+            get => _intRating;
             set
             {
                 if (_intRating == -1)
@@ -477,14 +440,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string MaxRating
         {
-            get
-            {
-                return _strMaxRating;
-            }
-            set
-            {
-                _strMaxRating = value;
-            }
+            get => _strMaxRating;
+            set => _strMaxRating = value;
         }
 
         /// <summary>
@@ -492,14 +449,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Response
         {
-            get
-            {
-                return _intResponse;
-            }
-            set
-            {
-                _intResponse = value;
-            }
+            get => _intResponse;
+            set => _intResponse = value;
         }
 
         /// <summary>
@@ -507,14 +458,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int System
         {
-            get
-            {
-                return _intSystem;
-            }
-            set
-            {
-                _intSystem = value;
-            }
+            get => _intSystem;
+            set => _intSystem = value;
         }
 
         /// <summary>
@@ -522,14 +467,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Firewall
         {
-            get
-            {
-                return _intFirewall;
-            }
-            set
-            {
-                _intFirewall = value;
-            }
+            get => _intFirewall;
+            set => _intFirewall = value;
         }
 
         /// <summary>
@@ -537,14 +476,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Signal
         {
-            get
-            {
-                return _intSignal;
-            }
-            set
-            {
-                _intSignal = value;
-            }
+            get => _intSignal;
+            set => _intSignal = value;
         }
 
         /// <summary>
@@ -552,14 +485,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Pilot
         {
-            get
-            {
-                return _intPilot;
-            }
-            set
-            {
-                _intPilot = value;
-            }
+            get => _intPilot;
+            set => _intPilot = value;
         }
 
         /// <summary>
@@ -567,14 +494,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                return _strCost;
-            }
-            set
-            {
-                _strCost = value;
-            }
+            get => _strCost;
+            set => _strCost = value;
         }
 
         /// <summary>
@@ -582,14 +503,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal Markup
         {
-            get
-            {
-                return _decMarkup;
-            }
-            set
-            {
-                _decMarkup = value;
-            }
+            get => _decMarkup;
+            set => _decMarkup = value;
         }
 
         /// <summary>
@@ -597,14 +512,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Avail
         {
-            get
-            {
-                return _strAvail;
-            }
-            set
-            {
-                _strAvail = value;
-            }
+            get => _strAvail;
+            set => _strAvail = value;
         }
 
         /// <summary>
@@ -612,14 +521,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -638,14 +541,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode Bonus
         {
-            get
-            {
-                return _nodBonus;
-            }
-            set
-            {
-                _nodBonus = value;
-            }
+            get => _nodBonus;
+            set => _nodBonus = value;
         }
 
         /// <summary>
@@ -653,14 +550,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public XmlNode WirelessBonus
         {
-            get
-            {
-                return _nodWirelessBonus;
-            }
-            set
-            {
-                _nodWirelessBonus = value;
-            }
+            get => _nodWirelessBonus;
+            set => _nodWirelessBonus = value;
         }
 
         /// <summary>
@@ -668,14 +559,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool WirelessOn
         {
-            get
-            {
-                return _blnWirelessOn;
-            }
-            set
-            {
-                _blnWirelessOn = value;
-            }
+            get => _blnWirelessOn;
+            set => _blnWirelessOn = value;
         }
 
         /// <summary>
@@ -683,14 +568,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool IncludedInVehicle
         {
-            get
-            {
-                return _blnIncludeInVehicle;
-            }
-            set
-            {
-                _blnIncludeInVehicle = value;
-            }
+            get => _blnIncludeInVehicle;
+            set => _blnIncludeInVehicle = value;
         }
 
         /// <summary>
@@ -698,14 +577,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool Installed
         {
-            get
-            {
-                return _blnInstalled;
-            }
-            set
-            {
-                _blnInstalled = value;
-            }
+            get => _blnInstalled;
+            set => _blnInstalled = value;
         }
 
         /// <summary>
@@ -713,40 +586,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
         /// Whether or not the Vehicle Mod allows Cyberware Plugins.
         /// </summary>
-        public bool AllowCyberware
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(_strSubsystems);
-            }
-        }
+        public bool AllowCyberware => !string.IsNullOrEmpty(_strSubsystems);
 
         /// <summary>
         /// Allowed Cyberwarre Subsystems.
         /// </summary>
         public string Subsystems
         {
-            get
-            {
-                return _strSubsystems;
-            }
-            set
-            {
-                _strSubsystems = value;
-            }
+            get => _strSubsystems;
+            set => _strSubsystems = value;
         }
 
         /// <summary>
@@ -754,14 +609,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Extra
         {
-            get
-            {
-                return _strExtra;
-            }
-            set
-            {
-                _strExtra = value;
-            }
+            get => _strExtra;
+            set => _strExtra = value;
         }
 
         /// <summary>
@@ -769,40 +618,42 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool DiscountCost
         {
-            get
-            {
-                return _blnDiscountCost;
-            }
-            set
-            {
-                _blnDiscountCost = value;
-            }
+            get => _blnDiscountCost;
+            set => _blnDiscountCost = value;
         }
 
         /// <summary>
         /// Whether or not the Vehicle Mod is a downgrade for drone attributes
         /// </summary>
-        public bool Downgrade
-        {
-            get
-            {
-                return _blnDowngrade;
-            }
-
-        }
+        public bool Downgrade => _blnDowngrade;
 
         /// <summary>
         /// Bonus/Penalty to the parent vehicle that this mod provides.
         /// </summary>
-        public int ConditionMonitor
-        {
-            get { return _intConditionMonitor; }
-        }
+        public int ConditionMonitor => _intConditionMonitor;
 
         /// <summary>
         /// Vehicle that the Mod is attached to. 
         /// </summary>
         public Vehicle Parent { internal get; set; }
+
+        /// <summary>
+        /// Adjust the Weapon's Ammo amount by the specified percent.
+        /// </summary>
+        public int AmmoBonus
+        {
+            get => _intAmmoBonus;
+            set => _intAmmoBonus = value;
+        }
+
+        /// <summary>
+        /// Replace the Weapon's Ammo value with the Weapon Mod's value.
+        /// </summary>
+        public string AmmoReplace
+        {
+            get => _strAmmoReplace;
+            set => _strAmmoReplace = value;
+        }
         #endregion
 
         #region Complex Properties
@@ -1242,9 +1093,6 @@ namespace Chummer.Backend.Equipment
                 return _lstCyberware.Any(objChild => objChild.AllowedSubsystems.Contains("Modular Plug-In"));
             }
         }
-
-        private XmlNode _objCachedMyXmlNode = null;
-        private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
         {

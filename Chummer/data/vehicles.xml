@@ -8509,17 +8509,6 @@
     <!-- End Region -->
     <!-- Region Weapons -->
     <mod>
-      <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
-      <name>Ammo Bin</name>
-      <page>159</page>
-      <source>R5</source>
-      <avail>6R</avail>
-      <category>Weapons</category>
-      <cost>200</cost>
-      <rating>0</rating>
-      <slots>1</slots>
-    </mod>
-    <mod>
       <id>0f5c3fc1-04d6-4cec-9e65-7baca6139e74</id>
       <name>Standard Drone Rack (Micro)</name>
       <page>160</page>
@@ -8716,6 +8705,7 @@
       <cost>750</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <hide />
       <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponmountcategories>
     </mod>
     <mod>
@@ -8728,6 +8718,7 @@
       <cost>1500</cost>
       <rating>0</rating>
       <slots>2</slots>
+      <hide />
       <!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
       <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
     </mod>
@@ -8741,6 +8732,7 @@
       <cost>4000</cost>
       <rating>0</rating>
       <slots>4</slots>
+      <hide />
       <!-- TODO: Add Melee, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
       <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
     </mod>
@@ -8754,6 +8746,7 @@
       <cost>0</cost>
       <rating>0</rating>
       <slots>0</slots>
+      <hide />
     </mod>
     <mod>
       <id>4387e71e-d359-468d-b0c7-d41c9ec6404f</id>
@@ -8765,6 +8758,7 @@
       <cost>1500</cost>
       <rating>0</rating>
       <slots>2</slots>
+      <hide />
     </mod>
     <mod>
       <id>50e84b26-a09c-4f90-8b7a-7974a9133311</id>
@@ -8776,6 +8770,7 @@
       <cost>4000</cost>
       <rating>0</rating>
       <slots>4</slots>
+      <hide />
     </mod>
     <mod>
       <id>ec031f5b-8b2c-4289-a4f0-1cce29f36f3e</id>
@@ -8787,6 +8782,7 @@
       <cost>0</cost>
       <rating>0</rating>
       <slots>0</slots>
+      <hide />
     </mod>
     <mod>
       <id>cfa4d3c5-d970-490a-81fd-5617f96f6556</id>
@@ -8798,6 +8794,7 @@
       <cost>2000</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <hide />
     </mod>
     <mod>
       <id>886f7678-d957-4804-b0fe-01a8506b31ca</id>
@@ -8809,6 +8806,7 @@
       <cost>5000</cost>
       <rating>0</rating>
       <slots>2</slots>
+      <hide />
     </mod>
     <mod>
       <id>1cd32dd6-3520-4ab5-a6d9-d5932f4b2188</id>
@@ -8820,6 +8818,7 @@
       <cost>0</cost>
       <rating>0</rating>
       <slots>0</slots>
+      <hide />
     </mod>
     <mod>
       <id>6e4ec837-1c16-4813-adc1-6009e410737a</id>
@@ -8831,6 +8830,7 @@
       <cost>500</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <hide />
     </mod>
     <mod>
       <id>8d988a80-45df-4656-80a6-98579ce44e43</id>
@@ -8842,6 +8842,7 @@
       <cost>1500</cost>
       <rating>0</rating>
       <slots>2</slots>
+      <hide />
     </mod>
     <mod>
       <id>4b7ce902-a8b2-4bdb-9095-05b029750dde</id>
@@ -9346,6 +9347,7 @@
       <cost>400</cost>
       <rating>0</rating>
       <slots>0</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9364,6 +9366,7 @@
       <cost>800</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9399,6 +9402,7 @@
       <cost>1600</cost>
       <rating>0</rating>
       <slots>2</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9417,6 +9421,7 @@
       <cost>2400</cost>
       <rating>0</rating>
       <slots>3</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9435,6 +9440,7 @@
       <cost>3200</cost>
       <rating>0</rating>
       <slots>4</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9453,6 +9459,7 @@
       <cost>4000</cost>
       <rating>0</rating>
       <slots>5</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9471,6 +9478,7 @@
       <cost>4800</cost>
       <rating>0</rating>
       <slots>6</slots>
+      <hide />
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -9478,74 +9486,6 @@
         </vehicledetails>
       </required>
       <weaponmountcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Sporting Rifles,Sniper Rifles</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>45d84d77-5461-4441-a529-527aba347334</id>
-      <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
-      <page>124</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>All</category>
-      <cost>25</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <optionaldrone />
-      <required>
-        <vehicledetails>
-          <category operation="contains">Drones</category>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
-      <name>Pop-Out Weapon Mount Add-on (Drone)</name>
-      <page>124</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>All</category>
-      <cost>Rating * 100</cost>
-      <rating>7</rating>
-      <slots>1</slots>
-      <optionaldrone />
-      <required>
-        <vehicledetails>
-          <category operation="contains">Drones</category>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
-      <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
-      <page>124</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>All</category>
-      <cost>50</cost>
-      <rating>0</rating>
-      <slots>1</slots>
-      <optionaldrone />
-      <required>
-        <vehicledetails>
-          <category operation="contains">Drones</category>
-        </vehicledetails>
-      </required>
-    </mod>
-    <mod>
-      <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
-      <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
-      <page>124</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>All</category>
-      <cost>500</cost>
-      <rating>0</rating>
-      <slots>2</slots>
-      <optionaldrone />
-      <required>
-        <vehicledetails>
-          <category operation="contains">Drones</category>
-        </vehicledetails>
-      </required>
     </mod>
     <mod>
       <id>b5b9cd7e-dbb3-42e9-abcd-f805f6a4b10e</id>
@@ -10852,6 +10792,93 @@
       <optionaldrone />
       <slots>0</slots>
     </weaponmount>
+    <!-- End Region -->
+    <!-- Region Mods -->
+    <mods>
+      <mod>
+        <id>45d84d77-5461-4441-a529-527aba347334</id>
+        <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
+        <page>124</page>
+        <source>R5</source>
+        <avail>0</avail>
+        <category>All</category>
+        <cost>25</cost>
+        <rating>0</rating>
+        <slots>0</slots>
+        <optionaldrone />
+        <required>
+          <vehicledetails>
+            <category operation="contains">Drones</category>
+          </vehicledetails>
+        </required>
+      </mod>
+      <mod>
+        <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
+        <name>Pop-Out Weapon Mount Add-on (Drone)</name>
+        <page>124</page>
+        <source>R5</source>
+        <avail>0</avail>
+        <category>All</category>
+        <cost>Rating * 100</cost>
+        <rating>7</rating>
+        <slots>1</slots>
+        <optionaldrone />
+        <required>
+          <vehicledetails>
+            <category operation="contains">Drones</category>
+          </vehicledetails>
+        </required>
+      </mod>
+      <mod>
+        <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+        <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+        <page>124</page>
+        <source>R5</source>
+        <avail>0</avail>
+        <category>All</category>
+        <cost>50</cost>
+        <rating>0</rating>
+        <slots>1</slots>
+        <ammoreplace>Weapon * 2</ammoreplace>
+        <optionaldrone />
+        <required>
+          <vehicledetails>
+            <category operation="contains">Drones</category>
+          </vehicledetails>
+        </required>
+      </mod>
+      <mod>
+        <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+        <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+        <page>124</page>
+        <source>R5</source>
+        <avail>0</avail>
+        <category>All</category>
+        <cost>500</cost>
+        <rating>0</rating>
+        <slots>2</slots>
+        <optionaldrone />
+        <ammobonus>100</ammobonus>
+        <ammoreplace>0(belt)</ammoreplace>
+        <required>
+          <vehicledetails>
+            <category operation="contains">Drones</category>
+          </vehicledetails>
+        </required>
+      </mod>
+      <mod>
+        <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
+        <name>Ammo Bin</name>
+        <page>159</page>
+        <source>R5</source>
+        <avail>6R</avail>
+        <category>Weapons</category>
+        <cost>200</cost>
+        <rating>0</rating>
+        <slots>1</slots>
+        <ammobonus>250</ammobonus>
+      </mod>
+    </mods>
     <!-- End Region -->
   </weaponmounts>
 </chummer>

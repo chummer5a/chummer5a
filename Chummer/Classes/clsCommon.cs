@@ -345,7 +345,34 @@ namespace Chummer
             outVehicle = null;
             return null;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strGuid"></param>
+        /// <param name="lstVehicles"></param>
+        /// <returns></returns>
+        internal static VehicleMod FindVehicleWeaponMountMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out WeaponMount outMount)
+        {
+            if (strGuid != Guid.Empty.ToString())
+            {
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    if (string.IsNullOrEmpty(objVehicle.Name)) continue;
+                    foreach (WeaponMount wm in objVehicle.WeaponMounts)
+                    {
+                        foreach (VehicleMod v in wm.Mods)
+                        {
+                            if (v.InternalId != strGuid || string.IsNullOrEmpty(v.Name)) continue;
+                            outMount = wm;
+                            return v;
+                        }
+                    }
+                }
+            }
+            outMount = null;
+            return null;
+        }
+        
         /// <summary>
         /// Locate a Weapon Accessory within the character's Vehicles.
         /// </summary>

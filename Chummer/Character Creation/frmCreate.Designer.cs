@@ -196,6 +196,7 @@ namespace Chummer
             this.tsVehicleMountWeaponAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleMountWeaponAccessory = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleMountWeaponUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsEditWeaponMount = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuFileSave = new System.Windows.Forms.ToolStripMenuItem();
@@ -642,6 +643,8 @@ namespace Chummer
             this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
             this.nudLifestyleMonths = new System.Windows.Forms.NumericUpDown();
             this.tabVehicles = new System.Windows.Forms.TabPage();
+            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
             this.chkVehicleActiveCommlink = new System.Windows.Forms.CheckBox();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.lblVehicleWeaponDicePool = new System.Windows.Forms.Label();
@@ -888,8 +891,6 @@ namespace Chummer
             this.tsAIProgramNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsGearAllowRename = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsGearAllowRenameExtra = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblVehicleWeaponAccuracyLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2310,7 +2311,7 @@ namespace Chummer
             // 
             this.tsVehicleNotes.Image = global::Chummer.Properties.Resources.note_edit;
             this.tsVehicleNotes.Name = "tsVehicleNotes";
-            this.tsVehicleNotes.Size = new System.Drawing.Size(123, 22);
+            this.tsVehicleNotes.Size = new System.Drawing.Size(180, 22);
             this.tsVehicleNotes.Tag = "Menu_Notes";
             this.tsVehicleNotes.Text = "&Notes";
             this.tsVehicleNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
@@ -2319,9 +2320,10 @@ namespace Chummer
             // 
             this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleMountWeapon,
-            this.tsVehicleNotes});
+            this.tsVehicleNotes,
+            this.tsEditWeaponMount});
             this.cmsWeaponMount.Name = "cmsWeapon";
-            this.cmsWeaponMount.Size = new System.Drawing.Size(124, 48);
+            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 92);
             // 
             // tsVehicleMountWeapon
             // 
@@ -2331,7 +2333,7 @@ namespace Chummer
             this.tsVehicleMountWeaponUnderbarrel});
             this.tsVehicleMountWeapon.Image = global::Chummer.Properties.Resources.award_star_add;
             this.tsVehicleMountWeapon.Name = "tsVehicleMountWeapon";
-            this.tsVehicleMountWeapon.Size = new System.Drawing.Size(123, 22);
+            this.tsVehicleMountWeapon.Size = new System.Drawing.Size(180, 22);
             this.tsVehicleMountWeapon.Tag = "Menu_Weapons";
             this.tsVehicleMountWeapon.Text = "&Weapons";
             // 
@@ -2361,6 +2363,15 @@ namespace Chummer
             this.tsVehicleMountWeaponUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
             this.tsVehicleMountWeaponUnderbarrel.Text = "Add Underbarrel Weapon";
             this.tsVehicleMountWeaponUnderbarrel.Click += new System.EventHandler(this.tsVehicleAddUnderbarrelWeapon_Click);
+            // 
+            // tsEditWeaponMount
+            // 
+            this.tsEditWeaponMount.Image = global::Chummer.Properties.Resources.cog_edit;
+            this.tsEditWeaponMount.Name = "tsEditWeaponMount";
+            this.tsEditWeaponMount.Size = new System.Drawing.Size(180, 22);
+            this.tsEditWeaponMount.Tag = "Menu_EditWeaponMount";
+            this.tsEditWeaponMount.Text = "&Edit Weapon Mount";
+            this.tsEditWeaponMount.Click += new System.EventHandler(this.tsEditWeaponMount_Click);
             // 
             // mnuCreateMenu
             // 
@@ -7537,6 +7548,25 @@ namespace Chummer
             this.tabVehicles.Tag = "Tab_Vehicles";
             this.tabVehicles.Text = "Vehicles & Drones";
             // 
+            // lblVehicleWeaponAccuracyLabel
+            // 
+            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(417, 356);
+            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
+            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
+            this.lblVehicleWeaponAccuracyLabel.TabIndex = 243;
+            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
+            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
+            // 
+            // lblVehicleWeaponAccuracy
+            // 
+            this.lblVehicleWeaponAccuracy.AutoSize = true;
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(486, 356);
+            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
+            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
+            this.lblVehicleWeaponAccuracy.TabIndex = 244;
+            this.lblVehicleWeaponAccuracy.Text = "[Accuracy]";
+            // 
             // chkVehicleActiveCommlink
             // 
             this.chkVehicleActiveCommlink.AutoSize = true;
@@ -10117,25 +10147,6 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
-            // lblVehicleWeaponAccuracyLabel
-            // 
-            this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
-            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(417, 356);
-            this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
-            this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
-            this.lblVehicleWeaponAccuracyLabel.TabIndex = 243;
-            this.lblVehicleWeaponAccuracyLabel.Tag = "Label_Accuracy";
-            this.lblVehicleWeaponAccuracyLabel.Text = "Accuracy:";
-            // 
-            // lblVehicleWeaponAccuracy
-            // 
-            this.lblVehicleWeaponAccuracy.AutoSize = true;
-            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(486, 356);
-            this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
-            this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
-            this.lblVehicleWeaponAccuracy.TabIndex = 244;
-            this.lblVehicleWeaponAccuracy.Text = "[Accuracy]";
-            // 
             // frmCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -11107,5 +11118,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblPrototypeTranshumanESS;
         private System.Windows.Forms.Label lblVehicleWeaponAccuracyLabel;
         private System.Windows.Forms.Label lblVehicleWeaponAccuracy;
+        private System.Windows.Forms.ToolStripMenuItem tsEditWeaponMount;
     }
 }

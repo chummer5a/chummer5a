@@ -86,6 +86,7 @@ namespace Chummer
         AddCyberwareGear,
         AddWeaponGear,
         ImproveInitiateGrade,
+        AddVehicleWeaponMountMod,
     }
 
     /// <summary>

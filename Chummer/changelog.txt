@@ -66,6 +66,8 @@ Application Changes:
 - Fixed a potential crash when loading lifestyles that didn't have their base lifestyle saved properly.
 - Added preliminary support for being able to switch languages without restarting Chummer. This also feeds into character sheets that would be printed in a language different from the one under which Chummer is running. Note that not all strings properly update yet.
 - Added a basic system for management of vehicle-based firing modes. 
+- Implemented support for vehicle mods altering the ammo capacity of a given weapon mount's weapon(s). 
+- Added support for editing weapon mounts in create mode, career mode edits will come when I sort out how to manage the Expenses properly. 
 
 Data Changes:
 
@@ -82,6 +84,7 @@ Data Changes:
 - Fixed Karma values for qualities from Dark Terrors.
 - Fixed being unable to buy Flex Hand if the user had bought any cyberarms. Fixes #2202.
 - Removed extra recoil compensation from the Walther P118.
+- Old weapon mount mods have been flagged as hidden.
 
 New Strings:
 
@@ -95,6 +98,8 @@ New Strings:
 - Enum_RemoteOperated
 - Enum_DogBrain
 - Enum_ManualOperation
+- Menu_EditWeaponMount
+
 Build 196
 
 Application Changes:

@@ -390,6 +390,11 @@ namespace Chummer
                 _lstMods = (List<VehicleMod>)value;
             }
         }
+        /// <summary>
+        /// Is the mod being added to a vehicle weapon mount?
+        /// </summary>
+        public bool VehicleMountMods { get; set; }
+
         #endregion
 
         #region Methods
@@ -423,13 +428,15 @@ namespace Chummer
             }
 
             // Retrieve the list of Mods for the selected Category.
-            XmlNodeList objXmlModList = _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strFilter + "]");
-
+            var objXmlModList = VehicleMountMods
+                ? _objXmlDocument.SelectNodes("/chummer/weaponmounts/mods/mod[" + strFilter + "]")
+                : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strFilter + "]");
             // Update the list of Mods based on the selected Category.
             XmlNode objXmlVehicleNode = _objVehicle.GetNode();
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XmlNode objXmlMod in objXmlModList)
             {
+                if (objXmlMod["hide"] != null) continue;
                 if (objXmlMod["forbidden"]?["vehicledetails"] != null)
                 {
                     // Assumes topmost parent is an AND node
@@ -528,7 +535,9 @@ namespace Chummer
             {
                 // Retireve the information for the selected Mod.
                 // Filtering is also done on the Category in case there are non-unique names across categories.
-                XmlNode objXmlMod = _objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + lstMod.SelectedValue + "\"]");
+                XmlNode objXmlMod = VehicleMountMods
+                    ? _objXmlDocument.SelectSingleNode($"/chummer/weaponmounts/mods/mod[id = \"{lstMod.SelectedValue}\"]")
+                    : _objXmlDocument.SelectSingleNode($"/chummer/mods/mod[id = \"{lstMod.SelectedValue}\"]");
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
                 // This is done using XPathExpression.

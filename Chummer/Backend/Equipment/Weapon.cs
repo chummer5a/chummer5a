@@ -53,6 +53,7 @@ namespace Chummer.Backend.Equipment
         private List<WeaponAccessory> _lstAccessories = new List<WeaponAccessory>();
         private List<Weapon> _lstUnderbarrel = new List<Weapon>();
         private Vehicle _objMountedVehicle = null;
+        private WeaponMount _objWeaponMount = null;
         private string _strNotes = string.Empty;
         private string _strUseSkill = string.Empty;
         private string _strLocation = string.Empty;
@@ -1274,6 +1275,21 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// WeaponMount to which the weapon is mounted (if none, returns null)
+        /// </summary>
+        public WeaponMount ParentMount
+        {
+            get => _objWeaponMount;
+            set
+            {
+                _objWeaponMount = value;
+                _objMountedVehicle = _objWeaponMount.Parent;
+                foreach (Weapon objChild in Children)
+                    objChild.ParentMount = value;
+            }
+        }
+
+        /// <summary>
         /// Whether or not the Underbarrel Weapon is part of the parent Weapon by default.
         /// </summary>
         public bool IncludedInWeapon
@@ -1819,7 +1835,18 @@ namespace Chummer.Backend.Equipment
                 }
                 intAmmoBonus += objAccessory.AmmoBonus;
             }
-
+            if (ParentMount != null)
+            {
+                foreach (VehicleMod objMod in ParentMount.Mods)
+                {
+                    if (!string.IsNullOrEmpty(objMod.AmmoReplace))
+                    {
+                        strAmmos = new string[] { objMod.AmmoReplace };
+                        break;
+                    }
+                    intAmmoBonus += objMod.AmmoBonus;
+                }
+            }
             foreach (string strAmmo in strAmmos)
             {
                 string strThisAmmo = strAmmo;
@@ -1834,14 +1861,14 @@ namespace Chummer.Backend.Equipment
                         strPrepend = strThisAmmo.Substring(0, strThisAmmo.IndexOf('x') + 1);
                         strThisAmmo = strThisAmmo.Substring(strThisAmmo.IndexOf('x') + 1, strThisAmmo.Length - (strThisAmmo.IndexOf('x') + 1));
                     }
-
+                    strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => _strAmmo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     try
                     {
                         if (IsUnderbarrelWeapon && !IncludedInWeapon)
-                            intAmmo = Convert.ToInt32(strThisAmmo) / 2;
+                            intAmmo = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strThisAmmo))) / 2;
                         else
-                            intAmmo = Convert.ToInt32(strThisAmmo);
+                            intAmmo = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strThisAmmo)));
                     }
                     catch (FormatException) { }
 
@@ -1860,7 +1887,6 @@ namespace Chummer.Backend.Equipment
                 }
                 strReturn += strThisAmmo + " ";
             }
-
             strReturn = strReturn.Trim();
 
             if (strLanguage != GlobalOptions.DefaultLanguage)

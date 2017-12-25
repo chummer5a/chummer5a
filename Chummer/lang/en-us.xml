@@ -4584,6 +4584,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Add Weapon Mount</text>
     </string>
     <string>
+      <key>Menu_EditWeaponMount</key>
+      <text>&amp;Edit Weapon Mount</text>
+    </string>
+    <string>
       <key>String_WeaponMounts</key>
       <text>Weapon Mounts</text>
     </string>

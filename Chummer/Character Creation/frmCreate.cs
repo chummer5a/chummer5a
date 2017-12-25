@@ -7184,7 +7184,7 @@ namespace Chummer
 
                 List<TreeNode> lstNodes = new List<TreeNode>();
                 Weapon objWeapon = new Weapon(CharacterObject);
-                objWeapon.ParentVehicle = v;
+                objWeapon.ParentMount = wm;
                 objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -21828,6 +21828,22 @@ namespace Chummer
                 blnAddAgain = AddVehicle(objSelectedNode);
             }
             while (blnAddAgain);
+        }
+
+        private void tsEditWeaponMount_Click(object sender, EventArgs e)
+        {
+            WeaponMount wm = CommonFunctions.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles, out Vehicle v);
+            if (wm == null) return;
+            frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(v, CharacterObject, wm);
+            frmPickVehicleMod.ShowDialog(this);
+
+            if (frmPickVehicleMod.DialogResult != DialogResult.Cancel)
+            {
+                if (frmPickVehicleMod.FreeCost)
+                    frmPickVehicleMod.WeaponMount.Cost = "0";
+
+                treVehicles.SelectedNode.ExpandAll();
+            }
         }
     }
 }

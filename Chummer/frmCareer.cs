@@ -11910,6 +11910,16 @@ namespace Chummer
                         }
                     }
                     break;
+                case NuyenExpenseType.AddVehicleWeaponMountMod:
+                {
+                    VehicleMod v = CommonFunctions.FindVehicleWeaponMountMod(strUndoId, CharacterObject.Vehicles, out WeaponMount wm);
+                    if (v != null)
+                    {
+                        wm.Mods.Remove(v);
+                        CommonFunctions.FindNode(strUndoId, treVehicles)?.Remove();
+                    }
+                }
+                    break;
                 case NuyenExpenseType.AddArmor:
                     {
                         // Locate the Armor that was added.

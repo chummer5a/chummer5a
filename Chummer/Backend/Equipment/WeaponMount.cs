@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -20,7 +21,7 @@ namespace Chummer.Backend.Equipment
 		private string _strPage = string.Empty;
 		private bool _blnIncludeInVehicle;
 		private bool _blnInstalled = true;
-		private List<Weapon> _weapons = new List<Weapon>();
+		private IList<Weapon> _weapons = new List<Weapon>();
 		private string _strNotes = string.Empty;
 		private string _strExtra = string.Empty;
 		private string _strWeaponMountCategories = string.Empty;
@@ -32,7 +33,11 @@ namespace Chummer.Backend.Equipment
 		private string _strCost = string.Empty;
         private string _strSourceId = string.Empty;
 
-		private readonly Vehicle _vehicle;
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+        private IList<VehicleMod> _mods = new List<VehicleMod>();
+
+        private readonly Vehicle _vehicle;
 	    private readonly Character _character;
 
 		#region Constructor, Create, Save, Load, and Print Methods
@@ -131,16 +136,22 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
 			objWriter.WriteStartElement("weapons");
-            foreach (Weapon w in _weapons)
+            foreach (var w in _weapons)
             {
                 w.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weaponmountoptions");
-            foreach (WeaponMountOption w in WeaponMountOptions)
+            foreach (var w in WeaponMountOptions)
             {
                 w.Save(objWriter);
             }
+            objWriter.WriteEndElement();
+            objWriter.WriteStartElement("mods");
+		    foreach (var m in Mods)
+		    {
+		        m.Save(objWriter);
+		    }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
 			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
@@ -187,6 +198,7 @@ namespace Chummer.Backend.Equipment
                     Weapon w = new Weapon(_character);
                     w.Load(n, blnCopy);
                     _weapons.Add(w);
+                    w.ParentMount = this;
                 }
             }
             if (objNode["weaponmountoptions"] != null)
@@ -197,6 +209,15 @@ namespace Chummer.Backend.Equipment
                     w.Load(n, _vehicle);
                     WeaponMountOptions.Add(w);
                 }
+            }
+		    if (objNode["mods"] != null)
+		    {
+		        foreach (XmlNode n in objNode.SelectNodes("mods/mod"))
+		        {
+		            var m = new VehicleMod(_character);
+		            m.Load(n);
+		            Mods.Add(m);
+		        }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 			objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
@@ -221,10 +242,14 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("page", Page(strLanguageToPrint));
 			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
-            foreach (Weapon w in _weapons)
-            {
-                w.Print(objWriter, objCulture, strLanguageToPrint);
+		    foreach (var w in _weapons)
+		    {
+		        w.Print(objWriter, objCulture, strLanguageToPrint);
             }
+		    foreach (var m in _mods)
+		    {
+		        m.Print(objWriter, objCulture, strLanguageToPrint);
+		    }
             objWriter.WriteEndElement();
 			if (_character.Options.PrintNotes)
 				objWriter.WriteElementString("notes", _strNotes);
@@ -526,7 +551,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mount consumes, including all child items.
         /// </summary>
-        public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots);
+        public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots) + Mods.Sum(m => m.CalculatedSlots);
 
         /// <summary>
         /// Total Availability.
@@ -618,7 +643,7 @@ namespace Chummer.Backend.Equipment
 			    {
 			        return 0;
 			    }
-				return OwnCost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost);
+				return OwnCost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.Cost) + Mods.Sum(m => m.TotalCost);
 			}
 		}
 
@@ -643,6 +668,12 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        public IList<VehicleMod> Mods
+        {
+            get => _mods;
+            set => _mods = value;
         }
 
         /// <summary>
@@ -670,9 +701,6 @@ namespace Chummer.Backend.Equipment
 
             return strReturn;
         }
-
-        private XmlNode _objCachedMyXmlNode = null;
-        private string _strCachedXmlNodeLanguage = string.Empty;
 
         public XmlNode GetNode()
         {
