@@ -68,6 +68,7 @@ Application Changes:
 - Added a basic system for management of vehicle-based firing modes. 
 - Implemented support for vehicle mods altering the ammo capacity of a given weapon mount's weapon(s). 
 - Added support for editing weapon mounts in create mode, career mode edits will come when I sort out how to manage the Expenses properly. 
+- Fixed behaviour of the selectpowers improvement not working properly for powers that depend on having a Rating.
 
 Data Changes:
 

@@ -3217,7 +3217,7 @@ namespace Chummer.Classes
 
                         // If no, add the power and mark it free or give it free levels
                         Power objNewPower = new Power(_objCharacter);
-                        if (!objNewPower.Create(objXmlPower, 0))
+                        if (!objNewPower.Create(objXmlPower))
                             throw new AbortedException();
 
                         if (!string.IsNullOrEmpty(objNewPower.Extra))
