@@ -2109,7 +2109,9 @@
       <karma>15</karma>
       <doublecareer>False</doublecareer>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <burnoutsway />
+      </bonus>
       <required>
         <oneof>
           <quality>Adept</quality>

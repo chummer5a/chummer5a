@@ -85,6 +85,7 @@ Data Changes:
 - Fixed being unable to buy Flex Hand if the user had bought any cyberarms. Fixes #2202.
 - Removed extra recoil compensation from the Walther P118.
 - Old weapon mount mods have been flagged as hidden.
+- Added missing improvement to the Burnout's Way quality that allowed the replacement Grade to show up properly. Existing characters will need to remove and re-add the quality or use the Reapply Improvements menu.
 
 New Strings:
 
