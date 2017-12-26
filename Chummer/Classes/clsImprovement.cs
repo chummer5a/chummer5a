@@ -1409,7 +1409,7 @@ namespace Chummer
                             {
                                 string strNewName = objCyberware.Grade.Name.Replace("(Adapsin)", string.Empty).Trim();
                                 // Determine which GradeList to use for the Cyberware.
-                                objCyberware.Grade = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter.Options).FirstOrDefault(x => x.Name == strNewName);
+                                objCyberware.Grade = CommonFunctions.GetGradeList(objCyberware.SourceType, objCharacter).FirstOrDefault(x => x.Name == strNewName);
                             }
                         }
                         break;

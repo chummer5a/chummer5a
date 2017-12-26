@@ -86,9 +86,9 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a Grade.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions)
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
         {
-            IList<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacterOptions);
+            IList<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacter);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)
@@ -722,7 +722,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("subsystems", ref _strAllowSubsystems);
             if (objNode["grade"] != null)
-                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
+                _objGrade = ConvertToCyberwareGrade(objNode["grade"].InnerText, _objImprovementSource, _objCharacter);
             objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             if (!objNode.TryGetStringFieldQuickly("extra", ref _strExtra) && _strLocation != "Left" && _strLocation != "Right")
             {
@@ -748,7 +748,7 @@ namespace Chummer.Backend.Equipment
             {
                 _strForceGrade = GetNode()?["forcegrade"].InnerText;
                 if (!string.IsNullOrEmpty(_strForceGrade))
-                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter.Options);
+                    _objGrade = ConvertToCyberwareGrade(_strForceGrade, _objImprovementSource, _objCharacter);
             }
             if (objNode["weaponguid"] != null)
             {
@@ -1584,7 +1584,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrWhiteSpace(_strForceGrade) && _strForceGrade != _objGrade.Name)
                 {
-                    return ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter.Options);
+                    return ConvertToCyberwareGrade(_strForceGrade, Improvement.ImprovementSource.Bioware, _objCharacter);
                 }
                 return _objGrade;
             }

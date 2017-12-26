@@ -10276,7 +10276,7 @@ namespace Chummer
                 if (objCyberware == null)
                     return;
 
-                IList<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, CharacterObject.Options);
+                IList<Grade> objGradeList = CommonFunctions.GetGradeList(objCyberware.SourceType, CharacterObject);
 
                 // Updated the selected Cyberware Grade.
                 objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == cboCyberwareGrade.SelectedValue.ToString());
@@ -17109,7 +17109,7 @@ namespace Chummer
         /// </summary>
         public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
-            IList<Grade> objGradeList = CommonFunctions.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, CharacterObject.Options);
+            IList<Grade> objGradeList = CommonFunctions.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, CharacterObject);
             List<ListItem> lstCyberwareGrades = new List<ListItem>();
 
             foreach (Grade objWareGrade in objGradeList)
@@ -17122,6 +17122,8 @@ namespace Chummer
                 else if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                     continue;
                 else if (!CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
+                    continue;
+                else if (CharacterObject.BannedGrades.Any(s => objWareGrade.Name.Contains(s)))
                     continue;
 
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
@@ -17456,12 +17458,8 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.ParentID)))
             {
-                if (objCyberware.Grade.Name.Contains("Betaware") ||
-                    objCyberware.Grade.Name.Contains("Deltaware") ||
-                    objCyberware.Grade.Name.Contains("Gammaware"))
-                {
+                if (CharacterObject.BannedGrades.Any( s => objCyberware.Grade.Name.Contains(s)))
                     strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
-                }
 
                 string strTotalAvail = objCyberware.TotalAvail(GlobalOptions.Language);
                 if (!strTotalAvail.StartsWith('+'))
@@ -18815,7 +18813,7 @@ namespace Chummer
                     {
                         ContextMenuStrip = cmsCyberware
                     };
-                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject.Options);
+                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject);
 
                     int intRating = 0;
                     if (objXmlCyberware["rating"] != null)
@@ -18915,7 +18913,7 @@ namespace Chummer
                     {
                         ContextMenuStrip = cmsCyberware
                     };
-                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlBioware["grade"].InnerText, Improvement.ImprovementSource.Bioware, CharacterObject.Options);
+                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlBioware["grade"].InnerText, Improvement.ImprovementSource.Bioware, CharacterObject);
 
                     int intRating = 0;
                     if (objXmlBioware["rating"] != null)
@@ -20518,7 +20516,7 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml", string.Empty, true);
 
             XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject.Options);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject);
 
             // Run through each of the items in the Suite and add them to the character.
             foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))

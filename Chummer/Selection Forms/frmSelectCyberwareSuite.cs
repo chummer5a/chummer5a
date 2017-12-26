@@ -88,7 +88,7 @@ namespace Chummer
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            IList<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter.Options);
+            IList<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter);
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
@@ -118,7 +118,7 @@ namespace Chummer
             
             lblCyberware.Text = string.Empty;
 
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter);
             ParseNode(objXmlSuite, objGrade, null);
             foreach (Cyberware objCyberware in _lstCyberware)
             {

@@ -5339,7 +5339,7 @@ namespace Chummer.Classes
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
 
-            Grade g = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter.Options);
+            Grade g = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter);
             objCyberware.Create(node, _objCharacter, g,
                 bonusNode["type"].InnerText == "bioware"
                     ? Improvement.ImprovementSource.Bioware

@@ -27,6 +27,11 @@
       <maxnuyen>10</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
       <default>yes</default>
+      <bannedgrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedgrades>
     </gameplayoption>
     <gameplayoption>
       <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
@@ -35,6 +40,11 @@
       <maxavailability>15</maxavailability>
       <maxnuyen>25</maxnuyen>
       <contactmultiplier>6</contactmultiplier>
+      <bannedgrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedgrades>
     </gameplayoption>
     <gameplayoption>
       <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
@@ -43,6 +53,11 @@
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
+      <bannedgrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedgrades>
     </gameplayoption>
     <gameplayoption>
       <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
@@ -51,6 +66,11 @@
       <maxavailability>10</maxavailability>
       <maxnuyen>5</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
+      <bannedgrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedgrades>
     </gameplayoption>
   </gameplayoptions>
 </chummer>

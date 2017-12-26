@@ -483,6 +483,14 @@ namespace Chummer
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
 
+            // <bannedgrades >
+            objWriter.WriteStartElement("bannedgrades");
+            foreach (string g in BannedGrades)
+            {
+                objWriter.WriteElementString("grade", g);
+            }
+            // </bannedgrades>
+            objWriter.WriteEndElement();
 
             // <nuyenbp />
             objWriter.WriteElementString("nuyenbp", _decNuyenBP.ToString(GlobalOptions.InvariantCultureInfo));
@@ -1128,6 +1136,18 @@ namespace Chummer
                 foreach (XmlNode objXmlSkillName in objXmlPrioritySkillsList)
                 {
                     _lstPrioritySkills.Add(objXmlSkillName.InnerText);
+                }
+            }
+            if (objXmlCharacter["bannedgrades"] != null)
+            {
+                BannedGrades.Clear();
+                XmlNodeList gradeList = objXmlCharacter.SelectNodes("bannedgrades/grade");
+                if (gradeList != null)
+                {
+                    foreach (XmlNode g in gradeList)
+                    {
+                        BannedGrades.Add(g.InnerText);
+                    }
                 }
             }
             string strSkill1 = string.Empty;
@@ -8556,6 +8576,11 @@ namespace Chummer
                 return Options.MysaddPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
             }
         }
+
+        /// <summary>
+        /// Blocked grades of cyber/bioware in Create mode. 
+        /// </summary>
+        public List<string> BannedGrades { get; set; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 

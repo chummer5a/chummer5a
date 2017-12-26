@@ -92,7 +92,7 @@ namespace Chummer
                     break;
             }
 
-            _objGradeList = (List<Grade>)CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter.Options);
+            _objGradeList = (List<Grade>)CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -1152,20 +1152,21 @@ namespace Chummer
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
                 _lstGrade.Clear();
-                foreach (Grade objGrade in _objGradeList)
+                foreach (Grade objWareGrade in _objGradeList)
                 {
-                    if (objGrade.Name == "None" && (string.IsNullOrEmpty(_strForceGrade) || _strForceGrade != "None"))
+                    if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                         continue;
-                    if (_objCharacter.Improvements.Any(x => ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode == Mode.Cyberware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
-                            && objGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                    if (_objCharacter.Improvements.Any(x => (WindowMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade || WindowMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)
+                                                                   && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                         continue;
-                    if ((!_blnIgnoreSecondHand || !objGrade.SecondHand) &&
-                        (_objCharacter.BurnoutEnabled || !objGrade.Burnout) &&
-                        (!_objCharacter.BurnoutEnabled || objGrade.Name != "Standard") &&
-                        (_objCharacter.AdapsinEnabled || !objGrade.Adapsin))
-                    {
-                        _lstGrade.Add(new ListItem(objGrade.Name, objGrade.DisplayName(GlobalOptions.Language)));
-                    }
+                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                        continue;
+                    if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
+                        continue;
+                    if (!_objCharacter.Created && _objCharacter.BannedGrades.Any(s => objWareGrade.Name.Contains(s)))
+                        continue;
+
+                    _lstGrade.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
                 }
                 cboGrade.BeginUpdate();
                 bool blnOldEnabled = cboGrade.Enabled;

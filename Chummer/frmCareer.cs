@@ -4340,7 +4340,7 @@ namespace Chummer
                 objHole = new Cyberware(CharacterObject);
                 TreeNode treNode = new TreeNode();
 
-                objHole.Create(xmlEssHole, CharacterObject, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, CharacterObject.Options).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
+                objHole.Create(xmlEssHole, CharacterObject, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, CharacterObject).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
                 treCyberware.Nodes.Add(treNode);
                 CharacterObject.Cyberware.Add(objHole);
             }
@@ -24017,7 +24017,7 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load(strType + ".xml");
 
             XmlNode objXmlSuite = objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = \"" + frmPickCyberwareSuite.SelectedSuite + "\"]");
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject.Options);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlSuite["grade"].InnerText, objSource, CharacterObject);
 
             // Run through each of the items in the Suite and add them to the character.
             foreach (XmlNode objXmlItem in objXmlSuite.SelectNodes(strType + "s/" + strType))

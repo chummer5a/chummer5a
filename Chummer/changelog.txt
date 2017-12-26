@@ -69,6 +69,8 @@ Application Changes:
 - Implemented support for vehicle mods altering the ammo capacity of a given weapon mount's weapon(s). 
 - Added support for editing weapon mounts in create mode, career mode edits will come when I sort out how to manage the Expenses properly. 
 - Fixed behaviour of the selectpowers improvement not working properly for powers that depend on having a Rating.
+- Various build methods can now ban specific grades of 'ware instead of relying on a blanket ban of Betaware, Deltaware and Gammaware at character creation. Custom and override gameplayoptions.xml files will need to be updated manually to accommodate this change.
+- Banned grades are now not shown while in create mode. Optional rules to override this behaviour if the character has Restricted Gear or under other specific circumstances will come in a later build as part of #1089
 
 Data Changes:
 
@@ -87,6 +89,7 @@ Data Changes:
 - Removed extra recoil compensation from the Walther P118.
 - Old weapon mount mods have been flagged as hidden.
 - Added missing improvement to the Burnout's Way quality that allowed the replacement Grade to show up properly. Existing characters will need to remove and re-add the quality or use the Reapply Improvements menu.
+- Added default banned grades to the default gameplayoptions.xml entries. 
 
 New Strings:
 

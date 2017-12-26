@@ -2868,19 +2868,22 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public static IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, CharacterOptions objCharacterOptions = null)
+        public static IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, Character objChar = null)
         {
             List<Grade> lstGrades = new List<Grade>();
             string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";
             XmlDocument objXMlDocument = XmlManager.Load(strXmlFile);
 
             string strBookFilter = string.Empty;
-            if (objCharacterOptions != null)
-                strBookFilter = "[(" + objCharacterOptions.BookXPath() + ")]";
+            if (objChar.Options != null)
+                strBookFilter = "[(" + objChar.Options.BookXPath() + ")]";
             foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
             {
+                
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
+                if (!objChar.IgnoreRules && !objChar.Created && objChar.BannedGrades.Any(s => objGrade.Name.Contains(s)))
+                    continue;
                 lstGrades.Add(objGrade);
             }
 
