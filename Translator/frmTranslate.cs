@@ -193,7 +193,7 @@ namespace Translator
             {
                 XmlElement element = xmlNodeLocal["translate"];
                 if (element != null) element.InnerText = strTranslated;
-                XmlElement xmlElement = xmlNodeLocal["page"];
+                XmlElement xmlElement = xmlNodeLocal["altpage"];
                 if (xmlElement != null) xmlElement.InnerText = strPage;
 
                 XmlAttribute itemOf;
@@ -461,7 +461,7 @@ namespace Translator
                     else
                     {
                         strName = xmlChildNameNode.InnerText;
-                        strPage = xmlChildNode["page"]?.InnerText ?? string.Empty;
+                        strPage = xmlChildNode["altpage"]?.InnerText ?? string.Empty;
                         XmlNode xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
                         strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                         strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;

@@ -72,6 +72,8 @@ Application Changes:
 - Various build methods can now ban specific grades of 'ware instead of relying on a blanket ban of Betaware, Deltaware and Gammaware at character creation. Custom and override gameplayoptions.xml files will need to be updated manually to accommodate this change.
 - Banned grades are now not shown while in create mode. Optional rules to override this behaviour if the character has Restricted Gear or under other specific circumstances will come in a later build as part of #1089.
 - Fixed a bug where selected category and selected grade were not saved in the cyberware and bioware selection screens.
+- Fixed a bug where the Translator tool was saving page numbers in an incorrectly named node. Existing translations will automatically get their page number nodes renamed if they are rebuilt.
+- Fixed an issue with the Translator tool incorrectly saving gameplay options as part of the entries for the priorities file.
 
 Data Changes:
 
