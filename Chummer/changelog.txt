@@ -74,6 +74,7 @@ Application Changes:
 - Fixed a bug where selected category and selected grade were not saved in the cyberware and bioware selection screens.
 - Fixed a bug where the Translator tool was saving page numbers in an incorrectly named node. Existing translations will automatically get their page number nodes renamed if they are rebuilt.
 - Fixed an issue with the Translator tool incorrectly saving gameplay options as part of the entries for the priorities file.
+- Fixed alternate page references never showing up for translated skills.
 
 Data Changes:
 

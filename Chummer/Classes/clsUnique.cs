@@ -4398,10 +4398,13 @@ namespace Chummer
         /// <summary>
         /// Page Number.
         /// </summary>
-        public string Page
+        public string Page(string strLanguage)
         {
-            get => _strPage;
-            set => _strPage = value;
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
         }
 
         private XmlNode _objCachedMyXmlNode = null;
