@@ -93,7 +93,7 @@ namespace Chummer
                     break;
             }
 
-            _objGradeList = (List<Grade>)CommonFunctions.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, _objCharacter);
+            _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString();
         }
 

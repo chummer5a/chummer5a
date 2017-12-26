@@ -277,7 +277,7 @@ namespace Chummer
                 strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(_objSpirit.Notes))
                 strTooltip += "\n\n" + _objSpirit.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
         #endregion
 
@@ -339,7 +339,7 @@ namespace Chummer
                     string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objSpirit.Notes))
                         strTooltip += "\n\n" + _objSpirit.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
                 }
                 else
                 {
@@ -353,7 +353,7 @@ namespace Chummer
                     string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objSpirit.Notes))
                         strTooltip += "\n\n" + _objSpirit.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
                 }
             }
         }

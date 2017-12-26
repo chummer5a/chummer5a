@@ -834,7 +834,7 @@ namespace Chummer.Backend.Skills
                 }
                 if (!string.IsNullOrEmpty(_strNotes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + CommonFunctions.WordWrap(_strNotes, 100) + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + _strNotes.WordWrap(100) + "\n\n";
                 }
 
                 strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CharacterObject.Options.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";

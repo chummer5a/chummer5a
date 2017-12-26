@@ -289,7 +289,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
@@ -384,7 +384,7 @@ namespace Chummer
                     string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objContact.Notes))
                         strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
                     chkFamily.Visible = false;
                     chkBlackmail.Visible = false;
                     nudConnection.Minimum = 1;
@@ -399,7 +399,7 @@ namespace Chummer
                     string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
                     if (!string.IsNullOrEmpty(_objContact.Notes))
                         strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
 
                     nudConnection.Minimum = 1;
                 }

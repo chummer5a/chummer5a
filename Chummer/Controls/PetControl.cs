@@ -180,7 +180,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += "\n\n" + _objContact.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
         #endregion
 

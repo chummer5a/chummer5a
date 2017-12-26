@@ -359,7 +359,7 @@ namespace Chummer
                 };
                 if (!string.IsNullOrEmpty(objPower.Notes))
                     objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
+                objNode.ToolTipText = objPower.Notes.WordWrap(100);
 
                 if (objPower.Category != "Weakness")
                 {
@@ -425,7 +425,7 @@ namespace Chummer
                     {
                         objNode.ForeColor = SystemColors.GrayText;
                     }
-                    objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
+                    objNode.ToolTipText = objQuality.Notes.WordWrap(100);
 
                     switch (objQuality.Type)
                     {

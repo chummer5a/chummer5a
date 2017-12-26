@@ -73,7 +73,7 @@ namespace Chummer
                 newNode.Tag = input.InternalId;
                 if (!string.IsNullOrEmpty(input.Notes))
                     newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+                newNode.ToolTipText = input.Notes.WordWrap(100);
                 newNode.ContextMenuStrip = strip;
 
                 nodeToAddTo.Nodes.Add(newNode);
@@ -98,7 +98,7 @@ namespace Chummer
                 newNode.Tag = input.SourceName;
                 if (!string.IsNullOrEmpty(input.Notes))
                     newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+                newNode.ToolTipText = input.Notes.WordWrap(100);
                 newNode.ContextMenuStrip = strip;
                 if (string.IsNullOrEmpty(input.ImprovedName))
                 {
@@ -129,7 +129,7 @@ namespace Chummer
                 };
                 if (!string.IsNullOrEmpty(input.Notes))
                     newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+                newNode.ToolTipText = input.Notes.WordWrap(100);
 
                 foreach (MartialArtAdvantage objAdvantage in input.Advantages)
                 {
@@ -167,7 +167,7 @@ namespace Chummer
                     newNode.ForeColor = SystemColors.GrayText;
                 if (!input.Implemented)
                     newNode.ForeColor = Color.Red;
-                newNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+                newNode.ToolTipText = input.Notes.WordWrap(100);
 
                 nodeToAddTo.Nodes.Add(newNode);
                 nodeToAddTo.Expand();
@@ -185,7 +185,7 @@ namespace Chummer
             };
             if (!string.IsNullOrEmpty(input.Notes))
                 objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = CommonFunctions.WordWrap(input.Notes, 100);
+            objNode.ToolTipText = input.Notes.WordWrap(100);
 
             TreeNode objSpellTypeNode = null;
             switch (input.Category)

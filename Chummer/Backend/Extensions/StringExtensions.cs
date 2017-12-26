@@ -194,5 +194,81 @@ namespace Chummer
         {
             return Guid.TryParse(strGuid, out Guid guidDummy);
         }
+
+        /// <summary>
+        /// Word wraps the given text to fit within the specified width.
+        /// </summary>
+        /// <param name="text">Text to be word wrapped</param>
+        /// <param name="width">Width, in characters, to which the text
+        /// should be word wrapped</param>
+        /// <returns>The modified text</returns>
+        public static string WordWrap(this string text, int width)
+        {
+            // Lucidity check
+            if (width < 1)
+                return text;
+
+            int next = 0;
+            StringBuilder sb = new StringBuilder(text.Length);
+
+            // Parse each line of text
+            for (int pos = 0; pos < text.Length; pos = next)
+            {
+                // Find end of line
+                int eol = text.IndexOf(Environment.NewLine, pos, StringComparison.Ordinal);
+                if (eol == -1)
+                    next = eol = text.Length;
+                else
+                    next = eol + Environment.NewLine.Length;
+
+                // Copy this line of text, breaking into smaller lines as needed
+                if (eol > pos)
+                {
+                    do
+                    {
+                        int len = eol - pos;
+                        if (len > width)
+                            len = text.BreakLine(pos, width);
+                        sb.Append(text, pos, len);
+                        sb.Append(Environment.NewLine);
+
+                        // Trim whitespace following break
+                        pos += len;
+                        while (pos < eol && char.IsWhiteSpace(text[pos]))
+                            pos += 1;
+                    }
+                    while (eol > pos);
+                }
+                else sb.Append(Environment.NewLine); // Empty line
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Locates position to break the given line so as to avoid
+        /// breaking words.
+        /// </summary>
+        /// <param name="text">String that contains line of text</param>
+        /// <param name="pos">Index where line of text starts</param>
+        /// <param name="max">Maximum line length</param>
+        /// <returns>The modified line length</returns>
+        private static int BreakLine(this string text, int pos, int max)
+        {
+            if (max + pos >= text.Length)
+                return max;
+            // Find last whitespace in line
+            for (int i = max; i >= 0; --i)
+            {
+                char chrLoop = text[pos + i];
+                if (char.IsWhiteSpace(chrLoop))
+                {
+                    // Return length of text before whitespace
+                    return i + 1;
+                }
+            }
+
+            // If no whitespace found, break at maximum length
+            return max;
+        }
     }
 }

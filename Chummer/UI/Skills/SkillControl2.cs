@@ -325,7 +325,7 @@ namespace Chummer.UI.Skills
             if (frmItemNotes.DialogResult == DialogResult.OK)
             {
                 _skill.Notes = frmItemNotes.Notes;
-                _skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
+                _skill.Notes = _skill.Notes.WordWrap(100);
                 tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
             }
             if (!string.IsNullOrEmpty(_skill.Notes))

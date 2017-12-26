@@ -496,17 +496,12 @@ namespace Chummer
 
         private void TestCyberware(string strFile)
         {
-            string strPrefix = string.Empty;
-            Improvement.ImprovementSource objSource = new Improvement.ImprovementSource();
+            string strPrefix = "cyberware";
+            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware;
             if (strFile == "bioware.xml")
             {
                 strPrefix = "bioware";
                 objSource = Improvement.ImprovementSource.Bioware;
-            }
-            else
-            {
-                strPrefix = "cyberware";
-                objSource = Improvement.ImprovementSource.Cyberware;
             }
 
             Character objCharacter = new Character();
@@ -515,7 +510,7 @@ namespace Chummer
             pgbProgress.Value = 0;
             pgbProgress.Maximum = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix).Count;
 
-            Grade objTestGrade = CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware).FirstOrDefault(x => x.Name == "Standard");
+            Grade objTestGrade = objCharacter.GetGradeList(objSource).FirstOrDefault(x => x.Name == "Standard");
 
             // Gear.
             foreach (XmlNode objXmlGear in objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix))

@@ -88,7 +88,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
         {
-            IList<Grade> lstGrades = CommonFunctions.GetGradeList(objSource, objCharacter);
+            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource);
             foreach (Grade objGrade in lstGrades)
             {
                 if (objGrade.Name == strValue)

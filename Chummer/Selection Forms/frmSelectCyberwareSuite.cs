@@ -88,7 +88,7 @@ namespace Chummer
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            IList<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter);
+            IList<Grade> lstGrades = _objCharacter.GetGradeList(_objSource);
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {

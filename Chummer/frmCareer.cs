@@ -606,7 +606,7 @@ namespace Chummer
                     Text = objSpell.DisplayName(GlobalOptions.Language),
                     Tag = objSpell.InternalId,
                     ContextMenuStrip = cmsSpell,
-                    ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100)
+                    ToolTipText = objSpell.Notes.WordWrap(100)
                 };
                 if (!string.IsNullOrEmpty(objSpell.Notes))
                     objNode.ForeColor = Color.SaddleBrown;
@@ -716,7 +716,7 @@ namespace Chummer
                 {
                     Text = objProgram.DisplayName,
                     Tag = objProgram.InternalId,
-                    ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100),
+                    ToolTipText = objProgram.Notes.WordWrap(100),
                     ContextMenuStrip = cmsComplexForm
                 };
                 if (!string.IsNullOrEmpty(objProgram.Notes))
@@ -732,7 +732,7 @@ namespace Chummer
                 {
                     Text = objProgram.DisplayName,
                     Tag = objProgram.InternalId,
-                    ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100),
+                    ToolTipText = objProgram.Notes.WordWrap(100),
                     ContextMenuStrip = cmsAdvancedProgram
                 };
                 if (!string.IsNullOrEmpty(objProgram.Notes))
@@ -753,7 +753,7 @@ namespace Chummer
                     Text = objMartialArt.DisplayName(GlobalOptions.Language),
                     Tag = objMartialArt.InternalId,
                     ContextMenuStrip = cmsMartialArts,
-                    ToolTipText = CommonFunctions.WordWrap(objMartialArt.Notes, 100)
+                    ToolTipText = objMartialArt.Notes.WordWrap(100)
                 };
                 if (!string.IsNullOrEmpty(objMartialArt.Notes))
                     objMartialArtNode.ForeColor = Color.SaddleBrown;
@@ -765,7 +765,7 @@ namespace Chummer
                         Text = objAdvantage.DisplayName(GlobalOptions.Language),
                         Tag = objAdvantage.InternalId,
                         ContextMenuStrip = cmsTechnique,
-                        ToolTipText = CommonFunctions.WordWrap(objAdvantage.Notes, 100)
+                        ToolTipText = objAdvantage.Notes.WordWrap(100)
                     };
                     if (!string.IsNullOrEmpty(objAdvantage.Notes))
                         objAdvantageNode.ForeColor = Color.SaddleBrown;
@@ -787,7 +787,7 @@ namespace Chummer
                     Text = objManeuver.DisplayName(GlobalOptions.Language),
                     Tag = objManeuver.InternalId,
                     ContextMenuStrip = cmsMartialArtManeuver,
-                    ToolTipText = CommonFunctions.WordWrap(objManeuver.Notes, 100)
+                    ToolTipText = objManeuver.Notes.WordWrap(100)
                 };
                 if (!string.IsNullOrEmpty(objManeuver.Notes))
                     objManeuverNode.ForeColor = Color.SaddleBrown;
@@ -804,7 +804,7 @@ namespace Chummer
                     Text = objLimitModifier.DisplayName,
                     Tag = objLimitModifier.Name,
                     ContextMenuStrip = cmsMartialArts,
-                    ToolTipText = CommonFunctions.WordWrap(objLimitModifier.Notes, 100)
+                    ToolTipText = objLimitModifier.Notes.WordWrap(100)
                 };
                 objLimitModifierNode.ContextMenuStrip = cmsLimitModifier;
                 if (!string.IsNullOrEmpty(objLimitModifier.Notes))
@@ -834,7 +834,7 @@ namespace Chummer
                 {
                     Text = objLifestyle.DisplayName(GlobalOptions.Language),
                     Tag = objLifestyle.InternalId,
-                    ToolTipText = CommonFunctions.WordWrap(objLifestyle.Notes, 100)
+                    ToolTipText = objLifestyle.Notes.WordWrap(100)
                 };
                 if (objLifestyle.StyleType.ToString() != "Standard")
                     objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
@@ -849,7 +849,7 @@ namespace Chummer
             PopulateGearList();
 
             // Populate Foci.
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
 
             // Populate Vehicles.
             foreach (Vehicle objVehicle in CharacterObject.Vehicles)
@@ -4340,7 +4340,7 @@ namespace Chummer
                 objHole = new Cyberware(CharacterObject);
                 TreeNode treNode = new TreeNode();
 
-                objHole.Create(xmlEssHole, CharacterObject, CommonFunctions.GetGradeList(Improvement.ImprovementSource.Cyberware, CharacterObject).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
+                objHole.Create(xmlEssHole, CharacterObject, CharacterObject.GetGradeList(Improvement.ImprovementSource.Cyberware).FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware, centiessence, treNode, new List<Weapon>(), new List<TreeNode>(), new List<Vehicle>(), new List<TreeNode>());
                 treCyberware.Nodes.Add(treNode);
                 CharacterObject.Cyberware.Add(objHole);
             }
@@ -4878,7 +4878,7 @@ namespace Chummer
                 blnAddAgain = PickGear(treGear.SelectedNode);
             }
             while (blnAddAgain);
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
         }
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
@@ -4937,7 +4937,7 @@ namespace Chummer
                         objGear.Parent.RefreshMatrixAttributeArray();
                     }
                 }
-                CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                CharacterObject.PopulateFocusList(treFoci);
                 ScheduleCharacterUpdate();
                 RefreshSelectedGear();
 
@@ -6721,7 +6721,7 @@ namespace Chummer
                     treGear.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
         }
 
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
@@ -7870,7 +7870,7 @@ namespace Chummer
             objStack.GearId = objStackItem.InternalId;
 
             IsDirty = true;
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
             ScheduleCharacterUpdate();
         }
 
@@ -9748,7 +9748,7 @@ namespace Chummer
                     treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
+                treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap(100);
             }
         }
 
@@ -10435,7 +10435,7 @@ namespace Chummer
                         objParent.RefreshMatrixAttributeArray();
                     }
                 }
-                CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                CharacterObject.PopulateFocusList(treFoci);
                 ScheduleCharacterUpdate();
                 RefreshSelectedGear();
 
@@ -11706,7 +11706,7 @@ namespace Chummer
                             objNode.Text = objGear.DisplayName(GlobalOptions.Language);
                         }
 
-                        CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                        CharacterObject.PopulateFocusList(treFoci);
                     }
                     break;
                 case NuyenExpenseType.AddVehicle:
@@ -12265,7 +12265,7 @@ namespace Chummer
             }
 
             // Populate Foci.
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
 
             // Populate Vehicles.
             for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
@@ -12390,7 +12390,7 @@ namespace Chummer
                     treArmor.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmor.Notes, 100);
+                treArmor.SelectedNode.ToolTipText = objArmor.Notes.WordWrap(100);
             }
         }
 
@@ -12423,7 +12423,7 @@ namespace Chummer
                     treArmor.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorMod.Notes, 100);
+                treArmor.SelectedNode.ToolTipText = objArmorMod.Notes.WordWrap(100);
             }
         }
 
@@ -12456,7 +12456,7 @@ namespace Chummer
                     treArmor.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treArmor.SelectedNode.ForeColor = SystemColors.WindowText;
-                treArmor.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArmorGear.Notes, 100);
+                treArmor.SelectedNode.ToolTipText = objArmorGear.Notes.WordWrap(100);
             }
         }
 
@@ -12489,7 +12489,7 @@ namespace Chummer
                     treWeapons.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
-                treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objWeapon.Notes, 100);
+                treWeapons.SelectedNode.ToolTipText = objWeapon.Notes.WordWrap(100);
             }
         }
 
@@ -12521,7 +12521,7 @@ namespace Chummer
                 treWeapons.SelectedNode.ForeColor = SystemColors.GrayText;
             else
                 treWeapons.SelectedNode.ForeColor = SystemColors.WindowText;
-            treWeapons.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAccessory.Notes, 100);
+            treWeapons.SelectedNode.ToolTipText = objAccessory.Notes.WordWrap(100);
         }
 
         private void tsCyberwareNotes_Click(object sender, EventArgs e)
@@ -12553,7 +12553,7 @@ namespace Chummer
                         treCyberware.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treCyberware.SelectedNode.ForeColor = SystemColors.WindowText;
-                treCyberware.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCyberware.Notes, 100);
+                treCyberware.SelectedNode.ToolTipText = objCyberware.Notes.WordWrap(100);
             }
         }
 
@@ -12586,7 +12586,7 @@ namespace Chummer
                     treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
                 else
                     treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
-                treQualities.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
+                treQualities.SelectedNode.ToolTipText = objQuality.Notes.WordWrap(100);
             }
         }
 
@@ -12617,7 +12617,7 @@ namespace Chummer
                     treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArt.Notes, 100);
+                treMartialArts.SelectedNode.ToolTipText = objMartialArt.Notes.WordWrap(100);
             }
             else
             {
@@ -12644,7 +12644,7 @@ namespace Chummer
                         treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
                     else
                         treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objTechnique.Notes, 100);
+                    treMartialArts.SelectedNode.ToolTipText = objTechnique.Notes.WordWrap(100);
                 }
             }
         }
@@ -12677,7 +12677,7 @@ namespace Chummer
                     treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMartialArtManeuver.Notes, 100);
+                treMartialArts.SelectedNode.ToolTipText = objMartialArtManeuver.Notes.WordWrap(100);
             }
         }
 
@@ -12708,7 +12708,7 @@ namespace Chummer
                     treSpells.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treSpells.SelectedNode.ForeColor = SystemColors.WindowText;
-                treSpells.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
+                treSpells.SelectedNode.ToolTipText = objSpell.Notes.WordWrap(100);
             }
         }
 
@@ -12739,7 +12739,7 @@ namespace Chummer
                     treComplexForms.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treComplexForms.SelectedNode.ForeColor = SystemColors.WindowText;
-                treComplexForms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objComplexForm.Notes, 100);
+                treComplexForms.SelectedNode.ToolTipText = objComplexForm.Notes.WordWrap(100);
             }
         }
 
@@ -12770,7 +12770,7 @@ namespace Chummer
                     treCritterPowers.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treCritterPowers.SelectedNode.ForeColor = SystemColors.WindowText;
-                treCritterPowers.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objCritterPower.Notes, 100);
+                treCritterPowers.SelectedNode.ToolTipText = objCritterPower.Notes.WordWrap(100);
             }
         }
 
@@ -12801,7 +12801,7 @@ namespace Chummer
                     treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGrade.Notes, 100);
+                treMetamagic.SelectedNode.ToolTipText = objGrade.Notes.WordWrap(100);
             }
         }
 
@@ -12834,7 +12834,7 @@ namespace Chummer
                 treGear.SelectedNode.ForeColor = SystemColors.GrayText;
             else
                     treGear.SelectedNode.ForeColor = SystemColors.WindowText;
-                treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
+                treGear.SelectedNode.ToolTipText = objGear.Notes.WordWrap(100);
             }
         }
 
@@ -12867,7 +12867,7 @@ namespace Chummer
                 treGear.SelectedNode.ForeColor = SystemColors.GrayText;
             else
                     treGear.SelectedNode.ForeColor = SystemColors.WindowText;
-                treGear.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100);
+                treGear.SelectedNode.ToolTipText = objGear.Notes.WordWrap(100);
             }
         }
 
@@ -12899,7 +12899,7 @@ namespace Chummer
                     treVehicles.SelectedNode.ForeColor = Color.SaddleBrown;
                 else
                     treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objVehicle.Notes, 100);
+                treVehicles.SelectedNode.ToolTipText = objVehicle.Notes.WordWrap(100);
             }
             else
             {
@@ -12928,7 +12928,7 @@ namespace Chummer
                         treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMod.Notes, 100);
+                    treVehicles.SelectedNode.ToolTipText = objMod.Notes.WordWrap(100);
                 }
             }
         }
@@ -12960,7 +12960,7 @@ namespace Chummer
                         treLifestyles.SelectedNode.ForeColor = Color.SaddleBrown;
                     else
                         treLifestyles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treLifestyles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objLifestyle.Notes, 100);
+                    treLifestyles.SelectedNode.ToolTipText = objLifestyle.Notes.WordWrap(100);
                 }
             }
         }
@@ -12994,7 +12994,7 @@ namespace Chummer
                         treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-                treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objWeapon.Notes, 100);
+                treVehicles.SelectedNode.ToolTipText = objWeapon.Notes.WordWrap(100);
             }
         }
 
@@ -13520,7 +13520,7 @@ namespace Chummer
                             treImprovements.SelectedNode.ForeColor = SystemColors.WindowText;
                         else
                             treImprovements.SelectedNode.ForeColor = SystemColors.GrayText;
-                    treImprovements.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objImprovement.Notes, 100);
+                    treImprovements.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                 }
             }
         }
@@ -14191,7 +14191,7 @@ namespace Chummer
                 treVehicles.SelectedNode.ForeColor = SystemColors.GrayText;
             else
                 treVehicles.SelectedNode.ForeColor = SystemColors.WindowText;
-            treVehicles.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAccessory.Notes, 100);
+            treVehicles.SelectedNode.ToolTipText = objAccessory.Notes.WordWrap(100);
         }
 
         private void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -16645,7 +16645,7 @@ namespace Chummer
                 {
                     CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
                 }
-                CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+                CharacterObject.PopulateFocusList(treFoci);
             }
             else
             {
@@ -18554,7 +18554,7 @@ namespace Chummer
             }
 
             // Populate Foci.
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
 
             // Populate Vehicles.
             for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
@@ -19084,13 +19084,13 @@ namespace Chummer
             {
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CommonFunctions.CalculateFreeSpiritPowerPoints(CharacterObject);
+                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
             }
             else if (CharacterObject.IsFreeSprite)
             {
                 lblCritterPowerPointsLabel.Visible = true;
                 lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CommonFunctions.CalculateFreeSpritePowerPoints(CharacterObject);
+                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
             }
 
             // Update the Nuyen and Karma for the character.
@@ -19430,7 +19430,7 @@ namespace Chummer
                 {
                     Text = objAIProgram.DisplayName,
                     Tag = objAIProgram.InternalId,
-                    ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100),
+                    ToolTipText = objAIProgram.Notes.WordWrap(100),
                     ContextMenuStrip = cmsAdvancedProgram
                 };
                 if (!string.IsNullOrEmpty(objAIProgram.Notes))
@@ -22596,7 +22596,7 @@ namespace Chummer
                 nodGrade.ContextMenuStrip = cmsMetamagic;
                 if (!string.IsNullOrEmpty(objGrade.Notes))
                     nodGrade.ForeColor = Color.SaddleBrown;
-                nodGrade.ToolTipText = CommonFunctions.WordWrap(objGrade.Notes, 100);
+                nodGrade.ToolTipText = objGrade.Notes.WordWrap(100);
 
                 foreach (Art objArt in CharacterObject.Arts)
                 {
@@ -22607,7 +22607,7 @@ namespace Chummer
                         nodArt.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objArt.Notes))
                             nodArt.ForeColor = Color.SaddleBrown;
-                        nodArt.ToolTipText = CommonFunctions.WordWrap(objArt.Notes, 100);
+                        nodArt.ToolTipText = objArt.Notes.WordWrap(100);
                     }
                 }
                 foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
@@ -22624,7 +22624,7 @@ namespace Chummer
                         nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objMetamagic.Notes))
                             nodMetamagic.ForeColor = Color.SaddleBrown;
-                        nodMetamagic.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+                        nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
                     }
                 }
                 foreach (Spell objSpell in CharacterObject.Spells)
@@ -22641,7 +22641,7 @@ namespace Chummer
                         nodSpell.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objSpell.Notes))
                             nodSpell.ForeColor = Color.SaddleBrown;
-                        nodSpell.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
+                        nodSpell.ToolTipText = objSpell.Notes.WordWrap(100);
                     }
                 }
                 foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
@@ -22653,7 +22653,7 @@ namespace Chummer
                         nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
                         if (!string.IsNullOrEmpty(objEnhancement.Notes))
                             nodEnhancement.ForeColor = Color.SaddleBrown;
-                        nodEnhancement.ToolTipText = CommonFunctions.WordWrap(objEnhancement.Notes, 100);
+                        nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
                     }
                 }
                 foreach (Power objPower in CharacterObject.Powers)
@@ -22667,7 +22667,7 @@ namespace Chummer
                             nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
                             if (!string.IsNullOrEmpty(objEnhancement.Notes))
                                 nodEnhancement.ForeColor = Color.SaddleBrown;
-                            nodEnhancement.ToolTipText = CommonFunctions.WordWrap(objEnhancement.Notes, 100);
+                            nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
                         }
                     }
                 }
@@ -22686,7 +22686,7 @@ namespace Chummer
                     nodMetamagic.ForeColor = Color.SaddleBrown;
                 else
                     nodMetamagic.ForeColor = SystemColors.GrayText;
-                nodMetamagic.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+                nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
             }
             treMetamagic.ExpandAll();
             UpdateInitiationCost();
@@ -22921,7 +22921,7 @@ namespace Chummer
                 {
                     Tag = objImprovement.SourceName,
                     Text = objImprovement.CustomName,
-                    ToolTipText = CommonFunctions.WordWrap(objImprovement.Notes, 100),
+                    ToolTipText = objImprovement.Notes.WordWrap(100),
                     ContextMenuStrip = cmsImprovement
                 };
                 if (!string.IsNullOrEmpty(objImprovement.Notes))
@@ -23854,7 +23854,7 @@ namespace Chummer
                     {
                         Text = objGear.DisplayName(GlobalOptions.Language),
                         Tag = objGear.InternalId,
-                        ToolTipText = CommonFunctions.WordWrap(objGear.Notes, 100),
+                        ToolTipText = objGear.Notes.WordWrap(100),
                         ContextMenuStrip = cmsGear
                     };
                     if (!string.IsNullOrEmpty(objGear.Notes))
@@ -24135,7 +24135,7 @@ namespace Chummer
                         treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
                     else
                         treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(obLimitModifier.Notes, 100);
+                    treLimit.SelectedNode.ToolTipText = obLimitModifier.Notes.WordWrap(100);
                 }
                 else
                 {
@@ -24164,7 +24164,7 @@ namespace Chummer
                                 treLimit.SelectedNode.ForeColor = Color.SaddleBrown;
                             else
                                 treLimit.SelectedNode.ForeColor = SystemColors.WindowText;
-                            treLimit.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objImprovement.Notes, 100);
+                            treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap(100);
                         }
                     }
                 }
@@ -24650,7 +24650,7 @@ namespace Chummer
                         treMetamagic.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objMetamagic.Notes, 100);
+                    treMetamagic.SelectedNode.ToolTipText = objMetamagic.Notes.WordWrap(100);
                     return;
                 }
 
@@ -24678,7 +24678,7 @@ namespace Chummer
                         treMetamagic.SelectedNode.ForeColor = Color.SaddleBrown;
                     else
                         treMetamagic.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMetamagic.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objArt.Notes, 100);
+                    treMetamagic.SelectedNode.ToolTipText = objArt.Notes.WordWrap(100);
                     return;
                 }
 
@@ -24718,7 +24718,7 @@ namespace Chummer
                                     nodSpell.ForeColor = Color.SaddleBrown;
                                 else
                                     nodSpell.ForeColor = SystemColors.WindowText;
-                                nodSpell.ToolTipText = CommonFunctions.WordWrap(objSpell.Notes, 100);
+                                nodSpell.ToolTipText = objSpell.Notes.WordWrap(100);
                             }
                         }
                 }
@@ -24859,7 +24859,7 @@ namespace Chummer
                         treMartialArts.SelectedNode.ForeColor = Color.SaddleBrown;
                     else
                         treMartialArts.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treMartialArts.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objTechnique.Notes, 100);
+                    treMartialArts.SelectedNode.ToolTipText = objTechnique.Notes.WordWrap(100);
                 }
             }
         }
@@ -25068,7 +25068,7 @@ namespace Chummer
                     objNode.ForeColor = SystemColors.GrayText;
                 else
                     objNode.ForeColor = SystemColors.WindowText;
-                objNode.ToolTipText = CommonFunctions.WordWrap(objProgram.Notes, 100);
+                objNode.ToolTipText = objProgram.Notes.WordWrap(100);
                 objNode.ContextMenuStrip = cmsAdvancedProgram;
                 treAIPrograms.Nodes[0].Nodes.Add(objNode);
                 treAIPrograms.Nodes[0].Expand();
@@ -25188,7 +25188,7 @@ namespace Chummer
                         treAIPrograms.SelectedNode.ForeColor = SystemColors.GrayText;
                     else
                         treAIPrograms.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treAIPrograms.SelectedNode.ToolTipText = CommonFunctions.WordWrap(objAIProgram.Notes, 100);
+                    treAIPrograms.SelectedNode.ToolTipText = objAIProgram.Notes.WordWrap(100);
                 }
             }
         }
@@ -25248,7 +25248,7 @@ namespace Chummer
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CommonFunctions.ConstructModularCyberlimbList(CharacterObject, objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
             frmPickMount.ShowDialog();
@@ -25314,7 +25314,7 @@ namespace Chummer
                 return;
             frmSelectItem frmPickMount = new frmSelectItem
             {
-                GeneralItems = CommonFunctions.ConstructModularCyberlimbList(CharacterObject, objModularCyberware),
+                GeneralItems = CharacterObject.ConstructModularCyberlimbList(objModularCyberware),
                 Description = LanguageManager.GetString("MessageTitle_SelectCyberware", GlobalOptions.Language)
             };
             frmPickMount.ShowDialog();
@@ -25410,7 +25410,7 @@ namespace Chummer
                     treGear.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
-            CommonFunctions.PopulateFocusList(CharacterObject, treFoci);
+            CharacterObject.PopulateFocusList(treFoci);
         }
 
         private void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
