@@ -87,7 +87,7 @@ namespace CrashHandler
 
         private void AttemptDebug(Process process)
 		{
-			bool sucess = SafeNativeMethods.DebugActiveProcess(new IntPtr(process.Id));
+			bool sucess = NativeMethods.DebugActiveProcess(new IntPtr(process.Id));
 
             int intLastError = Marshal.GetLastWin32Error();
             if (sucess)
@@ -230,11 +230,11 @@ namespace CrashHandler
 				if (extraInfo)
 				{
 					dtype |= 0;
-					ret = !(SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+					ret = !(NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 						dtype, ref info, IntPtr.Zero, IntPtr.Zero));
 					
 				}
-				else if (SafeNativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
+				else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle.DangerousGetHandle(),
 					dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
 				{
 					ret = false;

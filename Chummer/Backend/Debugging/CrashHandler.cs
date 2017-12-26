@@ -16,8 +16,7 @@ namespace Chummer.Backend
 {
     public static class CrashHandler
     {
-        [SuppressUnmanagedCodeSecurity]
-        private static class SafeNativeMethods
+        private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
             internal static extern uint GetCurrentThreadId();
@@ -34,7 +33,7 @@ namespace Chummer.Backend
             private Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
             private Dictionary<string, string> attributes = new Dictionary<string, string>();
             private int processid = Process.GetCurrentProcess().Id;
-            private uint threadId = SafeNativeMethods.GetCurrentThreadId();
+            private uint threadId = NativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {

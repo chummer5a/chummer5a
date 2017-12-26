@@ -8833,7 +8833,7 @@ namespace Chummer
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode. 
         /// </summary>
-        public List<string> BannedGrades { get; set; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
+        public IList<string> BannedGrades { get; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 

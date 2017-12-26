@@ -673,7 +673,6 @@ namespace Chummer.Backend.Equipment
         public IList<VehicleMod> Mods
         {
             get => _mods;
-            set => _mods = value;
         }
 
         /// <summary>

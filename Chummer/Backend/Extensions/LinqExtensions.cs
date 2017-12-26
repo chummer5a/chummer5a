@@ -69,7 +69,7 @@ namespace Chummer
         {
             if (objParentList.Count != objTargetList.Count)
                 return false;
-            List<T> lstExclude = new List<T>(objTargetList.Count);
+            HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
                 foreach (T objTargetChild in objTargetList)
