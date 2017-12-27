@@ -28,11 +28,11 @@ namespace Translator
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cboFile = new System.Windows.Forms.ComboBox();
             this.dgvSection = new System.Windows.Forms.DataGridView();
             this.dgvTranslate = new System.Windows.Forms.DataGridView();
@@ -77,7 +77,7 @@ namespace Translator
             this.dgvSection.MultiSelect = false;
             this.dgvSection.Name = "dgvSection";
             this.dgvSection.RowHeadersVisible = false;
-            this.dgvSection.Size = new System.Drawing.Size(1197, 465);
+            this.dgvSection.Size = new System.Drawing.Size(1143, 349);
             this.dgvSection.TabIndex = 13;
             this.dgvSection.Visible = false;
             this.dgvSection.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvSection_CellMouseUp);
@@ -98,7 +98,7 @@ namespace Translator
             this.dgvTranslate.MultiSelect = false;
             this.dgvTranslate.Name = "dgvTranslate";
             this.dgvTranslate.RowHeadersVisible = false;
-            this.dgvTranslate.Size = new System.Drawing.Size(1197, 465);
+            this.dgvTranslate.Size = new System.Drawing.Size(1143, 349);
             this.dgvTranslate.TabIndex = 14;
             this.dgvTranslate.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTranslate_CellValueChanged);
             this.dgvTranslate.Sorted += new System.EventHandler(this.dgvTranslate_Sorted);
@@ -108,8 +108,8 @@ namespace Translator
             // 
             this.key.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.key.DataPropertyName = "key";
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.key.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.key.DefaultCellStyle = dataGridViewCellStyle11;
             this.key.HeaderText = "Key";
             this.key.Name = "key";
             this.key.ReadOnly = true;
@@ -119,8 +119,8 @@ namespace Translator
             // 
             this.english.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.english.DataPropertyName = "english";
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.english.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.english.DefaultCellStyle = dataGridViewCellStyle12;
             this.english.HeaderText = "English";
             this.english.Name = "english";
             this.english.ReadOnly = true;
@@ -130,8 +130,8 @@ namespace Translator
             // 
             this.text.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.text.DataPropertyName = "text";
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.text.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.text.DefaultCellStyle = dataGridViewCellStyle13;
             this.text.HeaderText = "Text";
             this.text.Name = "text";
             this.text.Width = 400;
@@ -171,8 +171,8 @@ namespace Translator
             // 
             this.sectionEnglish.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.sectionEnglish.DataPropertyName = "english";
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.sectionEnglish.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.sectionEnglish.DefaultCellStyle = dataGridViewCellStyle14;
             this.sectionEnglish.HeaderText = "English";
             this.sectionEnglish.Name = "sectionEnglish";
             this.sectionEnglish.ReadOnly = true;
@@ -182,8 +182,8 @@ namespace Translator
             // 
             this.sectionText.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.sectionText.DataPropertyName = "text";
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.sectionText.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.sectionText.DefaultCellStyle = dataGridViewCellStyle15;
             this.sectionText.HeaderText = "Text";
             this.sectionText.Name = "sectionText";
             this.sectionText.Width = 480;
@@ -215,7 +215,7 @@ namespace Translator
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(962, 13);
+            this.txtSearch.Location = new System.Drawing.Point(908, 13);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(166, 20);
             this.txtSearch.TabIndex = 11;
@@ -225,7 +225,7 @@ namespace Translator
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(1134, 11);
+            this.btnSearch.Location = new System.Drawing.Point(1080, 11);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(75, 23);
             this.btnSearch.TabIndex = 12;
@@ -235,9 +235,11 @@ namespace Translator
             // 
             // pbTranslateProgressBar
             // 
-            this.pbTranslateProgressBar.Location = new System.Drawing.Point(12, 511);
+            this.pbTranslateProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbTranslateProgressBar.Location = new System.Drawing.Point(12, 395);
             this.pbTranslateProgressBar.Name = "pbTranslateProgressBar";
-            this.pbTranslateProgressBar.Size = new System.Drawing.Size(1197, 23);
+            this.pbTranslateProgressBar.Size = new System.Drawing.Size(1143, 23);
             this.pbTranslateProgressBar.Step = 1;
             this.pbTranslateProgressBar.TabIndex = 148;
             // 
@@ -245,7 +247,7 @@ namespace Translator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1221, 546);
+            this.ClientSize = new System.Drawing.Size(1167, 430);
             this.Controls.Add(this.pbTranslateProgressBar);
             this.Controls.Add(this.cboFile);
             this.Controls.Add(this.dgvSection);
