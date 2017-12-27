@@ -3563,6 +3563,16 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Verify that the user wants to delete an item.
+        /// </summary>
+        public bool ConfirmDelete(string strMessage)
+        {
+            return !Options.ConfirmDelete ||
+                   MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_Delete", GlobalOptions.Language),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
         #region Tab clearing
         /// <summary>
         /// Clear all Spell tab elements from the character.
@@ -3630,7 +3640,7 @@ namespace Chummer
         {
             foreach (Cyberware objCyberware in Cyberware)
             {
-                CommonFunctions.DeleteCyberware(this, objCyberware, treWeapons, treVehicles);
+                objCyberware.DeleteCyberware(treWeapons, treVehicles);
             }
             Cyberware.Clear();
 

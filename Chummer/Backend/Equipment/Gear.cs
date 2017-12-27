@@ -2741,7 +2741,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = CommonFunctions.FindNode(strNodeId, treWeapons) ?? CommonFunctions.FindNode(strNodeId, treVehicles);
+                    TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
                     objLoopNode?.Remove();
                 }
             }
@@ -2785,6 +2785,40 @@ namespace Chummer.Backend.Equipment
             this.SetActiveCommlink(_objCharacter, false);
             return decReturn;
         }
+
+        #region UI Methods
+        /// <summary>
+        /// Build up the Tree for the current piece of Gear and all of its children.
+        /// </summary>
+        /// <param name="objNode">TreeNode to append to.</param>
+        /// <param name="objMenu">ContextMenuStrip that the new TreeNodes should use.</param>
+        public void BuildGearTree(TreeNode objNode, ContextMenuStrip objMenu)
+        {
+            bool blnExpandNode = false;
+            foreach (Gear objChild in Children)
+            {
+                TreeNode objChildNode = new TreeNode
+                {
+                    Text = objChild.DisplayName(GlobalOptions.Language),
+                    Tag = objChild.InternalId,
+                    ContextMenuStrip = objMenu
+                };
+                if (!string.IsNullOrEmpty(objChild.Notes))
+                    objChildNode.ForeColor = Color.SaddleBrown;
+                else if (objChild.IncludedInParent)
+                    objChildNode.ForeColor = SystemColors.GrayText;
+                objChildNode.ToolTipText = objChild.Notes;
+
+                objNode.Nodes.Add(objChildNode);
+                if (objChild.ParentID != InternalId || (GetNode()?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
+                    blnExpandNode = true;
+
+                objChild.BuildGearTree(objChildNode, objMenu);
+            }
+            if (blnExpandNode)
+                objNode.Expand();
+        }
+        #endregion
         #endregion
     }
 }

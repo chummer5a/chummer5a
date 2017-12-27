@@ -1972,7 +1972,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objQuality.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objTreeNode = CommonFunctions.FindNode(objQuality.InternalId, treQualities);
+                            TreeNode objTreeNode = treQualities.FindNode(objQuality.InternalId);
                             if (objTreeNode != null)
                                 objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                         }
@@ -2000,7 +2000,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objQuality.Extra = ImprovementManager.SelectedValue;
-                                TreeNode objTreeNode = CommonFunctions.FindNode(objQuality.InternalId, treQualities);
+                                TreeNode objTreeNode = treQualities.FindNode(objQuality.InternalId);
                                 if (objTreeNode != null)
                                     objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                             }
@@ -2261,7 +2261,7 @@ namespace Chummer
                                     dicPairableCyberwares.Add(objCyberware, 1);
                             }
                         }
-                        TreeNode objWareNode = CommonFunctions.FindNode(objCyberware.InternalId, treCyberware);
+                        TreeNode objWareNode = treCyberware.FindNode(objCyberware.InternalId);
                         if (objWareNode != null)
                             objWareNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                     }
@@ -2295,7 +2295,7 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId, objLoopCyberware.PairBonus, false, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalOptions.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                 objCyberware.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objNode = CommonFunctions.FindNode(objLoopCyberware.InternalId, treCyberware);
+                            TreeNode objNode = treCyberware.FindNode(objLoopCyberware.InternalId);
                             if (objNode != null)
                                 objNode.Text = objCyberware.DisplayName(GlobalOptions.Language);
                         }
@@ -2326,7 +2326,7 @@ namespace Chummer
                                 {
                                     objArmor.Extra = ImprovementManager.SelectedValue;
 
-                                    TreeNode objArmorNode = CommonFunctions.FindNode(objArmor.InternalId, treArmor);
+                                    TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
                                     if (objArmorNode != null)
                                         objArmorNode.Text = objArmor.DisplayName(GlobalOptions.Language);
                                 }
@@ -2359,7 +2359,7 @@ namespace Chummer
                                     {
                                         objMod.Extra = ImprovementManager.SelectedValue;
 
-                                        TreeNode objPluginNode = CommonFunctions.FindNode(objMod.InternalId, treArmor);
+                                        TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
                                         if (objPluginNode != null)
                                             objPluginNode.Text = objMod.DisplayName(GlobalOptions.Language);
                                     }
@@ -2460,7 +2460,7 @@ namespace Chummer
                 if (tabStreetGearTabs.SelectedTab == tabLifestyle)
                 {
                     // Copy the selected Lifestyle.
-                    Lifestyle objCopyLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), CharacterObject.Lifestyles);
+                    Lifestyle objCopyLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
 
                     if (objCopyLifestyle == null)
                         return;
@@ -2507,7 +2507,7 @@ namespace Chummer
                 else if (tabStreetGearTabs.SelectedTab == tabArmor)
                 {
                     // Copy the selected Armor.
-                    Armor objCopyArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+                    Armor objCopyArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
 
                     if (objCopyArmor != null)
                     {
@@ -2613,7 +2613,7 @@ namespace Chummer
                 else if (tabStreetGearTabs.SelectedTab == tabWeapons)
                 {
                     // Copy the selected Weapon.
-                    Weapon objCopyWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+                    Weapon objCopyWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
 
                     if (objCopyWeapon != null)
                     {
@@ -2722,7 +2722,7 @@ namespace Chummer
                 else if (tabStreetGearTabs.SelectedTab == tabGear)
                 {
                     // Copy the selected Gear.
-                    Gear objCopyGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                    Gear objCopyGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
 
                     if (objCopyGear == null)
                         return;
@@ -2784,7 +2784,7 @@ namespace Chummer
                 if (treVehicles.SelectedNode.Level == 1)
                 {
                     // Copy the selected Vehicle.
-                    Vehicle objCopyVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+                    Vehicle objCopyVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
 
                     MemoryStream objStream = new MemoryStream();
                     XmlTextWriter objWriter = new XmlTextWriter(objStream, System.Text.Encoding.Unicode)
@@ -2885,7 +2885,7 @@ namespace Chummer
                     {
                         foreach (VehicleMod objMod in objCharacterVehicle.Mods)
                         {
-                            Weapon objCopyWeapon = CommonFunctions.DeepFindById(treVehicles.SelectedNode.Tag.ToString(), objMod.Weapons);
+                            Weapon objCopyWeapon = objMod.Weapons.DeepFindById(treVehicles.SelectedNode.Tag.ToString());
                             if (objCopyWeapon != null)
                             {
                                 // Do not let the user copy Gear or Cyberware Weapons.
@@ -3018,7 +3018,7 @@ namespace Chummer
                                 else if (objGear.IncludedInParent)
                                     objNode.ForeColor = SystemColors.GrayText;
 
-                                CommonFunctions.BuildGearTree(objGear, objNode, cmsArmorGear);
+                                objGear.BuildGearTree(objNode, cmsArmorGear);
 
                                 treArmor.SelectedNode.Nodes.Add(objNode);
                                 treArmor.SelectedNode.Expand();
@@ -3087,7 +3087,7 @@ namespace Chummer
                             else if (objGear.IncludedInParent)
                                 objNode.ForeColor = SystemColors.GrayText;
 
-                            CommonFunctions.BuildGearTree(objGear, objNode, cmsWeaponAccessoryGear);
+                            objGear.BuildGearTree(objNode, cmsWeaponAccessoryGear);
 
                             treWeapons.SelectedNode.Nodes.Add(objNode);
                             treWeapons.SelectedNode.Expand();
@@ -3156,7 +3156,7 @@ namespace Chummer
                         else if (objGear.IncludedInParent)
                             objNode.ForeColor = SystemColors.GrayText;
 
-                        CommonFunctions.BuildGearTree(objGear, objNode, cmsGear);
+                        objGear.BuildGearTree(objNode, cmsGear);
 
                         objNode.ContextMenuStrip = cmsGear;
 
@@ -3243,7 +3243,7 @@ namespace Chummer
                             else if (objGear.IncludedInParent)
                                 objNode.ForeColor = SystemColors.GrayText;
 
-                            CommonFunctions.BuildGearTree(objGear, objNode, cmsVehicleGear);
+                            objGear.BuildGearTree(objNode, cmsVehicleGear);
 
                             treVehicles.SelectedNode.Nodes.Add(objNode);
                             treVehicles.SelectedNode.Expand();
@@ -3268,7 +3268,7 @@ namespace Chummer
                         else if (objGear.IncludedInParent)
                             objNode.ForeColor = SystemColors.GrayText;
 
-                        CommonFunctions.BuildGearTree(objGear, objNode, cmsVehicleGear);
+                        objGear.BuildGearTree(objNode, cmsVehicleGear);
 
                         treVehicles.SelectedNode.Nodes.Add(objNode);
                         treVehicles.SelectedNode.Expand();
@@ -3409,7 +3409,7 @@ namespace Chummer
 
         private void objContact_DeleteContact(Object sender, bool force)
         {
-            if (!force && !CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+            if (!force && !CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
                 return;
 
             // Handle the DeleteContact Event for the ContactControl object.
@@ -3548,7 +3548,7 @@ namespace Chummer
 
         private void objEnemy_DeleteContact(Object sender)
         {
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy", GlobalOptions.Language)))
                 return;
 
             // Handle the DeleteCOntact Event for the ContactControl object.
@@ -3586,7 +3586,7 @@ namespace Chummer
         #region PetControl Events
         private void objPet_DeleteContact(Object sender)
         {
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact", GlobalOptions.Language)))
                 return;
 
             // Handle the DeleteContact Event for the ContactControl object.
@@ -3658,7 +3658,7 @@ namespace Chummer
 
         private void objSpirit_DeleteSpirit(Object sender)
         {
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteSpirit", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpirit", GlobalOptions.Language)))
                 return;
 
             // Handle the DeleteSpirit Event for the SpiritControl object.
@@ -3726,7 +3726,7 @@ namespace Chummer
 
         private void objSprite_DeleteSpirit(Object sender)
         {
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteSprite", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSprite", GlobalOptions.Language)))
                 return;
 
             // Handle the DeleteSpirit Event for the SpiritControl object.
@@ -3770,7 +3770,7 @@ namespace Chummer
             // The Rating NUD is only enabled if a Martial Art is currently selected.
             if (treMartialArts.SelectedNode.Level == 1)
             {
-                MartialArt objMartialArt = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArts);
+                MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
 
                 strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                 strPage = objMartialArt.Page(GlobalOptions.Language);
@@ -4011,11 +4011,11 @@ namespace Chummer
             // Delete the selected Spell.
             if (treSpells.SelectedNode.Level > 0)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language)))
                     return;
 
                 // Locate the Spell that is selected in the tree.
-                Spell objSpell = CommonFunctions.FindByIdWithNameCheck(treSpells.SelectedNode.Tag.ToString(), CharacterObject.Spells);
+                Spell objSpell = CharacterObject.Spells.FindById(treSpells.SelectedNode.Tag.ToString());
 
                 if (objSpell != null)
                 {
@@ -4133,7 +4133,7 @@ namespace Chummer
             {
                 XmlDocument objXmlDocument = null;
                 // Locate the piece of Cyberware that is selected in the tree.
-                Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
                 if (objCyberware != null)
                 {
                     if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !CharacterObject.IgnoreRules)
@@ -4143,18 +4143,18 @@ namespace Chummer
                     }
                     if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                     {
-                        if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
+                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
                             return;
                         objXmlDocument = XmlManager.Load("bioware.xml");
                     }
                     else
                     {
-                        if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
+                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
                             return;
                         objXmlDocument = XmlManager.Load("cyberware.xml");
                     }
 
-                    CommonFunctions.DeleteCyberware(CharacterObject, objCyberware, treWeapons, treVehicles);
+                    objCyberware.DeleteCyberware(treWeapons, treVehicles);
                     // Remove the Children.
                     objCyberware.Children.Clear();
 
@@ -4343,13 +4343,13 @@ namespace Chummer
                 if (objSelectedNode.Text == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
                     return;
 
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteArmorLocation", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmorLocation", GlobalOptions.Language)))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Armor parent node.
                 foreach (TreeNode objNode in objSelectedNode.Nodes)
                 {
-                    Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objNode.Tag.ToString(), CharacterObject.Armor);
+                    Armor objArmor = CharacterObject.Armor.FindById(objNode.Tag.ToString());
 
                     // Change the Location for the Armor.
                     objArmor.Location = string.Empty;
@@ -4408,10 +4408,10 @@ namespace Chummer
             }
             else
             {
-                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+                Armor objArmor = CharacterObject.Armor.FindById(objSelectedNode.Tag.ToString());
                 if (objArmor != null)
                 {
-                    CommonFunctions.DeleteArmor(CharacterObject, objArmor, treWeapons, treVehicles);
+                    objArmor.DeleteArmor(treWeapons, treVehicles);
                     CharacterObject.Armor.Remove(objArmor);
                     objSelectedNode.Remove();
                 }
@@ -4420,7 +4420,7 @@ namespace Chummer
                     ArmorMod objMod = CommonFunctions.FindArmorMod(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
                     if (objMod != null)
                     {
-                        CommonFunctions.DeleteArmorMod(CharacterObject, objMod, treWeapons, treVehicles);
+                        objMod.DeleteArmorMod(treWeapons, treVehicles);
                         objMod.Parent.ArmorMods.Remove(objMod);
                         objSelectedNode.Remove();
                     }
@@ -4523,13 +4523,13 @@ namespace Chummer
                 if (treWeapons.SelectedNode.Text == LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language))
                     return;
 
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteWeaponLocation", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponLocation", GlobalOptions.Language)))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Weapons parent node.
                 foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
                 {
-                    Weapon objWeapon = CommonFunctions.DeepFindById(objNode.Tag.ToString(), CharacterObject.Weapons);
+                    Weapon objWeapon = CharacterObject.Weapons.DeepFindById(objNode.Tag.ToString());
 
                     // Change the Location for the Weapon.
                     if (objWeapon != null)
@@ -4552,11 +4552,11 @@ namespace Chummer
             }
             else if (treWeapons.SelectedNode.Level > 0)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteWeapon", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon", GlobalOptions.Language)))
                     return;
 
                 // Locate the Weapon that is selected in the tree.
-                Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+                Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
 
                 if (objWeapon != null)
                 {
@@ -4686,10 +4686,10 @@ namespace Chummer
             // Delete the selected Lifestyle.
             if (treLifestyles.SelectedNode != null && treLifestyles.SelectedNode.Level > 0)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle", GlobalOptions.Language)))
                     return;
 
-                Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), CharacterObject.Lifestyles);
+                Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
                 if (objLifestyle == null)
                     return;
 
@@ -4723,13 +4723,13 @@ namespace Chummer
                 if (treGear.SelectedNode.Text == LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language))
                     return;
 
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation", GlobalOptions.Language)))
                     return;
 
                 // Move all of the child nodes in the current parent to the Selected Gear parent node.
                 foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
                 {
-                    Gear objGear = CommonFunctions.DeepFindById(objNode.Tag.ToString(), CharacterObject.Gear);
+                    Gear objGear = CharacterObject.Gear.DeepFindById(objNode.Tag.ToString());
 
                     // Change the Location for the Gear.
                     if (objGear != null)
@@ -4752,13 +4752,13 @@ namespace Chummer
             }
             else if (treGear.SelectedNode.Level > 0)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear", GlobalOptions.Language)))
                     return;
 
-                Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
                 if (objGear != null)
                 {
-                    Gear objParent = CommonFunctions.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString(), CharacterObject.Gear);
+                    Gear objParent = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString());
 
                     objGear.DeleteGear(treWeapons, treVehicles);
 
@@ -4843,7 +4843,7 @@ namespace Chummer
 
             if (treVehicles.SelectedNode.Level != 2)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
                     return;
             }
 
@@ -4858,7 +4858,7 @@ namespace Chummer
             }
 
             // Locate the Vehicle that is selected in the tree.
-            Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
 
             // Removing a Vehicle
             if (objVehicle != null)
@@ -4880,7 +4880,7 @@ namespace Chummer
                     }
                     foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                     {
-                        CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
+                        objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                     }
                 }
                 treVehicles.SelectedNode.Remove();
@@ -4892,7 +4892,7 @@ namespace Chummer
                 // Removing a Vehicle Mod
                 if (objMod != null)
                 {
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
                         return;
 
                     // Check for Improved Sensor bonus.
@@ -4953,7 +4953,7 @@ namespace Chummer
                     }
                     foreach (Cyberware objLoopCyberware in objMod.Cyberware)
                     {
-                        CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
+                        objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                     }
                     treVehicles.SelectedNode.Remove();
                 }
@@ -5005,7 +5005,7 @@ namespace Chummer
                                 }
                                 treVehicles.SelectedNode.Remove();
 
-                                CommonFunctions.DeleteCyberware(CharacterObject, objCyberware, treWeapons, treVehicles);
+                                objCyberware.DeleteCyberware(treWeapons, treVehicles);
                             }
                             else
                             {
@@ -5090,14 +5090,14 @@ namespace Chummer
             if (treLimit.SelectedNode == null || treLimit.SelectedNode.Level <= 0)
                 return;
 
-            LimitModifier objLimitModifier = CommonFunctions.FindByIdWithNameCheck(treLimit.SelectedNode.Tag.ToString(), CharacterObject.LimitModifiers);
+            LimitModifier objLimitModifier = CharacterObject.LimitModifiers.FindById(treLimit.SelectedNode.Tag.ToString());
             if (objLimitModifier == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteLimitModifier", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier", GlobalOptions.Language)))
                 return;
 
             string strLimit = treLimit.SelectedNode.Parent.Text;
@@ -5114,14 +5114,14 @@ namespace Chummer
             if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
                 return;
 
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
                 return;
 
             bool blnDoQualityRefresh = false;
             if (treMartialArts.SelectedNode.Level == 1)
             {
                 // Delete the selected Martial Art.
-                MartialArt objMartialArt = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArts);
+                MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
                 if (objMartialArt == null)
                     return;
                 if (objMartialArt.Name == "One Trick Pony")
@@ -5389,7 +5389,7 @@ namespace Chummer
             if (treMetamagic.SelectedNode.Level == 0)
             {
                 // Locate the selected Grade.
-                InitiationGrade objGrade = CommonFunctions.FindById(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.InitiationGrades);
+                InitiationGrade objGrade = CharacterObject.InitiationGrades.FindById(treMetamagic.SelectedNode.Tag.ToString());
                 if (objGrade == null)
                     return;
 
@@ -5418,7 +5418,7 @@ namespace Chummer
                     strMessage = LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language);
                 else if (CharacterObject.RESEnabled)
                     strMessage = LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language);
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, strMessage))
+                if (!CharacterObject.ConfirmDelete(strMessage))
                     return;
 
                 // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
@@ -5536,12 +5536,12 @@ namespace Chummer
             {
                 // We're deleting a single bonus attached to a grade
                 string strItemId = treMetamagic.SelectedNode.Tag.ToString();
-                Art objArt = CommonFunctions.FindByIdWithNameCheck(strItemId, CharacterObject.Arts);
+                Art objArt = CharacterObject.Arts.FindById(strItemId);
                 if (objArt != null)
                 {
                     string strMessage = string.Empty;
                     strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, strMessage))
+                    if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
                     CharacterObject.Arts.Remove(objArt);
@@ -5549,7 +5549,7 @@ namespace Chummer
                     return;
                 }
 
-                Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(strItemId, CharacterObject.Metamagics);
+                Metamagic objMetamagic = CharacterObject.Metamagics.FindById(strItemId);
                 if (objMetamagic != null)
                 {
                     string strMessage = string.Empty;
@@ -5557,7 +5557,7 @@ namespace Chummer
                         strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
                     else if (CharacterObject.RESEnabled)
                         strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, strMessage))
+                    if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
                     CharacterObject.Metamagics.Remove(objMetamagic);
@@ -5571,7 +5571,7 @@ namespace Chummer
                 {
                     string strMessage = string.Empty;
                     strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, strMessage))
+                    if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
                     CharacterObject.Enhancements.Remove(objEnhancement);
@@ -5584,12 +5584,12 @@ namespace Chummer
                     return;
                 }
 
-                Spell objSpell = CommonFunctions.FindByIdWithNameCheck(strItemId, CharacterObject.Spells);
+                Spell objSpell = CharacterObject.Spells.FindById(strItemId);
                 if (objSpell != null)
                 {
                     string strMessage = string.Empty;
                     strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, strMessage))
+                    if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
                     CharacterObject.Spells.Remove(objSpell);
@@ -5686,11 +5686,11 @@ namespace Chummer
             if (treCritterPowers.SelectedNode == null || treCritterPowers.SelectedNode.Level <= 0)
                 return;
 
-            if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteCritterPower", GlobalOptions.Language)))
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower", GlobalOptions.Language)))
                 return;
 
             // Locate the selected Critter Power.
-            CritterPower objPower = CommonFunctions.FindByIdWithNameCheck(treCritterPowers.SelectedNode.Tag.ToString(), CharacterObject.CritterPowers);
+            CritterPower objPower = CharacterObject.CritterPowers.FindById(treCritterPowers.SelectedNode.Tag.ToString());
 
             // Remove any Improvements that were created by the Critter Power.
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
@@ -5708,11 +5708,11 @@ namespace Chummer
             // Delete the selected Complex Form.
             if (treComplexForms.SelectedNode.Level == 1)
             {
-                if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteComplexForm", GlobalOptions.Language)))
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm", GlobalOptions.Language)))
                     return;
 
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CommonFunctions.FindByIdWithNameCheck(treComplexForms.SelectedNode.Tag.ToString(), CharacterObject.ComplexForms);
+                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
                 if (objProgram == null)
                     return;
@@ -5736,11 +5736,11 @@ namespace Chummer
             if (treAIPrograms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                AIProgram objProgram = CommonFunctions.FindByIdWithNameCheck(treAIPrograms.SelectedNode.Tag.ToString(), CharacterObject.AIPrograms);
+                AIProgram objProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode.Tag.ToString());
 
                 if (objProgram != null && objProgram.CanDelete)
                 {
-                    if (!CommonFunctions.ConfirmDelete(CharacterObject, LanguageManager.GetString("Message_DeleteAIProgram", GlobalOptions.Language)))
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram", GlobalOptions.Language)))
                         return;
 
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
@@ -6089,7 +6089,7 @@ namespace Chummer
                 string strBP = intShowBP.ToString();
                 strBP += " " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
-                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(CharacterObject, blnCompleteDelete ?
+                if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ?
                                                                         LanguageManager.GetString("Message_DeleteMetatypeQuality", GlobalOptions.Language).Replace("{0}", strBP) :
                                                                         LanguageManager.GetString("Message_LowerMetatypeQualityLevel", GlobalOptions.Language).Replace("{0}", strBP)))
                     return false;
@@ -6117,7 +6117,7 @@ namespace Chummer
             }
             else
             {
-                if (blnConfirmDelete &&!CommonFunctions.ConfirmDelete(CharacterObject, blnCompleteDelete ? LanguageManager.GetString("Message_DeleteQuality", GlobalOptions.Language) : LanguageManager.GetString("Message_LowerQualityLevel", GlobalOptions.Language)))
+                if (blnConfirmDelete &&!CharacterObject.ConfirmDelete(blnCompleteDelete ? LanguageManager.GetString("Message_DeleteQuality", GlobalOptions.Language) : LanguageManager.GetString("Message_LowerQualityLevel", GlobalOptions.Language)))
                     return false;
             }
 
@@ -6178,7 +6178,7 @@ namespace Chummer
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    CommonFunctions.FindNode(strNodeId, treWeapons)?.Remove();
+                    treWeapons.FindNode(strNodeId)?.Remove();
                 }
             }
 
@@ -6198,7 +6198,7 @@ namespace Chummer
             if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
                 return;
 
-            Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
+            Quality objSelectedQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
             string strInternalIDToRemove = objSelectedQuality.QualityId;
             // Can't do a foreach because we're removing items, this is the next best thing
             bool blnFirstRemoval = true;
@@ -6635,7 +6635,7 @@ namespace Chummer
             Vehicle objVehicle = null;
             if (treVehicles.SelectedNode != null && treVehicles.SelectedNode.Level == 1)
             {
-                objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+                objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
             }
             else
             {
@@ -6724,7 +6724,7 @@ namespace Chummer
             }
 
             // Locate the Weapon that is selected in the Tree.
-            Weapon objWeapon = CommonFunctions.DeepFindById(objSelectedNode.Tag.ToString(), CharacterObject.Weapons);
+            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
 
             if (objWeapon == null)
             {
@@ -6860,7 +6860,7 @@ namespace Chummer
             }
 
             // Locate the Armor that is selected in the tree.
-            Armor objArmor = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Armor);
+            Armor objArmor = CharacterObject.Armor.FindById(objSelectedNode.Tag.ToString());
 
             // Open the Armor XML file and locate the selected Armor.
             XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
@@ -6957,7 +6957,7 @@ namespace Chummer
 
 		private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
 		{
-            Vehicle v = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle v = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
             if (v == null) return;
             frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(v, CharacterObject);
 			frmPickVehicleMod.ShowDialog(this);
@@ -7006,7 +7006,7 @@ namespace Chummer
                 return;
             }
 
-            Vehicle objSelectedVehicle = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString());
             // Open the Vehicles XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
@@ -7378,7 +7378,7 @@ namespace Chummer
                 return;
             }
 
-            MartialArt objMartialArt = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArts);
+            MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
 
             if (objMartialArt == null)
             {
@@ -7428,7 +7428,7 @@ namespace Chummer
             }
 
             // Locate the selected Vehicle.
-            Vehicle objSelectedVehicle = CommonFunctions.FindByIdWithNameCheck(objSelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(objSelectedNode.Tag.ToString());
             if (objSelectedVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7722,7 +7722,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Weapon.
-            Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
             if (objWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7754,7 +7754,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Gear.
-            Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objGear == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGear", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7788,7 +7788,7 @@ namespace Chummer
             }
 
             // Locate the Weapon that is selected in the tree.
-            Weapon objSelectedWeapon = CommonFunctions.DeepFindById(objSelectedNode.Tag.ToString(), CharacterObject.Weapons);
+            Weapon objSelectedWeapon = CharacterObject.Weapons.DeepFindById(objSelectedNode.Tag.ToString());
             if (objSelectedWeapon == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectWeaponUnderbarrel", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7906,7 +7906,7 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            Gear g = CommonFunctions.FindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+            Gear g = CharacterObject.Gear.FindById(treGear.SelectedNode.Tag.ToString());
             g.Extra = frmPickText.SelectedValue;
             treGear.SelectedNode.Text = g.DisplayName(GlobalOptions.Language);
             IsDirty = true;
@@ -7925,7 +7925,7 @@ namespace Chummer
             }
 
             // Attempt to locate the selected Vehicle.
-            Vehicle objSelectedVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle objSelectedVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
             if (objSelectedVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectGearVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectGearVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8037,7 +8037,7 @@ namespace Chummer
         {
             if (treArmor.SelectedNode == null)
                 return;
-            Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+            Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
             if (objArmor != null)
             {
                 string strOldValue = objArmor.Notes;
@@ -8101,7 +8101,7 @@ namespace Chummer
         {
             if (treLimit.SelectedNode == null)
                 return;
-            LimitModifier obLimitModifier = CommonFunctions.FindByIdWithNameCheck(treLimit.SelectedNode.Tag.ToString(), CharacterObject.LimitModifiers);
+            LimitModifier obLimitModifier = CharacterObject.LimitModifiers.FindById(treLimit.SelectedNode.Tag.ToString());
             if (obLimitModifier != null)
             {
                 string strOldValue = obLimitModifier.Notes;
@@ -8198,7 +8198,7 @@ namespace Chummer
             if (treWeapons.SelectedNode == null)
                 return;
 
-            Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+            Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
             if (objWeapon != null)
             {
                 string strOldValue = objWeapon.Notes;
@@ -8265,7 +8265,7 @@ namespace Chummer
         {
             if (treCyberware.SelectedNode == null)
                 return;
-            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
             if (objCyberware != null)
             {
                 string strOldValue = objCyberware.Notes;
@@ -8299,7 +8299,7 @@ namespace Chummer
             if (treQualities.SelectedNode == null)
                 return;
 
-            Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
+            Quality objQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
             if (objQuality != null)
             {
                 string strOldValue = objQuality.Notes;
@@ -8335,7 +8335,7 @@ namespace Chummer
             if (treMartialArts.SelectedNode == null)
                 return;
 
-            MartialArt objMartialArt = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArts);
+            MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
             if (objMartialArt != null)
             {
                 string strOldValue = objMartialArt.Notes;
@@ -8368,7 +8368,7 @@ namespace Chummer
             if (treMartialArts.SelectedNode == null)
                 return;
 
-            MartialArtManeuver objMartialArtManeuver = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArtManeuvers);
+            MartialArtManeuver objMartialArtManeuver = CharacterObject.MartialArtManeuvers.FindById(treMartialArts.SelectedNode.Tag.ToString());
             if (objMartialArtManeuver != null)
             {
                 string strOldValue = objMartialArtManeuver.Notes;
@@ -8400,7 +8400,7 @@ namespace Chummer
             if (treSpells.SelectedNode == null)
                 return;
 
-            Spell objSpell = CommonFunctions.FindByIdWithNameCheck(treSpells.SelectedNode.Tag.ToString(), CharacterObject.Spells);
+            Spell objSpell = CharacterObject.Spells.FindById(treSpells.SelectedNode.Tag.ToString());
             if (objSpell != null)
             {
                 string strOldValue = objSpell.Notes;
@@ -8432,7 +8432,7 @@ namespace Chummer
             if (treComplexForms.SelectedNode == null)
                 return;
 
-            ComplexForm objComplexForm = CommonFunctions.FindByIdWithNameCheck(treComplexForms.SelectedNode.Tag.ToString(), CharacterObject.ComplexForms);
+            ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
             if (objComplexForm != null)
             {
                 string strOldValue = objComplexForm.Notes;
@@ -8464,7 +8464,7 @@ namespace Chummer
             if (treComplexForms.SelectedNode == null)
                 return;
 
-            AIProgram objAIProgram = CommonFunctions.FindByIdWithNameCheck(treAIPrograms.SelectedNode.Tag.ToString(), CharacterObject.AIPrograms);
+            AIProgram objAIProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode.Tag.ToString());
             if (objAIProgram != null)
             {
                 string strOldValue = objAIProgram.Notes;
@@ -8498,7 +8498,7 @@ namespace Chummer
             if (treCritterPowers.SelectedNode == null)
                 return;
 
-            CritterPower objCritterPower = CommonFunctions.FindByIdWithNameCheck(treCritterPowers.SelectedNode.Tag.ToString(), CharacterObject.CritterPowers);
+            CritterPower objCritterPower = CharacterObject.CritterPowers.FindById(treCritterPowers.SelectedNode.Tag.ToString());
             if (objCritterPower != null)
             {
                 string strOldValue = objCritterPower.Notes;
@@ -8530,7 +8530,7 @@ namespace Chummer
             if (treMetamagic.SelectedNode == null)
                 return;
 
-            Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Metamagics);
+            Metamagic objMetamagic = CharacterObject.Metamagics.FindById(treMetamagic.SelectedNode.Tag.ToString());
             if (objMetamagic != null)
             {
                 string strOldValue = objMetamagic.Notes;
@@ -8562,7 +8562,7 @@ namespace Chummer
             if (treGear.SelectedNode == null)
                 return;
 
-            Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objGear != null)
             {
                 string strOldValue = objGear.Notes;
@@ -8596,7 +8596,7 @@ namespace Chummer
             if (treGear.SelectedNode == null)
                 return;
 
-            Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+            Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objGear != null)
             {
                 string strOldValue = objGear.Notes;
@@ -8712,7 +8712,7 @@ namespace Chummer
             if (treLifestyles.SelectedNode == null)
                 return;
 
-            Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), CharacterObject.Lifestyles);
+            Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
             if (objLifestyle != null)
             {
                 string strOldValue = objLifestyle.Notes;
@@ -8787,7 +8787,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Vehicle.
-            Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
             if (objVehicle == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectVehicleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectVehicle", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -9000,7 +9000,7 @@ namespace Chummer
             }
 
             // Get the information for the currently selected Armor.
-            Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+            Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
             if (objArmor == null)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SelectArmorName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectArmor", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -10022,7 +10022,7 @@ namespace Chummer
                 return;
             }
 
-            Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
+            Quality objQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
 
             string strBook = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
             string strPage = objQuality.Page(GlobalOptions.Language);
@@ -10077,7 +10077,7 @@ namespace Chummer
             if (nudQualityLevel.Enabled && treQualities.SelectedNode != null && treQualities.SelectedNode.Level > 0)
             {
                 // Locate the selected Quality.
-                Quality objSelectedQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
+                Quality objSelectedQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
                 int intCurrentLevels = objSelectedQuality.Levels;
 
                 XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
@@ -10271,7 +10271,7 @@ namespace Chummer
             if (!_blnSkipRefresh && !_blnLoading)
             {
                 // Locate the selected piece of Cyberware.
-                Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
                 if (objCyberware == null)
                     return;
 
@@ -10298,7 +10298,7 @@ namespace Chummer
             if (!_blnSkipRefresh)
             {
                 // Locate the selected piece of Cyberware.
-                Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
                 if (objCyberware != null)
                 {
                     // Update the selected Cyberware Rating.
@@ -10316,7 +10316,7 @@ namespace Chummer
             if (!_blnSkipRefresh)
             {
                 // Locate the selected piece of Cyberware.
-                Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
                 if (objCyberware != null)
                 {
                     // Update the selected Cyberware Rating.
@@ -10666,7 +10666,7 @@ namespace Chummer
                     _blnSkipRefresh = true;
 
                     // Locate the selected Lifestyle.
-                    Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), CharacterObject.Lifestyles);
+                    Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
                     if (objLifestyle == null)
                         return;
 
@@ -10694,7 +10694,7 @@ namespace Chummer
 
             if (treGear.SelectedNode.Level > 0)
             {
-                Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
                 if (objGear == null)
                     return;
 
@@ -10737,7 +10737,7 @@ namespace Chummer
             // Attempt to locate the selected piece of Gear.
             if (treGear.SelectedNode.Level > 0)
             {
-                Gear objSelectedGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                Gear objSelectedGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
 
                 if (objSelectedGear != null)
                 {
@@ -10758,7 +10758,7 @@ namespace Chummer
             // Locate the selected Armor or Armor Mod.
             if (treArmor.SelectedNode.Level == 1)
             {
-                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+                Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
                 if (objArmor != null)
                 {
                     objArmor.Equipped = chkArmorEquipped.Checked;
@@ -10900,7 +10900,7 @@ namespace Chummer
             else
             {
                 // Determine if this is an Underbarrel Weapon.
-                Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+                Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
                 if (objWeapon != null)
                 {
                     objWeapon.Installed = chkWeaponAccessoryInstalled.Checked;
@@ -11031,7 +11031,7 @@ namespace Chummer
                 return;
 
             // Attempt to locate the selected piece of Gear.
-            Gear objSelectedGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objSelectedGear != null)
             {
                 objSelectedGear.Equipped = chkGearEquipped.Checked;
@@ -11052,7 +11052,7 @@ namespace Chummer
             string strGuid = treGear.SelectedNode?.Tag.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(strGuid))
             {
-                IHasMatrixAttributes objCommlink = CommonFunctions.DeepFindById(strGuid, CharacterObject.Gear.DeepWhere(x => x.Children, x => x.IsCommlink));
+                IHasMatrixAttributes objCommlink = CharacterObject.Gear.DeepFindById(strGuid);
                 if (objCommlink != null)
                 {
                     objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
@@ -11122,7 +11122,7 @@ namespace Chummer
                 return;
 
             // Attempt to locate the selected piece of Gear.
-            IHasMatrixAttributes objSelectedCommlink = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.DeepWhere(x => x.Children, x => x.IsCommlink));
+            IHasMatrixAttributes objSelectedCommlink = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objSelectedCommlink != null)
             {
                 objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
@@ -11146,7 +11146,7 @@ namespace Chummer
             if (treCyberware.SelectedNode != null)
             {
                 string strGuid = treCyberware.SelectedNode.Tag.ToString();
-                IHasMatrixAttributes objSelectedCommlink = CommonFunctions.DeepFindById(strGuid, CharacterObject.Cyberware);
+                IHasMatrixAttributes objSelectedCommlink = CharacterObject.Cyberware.DeepFindById(strGuid);
                 if (objSelectedCommlink == null)
                 {
                     objSelectedCommlink = CommonFunctions.FindCyberwareGear(strGuid, CharacterObject.Cyberware);
@@ -11206,7 +11206,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.GetAllDescendants(x => x.Children));
+            IHasMatrixAttributes objTarget = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearAttack, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 ScheduleCharacterUpdate();
@@ -11222,7 +11222,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.GetAllDescendants(x => x.Children));
+            IHasMatrixAttributes objTarget = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearSleaze, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 ScheduleCharacterUpdate();
@@ -11238,7 +11238,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.GetAllDescendants(x => x.Children));
+            IHasMatrixAttributes objTarget = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearDataProcessing, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 ScheduleCharacterUpdate();
@@ -11254,7 +11254,7 @@ namespace Chummer
 
             _blnLoading = true;
 
-            IHasMatrixAttributes objTarget = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear.GetAllDescendants(x => x.Children));
+            IHasMatrixAttributes objTarget = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboGearFirewall, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 ScheduleCharacterUpdate();
@@ -11271,7 +11271,7 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode.Tag.ToString();
-            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, CharacterObject.Vehicles);
+            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid);
             if (objTarget == null)
             {
                 objTarget = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
@@ -11294,7 +11294,7 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode.Tag.ToString();
-            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, CharacterObject.Vehicles);
+            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid);
             if (objTarget == null)
             {
                 objTarget = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
@@ -11317,7 +11317,7 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode.Tag.ToString();
-            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, CharacterObject.Vehicles);
+            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid);
             if (objTarget == null)
             {
                 objTarget = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
@@ -11340,7 +11340,7 @@ namespace Chummer
             _blnLoading = true;
 
             string strGuid = treVehicles.SelectedNode.Tag.ToString();
-            IHasMatrixAttributes objTarget = CommonFunctions.FindById(strGuid, CharacterObject.Vehicles);
+            IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid);
             if (objTarget == null)
             {
                 objTarget = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
@@ -11538,7 +11538,7 @@ namespace Chummer
             string strGuid = treVehicles.SelectedNode?.Tag.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(strGuid))
             {
-                IHasMatrixAttributes objTarget = CommonFunctions.FindByIdWithNameCheck(strGuid, CharacterObject.Vehicles);
+                IHasMatrixAttributes objTarget = CharacterObject.Vehicles.FindById(strGuid);
                 if (objTarget == null)
                 {
                     objTarget = CommonFunctions.FindVehicleGear(strGuid, CharacterObject.Vehicles);
@@ -11568,7 +11568,7 @@ namespace Chummer
             if (treSpells.SelectedNode.Level > 0)
             {
                 // Locate the selected Spell.
-                Spell objSpell = CommonFunctions.FindByIdWithNameCheck(e.Node.Tag.ToString(), CharacterObject.Spells);
+                Spell objSpell = CharacterObject.Spells.FindById(e.Node.Tag.ToString());
 
                 lblSpellDescriptors.Text = objSpell.DisplayDescriptors(GlobalOptions.Language);
                 lblSpellCategory.Text = objSpell.DisplayCategory(GlobalOptions.Language);
@@ -11619,7 +11619,7 @@ namespace Chummer
                 Focus objFocus = CharacterObject.Foci.FirstOrDefault(x => x.GearId == e.Node.Tag.ToString());
 
                 // Mark the Gear as not Bonded and remove any Improvements.
-                Gear objGear = objFocus != null ? CommonFunctions.DeepFindById(objFocus.GearId, CharacterObject.Gear) : null;
+                Gear objGear = objFocus != null ? CharacterObject.Gear.DeepFindById(objFocus.GearId) : null;
 
                 if (objGear != null)
                 {
@@ -11655,7 +11655,7 @@ namespace Chummer
                 return;
 
             // Locate the Focus that is being touched.
-            Gear objSelectedFocus = CommonFunctions.DeepFindById(e.Node.Tag.ToString(), CharacterObject.Gear);
+            Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(e.Node.Tag.ToString());
 
             // Set the Focus count to 1 and get its current Rating (Force). This number isn't used in the following loops because it isn't yet checked or unchecked.
             int intFociCount = 1;
@@ -11780,7 +11780,7 @@ namespace Chummer
                 StackedFocus objStack = CharacterObject.StackedFoci.FirstOrDefault(x => x.InternalId == e.Node.Tag.ToString());
                 if (objStack != null)
                 {
-                    Gear objStackGear = CommonFunctions.DeepFindById(objStack.GearId, CharacterObject.Gear);
+                    Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
                     if (objStackGear.Equipped)
                     {
                         foreach (Gear objGear in objStack.Gear)
@@ -11868,7 +11868,7 @@ namespace Chummer
 
             else
             {
-                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+                Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
                 objArmor.Rating = decimal.ToInt32(nudArmorRating.Value);
                 treArmor.SelectedNode.Text = objArmor.DisplayName(GlobalOptions.Language);
             }
@@ -12073,7 +12073,7 @@ namespace Chummer
             if (treComplexForms.SelectedNode != null && treComplexForms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CommonFunctions.FindByIdWithNameCheck(treComplexForms.SelectedNode.Tag.ToString(), CharacterObject.ComplexForms);
+                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
                 if (objProgram != null)
                 {
@@ -12101,7 +12101,7 @@ namespace Chummer
             if (treComplexForms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CommonFunctions.FindByIdWithNameCheck(treComplexForms.SelectedNode.Tag.ToString(), CharacterObject.ComplexForms);
+                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
                 if (objProgram != null)
                 {
@@ -12128,7 +12128,7 @@ namespace Chummer
             if (treAIPrograms.SelectedNode != null && treAIPrograms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                AIProgram objProgram = CommonFunctions.FindByIdWithNameCheck(treAIPrograms.SelectedNode.Tag.ToString(), CharacterObject.AIPrograms);
+                AIProgram objProgram = CharacterObject.AIPrograms.FindById(treAIPrograms.SelectedNode.Tag.ToString());
 
                 if (objProgram != null)
                 {
@@ -12165,7 +12165,7 @@ namespace Chummer
         private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Metamagic.
-            Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Metamagics);
+            Metamagic objMetamagic = CharacterObject.Metamagics.FindById(treMetamagic.SelectedNode.Tag.ToString());
 
             if (objMetamagic != null)
             {
@@ -12177,7 +12177,7 @@ namespace Chummer
             }
 
             // Locate the selected Art.
-            Art objArt = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Arts);
+            Art objArt = CharacterObject.Arts.FindById(treMetamagic.SelectedNode.Tag.ToString());
 
             if (objArt != null)
             {
@@ -12189,7 +12189,7 @@ namespace Chummer
             }
 
             // Locate the selected Spell.
-            Spell objSpell = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Spells);
+            Spell objSpell = CharacterObject.Spells.FindById(treMetamagic.SelectedNode.Tag.ToString());
 
             if (objSpell != null)
             {
@@ -12233,7 +12233,7 @@ namespace Chummer
             lblCritterPowerPointCostLabel.Visible = false;
             if (treCritterPowers.SelectedNode != null && treCritterPowers.SelectedNode.Level > 0)
             {
-                CritterPower objPower = CommonFunctions.FindByIdWithNameCheck(treCritterPowers.SelectedNode.Tag.ToString(), CharacterObject.CritterPowers);
+                CritterPower objPower = CharacterObject.CritterPowers.FindById(treCritterPowers.SelectedNode.Tag.ToString());
 
                 if (objPower != null)
                 {
@@ -12264,7 +12264,7 @@ namespace Chummer
                 return;
 
             // Locate the selected Critter Power.
-            CritterPower objPower = CommonFunctions.FindByIdWithNameCheck(treCritterPowers.SelectedNode.Tag.ToString(), CharacterObject.CritterPowers);
+            CritterPower objPower = CharacterObject.CritterPowers.FindById(treCritterPowers.SelectedNode.Tag.ToString());
 
             objPower.CountTowardsLimit = chkCritterPowerCount.Checked;
 
@@ -14094,7 +14094,7 @@ namespace Chummer
             }
 
             // Locate the selected piece of Cyberware.
-            Cyberware objCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
             if (objCyberware != null)
             {
                 if (!string.IsNullOrEmpty(objCyberware.ParentID))
@@ -14443,7 +14443,7 @@ namespace Chummer
             // Locate the selected Weapon.
             if (treWeapons.SelectedNode.Level == 1)
             {
-                Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+                Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
                 if (objWeapon == null)
                     return;
 
@@ -14502,7 +14502,7 @@ namespace Chummer
             else
             {
                 // See if this is an Underbarrel Weapon.
-                Weapon objWeapon = CommonFunctions.DeepFindById(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons);
+                Weapon objWeapon = CharacterObject.Weapons.DeepFindById(treWeapons.SelectedNode.Tag.ToString());
                 if (objWeapon != null && objWeapon.IsUnderbarrelWeapon)
                 {
                     if (objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
@@ -14717,7 +14717,7 @@ namespace Chummer
             if (treArmor.SelectedNode.Level == 1)
             {
                 // Loclate the selected Armor
-                Armor objArmor = CommonFunctions.FindByIdWithNameCheck(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+                Armor objArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
                 if (objArmor == null)
                 {
                     _blnSkipRefresh = false;
@@ -15051,7 +15051,7 @@ namespace Chummer
 
             if (treGear.SelectedNode.Level > 0)
             {
-                Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
 
                 if (objGear.IncludedInParent)
                     cmdDeleteGear.Enabled = false;
@@ -15292,7 +15292,7 @@ namespace Chummer
 
             // Attempt to locate the selected piece of Cyberware.
             if (treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level > 0)
-                objSelectedCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+                objSelectedCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
 
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware?.GetNode());
             decimal decMultiplier = 1.0m;
@@ -15571,7 +15571,7 @@ namespace Chummer
         private bool PickGear(TreeNode n)
         {
             bool blnNullParent = false;
-            Gear objSelectedGear = CommonFunctions.DeepFindById(n.Tag.ToString(), CharacterObject.Gear);
+            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(n.Tag.ToString());
             if (objSelectedGear == null)
             {
                 objSelectedGear = new Gear(CharacterObject);
@@ -15696,7 +15696,7 @@ namespace Chummer
         private bool PickArmorGear(bool blnShowArmorCapacityOnly = false)
         {
             Gear objSelectedGear = null;
-            Armor objSelectedArmor = CommonFunctions.FindById(treArmor.SelectedNode.Tag.ToString(), CharacterObject.Armor);
+            Armor objSelectedArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
             ArmorMod objSelectedMod = null;
 
             if (treArmor.SelectedNode.Level > 1)
@@ -15875,7 +15875,7 @@ namespace Chummer
             nudLifestyleMonths.Enabled = true;
 
             // Locate the selected Lifestyle.
-            Lifestyle objLifestyle = CommonFunctions.FindByIdWithNameCheck(treLifestyles.SelectedNode.Tag.ToString(), CharacterObject.Lifestyles);
+            Lifestyle objLifestyle = CharacterObject.Lifestyles.FindById(treLifestyles.SelectedNode.Tag.ToString());
             if (objLifestyle == null)
             {
                 _blnSkipRefresh = false;
@@ -16099,7 +16099,7 @@ namespace Chummer
             
             if (treVehicles.SelectedNode.Level == 1)
             {
-                Vehicle objVehicle = CommonFunctions.FindByIdWithNameCheck(treVehicles.SelectedNode.Tag.ToString(), CharacterObject.Vehicles);
+                Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
                 if (objVehicle == null)
                 {
                     _blnSkipRefresh = false;
@@ -16384,7 +16384,7 @@ namespace Chummer
 
                         foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                         {
-                            objWeapon = CommonFunctions.DeepFindById(treVehicles.SelectedNode.Tag.ToString(), objVehicle.Weapons);
+                            objWeapon = objVehicle.Weapons.DeepFindById(treVehicles.SelectedNode.Tag.ToString());
                             if (objWeapon != null)
                             {
                                 objCurrentVehicle = objVehicle;
@@ -20150,7 +20150,7 @@ namespace Chummer
                 if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
                 {
                     // Update the name of the item in the TreeView.
-                    TreeNode objNode = CommonFunctions.FindNode(objGear.InternalId, treVehicles);
+                    TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
                     objNode.Text = objGear.DisplayName(GlobalOptions.Language);
                 }
             }
@@ -20269,7 +20269,7 @@ namespace Chummer
                 objSensor.Page = objNewSensor.Page;
 
                 // Update the name of the item in the TreeView.
-                TreeNode objNode = CommonFunctions.FindNode(objSensor.InternalId, treVehicles);
+                TreeNode objNode = treVehicles.FindNode(objSensor.InternalId);
                 objNode.Text = objSensor.DisplayNameShort(GlobalOptions.Language);
             }
         }
@@ -20416,7 +20416,7 @@ namespace Chummer
                     if (GlobalOptions.ClipboardContentType == ClipboardContentType.Gear || GlobalOptions.ClipboardContentType == ClipboardContentType.OperatingSystem)
                         blnPasteEnabled = true;
 
-                    Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
+                    Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
                     if (objGear != null)
                         blnCopyEnabled = true;
                 }
@@ -20778,7 +20778,7 @@ namespace Chummer
                     else if (objGear.IncludedInParent)
                         objNode.ForeColor = SystemColors.GrayText;
 
-                    CommonFunctions.BuildGearTree(objGear, objNode, cmsGear);
+                    objGear.BuildGearTree(objNode, cmsGear);
 
                     objNode.ContextMenuStrip = cmsGear;
 
@@ -20813,12 +20813,12 @@ namespace Chummer
                 // Populate Cyberware.
                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                 {
-                    CommonFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[objCyberware.IsModularCurrentlyEquipped ? 0 : 2], cmsCyberware, cmsCyberwareGear);
+                    CommonFunctions.CreateCyberwareTreeNode(objCyberware, treCyberware.Nodes[objCyberware.IsModularCurrentlyEquipped ? 0 : 2], cmsCyberware, cmsCyberwareGear);
                 }
                 // Populate Bioware.
                 else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                 {
-                    CommonFunctions.BuildCyberwareTree(objCyberware, treCyberware.Nodes[1], cmsCyberware, cmsCyberwareGear);
+                    CommonFunctions.CreateCyberwareTreeNode(objCyberware, treCyberware.Nodes[1], cmsCyberware, cmsCyberwareGear);
                 }
             }
         }
@@ -21069,7 +21069,7 @@ namespace Chummer
             if (treMetamagic.SelectedNode == null)
                 return;
             // Locate the selected Metamagic.
-            Metamagic objMetamagic = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Metamagics);
+            Metamagic objMetamagic = CharacterObject.Metamagics.FindById(treMetamagic.SelectedNode.Tag.ToString());
             if (objMetamagic != null)
             {
                 string strOldValue = objMetamagic.Notes;
@@ -21099,7 +21099,7 @@ namespace Chummer
             }
 
             // Locate the selected Art.
-            Art objArt = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Arts);
+            Art objArt = CharacterObject.Arts.FindById(treMetamagic.SelectedNode.Tag.ToString());
             if (objArt != null)
             {
                 string strOldValue = objArt.Notes;
@@ -21127,7 +21127,7 @@ namespace Chummer
             }
 
             // Locate the selected Spell.
-            Spell objSpell = CommonFunctions.FindByIdWithNameCheck(treMetamagic.SelectedNode.Tag.ToString(), CharacterObject.Spells);
+            Spell objSpell = CharacterObject.Spells.FindById(treMetamagic.SelectedNode.Tag.ToString());
             if (objSpell != null)
             {
                 string strOldValue = objSpell.Notes;
@@ -21640,7 +21640,7 @@ namespace Chummer
         {
             if (treCyberware.SelectedNode == null)
                 return;
-            Cyberware objModularCyberware = CommonFunctions.DeepFindById(treCyberware.SelectedNode.Tag.ToString(), CharacterObject.Cyberware);
+            Cyberware objModularCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
             if (objModularCyberware == null)
                 return;
             Cyberware objOldParent = objModularCyberware.Parent;
@@ -21667,8 +21667,8 @@ namespace Chummer
             }
             else
             {
-                Cyberware objNewParent = CommonFunctions.DeepFindById(strSelectedParentID, CharacterObject.Cyberware);
-                TreeNode objNewNode = CommonFunctions.FindNode(strSelectedParentID, treCyberware);
+                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                TreeNode objNewNode = treCyberware.FindNode(strSelectedParentID);
                 if (objNewParent != null && objNewNode != null)
                 {
                     CommonFunctions.MoveCyberwareNode(CharacterObject, int.MaxValue, objNewParent.Children, objNewNode, treCyberware);
@@ -21682,7 +21682,7 @@ namespace Chummer
                         objNewParent = CommonFunctions.FindVehicleCyberware(strSelectedParentID, CharacterObject.Vehicles, out objNewVehicleModParent);
                     else
                         objNewParent = null;
-                    objNewNode = CommonFunctions.FindNode(strSelectedParentID, treVehicles);
+                    objNewNode = treVehicles.FindNode(strSelectedParentID);
                     if ((objNewVehicleModParent != null || objNewParent != null) && objNewNode != null)
                     {
                         CommonFunctions.MoveCyberwareNode(CharacterObject, int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treCyberware);
@@ -21734,8 +21734,8 @@ namespace Chummer
             }
             else
             {
-                Cyberware objNewParent = CommonFunctions.DeepFindById(strSelectedParentID, CharacterObject.Cyberware);
-                TreeNode objNewNode = CommonFunctions.FindNode(strSelectedParentID, treCyberware);
+                Cyberware objNewParent = CharacterObject.Cyberware.DeepFindById(strSelectedParentID);
+                TreeNode objNewNode = treCyberware.FindNode(strSelectedParentID);
                 if (objNewParent != null && objNewNode != null)
                 {
                     CommonFunctions.MoveCyberwareNode(CharacterObject, int.MaxValue, objNewParent.Children, objNewNode, treVehicles);
@@ -21750,7 +21750,7 @@ namespace Chummer
                         objNewParent = CommonFunctions.FindVehicleCyberware(strSelectedParentID, CharacterObject.Vehicles, out objNewVehicleModParent);
                     else
                         objNewParent = null;
-                    objNewNode = CommonFunctions.FindNode(strSelectedParentID, treVehicles);
+                    objNewNode = treVehicles.FindNode(strSelectedParentID);
                     if ((objNewVehicleModParent != null || objNewParent != null) && objNewNode != null)
                     {
                         CommonFunctions.MoveCyberwareNode(CharacterObject, int.MaxValue, objNewParent == null ? objNewVehicleModParent.Cyberware : objNewParent.Children, objNewNode, treVehicles);

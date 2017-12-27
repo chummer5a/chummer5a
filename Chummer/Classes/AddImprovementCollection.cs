@@ -3466,7 +3466,7 @@ namespace Chummer.Classes
             string strNodeOuterXml = bonusNode.OuterXml;
             Log.Info("hardwire = " + strNodeOuterXml);
             Log.Info("Calling CreateImprovement");
-            Cyberware objCyberware = CommonFunctions.DeepFindById(SourceName, _objCharacter.Cyberware);
+            Cyberware objCyberware = _objCharacter.Cyberware.DeepFindById(SourceName);
             if (objCyberware == null)
             {
                 Log.Info("_strSelectedValue = " + SelectedValue);

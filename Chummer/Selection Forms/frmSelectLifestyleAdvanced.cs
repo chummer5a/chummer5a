@@ -455,10 +455,8 @@ namespace Chummer
                 return;
             }
             LifestyleQuality objQuality =
-                    CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
-                        _objLifestyle.LifestyleQualities) ??
-                    CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
-                            _objLifestyle.FreeGrids);
+                    _objLifestyle.LifestyleQualities.FindById(treLifestyleQualities.SelectedNode.Tag.ToString()) ??
+                    _objLifestyle.FreeGrids.FindById(treLifestyleQualities.SelectedNode.Tag.ToString());
             lblQualityLp.Text = objQuality.LP.ToString();
             lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page(GlobalOptions.Language)}";

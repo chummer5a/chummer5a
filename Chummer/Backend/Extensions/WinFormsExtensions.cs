@@ -58,6 +58,29 @@ namespace Chummer
                 objReturn = objReturn.Parent;
             return objReturn;
         }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeNode based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="objNode">TreeNode to search.</param>
+        public static TreeNode FindNode(this TreeNode objNode, string strGuid)
+        {
+            if (objNode != null && strGuid != Guid.Empty.ToString())
+            {
+                TreeNode objFound;
+                foreach (TreeNode objChild in objNode.Nodes)
+                {
+                    if (objChild.Tag.ToString() == strGuid)
+                        return objChild;
+
+                    objFound = objChild.FindNode(strGuid);
+                    if (objFound != null)
+                        return objFound;
+                }
+            }
+            return null;
+        }
         #endregion
 
         #region TreeView Extensions
@@ -247,6 +270,29 @@ namespace Chummer
         public static void ClearNodeBackground(this TreeView treView, TreeNode objHighlighted)
         {
             treView?.Nodes.ClearNodeBackground(objHighlighted);
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeView based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="treTree">TreeView to search.</param>
+        public static TreeNode FindNode(this TreeView treTree, string strGuid)
+        {
+            if (treTree != null && strGuid != Guid.Empty.ToString())
+            {
+                TreeNode objFound;
+                foreach (TreeNode objNode in treTree.Nodes)
+                {
+                    if (objNode.Tag.ToString() == strGuid)
+                        return objNode;
+
+                    objFound = objNode.FindNode(strGuid);
+                    if (objFound != null)
+                        return objFound;
+                }
+            }
+            return null;
         }
         #endregion
 

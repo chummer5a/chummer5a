@@ -659,7 +659,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            Gear objGear = CommonFunctions.DeepFindById(ParentID, lstGearToSearch);
+            Gear objGear = lstGearToSearch.DeepFindById(ParentID);
 
             objWriter.WriteStartElement("weapon");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
@@ -773,11 +773,8 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             else
             {
-                Gear objAmmo = CommonFunctions.DeepFindById(guiAmmo.ToString(), _objCharacter.Gear);
-                if (objAmmo == null)
-                {
-                    objAmmo = CommonFunctions.FindVehicleGear(guiAmmo.ToString(), _objCharacter.Vehicles);
-                }
+                string strAmmoGuid = guiAmmo.ToString();
+                Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? CommonFunctions.FindVehicleGear(strAmmoGuid, _objCharacter.Vehicles);
 
                 if (objAmmo != null)
                     return objAmmo.DisplayNameShort(strLanguage);
@@ -1669,7 +1666,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(AmmoLoaded))
             {
                 // Look for Ammo on the character.
-                Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
+                Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
                     objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
@@ -1926,7 +1923,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(AmmoLoaded))
             {
                 // Look for Ammo on the character.
-                Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
+                Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
                     objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
@@ -2187,7 +2184,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(AmmoLoaded))
             {
                 // Look for Ammo on the character.
-                Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
+                Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
                     objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
@@ -2463,7 +2460,7 @@ namespace Chummer.Backend.Equipment
                 // Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
                 if (!string.IsNullOrEmpty(AmmoLoaded) && AmmoLoaded != "00000000-0000-0000-0000-000000000000")
                 {
-                    Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
+                    Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                     if (objGear == null)
                     {
                         objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
@@ -3128,7 +3125,7 @@ namespace Chummer.Backend.Equipment
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
                 if (!string.IsNullOrEmpty(AmmoLoaded))
                 {
-                    Gear objGear = CommonFunctions.DeepFindById(AmmoLoaded, _objCharacter.Gear);
+                    Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                     if (objGear == null)
                     {
                         objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
@@ -3786,7 +3783,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strNodeId in lstNodesToRemoveIds)
             {
                 // Remove the Weapons from the TreeView.
-                TreeNode objLoopNode = CommonFunctions.FindNode(strNodeId, treWeapons) ?? CommonFunctions.FindNode(strNodeId, treVehicles);
+                TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
                 objLoopNode?.Remove();
             }
 
