@@ -178,8 +178,15 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill skill in loadingSkills)
                 {
+                    var name = skill.IsExoticSkill
+                        ? $"{skill.Name} ({skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                        : skill.Name;
+                    if (_dicSkills.TryGetValue(name, out Skill thisSkill) && thisSkill.Rating < skill.Rating)
+                    {
+                        _dicSkills.Remove(name);
+                    }
                     _skills.Add(skill);
-                    _dicSkills.Add(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : skill.Name, skill);
+                    _dicSkills.Add(name, skill);
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 

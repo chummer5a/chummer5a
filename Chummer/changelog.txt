@@ -76,6 +76,7 @@ Application Changes:
 - Fixed an issue with the Translator tool incorrectly saving gameplay options as part of the entries for the priorities file.
 - Fixed alternate page references never showing up for translated skills.
 - Fixed a bug where the Translator tool would not properly consider and treat alternate codes for books.
+- Added a small shim to the skill loader that prevents an error if the character somehow gains two copies of the same skill.
 
 Data Changes:
 
