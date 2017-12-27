@@ -3562,6 +3562,125 @@ namespace Chummer
                 }
             }
         }
+
+        #region Tab clearing
+        /// <summary>
+        /// Clear all Spell tab elements from the character.
+        /// </summary>
+        /// <param name="treSpells"></param>
+        public void ClearSpellTab(TreeView treSpells)
+        {
+            // Run through all of the Spells and remove their Improvements.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, string.Empty);
+
+            // Clear the list of Spells.
+            foreach (TreeNode objNode in treSpells.Nodes)
+                objNode.Nodes.Clear();
+
+            Spells.Clear();
+            ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
+        }
+
+        /// <summary>
+        /// Clear all Adept tab elements from the character.
+        /// </summary>
+        public void ClearAdeptTab()
+        {
+            // Run through all of the Powers and remove their Improvements.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, string.Empty);
+
+            Powers.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Technomancer tab elements from the character.
+        /// </summary>
+        public void ClearTechnomancerTab(TreeView treComplexForms)
+        {
+            // Run through all of the Complex Forms and remove their Improvements.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, string.Empty);
+
+            // Clear the list of Complex Forms.
+            foreach (TreeNode objNode in treComplexForms.Nodes)
+                objNode.Nodes.Clear();
+
+            ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
+            ComplexForms.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Advanced Programs tab elements from the character.
+        /// </summary>
+        public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
+        {
+            // Run through all of the Advanced Programs and remove their Improvements.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, string.Empty);
+
+            // Clear the list of Advanced Programs.
+            foreach (TreeNode objNode in treAIPrograms.Nodes)
+                objNode.Nodes.Clear();
+
+            AIPrograms.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Cyberware tab elements from the character.
+        /// </summary>
+        public void ClearCyberwareTab(TreeView treCyberware, TreeView treWeapons, TreeView treVehicles)
+        {
+            foreach (Cyberware objCyberware in Cyberware)
+            {
+                CommonFunctions.DeleteCyberware(this, objCyberware, treWeapons, treVehicles);
+            }
+            Cyberware.Clear();
+
+            // Clear the list of Advanced Programs.
+            // Remove the item from the TreeView.
+            foreach (TreeNode objNode in treCyberware.Nodes)
+                objNode.Nodes.Clear();
+            treCyberware.Nodes.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Critter tab elements from the character.
+        /// </summary>
+        public void ClearCritterTab(TreeView treCritterPowers)
+        {
+            // Run through all of the Critter Powers and remove their Improvements.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, string.Empty);
+
+            // Clear the list of Critter Powers.
+            foreach (TreeNode objNode in treCritterPowers.Nodes)
+                objNode.Nodes.Clear();
+
+            CritterPowers.Clear();
+        }
+
+        /// <summary>
+        /// Clear all Initiation tab elements from the character that were not added by improvements.
+        /// </summary>
+        public void ClearInitiations()
+        {
+            InitiateGrade = 0;
+            SubmersionGrade = 0;
+            InitiationGrades.Clear();
+            // Metamagics/Echoes can add addition bonus metamagics/echoes, so we cannot use foreach or RemoveAll()
+            for (int j = Metamagics.Count - 1; j >= 0; j--)
+            {
+                if (j < Metamagics.Count)
+                {
+                    Metamagic objToRemove = Metamagics[j];
+                    if (objToRemove.Grade >= 0)
+                    {
+                        // Remove the Improvements created by the Metamagic.
+                        ImprovementManager.RemoveImprovements(this, objToRemove.SourceType, objToRemove.InternalId);
+                        Metamagics.Remove(objToRemove);
+                    }
+                }
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Basic Properties

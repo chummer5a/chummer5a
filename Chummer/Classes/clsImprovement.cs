@@ -1460,7 +1460,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            CommonFunctions.DeleteGear(objCharacter, objGear, null, null);
+                            objGear.DeleteGear(null, null);
                             objCharacter.Gear.Remove(objGear);
                         }
                         break;

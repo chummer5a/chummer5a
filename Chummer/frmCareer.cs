@@ -4309,7 +4309,7 @@ namespace Chummer
                             objGear.Parent.Children.Remove(objGear);
                             objGear.Parent.RefreshMatrixAttributeArray();
                         }
-                        CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                        objGear.DeleteGear(treWeapons, treVehicles);
                     }
 
                     // Remove the item from the TreeView.
@@ -4580,7 +4580,7 @@ namespace Chummer
                         Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), CharacterObject.Armor, out objArmor, out objMod);
                         if (objGear != null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
 
                             Gear objGearParent = objGear.Parent;
                             if (objGearParent != null)
@@ -4762,7 +4762,7 @@ namespace Chummer
                             return;
                         }
 
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
 
                         if (objWeapon.Parent != null)
                             objWeapon.Parent.Children.Remove(objWeapon);
@@ -4779,7 +4779,7 @@ namespace Chummer
                         if (objAccessory != null)
                         {
                             foreach (Gear objGear in objAccessory.Gear)
-                                CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                objGear.DeleteGear(treWeapons, treVehicles);
                             objWeapon.WeaponAccessories.Remove(objAccessory);
                             treWeapons.SelectedNode.Remove();
                         }
@@ -4787,7 +4787,7 @@ namespace Chummer
                         {
                             // Find the selected Gear.
                             Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons, out objAccessory);
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                             if (objGear.Parent == null)
                                 objAccessory.Gear.Remove(objGear);
                             else
@@ -4925,7 +4925,7 @@ namespace Chummer
                     Gear objGear = CommonFunctions.DeepFindById(treGear.SelectedNode.Tag.ToString(), CharacterObject.Gear);
                     Gear objParent = CommonFunctions.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString(), CharacterObject.Gear);
 
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
 
                     CharacterObject.Gear.Remove(objGear);
                     treGear.SelectedNode.Remove();
@@ -5070,17 +5070,24 @@ namespace Chummer
                 CharacterObject.Vehicles.Remove(objVehicle);
                 foreach (Weapon objLoopWeapon in objVehicle.Weapons)
                 {
-                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                    objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                 }
                 foreach (VehicleMod objLoopMod in objVehicle.Mods)
                 {
                     foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                     foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                     {
                         CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles);
+                    }
+                }
+                foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
+                {
+                    foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
+                    {
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                 }
                 treVehicles.SelectedNode.Remove();
@@ -5149,7 +5156,7 @@ namespace Chummer
                     objVehicle.Mods.Remove(objMod);
                     foreach (Weapon objLoopWeapon in objMod.Weapons)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                     foreach (Cyberware objLoopCyberware in objMod.Cyberware)
                     {
@@ -5163,7 +5170,7 @@ namespace Chummer
                     // Removing a Weapon
                     if (objWeapon != null)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         if (objWeapon.Parent == null)
                         {
                             if (wm != null)
@@ -5187,7 +5194,7 @@ namespace Chummer
                             objWeapon.WeaponAccessories.Remove(objWeaponAccessory);
                             foreach (Gear objLoopGear in objWeaponAccessory.Gear)
                             {
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                                objLoopGear.DeleteGear(treWeapons, treVehicles);
                             }
                             treVehicles.SelectedNode.Remove();
                         }
@@ -5231,7 +5238,7 @@ namespace Chummer
                                     }
                                     treVehicles.SelectedNode.Remove();
 
-                                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                    objGear.DeleteGear(treWeapons, treVehicles);
                                 }
                             }
                         }
@@ -6177,7 +6184,7 @@ namespace Chummer
                     foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                         if (objWeapon.Parent != null)
                             objWeapon.Parent.Children.Remove(objWeapon);
@@ -6376,7 +6383,7 @@ namespace Chummer
                     foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                         if (objWeapon.Parent != null)
                             objWeapon.Parent.Children.Remove(objWeapon);
@@ -6541,7 +6548,7 @@ namespace Chummer
                 }
                 else
                     CharacterObject.Gear.Remove(objSelectedGear);
-                CommonFunctions.DeleteGear(CharacterObject, objSelectedGear, treWeapons, treVehicles);
+                objSelectedGear.DeleteGear(treWeapons, treVehicles);
                 treGear.SelectedNode.Remove();
                 ScheduleCharacterUpdate();
             }
@@ -6752,14 +6759,14 @@ namespace Chummer
                     else
                         objVehicle.Gear.Remove(objGear);
                     treVehicles.SelectedNode.Remove();
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treVehicles, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
                 }
                 else
                 {
                     objParent.Children.Remove(objGear);
                     objParent.RefreshMatrixAttributeArray();
                     treVehicles.SelectedNode.Remove();
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
                 }
             }
 
@@ -7120,7 +7127,7 @@ namespace Chummer
                     foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId))
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                         if (objWeapon.Parent != null)
                             objWeapon.Parent.Children.Remove(objWeapon);
@@ -7327,7 +7334,7 @@ namespace Chummer
                 foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objSelectedQuality.InternalId))
                 {
                     lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                    CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                    objWeapon.DeleteWeapon(treWeapons, treVehicles);
                     // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
@@ -10124,7 +10131,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
                         objExpense.Create(decAmount, strEntry + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
@@ -10221,7 +10228,7 @@ namespace Chummer
                         else
                             decNewCost = objArmor.TotalCost;
                         decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10253,7 +10260,7 @@ namespace Chummer
                     else
                         decNewCost = objArmor.TotalCost;
                     decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
-                    decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                    decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10308,7 +10315,7 @@ namespace Chummer
                         return;
 
                     // Create the Expense Log Entry for the sale.
-                    decimal decAmount = (objWeapon.TotalCost + CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles)) * frmSell.SellPercent;
+                    decimal decAmount = (objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles)) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon", GlobalOptions.Language) + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10358,7 +10365,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objWeapon.TotalCost) * frmSell.SellPercent;
                         foreach (Gear objGear in objAccessory.Gear)
                         {
-                            decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                            decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + " " + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
@@ -10385,7 +10392,7 @@ namespace Chummer
                         treWeapons.SelectedNode.Remove();
 
                         decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10419,7 +10426,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
-                    decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                    decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
@@ -10478,22 +10485,29 @@ namespace Chummer
                     // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
                     foreach (Gear objGear in objVehicle.Gear)
                     {
-                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                     }
 
                     foreach (Weapon objLoopWeapon in objVehicle.Weapons)
                     {
-                        decAmount += CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles) * frmSell.SellPercent;
+                        decAmount += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles) * frmSell.SellPercent;
                     }
                     foreach (VehicleMod objLoopMod in objVehicle.Mods)
                     {
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
-                            decAmount += CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles) * frmSell.SellPercent;
+                            decAmount += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
                             decAmount += CommonFunctions.DeleteCyberware(CharacterObject, objLoopCyberware, treWeapons, treVehicles) * frmSell.SellPercent;
+                        }
+                    }
+                    foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
+                        {
+                            decAmount += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                     }
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -10535,7 +10549,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                         foreach (Weapon objLoopWeapon in objMod.Weapons)
                         {
-                            decAmount += CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles) * frmSell.SellPercent;
+                            decAmount += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                         foreach (Cyberware objLoopCyberware in objMod.Cyberware)
                         {
@@ -10562,7 +10576,7 @@ namespace Chummer
                                 return;
 
                             // Record the original value of the Vehicle.
-                            decimal decOriginal = objVehicle.TotalCost + CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                            decimal decOriginal = objVehicle.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles);
                             if (objWeapon.Parent == null)
                             {
                                 if (wm != null)
@@ -10606,7 +10620,7 @@ namespace Chummer
                                 decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                 foreach (Gear objLoopGear in objWeaponAccessory.Gear)
                                 {
-                                    decAmount += CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                                    decAmount += objLoopGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                                 }
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + " " + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
@@ -10679,7 +10693,7 @@ namespace Chummer
 
                                         // Create the Expense Log Entry for the sale.
                                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
-                                        decAmount += CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles) * frmSell.SellPercent;
+                                        decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                         objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                         CharacterObject.ExpenseEntries.Add(objExpense);
@@ -11134,7 +11148,7 @@ namespace Chummer
                                 foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId))
                                 {
                                     lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                                    CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                                    objWeapon.DeleteWeapon(treWeapons, treVehicles);
                                     // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                                     if (objWeapon.Parent != null)
                                         objWeapon.Parent.Children.Remove(objWeapon);
@@ -11698,7 +11712,7 @@ namespace Chummer
                             else
                                 CharacterObject.Gear.Remove(objGear);
 
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                             objNode?.Remove();
                         }
                         else if (objNode != null)
@@ -11717,17 +11731,17 @@ namespace Chummer
                         {
                             foreach (Gear objLoopGear in objVehicle.Gear)
                             {
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                                objLoopGear.DeleteGear(treWeapons, treVehicles);
                             }
                             foreach (Weapon objLoopWeapon in objVehicle.Weapons)
                             {
-                                CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                                objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                             }
                             foreach (VehicleMod objLoopMod in objVehicle.Mods)
                             {
                                 foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                                 {
-                                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                                    objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                                 }
                                 foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                                 {
@@ -11738,7 +11752,7 @@ namespace Chummer
                             {
                                 foreach (Weapon objLoopWeapon in objLoopWeaponMount.Weapons)
                                 {
-                                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                                    objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                                 }
                             }
 
@@ -11763,7 +11777,7 @@ namespace Chummer
 
                             foreach (Weapon objLoopWeapon in objVehicleMod.Weapons)
                             {
-                                CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                                objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                             }
                             foreach (Cyberware objLoopCyberware in objVehicleMod.Cyberware)
                             {
@@ -11828,7 +11842,7 @@ namespace Chummer
                                 else
                                     CharacterObject.Gear.Remove(objGear);
 
-                                CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                objGear.DeleteGear(treWeapons, treVehicles);
                                 objNode?.Remove();
                             }
                             else if (objNode != null)
@@ -11853,7 +11867,7 @@ namespace Chummer
                             objNode = CommonFunctions.FindNode(strUndoId, treVehicles);
                         if (objWeapon != null)
                         {
-                            CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                            objWeapon.DeleteWeapon(treWeapons, treVehicles);
 
                             // Remove the Weapon.
                             if (objWeapon.Parent != null)
@@ -11891,7 +11905,7 @@ namespace Chummer
                             objWeapon.WeaponAccessories.Remove(objWeaponAccessory);
 
                             foreach (Gear objLoopGear in objWeaponAccessory.Gear)
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                                objLoopGear.DeleteGear(treWeapons, treVehicles);
 
                             // Remove the Weapon Accessory from the Tree.
                             objNode?.Remove();
@@ -11905,7 +11919,7 @@ namespace Chummer
                         {
                             objVehicle.WeaponMounts.Remove(objWeaponMount);
                             foreach (Weapon objWeapon in objWeaponMount.Weapons)
-                                CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                                objWeapon.DeleteWeapon(treWeapons, treVehicles);
                             CommonFunctions.FindNode(strUndoId, treVehicles)?.Remove();
                         }
                     }
@@ -11971,7 +11985,7 @@ namespace Chummer
                             objNode = CommonFunctions.FindNode(strUndoId, treWeapons);
                         if (objWeapon != null)
                         {
-                            CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                            objWeapon.DeleteWeapon(treWeapons, treVehicles);
 
                             // Remove the Weapn from the character.
                             if (objWeapon.Parent != null)
@@ -12010,7 +12024,7 @@ namespace Chummer
 
                             foreach (Gear objLoopGear in objWeaponAccessory.Gear)
                             {
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                                objLoopGear.DeleteGear(treWeapons, treVehicles);
                             }
 
                             // Remove the Weapon Accessory from the tree.
@@ -12042,7 +12056,7 @@ namespace Chummer
                             // Remove the Gear if its Qty has been reduced to 0.
                             if (objGear.Quantity <= 0)
                             {
-                                CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                objGear.DeleteGear(treWeapons, treVehicles);
 
                                 if (objGear.Parent != null)
                                 {
@@ -12116,7 +12130,7 @@ namespace Chummer
                             objNode = CommonFunctions.FindNode(objGear.InternalId, treCyberware);
                         if (objGear != null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
 
                             if (objGear.Parent != null)
                             {
@@ -12165,7 +12179,7 @@ namespace Chummer
                             objNode = CommonFunctions.FindNode(objGear.InternalId, treWeapons);
                         if (objGear != null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                             if (objGear.Parent != null)
                             {
                                 objGear.Parent.Children.Remove(objGear);
@@ -13677,7 +13691,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objNewGear, treWeapons, treVehicles);
+                        objNewGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -13816,7 +13830,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                        objGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -13931,7 +13945,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objNewGear, treWeapons, treVehicles);
+                        objNewGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -14062,7 +14076,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                        objGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -14280,7 +14294,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                        objGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -14393,7 +14407,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        CommonFunctions.DeleteGear(CharacterObject, objNewGear, treWeapons, treVehicles);
+                        objNewGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -15149,7 +15163,7 @@ namespace Chummer
                     {
                         objSelectedGear.Equipped = chkWeaponAccessoryInstalled.Checked;
 
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedGear, chkWeaponAccessoryInstalled.Checked);
+                        objSelectedGear.ChangeEquippedStatus(chkWeaponAccessoryInstalled.Checked);
                     }
                 }
             }
@@ -15271,7 +15285,7 @@ namespace Chummer
             {
                 objSelectedGear.Equipped = chkGearEquipped.Checked;
 
-                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedGear, chkGearEquipped.Checked);
+                objSelectedGear.ChangeEquippedStatus(chkGearEquipped.Checked);
 
                 RefreshSelectedGear();
                 ScheduleCharacterUpdate();
@@ -15473,7 +15487,7 @@ namespace Chummer
             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
             {
                 foreach (Gear objGear in objAccessory.Gear)
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
             }
             if (objWeapon.UnderbarrelWeapons.Count > 0)
             {
@@ -15482,7 +15496,7 @@ namespace Chummer
                     foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                     {
                         foreach (Gear objGear in objAccessory.Gear)
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                     }
                 }
             }
@@ -16516,9 +16530,9 @@ namespace Chummer
                         if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                         {
                             // Clear created improvements
-                            CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
+                            objSelectedFocus.ChangeEquippedStatus(false);
                             if (blnOldEquipped)
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                                objSelectedFocus.ChangeEquippedStatus(true);
                             e.Cancel = true;
                             return;
                         }
@@ -16529,9 +16543,9 @@ namespace Chummer
                         if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                         {
                             // Clear created improvements
-                            CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
+                            objSelectedFocus.ChangeEquippedStatus(false);
                             if (blnOldEquipped)
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                                objSelectedFocus.ChangeEquippedStatus(true);
                             e.Cancel = true;
                             return;
                         }
@@ -16612,9 +16626,9 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Clear created improvements
-                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
+                    objSelectedFocus.ChangeEquippedStatus(false);
                     if (blnOldEquipped)
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                        objSelectedFocus.ChangeEquippedStatus(true);
                     e.Cancel = true;
                     return;
                 }
@@ -16622,9 +16636,9 @@ namespace Chummer
                 if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", objSelectedFocus.DisplayNameShort(GlobalOptions.Language))))
                 {
                     // Clear created improvements
-                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
+                    objSelectedFocus.ChangeEquippedStatus(false);
                     if (blnOldEquipped)
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                        objSelectedFocus.ChangeEquippedStatus(true);
                     e.Cancel = true;
                     return;
                 }
@@ -16643,7 +16657,7 @@ namespace Chummer
                 objSelectedFocus.Bonded = true;
                 if (!blnOldEquipped)
                 {
-                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
+                    objSelectedFocus.ChangeEquippedStatus(false);
                 }
                 CharacterObject.PopulateFocusList(treFoci);
             }
@@ -16675,9 +16689,9 @@ namespace Chummer
                             if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
+                                objSelectedFocus.ChangeEquippedStatus(false);
                                 if (blnOldEquipped)
-                                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                                    objSelectedFocus.ChangeEquippedStatus(true);
                                 e.Cancel = true;
                                 return;
                             }
@@ -16688,9 +16702,9 @@ namespace Chummer
                             if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
+                                objSelectedFocus.ChangeEquippedStatus(false);
                                 if (blnOldEquipped)
-                                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                                    objSelectedFocus.ChangeEquippedStatus(true);
                                 e.Cancel = true;
                                 return;
                             }
@@ -16703,9 +16717,9 @@ namespace Chummer
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     // Clear created improvements
-                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
+                    objStackGear.ChangeEquippedStatus(false);
                     if (blnOldEquipped)
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                        objStackGear.ChangeEquippedStatus(true);
                     e.Cancel = true;
                     return;
                 }
@@ -16713,9 +16727,9 @@ namespace Chummer
                 if (!ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + " " + objStack.Name(GlobalOptions.Language))))
                 {
                     // Clear created improvements
-                    CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
+                    objStackGear.ChangeEquippedStatus(false);
                     if (blnOldEquipped)
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                        objStackGear.ChangeEquippedStatus(true);
                     e.Cancel = true;
                     return;
                 }
@@ -17974,7 +17988,7 @@ namespace Chummer
         /// </summary>
         private void ClearSpellTab()
         {
-            CommonFunctions.ClearSpellTab(CharacterObject, treSpells);
+            CharacterObject.ClearSpellTab(treSpells);
 
             // Remove the Spirits.
             panSpirits.Controls.Clear();
@@ -17988,7 +18002,7 @@ namespace Chummer
         /// </summary>
         private void ClearTechnomancerTab()
         {
-            CommonFunctions.ClearTechnomancerTab(CharacterObject, treComplexForms);
+            CharacterObject.ClearTechnomancerTab(treComplexForms);
 
             // Remove the Sprites.
             panSprites.Controls.Clear();
@@ -18002,7 +18016,7 @@ namespace Chummer
         /// </summary>
         private void ClearAdvancedProgramsTab()
         {
-            CommonFunctions.ClearAdvancedProgramsTab(CharacterObject, treAIPrograms);
+            CharacterObject.ClearAdvancedProgramsTab(treAIPrograms);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -18013,7 +18027,7 @@ namespace Chummer
         /// </summary>
         private void ClearCyberwareTab()
         {
-            CommonFunctions.ClearCyberwareTab(CharacterObject, treCyberware, treWeapons, treVehicles);
+            CharacterObject.ClearCyberwareTab(treCyberware, treWeapons, treVehicles);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -18024,7 +18038,7 @@ namespace Chummer
         /// </summary>
         private void ClearCritterTab()
         {
-            CommonFunctions.ClearCritterTab(CharacterObject, treCritterPowers);
+            CharacterObject.ClearCritterTab(treCritterPowers);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -18035,8 +18049,7 @@ namespace Chummer
         /// </summary>
         private void ClearInitiationTab()
         {
-            CommonFunctions.ClearInitiations(CharacterObject);
-            UpdateInitiationGradeTree();
+            CharacterObject.ClearInitiations();
 
             IsDirty = true;
             ScheduleCharacterUpdate();

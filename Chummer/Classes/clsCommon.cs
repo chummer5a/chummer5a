@@ -792,119 +792,6 @@ namespace Chummer
 
         #region Delete Functions
         /// <summary>
-        /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
-        /// </summary>
-        /// <param name="objGear">Gear to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
-        /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
-        public static decimal DeleteGear(Character objCharacter, Gear objGear, TreeView treWeapons, TreeView treVehicles)
-        {
-            decimal decReturn = 0;
-            // Remove any children the Gear may have.
-            foreach (Gear objChild in objGear.Children)
-                decReturn += DeleteGear(objCharacter, objChild, treWeapons, treVehicles);
-
-            // Remove the Gear Weapon created by the Gear if applicable.
-            if (objGear.WeaponID != Guid.Empty.ToString())
-            {
-                List<string> lstNodesToRemoveIds = new List<string>();
-                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
-                foreach (Weapon objWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
-                {
-                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
-                }
-                foreach (Vehicle objVehicle in objCharacter.Vehicles)
-                {
-                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
-                    {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, null));
-                    }
-
-                    foreach (VehicleMod objMod in objVehicle.Mods)
-                    {
-                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
-                        {
-                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, objMod, null));
-                        }
-                    }
-
-                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                    {
-                        foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId))
-                        {
-                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, objMount));
-                        }
-                    }
-                }
-                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-                foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
-                {
-                    Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + DeleteWeapon(objCharacter, objWeapon, treWeapons, treVehicles);
-                    if (objWeapon.Parent != null)
-                        objWeapon.Parent.Children.Remove(objWeapon);
-                    else if (objLoopTuple.Item4 != null)
-                        objLoopTuple.Item4.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item3 != null)
-                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
-                    else if (objLoopTuple.Item2 != null)
-                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
-                    else
-                        objCharacter.Weapons.Remove(objWeapon);
-                }
-                foreach (string strNodeId in lstNodesToRemoveIds)
-                {
-                    // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
-                    objLoopNode?.Remove();
-                }
-            }
-
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
-            // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
-            if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci")
-            {
-                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
-                foreach (Focus objFocus in objCharacter.Foci)
-                {
-                    if (objFocus.GearId == objGear.InternalId)
-                        lstRemoveFoci.Add(objFocus);
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    /*
-                    foreach (Power objPower in objCharacter.Powers)
-                    {
-                        if (objPower.BonusSource == objFocus.GearId)
-                        {
-                            //objPower.FreeLevels -= (objFocus.Rating / 4);
-                        }
-                    }
-                    */
-                    objCharacter.Foci.Remove(objFocus);
-                }
-            }
-            // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
-            else if (objGear.Category == "Stacked Focus")
-            {
-                StackedFocus objStack = objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == objGear.InternalId);
-                if (objStack != null)
-                {
-                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                    objCharacter.StackedFoci.Remove(objStack);
-                }
-            }
-
-            objGear.SetActiveCommlink(objCharacter, false);
-            return decReturn;
-        }
-
-        /// <summary>
         /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
         /// </summary>
         /// <param name="objGear">Gear to delete.</param>
@@ -957,7 +844,7 @@ namespace Chummer
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objWeapon = objLoopTuple.Item1;
-                    decReturn += objWeapon.TotalCost + DeleteWeapon(objCharacter, objWeapon, treWeapons, treVehicles);
+                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles);
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -996,17 +883,17 @@ namespace Chummer
                     objCharacter.Vehicles.Remove(objLoopVehicle);
                     foreach (Gear objLoopGear in objLoopVehicle.Gear)
                     {
-                        decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
+                        decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
                     }
                     foreach (Weapon objLoopWeapon in objLoopVehicle.Weapons)
                     {
-                        decReturn += DeleteWeapon(objCharacter, objLoopWeapon, treWeapons, treVehicles);
+                        decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                     foreach (VehicleMod objLoopMod in objLoopVehicle.Mods)
                     {
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
-                            decReturn += DeleteWeapon(objCharacter, objLoopWeapon, treWeapons, treVehicles);
+                            decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                         }
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
@@ -1017,7 +904,7 @@ namespace Chummer
                     {
                         foreach (Weapon objLoopWeapon in objLoopWeaponMount.Weapons)
                         {
-                            decReturn += DeleteWeapon(objCharacter, objLoopWeapon, treWeapons, treVehicles);
+                            decReturn += objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                         }
                     }
                 }
@@ -1054,87 +941,7 @@ namespace Chummer
 
             foreach (Gear objLoopGear in objCyberware.Gear)
             {
-                decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
-            }
-
-            return decReturn;
-        }
-
-        /// <summary>
-        /// Recursive method to delete a piece of 'ware and its Improvements from the character. Returns total extra cost removed unrelated to children.
-        /// </summary>
-        /// <param name="objWeapon">Weapon to delete.</param>
-        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
-        /// <param name="treVehicles">TreeView that holds the list of Vehicles.</param>
-        public static decimal DeleteWeapon(Character objCharacter, Weapon objWeapon, TreeView treWeapons, TreeView treVehicles)
-        {
-            decimal decReturn = 0;
-            // Remove any children the Gear may have.
-            foreach (Weapon objChild in objWeapon.Children)
-                decReturn += DeleteWeapon(objCharacter, objChild, treWeapons, treVehicles);
-
-            foreach (WeaponAccessory objLoopAccessory in objWeapon.WeaponAccessories)
-            {
-                foreach (Gear objLoopGear in objLoopAccessory.Gear)
-                {
-                    decReturn += DeleteGear(objCharacter, objLoopGear, treWeapons, treVehicles);
-                }
-            }
-
-            List<string> lstNodesToRemoveIds = new List<string>();
-            List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
-            foreach (Weapon objDeleteWeapon in objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
-            {
-                lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
-                lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, null, null, null));
-            }
-            foreach (Vehicle objVehicle in objCharacter.Vehicles)
-            {
-                foreach (Weapon objDeleteWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
-                {
-                    lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
-                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, null));
-                }
-
-                foreach (VehicleMod objMod in objVehicle.Mods)
-                {
-                    foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
-                    {
-                        lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
-                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, objMod, null));
-                    }
-                }
-
-                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                {
-                    foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objWeapon.InternalId))
-                    {
-                        lstNodesToRemoveIds.Add(objDeleteWeapon.InternalId);
-                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objDeleteWeapon, objVehicle, null, objMount));
-                    }
-                }
-            }
-            // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
-            foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
-            {
-                Weapon objDeleteWeapon = objLoopTuple.Item1;
-                decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
-                if (objDeleteWeapon.Parent != null)
-                    objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item4 != null)
-                    objLoopTuple.Item4.Weapons.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item3 != null)
-                    objLoopTuple.Item3.Weapons.Remove(objDeleteWeapon);
-                else if (objLoopTuple.Item2 != null)
-                    objLoopTuple.Item2.Weapons.Remove(objDeleteWeapon);
-                else
-                    objCharacter.Weapons.Remove(objDeleteWeapon);
-            }
-            foreach (string strNodeId in lstNodesToRemoveIds)
-            {
-                // Remove the Weapons from the TreeView.
-                TreeNode objLoopNode = FindNode(strNodeId, treWeapons) ?? FindNode(strNodeId, treVehicles);
-                objLoopNode?.Remove();
+                decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
             }
 
             return decReturn;
@@ -1154,7 +961,7 @@ namespace Chummer
                 decReturn += DeleteArmorMod(objCharacter, objMod, treWeapons, treVehicles);
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in objArmor.Gear)
-                decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
+                decReturn += objGear.DeleteGear(treWeapons, treVehicles);
 
             ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
@@ -1197,7 +1004,7 @@ namespace Chummer
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objDeleteWeapon = objLoopTuple.Item1;
-                    decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treWeapons, treVehicles);
                     if (objDeleteWeapon.Parent != null)
                         objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -1269,7 +1076,7 @@ namespace Chummer
                 foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
                 {
                     Weapon objDeleteWeapon = objLoopTuple.Item1;
-                    decReturn += objDeleteWeapon.TotalCost + DeleteWeapon(objCharacter, objDeleteWeapon, treWeapons, treVehicles);
+                    decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon(treWeapons, treVehicles);
                     if (objDeleteWeapon.Parent != null)
                         objDeleteWeapon.Parent.Children.Remove(objDeleteWeapon);
                     else if (objLoopTuple.Item4 != null)
@@ -1292,7 +1099,7 @@ namespace Chummer
             ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ArmorMod, objArmorMod.InternalId);
             // Remove any Improvements created by the Armor's Gear.
             foreach (Gear objGear in objArmorMod.Gear)
-                decReturn += DeleteGear(objCharacter, objGear, treWeapons, treVehicles);
+                decReturn += objGear.DeleteGear(treWeapons, treVehicles);
 
             return decReturn;
         }
@@ -2400,243 +2207,6 @@ namespace Chummer
             treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
         }
         #endregion
-
-        #region Tab clearing
-        /// <summary>
-        /// Clear all Spell tab elements from the character.
-        /// </summary>
-        /// <param name="treSpells"></param>
-        public static void ClearSpellTab(Character objCharacter, TreeView treSpells)
-        {
-            // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, string.Empty);
-
-            // Clear the list of Spells.
-            foreach (TreeNode objNode in treSpells.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.Spells.Clear();
-            ((List<Spirit>)objCharacter.Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
-        }
-
-        /// <summary>
-        /// Clear all Adept tab elements from the character.
-        /// </summary>
-        public static void ClearAdeptTab(Character objCharacter)
-        {
-            // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Power, string.Empty);
-
-            objCharacter.Powers.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Technomancer tab elements from the character.
-        /// </summary>
-        public static void ClearTechnomancerTab(Character objCharacter, TreeView treComplexForms)
-        {
-            // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, string.Empty);
-
-            // Clear the list of Complex Forms.
-            foreach (TreeNode objNode in treComplexForms.Nodes)
-                objNode.Nodes.Clear();
-
-            ((List<Spirit>)objCharacter.Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
-            objCharacter.ComplexForms.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Advanced Programs tab elements from the character.
-        /// </summary>
-        public static void ClearAdvancedProgramsTab(Character objCharacter, TreeView treAIPrograms)
-        {
-            // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, string.Empty);
-
-            // Clear the list of Advanced Programs.
-            foreach (TreeNode objNode in treAIPrograms.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.AIPrograms.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Cyberware tab elements from the character.
-        /// </summary>
-        public static void ClearCyberwareTab(Character objCharacter, TreeView treCyberware, TreeView treWeapons, TreeView treVehicles)
-        {
-            foreach (Cyberware objCyberware in objCharacter.Cyberware)
-            {
-                DeleteCyberware(objCharacter, objCyberware, treWeapons, treVehicles);
-            }
-            objCharacter.Cyberware.Clear();
-
-            // Clear the list of Advanced Programs.
-            // Remove the item from the TreeView.
-            foreach (TreeNode objNode in treCyberware.Nodes)
-                objNode.Nodes.Clear();
-            treCyberware.Nodes.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Critter tab elements from the character.
-        /// </summary>
-        public static void ClearCritterTab(Character objCharacter, TreeView treCritterPowers)
-        {
-            // Run through all of the Critter Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, string.Empty);
-
-            // Clear the list of Critter Powers.
-            foreach (TreeNode objNode in treCritterPowers.Nodes)
-                objNode.Nodes.Clear();
-
-            objCharacter.CritterPowers.Clear();
-        }
-
-        /// <summary>
-        /// Clear all Initiation tab elements from the character that were not added by improvements.
-        /// </summary>
-        public static void ClearInitiations(Character objCharacter)
-        {
-            objCharacter.InitiateGrade = 0;
-            objCharacter.SubmersionGrade = 0;
-            objCharacter.InitiationGrades.Clear();
-            // Metamagics/Echoes can add addition bonus metamagics/echoes, so we cannot use foreach or RemoveAll()
-            for (int j = objCharacter.Metamagics.Count - 1; j >= 0; j--)
-            {
-                if (j < objCharacter.Metamagics.Count)
-                {
-                    Metamagic objToRemove = objCharacter.Metamagics[j];
-                    if (objToRemove.Grade >= 0)
-                    {
-                        // Remove the Improvements created by the Metamagic.
-                        ImprovementManager.RemoveImprovements(objCharacter, objToRemove.SourceType, objToRemove.InternalId);
-                        objCharacter.Metamagics.Remove(objToRemove);
-                    }
-                }
-            }
-        }
-        #endregion
-
-        /// <summary>
-        /// Change the Equipped status of a piece of Gear and all of its children.
-        /// </summary>
-        /// <param name="objGear">Gear object to change.</param>
-        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
-        public static void ChangeGearEquippedStatus(Character objCharacter, Gear objGear, bool blnEquipped)
-        {
-            if (blnEquipped)
-            {
-                // Add any Improvements from the Gear.
-                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-                {
-                    bool blnAddImprovement = true;
-                    // If this is a Focus which is not bonded, don't do anything.
-                    if (objGear.Category != "Stacked Focus")
-                    {
-                        if (objGear.Category.EndsWith("Foci"))
-                            blnAddImprovement = objGear.Bonded;
-
-                        if (blnAddImprovement)
-                        {
-                            if (!string.IsNullOrEmpty(objGear.Extra))
-                                ImprovementManager.ForcedValue = objGear.Extra;
-                            if (objGear.Bonus != null)
-                            {
-                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
-                                {
-                                    // Clear created improvements
-                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
-                                    return;
-                                }
-                                objGear.Extra = ImprovementManager.SelectedValue;
-                            }
-                            if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                            {
-                                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
-                                {
-                                    // Clear created improvements
-                                    ChangeGearEquippedStatus(objCharacter, objGear, false);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Stacked Foci need to be handled a little differently.
-                        foreach (StackedFocus objStack in objCharacter.StackedFoci)
-                        {
-                            if (objStack.GearId == objGear.InternalId && objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    if (objGear.Bonus != null)
-                                    {
-                                        if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
-                                        {
-                                            // Clear created improvements
-                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
-                                            return;
-                                        }
-                                        objGear.Extra = ImprovementManager.SelectedValue;
-                                    }
-                                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                    {
-                                        if (ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
-                                        {
-                                            // Clear created improvements
-                                            ChangeGearEquippedStatus(objCharacter, objGear, false);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // Remove any Improvements from the Gear.
-                if (objGear.Bonus != null || (objGear.WirelessOn && objGear.WirelessBonus != null))
-                {
-                    if (objGear.Category != "Stacked Focus")
-                        ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                    else
-                    {
-                        // Stacked Foci need to be handled a little differetnly.
-                        foreach (StackedFocus objStack in objCharacter.StackedFoci)
-                        {
-                            if (objStack.GearId == objGear.InternalId)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                    ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (objGear.Children.Count > 0)
-                ChangeGearEquippedStatus(objCharacter, objGear.Children, blnEquipped);
-        }
-
-        /// <summary>
-        /// Change the Equipped status of all Gear plugins. This should only be called from the other ChangeGearEquippedStatus and never used directly.
-        /// </summary>
-        /// <param name="lstGear">List of child Gear to change.</param>
-        /// <param name="blnEquipped">Whether or not the children should be marked as Equipped.</param>
-        public static void ChangeGearEquippedStatus(Character objCharacter, IEnumerable<Gear> lstGear, bool blnEquipped)
-        {
-            foreach (Gear objGear in lstGear)
-            {
-                ChangeGearEquippedStatus(objCharacter, objGear, blnEquipped);
-            }
-        }
 
         /// <summary>
         /// Convert a book code into the full name.

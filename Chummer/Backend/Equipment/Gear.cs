@@ -2565,6 +2565,226 @@ namespace Chummer.Backend.Equipment
             }
             return false;
         }
+
+        /// <summary>
+        /// Change the Equipped status of a piece of Gear and all of its children.
+        /// </summary>
+        /// <param name="objGear">Gear object to change.</param>
+        /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
+        public void ChangeEquippedStatus(bool blnEquipped)
+        {
+            if (blnEquipped)
+            {
+                // Add any Improvements from the Gear.
+                if (Bonus != null || (WirelessOn && WirelessBonus != null))
+                {
+                    bool blnAddImprovement = true;
+                    // If this is a Focus which is not bonded, don't do anything.
+                    if (Category != "Stacked Focus")
+                    {
+                        if (Category.EndsWith("Foci"))
+                            blnAddImprovement = Bonded;
+
+                        if (blnAddImprovement)
+                        {
+                            if (!string.IsNullOrEmpty(Extra))
+                                ImprovementManager.ForcedValue = Extra;
+                            if (Bonus != null)
+                            {
+                                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                                {
+                                    // Clear created improvements
+                                    ChangeEquippedStatus(false);
+                                    return;
+                                }
+                                Extra = ImprovementManager.SelectedValue;
+                            }
+                            if (WirelessOn && WirelessBonus != null)
+                            {
+                                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
+                                {
+                                    // Clear created improvements
+                                    ChangeEquippedStatus(false);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Stacked Foci need to be handled a little differently.
+                        foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                        {
+                            if (objStack.GearId == InternalId && objStack.Bonded)
+                            {
+                                foreach (Gear objFociGear in objStack.Gear)
+                                {
+                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    if (objFociGear.Bonus != null)
+                                    {
+                                        if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
+                                        {
+                                            // Clear created improvements
+                                            ChangeEquippedStatus(false);
+                                            return;
+                                        }
+                                        objFociGear.Extra = ImprovementManager.SelectedValue;
+                                    }
+                                    if (objFociGear.WirelessOn && objFociGear.WirelessBonus != null)
+                                    {
+                                        if (ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, objStack.InternalId, objFociGear.WirelessBonus, false, Rating, objFociGear.DisplayNameShort(GlobalOptions.Language)))
+                                        {
+                                            // Clear created improvements
+                                            ChangeEquippedStatus(false);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Remove any Improvements from the Gear.
+                if (Bonus != null || (WirelessOn && WirelessBonus != null))
+                {
+                    if (Category != "Stacked Focus")
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
+                    else
+                    {
+                        // Stacked Foci need to be handled a little differetnly.
+                        foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                        {
+                            if (objStack.GearId == InternalId)
+                            {
+                                foreach (Gear objFociGear in objStack.Gear)
+                                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Children.Count > 0)
+                foreach (Gear objGear in Children)
+                    objGear.ChangeEquippedStatus(blnEquipped);
+        }
+
+        /// <summary>
+        /// Recursive method to delete a piece of Gear and its Improvements from the character. Returns total extra cost removed unrelated to children.
+        /// </summary>
+        /// <param name="objGear">Gear to delete.</param>
+        /// <param name="treWeapons">TreeView that holds the list of Weapons.</param>
+        /// <param name="objImprovementManager">Improvement Manager the character is using.</param>
+        public decimal DeleteGear(TreeView treWeapons, TreeView treVehicles)
+        {
+            decimal decReturn = 0;
+            // Remove any children the Gear may have.
+            foreach (Gear objChild in Children)
+                decReturn += objChild.DeleteGear(treWeapons, treVehicles);
+
+            // Remove the Gear Weapon created by the Gear if applicable.
+            if (WeaponID != Guid.Empty.ToString())
+            {
+                List<string> lstNodesToRemoveIds = new List<string>();
+                List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
+                foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                {
+                    lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                    lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, null, null, null));
+                }
+                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                {
+                    foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                    {
+                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                        lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, null));
+                    }
+
+                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                        {
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, objMod, null));
+                        }
+                    }
+
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId))
+                        {
+                            lstNodesToRemoveIds.Add(objWeapon.InternalId);
+                            lstWeaponsToDelete.Add(new Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>(objWeapon, objVehicle, null, objMount));
+                        }
+                    }
+                }
+                // We need this list separate because weapons to remove can contain gear that add more weapons in need of removing
+                foreach (Tuple<Weapon, Vehicle, VehicleMod, WeaponMount> objLoopTuple in lstWeaponsToDelete)
+                {
+                    Weapon objWeapon = objLoopTuple.Item1;
+                    decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    if (objWeapon.Parent != null)
+                        objWeapon.Parent.Children.Remove(objWeapon);
+                    else if (objLoopTuple.Item4 != null)
+                        objLoopTuple.Item4.Weapons.Remove(objWeapon);
+                    else if (objLoopTuple.Item3 != null)
+                        objLoopTuple.Item3.Weapons.Remove(objWeapon);
+                    else if (objLoopTuple.Item2 != null)
+                        objLoopTuple.Item2.Weapons.Remove(objWeapon);
+                    else
+                        _objCharacter.Weapons.Remove(objWeapon);
+                }
+                foreach (string strNodeId in lstNodesToRemoveIds)
+                {
+                    // Remove the Weapons from the TreeView.
+                    TreeNode objLoopNode = CommonFunctions.FindNode(strNodeId, treWeapons) ?? CommonFunctions.FindNode(strNodeId, treVehicles);
+                    objLoopNode?.Remove();
+                }
+            }
+
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
+
+            // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
+            if (Category == "Foci" || Category == "Metamagic Foci")
+            {
+                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
+                foreach (Focus objFocus in _objCharacter.Foci)
+                {
+                    if (objFocus.GearId == InternalId)
+                        lstRemoveFoci.Add(objFocus);
+                }
+                foreach (Focus objFocus in lstRemoveFoci)
+                {
+                    /*
+                    foreach (Power objPower in objCharacter.Powers)
+                    {
+                        if (objPower.BonusSource == objFocus.GearId)
+                        {
+                            //objPower.FreeLevels -= (objFocus.Rating / 4);
+                        }
+                    }
+                    */
+                    _objCharacter.Foci.Remove(objFocus);
+                }
+            }
+            // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
+            else if (Category == "Stacked Focus")
+            {
+                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                if (objStack != null)
+                {
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                    _objCharacter.StackedFoci.Remove(objStack);
+                }
+            }
+
+            this.SetActiveCommlink(_objCharacter, false);
+            return decReturn;
+        }
         #endregion
     }
 }

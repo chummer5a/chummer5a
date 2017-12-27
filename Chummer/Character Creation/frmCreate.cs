@@ -290,7 +290,7 @@ namespace Chummer
 
             if (!CharacterObject.MAGEnabled && !CharacterObject.RESEnabled)
             {
-                CommonFunctions.ClearInitiations(CharacterObject);
+                CharacterObject.ClearInitiations();
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
             }
             else
@@ -318,7 +318,7 @@ namespace Chummer
                 }
                 cmdAddMetamagic.Enabled = CharacterObjectOptions.AllowInitiationInCreateMode;
                 if (!CharacterObjectOptions.AllowInitiationInCreateMode)
-                    CommonFunctions.ClearInitiations(CharacterObject);
+                    CharacterObject.ClearInitiations();
             }
 
             // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -4197,7 +4197,7 @@ namespace Chummer
                         objGear.Parent.Children.Remove(objGear);
                         objGear.Parent.RefreshMatrixAttributeArray();
                     }
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
                 }
 
                 // Remove the item from the TreeView.
@@ -4429,7 +4429,7 @@ namespace Chummer
                         Gear objGear = CommonFunctions.FindArmorGear(objSelectedNode.Tag.ToString(), CharacterObject.Armor, out objArmor, out objMod);
                         if (objGear != null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
 
                             Gear objGearParent = objGear.Parent;
                             if (objGearParent != null)
@@ -4577,7 +4577,7 @@ namespace Chummer
                         return;
                     }
 
-                    CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                    objWeapon.DeleteWeapon(treWeapons, treVehicles);
 
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
@@ -4614,7 +4614,7 @@ namespace Chummer
                     if (objAccessory != null)
                     {
                         foreach (Gear objGear in objAccessory.Gear)
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                         objWeapon.WeaponAccessories.Remove(objAccessory);
                         treWeapons.SelectedNode.Remove();
                     }
@@ -4624,7 +4624,7 @@ namespace Chummer
                         Gear objGear = CommonFunctions.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), CharacterObject.Weapons, out objAccessory);
                         if (objGear != null)
                         {
-                            CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                            objGear.DeleteGear(treWeapons, treVehicles);
                             if (objGear.Parent == null)
                                 objAccessory.Gear.Remove(objGear);
                             else
@@ -4760,7 +4760,7 @@ namespace Chummer
                 {
                     Gear objParent = CommonFunctions.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString(), CharacterObject.Gear);
 
-                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                    objGear.DeleteGear(treWeapons, treVehicles);
 
                     CharacterObject.Gear.Remove(objGear);
                     treGear.SelectedNode.Remove();
@@ -4870,13 +4870,13 @@ namespace Chummer
                 CharacterObject.Vehicles.Remove(objVehicle);
                 foreach (Weapon objLoopWeapon in objVehicle.Weapons)
                 {
-                    CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                    objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                 }
                 foreach (VehicleMod objLoopMod in objVehicle.Mods)
                 {
                     foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                     foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                     {
@@ -4949,7 +4949,7 @@ namespace Chummer
                     objVehicle.Mods.Remove(objMod);
                     foreach (Weapon objLoopWeapon in objMod.Weapons)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objLoopWeapon, treWeapons, treVehicles);
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
                     foreach (Cyberware objLoopCyberware in objMod.Cyberware)
                     {
@@ -4963,7 +4963,7 @@ namespace Chummer
                     // Removing a Weapon
                     if (objWeapon != null)
                     {
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         if (objWeapon.Parent == null)
                         {
                             if (objMod != null)
@@ -4987,7 +4987,7 @@ namespace Chummer
                             objWeapon.WeaponAccessories.Remove(objWeaponAccessory);
                             foreach (Gear objLoopGear in objWeaponAccessory.Gear)
                             {
-                                CommonFunctions.DeleteGear(CharacterObject, objLoopGear, treWeapons, treVehicles);
+                                objLoopGear.DeleteGear(treWeapons, treVehicles);
                             }
                             treVehicles.SelectedNode.Remove();
                         }
@@ -5031,7 +5031,7 @@ namespace Chummer
                                     }
                                     treVehicles.SelectedNode.Remove();
 
-                                    CommonFunctions.DeleteGear(CharacterObject, objGear, treWeapons, treVehicles);
+                                    objGear.DeleteGear(treWeapons, treVehicles);
                                 }
                                 else
                                 {
@@ -5378,8 +5378,7 @@ namespace Chummer
                     }
                 }
             }
-
-            UpdateInitiationGradeTree();
+            
             ScheduleCharacterUpdate();
 
             IsDirty = true;
@@ -6168,7 +6167,7 @@ namespace Chummer
                     if (objWeapon.ParentID == objSelectedQuality.InternalId)
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        CommonFunctions.DeleteWeapon(CharacterObject, objWeapon, treWeapons, treVehicles);
+                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
                         // We can remove here because GetAllDescendants creates a new IEnumerable, different from these two
                         if (objWeapon.Parent != null)
                             objWeapon.Parent.Children.Remove(objWeapon);
@@ -10914,7 +10913,7 @@ namespace Chummer
                     {
                         objSelectedGear.Equipped = chkWeaponAccessoryInstalled.Checked;
 
-                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedGear, chkWeaponAccessoryInstalled.Checked);
+                        objSelectedGear.ChangeEquippedStatus(chkWeaponAccessoryInstalled.Checked);
 
                         ScheduleCharacterUpdate();
                     }
@@ -11037,7 +11036,7 @@ namespace Chummer
             {
                 objSelectedGear.Equipped = chkGearEquipped.Checked;
 
-                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedGear, chkGearEquipped.Checked);
+                objSelectedGear.ChangeEquippedStatus(chkGearEquipped.Checked);
 
                 RefreshSelectedGear();
                 ScheduleCharacterUpdate();
@@ -11751,8 +11750,8 @@ namespace Chummer
                             if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                                objSelectedFocus.ChangeEquippedStatus(false);
+                                objSelectedFocus.ChangeEquippedStatus(true);
                                 e.Cancel = true;
                                 return;
                             }
@@ -11763,8 +11762,8 @@ namespace Chummer
                             if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, false, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                             {
                                 // Clear created improvements
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, false);
-                                CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objSelectedFocus, true);
+                                objSelectedFocus.ChangeEquippedStatus(false);
+                                objSelectedFocus.ChangeEquippedStatus(true);
                                 e.Cancel = true;
                                 return;
                             }
@@ -11795,8 +11794,8 @@ namespace Chummer
                                     if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
-                                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
-                                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                                        objStackGear.ChangeEquippedStatus(false);
+                                        objStackGear.ChangeEquippedStatus(true);
                                         e.Cancel = true;
                                         return;
                                     }
@@ -11807,8 +11806,8 @@ namespace Chummer
                                     if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                                     {
                                         // Clear created improvements
-                                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, false);
-                                        CommonFunctions.ChangeGearEquippedStatus(CharacterObject, objStackGear, true);
+                                        objStackGear.ChangeEquippedStatus(false);
+                                        objStackGear.ChangeEquippedStatus(true);
                                         e.Cancel = true;
                                         return;
                                     }
@@ -12480,7 +12479,7 @@ namespace Chummer
         /// </summary>
         private void ClearSpellTab()
         {
-            CommonFunctions.ClearSpellTab(CharacterObject, treSpells);
+            CharacterObject.ClearSpellTab(treSpells);
 
             // Remove the Spirits.
             panSpirits.Controls.Clear();
@@ -12494,7 +12493,7 @@ namespace Chummer
         /// </summary>
         private void ClearAdeptTab()
         {
-            CommonFunctions.ClearAdeptTab(CharacterObject);
+            CharacterObject.ClearAdeptTab();
 
             // Remove all of the Adept Powers from the panel.
             // TODO: Remove adept powers.
@@ -12508,7 +12507,7 @@ namespace Chummer
         /// </summary>
         private void ClearTechnomancerTab()
         {
-            CommonFunctions.ClearTechnomancerTab(CharacterObject, treComplexForms);
+            CharacterObject.ClearTechnomancerTab(treComplexForms);
 
             // Remove the Sprites.
             panSprites.Controls.Clear();
@@ -12522,7 +12521,7 @@ namespace Chummer
         /// </summary>
         private void ClearAdvancedProgramsTab()
         {
-            CommonFunctions.ClearAdvancedProgramsTab(CharacterObject, treAIPrograms);
+            CharacterObject.ClearAdvancedProgramsTab(treAIPrograms);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -12533,7 +12532,7 @@ namespace Chummer
         /// </summary>
         private void ClearCyberwareTab()
         {
-            CommonFunctions.ClearCyberwareTab(CharacterObject, treCyberware, treWeapons, treVehicles);
+            CharacterObject.ClearCyberwareTab(treCyberware, treWeapons, treVehicles);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -12544,7 +12543,7 @@ namespace Chummer
         /// </summary>
         private void ClearCritterTab()
         {
-            CommonFunctions.ClearCritterTab(CharacterObject, treCritterPowers);
+            CharacterObject.ClearCritterTab(treCritterPowers);
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -12555,8 +12554,7 @@ namespace Chummer
         /// </summary>
         private void ClearInitiationTab()
         {
-            CommonFunctions.ClearInitiations(CharacterObject);
-            UpdateInitiationGradeTree();
+            CharacterObject.ClearInitiations();
 
             IsDirty = true;
             ScheduleCharacterUpdate();
@@ -13975,6 +13973,7 @@ namespace Chummer
             RefreshImprovements();
             RefreshLimitModifiers();
             UpdateReputation();
+            UpdateInitiationGradeTree();
             if (CharacterObjectOptions.AllowInitiationInCreateMode)
                 UpdateInitiationCost();
 
