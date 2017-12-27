@@ -698,12 +698,16 @@ namespace Chummer.Backend.Equipment
             // If the availability is determined by the Rating, evaluate the expression.
 
             string strAvailExpr = strCalculated.Replace("Rating", _intRating.ToString());
-            strAvailExpr = strAvailExpr.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
-            // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-            strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-            strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
-            strAvailExpr = strAvailExpr.Replace("Acceleration", Parent.Accel.ToString());
-            strAvailExpr = strAvailExpr.Replace("Handling", Parent.Handling.ToString());
+            if (Parent != null)
+            {
+                strAvailExpr = strAvailExpr.CheapReplace("Vehicle Cost",
+                    () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
+                strAvailExpr = strAvailExpr.Replace("Acceleration", Parent.Accel.ToString());
+                strAvailExpr = strAvailExpr.Replace("Handling", Parent.Handling.ToString());
+            }
             int intAvail = 0;
             string strReturn = string.Empty;
             try
@@ -956,12 +960,16 @@ namespace Chummer.Backend.Equipment
                         strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                strCost = strCost.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
-                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                strCost = strCost.Replace("Speed", Parent.Speed.ToString());
-                strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
-                strCost = strCost.Replace("Handling", Parent.Handling.ToString());
+                if (Parent != null)
+                {
+                    strCost = strCost.CheapReplace("Vehicle Cost",
+                        () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                    strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                    strCost = strCost.Replace("Speed", Parent.Speed.ToString());
+                    strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
+                    strCost = strCost.Replace("Handling", Parent.Handling.ToString());
+                }
                 decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
@@ -993,12 +1001,16 @@ namespace Chummer.Backend.Equipment
                         strSlotsExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
                 string strSlots = strSlotsExpression.Replace("Rating", _intRating.ToString());
-                strSlots = strSlots.CheapReplace("Vehicle Cost", () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
-                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
-                strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
-                strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());
-                strSlots = strSlots.Replace("Acceleration", Parent.Accel.ToString());
-                strSlots = strSlots.Replace("Handling", Parent.Handling.ToString());
+                if (Parent != null)
+                {
+                    strSlots = strSlots.CheapReplace("Vehicle Cost",
+                        () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                    strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                    strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());
+                    strSlots = strSlots.Replace("Acceleration", Parent.Accel.ToString());
+                    strSlots = strSlots.Replace("Handling", Parent.Handling.ToString());
+                }
                 return Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strSlots));
             }
         }
@@ -1038,8 +1050,13 @@ namespace Chummer.Backend.Equipment
                 string strName = Name.ToLower();
                 if (!strName.Contains("arm") && !strName.Contains("leg"))
                     return 0;
-
-                int intAttribute = Math.Max(Parent.TotalBody, 0);
+                int intAttribute = 0;
+                int bod = 1;
+                if (Parent != null)
+                {
+                    bod = Parent.TotalBody * 2;
+                    intAttribute = Math.Max(Parent.TotalBody, 0);
+                }
                 int intBonus = 0;
 
                 foreach (Cyberware objChild in Cyberware)
@@ -1051,7 +1068,7 @@ namespace Chummer.Backend.Equipment
                     if (objChild.Name == "Enhanced Strength")
                         intBonus = objChild.Rating;
                 }
-                return Math.Min(intAttribute + intBonus, Math.Max(Parent.TotalBody * 2, 1));
+                return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
             }
         }
         
@@ -1066,7 +1083,13 @@ namespace Chummer.Backend.Equipment
                 if (!strName.Contains("arm") && !strName.Contains("leg"))
                     return 0;
 
-                int intAttribute = Math.Max(Parent.Pilot, 0);
+                int intAttribute = 0;
+                int pilot = 1;
+                if (Parent != null)
+                {
+                    pilot = Parent.TotalBody * 2;
+                    intAttribute = Math.Max(Parent.Pilot, 0);
+                }
                 int intBonus = 0;
 
                 foreach (Cyberware objChild in Cyberware)
@@ -1079,7 +1102,7 @@ namespace Chummer.Backend.Equipment
                         intBonus = objChild.Rating;
                 }
 
-                return Math.Min(intAttribute + intBonus, Math.Max(Parent.Pilot * 2, 1));
+                return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
             }
         }
 
