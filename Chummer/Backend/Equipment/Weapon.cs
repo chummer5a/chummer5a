@@ -690,7 +690,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", _strWeaponName);
             objWriter.WriteElementString("location", _strLocation);
@@ -3694,7 +3694,7 @@ namespace Chummer.Backend.Equipment
         /// Convert a string to a Firing Mode.
         /// </summary>
         /// <param name="strValue">String value to convert.</param>
-        public FiringMode ConvertToFiringMode(string strValue)
+        public static FiringMode ConvertToFiringMode(string strValue)
         {
             switch (strValue)
             {

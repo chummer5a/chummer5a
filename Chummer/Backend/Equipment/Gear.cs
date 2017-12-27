@@ -939,7 +939,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("gearname", _strGearName);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in _objChildren)

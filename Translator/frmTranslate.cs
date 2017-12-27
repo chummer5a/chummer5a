@@ -157,7 +157,7 @@ namespace Translator
             TranslatedIndicator(item);
             string strTranslated = item.Cells["Text"].Value.ToString();
             string strEnglish = item.Cells["English"].Value.ToString();
-            string strPage = item.Cells["Page"].Value.ToString();
+            string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
@@ -193,7 +193,7 @@ namespace Translator
             {
                 XmlElement element = xmlNodeLocal["translate"];
                 if (element != null) element.InnerText = strTranslated;
-                XmlElement xmlElement = xmlNodeLocal["altpage"];
+                XmlElement xmlElement = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
                 if (xmlElement != null) xmlElement.InnerText = strPage;
 
                 XmlAttribute itemOf;
@@ -415,15 +415,23 @@ namespace Translator
 
         private void DoLoadSection(object sender, DoWorkEventArgs e)
         {
-            var dataTable = new DataTable("strings");
-            dataTable.Columns.Add("English");
-            dataTable.Columns.Add("Text");
-            dataTable.Columns.Add("Book");
-            dataTable.Columns.Add("Page");
-            dataTable.Columns.Add("Translated?");
             string[] strArgs = e.Argument as string[];
             string strFileName = strArgs[0];
             string strSection = strArgs[1];
+            var dataTable = new DataTable("strings");
+            dataTable.Columns.Add("English");
+            dataTable.Columns.Add("Text");
+            if (strFileName == "books.xml")
+            {
+                dataTable.Columns.Add("English Code");
+                dataTable.Columns.Add("Code");
+            }
+            else
+            {
+                dataTable.Columns.Add("Book");
+                dataTable.Columns.Add("Page");
+            }
+            dataTable.Columns.Add("Translated?");
             if (strSection == "[Show All Sections]")
                 strSection = "*";
             XmlNodeList xmlBaseList = _objDataDoc.SelectNodes("/chummer/chummer[@file=\"" + strFileName + "\"]/" + strSection);
@@ -461,7 +469,7 @@ namespace Translator
                     else
                     {
                         strName = xmlChildNameNode.InnerText;
-                        strPage = xmlChildNode["altpage"]?.InnerText ?? string.Empty;
+                        strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText ) ?? string.Empty;
                         XmlNode xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
                         strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                         strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;

@@ -98,11 +98,11 @@ namespace Chummer
 
             if (objXmlMetamagic != null)
             {
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language);
                 string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
                 lblSource.Text = $"{strBook} {strPage}";
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
 
@@ -241,7 +241,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
     }
 }

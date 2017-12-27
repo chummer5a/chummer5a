@@ -479,7 +479,7 @@ namespace Chummer
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", _objQualityType.ToString());
                 objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
-                objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
                 objWriter.WriteElementString("page", Page(strLanguageToPrint));
                 if (_objCharacter.Options.PrintNotes)
                     objWriter.WriteElementString("notes", _strNotes);
@@ -1817,7 +1817,7 @@ namespace Chummer
             objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
             objWriter.WriteElementString("alchemy", Alchemical.ToString());
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
@@ -2886,7 +2886,7 @@ namespace Chummer
             objWriter.WriteStartElement("metamagic");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("grade", _intGrade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -3140,7 +3140,7 @@ namespace Chummer
             objWriter.WriteStartElement("art");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -3376,7 +3376,7 @@ namespace Chummer
             objWriter.WriteStartElement("enhancement");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
@@ -3610,7 +3610,7 @@ namespace Chummer
             objWriter.WriteElementString("duration", _strDuration);
             objWriter.WriteElementString("fv", _strFV);
             objWriter.WriteElementString("target", _strTarget);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -3854,7 +3854,7 @@ namespace Chummer
                 objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
             else
                 objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -4114,7 +4114,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialart");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
             objWriter.WriteElementString("cost", _intKarmaCost.ToString(objCulture));
@@ -4501,7 +4501,7 @@ namespace Chummer
             objWriter.WriteStartElement("martialartmaneuver");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -5816,7 +5816,7 @@ namespace Chummer
             objWriter.WriteElementString("action", DisplayAction(strLanguageToPrint));
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);
@@ -6810,7 +6810,7 @@ namespace Chummer
             objWriter.WriteElementString("advantage", Advantage);
             objWriter.WriteElementString("disadvantage", Disadvantage);
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("mentormask", MentorMask.ToString());
             if (_objCharacter.Options.PrintNotes)

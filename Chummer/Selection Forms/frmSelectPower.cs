@@ -86,13 +86,13 @@ namespace Chummer
                 lblPowerPoints.Text = objXmlPower["extrapointcost"].InnerText + " + " + lblPowerPoints.Text;
             }
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlPower["page"].InnerText;
             if (objXmlPower["altpage"] != null)
                 strPage = objXmlPower["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -300,7 +300,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
     }
 }

@@ -169,13 +169,13 @@ namespace Chummer
             cboChoice1.EndUpdate();
             cboChoice2.EndUpdate();
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlMentor["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlMentor["page"].InnerText;
             if (objXmlMentor["altpage"] != null)
                 strPage = objXmlMentor["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMentor["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion
 
@@ -272,7 +272,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
     }
 }

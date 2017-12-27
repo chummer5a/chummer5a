@@ -325,7 +325,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());

@@ -260,7 +260,7 @@ namespace Chummer
             objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
             objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
             objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
-            objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", _strNotes);

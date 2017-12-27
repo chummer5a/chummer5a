@@ -2638,13 +2638,84 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Convert a book code into the full name.
+        /// </summary>
+        /// <param name="strCode">Book code to convert.</param>
+        public static string BookFromCode(string strCode, string strLanguage)
+        {
+            if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["name"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        public static string LanguageBookShort(string strCode, string strLanguage)
+        {
+            if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["altcode"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+                return strCode;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Determine the book's original code by using the alternate code.
+        /// </summary>
+        /// <param name="strCode">Alternate code to look for.</param>
+        public static string BookFromAltCode(string strCode, string strLanguage)
+        {
+            if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
+                string strReturn = objXmlBook?["code"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+                return strCode;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Book name (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        public static string LanguageBookLong(string strCode, string strLanguage)
+        {
+            if (!string.IsNullOrWhiteSpace(strCode))
+            {
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                if (objXmlBook != null)
+                {
+                    string strReturn = objXmlBook["translate"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                    strReturn = objXmlBook["name"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                }
+            }
+            return string.Empty;
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book coode and page number to open.</param>
-        /// <param name="objCharacter">Character from which alternate sources should be fetched.</param>
-        public static void OpenPDF(string strSource, Character objCharacter = null, string strPDFParamaters = "", string strPDFAppPath = "")
+        public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
         {
             if (string.IsNullOrEmpty(strPDFParamaters))
                 strPDFParamaters = GlobalOptions.PDFParameters;
@@ -2669,9 +2740,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = strTemp[0];
-            if (objCharacter != null)
-                strBook = objCharacter.Options.LanguageBookShort(strBook, GlobalOptions.Language);
+            string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             Uri uriPath;

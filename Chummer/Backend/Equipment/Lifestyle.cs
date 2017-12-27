@@ -347,7 +347,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
 

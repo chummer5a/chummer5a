@@ -480,7 +480,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(txtPDFLocation.Text))
                 return;
 
-            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+            CommonFunctions.OpenPDF(treSourcebook.SelectedNode.Tag + " 5", cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
         #endregion
 

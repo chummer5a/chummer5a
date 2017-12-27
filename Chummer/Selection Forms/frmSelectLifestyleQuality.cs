@@ -125,7 +125,7 @@ namespace Chummer
             if (chkFree.Checked)
                 lblBP.Text = LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language);
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlQuality["page"].InnerText;
             if (objXmlQuality["altpage"] != null)
                 strPage = objXmlQuality["altpage"].InnerText;
@@ -175,7 +175,7 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
             }
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)
@@ -1123,7 +1123,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
     }
 }

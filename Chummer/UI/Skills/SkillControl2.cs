@@ -345,7 +345,7 @@ namespace Chummer.UI.Skills
         
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.DisplayPage(GlobalOptions.Language), _skill.CharacterObject);
+            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.DisplayPage(GlobalOptions.Language));
         }
 
         private void cboSpec_TextChanged(object sender, EventArgs e)

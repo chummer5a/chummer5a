@@ -111,13 +111,13 @@ namespace Chummer
             // Populate the Martial Arts list.
             XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + lstMartialArts.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlArt["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlArt["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlArt["page"].InnerText;
             if (objXmlArt["altpage"] != null)
                 strPage = objXmlArt["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -190,7 +190,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
     }
 }

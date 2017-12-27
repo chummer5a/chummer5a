@@ -286,7 +286,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
         #endregion
 
@@ -735,14 +735,14 @@ namespace Chummer
                 chkFreeBonus.Enabled = true;
             }
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlSpell["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlSpell["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlSpell["page"].InnerText;
             if (objXmlSpell["altpage"] != null)
                 strPage = objXmlSpell["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
             tipTooltip.SetToolTip(lblSource,
-                _objCharacter.Options.LanguageBookLong(objXmlSpell["source"].InnerText, GlobalOptions.Language) + " " +
+                CommonFunctions.LanguageBookLong(objXmlSpell["source"].InnerText, GlobalOptions.Language) + " " +
                 LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion

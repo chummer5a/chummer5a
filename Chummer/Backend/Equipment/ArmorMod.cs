@@ -338,7 +338,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("included", _blnIncludedInArmor.ToString());
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());

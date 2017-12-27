@@ -262,11 +262,11 @@ namespace Chummer
                 }
                 nudRating.Value = nudRating.Minimum;
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlCyberware["source"].InnerText, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objXmlCyberware["source"].InnerText, GlobalOptions.Language);
                 string strPage = objXmlCyberware["altpage"]?.InnerText ?? objXmlCyberware["page"].InnerText;
                 lblSource.Text = $"{strBook} {strPage}";
                 tipTooltip.SetToolTip(lblSource,
-                    _objCharacter.Options.LanguageBookLong(objXmlCyberware["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    CommonFunctions.LanguageBookLong(objXmlCyberware["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
             else
             {
@@ -326,7 +326,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)

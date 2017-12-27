@@ -232,7 +232,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
 
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
@@ -605,12 +605,12 @@ namespace Chummer
             }
 
             string strBookCode = objXmlAccessory["source"]?.InnerText;
-            string strBook = _objCharacter.Options.LanguageBookShort(strBookCode, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(strBookCode, GlobalOptions.Language);
             string strPage = objXmlAccessory["page"]?.InnerText;
             objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(strBookCode, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

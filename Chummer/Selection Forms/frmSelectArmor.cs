@@ -269,7 +269,7 @@ namespace Chummer
         }
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
 
         private void dgvArmor_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -601,7 +601,7 @@ namespace Chummer
 
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlArmor["source"]?.InnerText, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objXmlArmor["source"]?.InnerText, GlobalOptions.Language);
                 string strPage = objXmlArmor["page"]?.InnerText;
                 if (objXmlArmor["altpage"] != null)
                     strPage = objXmlArmor["altpage"].InnerText;
@@ -609,7 +609,7 @@ namespace Chummer
 
 
                 tipTooltip.SetToolTip(lblSource,
-                    _objCharacter.Options.LanguageBookLong(objXmlArmor["source"]?.InnerText, GlobalOptions.Language) + " " +
+                    CommonFunctions.LanguageBookLong(objXmlArmor["source"]?.InnerText, GlobalOptions.Language) + " " +
                     LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }

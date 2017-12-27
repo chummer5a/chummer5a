@@ -204,7 +204,7 @@ namespace Chummer
 
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblWeaponAvail.Text);
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language);
             string strPage = objXmlWeapon["page"]?.InnerText;
             if (objXmlWeapon["altpage"] != null)
                 strPage = objXmlWeapon["altpage"].InnerText;
@@ -229,7 +229,7 @@ namespace Chummer
                 }
             lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
@@ -649,7 +649,7 @@ namespace Chummer
 
         private void lblSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
+            CommonFunctions.OpenPDF(lblSource.Text);
         }
         #endregion
     }

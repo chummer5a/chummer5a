@@ -346,7 +346,7 @@ namespace Chummer
             }
 
             string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
@@ -357,7 +357,7 @@ namespace Chummer
                     ? " (" + objMetatypeNode["translate"].InnerText + ")"
                     : " (" + CharacterObject.Metavariant + ")";
 
-                strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
@@ -3772,10 +3772,10 @@ namespace Chummer
             {
                 MartialArt objMartialArt = CommonFunctions.FindByIdWithNameCheck(treMartialArts.SelectedNode.Tag.ToString(), CharacterObject.MartialArts);
 
-                strBook = CharacterObjectOptions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
+                strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                 strPage = objMartialArt.Page(GlobalOptions.Language);
                 lblMartialArtSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMartialArtSource, CharacterObjectOptions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + " page " + strPage);
+                tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + " page " + strPage);
             }
 
             // Display the Martial Art Advantage information.
@@ -3788,10 +3788,10 @@ namespace Chummer
                 if (objXmlTechnique != null)
                 {
                     objXmlTechnique.TryGetStringFieldQuickly("source", ref strBook);
-                    string strBookShort = CharacterObjectOptions.LanguageBookShort(strBook, GlobalOptions.Language);
+                    string strBookShort = CommonFunctions.LanguageBookShort(strBook, GlobalOptions.Language);
                     objXmlTechnique.TryGetStringFieldQuickly("page", ref strPage);
                     lblMartialArtSource.Text = strBookShort + " " + strPage;
-                    tipTooltip.SetToolTip(lblMartialArtSource, CharacterObjectOptions.LanguageBookLong(strBook, GlobalOptions.Language) + " page " + strPage);
+                    tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(strBook, GlobalOptions.Language) + " page " + strPage);
                 }
             }
 
@@ -3804,10 +3804,10 @@ namespace Chummer
 
             //    if (objXmlTechnique != null)
             //    {
-            //        string strBook = CharacterObjectOptions.LanguageBookShort(objXmlTechnique["source"].InnerText);
+            //        string strBook = CommonFunctions.LanguageBookShort(objXmlTechnique["source"].InnerText);
             //        string strPage = objXmlTechnique["page"].InnerText;
             //        lblMartialArtSource.Text = strBook + " " + strPage;
-            //        tipTooltip.SetToolTip(lblMartialArtSource, CharacterObjectOptions.LanguageBookLong(objXmlTechnique["source"].InnerText) + " page " + objXmlTechnique["page"].InnerText);
+            //        tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objXmlTechnique["source"].InnerText) + " page " + objXmlTechnique["page"].InnerText);
             //    }
             //}
             _blnSkipRefresh = false;
@@ -10025,10 +10025,10 @@ namespace Chummer
 
             Quality objQuality = CommonFunctions.FindByIdWithNameCheck(treQualities.SelectedNode.Tag.ToString(), CharacterObject.Qualities);
 
-            string strBook = CharacterObjectOptions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
             string strPage = objQuality.Page(GlobalOptions.Language);
             lblQualitySource.Text = strBook + " " + strPage;
-            tipTooltip.SetToolTip(lblQualitySource, CharacterObjectOptions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + " " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             nudQualityLevel_UpdateValue(objQuality);
@@ -11578,10 +11578,10 @@ namespace Chummer
                 lblSpellDamage.Text = objSpell.DisplayDamage(GlobalOptions.Language);
                 lblSpellDuration.Text = objSpell.DisplayDuration(GlobalOptions.Language);
                 lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
-                string strBook = CharacterObjectOptions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
                 string strPage = objSpell.DisplayPage(GlobalOptions.Language);
                 lblSpellSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblSpellSource, CharacterObjectOptions.LanguageBookLong(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSpellSource, CommonFunctions.LanguageBookLong(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                 // Determine the size of the Spellcasting Dice Pool.
                 lblSpellDicePool.Text = objSpell.DicePool.ToString();
@@ -12086,10 +12086,10 @@ namespace Chummer
                     lblTarget.Text = strTarget;
                     lblFV.Text = strFV;
 
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
                     string strPage = objProgram.Page(GlobalOptions.Language);
                     lblComplexFormSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblComplexFormSource, CharacterObjectOptions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 }
             }
         }
@@ -12135,10 +12135,10 @@ namespace Chummer
                 {
                     lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalOptions.Language);
 
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
                     string strPage = objProgram.Page(GlobalOptions.Language);
                     lblAIProgramsSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblAIProgramsSource, CharacterObjectOptions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblAIProgramsSource, CommonFunctions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 }
             }
         }
@@ -12170,10 +12170,10 @@ namespace Chummer
 
             if (objMetamagic != null)
             {
-                string strBook = CharacterObjectOptions.LanguageBookShort(objMetamagic.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objMetamagic.Source, GlobalOptions.Language);
                 string strPage = objMetamagic.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CharacterObjectOptions.BookFromCode(objMetamagic.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objMetamagic.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 return;
             }
 
@@ -12182,10 +12182,10 @@ namespace Chummer
 
             if (objArt != null)
             {
-                string strBook = CharacterObjectOptions.LanguageBookShort(objArt.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objArt.Source, GlobalOptions.Language);
                 string strPage = objArt.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CharacterObjectOptions.BookFromCode(objArt.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objArt.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 return;
             }
 
@@ -12194,10 +12194,10 @@ namespace Chummer
 
             if (objSpell != null)
             {
-                string strBook = CharacterObjectOptions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
                 string strPage = objSpell.DisplayPage(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CharacterObjectOptions.BookFromCode(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 return;
             }
 
@@ -12206,10 +12206,10 @@ namespace Chummer
 
             if (objEnhancement != null)
             {
-                string strBook = CharacterObjectOptions.LanguageBookShort(objEnhancement.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objEnhancement.Source, GlobalOptions.Language);
                 string strPage = objEnhancement.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CharacterObjectOptions.BookFromCode(objEnhancement.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objEnhancement.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 return;
             }
 
@@ -12245,10 +12245,10 @@ namespace Chummer
                     lblCritterPowerRange.Text = objPower.DisplayRange(GlobalOptions.Language);
                     lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalOptions.Language);
                     chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objPower.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objPower.Source, GlobalOptions.Language);
                     string strPage = objPower.Page(GlobalOptions.Language);
                     lblCritterPowerSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCritterPowerSource, CharacterObjectOptions.LanguageBookLong(objPower.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(objPower.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                     if (objPower.PowerPoints > 0)
                     {
                         lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.CultureInfo);
@@ -12566,77 +12566,77 @@ namespace Chummer
         #region Sourcebook Label Events
         private void lblWeaponSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblWeaponSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblWeaponSource.Text);
         }
 
         private void lblMetatypeSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblMetatypeSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblMetatypeSource.Text);
         }
 
         private void lblQualitySource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblQualitySource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblQualitySource.Text);
         }
 
         private void lblMartialArtSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblMartialArtSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblMartialArtSource.Text);
         }
 
         private void lblSpellSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblSpellSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblSpellSource.Text);
         }
 
         private void lblTraditionSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblTraditionSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblTraditionSource.Text);
         }
 
         private void lblComplexFormSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblComplexFormSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblComplexFormSource.Text);
         }
 
         private void lblAdvancedProgramsSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblAIProgramsSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblAIProgramsSource.Text);
         }
 
         private void lblCritterPowerSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblCritterPowerSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblCritterPowerSource.Text);
         }
 
         private void lblMetamagicSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblMetamagicSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblMetamagicSource.Text);
         }
 
         private void lblCyberwareSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblCyberwareSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblCyberwareSource.Text);
         }
 
         private void lblLifestyleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblLifestyleSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblLifestyleSource.Text);
         }
 
         private void lblArmorSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblArmorSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblArmorSource.Text);
         }
 
         private void lblGearSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblGearSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblGearSource.Text);
         }
 
         private void lblVehicleSource_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(lblVehicleSource.Text, CharacterObject);
+            CommonFunctions.OpenPDF(lblVehicleSource.Text);
         }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -13489,7 +13489,7 @@ namespace Chummer
             }
 
             string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
@@ -13500,7 +13500,7 @@ namespace Chummer
                     ? " (" + objMetatypeNode["translate"].InnerText + ")"
                     : " (" + CharacterObject.Metavariant + ")";
 
-                strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
@@ -14103,10 +14103,10 @@ namespace Chummer
                 cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
-                string strBook = CharacterObjectOptions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
                 string strPage = objCyberware.Page(GlobalOptions.Language);
                 lblCyberwareSource.Text = $"{strBook} {strPage}";
-                tipTooltip.SetToolTip(lblCyberwareSource, CharacterObjectOptions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 // Enable and set the Rating values as needed.
                 if (objCyberware.MaxRating == 0)
                 {
@@ -14223,10 +14223,10 @@ namespace Chummer
                                                 LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
                     lblCyberwareEssence.Text = "0";
                     cboCyberwareGrade.Enabled = false;
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
                     lblCyberwareSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCyberwareSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     lblCyberDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
                     lblCyberAttack.Text = objGear.GetTotalMatrixAttribute("Attack").ToString();
@@ -14453,10 +14453,10 @@ namespace Chummer
 
                 lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                 lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                 string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                 lblWeaponSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblWeaponSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
@@ -14510,10 +14510,10 @@ namespace Chummer
                         cmdDeleteWeapon.Enabled = false;
                     lblWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                     lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                     string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                     lblWeaponSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblWeaponSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                     chkWeaponAccessoryInstalled.Enabled = true;
                     chkWeaponAccessoryInstalled.Checked = objWeapon.Installed;
                     chkIncludedInWeapon.Enabled = false;
@@ -14613,10 +14613,10 @@ namespace Chummer
                         }
 
                         lblWeaponSlots.Text = strMount;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objSelectedAccessory.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objSelectedAccessory.Source, GlobalOptions.Language);
                         string strPage = objSelectedAccessory.Page(GlobalOptions.Language);
                         lblWeaponSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblWeaponSource, CharacterObjectOptions.LanguageBookLong(objSelectedAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objSelectedAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                         chkWeaponAccessoryInstalled.Enabled = true;
                         chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                         chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
@@ -14646,10 +14646,10 @@ namespace Chummer
                             lblWeaponAmmo.Text = string.Empty;
                             lblWeaponSlots.Text = string.Empty;
                             lblWeaponRating.Text = string.Empty;
-                            string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                            string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                             string strPage = objGear.DisplayPage(GlobalOptions.Language);
                             lblWeaponSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblWeaponSource, CharacterObjectOptions.BookFromCode(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.BookFromCode(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                             chkWeaponAccessoryInstalled.Enabled = true;
                             chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                             chkIncludedInWeapon.Enabled = false;
@@ -14729,10 +14729,10 @@ namespace Chummer
                 lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                string strBook = CharacterObjectOptions.LanguageBookShort(objArmor.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objArmor.Source, GlobalOptions.Language);
                 string strPage = objArmor.Page(GlobalOptions.Language);
                 lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, CharacterObjectOptions.LanguageBookLong(objArmor.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objArmor.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 if (objArmor.MaxRating == 0)
@@ -14778,10 +14778,10 @@ namespace Chummer
                         lblArmorCapacity.Text = objSelectedMod.GearCapacity + "/" + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
                     lblArmorCost.Text = objSelectedMod.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objSelectedMod.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objSelectedMod.Source, GlobalOptions.Language);
                     string strPage = objSelectedMod.DisplayPage(GlobalOptions.Language);
                     lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, CharacterObjectOptions.LanguageBookLong(objSelectedMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedMod.Equipped;
                     if (objSelectedMod.MaximumRating > 1)
@@ -14834,10 +14834,10 @@ namespace Chummer
                     {
                         lblArmorCost.Text = objSelectedGear.Cost + '¥';
                     }
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
                     string strPage = objSelectedGear.DisplayPage(GlobalOptions.Language);
                     lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, CharacterObjectOptions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                     chkArmorEquipped.Enabled = true;
                     chkArmorEquipped.Checked = objSelectedGear.Equipped;
                     if (objSelectedGear.MaxRating > 1)
@@ -14880,10 +14880,10 @@ namespace Chummer
                 {
                     lblArmorCost.Text = objSelectedGear.Cost + '¥';
                 }
-                string strBook = CharacterObjectOptions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
                 string strPage = objSelectedGear.DisplayPage(GlobalOptions.Language);
                 lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, CharacterObjectOptions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 chkArmorEquipped.Enabled = true;
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 if (objSelectedGear.MaxRating > 1)
@@ -15070,10 +15070,10 @@ namespace Chummer
                     lblGearCost.Text = objGear.Cost + "¥";
                 }
                 lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                 string strPage = objGear.DisplayPage(GlobalOptions.Language);
                 lblGearSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblGearSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblGearSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                 objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
@@ -15886,10 +15886,10 @@ namespace Chummer
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo);
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + objLifestyle.Multiplier.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            string strBook = CharacterObjectOptions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language);
             string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
             lblLifestyleSource.Text = strBook + " " + strPage;
-            tipTooltip.SetToolTip(lblLifestyleSource, CharacterObjectOptions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
             // Change the Cost/Month label.
@@ -16160,10 +16160,10 @@ namespace Chummer
                 UpdateSensor(objVehicle);
 
                 lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                string strBook = CharacterObjectOptions.LanguageBookShort(objVehicle.Source, GlobalOptions.Language);
+                string strBook = CommonFunctions.LanguageBookShort(objVehicle.Source, GlobalOptions.Language);
                 string strPage = objVehicle.Page(GlobalOptions.Language);
                 lblVehicleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
 
@@ -16293,10 +16293,10 @@ namespace Chummer
                     lblVehicleGearQtyLabel.Visible = true;
 
                     lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objMod.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language);
                     string strPage = objMod.Page(GlobalOptions.Language);
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 }
                 else
                 {
@@ -16359,10 +16359,10 @@ namespace Chummer
                         DisplayVehicleWeaponStats(false);
 
                         lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                         string strPage = objGear.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
@@ -16426,10 +16426,10 @@ namespace Chummer
                         lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
                         lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblVehicleSlots.Text = string.Empty;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         // Determine the Dice Pool size.
                         int intPilot = objCurrentVehicle.Pilot;
@@ -16491,10 +16491,10 @@ namespace Chummer
                     DisplayVehicleCommlinkStats(false);
                     DisplayVehicleStats(false);
                     lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
@@ -16571,10 +16571,10 @@ namespace Chummer
                         lblVehicleDroneModSlotsLabel.Visible = false;
                         lblVehicleDroneModSlots.Text = string.Empty;
                         lblVehicleSlots.Text = string.Empty;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         // Determine the Dice Pool size.
                         int intPilot = objSelectedVehicle.Pilot;
@@ -16644,10 +16644,10 @@ namespace Chummer
                             lblVehicleDroneModSlotsLabel.Visible = false;
                             lblVehicleDroneModSlots.Text = string.Empty;
 
-                            string strBook = CharacterObjectOptions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
+                            string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
                             string strPage = objCyberware.Page(GlobalOptions.Language);
                             lblVehicleSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                             lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
                             objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
@@ -16718,10 +16718,10 @@ namespace Chummer
                     lblVehicleDroneModSlotsLabel.Visible = false;
                     lblVehicleDroneModSlots.Text = string.Empty;
                     lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
@@ -16803,10 +16803,10 @@ namespace Chummer
                         }
 
                         lblVehicleSlots.Text = strMount;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
                         string strPage = objAccessory.Page(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                         chkVehicleWeaponAccessoryInstalled.Enabled = true;
                         chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                         chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -16874,10 +16874,10 @@ namespace Chummer
                         lblVehicleDroneModSlotsLabel.Visible = false;
                         lblVehicleDroneModSlots.Text = string.Empty;
                         lblVehicleSlots.Text = string.Empty;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         // Determine the Dice Pool size.
                         int intPilot = objFoundVehicle.Pilot;
@@ -16967,10 +16967,10 @@ namespace Chummer
                     }
 
                     lblVehicleSlots.Text = strMount;
-                    string strBook = CharacterObjectOptions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
                     string strPage = objAccessory.Page(GlobalOptions.Language);
                     lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                     chkVehicleWeaponAccessoryInstalled.Enabled = true;
                     chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                     chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -17025,10 +17025,10 @@ namespace Chummer
                         lblVehicleDroneModSlotsLabel.Visible = false;
                         lblVehicleDroneModSlots.Text = string.Empty;
                         lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                         string strPage = objGear.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
@@ -17075,12 +17075,12 @@ namespace Chummer
                         lblVehicleProtection.Text = string.Empty;
                         lblVehicleDroneModSlotsLabel.Visible = false;
                         lblVehicleDroneModSlots.Text = string.Empty;
-                        string strBook = CharacterObjectOptions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
                         lblVehicleSource.Text = strBook + " " + strPage;
                         chkVehicleWeaponAccessoryInstalled.Enabled = true;
                         chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
-                        tipTooltip.SetToolTip(lblVehicleSource, CharacterObjectOptions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                         // Determine the Dice Pool size.
                         int intPilot = objFoundVehicle.Pilot;
@@ -19494,7 +19494,7 @@ namespace Chummer
             }
 
             string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+            string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
@@ -19505,12 +19505,12 @@ namespace Chummer
                     ? " (" + objMetatypeNode["translate"].InnerText + ")"
                     : " (" + CharacterObject.Metavariant + ")";
 
-                strBook = CharacterObjectOptions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
             lblMetatypeSource.Text = strBook + " " + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CharacterObjectOptions.LanguageBookLong(objMetatypeNode["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(objMetatypeNode["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
             // If we're working with Karma, the Metatype doesn't cost anything.
             if (CharacterObjectOptions.MetatypeCostsKarma)

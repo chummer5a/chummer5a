@@ -103,7 +103,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
             if (CharacterObject.Options.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteElementString("source", CharacterObject.Options.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
             objWriter.WriteElementString("ratingmod", (ratingModifiers + dicePoolModifiers).ToString(objCulture));
@@ -837,7 +837,7 @@ namespace Chummer.Backend.Skills
                     strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + _strNotes.WordWrap(100) + "\n\n";
                 }
 
-                strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CharacterObject.Options.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";
+                strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";
 
                 return strReturn;
             }
