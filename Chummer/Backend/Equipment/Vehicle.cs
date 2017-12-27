@@ -1504,7 +1504,6 @@ namespace Chummer.Backend.Equipment
                             }
                     }
                 }
-                intDroneModSlots += WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
 
                 return intDroneModSlots;
             }
