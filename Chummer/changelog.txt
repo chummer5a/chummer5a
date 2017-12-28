@@ -78,6 +78,7 @@ Application Changes:
 - Fixed a bug where the Translator tool would not properly consider and treat alternate codes for books.
 - Added a small shim to the skill loader that prevents an error if the character somehow gains two copies of the same skill.
 - Removed the nomission property, as this is now managed by customdata.
+- Fixed a bug where the optional rule for having positive quality costs double if over the limit would not get enabled/disabled properly.
 
 Data Changes:
 

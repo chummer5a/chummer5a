@@ -339,7 +339,7 @@ namespace Chummer
 
         private void chkExceedPositiveQualities_CheckedChanged(object sender, EventArgs e)
         {
-            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedNegativeQualities.Checked;
+            chkExceedPositiveQualitiesCostDoubled.Enabled = chkExceedPositiveQualities.Checked;
             if (!chkExceedPositiveQualitiesCostDoubled.Enabled)
                 chkExceedPositiveQualitiesCostDoubled.Checked = false;
             OptionsChanged(sender, e);
