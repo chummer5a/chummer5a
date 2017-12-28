@@ -299,6 +299,11 @@ namespace Chummer.Backend.Skills
                         {
                             case Improvement.ImprovementType.Skill:
 
+                                if (objImprovement.ImprovedName == Name)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    break;
+                                }
                                 if (IsExoticSkill)
                                 {
                                     var s = (ExoticSkill)this;
@@ -306,10 +311,6 @@ namespace Chummer.Backend.Skills
                                     {
                                         lstReturn.Add(objImprovement);
                                     }
-                                }
-                                else if (objImprovement.ImprovedName == Name)
-                                {
-                                    lstReturn.Add(objImprovement);
                                 }
                                 break;
                             case Improvement.ImprovementType.SkillGroup:
