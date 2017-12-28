@@ -562,7 +562,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";
-                strFilter += '(' + strCustomXPath + ')';
+                strFilter += '(' + strCustomXPath.Replace("&amp;", "&") + ')';
                 blnHasIdentifier = true;
             }
 
@@ -588,7 +588,7 @@ namespace Chummer
 
             bool blnReturn = false;
             // Loop through any nodes that satisfy the XPath filter (as long as we have some way of identifying them, the node is a grouping node and not a data node, and/or we wish to remove the node)
-            if (objNodesToEdit != null && (blnHasIdentifier || objNodesToEdit.Count == 1 || blnHasElementChildren || objAmendingNodeAttribs?["remove"]?.InnerText == "yes"))
+            if (objNodesToEdit != null && objNodesToEdit.Count > 0 && (blnHasIdentifier || objNodesToEdit.Count == 1 || blnHasElementChildren || objAmendingNodeAttribs?["remove"]?.InnerText == "yes"))
             {
                 foreach (XmlNode objNodeToEdit in objNodesToEdit)
                 {
