@@ -1138,11 +1138,6 @@ namespace Chummer
             {
                 strPath += " and " + _strBookXPath;
             }
-            if (GlobalOptions.MissionsOnly)
-            {
-                strPath += " and not(nomission)";
-            }
-
             if (!GlobalOptions.Dronemods)
             {
                 strPath += " and not(optionaldrone)";

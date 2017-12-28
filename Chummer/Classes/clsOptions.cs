@@ -157,7 +157,6 @@ namespace Chummer
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst = false;
         private static bool _lifeModuleEnabled;
-        private static bool _blnMissionsOnly = false;
         private static bool _blnDronemods = false;
         private static bool _blnDronemodsMaximumPilot = false;
         private static bool _blnPreferNightlyUpdates = false;
@@ -250,8 +249,6 @@ namespace Chummer
 
             // Whether or not dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
-
-            LoadBoolFromRegistry(ref _blnMissionsOnly, "missionsonly");
 
             LoadBoolFromRegistry(ref _blnDronemods, "dronemods");
 
@@ -473,19 +470,6 @@ namespace Chummer
             set
             {
                 _blnDatesIncludeTime = value;
-            }
-        }
-
-        public static bool MissionsOnly
-        {
-            get
-            {
-                return _blnMissionsOnly;
-
-            }
-            set
-            {
-                _blnMissionsOnly = value;
             }
         }
 

@@ -926,7 +926,6 @@ namespace Chummer
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.OmaeEnabled = chkOmaeEnabled.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
-            GlobalOptions.MissionsOnly = chkMissions.Checked;
             GlobalOptions.Dronemods = chkDronemods.Checked;
             GlobalOptions.DronemodsMaximumPilot = chkDronemodsMaximumPilot.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
@@ -955,7 +954,6 @@ namespace Chummer
             objRegistry.SetValue("lifemodule", chkLifeModule.Checked.ToString());
             objRegistry.SetValue("omaeenabled", chkOmaeEnabled.Checked.ToString());
             objRegistry.SetValue("prefernightlybuilds", chkPreferNightlyBuilds.Checked.ToString());
-            objRegistry.SetValue("missionsonly", chkMissions.Checked.ToString());
             objRegistry.SetValue("dronemods", chkDronemods.Checked.ToString());
             objRegistry.SetValue("dronemodsPilot", chkDronemodsMaximumPilot.Checked.ToString());
             objRegistry.SetValue("characterrosterpath", txtCharacterRosterPath.Text);
@@ -1282,7 +1280,6 @@ namespace Chummer
             chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
             chkSingleDiceRoller.Checked = GlobalOptions.SingleDiceRoller;
             chkDatesIncludeTime.Checked = GlobalOptions.DatesIncludeTime;
-            chkMissions.Checked = GlobalOptions.MissionsOnly;
             chkDronemods.Checked = GlobalOptions.Dronemods;
             chkDronemodsMaximumPilot.Checked = GlobalOptions.DronemodsMaximumPilot;
             chkPrintToFileFirst.Checked = GlobalOptions.PrintToFileFirst;

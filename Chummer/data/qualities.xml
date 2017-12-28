@@ -632,7 +632,6 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
-      <nomission />
       <source>AP</source>
       <page>16</page>
     </quality>
@@ -644,7 +643,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
       <source>AP</source>
       <page>17</page>
     </quality>
@@ -693,7 +691,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
       <source>RG</source>
       <page>127</page>
     </quality>
@@ -706,7 +703,6 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
       <source>RG</source>
       <page>127</page>
     </quality>
@@ -1199,7 +1195,7 @@
       <bonus>
         <notoriety>3</notoriety>
       </bonus>
-      <nomission />
+
       <source>SR5</source>
       <page>79</page>
     </quality>
@@ -1212,7 +1208,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>SR5</source>
       <page>79</page>
     </quality>
@@ -1248,7 +1244,7 @@
       <bonus>
         <lifestylecost>10</lifestylecost>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Dependent (Inconvenience)</quality>
@@ -1266,7 +1262,7 @@
       <bonus>
         <lifestylecost>20</lifestylecost>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Dependent (Nuisance)</quality>
@@ -1284,7 +1280,7 @@
       <bonus>
         <lifestylecost>30</lifestylecost>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Dependent (Nuisance)</quality>
@@ -1388,7 +1384,7 @@
           <disablespecializationeffects />
         </selectskill>
       </bonus>
-      <nomission />
+
       <source>SR5</source>
       <page>82</page>
     </quality>
@@ -1609,7 +1605,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>SR5</source>
       <page>85</page>
     </quality>
@@ -1679,7 +1675,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>RG</source>
       <page>127</page>
     </quality>
@@ -1716,7 +1712,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>RG</source>
       <page>169</page>
     </quality>
@@ -1766,7 +1762,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>SR5</source>
       <page>87</page>
     </quality>
@@ -2702,7 +2698,7 @@
           <bonus>1</bonus>
         </skillcategory>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2731,7 +2727,7 @@
           <bonus>2</bonus>
         </skillcategory>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Fame: Local</quality>
@@ -2760,7 +2756,7 @@
           <bonus>2</bonus>
         </skillcategory>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2788,7 +2784,7 @@
           <bonus>3</bonus>
         </skillcategory>
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2807,7 +2803,7 @@
       <bonus>
         <friendsinhighplaces />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>147</page>
     </quality>
@@ -3218,7 +3214,7 @@
       <bonus>
         <trustfund>1</trustfund>
       </bonus>
-      <nomission />
+
       <required>
         <oneof>
           <quality>SINner (National)</quality>
@@ -3236,7 +3232,7 @@
       <bonus>
         <trustfund>2</trustfund>
       </bonus>
-      <nomission />
+
       <required>
         <oneof>
           <quality>SINner (National)</quality>
@@ -3254,7 +3250,7 @@
       <bonus>
         <trustfund>3</trustfund>
       </bonus>
-      <nomission />
+
       <required>
         <oneof>
           <quality>SINner (National)</quality>
@@ -3272,7 +3268,7 @@
       <bonus>
         <trustfund>4</trustfund>
       </bonus>
-      <nomission />
+
       <required>
         <oneof>
           <quality>SINner (National)</quality>
@@ -3379,7 +3375,7 @@
       <name>Amnesia (Surface Loss)</name>
       <karma>-4</karma>
       <category>Negative</category>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Amnesia (Neural Deletion)</quality>
@@ -3393,7 +3389,7 @@
       <name>Amnesia (Neural Deletion)</name>
       <karma>-8</karma>
       <category>Negative</category>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Amnesia (Surface Loss)</quality>
@@ -3429,7 +3425,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>153</page>
     </quality>
@@ -3470,7 +3466,7 @@
       <karma>-20</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>RF</source>
       <page>153</page>
     </quality>
@@ -3482,7 +3478,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3494,7 +3490,7 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3565,7 +3561,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Day Job (20 hrs)</quality>
@@ -3583,7 +3579,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Day Job (10 hrs)</quality>
@@ -3601,7 +3597,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Day Job (10 hrs)</quality>
@@ -3653,7 +3649,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>154</page>
     </quality>
@@ -3680,7 +3676,7 @@
         </addqualities>
         <excon />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3693,7 +3689,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3706,7 +3702,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3725,7 +3721,7 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3747,7 +3743,7 @@
       <bonus>
         <nuyenamt>5000</nuyenamt>
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>156</page>
     </quality>
@@ -3912,7 +3908,7 @@
         <basiclifestylecost>10</basiclifestylecost>
         <lifestylecost>10</lifestylecost>
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>157</page>
     </quality>
@@ -4019,7 +4015,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4032,7 +4028,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4045,7 +4041,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4058,7 +4054,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4071,7 +4067,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4084,7 +4080,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4097,7 +4093,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4110,7 +4106,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4123,7 +4119,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4136,7 +4132,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4149,7 +4145,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4162,7 +4158,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4181,7 +4177,7 @@
       <karma>-5</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>RF</source>
       <page>158</page>
     </quality>
@@ -4204,7 +4200,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <forbidden>
         <oneof>
           <quality>Erased</quality>
@@ -4320,7 +4316,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -4332,7 +4328,7 @@
       <bonus>
         <selecttext />
       </bonus>
-      <nomission />
+
       <source>RF</source>
       <page>159</page>
     </quality>
@@ -10492,7 +10488,7 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
-      <nomission />
+
       <source>DT</source>
       <page>45</page>
     </quality>
@@ -10557,81 +10553,81 @@
       <page>46</page>
     </quality>
     <!-- End Region -->
-	<!-- Region Dark Terrors Negetive Qualities -->
-	<quality>
-	  <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
-	  <name>Wildcard Chimera</name>
-	  <karma>0</karma>
-	  <category>Positive</category>
-    <bonus>
-      <selectquality>
-        <quality contributetobp="True">Infected Optional Power: Armor</quality>
-        <quality contributetobp="True">Infected Optional Power: Compulsion</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Hearing)</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Low-Light Vision)</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Smell)</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Taste)</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Thermographic Vision)</quality>
-        <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Visual Acuity)</quality>
-        <quality contributetobp="True">Infected Optional Power: Fear</quality>
-        <quality contributetobp="True">Infected Optional Power: Immunity (Fire)</quality>
-        <quality contributetobp="True">Infected Optional Power: Immunity (Pathogens)</quality>as
-        <quality contributetobp="True">Infected Optional Power: Immunity (Toxins)</quality>
-        <quality contributetobp="True">Infected Optional Power: Influence</quality>
-        <quality contributetobp="True">Infected Optional Power: Magical Guard</quality>
-        <quality contributetobp="True">Infected Optional Power: Mist Form</quality>
-        <quality contributetobp="True">Infected Optional Power: Paralyzing Howl</quality>
-        <quality contributetobp="True">Infected Optional Power: Regeneration</quality>
-        <discountqualities>
-          <quality discount="-1">Third Eye</quality>
-          <quality discount="-2">Scent Glands</quality>
-          <quality discount="-3">Scales</quality>
-          <quality discount="-3">Critter Spook</quality>
-          <quality discount="-3">Cold-Blooded</quality>
-          <quality discount="-3">Bioluminescence</quality>
-          <quality discount="-4">Cyclopean Eye</quality>
-          <quality discount="-4">Berserker</quality>
-          <quality discount="-8">Astral Hazing</quality>
-          <quality discount="-8">Impaired Attribute (Charisma)</quality>
-          <quality discount="-8">Impaired Attribute (Intuition)</quality>
-          <quality discount="-8">Impaired Attribute (Willpower)</quality>
-          <quality discount="-8">Impaired Attribute (Logic)</quality>
-        </discountqualities>
-      </selectquality>
-    </bonus>
-    <source>DTR</source>
-    <page>163</page>
-	</quality>
-	<quality>
-	  <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
-	  <name>It Works If You Work It</name>
-	  <karma>5</karma>
-	  <category>Positive</category>
-	  <bonus />
-	  <source>DTR</source>
-	  <page>164</page>
-	</quality>
-	<quality>
-	  <id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
-	  <name>Soul Swallower</name>
-	  <karma>7</karma>
-	  <category>Positive</category>
-	  <bonus />
-	  <source>DTR</source>
-	  <page>164</page>
-	  </quality>
-	<quality>
-	  <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
-	  <name>Metaviral Attunement</name>
-	  <karma>5</karma>
-	  <category>Positive</category>
-	  <bonus>
-	    <selecttext />
-	  </bonus>
-	  <source>DTR</source>
-	  <page>164</page>
-	</quality>
-	<!-- End Region -->
+    <!-- Region Dark Terrors Negetive Qualities -->
+    <quality>
+      <id>b0321887-df33-49d9-9d2e-e718eca9c7a0</id>
+      <name>Wildcard Chimera</name>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <selectquality>
+          <quality contributetobp="True">Infected Optional Power: Armor</quality>
+          <quality contributetobp="True">Infected Optional Power: Compulsion</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Hearing)</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Low-Light Vision)</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Smell)</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Taste)</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Thermographic Vision)</quality>
+          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Visual Acuity)</quality>
+          <quality contributetobp="True">Infected Optional Power: Fear</quality>
+          <quality contributetobp="True">Infected Optional Power: Immunity (Fire)</quality>
+          <quality contributetobp="True">Infected Optional Power: Immunity (Pathogens)</quality>as
+          <quality contributetobp="True">Infected Optional Power: Immunity (Toxins)</quality>
+          <quality contributetobp="True">Infected Optional Power: Influence</quality>
+          <quality contributetobp="True">Infected Optional Power: Magical Guard</quality>
+          <quality contributetobp="True">Infected Optional Power: Mist Form</quality>
+          <quality contributetobp="True">Infected Optional Power: Paralyzing Howl</quality>
+          <quality contributetobp="True">Infected Optional Power: Regeneration</quality>
+          <discountqualities>
+            <quality discount="-1">Third Eye</quality>
+            <quality discount="-2">Scent Glands</quality>
+            <quality discount="-3">Scales</quality>
+            <quality discount="-3">Critter Spook</quality>
+            <quality discount="-3">Cold-Blooded</quality>
+            <quality discount="-3">Bioluminescence</quality>
+            <quality discount="-4">Cyclopean Eye</quality>
+            <quality discount="-4">Berserker</quality>
+            <quality discount="-8">Astral Hazing</quality>
+            <quality discount="-8">Impaired Attribute (Charisma)</quality>
+            <quality discount="-8">Impaired Attribute (Intuition)</quality>
+            <quality discount="-8">Impaired Attribute (Willpower)</quality>
+            <quality discount="-8">Impaired Attribute (Logic)</quality>
+          </discountqualities>
+        </selectquality>
+      </bonus>
+      <source>DTR</source>
+      <page>163</page>
+    </quality>
+    <quality>
+      <id>b3373640-35cc-4a29-b2b0-6ded9acd8d4b</id>
+      <name>It Works If You Work It</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>DTR</source>
+      <page>164</page>
+    </quality>
+    <quality>
+      <id>254c19fc-0a5b-4f75-a6d9-614f885e3d19</id>
+      <name>Soul Swallower</name>
+      <karma>7</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>DTR</source>
+      <page>164</page>
+    </quality>
+    <quality>
+      <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
+      <name>Metaviral Attunement</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>DTR</source>
+      <page>164</page>
+    </quality>
+    <!-- End Region -->
     <!-- Region Data Trails Negative Qualities -->
     <quality>
       <id>233cb57f-6e4d-45dc-b7a9-9bc1e1bf940c</id>
@@ -10639,7 +10635,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -10658,7 +10654,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <required>
         <oneof>
           <skill>
@@ -10676,7 +10672,7 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>DT</source>
       <page>46</page>
     </quality>
@@ -10727,7 +10723,6 @@
       <karma>-20</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>DT</source>
       <page>48</page>
     </quality>
@@ -10746,7 +10741,6 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>DT</source>
       <page>49</page>
     </quality>
@@ -10756,7 +10750,6 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <required>
         <oneof>
           <skill>
@@ -11043,7 +11036,6 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <required>
         <oneof>
           <metatype>A.I.</metatype>
@@ -11059,7 +11051,6 @@
       <implemented>False</implemented>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <required>
         <oneof>
           <metatype>A.I.</metatype>
@@ -11156,7 +11147,7 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus />
-      <nomission />
+
       <source>CF</source>
       <page>54</page>
     </quality>
@@ -11220,7 +11211,7 @@
       <karma>8</karma>
       <category>Positive</category>
       <bonus />
-      <nomission />
+
       <source>CF</source>
       <page>56</page>
     </quality>
@@ -11503,7 +11494,6 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>CF</source>
       <page>57</page>
     </quality>
@@ -11678,7 +11668,7 @@
       <karma>-7</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
+
       <source>CF</source>
       <page>58</page>
     </quality>
@@ -11767,7 +11757,6 @@
       <karma>-10</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>CF</source>
       <page>60</page>
     </quality>
@@ -11824,7 +11813,6 @@
       <karma>-8</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>HT</source>
       <page>191</page>
     </quality>
@@ -11952,7 +11940,6 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>R5</source>
       <page>34</page>
     </quality>
@@ -12412,7 +12399,6 @@
       <karma>-12</karma>
       <category>Negative</category>
       <bonus />
-      <nomission />
       <source>CA</source>
       <page>151</page>
     </quality>

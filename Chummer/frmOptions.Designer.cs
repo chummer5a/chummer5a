@@ -241,7 +241,6 @@ namespace Chummer
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
             this.chkDronemodsMaximumPilot = new System.Windows.Forms.CheckBox();
             this.chkDronemods = new System.Windows.Forms.CheckBox();
-            this.chkMissions = new System.Windows.Forms.CheckBox();
             this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
             this.chkMaximumArmorModifications = new System.Windows.Forms.CheckBox();
             this.lblMetatypeCostsKarma = new System.Windows.Forms.Label();
@@ -2652,7 +2651,6 @@ namespace Chummer
             this.tabOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel);
             this.tabOptionalRules.Controls.Add(this.chkDronemodsMaximumPilot);
             this.tabOptionalRules.Controls.Add(this.chkDronemods);
-            this.tabOptionalRules.Controls.Add(this.chkMissions);
             this.tabOptionalRules.Controls.Add(this.chkExtendAnyDetectionSpell);
             this.tabOptionalRules.Controls.Add(this.chkMaximumArmorModifications);
             this.tabOptionalRules.Controls.Add(this.lblMetatypeCostsKarma);
@@ -2775,18 +2773,6 @@ namespace Chummer
             this.chkDronemods.Text = "Use Drone Modification rules (R5 122)";
             this.chkDronemods.UseVisualStyleBackColor = true;
             this.chkDronemods.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkMissions
-            // 
-            this.chkMissions.AutoSize = true;
-            this.chkMissions.Location = new System.Drawing.Point(8, 52);
-            this.chkMissions.Name = "chkMissions";
-            this.chkMissions.Size = new System.Drawing.Size(197, 17);
-            this.chkMissions.TabIndex = 33;
-            this.chkMissions.Tag = "Checkbox_Options_Missions";
-            this.chkMissions.Text = "Hide Qualities prohibited by Missions";
-            this.chkMissions.UseVisualStyleBackColor = true;
-            this.chkMissions.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkExtendAnyDetectionSpell
             // 
@@ -3720,7 +3706,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
         private System.Windows.Forms.CheckBox chkLifeModule;
         private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
-        private System.Windows.Forms.CheckBox chkMissions;
         private System.Windows.Forms.CheckBox chkESSLossReducesMaximumOnly;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button cmdUploadPastebin;
