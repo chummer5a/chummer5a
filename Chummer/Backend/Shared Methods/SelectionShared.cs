@@ -507,7 +507,17 @@ namespace Chummer.Backend
                                .Replace("{0}", strNodeInnerText)
                                .Replace("{1}", character.Essence.ToString(CultureInfo.InvariantCulture));
                     return character.Essence >= Convert.ToDecimal(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
-
+                case "echo":
+                    {
+                        XmlNode echoDoc = XmlManager.Load("echoes.xml");
+                        nameNode =
+                            echoDoc.SelectSingleNode($"/chummer/echoes/echo[name = \"{strNodeInnerText}\"]");
+                        name = nameNode["translate"] != null
+                            ? "\n\t" + nameNode["translate"].InnerText
+                            : "\n\t" + strNodeInnerText;
+                        name += $" ({LanguageManager.GetString("String_Echo", GlobalOptions.Language)})";
+                        return character.Metamagics.Any(objMetamagic => objMetamagic.Name == strNodeInnerText && objMetamagic.SourceType == Improvement.ImprovementSource.Echo);
+                    }
                 case "group":
                     // Check that clustered options are present (Magical Tradition + Skill 6, for example)
                     string strResult = string.Empty;
@@ -553,7 +563,7 @@ namespace Chummer.Backend
                         ? "\n\t" + nameNode["translate"].InnerText
                         : "\n\t" + strNodeInnerText;
                     name += $" ({LanguageManager.GetString("String_Metamagic", GlobalOptions.Language)})";
-                    return character.Metamagics.Any(objMetamagic => objMetamagic.Name == strNodeInnerText);
+                    return character.Metamagics.Any(objMetamagic => objMetamagic.Name == strNodeInnerText && objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic);
                 case "metamagicart":
                 case "art":
                     XmlNode metamagicArtDoc = XmlManager.Load("metamagic.xml");
