@@ -96,6 +96,7 @@ Data Changes:
 - Old weapon mount mods have been flagged as hidden.
 - Added missing improvement to the Burnout's Way quality that allowed the replacement Grade to show up properly. Existing characters will need to remove and re-add the quality or use the Reapply Improvements menu.
 - Added default banned grades to the default gameplayoptions.xml entries. 
+- Fixed incorrect categories for the Claw and Barrage spells.
 
 New Strings:
 

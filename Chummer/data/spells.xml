@@ -4528,7 +4528,7 @@
       <name>Claw</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect</descriptor>
       <duration>I</duration>
@@ -4541,7 +4541,7 @@
       <name>Barrage</name>
       <page>50</page>
       <source>FA</source>
-      <category>Manipulation</category>
+      <category>Combat</category>
       <damage>0</damage>
       <descriptor>Indirect, Area</descriptor>
       <duration>I</duration>
