@@ -87,7 +87,6 @@ namespace Chummer
             this.nudConnection.Name = "nudConnection";
             this.nudConnection.Size = new System.Drawing.Size(40, 20);
             this.nudConnection.TabIndex = 3;
-            this.tipTooltip.SetToolTip(this.nudConnection, "Connection");
             this.nudConnection.Value = new decimal(new int[] {
             1,
             0,
