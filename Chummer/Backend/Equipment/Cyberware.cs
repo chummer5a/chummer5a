@@ -380,6 +380,11 @@ namespace Chummer.Backend.Equipment
                         {
                             intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
                         }
+                        // Since this cyberware shouldn't exist on the character yet, pair bonuses won't apply properly. TODO: Might cause issues with modular ware?
+                        if (!lstPairableCyberwares.Contains(this) && lstPairableCyberwares.Count > 0)
+                        {
+                            intCount++;
+                        }
                         if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
                             _guiID = Guid.Empty;
