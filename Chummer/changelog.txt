@@ -101,6 +101,7 @@ Data Changes:
 - Added missing improvement to the Burnout's Way quality that allowed the replacement Grade to show up properly. Existing characters will need to remove and re-add the quality or use the Reapply Improvements menu.
 - Added default banned grades to the default gameplayoptions.xml entries. 
 - Fixed incorrect categories for the Claw and Barrage spells.
+- Implemented the Gyro-Stabilization vehicle mod as a customdata entry per the entry in the German version of Rigger 5.0. This file will be merged into the main file if the mod ever gets erratad into the English version. 
 
 New Strings:
 

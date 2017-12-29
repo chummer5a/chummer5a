@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <mods>
+    <mod>
+      <id>f89a112e-600a-4278-8731-9b14cf3737c9</id>
+      <name>Gyro-Stabilization</name>
+      <page>162</page>
+      <source>R5</source>
+      <avail>8</avail>
+      <category>Powertrain</category>
+      <cost>Body * 1000</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+    </mod>
+  </mods>
+</chummer>
