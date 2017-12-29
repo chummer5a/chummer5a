@@ -32,7 +32,7 @@ namespace Chummer
         private string _strXmlFile = "mentors.xml";
         private string _strForceMentor = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
@@ -43,12 +43,12 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            // Load the Mentor information.
-            _objXmlDocument = XmlManager.Load(_strXmlFile);
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
         {
+            // Load the Mentor information.
+            _objXmlDocument = XmlManager.Load(_strXmlFile);
             if (_strXmlFile == "paragons.xml")
                 Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon", GlobalOptions.Language);
 
@@ -83,6 +83,7 @@ namespace Chummer
                     lstMentor.Enabled = false;
                 }
             }
+            chkMentorMask.Visible = _strXmlFile == "mentors.xml";
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
