@@ -168,24 +168,19 @@ namespace Translator
                 if (xmlNodeLocal?.Attributes != null)
                 {
                     xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
-                    XmlAttribute objAttrib;
-                    if (!flag)
+                    XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
+                    if (objAttrib != null)
                     {
-                        objAttrib = xmlNodeLocal.Attributes["translated"];
-                        if (objAttrib != null)
+                        if (!flag)
                             xmlNodeLocal.Attributes.Remove(objAttrib);
-                    }
-                    else
-                    {
-                        objAttrib = xmlNodeLocal.Attributes["translated"];
-                        if (objAttrib == null)
-                        {
-                            objAttrib = _objDataDoc.CreateAttribute("translated");
-                            objAttrib.InnerText = bool.TrueString;
-                            xmlNodeLocal.Attributes.Append(objAttrib);
-                        }
                         else
                             objAttrib.InnerText = bool.TrueString;
+                    }
+                    else if (flag)
+                    {
+                        objAttrib = _objDataDoc.CreateAttribute("translated");
+                        objAttrib.InnerText = bool.TrueString;
+                        xmlNodeLocal.Attributes.Append(objAttrib);
                     }
                 }
             }
@@ -196,26 +191,19 @@ namespace Translator
                 XmlElement xmlElement = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
                 if (xmlElement != null) xmlElement.InnerText = strPage;
 
-                XmlAttribute itemOf;
-                if (!flag)
+                XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
+                if (objAttrib != null)
                 {
-                    itemOf = xmlNodeLocal.Attributes?["translated"];
-                    if (itemOf != null)
-                        xmlNodeLocal.Attributes.Remove(itemOf);
-                }
-                else
-                {
-                    itemOf = xmlNodeLocal.Attributes?["translated"];
-                    if (itemOf == null)
-                    {
-                        itemOf = _objDataDoc.CreateAttribute("translated");
-                        itemOf.InnerText = System.Boolean.TrueString;
-                        xmlNodeLocal.Attributes.Append(itemOf);
-                    }
+                    if (!flag)
+                        xmlNodeLocal.Attributes.Remove(objAttrib);
                     else
-                    {
-                        itemOf.InnerText = System.Boolean.TrueString;
-                    }
+                        objAttrib.InnerText = bool.TrueString;
+                }
+                else if (flag)
+                {
+                    objAttrib = _objDataDoc.CreateAttribute("translated");
+                    objAttrib.InnerText = bool.TrueString;
+                    xmlNodeLocal.Attributes.Append(objAttrib);
                 }
             }
             Save(_objDataDoc);
@@ -368,7 +356,7 @@ namespace Translator
                 if (xmlNodeLocal != null)
                 {
                     strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
-                    XmlNode xmlNodeAttributesTranslated = xmlNodeEnglish.Attributes?["translated"];
+                    XmlNode xmlNodeAttributesTranslated = xmlNodeLocal.Attributes?["translated"];
                     blnTranslated = xmlNodeAttributesTranslated != null
                         ? xmlNodeAttributesTranslated.InnerText == System.Boolean.TrueString
                         : strEnglish != strTranslated;
@@ -464,7 +452,7 @@ namespace Translator
                     {
                         strName = xmlChildNode.InnerText;
                         strTranslated = xmlChildNode.Attributes?["translate"]?.InnerText ?? string.Empty;
-                        blnTranslated = strName != strTranslated;
+                        blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == System.Boolean.TrueString;
                     }
                     else
                     {

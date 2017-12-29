@@ -733,7 +733,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlArmorNode.Attributes.RemoveAll();
+                for (int i = xmlArmorNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlArmorNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlArmorNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataArmorNodeList?.SelectSingleNode("armor[name = \"" + xmlArmorNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -833,7 +838,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlArmorModNode.Attributes.RemoveAll();
+                for (int i = xmlArmorModNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlArmorModNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlArmorModNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataArmorModNodeList?.SelectSingleNode("mod[name = \"" + xmlArmorModNode["name"]?.InnerText + "\"]") == null)
                 {
                     #if !DELETE
@@ -993,7 +1003,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlBiowareNode.Attributes.RemoveAll();
+                for (int i = xmlBiowareNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlBiowareNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlBiowareNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataBiowareNodeList?.SelectSingleNode("bioware[name = \"" + xmlBiowareNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1093,7 +1108,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlGradeNode.Attributes.RemoveAll();
+                for (int i = xmlGradeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlGradeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlGradeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataGradeNodeList?.SelectSingleNode("grade[name = \"" + xmlGradeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1207,7 +1227,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlBookNode.Attributes.RemoveAll();
+                for (int i = xmlBookNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlBookNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlBookNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataBookNodeList?.SelectSingleNode("book[name = \"" + xmlBookNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1327,7 +1352,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlComplexFormNode.Attributes.RemoveAll();
+                for (int i = xmlComplexFormNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlComplexFormNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlComplexFormNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataComplexFormNodeList?.SelectSingleNode("complexform[name = \"" + xmlComplexFormNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1487,7 +1517,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlPowerNode.Attributes.RemoveAll();
+                for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlPowerNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataPowerNodeList?.SelectSingleNode("power[name = \"" + xmlPowerNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1647,7 +1682,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlMetatypeNode.Attributes.RemoveAll();
+                for (int i = xmlMetatypeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlMetatypeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlMetatypeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataMetatypeNodeList?.SelectSingleNode("metatype[name = \"" + xmlMetatypeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1807,7 +1847,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlCyberwareNode.Attributes.RemoveAll();
+                for (int i = xmlCyberwareNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlCyberwareNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlCyberwareNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataCyberwareNodeList?.SelectSingleNode("cyberware[name = \"" + xmlCyberwareNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -1907,7 +1952,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlGradeNode.Attributes.RemoveAll();
+                for (int i = xmlGradeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlGradeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlGradeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataGradeNodeList?.SelectSingleNode("grade[name = \"" + xmlGradeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2035,7 +2085,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlEchoNode.Attributes.RemoveAll();
+                for (int i = xmlEchoNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlEchoNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlEchoNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataEchoNodeList?.SelectSingleNode("echo[name = \"" + xmlEchoNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2140,7 +2195,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlGameplayOptionNode.Attributes.RemoveAll();
+                for (int i = xmlGameplayOptionNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlGameplayOptionNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlGameplayOptionNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataGameplayOptionNodeList?.SelectSingleNode("gameplayoption[name = \"" + xmlGameplayOptionNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2300,7 +2360,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlGearNode.Attributes.RemoveAll();
+                for (int i = xmlGearNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlGearNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlGearNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataGearNodeList?.SelectSingleNode("gear[name = \"" + xmlGearNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2420,7 +2485,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlImprovementNode.Attributes.RemoveAll();
+                for (int i = xmlImprovementNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlImprovementNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlImprovementNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataImprovementNodeList?.SelectSingleNode("improvement[name = \"" + xmlImprovementNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2640,7 +2710,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlLifestyleNode.Attributes.RemoveAll();
+                for (int i = xmlLifestyleNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlLifestyleNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlLifestyleNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataLifestyleNodeList?.SelectSingleNode("lifestyle[name = \"" + xmlLifestyleNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2740,7 +2815,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlQualityNode.Attributes.RemoveAll();
+                for (int i = xmlQualityNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlQualityNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlQualityNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataQualityNodeList?.SelectSingleNode("quality[name = \"" + xmlQualityNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2897,7 +2977,12 @@ namespace Translator
                     xmlMartialArtNode.RemoveChild(xmlRemoveAdvantageNode);
                 }
 
-                xmlMartialArtNode.Attributes.RemoveAll();
+                for (int i = xmlMartialArtNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlMartialArtNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlMartialArtNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataMartialArtNodeList?.SelectSingleNode("martialart[name = \"" + xmlMartialArtNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -2997,7 +3082,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlTechniqueNode.Attributes.RemoveAll();
+                for (int i = xmlTechniqueNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlTechniqueNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlTechniqueNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataTechniqueNodeList?.SelectSingleNode("technique[name = \"" + xmlTechniqueNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3088,18 +3178,28 @@ namespace Translator
                             xmlMentorNode.AppendChild(xmlTranslateElement);
                         }
 
-                        if (xmlMentorNode["advantage"] == null)
+                        XmlNode xmlAdvantage = xmlMentorNode["advantage"];
+                        if (xmlMentorNode["altadvantage"] == null)
                         {
-                            XmlNode xmlAdvantageElement = objDataDoc.CreateElement("advantage");
-                            xmlAdvantageElement.InnerText = strDataMentorAdvantage;
+                            XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
+                            xmlAdvantageElement.InnerText = xmlAdvantage?.InnerText ?? strDataMentorAdvantage;
                             xmlMentorNode.AppendChild(xmlAdvantageElement);
                         }
-
-                        if (xmlMentorNode["disadvantage"] == null)
+                        if (xmlAdvantage != null)
                         {
-                            XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("disadvantage");
-                            xmlDisadvantageElement.InnerText = strDataMentorDisadvantage;
+                            xmlMentorNode.RemoveChild(xmlAdvantage);
+                        }
+
+                        XmlNode xmlDisadvantage = xmlMentorNode["disadvantage"];
+                        if (xmlMentorNode["altdisadvantage"] == null)
+                        {
+                            XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
+                            xmlDisadvantageElement.InnerText = xmlDisadvantage?.InnerText ?? strDataMentorDisadvantage;
                             xmlMentorNode.AppendChild(xmlDisadvantageElement);
+                        }
+                        if (xmlDisadvantage != null)
+                        {
+                            xmlMentorNode.RemoveChild(xmlDisadvantage);
                         }
 
                         XmlNode xmlPage = xmlMentorNode["page"];
@@ -3131,11 +3231,11 @@ namespace Translator
                         xmlTranslateElement.InnerText = strDataMentorName;
                         xmlMentorNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlAdvantageElement = objDataDoc.CreateElement("advantage");
+                        XmlNode xmlAdvantageElement = objDataDoc.CreateElement("altadvantage");
                         xmlAdvantageElement.InnerText = strDataMentorAdvantage;
                         xmlMentorNode.AppendChild(xmlAdvantageElement);
 
-                        XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("disadvantage");
+                        XmlNode xmlDisadvantageElement = objDataDoc.CreateElement("altdisadvantage");
                         xmlDisadvantageElement.InnerText = strDataMentorDisadvantage;
                         xmlMentorNode.AppendChild(xmlDisadvantageElement);
 
@@ -3193,7 +3293,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlMentorNode.Attributes.RemoveAll();
+                for (int i = xmlMentorNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlMentorNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlMentorNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataMentorNodeList?.SelectSingleNode("mentor[name = \"" + xmlMentorNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3315,7 +3420,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlMetamagicNode.Attributes.RemoveAll();
+                for (int i = xmlMetamagicNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlMetamagicNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlMetamagicNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataMetamagicNodeList?.SelectSingleNode("metamagic[name = \"" + xmlMetamagicNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3415,7 +3525,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlArtNode.Attributes.RemoveAll();
+                for (int i = xmlArtNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlArtNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlArtNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataArtNodeList?.SelectSingleNode("art[name = \"" + xmlArtNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3640,7 +3755,12 @@ namespace Translator
                         {
                             if (objWorker.CancellationPending)
                                 return;
-                            xmlMetavariantNode.Attributes.RemoveAll();
+                            for (int i = xmlMetavariantNode.Attributes.Count - 1; i >= 0; --i)
+                            {
+                                XmlAttribute xmlAttribute = xmlMetavariantNode.Attributes[i];
+                                if (xmlAttribute.Name != "translated")
+                                    xmlMetavariantNode.Attributes.RemoveAt(i);
+                            }
                             if (xmlDataMetavariantNodeList?.SelectSingleNode("metavariant[name = \"" + xmlMetavariantNode["name"]?.InnerText + "\"]") == null)
                             {
 #if !DELETE
@@ -3677,7 +3797,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlMetatypeNode.Attributes.RemoveAll();
+                for (int i = xmlMetatypeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlMetatypeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlMetatypeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataMetatypeNodeList?.SelectSingleNode("metatype[name = \"" + xmlMetatypeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3799,7 +3924,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlPowerNode.Attributes.RemoveAll();
+                for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlPowerNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataPowerNodeList?.SelectSingleNode("power[name = \"" + xmlPowerNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -3899,7 +4029,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlEnhancementNode.Attributes.RemoveAll();
+                for (int i = xmlEnhancementNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlEnhancementNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlEnhancementNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataEnhancementNodeList?.SelectSingleNode("enhancement[name = \"" + xmlEnhancementNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -4042,7 +4177,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlPriorityNode.Attributes.RemoveAll();
+                for (int i = xmlPriorityNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlPriorityNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlPriorityNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataPriorityNodeList?.SelectSingleNode("priority[name = \"" + xmlPriorityNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -4218,7 +4358,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlProgramNode.Attributes.RemoveAll();
+                for (int i = xmlProgramNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlProgramNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlProgramNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataProgramNodeList?.SelectSingleNode("program[name = \"" + xmlProgramNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -4319,7 +4464,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlRangeNode.Attributes.RemoveAll();
+                for (int i = xmlRangeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlRangeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlRangeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataRangeNodeList?.SelectSingleNode("range[name = \"" + xmlRangeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -4479,7 +4629,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlQualityNode.Attributes.RemoveAll();
+                for (int i = xmlQualityNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlQualityNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlQualityNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataQualityNodeList?.SelectSingleNode("quality[name = \"" + xmlQualityNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -4704,7 +4859,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlSkillNode.Attributes.RemoveAll();
+                for (int i = xmlSkillNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlSkillNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlSkillNode.Attributes.RemoveAt(i);
+                }
                 XmlNode xmlDataSkillNode = xmlDataSkillNodeList?.SelectSingleNode("skill[name = \"" + xmlSkillNode["name"]?.InnerText + "\"]");
                 if (xmlDataSkillNode == null)
                 {
@@ -4725,7 +4885,12 @@ namespace Translator
                     XmlNode xmlSkillNodeSpecsParent = xmlSkillNode.SelectSingleNode("specs");
                     if (xmlSkillNodeSpecsParent != null)
                     {
-                        xmlSkillNodeSpecsParent.Attributes.RemoveAll();
+                        for (int i = xmlSkillNodeSpecsParent.Attributes.Count - 1; i >= 0; --i)
+                        {
+                            XmlAttribute xmlAttribute = xmlSkillNodeSpecsParent.Attributes[i];
+                            if (xmlAttribute.Name != "translated")
+                                xmlSkillNodeSpecsParent.Attributes.RemoveAt(i);
+                        }
                         XmlNode xmlDataSkillNodeSpecsParent = xmlDataSkillNode.SelectSingleNode("specs");
                         if (xmlDataSkillNodeSpecsParent == null)
                         {
@@ -4863,7 +5028,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlKnowledgeSkillNode.Attributes.RemoveAll();
+                for (int i = xmlKnowledgeSkillNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlKnowledgeSkillNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlKnowledgeSkillNode.Attributes.RemoveAt(i);
+                }
                 XmlNode xmlDataKnowledgeSkillNode = xmlDataKnowledgeSkillNodeList?.SelectSingleNode("skill[name = \"" + xmlKnowledgeSkillNode["name"]?.InnerText + "\"]");
                 if (xmlDataKnowledgeSkillNode == null)
                 {
@@ -4884,7 +5054,12 @@ namespace Translator
                     XmlNode xmlSkillNodeSpecsParent = xmlKnowledgeSkillNode.SelectSingleNode("specs");
                     if (xmlSkillNodeSpecsParent != null)
                     {
-                        xmlSkillNodeSpecsParent.Attributes.RemoveAll();
+                        for (int i = xmlSkillNodeSpecsParent.Attributes.Count - 1; i >= 0; --i)
+                        {
+                            XmlAttribute xmlAttribute = xmlSkillNodeSpecsParent.Attributes[i];
+                            if (xmlAttribute.Name != "translated")
+                                xmlSkillNodeSpecsParent.Attributes.RemoveAt(i);
+                        }
                         XmlNode xmlDataSkillNodeSpecsParent = xmlDataKnowledgeSkillNode.SelectSingleNode("specs");
                         if (xmlDataSkillNodeSpecsParent == null)
                         {
@@ -5075,7 +5250,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlSpellNode.Attributes.RemoveAll();
+                for (int i = xmlSpellNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlSpellNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlSpellNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataSpellNodeList?.SelectSingleNode("spell[name = \"" + xmlSpellNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5185,7 +5365,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlPowerNode.Attributes.RemoveAll();
+                for (int i = xmlPowerNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlPowerNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlPowerNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataPowerNodeList?.SelectSingleNode("power[name = \"" + xmlPowerNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5307,7 +5492,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlTraditionNode.Attributes.RemoveAll();
+                for (int i = xmlTraditionNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlTraditionNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlTraditionNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataTraditionNodeList?.SelectSingleNode("tradition[name = \"" + xmlTraditionNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5407,7 +5597,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlSpiritNode.Attributes.RemoveAll();
+                for (int i = xmlSpiritNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlSpiritNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlSpiritNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataSpiritNodeList?.SelectSingleNode("spirit[name = \"" + xmlSpiritNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5529,7 +5724,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlTraditionNode.Attributes.RemoveAll();
+                for (int i = xmlTraditionNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlTraditionNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlTraditionNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataTraditionNodeList?.SelectSingleNode("tradition[name = \"" + xmlTraditionNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5629,7 +5829,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlSpiritNode.Attributes.RemoveAll();
+                for (int i = xmlSpiritNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlSpiritNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlSpiritNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataSpiritNodeList?.SelectSingleNode("spirit[name = \"" + xmlSpiritNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5712,7 +5917,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlDrainAttributeNode.Attributes.RemoveAll();
+                for (int i = xmlDrainAttributeNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlDrainAttributeNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlDrainAttributeNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataDrainAttributeNodeList?.SelectSingleNode("drainattribute[name = \"" + xmlDrainAttributeNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -5910,7 +6120,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlVehicleNode.Attributes.RemoveAll();
+                for (int i = xmlVehicleNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlVehicleNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlVehicleNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataVehicleNodeList?.SelectSingleNode("vehicle[name = \"" + xmlVehicleNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -6010,7 +6225,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlVehicleModNode.Attributes.RemoveAll();
+                for (int i = xmlVehicleModNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlVehicleModNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlVehicleModNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataVehicleModNodeList?.SelectSingleNode("mod[name = \"" + xmlVehicleModNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -6110,7 +6330,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlWeaponMountNode.Attributes.RemoveAll();
+                for (int i = xmlWeaponMountNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlWeaponMountNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlWeaponMountNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataWeaponMountNodeList?.SelectSingleNode("weaponmount[name = \"" + xmlWeaponMountNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -6278,7 +6503,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlWeaponNode.Attributes.RemoveAll();
+                for (int i = xmlWeaponNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlWeaponNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlWeaponNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataWeaponNodeList?.SelectSingleNode("weapon[name = \"" + xmlWeaponNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
@@ -6378,7 +6608,12 @@ namespace Translator
             {
                 if (objWorker.CancellationPending)
                     return;
-                xmlAccessoryNode.Attributes.RemoveAll();
+                for (int i = xmlAccessoryNode.Attributes.Count - 1; i >= 0; --i)
+                {
+                    XmlAttribute xmlAttribute = xmlAccessoryNode.Attributes[i];
+                    if (xmlAttribute.Name != "translated")
+                        xmlAccessoryNode.Attributes.RemoveAt(i);
+                }
                 if (xmlDataAccessoryNodeList?.SelectSingleNode("accessory[name = \"" + xmlAccessoryNode["name"]?.InnerText + "\"]") == null)
                 {
 #if !DELETE
