@@ -43,10 +43,11 @@ namespace Chummer.Backend.Equipment
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
         private BindingList<Cyberware> _objChildren = new BindingList<Cyberware>();
-        private List<Gear> _lstGear = new List<Gear>();
+        private readonly List<Gear> _lstGear = new List<Gear>();
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
+        private readonly HashSet<string> _lstIncludeInPairBonus = new HashSet<string>();
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
@@ -196,6 +197,12 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 _strAllowSubsystems = strSubsystem;
+            }
+
+            _lstIncludeInPairBonus.Add(Name);
+            foreach (XmlNode objPairNameNode in objXmlCyberware.SelectNodes("pairinclude/name"))
+            {
+                _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
             }
 
             // Check for a Variable Cost.
@@ -374,16 +381,11 @@ namespace Chummer.Backend.Equipment
 
                     if (PairBonus != null)
                     {
-                        List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                        List<Cyberware> lstPairableCyberwares = objCharacter.Cyberware.DeepWhere(x => x.Children, x => IncludePair.Contains(x.Name) && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
                         int intCount = lstPairableCyberwares.Count;
                         if (!string.IsNullOrEmpty(Location))
                         {
                             intCount = Math.Min(lstPairableCyberwares.Count(x => x.Location == Location), lstPairableCyberwares.Count(x => x.Location != Location) - 1);
-                        }
-                        // Since this cyberware shouldn't exist on the character yet, pair bonuses won't apply properly. TODO: Might cause issues with modular ware?
-                        if (!lstPairableCyberwares.Contains(this) && lstPairableCyberwares.Count > 0)
-                        {
-                            intCount++;
                         }
                         if (intCount > 0 && intCount % 2 == 1 && !ImprovementManager.CreateImprovements(objCharacter, objSource, _guiID.ToString(), PairBonus, false, Rating, DisplayNameShort(GlobalOptions.Language)))
                         {
@@ -630,6 +632,10 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
             if (_guiVehicleID != Guid.Empty)
                 objWriter.WriteElementString("vehicleguid", _guiVehicleID.ToString());
+            objWriter.WriteStartElement("pairinclude");
+            foreach (string strName in _lstIncludeInPairBonus)
+                objWriter.WriteElementString("name", strName);
+            objWriter.WriteEndElement();
             objWriter.WriteStartElement("children");
             foreach (Cyberware objChild in _objChildren)
             {
@@ -742,6 +748,17 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
             _nodBonus = objNode["bonus"];
             _nodPairBonus = objNode["pairbonus"];
+            XmlNode xmlPairIncludeNode = objNode["pairinclude"];
+            if (xmlPairIncludeNode == null)
+            {
+                xmlPairIncludeNode = GetNode()?["pairinclude"];
+                _lstIncludeInPairBonus.Add(Name);
+            }
+            if (xmlPairIncludeNode != null)
+            {
+                foreach (XmlNode xmlNameNode in xmlPairIncludeNode.SelectNodes("name"))
+                    _lstIncludeInPairBonus.Add(xmlNameNode.InnerText);
+            }
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
             {
@@ -1050,7 +1067,12 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _strName = value;
+                if (_strName != value)
+                {
+                    _lstIncludeInPairBonus.Remove(_strName);
+                    _lstIncludeInPairBonus.Add(value);
+                    _strName = value;
+                }
             }
         }
 
@@ -1416,7 +1438,7 @@ namespace Chummer.Backend.Equipment
 
                     if (PairBonus != null)
                     {
-                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                        List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => IncludePair.Contains(x.Name) && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
                         int intCount = lstPairableCyberwares.Count;
                         if (!string.IsNullOrEmpty(Location))
                         {
@@ -1728,6 +1750,17 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _lstGear;
+            }
+        }
+
+        /// <summary>
+        /// List of names to include in pair bonus
+        /// </summary>
+        public ICollection<string> IncludePair
+        {
+            get
+            {
+                return _lstIncludeInPairBonus;
             }
         }
 
@@ -3247,7 +3280,7 @@ namespace Chummer.Backend.Equipment
             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
             if (PairBonus != null)
             {
-                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Name == Name && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
+                List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children, x => IncludePair.Contains(x.Name) && x.Extra == Extra && x.IsModularCurrentlyEquipped).ToList();
                 int intCyberwaresCount = lstPairableCyberwares.Count - 1;
                 if (!string.IsNullOrEmpty(Location))
                 {

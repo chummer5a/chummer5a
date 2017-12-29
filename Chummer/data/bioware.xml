@@ -1451,6 +1451,9 @@
       <pairbonus>
         <unarmeddv>1</unarmeddv>
       </pairbonus>
+      <pairinclude>
+        <name>Striking Callus (Feet)</name>
+      </pairinclude>
       <source>CF</source>
       <page>121</page>
     </bioware>
@@ -1471,6 +1474,9 @@
       <pairbonus>
         <unarmeddv>1</unarmeddv>
       </pairbonus>
+      <pairinclude>
+        <name>Striking Callus (Hands)</name>
+      </pairinclude>
       <source>CF</source>
       <page>121</page>
     </bioware>
