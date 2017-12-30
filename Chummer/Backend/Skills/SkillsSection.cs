@@ -181,12 +181,18 @@ namespace Chummer.Backend.Skills
                     var name = skill.IsExoticSkill
                         ? $"{skill.Name} ({skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
                         : skill.Name;
-                    if (_dicSkills.TryGetValue(name, out Skill thisSkill) && thisSkill.Rating < skill.Rating)
+                    bool blnDoAddToDictionary = true;
+                    _skills.MergeInto(skill, CompareSkills, (objExistSkill, objNewSkill) =>
                     {
-                        _dicSkills.Remove(name);
-                    }
-                    _skills.Add(skill);
-                    _dicSkills.Add(name, skill);
+                        blnDoAddToDictionary = false;
+                        if (objNewSkill.Base > objExistSkill.Base)
+                            objExistSkill.Base = objNewSkill.Base;
+                        if (objNewSkill.Karma > objExistSkill.Karma)
+                            objExistSkill.Karma = objNewSkill.Karma;
+                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                    });
+                    if (blnDoAddToDictionary)
+                        _dicSkills.Add(name, skill);
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 
