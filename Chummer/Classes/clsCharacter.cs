@@ -483,13 +483,13 @@ namespace Chummer
             // <contactmultiplier />
             objWriter.WriteElementString("contactmultiplier", _intContactMultiplier.ToString());
 
-            // <bannedgrades >
-            objWriter.WriteStartElement("bannedgrades");
-            foreach (string g in BannedGrades)
+            // <bannedwaregrades >
+            objWriter.WriteStartElement("bannedwaregrades");
+            foreach (string g in bannedwaregrades)
             {
                 objWriter.WriteElementString("grade", g);
             }
-            // </bannedgrades>
+            // </bannedwaregrades>
             objWriter.WriteEndElement();
 
             // <nuyenbp />
@@ -1138,17 +1138,25 @@ namespace Chummer
                     _lstPrioritySkills.Add(objXmlSkillName.InnerText);
                 }
             }
-            if (objXmlCharacter["bannedgrades"] != null)
+            if (objXmlCharacter["bannedwaregrades"] != null && objXmlCharacter["bannedwaregrades"].HasChildNodes)
             {
-                BannedGrades.Clear();
-                XmlNodeList gradeList = objXmlCharacter.SelectNodes("bannedgrades/grade");
+                bannedwaregrades.Clear();
+                XmlNodeList gradeList = objXmlCharacter.SelectNodes("bannedwaregrades/grade");
                 if (gradeList != null)
                 {
                     foreach (XmlNode g in gradeList)
                     {
-                        BannedGrades.Add(g.InnerText);
+                        bannedwaregrades.Add(g.InnerText);
                     }
                 }
+            }
+            else
+            {
+                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+                XmlNodeList lstBannedGradeNodes = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]/bannedwaregrades/grade");
+                bannedwaregrades.Clear();
+                foreach (XmlNode xmlNode in lstBannedGradeNodes)
+                    bannedwaregrades.Add(xmlNode.InnerText);
             }
             string strSkill1 = string.Empty;
             string strSkill2 = string.Empty;
@@ -3328,7 +3336,7 @@ namespace Chummer
 
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
-                if (IgnoreRules || Created || !BannedGrades.Any(s => objGrade.Name.Contains(s)))
+                if (IgnoreRules || Created || !bannedwaregrades.Any(s => objGrade.Name.Contains(s)))
                     lstGrades.Add(objGrade);
             }
 
@@ -8962,7 +8970,7 @@ namespace Chummer
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode. 
         /// </summary>
-        public IList<string> BannedGrades { get; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
+        public IList<string> bannedwaregrades { get; } = new List<string>(){ "Betaware", "Deltaware", "Gammaware" };
 
         public event PropertyChangedEventHandler PropertyChanged;
 

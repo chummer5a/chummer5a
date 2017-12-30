@@ -160,7 +160,7 @@ namespace Chummer
             XmlNode objXmlGrade = null;
             // Retrieve the information for the selected Grade.
             string strSelectedGrade = cboGrade.SelectedValue?.ToString();
-            if (cboGrade.Enabled)
+            if (cboGrade.Enabled && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
                 objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[id = \"" + strSelectedGrade + "\"]");
@@ -184,7 +184,9 @@ namespace Chummer
             {
                 _blnOldGradeEnabled = cboGrade.Enabled;
                 if (_blnOldGradeEnabled)
+                {
                     cboGrade.SelectedValue = _strOldSelectedGrade;
+                }
                 cboGrade_SelectedIndexChanged(sender, e);
             }
         }
@@ -285,6 +287,7 @@ namespace Chummer
                 if (cboGrade.Enabled)
                     cboGrade.Enabled = false;
                 objForcedGrade = _objGradeList.FirstOrDefault(x => x.Name == strForceGrade);
+                strForceGrade = objForcedGrade.SourceId.ToString();
             }
             else
             {
@@ -1160,7 +1163,7 @@ namespace Chummer
                         continue;
                     if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
                         continue;
-                    if (!_objCharacter.Created && _objCharacter.BannedGrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (!_objCharacter.Created && _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
 
                     lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString(), objWareGrade.DisplayName(GlobalOptions.Language)));
@@ -1180,7 +1183,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strForceGrade))
                     cboGrade.SelectedValue = strForceGrade;
-                if (cboGrade.SelectedIndex == -1)
+                else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
                     cboGrade.SelectedValue = strOldSelected;
                 if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
                     cboGrade.SelectedIndex = 0;

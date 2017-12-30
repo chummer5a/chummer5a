@@ -136,9 +136,9 @@ namespace Chummer
             }
             XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
             XmlNodeList lstBannedGradeNodes = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]/bannedwaregrades/grade");
-            _objCharacter.BannedGrades.Clear();
+            _objCharacter.bannedwaregrades.Clear();
             foreach (XmlNode xmlNode in lstBannedGradeNodes)
-                _objCharacter.BannedGrades.Add(xmlNode.InnerText);
+                _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
             _objCharacter.BuildPoints = 0;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();

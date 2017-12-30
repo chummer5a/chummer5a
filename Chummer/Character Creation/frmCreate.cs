@@ -17122,7 +17122,7 @@ namespace Chummer
                     continue;
                 else if (!CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
                     continue;
-                else if (CharacterObject.BannedGrades.Any(s => objWareGrade.Name.Contains(s)))
+                else if (CharacterObject.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
                     continue;
 
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));
@@ -17457,7 +17457,7 @@ namespace Chummer
             // Cyberware Availability.
             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => string.IsNullOrEmpty(x.ParentID)))
             {
-                if (CharacterObject.BannedGrades.Any( s => objCyberware.Grade.Name.Contains(s)))
+                if (CharacterObject.bannedwaregrades.Any( s => objCyberware.Grade.Name.Contains(s)))
                     strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
 
                 string strTotalAvail = objCyberware.TotalAvail(GlobalOptions.Language);
