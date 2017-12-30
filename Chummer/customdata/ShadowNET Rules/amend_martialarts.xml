@@ -21,11 +21,11 @@
   <techniques>
     <technique>
       <name>Mana Choke</name>
-      <required operation="remove" />
+      <required amendoperation="remove" />
     </technique>
     <technique>
       <name>Mana Strike</name>
-      <required operation="remove" />
+      <required amendoperation="remove" />
     </technique>
   </techniques>
 </chummer>

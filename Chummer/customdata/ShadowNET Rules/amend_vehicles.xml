@@ -31,7 +31,7 @@
 <!-- TODO: Handle GTS Tower, it should have a retrans unit and a drone landing rack -->
     <vehicle>
       <name>GTS Tower (Large)</name>
-      <mods operation="replace">
+      <mods amendoperation="replace">
         <name>Landing Drone Rack (Mini)</name>
         <name>Landing Drone Rack (Mini)</name>
         <name>Landing Drone Rack (Mini)</name>
