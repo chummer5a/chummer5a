@@ -23,7 +23,7 @@
   <cyberwares>
     <cyberware xpathfilter="category = 'Cyberlimb'">
       <allowsubsystems>
-        <category xpathfilter="text() = 'Headware'" remove="yes">Headware</category>
+        <category xpathfilter="text() = 'Headware'" operation="remove">Headware</category>
       </allowsubsystems>
     </cyberware>
   </cyberwares>
