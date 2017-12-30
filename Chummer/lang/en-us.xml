@@ -2333,7 +2333,7 @@
     </string>        
     <string>
       <key>Message_OverNegativeMetagenicQualities</key>
-      <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
+      <text>Too many negative Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>        
     <string>
       <key>Message_MetagenicQualitiesUnbalanced</key>
