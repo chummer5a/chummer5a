@@ -4517,6 +4517,7 @@ namespace Chummer
 
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
         {
+            if (treWeapons.SelectedNode == null) return;
             // Delete the selected Weapon.
             if (treWeapons.SelectedNode.Level == 0)
             {
@@ -4718,6 +4719,7 @@ namespace Chummer
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
             // Delete the selected Gear.
+            if (treGear.SelectedNode == null) return;
             if (treGear.SelectedNode.Level == 0)
             {
                 if (treGear.SelectedNode.Text == LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language))

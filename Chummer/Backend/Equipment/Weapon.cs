@@ -1467,6 +1467,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -1493,6 +1494,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -2280,6 +2282,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intSTRBase = objAttributeSource.BaseStrength;
                                 intAGI = objAttributeSource.TotalAgility;
@@ -2316,6 +2319,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intSTRBase = objAttributeSource.BaseStrength;
                                 intAGI = objAttributeSource.TotalAgility;
@@ -2547,6 +2551,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -2570,6 +2575,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                             }
 
@@ -2672,6 +2678,7 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intSTRBase = objAttributeSource.BaseStrength;
                                     intAGI = objAttributeSource.TotalAgility;
@@ -2708,6 +2715,7 @@ namespace Chummer.Backend.Equipment
                                     if (intSTR != 0 || intAGI != 0 || intSTRBase != 0 || intAGIBase != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
+                                    if (objAttributeSource == null) continue;
                                     intSTR = objAttributeSource.TotalStrength;
                                     intSTRBase = objAttributeSource.BaseStrength;
                                     intAGI = objAttributeSource.TotalAgility;
@@ -3032,6 +3040,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
@@ -3058,6 +3067,7 @@ namespace Chummer.Backend.Equipment
                                 if (intSTR != 0 || intAGI != 0)
                                     break;
                                 objAttributeSource = objAttributeSource.Parent;
+                                if (objAttributeSource == null) continue;
                                 intSTR = objAttributeSource.TotalStrength;
                                 intAGI = objAttributeSource.TotalStrength;
                             }
