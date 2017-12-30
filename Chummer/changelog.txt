@@ -81,6 +81,8 @@ Application Changes:
 - Fixed a bug where the optional rule for having positive quality costs double if over the limit would not get enabled/disabled properly.
 - Added the ability to have echoes as part of "forbidden" and "required" nodes.
 - Removed a readonly flag that prevented using the selectparagon bonus.
+- Fixed the selectspell improvement to properly add the relevant spell to the character. 
+- Tweaked the list of Spells to be an observable collection to allow updating the UI whenever the spell list changes.
 
 Data Changes:
 

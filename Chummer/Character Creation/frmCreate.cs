@@ -902,6 +902,7 @@ namespace Chummer
             lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
             BuildAttributePanel();
 
+            CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
             // Hacky, but necessary
             // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
             // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
@@ -2421,7 +2422,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshSpells(treSpells, cmsSpell, CharacterObject);
             PopulateGearList();
             RefreshContacts();
             if (treCyberware.SelectedNode != null)
@@ -5999,7 +5999,6 @@ namespace Chummer
                 RefreshContacts();
                 PopulateCyberwareList();
                 RefreshSelectedCyberware();
-                RefreshSpells(treSpells, cmsSpell, CharacterObject);
                 PopulateGearList();
                 RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             }
@@ -6230,7 +6229,6 @@ namespace Chummer
                 RefreshMartialArts();
                 RefreshAIPrograms();
                 RefreshLimitModifiers();
-                RefreshSpells(treSpells, cmsSpell, CharacterObject);
                 PopulateGearList();
                 RefreshContacts();
                 RefreshSelectedCyberware();
@@ -10251,7 +10249,6 @@ namespace Chummer
                     RefreshMartialArts();
                     RefreshAIPrograms();
                     RefreshLimitModifiers();
-                    RefreshSpells(treSpells, cmsSpell, CharacterObject);
                     PopulateGearList();
                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                     RefreshContacts();
@@ -13528,7 +13525,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshSpells(treSpells, cmsSpell, CharacterObject);
             PopulateGearList();
             RefreshContacts();
             PopulateCyberwareList();
@@ -21451,6 +21447,11 @@ namespace Chummer
                     }
                     break;
             }
+        }
+
+        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshSpells(treSpells, cmsSpell, CharacterObject);
         }
         private void objAttribute_ValueChanged(Object sender, EventArgs e)
         {

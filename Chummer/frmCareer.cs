@@ -1033,6 +1033,7 @@ namespace Chummer
 
             lstPrimaryAttributes.CollectionChanged += AttributeCollectionChanged;
             lstSpecialAttributes.CollectionChanged += AttributeCollectionChanged;
+            CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
             BuildAttributePanel();
 
             // Hacky, but necessary
@@ -1076,6 +1077,11 @@ namespace Chummer
                     tssKarma.Text = CharacterObject.Karma.ToString();
                     break;
             }
+        }
+
+        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshSpells(treSpells, cmsSpell, CharacterObject);
         }
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -2439,7 +2445,6 @@ namespace Chummer
             RefreshMartialArts();
             RefreshAIPrograms();
             RefreshLimitModifiers();
-            RefreshSpells(treSpells, cmsSpell, CharacterObject);
             PopulateGearList();
             RefreshContacts();
             if (treCyberware.SelectedNode != null)
@@ -6928,7 +6933,6 @@ namespace Chummer
                 RefreshContacts();
                 PopulateCyberware();
                 RefreshSelectedCyberware();
-                RefreshSpells(treSpells, cmsSpell, CharacterObject);
                 PopulateGearList();
                 RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             }
@@ -6970,7 +6974,6 @@ namespace Chummer
                 RefreshMartialArts();
                 RefreshAIPrograms();
                 RefreshLimitModifiers();
-                RefreshSpells(treSpells, cmsSpell, CharacterObject);
                 PopulateGearList();
                 RefreshContacts();
                 IsDirty = true;
@@ -7521,7 +7524,6 @@ namespace Chummer
                     RefreshMartialArts();
                     RefreshAIPrograms();
                     RefreshLimitModifiers();
-                    RefreshSpells(treSpells, cmsSpell, CharacterObject);
                     PopulateGearList();
                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                     RefreshContacts();

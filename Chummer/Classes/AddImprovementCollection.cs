@@ -1152,17 +1152,39 @@ namespace Chummer.Classes
             // Open the Spells XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("spells.xml");
 
-            XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]");
-            SelectedValue = objXmlSpell["name"].InnerText;
+            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = \"" + frmPickSpell.SelectedSpell + "\"]") ??
+                           objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + frmPickSpell.SelectedSpell + "\"]");
+            SelectedValue = node["name"].InnerText;
 
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+            Spell spell = new Spell(_objCharacter);
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
 
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description =
+                        LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
+                            .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText)
+                };
+                frmPickText.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickText.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                strExtra = frmPickText.SelectedValue;
+            }
+            spell.Create(node, new TreeNode(), strExtra);
+            if (spell.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.Spells.Add(spell);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Text,
+            CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.Spell,
                 _strUnique);
         }
 

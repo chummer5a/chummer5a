@@ -211,7 +211,7 @@ namespace Chummer
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
-        private List<Spell> _lstSpells = new List<Spell>();
+        private ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
         private BindingList<Power> _lstPowers = new BindingList<Power>();
@@ -2954,7 +2954,7 @@ namespace Chummer
             _lstImprovements = new List<Improvement>();
             _lstContacts = new List<Contact>();
             _lstSpirits = new List<Spirit>();
-            _lstSpells = new List<Spell>();
+            _lstSpells = new ObservableCollection<Spell>();
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
             _lstPowers = new BindingList<Power>();
@@ -6226,7 +6226,7 @@ namespace Chummer
         /// <summary>
         /// Magician Spells.
         /// </summary>
-        public IList<Spell> Spells
+        public ObservableCollection<Spell> Spells
         {
             get
             {
