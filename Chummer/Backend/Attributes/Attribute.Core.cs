@@ -245,10 +245,10 @@ namespace Chummer.Backend.Attributes
         public int TotalBase
         {
             //TODO: Ugly ugly ugly, may cause UI confusion.
-            get { return Math.Max(Base + FreeBase + TotalMinimum, TotalMinimum); }
+            get { return Math.Max(Base + FreeBase + RawMinimum, TotalMinimum); }
             set
             {
-                Base = Math.Max(value - FreeBase - TotalMinimum, 0);
+                Base = Math.Max(value - FreeBase - RawMinimum, 0);
             }
         }
 
@@ -697,24 +697,13 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
         /// </summary>
-        public int TotalMinimum
+        public int RawMinimum
         {
             get
             {
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
-                    return 1;
-
                 int intReturn = MetatypeMinimum + MinimumModifiers;
-                if (intReturn < 1)
-                {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG")
-                        intReturn = 0;
-                    else
-                        intReturn = 1;
-                }
 
                 if ((Abbrev != "MAG" && Abbrev != "MAGAdept" && Abbrev != "RES" && Abbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
                     return intReturn;
@@ -725,13 +714,32 @@ namespace Chummer.Backend.Attributes
                 if (intEssencePenalty == 0)
                     return intReturn;
 
-                if (!_objCharacter.Options.ESSLossReducesMaximumOnly)
+                if (!_objCharacter.Options.ESSLossReducesMaximumOnly || intEssencePenalty >= TotalMaximum)
                 {
-                    return Math.Max(intReturn - intEssencePenalty, 0);
+                    return intReturn - intEssencePenalty;
                 }
-                if (intEssencePenalty >= TotalMaximum)
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
+        /// </summary>
+        public int TotalMinimum
+        {
+            get
+            {
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
+                    return 1;
+
+                int intReturn = RawMinimum;
+                if (intReturn < 1)
                 {
-                    intReturn = Math.Max(intReturn - intEssencePenalty, 0);
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG")
+                        intReturn = 0;
+                    else
+                        intReturn = 1;
                 }
                 return intReturn;
             }
