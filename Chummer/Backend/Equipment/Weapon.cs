@@ -2181,7 +2181,7 @@ namespace Chummer.Backend.Equipment
             string strAP = _strAP;
 
             int intAP = 0;
-
+            int bonusAP = 0;
             // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
             if (!string.IsNullOrEmpty(AmmoLoaded))
             {
@@ -2200,7 +2200,7 @@ namespace Chummer.Backend.Equipment
                         // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
                         if (_strDamage.Contains("(f)") && objGear.Name.Contains("Flechette"))
                         {
-                            intAP -= 5;
+                            bonusAP -= 5;
                         }
                         else
                         {
@@ -2211,7 +2211,7 @@ namespace Chummer.Backend.Equipment
                             // Adjust the Weapon's Damage.
                             string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
                             if (!string.IsNullOrEmpty(strAPAdd))
-                                intAP += Convert.ToInt32(strAPAdd);
+                                bonusAP += Convert.ToInt32(strAPAdd);
                         }
                     }
                 }
@@ -2221,7 +2221,7 @@ namespace Chummer.Backend.Equipment
                     // Add any UnarmedAP bonus for the Unarmed Attack item.
                     if (_strName == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
-                        intAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
+                        bonusAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                     }
                 }
             }
@@ -2235,7 +2235,7 @@ namespace Chummer.Backend.Equipment
                     // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
                     if (_strDamage.Contains("(f)") && objAccessory.Name.Contains("Flechette"))
                     {
-                        intAP -= 5;
+                        bonusAP -= 5;
                     }
                     else
                     {
@@ -2244,7 +2244,7 @@ namespace Chummer.Backend.Equipment
                             strAP = objAccessory.APReplacement;
                         // Adjust the Weapon's AP value.
                         if (!string.IsNullOrEmpty(objAccessory.AP))
-                            intAP += Convert.ToInt32(objAccessory.AP);
+                            bonusAP += Convert.ToInt32(objAccessory.AP);
                     }
                 }
             }
@@ -2397,7 +2397,7 @@ namespace Chummer.Backend.Equipment
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
                 return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
             }
-
+            intAP += bonusAP;
             if (intAP == 0)
                 return "-";
             else if (intAP > 0)
