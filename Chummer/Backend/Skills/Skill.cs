@@ -537,7 +537,7 @@ namespace Chummer.Backend.Skills
         /// multiple characters, ?and predefined knowledge skills,? but not
         /// for skills where the user supplies a name (Exotic and Knowledge)
         /// </summary>
-        public Guid SkillId { get; private set; } = Guid.Empty;
+        public Guid SkillId { get; protected set; } = Guid.Empty;
 
         public string SkillGroup
         {

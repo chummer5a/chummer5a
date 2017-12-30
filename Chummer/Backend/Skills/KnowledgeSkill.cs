@@ -385,6 +385,18 @@ namespace Chummer.Backend.Skills
             string strTemp = Name;
             if (node.TryGetStringFieldQuickly("name", ref strTemp))
                 Name = strTemp;
+            if (node["id"] != null)
+                SkillId = Guid.Parse(node["id"].InnerText);
+            else if (node["suid"] != null)
+                SkillId = Guid.Parse(node["suid"].InnerText);
+
+            // Legacy shim
+            if (SkillId.Equals(Guid.Empty))
+            {
+                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language)?.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                if (objDataNode?["id"] != null)
+                    SkillId = Guid.Parse(objDataNode["id"].InnerText);
+            }
 
             LoadSuggestedSpecializations(Name);
             string strCategoryString = string.Empty;
