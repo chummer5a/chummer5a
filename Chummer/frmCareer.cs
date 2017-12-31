@@ -4065,40 +4065,6 @@ namespace Chummer
                 }
 
                 CharacterObject.Spells.Add(objSpell);
-
-                switch (objSpell.Category)
-                {
-                    case "Combat":
-                        treSpells.Nodes[0].Nodes.Add(objNode);
-                        treSpells.Nodes[0].Expand();
-                        break;
-                    case "Detection":
-                        treSpells.Nodes[1].Nodes.Add(objNode);
-                        treSpells.Nodes[1].Expand();
-                        break;
-                    case "Health":
-                        treSpells.Nodes[2].Nodes.Add(objNode);
-                        treSpells.Nodes[2].Expand();
-                        break;
-                    case "Illusion":
-                        treSpells.Nodes[3].Nodes.Add(objNode);
-                        treSpells.Nodes[3].Expand();
-                        break;
-                    case "Manipulation":
-                        treSpells.Nodes[4].Nodes.Add(objNode);
-                        treSpells.Nodes[4].Expand();
-                        break;
-                    case "Rituals":
-                        treSpells.Nodes[5].Nodes.Add(objNode);
-                        treSpells.Nodes[5].Expand();
-                        break;
-                    case "Enchantments":
-                        treSpells.Nodes[6].Nodes.Add(objNode);
-                        treSpells.Nodes[6].Expand();
-                        break;
-                }
-
-                treSpells.SelectedNode = objNode;
                 if (!objSpell.FreeBonus)
                 {
                     // Create the Expense Log Entry.
@@ -4111,7 +4077,6 @@ namespace Chummer
                     objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
                     objEntry.Undo = objUndo;
                 }
-                treSpells.SortCustom();
                 ScheduleCharacterUpdate();
 
                 IsDirty = true;
