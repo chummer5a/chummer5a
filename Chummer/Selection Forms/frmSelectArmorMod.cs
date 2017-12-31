@@ -446,11 +446,6 @@ namespace Chummer
         }
         #endregion
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
-
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {
             BuildModList();

@@ -403,10 +403,5 @@ namespace Chummer
             cboLifestyle.Left = intLeft + 6;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
     }
 }

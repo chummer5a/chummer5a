@@ -327,11 +327,6 @@ namespace Chummer
             RefreshList(_strSelectedCategory);
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
-
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             UpdateCyberwareInfo();

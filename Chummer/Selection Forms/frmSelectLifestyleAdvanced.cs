@@ -439,11 +439,6 @@ namespace Chummer
             }
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
-
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
@@ -462,11 +457,6 @@ namespace Chummer
             lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page(GlobalOptions.Language)}";
             tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
             cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
-        }
-
-        private void lblQualitySource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblQualitySource.Text);
         }
         #endregion
 

@@ -140,10 +140,5 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
     }
 }

@@ -238,10 +238,5 @@ namespace Chummer
         }
 
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
     }
 }

@@ -230,11 +230,6 @@ namespace Chummer
             UpdateGearInfo();
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
-
         private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(true);

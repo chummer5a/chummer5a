@@ -502,7 +502,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 57;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 

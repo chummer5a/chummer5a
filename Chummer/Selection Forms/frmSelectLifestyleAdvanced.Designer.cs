@@ -214,7 +214,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -437,7 +437,7 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 69;
             this.lblQualitySource.Text = "[Source]";
-            this.lblQualitySource.Click += new System.EventHandler(this.lblQualitySource_Click);
+            this.lblQualitySource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblQualitySourceLabel
             // 

@@ -267,10 +267,6 @@ namespace Chummer
                 e.Handled = true;
             }
         }
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
 
         private void dgvArmor_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

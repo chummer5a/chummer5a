@@ -1766,6 +1766,15 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="strSource">Book coode and page number to open.</param>
+        public static void OpenPDFFromControl(object sender, EventArgs e)
+        {
+            if (sender is Control objControl)
+                OpenPDF(objControl.Text);
+        }
+        /// <summary>
+        /// Opens a PDF file using the provided source information.
+        /// </summary>
+        /// <param name="strSource">Book coode and page number to open.</param>
         public static void OpenPDF(string strSource, string strPDFParamaters = "", string strPDFAppPath = "")
         {
             if (string.IsNullOrEmpty(strPDFParamaters))
@@ -1794,16 +1803,13 @@ namespace Chummer
             string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            Uri uriPath;
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
-            if (objBookInfo != null)
-            {
-                uriPath = new Uri(objBookInfo.Path);
-                intPage += objBookInfo.Offset;
-            }
             // If the sourcebook was not found, we can't open anything.
-            else
+            if (objBookInfo == null)
                 return;
+
+            Uri uriPath = new Uri(objBookInfo.Path);
+            intPage += objBookInfo.Offset;
 
             string strParams = strPDFParamaters;
             strParams = strParams.Replace("{page}", intPage.ToString());

@@ -283,11 +283,6 @@ namespace Chummer
         {
             UpdateSpellInfo();
         }
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text);
-        }
         #endregion
 
         #region Properties

@@ -544,10 +544,5 @@ namespace Chummer
             }
         }
         #endregion
-
-        private void lblCritterPowerSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblCritterPowerSource.Text);
-        }
     }
 }
