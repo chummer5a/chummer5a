@@ -750,7 +750,8 @@ namespace Chummer.Backend.Equipment
                 {
                     decReturn += BaseCost;
                 }
-                decReturn += decExtraAssetCost * CostMultiplier;
+                decReturn += decExtraAssetCost;
+                decReturn *= CostMultiplier + 1.0m;
                 if (!PrimaryTenant)
                 {
                     decReturn /= _intRoommates + 1.0m;
