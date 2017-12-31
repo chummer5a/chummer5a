@@ -5073,6 +5073,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum force of spirits summonable/bindable by the character
+        /// </summary>
+        public int MaxSpiritForce
+        {
+            get
+            {
+                return 2 * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value);
+            }
+        }
+
+        /// <summary>
+        /// Maximum level of sprites compilable/registerable by the character
+        /// </summary>
+        public int MaxSpriteLevel
+        {
+            get
+            {
+                return 2 * RES.TotalValue;
+            }
+        }
+
+        /// <summary>
         /// Amount of Power Points for Mystic Adepts.
         /// </summary>
         public int MysticAdeptPowerPoints

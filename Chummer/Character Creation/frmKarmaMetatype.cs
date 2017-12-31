@@ -913,7 +913,7 @@ namespace Chummer
                 {
                     int intRating = 0;
                     if (objXmlGear.Attributes["rating"] != null)
-                        intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0));
+                        intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
                     string strForceValue = string.Empty;
                     if (objXmlGear.Attributes["select"] != null)
                         strForceValue = objXmlGear.Attributes["select"].InnerText;
@@ -961,10 +961,10 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        private static string ExpressionToString(string strIn, int intForce, int intOffset)
+        private static int ExpressionToInt(string strIn, int intForce, int intOffset)
         {
             if (string.IsNullOrWhiteSpace(strIn))
-                return intOffset.ToString();
+                return intOffset;
             int intValue = 1;
             string strForce = intForce.ToString();
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
@@ -980,11 +980,23 @@ namespace Chummer
             if (intForce > 0)
             {
                 if (intValue < 1)
-                    intValue = 1;
+                    return 1;
             }
             else if (intValue < 0)
-                intValue = 0;
-            return intValue.ToString();
+                return 0;
+            return intValue;
+        }
+
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <returns></returns>
+        private static string ExpressionToString(string strIn, int intForce, int intOffset)
+        {
+            return ExpressionToInt(strIn, intForce, intOffset).ToString();
         }
 
         /// <summary>

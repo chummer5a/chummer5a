@@ -41,7 +41,7 @@ namespace Chummer
         public frmOptions()
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(_strSelectedLanguage, this);
         }
 
         private void frmOptions_Load(object sender, EventArgs e)
@@ -252,7 +252,7 @@ namespace Chummer
             _characterOptions.Save();
 
             if (blnDirty)
-                Utils.RestartApplication("Message_Options_CloseForms");
+                Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
         }
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)

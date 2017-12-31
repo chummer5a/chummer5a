@@ -4993,7 +4993,7 @@ namespace Chummer
         {
             objWriter.WriteStartElement("contact");
             objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("role", Role);
+            objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
             if (IsGroup == false)
                 objWriter.WriteElementString("connection", Connection.ToString(objCulture));
@@ -5001,12 +5001,12 @@ namespace Chummer
                 objWriter.WriteElementString("connection", "Group(" + Connection.ToString(objCulture) + ")");
             objWriter.WriteElementString("loyalty", Loyalty.ToString(objCulture));
             objWriter.WriteElementString("metatype", DisplayMetatypeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("sex", Sex);
-            objWriter.WriteElementString("age", Age);
-            objWriter.WriteElementString("contacttype", Type);
-            objWriter.WriteElementString("preferredpayment", PreferredPayment);
-            objWriter.WriteElementString("hobbiesvice", HobbiesVice);
-            objWriter.WriteElementString("personallife", PersonalLife);
+            objWriter.WriteElementString("sex", DisplaySexMethod(strLanguageToPrint));
+            objWriter.WriteElementString("age", DisplayAgeMethod(strLanguageToPrint));
+            objWriter.WriteElementString("contacttype", DisplayTypeMethod(strLanguageToPrint));
+            objWriter.WriteElementString("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
+            objWriter.WriteElementString("hobbiesvice", DisplayHobbiesViceMethod(strLanguageToPrint));
+            objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
             objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType.ToString(), strLanguageToPrint));
             objWriter.WriteElementString("forceloyalty", ForceLoyalty.ToString());
             objWriter.WriteElementString("blackmail", Blackmail.ToString());
@@ -5057,6 +5057,26 @@ namespace Chummer
                 return _strName;
             }
             set => _strName = value;
+        }
+
+        public string DisplayRoleMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Role;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/contacts/contact[text() = \"" + Role + "\"]")?.Attributes?["translate"]?.InnerText ?? Role;
+        }
+
+        public string DisplayRole
+        {
+            get
+            {
+                return DisplayRoleMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strRole = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            }
         }
 
         /// <summary>
@@ -5160,6 +5180,26 @@ namespace Chummer
             }
         }
 
+        public string DisplaySexMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Sex;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/sexes/sex[text() = \"" + Sex + "\"]")?.Attributes?["translate"]?.InnerText ?? Sex;
+        }
+
+        public string DisplaySex
+        {
+            get
+            {
+                return DisplaySexMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strSex = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            }
+        }
+
         /// <summary>
         /// Gender of this Contact.
         /// </summary>
@@ -5174,6 +5214,26 @@ namespace Chummer
             set
             {
                 _strSex = value;
+            }
+        }
+
+        public string DisplayAgeMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Age;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/ages/age[text() = \"" + Age + "\"]")?.Attributes?["translate"]?.InnerText ?? Age;
+        }
+
+        public string DisplayAge
+        {
+            get
+            {
+                return DisplayAgeMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strAge = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
             }
         }
 
@@ -5194,6 +5254,26 @@ namespace Chummer
             }
         }
 
+        public string DisplayTypeMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Type;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/types/type[text() = \"" + Type + "\"]")?.Attributes?["translate"]?.InnerText ?? Type;
+        }
+
+        public string DisplayType
+        {
+            get
+            {
+                return DisplayTypeMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strType = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            }
+        }
+
         /// <summary>
         /// What type of Contact is this.
         /// </summary>
@@ -5206,6 +5286,26 @@ namespace Chummer
             set
             {
                 _strType = value;
+            }
+        }
+
+        public string DisplayPreferredPaymentMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return PreferredPayment;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/preferredpayments/preferredpayment[text() = \"" + PreferredPayment + "\"]")?.Attributes?["translate"]?.InnerText ?? PreferredPayment;
+        }
+
+        public string DisplayPreferredPayment
+        {
+            get
+            {
+                return DisplayPreferredPaymentMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strPreferredPayment = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
             }
         }
 
@@ -5224,6 +5324,26 @@ namespace Chummer
             }
         }
 
+        public string DisplayHobbiesViceMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return HobbiesVice;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/hobbiesvices/hobbyvice[text() = \"" + HobbiesVice + "\"]")?.Attributes?["translate"]?.InnerText ?? HobbiesVice;
+        }
+
+        public string DisplayHobbiesVice
+        {
+            get
+            {
+                return DisplayHobbiesViceMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strHobbiesVice = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+            }
+        }
+
         /// <summary>
         /// Hobbies/Vice of this Contact.
         /// </summary>
@@ -5236,6 +5356,26 @@ namespace Chummer
             set
             {
                 _strHobbiesVice = value;
+            }
+        }
+
+        public string DisplayPersonalLifeMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return PersonalLife;
+
+            return XmlManager.Load("contacts.xml", strLanguage)?.SelectSingleNode("/chummer/personallives/personallife[text() = \"" + PersonalLife + "\"]")?.Attributes?["translate"]?.InnerText ?? PersonalLife;
+        }
+
+        public string DisplayPersonalLife
+        {
+            get
+            {
+                return DisplayPersonalLifeMethod(GlobalOptions.Language);
+            }
+            set
+            {
+                _strPersonalLife = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
             }
         }
 
@@ -5290,6 +5430,14 @@ namespace Chummer
         {
             get => _objContactType;
             set => _objContactType = value;
+        }
+
+        public bool IsNotEnemy
+        {
+            get
+            {
+                return EntityType != ContactType.Enemy;
+            }
         }
 
         /// <summary>
@@ -5417,6 +5565,17 @@ namespace Chummer
         public bool NoLinkedCharacter
         {
             get => _objLinkedCharacter == null;
+        }
+
+        public void RefreshForControl()
+        {
+            PropertyChangedEventHandler objPropertyChanged = PropertyChanged;
+            if (objPropertyChanged != null)
+            {
+                objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Loyalty)));
+                objPropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Connection)));
+            }
+            RefreshLinkedCharacter(false);
         }
 
         public void RefreshLinkedCharacter(bool blnShowError)

@@ -585,7 +585,7 @@ namespace Chummer
                     if (File.Exists(strFileToDelete))
                         File.Delete(strFileToDelete);
                 }
-                Utils.RestartApplication(string.Empty);
+                Utils.RestartApplication(GlobalOptions.Language, string.Empty);
             }
             else
             {

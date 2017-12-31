@@ -18,14 +18,12 @@
  */
  using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
- using System.Linq;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
  using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -127,7 +125,42 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
                 DataSourceUpdateMode.OnPropertyChanged);
+            if (_objSpirit.EntityType == SpiritType.Spirit)
+                nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpiritForce), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
+            else
+                nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpriteLevel), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
+
+            if (_objSpirit.EntityType == SpiritType.Spirit)
+            {
+                lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
+                chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objSpirit.FileName))
+                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
+                else
+                    tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_LinkSpirit", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                    strTooltip += "\n\n" + _objSpirit.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
+            else
+            {
+                lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
+                chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objSpirit.FileName))
+                    tipTooltip.SetToolTip(imgLink, "Open the linked Sprite save file.");
+                else
+                    tipTooltip.SetToolTip(imgLink, "Link this Sprite to a Chummer save file.");
+
+                string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objSpirit.Notes))
+                    strTooltip += "\n\n" + _objSpirit.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
         }
 
         private void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
@@ -292,146 +325,6 @@ namespace Chummer
                 return _objSpirit;
             }
         }
-
-        /// <summary>
-        /// Spirit Metatype name.
-        /// </summary>
-        public string SpiritName
-        {
-            get
-            {
-                return _objSpirit.Name;
-            }
-        }
-
-        /// <summary>
-        /// Spirit name.
-        /// </summary>
-        public string CritterName
-        {
-            get
-            {
-                return _objSpirit.CritterName;
-            }
-        }
-
-        /// <summary>
-        /// Indicates if this is a Spirit or Sprite. For labeling purposes only.
-        /// </summary>
-        public SpiritType EntityType
-        {
-            get
-            {
-                return _objSpirit.EntityType;
-            }
-            set
-            {
-                _objSpirit.EntityType = value;
-                if (value == SpiritType.Spirit)
-                {
-                    lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
-                    chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objSpirit.FileName))
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
-                    else
-                        tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_LinkSpirit", GlobalOptions.Language));
-
-                    string strTooltip = LanguageManager.GetString("Tip_Spirit_EditNotes", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += "\n\n" + _objSpirit.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
-                }
-                else
-                {
-                    lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
-                    chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objSpirit.FileName))
-                        tipTooltip.SetToolTip(imgLink, "Open the linked Sprite save file.");
-                    else
-                        tipTooltip.SetToolTip(imgLink, "Link this Sprite to a Chummer save file.");
-
-                    string strTooltip = LanguageManager.GetString("Tip_Sprite_EditNotes", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objSpirit.Notes))
-                        strTooltip += "\n\n" + _objSpirit.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Services owed.
-        /// </summary>
-        public int ServicesOwed
-        {
-            get
-            {
-                return _objSpirit.ServicesOwed;
-            }
-            set
-            {
-                _objSpirit.ServicesOwed = value;
-            }
-        }
-
-        /// <summary>
-        /// Force of the Spirit.
-        /// </summary>
-        public int Force
-        {
-            get
-            {
-                return _objSpirit.Force;
-            }
-            set
-            {
-                _objSpirit.Force = value;
-            }
-        }
-
-        /// <summary>
-        /// Maximum Force of the Spirit.
-        /// </summary>
-        public int ForceMaximum
-        {
-            get
-            {
-                return decimal.ToInt32(nudForce.Maximum);
-            }
-            set
-            {
-                nudForce.Maximum = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Spirit is Bound.
-        /// </summary>
-        public bool Bound
-        {
-            get
-            {
-                return _objSpirit.Bound;
-            }
-            set
-            {
-                _objSpirit.Bound = value;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Spirit is Fettered.
-        /// </summary>
-        public bool Fettered
-        {
-            get
-            {
-                return _objSpirit.Fettered;
-            }
-            set
-            {
-                _objSpirit.Fettered = value;
-            }
-        }
         #endregion
 
         #region Methods
@@ -442,15 +335,9 @@ namespace Chummer
             {
                 return;
             }
-            string strCurrentValue = _objSpirit.Name;
-            if (cboSpiritName.SelectedValue != null)
-                strCurrentValue = cboSpiritName.SelectedValue.ToString();
+            string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
-            XmlDocument objXmlDocument = null;
-            if (_objSpirit.EntityType == SpiritType.Spirit)
-                objXmlDocument = XmlManager.Load("traditions.xml");
-            else
-                objXmlDocument = XmlManager.Load("streams.xml");
+            XmlDocument objXmlDocument = _objSpirit.EntityType == SpiritType.Spirit ? XmlManager.Load("traditions.xml") : XmlManager.Load("streams.xml");
             XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
 
             HashSet<string> lstLimitCategories = new HashSet<string>();
@@ -631,18 +518,18 @@ namespace Chummer
             }
 
             // If we're working with a Critter, set the Attributes to their default values.
-            objCharacter.BOD.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["bodmin"].InnerText, intForce, 0));
-            objCharacter.AGI.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["agimin"].InnerText, intForce, 0));
-            objCharacter.REA.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["reamin"].InnerText, intForce, 0));
-            objCharacter.STR.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["strmin"].InnerText, intForce, 0));
-            objCharacter.CHA.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["chamin"].InnerText, intForce, 0));
-            objCharacter.INT.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["intmin"].InnerText, intForce, 0));
-            objCharacter.LOG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["logmin"].InnerText, intForce, 0));
-            objCharacter.WIL.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["wilmin"].InnerText, intForce, 0));
-            objCharacter.MAG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["magmin"].InnerText, intForce, 0));
-            objCharacter.RES.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["resmin"].InnerText, intForce, 0));
-            objCharacter.EDG.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["edgmin"].InnerText, intForce, 0));
-            objCharacter.ESS.MetatypeMinimum = Convert.ToInt32(ExpressionToString(objXmlMetatype["essmax"].InnerText, intForce, 0));
+            objCharacter.BOD.MetatypeMinimum = ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 0);
+            objCharacter.AGI.MetatypeMinimum = ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 0);
+            objCharacter.REA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 0);
+            objCharacter.STR.MetatypeMinimum = ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 0);
+            objCharacter.CHA.MetatypeMinimum = ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 0);
+            objCharacter.INT.MetatypeMinimum = ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 0);
+            objCharacter.LOG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 0);
+            objCharacter.WIL.MetatypeMinimum = ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 0);
+            objCharacter.MAG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 0);
+            objCharacter.RES.MetatypeMinimum = ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 0);
+            objCharacter.EDG.MetatypeMinimum = ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 0);
+            objCharacter.ESS.MetatypeMinimum = ExpressionToInt(objXmlMetatype["essmax"].InnerText, intForce, 0);
 
             // Sprites can never have Physical Attributes or WIL.
             if (objXmlMetatype["category"].InnerText.EndsWith("Sprite"))
@@ -765,7 +652,7 @@ namespace Chummer
             {
                 int intRating = 0;
                 if (objXmlGear.Attributes["rating"] != null)
-                    intRating = Convert.ToInt32(ExpressionToString(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0));
+                    intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, decimal.ToInt32(nudForce.Value), 0);
                 string strForceValue = string.Empty;
                 if (objXmlGear.Attributes["select"] != null)
                     strForceValue = objXmlGear.Attributes["select"].InnerText;
@@ -823,7 +710,7 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <returns></returns>
-        public static string ExpressionToString(string strIn, int intForce, int intOffset)
+        public static int ExpressionToInt(string strIn, int intForce, int intOffset)
         {
             int intValue = 0;
             string strForce = intForce.ToString();
@@ -839,13 +726,24 @@ namespace Chummer
             if (intForce > 0)
             {
                 if (intValue < 1)
-                    intValue = 1;
+                    return 1;
             }
             else if (intValue < 0)
-                intValue = 0;
-            return intValue.ToString();
+                return 0;
+            return intValue;
+        }
+
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <returns></returns>
+        public static string ExpressionToString(string strIn, int intForce, int intOffset)
+        {
+            return ExpressionToInt(strIn, intForce, intOffset).ToString();
         }
         #endregion
-
     }
 }

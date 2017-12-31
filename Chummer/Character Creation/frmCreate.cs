@@ -626,10 +626,6 @@ namespace Chummer
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
                     
-                    if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-                        objSpiritControl.ForceMaximum = CharacterObject.MAG.TotalValue;
-                    else
-                        objSpiritControl.ForceMaximum = CharacterObject.MAG.Value;
                     objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -644,10 +640,7 @@ namespace Chummer
                 if (objSpirit.EntityType == SpiritType.Sprite)
                 {
                     i++;
-                    SpiritControl objSpiritControl = new SpiritControl(objSpirit)
-                    {
-                        EntityType = SpiritType.Sprite
-                    };
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
                     objSpiritControl.ServicesOwedChanged += objSprite_ServicesOwedChanged;
@@ -656,7 +649,6 @@ namespace Chummer
                     objSpiritControl.DeleteSpirit += objSprite_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSprite_FileNameChanged;
                     
-                    objSpiritControl.ForceMaximum = CharacterObject.RES.TotalValue;
                     objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -3490,8 +3482,10 @@ namespace Chummer
             int intBPUsed = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
-                if (!objContactControl.Free) {
-                    intBPUsed -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * CharacterObjectOptions.KarmaEnemy;
+                Contact objLoopEnemy = objContactControl.ContactObject;
+                if (!objLoopEnemy.Free)
+                {
+                    intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
 
@@ -3507,15 +3501,15 @@ namespace Chummer
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_EnemyLimit", GlobalOptions.Language).Replace("{0}", strEnemyPoints), LanguageManager.GetString("MessageTitle_EnemyLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ContactControl objSender = (ContactControl)sender;
+                Contact objSenderContact = ((ContactControl)sender).ContactObject;
                 int intTotal = (intEnemyMax*-1) - intBPUsed;
                 switch (strMode)
                 {
                     case "Connection":
-                        objSender.ConnectionRating -= intTotal;
+                        objSenderContact.Connection -= intTotal;
                         break;
                     case "Loyalty":
-                        objSender.LoyaltyRating -= intTotal;
+                        objSenderContact.Loyalty -= intTotal;
                         break;
                 }
                 return;
@@ -3526,15 +3520,15 @@ namespace Chummer
                 if (intBPUsed + intNegativeQualityBP < (intQualityMax * -1) && !CharacterObject.IgnoreRules)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language).Replace("{0}", strQualityPoints), LanguageManager.GetString("MessageTitle_NegativeQualityLimit", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    ContactControl objSender = (ContactControl)sender;
+                    Contact objSenderContact = ((ContactControl)sender).ContactObject;
                     switch (strMode)
                     {
                         case "Connection":
-                            objSender.ConnectionRating -= (((intQualityMax*-1) - (intBPUsed + intNegativeQualityBP))/
+                            objSenderContact.Connection -= (((intQualityMax*-1) - (intBPUsed + intNegativeQualityBP))/
                                                            CharacterObjectOptions.KarmaQuality);
                             break;
                         case "Loyalty":
-                            objSender.LoyaltyRating -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
+                            objSenderContact.Loyalty -= (((intQualityMax * -1) - (intBPUsed + intNegativeQualityBP)) /
                                                         CharacterObjectOptions.KarmaQuality);
                             break;
                     }
@@ -3640,15 +3634,15 @@ namespace Chummer
         {
             // Handle the ServicesOwedChanged Event for the SpiritControl object.
             // A Spirit cannot owe more services than the character's Summoning Skill Rating.
-            SpiritControl objSpiritControl = (SpiritControl)sender;
+            Spirit objSpirit = ((SpiritControl)sender).SpiritObject;
 
             // Retrieve the character's Summoning Skill Rating.
             int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill("Summoning")?.Rating ?? 0;
 
-            if (objSpiritControl.ServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
+            if (objSpirit.ServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SpiritServices", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpiritServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                objSpiritControl.ServicesOwed = intSkillValue;
+                objSpirit.ServicesOwed = intSkillValue;
             }
 
             ScheduleCharacterUpdate();
@@ -3708,15 +3702,15 @@ namespace Chummer
         {
             // Handle the ServicesOwedChanged Event for the SpiritControl object.
             // A Sprite cannot owe more services than the character's Compiling Skill Rating.
-            SpiritControl objSpriteControl = (SpiritControl)sender;
+            Spirit objSprite = ((SpiritControl)sender).SpiritObject;
 
             // Retrieve the character's Compiling Skill Rating.
             int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill("Compiling")?.Rating ?? 0;
 
-            if (objSpriteControl.ServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
+            if (objSprite.ServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_SpriteServices", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                objSpriteControl.ServicesOwed = intSkillValue;
+                objSprite.ServicesOwed = intSkillValue;
             }
 
             ScheduleCharacterUpdate();
@@ -3825,14 +3819,14 @@ namespace Chummer
 
         private void cmdAddContact_Click(object sender, EventArgs e)
         {
-            Contact objContact = new Contact(CharacterObject);
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panContacts.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact)
+            Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Contact
             };
+            CharacterObject.Contacts.Add(objContact);
+
+            int i = panContacts.Controls.Count;
+            ContactControl objContactControl = new ContactControl(objContact);
 
             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChangedEvent
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
@@ -3880,7 +3874,8 @@ namespace Chummer
 
             foreach (ContactControl objEnemyControl in panEnemies.Controls)
             {
-                intBPUsed -= (objEnemyControl.ConnectionRating + objEnemyControl.LoyaltyRating) * CharacterObjectOptions.KarmaEnemy;
+                Contact objLoopEnemy = objEnemyControl.ContactObject;
+                intBPUsed -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
             }
 
             if (intBPUsed < (intEnemyMax * -1) && !CharacterObject.IgnoreRules)
@@ -3898,14 +3893,14 @@ namespace Chummer
                 }
             }
 
-            Contact objContact = new Contact(CharacterObject);
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panEnemies.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact)
+            Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Enemy
             };
+            CharacterObject.Contacts.Add(objContact);
+
+            int i = panEnemies.Controls.Count;
+            ContactControl objContactControl = new ContactControl(objContact);
 
             // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged and OtherCostChanged(hackish) Events
             objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
@@ -4003,13 +3998,14 @@ namespace Chummer
                 return;
             }
 
-            Spirit objSpirit = new Spirit(CharacterObject);
+            Spirit objSpirit = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Spirit,
+                Force = CharacterObject.MaxSpiritForce
+            };
             CharacterObject.Spirits.Add(objSpirit);
 
-            SpiritControl objSpiritControl = new SpiritControl(objSpirit)
-            {
-                EntityType = SpiritType.Spirit
-            };
+            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
             objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
@@ -4019,20 +4015,6 @@ namespace Chummer
             objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
 
-            if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-            {
-                int intMAGTotalValue = CharacterObject.MAG.TotalValue;
-                objSpiritControl.ForceMaximum = intMAGTotalValue * 2;
-                objSpiritControl.Force = intMAGTotalValue;
-            }
-            else
-            {
-                int intMAG = Convert.ToInt32(CharacterObject.MAG.Value);
-                if (intMAG == 0)
-                    intMAG = 1;
-                objSpiritControl.ForceMaximum = intMAG * 2;
-                objSpiritControl.Force = intMAG;
-            }
             objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
             objSpiritControl.Top = i * objSpiritControl.Height;
@@ -4052,13 +4034,14 @@ namespace Chummer
                 return;
             }
 
-            Spirit objSprite = new Spirit(CharacterObject);
+            Spirit objSprite = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Sprite,
+                Force = CharacterObject.MaxSpriteLevel
+            };
             CharacterObject.Spirits.Add(objSprite);
 
-            SpiritControl objSpriteControl = new SpiritControl(objSprite)
-            {
-                EntityType = SpiritType.Sprite
-            };
+            SpiritControl objSpriteControl = new SpiritControl(objSprite);
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
             objSpriteControl.ServicesOwedChanged += objSprite_ServicesOwedChanged;
@@ -4066,9 +4049,7 @@ namespace Chummer
             objSpriteControl.BoundChanged += objSprite_BoundChanged;
             objSpriteControl.DeleteSpirit += objSprite_DeleteSpirit;
             objSpriteControl.FileNameChanged += objSprite_FileNameChanged;
-
-            objSpriteControl.ForceMaximum = CharacterObject.RES.Value;
-            objSpriteControl.ForceMaximum = CharacterObject.RES.Value;
+            
             objSpriteControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
 
             objSpriteControl.Top = i * objSpriteControl.Height;
@@ -12674,7 +12655,7 @@ namespace Chummer
                     intHighPlacesFriends += (objContactControl.ContactObject.Connection +
                                             objContactControl.ContactObject.Loyalty);
                 }
-                else if (objContactControl.IsGroup == false)
+                else if (objContactControl.ContactObject.IsGroup == false)
                 {
                     int over = intContactPointsLeft - objContactControl.ContactObject.ContactPoints;
 
@@ -12723,10 +12704,11 @@ namespace Chummer
             int intEnemyPoints = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
-                if (!objContactControl.Free)
+                Contact objLoopEnemy = objContactControl.ContactObject;
+                if (!objLoopEnemy.Free)
                 {
                     // The Enemy's Karma cost = their (Connection + Loyalty Rating) x Karma multiplier.
-                    intEnemyPoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * CharacterObjectOptions.KarmaEnemy;
+                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
 
@@ -13079,16 +13061,17 @@ namespace Chummer
             int intSpiritPointsUsed = 0;
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
             {
+                Spirit objLoopSpirit = objSpiritControl.SpiritObject;
                 // Each Spirit costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= objSpiritControl.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-                intSpiritPointsUsed += objSpiritControl.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
+                intKarmaPointsRemain -= objLoopSpirit.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
+                intSpiritPointsUsed += objLoopSpirit.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
 
                 // Each Fettered Spirit costs 3 x Force.
                 //TODO: Bind the 3 to an option.
-                if (objSpiritControl.Fettered)
+                if (objLoopSpirit.Fettered)
                 {
-                    intKarmaPointsRemain -= objSpiritControl.Force * 3;
-                    intSpiritPointsUsed += objSpiritControl.Force * 3;
+                    intKarmaPointsRemain -= objLoopSpirit.Force * 3;
+                    intSpiritPointsUsed += objLoopSpirit.Force * 3;
                 }
             }
             intFreestyleBP += intSpiritPointsUsed;
@@ -13098,9 +13081,10 @@ namespace Chummer
             int intSpritePointsUsed = 0;
             foreach (SpiritControl objSpriteControl in panSprites.Controls)
             {
+                Spirit objLoopSprite = objSpriteControl.SpiritObject;
                 // Each Sprite costs KarmaSpirit x Services Owed.
-                intKarmaPointsRemain -= objSpriteControl.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
-                intSpritePointsUsed += objSpriteControl.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
+                intKarmaPointsRemain -= objLoopSprite.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
+                intSpritePointsUsed += objLoopSprite.ServicesOwed * CharacterObjectOptions.KarmaSpirit;
             }
             intFreestyleBP += intSpritePointsUsed;
 
@@ -13677,35 +13661,18 @@ namespace Chummer
             }
             CharacterObject.ContactPoints = intCHA * CharacterObjectOptions.FreeContactsMultiplier;
 
-            // If MAG is enabled, update the Force for Spirits (equal to Magician MAG Rating) and Adept Powers.
-            if (CharacterObject.MAGEnabled)
+            // Update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
+            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
             {
-                foreach (SpiritControl objSpiritControl in panSpirits.Controls)
+                Spirit objLoopSpirit = objSpiritControl.SpiritObject;
+                if (objLoopSpirit.EntityType == SpiritType.Spirit)
                 {
-                    if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-                    {
-                        objSpiritControl.ForceMaximum = dicAttributeTotalValues["MAG"];
-                    }
-                    else
-                    {
-                        int intLocalMAG = dicAttributeValues["MAG"];
-                        if (intLocalMAG == 0)
-                            intLocalMAG = 1;
-
-                        objSpiritControl.ForceMaximum = intLocalMAG;
-                    }
-                    objSpiritControl.Force = objSpiritControl.ForceMaximum;
+                    objLoopSpirit.Force = CharacterObject.MaxSpiritForce;
                     objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
                 }
-            }
-
-            // If RES is enabled, update the Rating for Sprites (equal to Technomancer RES Rating).
-            if (CharacterObject.RESEnabled)
-            {
-                foreach (SpiritControl objSpiritControl in panSprites.Controls)
+                else
                 {
-                    objSpiritControl.ForceMaximum = dicAttributeTotalValues["RES"];
-                    objSpiritControl.Force = objSpiritControl.ForceMaximum;
+                    objLoopSpirit.Force = CharacterObject.MaxSpriteLevel;
                     objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
                 }
             }
@@ -14170,13 +14137,14 @@ namespace Chummer
 
             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
             {
-                Control contact = panContacts.Controls[i];
+                ContactControl contactControl = panContacts.Controls[i] as ContactControl;
 
-                if (contact is ContactControl contactControl)
+                if (contactControl != null)
                 {
-                    if (CharacterObject.Contacts.Contains(contactControl.ContactObject))
+                    Contact objLoopContact = contactControl.ContactObject;
+                    if (CharacterObject.Contacts.Contains(objLoopContact))
                     {
-                        contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
+                        objLoopContact.RefreshForControl(); //Force refresh
                         existing.Add(contactControl.ContactObject);
                     }
                     else
@@ -14192,12 +14160,7 @@ namespace Chummer
             //objContactControl.DeleteContact += objContact_DeleteContact;
             //objContactControl.FileNameChanged += objContact_FileNameChanged;
 
-            var newcontacts = from contact in CharacterObject.Contacts
-                              where contact.EntityType == ContactType.Contact
-                              && !existing.Contains(contact)
-                              select contact;
-
-            foreach (Contact contact in newcontacts)
+            foreach (Contact contact in CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && !existing.Contains(x)))
             {
                 ContactControl ctrl = new ContactControl(contact);
 
@@ -17067,22 +17030,23 @@ namespace Chummer
             int intHighPlaces = 0;
             foreach (ContactControl objContactControl in panContacts.Controls)
             {
-                if (!objContactControl.Free)
+                Contact objLoopContact = objContactControl.ContactObject;
+                if (!objLoopContact.Free)
                 {
-                    if (objContactControl.IsGroup)
+                    if (objLoopContact.IsGroup)
                     {
-                        intGroupContacts += objContactControl.ContactObject.ContactPoints;
+                        intGroupContacts += objLoopContact.ContactPoints;
                     }
-                    else if (objContactControl.ConnectionRating >= 8 && CharacterObject.FriendsInHighPlaces)
+                    else if (objLoopContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
                     {
-                        intHighPlaces += (objContactControl.ConnectionRating +
-                                          objContactControl.LoyaltyRating);
+                        intHighPlaces += (objLoopContact.Connection +
+                                          objLoopContact.Loyalty);
                     }
                     else
                     {
                         // The Contact's BP cost = their Connection + Loyalty Rating.
-                        intContactPointsUsed += (objContactControl.ConnectionRating +
-                                                 objContactControl.LoyaltyRating) * CharacterObjectOptions.BPContact;
+                        intContactPointsUsed += (objLoopContact.Connection +
+                                                 objLoopContact.Loyalty) * CharacterObjectOptions.BPContact;
                     }
 
                 }
@@ -17111,9 +17075,10 @@ namespace Chummer
             int intNegativePoints = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
-                if (!objContactControl.Free)
+                Contact objLoopEnemy = objContactControl.ContactObject;
+                if (!objLoopEnemy.Free)
                 {
-                    intNegativePoints -= (objContactControl.ConnectionRating + objContactControl.LoyaltyRating) * CharacterObjectOptions.KarmaEnemy;
+                    intNegativePoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
 
@@ -18421,23 +18386,22 @@ namespace Chummer
                 {
                     int i = panSpirits.Controls.Count;
 
-                    Spirit objSpirit = new Spirit(CharacterObject);
+                    Spirit objSpirit = new Spirit(CharacterObject)
+                    {
+                        EntityType = SpiritType.Spirit,
+                        Name = objXmlSpirit["name"].InnerText,
+                        Force = Convert.ToInt32(objXmlSpirit["force"].InnerText),
+                        ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText)
+                    };
                     CharacterObject.Spirits.Add(objSpirit);
 
-                    SpiritControl objSpiritControl = new SpiritControl(objSpirit)
-                    {
-                        EntityType = SpiritType.Spirit
-                    };
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
                     objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
                     objSpiritControl.ForceChanged += objSpirit_ForceChanged;
                     objSpiritControl.BoundChanged += objSpirit_BoundChanged;
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
-
-                    objSpiritControl.Name = objXmlSpirit["name"].InnerText;
-                    objSpiritControl.Force = Convert.ToInt32(objXmlSpirit["force"].InnerText);
-                    objSpiritControl.ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
                     panSpirits.Controls.Add(objSpiritControl);
@@ -21662,11 +21626,14 @@ namespace Chummer
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
         {
-            bool toggle = ((ContactControl) panContacts.Controls[0]).Expanded;
-
-            foreach (ContactControl c in panContacts.Controls)
+            if (panContacts.Controls.Count > 0)
             {
-                c.ExpansionToggle(!toggle);
+                bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
+
+                foreach (ContactControl c in panContacts.Controls)
+                {
+                    c.Expanded = !toggle;
+                }
             }
         }
 

@@ -17,11 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.ComponentModel;
- using System.IO;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
- using System.Xml;
+using System.Xml;
 using System.Linq;
 
 namespace Chummer
@@ -29,7 +28,6 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private readonly Contact _objContact;
-        private string _strContactRole;
         private readonly bool _blnEnemy = false;
         private bool _loading = true;
         private readonly int _intLowHeight = 25;
@@ -60,8 +58,6 @@ namespace Chummer
             MoveControls();
 
             _objContact = objContact;
-            _strContactRole = _objContact.Role;
-            EntityType = _objContact.EntityType;
 
             foreach (ToolStripItem objItem in cmsContact.Items)
             {
@@ -77,6 +73,31 @@ namespace Chummer
             LoadContactList();
 
             DoDataBindings();
+
+            if (_objContact.EntityType == ContactType.Enemy)
+            {
+                tipTooltip.SetToolTip(imgLink,
+                    !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
+            else
+            {
+                tipTooltip.SetToolTip(imgLink,
+                    !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
+                        : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
+
+                string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
+                if (!string.IsNullOrEmpty(_objContact.Notes))
+                    strTooltip += "\n\n" + _objContact.Notes;
+                tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
+            }
 
             _loading = false;
         }
@@ -120,7 +141,7 @@ namespace Chummer
         
         private void cmdExpand_Click(object sender, EventArgs e)
         {
-            ExpansionToggle(!Expanded);
+            Expanded = !Expanded;
         }
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
@@ -323,249 +344,23 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Contact name.
-        /// </summary>
-        public string ContactName
+        public bool Expanded
         {
-            get
-            {
-                return _objContact.Name;
-            }
-        }
-
-        /// <summary>
-        /// Contact role.
-        /// </summary>
-        public string ContactRole
-        {
-            get
-            {
-                return _objContact.Role;
-            }
+            get => Height > _intLowHeight;
             set
             {
-                cboContactRole.Text = value;
-                _strContactRole = value;
-                _objContact.Role = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact location.
-        /// </summary>
-        public string ContactLocation
-        {
-            get
-            {
-                return _objContact.Location;
-            }
-        }
-
-        /// <summary>
-        /// Indicates if this is a Contact or Enemy.
-        /// </summary>
-        public ContactType EntityType
-        {
-            get
-            {
-                return _objContact.EntityType;
-            }
-            set
-            {
-                _objContact.EntityType = value;
-                if (value == ContactType.Enemy)
+                if (value)
                 {
-                    tipTooltip.SetToolTip(imgLink,
-                        !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy", GlobalOptions.Language)
-                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy", GlobalOptions.Language));
-
-                    string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
-                    chkFamily.Visible = false;
-                    chkBlackmail.Visible = false;
-                    nudConnection.Minimum = 1;
+                    Height = _intFullHeight;
+                    cmdExpand.Image = Properties.Resources.Expand;
                 }
                 else
                 {
-                    tipTooltip.SetToolTip(imgLink,
-                        !string.IsNullOrEmpty(_objContact.FileName)
-                            ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact", GlobalOptions.Language)
-                            : LanguageManager.GetString("Tip_Contact_LinkContact", GlobalOptions.Language));
-
-                    string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes", GlobalOptions.Language);
-                    if (!string.IsNullOrEmpty(_objContact.Notes))
-                        strTooltip += "\n\n" + _objContact.Notes;
-                    tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
-
-                    nudConnection.Minimum = 1;
+                    Height = _intLowHeight;
+                    cmdExpand.Image = Properties.Resources.Collapse;
                 }
             }
         }
-
-        /// <summary>
-        /// Connection Rating.
-        /// </summary>
-        public int ConnectionRating
-        {
-            get
-            {
-                return _objContact.Connection;
-            }
-            set
-            {
-                _objContact.Connection = value;
-            }
-        }
-
-        /// <summary>
-        /// Loyalty Rating.
-        /// </summary>
-        public int LoyaltyRating
-        {
-            get
-            {
-                return _objContact.Loyalty;
-            }
-            set
-            {
-                _objContact.Loyalty = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact Metatype.
-        /// </summary>
-        public string ContactMetatype
-        {
-            get
-            {
-                return _objContact.Metatype;
-            }
-        }
-
-        /// <summary>
-        /// Contact Gender.
-        /// </summary>
-        public string ContactSex
-        {
-            get
-            {
-                return _objContact.Sex;
-            }
-        }
-
-        /// <summary>
-        /// Contact Age.
-        /// </summary>
-        public string ContactAge
-        {
-            get
-            {
-                return _objContact.Age;
-            }
-        }
-
-        /// <summary>
-        /// Contact Personal Life.
-        /// </summary>
-        public string ContactPersonalLife
-        {
-            get
-            {
-                return _objContact.PersonalLife;
-            }
-            set
-            {
-                cboPersonalLife.Text = value;
-                _objContact.PersonalLife = value;
-            }
-        }
-
-        /// <summary>
-        /// Contact Type.
-        /// </summary>
-        public string ContactServiceType
-        {
-            get
-            {
-                return _objContact.Type;
-            }
-        }
-
-        /// <summary>
-        /// Contact Preferred Payment Method.
-        /// </summary>
-        public string ContactPreferredPayment
-        {
-            get
-            {
-                return _objContact.PreferredPayment;
-            }
-        }
-
-        /// <summary>
-        /// Contact Hobbies/Vice.
-        /// </summary>
-        public string ContactHobbiesVice
-        {
-            get
-            {
-                return _objContact.HobbiesVice;
-            }
-        }
-
-        /// <summary>
-        /// Whether or not this contact is a Family member.
-        /// </summary>
-        public bool Family
-        {
-            get { return _objContact.Family; }
-            set { _objContact.Family = value; }
-        }
-
-        /// <summary>
-        /// Whether or not this contact is being blackmailed. 
-        /// </summary>
-        public bool Blackmail
-        {
-            get { return _objContact.Blackmail; }
-            set { _objContact.Blackmail = value; }
-        }
-
-        /// <summary>
-        /// Whether or not this is a free Contact.
-        /// </summary>
-        public bool Free
-        {
-            get
-            {
-                return _objContact.Free;
-            }
-            set
-            {
-                _objContact.Free = value;
-            }
-        }
-        /// <summary>
-        /// Is the contract a group contract
-        /// </summary>
-        public bool IsGroup
-        {
-            get
-            {
-                return _objContact.IsGroup;
-            }
-            set
-            {
-                _objContact.IsGroup = value;
-            }
-        }
-
-        public bool Expanded => Height > _intLowHeight;
         #endregion
 
         #region Methods
@@ -573,8 +368,9 @@ namespace Chummer
         {
             if (_blnEnemy)
             {
-                if (!string.IsNullOrEmpty(_strContactRole))
-                    cboContactRole.Text = _strContactRole;
+                string strContactRole = _objContact.DisplayRole;
+                if (!string.IsNullOrEmpty(strContactRole))
+                    cboContactRole.Text = strContactRole;
                 return;
             }
 
@@ -735,7 +531,11 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
                 DataSourceUpdateMode.OnPropertyChanged);
+            chkFamily.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             chkBlackmail.DataBindings.Add("Checked", _objContact, nameof(_objContact.Blackmail), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsNotEnemy), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             lblQuickStats.DataBindings.Add("Text", _objContact, nameof(_objContact.QuickText), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -751,21 +551,21 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtContactLocation.DataBindings.Add("Text", _objContact, nameof(_objContact.Location), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.Role), false,
+            cboContactRole.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayRole), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             cboMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.Sex), false,
+            cboSex.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplaySex), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.Age), false,
+            cboAge.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayAge), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.PersonalLife), false,
+            cboPersonalLife.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPersonalLife), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.Type), false,
+            cboType.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayType), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.PreferredPayment), false,
+            cboPreferredPayment.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayPreferredPayment), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.HobbiesVice), false,
+            cboHobbiesVice.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayHobbiesVice), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
                 DataSourceUpdateMode.OnPropertyChanged);
@@ -801,20 +601,6 @@ namespace Chummer
             lblType.Left = cboType.Left - 7 - lblType.Width;
             lblPreferredPayment.Left = cboPreferredPayment.Left - 7 - lblPreferredPayment.Width;
             lblHobbiesVice.Left = cboHobbiesVice.Left - 7 - lblHobbiesVice.Width;
-        }
-
-        public void ExpansionToggle(bool expand = false)
-        {
-            if (expand)
-            {
-                Height = _intFullHeight;
-                cmdExpand.Image = Properties.Resources.Expand;
-            }
-            else
-            {
-                Height = _intLowHeight;
-                cmdExpand.Image = Properties.Resources.Collapse;
-            }
         }
         #endregion
     }

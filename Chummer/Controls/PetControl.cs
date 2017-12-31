@@ -17,8 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -202,21 +200,6 @@ namespace Chummer
             get
             {
                 return _objContact;
-            }
-        }
-
-        /// <summary>
-        /// Contact name.
-        /// </summary>
-        public string ContactName
-        {
-            get
-            {
-                return _objContact.Name;
-            }
-            set
-            {
-                _objContact.Name = value;
             }
         }
         #endregion

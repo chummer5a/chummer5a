@@ -84,6 +84,8 @@ Application Changes:
 - Fixed the selectspell improvement to properly add the relevant spell to the character. 
 - Tweaked the list of Spells to be an observable collection to allow updating the UI whenever the spell list changes.
 - Added support to the Amend system to be able to use operations other than the default ones. The four currently supported operations are "recurse" (perform amending recursively on children), "replace" (completely replace the target node's InnerXml), "append" (add to the target node's InnerXml), and "remove" (remove the target node). If no operation is specified, "recurse" is the default if the target node(s) have children and "replace" is the default if they do not. The 'remove="yes"' system for marking nodes for removal has been replaced by 'amendoperation="remove"'.
+- Fixed a bug where strings related to contacts were not properly translated.
+- Fixed a bug where certain changes to maximum MAG and/or maximum RES would not properly change the maximum Force/Level values for spirits and sprites tied to the character.
 
 Data Changes:
 

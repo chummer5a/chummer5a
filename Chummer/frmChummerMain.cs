@@ -1121,7 +1121,7 @@ namespace Chummer
 
         private void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication();
+            Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
         }
         #endregion
 

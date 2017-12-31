@@ -667,13 +667,7 @@ namespace Chummer
                     objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
                     objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
-                    
-                    int intMAG = 0;
-                    if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-                        intMAG = CharacterObject.MAG.TotalValue;
-                    else
-                        intMAG = CharacterObject.MAG.Value;
-                    objSpiritControl.ForceMaximum = intMAG * 2;
+
                     objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -689,10 +683,7 @@ namespace Chummer
                 if (objSpirit.EntityType == SpiritType.Sprite)
                 {
                     i++;
-                    SpiritControl objSpiritControl = new SpiritControl(objSpirit)
-                    {
-                        EntityType = SpiritType.Sprite
-                    };
+                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                     // Attach an EventHandler for the ServicesOwedChanged Event.
                     objSpiritControl.ServicesOwedChanged += objSprite_ServicesOwedChanged;
@@ -701,7 +692,6 @@ namespace Chummer
                     objSpiritControl.DeleteSpirit += objSprite_DeleteSpirit;
                     objSpiritControl.FileNameChanged += objSprite_FileNameChanged;
                     
-                    objSpiritControl.ForceMaximum = CharacterObject.RES.TotalValue * 2;
                     objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
 
                     objSpiritControl.Top = i * objSpiritControl.Height;
@@ -3630,7 +3620,8 @@ namespace Chummer
 
             // Determine the Karam cost to remove the Enemy.
             ContactControl objSender = (ContactControl)sender;
-            int intKarmaCost = (objSender.ConnectionRating + objSender.LoyaltyRating) * CharacterObjectOptions.KarmaQuality;
+            Contact objSenderContact = objSender.ContactObject;
+            int intKarmaCost = (objSenderContact.Connection + objSenderContact.Loyalty) * CharacterObjectOptions.KarmaQuality;
 
             bool blnKarmaExpense = ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseEnemy", GlobalOptions.Language).Replace("{0}", intKarmaCost.ToString()));
 
@@ -3645,23 +3636,18 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy", GlobalOptions.Language) + " " + objSender.ContactName, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy", GlobalOptions.Language) + " " + objSenderContact.Name, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
             }
 
             // Handle the DeleteContact Event for the ContactControl object.
-            bool blnFound = false;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
-                // Set the flag to show that we have found the contact.
                 if (objContactControl == objSender)
-                    blnFound = true;
-
                 // Once the Enemy has been found, all of the other ContactControls on the Panel should move up 25 pixels to fill in the gap that deleting this one will cause.
-                if (blnFound)
                 {
-                    CharacterObject.Contacts.Remove(objContactControl.ContactObject);
+                    CharacterObject.Contacts.Remove(objSenderContact);
                     objContactControl.Top -= 25;
                 }
             }
@@ -3961,14 +3947,14 @@ namespace Chummer
 
         private void cmdAddContact_Click(object sender, EventArgs e)
         {
-            Contact objContact = new Contact(CharacterObject);
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panContacts.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact)
+            Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Contact
             };
+            CharacterObject.Contacts.Add(objContact);
+
+            int i = panContacts.Controls.Count;
+            ContactControl objContactControl = new ContactControl(objContact);
 
             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
             objContactControl.ConnectionRatingChanged += objContact_ConnectionRatingChanged;
@@ -3989,14 +3975,14 @@ namespace Chummer
         private void cmdAddEnemy_Click(object sender, EventArgs e)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
-            Contact objContact = new Contact(CharacterObject);
-            CharacterObject.Contacts.Add(objContact);
-
-            int i = panEnemies.Controls.Count;
-            ContactControl objContactControl = new ContactControl(objContact)
+            Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Enemy
             };
+            CharacterObject.Contacts.Add(objContact);
+
+            int i = panEnemies.Controls.Count;
+            ContactControl objContactControl = new ContactControl(objContact);
 
             // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
             objContactControl.ConnectionRatingChanged += objEnemy_ConnectionRatingChanged;
@@ -4120,13 +4106,14 @@ namespace Chummer
         {
             int i = panSpirits.Controls.Count;
 
-            Spirit objSpirit = new Spirit(CharacterObject);
+            Spirit objSpirit = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Spirit,
+                Force = CharacterObject.MaxSpiritForce
+            };
             CharacterObject.Spirits.Add(objSpirit);
 
-            SpiritControl objSpiritControl = new SpiritControl(objSpirit)
-            {
-                EntityType = SpiritType.Spirit
-            };
+            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
             objSpiritControl.ServicesOwedChanged += objSpirit_ServicesOwedChanged;
@@ -4135,21 +4122,7 @@ namespace Chummer
             objSpiritControl.FetteredChanged += objSpirit_FetteredChanged;
             objSpiritControl.DeleteSpirit += objSpirit_DeleteSpirit;
             objSpiritControl.FileNameChanged += objSpirit_FileNameChanged;
-
-            if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-            {
-                int intMAGTotalValue = CharacterObject.MAG.TotalValue;
-                objSpiritControl.ForceMaximum = intMAGTotalValue * 2;
-                objSpiritControl.Force = intMAGTotalValue;
-            }
-            else
-            {
-                int intMAG = Convert.ToInt32(CharacterObject.MAG.Value);
-                if (intMAG == 0)
-                    intMAG = 1;
-                objSpiritControl.ForceMaximum = intMAG * 2;
-                objSpiritControl.Force = intMAG;
-            }
+            
             objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
             objSpiritControl.Top = i * objSpiritControl.Height;
@@ -4162,13 +4135,14 @@ namespace Chummer
         {
             int i = panSprites.Controls.Count;
 
-            Spirit objSprite = new Spirit(CharacterObject);
+            Spirit objSprite = new Spirit(CharacterObject)
+            {
+                EntityType = SpiritType.Sprite,
+                Force = CharacterObject.MaxSpriteLevel
+            };
             CharacterObject.Spirits.Add(objSprite);
 
-            SpiritControl objSpriteControl = new SpiritControl(objSprite)
-            {
-                EntityType = SpiritType.Sprite
-            };
+            SpiritControl objSpriteControl = new SpiritControl(objSprite);
 
             // Attach an EventHandler for the ServicesOwedChanged Event.
             objSpriteControl.ServicesOwedChanged += objSprite_ServicesOwedChanged;
@@ -4176,9 +4150,7 @@ namespace Chummer
             objSpriteControl.BoundChanged += objSprite_BoundChanged;
             objSpriteControl.DeleteSpirit += objSprite_DeleteSpirit;
             objSpriteControl.FileNameChanged += objSprite_FileNameChanged;
-
-            objSpriteControl.ForceMaximum = CharacterObject.RES.TotalValue * 2;
-            objSpriteControl.Force = Convert.ToInt32(CharacterObject.RES.Value);
+            
             objSpriteControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
 
             objSpriteControl.Top = i * objSpriteControl.Height;
@@ -18279,21 +18251,20 @@ namespace Chummer
             HashSet<Contact> existing = new HashSet<Contact>();
             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
             {
-                Control contact = panContacts.Controls[i];
-                ContactControl contactControl = (ContactControl)contact;
+                ContactControl contactControl = panContacts.Controls[i] as ContactControl;
 
                 if (contactControl != null)
                 {
-                    if (CharacterObject.Contacts.Contains(contactControl.ContactObject))
+                    Contact objLoopContact = contactControl.ContactObject;
+                    if (CharacterObject.Contacts.Contains(objLoopContact))
                     {
-                        contactControl.LoyaltyRating = contactControl.LoyaltyRating; //Force refresh
-                        existing.Add(contactControl.ContactObject);
+                        objLoopContact.RefreshForControl(); //Force refresh
+                        existing.Add(objLoopContact);
                     }
                     else
                     {
                         objContact_DeleteContact(contactControl, true);
                     }
-
                 }
             }
 
@@ -18303,12 +18274,7 @@ namespace Chummer
             //objContactControl.DeleteContact += objContact_DeleteContact;
             //objContactControl.FileNameChanged += objContact_FileNameChanged;
 
-            var newcontacts = from contact in CharacterObject.Contacts
-                              where contact.EntityType == ContactType.Contact
-                              && !existing.Contains(contact)
-                              select contact;
-
-            foreach (Contact contact in newcontacts)
+            foreach (Contact contact in CharacterObject.Contacts.Where(x => x.EntityType == ContactType.Contact && !existing.Contains(x)))
             {
                 ContactControl ctrl = new ContactControl(contact);
 
@@ -18316,21 +18282,11 @@ namespace Chummer
                 ctrl.LoyaltyRatingChanged += objContact_LoyaltyRatingChanged;
                 ctrl.DeleteContact += objContact_DeleteContact;
                 ctrl.FileNameChanged += objContact_FileNameChanged;
-                ctrl.BlackmailChanged += objContact_OtherCostChanged;
+                ctrl.FreeRatingChanged += objContact_OtherCostChanged;
                 ctrl.FamilyChanged += objContact_OtherCostChanged;
+                ctrl.BlackmailChanged += objContact_OtherCostChanged;
 
                 panContacts.Controls.Add(ctrl);
-            }
-            foreach (Control contact in panContacts.Controls)
-            {
-                // Probably won't find subclass, but don't wan't to track
-                // down bug about contacts in 4 months because i by some 
-                // retarded version decided to overload ContactControl
-                if (contact.GetType() == typeof(ContactControl) ||
-                    contact.GetType().IsSubclassOf(typeof(ContactControl)))
-                {
-                    ContactControl contactControl = (ContactControl)contact;
-                }
             }
         }
 
@@ -18884,17 +18840,7 @@ namespace Chummer
             // Update the maximum Force for all Spirits.
             foreach (SpiritControl objSpiritControl in panSpirits.Controls)
             {
-                if (CharacterObjectOptions.SpiritForceBasedOnTotalMAG)
-                    objSpiritControl.ForceMaximum = dicAttributeTotalValues["MAG"] * 2;
-                else
-                {
-                    int intLocalMAG = intCharacterMAG;
-                    if (intLocalMAG == 0)
-                        intLocalMAG = 1;
-
-                    objSpiritControl.ForceMaximum = intLocalMAG * 2;
-                }
-                objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                objSpiritControl.RebuildSpiritList(objSpiritControl.SpiritObject.EntityType == SpiritType.Spirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
             }
 
             if (CharacterObject.AdeptEnabled)
@@ -18906,13 +18852,6 @@ namespace Chummer
             if (CharacterObject.MAGEnabled && !string.IsNullOrEmpty(lblDrainAttributes.Text))
             {
                 CalculateTraditionDrain(CharacterObject.TraditionDrain, Improvement.ImprovementType.DrainResistance, lblDrainAttributes, lblDrainAttributesValue, tipTooltip);
-            }
-
-            // Update the maximum Force for all Sprites.
-            foreach (SpiritControl objSpiritControl in panSprites.Controls)
-            {
-                objSpiritControl.ForceMaximum = dicAttributeTotalValues["RES"] * 2;
-                objSpiritControl.RebuildSpiritList(CharacterObject.TechnomancerStream);
             }
 
             // Update the Fading CharacterAttribute Value.
@@ -25292,11 +25231,14 @@ namespace Chummer
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
         {
-            bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
-
-            foreach (ContactControl c in panContacts.Controls)
+            if (panContacts.Controls.Count > 0)
             {
-                c.ExpansionToggle(!toggle);
+                bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
+
+                foreach (ContactControl c in panContacts.Controls)
+                {
+                    c.Expanded = !toggle;
+                }
             }
         }
 
