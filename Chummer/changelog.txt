@@ -88,6 +88,8 @@ Application Changes:
 - Fixed a bug where certain changes to maximum MAG and/or maximum RES would not properly change the maximum Force/Level values for spirits and sprites tied to the character.
 - Fixed a bug where canceling out of the karma spending prompt to fetter a spirit would still cause the spirit to be fettered.
 - Fixed translation system for certain strings in the Relationships tab, metatypes in the character roster, labels in the weapon mount creation screen, and other, miscellaneous strings. Fixes #2238.
+- Fixed issues with printing nested gear and nested cyberware in the Shadowrun 5 character sheet set.
+- Fixed an issue with the Vehicles character sheet set trying to fetch "Parachuting" instead of "Free-Fall" for skills relevant to aerial vehicles.
 
 Data Changes:
 

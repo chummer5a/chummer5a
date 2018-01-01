@@ -490,12 +490,12 @@
         <xsl:when test="category = 'Gliders and FPMV'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'LAVs'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Military, Security and Medical Craft'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aerospace</xsl:with-param></xsl:call-template>
@@ -506,7 +506,7 @@
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Automotive Mechanic</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Nautical Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Boats &amp; Subs'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
@@ -515,17 +515,17 @@
         <xsl:when test="category = 'Winged Planes'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Rotorcraft'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Zeppelin'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Drones: Micro'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>

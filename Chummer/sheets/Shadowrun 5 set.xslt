@@ -1813,17 +1813,29 @@
           </td>
         </tr>
       </xsl:if>
-      <xsl:if test="children/cyberware">
+      <xsl:if test="children/cyberware or gears/gear">
         <tr>
           <xsl:if test="position() mod 2 != 1">
             <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
           </xsl:if>
           <td colspan="100%" class="indent">
-            <xsl:for-each select="children/cyberware">
+            <xsl:call-template name="cyberwareplugin">
+              <xsl:with-param name="cyberware" select="."/>
+            </xsl:call-template>
+            <xsl:for-each select="gears/gear">
+              <xsl:sort select="name"/>
               <xsl:value-of select="name"/>
               <xsl:if test="rating != 0">
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="rating"/>
+              </xsl:if>
+              <xsl:if test="children/gear">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$lang.with"/>
+                <xsl:text> </xsl:text>
+                <xsl:call-template name="gearplugin">
+                  <xsl:with-param name="gear" select="."/>
+                </xsl:call-template>
               </xsl:if>
               <xsl:if test="last() &gt; 1">; </xsl:if>
             </xsl:for-each>
@@ -2176,6 +2188,31 @@
                     <xsl:value-of select="$lang.Rating"/>
                     <xsl:text> </xsl:text>
                     <xsl:value-of select="rating"/>
+                  </xsl:if>
+                  <xsl:if test="children/cyberware or gears/gear">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$lang.with"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:call-template name="cyberwareplugin">
+                      <xsl:with-param name="cyberware" select="."/>
+                    </xsl:call-template>
+                    <xsl:for-each select="gears/gear">
+                      <xsl:sort select="name"/>
+                      <xsl:value-of select="name"/>
+                      <xsl:if test="rating != 0">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="rating"/>
+                      </xsl:if>
+                      <xsl:if test="children/gear">
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of select="$lang.with"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:call-template name="gearplugin">
+                          <xsl:with-param name="gear" select="."/>
+                        </xsl:call-template>
+                      </xsl:if>
+                      <xsl:if test="last() &gt; 1">; </xsl:if>
+                    </xsl:for-each>
                   </xsl:if>
                   <xsl:if test="last() &gt; 1">; </xsl:if>
                 </xsl:for-each>
@@ -3121,7 +3158,7 @@
       <xsl:if test="extra != '' and $xtra = 'A'">
         (<xsl:value-of select="extra"/>)
       </xsl:if>
-      <xsl:if test="qty &gt; 1"> x<xsl:value-of select="qty"/></xsl:if>
+      <xsl:if test="qty != 1"> x<xsl:value-of select="qty"/></xsl:if>
       <xsl:choose>
         <xsl:when test="children/gear">
           <xsl:text> </xsl:text>
@@ -3129,6 +3166,77 @@
           <xsl:text> </xsl:text>
           <xsl:call-template name="gearplugin">
             <xsl:with-param name="gear" select="."/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:when test="position() != last()">, </xsl:when>
+        <xsl:otherwise>; </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="cyberwareplugin">
+    <xsl:param name="cyberware"/>
+    <xsl:param name="rtg" select="''"/>
+    <xsl:param name="xtra" select="'A'"/>
+    <xsl:for-each select="children/cyberware">
+      <xsl:sort select="name"/>
+      <xsl:value-of select="name"/>
+      <xsl:if test="extra != '' and $xtra = 'B'">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="rating != 0">
+        <xsl:value-of select="$rtg"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="rating"/>
+      </xsl:if>
+      <xsl:if test="extra != '' and $xtra = 'A'">
+        (<xsl:value-of select="extra"/>)
+      </xsl:if>
+      <xsl:if test="gears/gear">
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="$lang.with"/>
+        <xsl:text> </xsl:text>
+        <xsl:for-each select="gears/gear">
+          <xsl:sort select="name"/>
+          <xsl:value-of select="name"/>
+          <xsl:if test="gearname != ''">
+            "<xsl:value-of select="gearname"/>"
+          </xsl:if>
+          <xsl:if test="extra != '' and $xtra = 'B'">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="rating != 0">
+            <xsl:value-of select="$rtg"/>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="rating"/>
+          </xsl:if>
+          <xsl:if test="extra != '' and $xtra = 'A'">
+            (<xsl:value-of select="extra"/>)
+          </xsl:if>
+          <xsl:if test="qty != 1">
+            x<xsl:value-of select="qty"/>
+          </xsl:if>
+          <xsl:choose>
+            <xsl:when test="children/gear">
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="$lang.with"/>
+              <xsl:text> </xsl:text>
+              <xsl:call-template name="gearplugin">
+                <xsl:with-param name="gear" select="."/>
+              </xsl:call-template>
+            </xsl:when>
+            <xsl:when test="position() != last()">, </xsl:when>
+            <xsl:otherwise>; </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="children/cyberware">
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="$lang.with"/>
+          <xsl:text> </xsl:text>
+          <xsl:call-template name="cyberwareplugin">
+            <xsl:with-param name="cyberware" select="."/>
           </xsl:call-template>
         </xsl:when>
         <xsl:when test="position() != last()">, </xsl:when>
