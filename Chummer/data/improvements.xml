@@ -204,14 +204,54 @@
       <page>Creates a free Adept Power. If the selected power already exists, the power will either be marked as free, or have free levels added to it.</page>
     </improvement>
     <improvement>
-      <name>Living Persona, Biofeedback Filter</name>
-      <id>livingpersonabiofeedback</id>
+      <name>Living Persona, Device Rating</name>
+      <id>livingpersonadevicerating</id>
       <internal>livingpersona</internal>
       <fields>
         <field>val</field>
       </fields>
-      <xml><![CDATA[<biofeedback>{val}</biofeedback>]]></xml>
-      <page>Adjusts the Living Persona's Biofeedback Filter Rating by the value entered. Positive numbers improve the Biofeedback Filter Rating. Negative numbers reduce the Biofeedback Filter Rating. This has no effect on characters that do not have a Living Persona.</page>
+      <xml><![CDATA[<devicerating>{val}</devicerating>]]></xml>
+      <page>Adjusts the Living Persona's Device Rating by the value entered. Positive numbers improve the Device Rating. Negative numbers reduce the Device Rating. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Program Limit</name>
+      <id>livingpersonaprogramlimit</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<programlimit>{val}</programlimit>]]></xml>
+      <page>Adjusts the Living Persona's Program Limit by the value entered. Positive numbers improve the Program Limit. Negative numbers reduce the Program Limit. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Attack</name>
+      <id>livingpersonaattack</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<attack>{val}</attack>]]></xml>
+      <page>Adjusts the Living Persona's Attack by the value entered. Positive numbers improve Attack. Negative numbers reduce Attack. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Sleaze</name>
+      <id>livingpersonasleaze</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<sleaze>{val}</sleaze>]]></xml>
+      <page>Adjusts the Living Persona's Sleaze by the value entered. Positive numbers improve Sleaze. Negative numbers reduce Sleaze. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
+    </improvement>
+    <improvement>
+      <name>Living Persona, Data Processing</name>
+      <id>livingpersonadataprocessing</id>
+      <internal>livingpersona</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[<dataprocessing>{val}</dataprocessing>]]></xml>
+      <page>Adjusts the Living Persona's Data Processing by the value entered. Positive numbers improve Data Processing. Negative numbers reduce Data Processing. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
     </improvement>
     <improvement>
       <name>Living Persona, Firewall</name>
@@ -221,37 +261,7 @@
         <field>val</field>
       </fields>
       <xml><![CDATA[<firewall>{val}</firewall>]]></xml>
-      <page>Adjusts the Living Persona's Firewall Rating by the value entered. Positive numbers improve the Firewall Rating. Negative numbers reduce the Firewall Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, Response</name>
-      <id>livingpersonaresponse</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<response>{val}</response>]]></xml>
-      <page>Adjusts the Living Persona's Response Rating by the value entered. Positive numbers improve the Response Rating. Negative numbers reduce the Response Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, Signal</name>
-      <id>livingpersonasignal</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<signal>{val}</signal>]]></xml>
-      <page>Adjusts the Living Persona's Signal Rating by the value entered. Positive numbers improve the Signal Rating. Negative numbers reduce the Signal Rating. This has no effect on characters that do not have a Living Persona.</page>
-    </improvement>
-    <improvement>
-      <name>Living Persona, System</name>
-      <id>livingpersonasystem</id>
-      <internal>livingpersona</internal>
-      <fields>
-        <field>val</field>
-      </fields>
-      <xml><![CDATA[<system>{val}</system>]]></xml>
-      <page>Adjusts the Living Persona's System Rating by the value entered. Positive numbers improve the System Rating. Negative numbers reduce the System Rating. This has no effect on characters that do not have a Living Persona.</page>
+      <page>Adjusts the Living Persona's Firewall by the value entered. Positive numbers improve Firewall. Negative numbers reduce Firewall. You may enter XPath operations as well. This has no effect on characters that do not have a Living Persona.</page>
     </improvement>
     <improvement>
       <name>Skill</name>

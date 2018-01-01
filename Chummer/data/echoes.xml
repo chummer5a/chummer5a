@@ -70,11 +70,7 @@
       <name>NeuroFilter</name>
       <source>SR5</source>
       <page>258</page>
-      <bonus>
-        <livingpersona>
-          <biofeedback>1</biofeedback>
-        </livingpersona>
-      </bonus>
+      <bonus />
       <limit>no</limit>
     </echo>
     <echo>
@@ -83,9 +79,6 @@
       <source>SR5</source>
       <page>258</page>
       <bonus>
-        <livingpersona>
-          <response>1</response>
-        </livingpersona>
         <matrixinitiativediceadd>1</matrixinitiativediceadd>
       </bonus>
     </echo>

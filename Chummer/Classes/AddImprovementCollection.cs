@@ -1969,47 +1969,119 @@ namespace Chummer.Classes
         {
             Log.Info("livingpersona");
             Log.Info("livingpersona = " + bonusNode.OuterXml);
-            string strNodeInnerXml = bonusNode.InnerXml;
-            // Response.
-            if (strNodeInnerXml.Contains("response"))
+
+            // Device Rating.
+            string strBonus = bonusNode["devicerating"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
             {
-                Log.Info("Calling CreateImprovement for response");
-                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaResponse,
-                    _strUnique, ValueToInt(_objCharacter, bonusNode["response"].InnerText, _intRating));
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for device rating");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique);
             }
 
-            // Signal.
-            if (strNodeInnerXml.Contains("signal"))
+            // Attack.
+            strBonus = bonusNode["programlimit"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
             {
-                Log.Info("Calling CreateImprovement for signal");
-                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSignal,
-                    _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["signal"].InnerText, _intRating));
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for program limit");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaProgramLimit, _strUnique);
+            }
+
+            // Attack.
+            strBonus = bonusNode["attack"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for attack");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaAttack, _strUnique);
+            }
+
+            // Sleaze.
+            strBonus = bonusNode["sleaze"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for sleaze");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSleaze, _strUnique);
+            }
+
+            // Data Processing.
+            strBonus = bonusNode["dataprocessing"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
+            {
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
+                Log.Info("Calling CreateImprovement for data processing");
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDataProcessing, _strUnique);
             }
 
             // Firewall.
-            if (strNodeInnerXml.Contains("firewall"))
+            strBonus = bonusNode["firewall"]?.InnerText;
+            if (!string.IsNullOrEmpty(strBonus))
             {
+                if (strBonus.Contains("FixedValues"))
+                {
+                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    if (strValues.Length >= _intRating)
+                        strBonus = strValues[_intRating - 1];
+                    else
+                        strBonus = strValues[strValues.Length - 1];
+                }
+                strBonus = strBonus.Replace("Rating", _intRating.ToString());
+                if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
+                    strBonus = '+' + strBonus;
                 Log.Info("Calling CreateImprovement for firewall");
-                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall,
-                    _strUnique, ValueToInt(_objCharacter, bonusNode["firewall"].InnerText, _intRating));
-            }
-
-            // System.
-            if (strNodeInnerXml.Contains("system"))
-            {
-                Log.Info("Calling CreateImprovement for system");
-                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSystem,
-                    _strUnique,
-                    ValueToInt(_objCharacter, bonusNode["system"].InnerText, _intRating));
-            }
-
-            // Biofeedback Filter.
-            if (strNodeInnerXml.Contains("biofeedback"))
-            {
-                Log.Info("Calling CreateImprovement for biofeedback");
-                CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaBiofeedback,
-                    _strUnique, ValueToInt(_objCharacter, bonusNode["biofeedback"].InnerText, _intRating));
+                CreateImprovement(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique);
             }
         }
 

@@ -421,11 +421,7 @@
       <name>Natural Hardening</name>
       <karma>10</karma>
       <category>Positive</category>
-      <bonus>
-        <livingpersona>
-          <biofeedback>1</biofeedback>
-        </livingpersona>
-      </bonus>
+      <bonus />
       <source>SR5</source>
       <page>76</page>
     </quality>

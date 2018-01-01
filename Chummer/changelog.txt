@@ -90,6 +90,7 @@ Application Changes:
 - Fixed translation system for certain strings in the Relationships tab, metatypes in the character roster, labels in the weapon mount creation screen, and other, miscellaneous strings. Fixes #2238.
 - Fixed issues with printing nested gear and nested cyberware in the Shadowrun 5 character sheet set.
 - Fixed an issue with the Vehicles character sheet set trying to fetch "Parachuting" instead of "Free-Fall" for skills relevant to aerial vehicles.
+- Updated the livingpersona improvement so that it uses SR5e values instead of SR4e ones. Fixes #2239.
 
 Data Changes:
 

@@ -1487,29 +1487,31 @@ namespace Chummer.Backend.Equipment
                 {
                     case "Device Rating":
                         if (IsCommlink)
-                            return 2;
+                            strExpression = "2";
                         else
-                            return 0;
+                            strExpression = "0";
+                        break;
                     case "Program Limit":
                         if (IsCommlink)
                         {
                             strExpression = this.GetMatrixAttributeString("Device Rating");
                             if (string.IsNullOrEmpty(strExpression))
-                                return 2;
+                                strExpression = "2";
                         }
                         else
-                            return 0;
+                            strExpression = "0";
                         break;
                     case "Data Processing":
                     case "Firewall":
                         strExpression = this.GetMatrixAttributeString("Device Rating");
                         if (string.IsNullOrEmpty(strExpression))
-                            return 0;
+                            strExpression = "0";
                         break;
                     case "Attack":
                     case "Sleaze":
                     default:
-                        return 0;
+                        strExpression = "0";
+                        break;
                 }
             }
 
@@ -1519,6 +1521,35 @@ namespace Chummer.Backend.Equipment
                 if (Rating > 0)
                     strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
             }
+
+            if (Name == "Living Persona")
+            {
+                string strExtraExpression = string.Empty;
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDeviceRating && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                    case "Program Limit":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaProgramLimit && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                    case "Attack":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaAttack && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                    case "Sleaze":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaSleaze && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                    case "Data Processing":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDataProcessing && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                    case "Firewall":
+                        strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaFirewall && x.Enabled).Select(x => x.ImprovedName));
+                        break;
+                }
+                if (!string.IsNullOrEmpty(strExtraExpression))
+                    strExpression += strExtraExpression;
+            }
+
             if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);

@@ -1592,11 +1592,7 @@
       <action>Special</action>
       <range>Special</range>
       <duration>Special</duration>
-      <bonus>
-        <livingpersona>
-          <biofeedback>1</biofeedback>
-        </livingpersona>
-      </bonus>
+      <bonus />
       <source>SR4</source>
       <page>243</page>
     </power>
@@ -1609,9 +1605,6 @@
       <range>Special</range>
       <duration>Special</duration>
       <bonus>
-        <livingpersona>
-          <response>1</response>
-        </livingpersona>
         <matrixinitiativediceadd>1</matrixinitiativediceadd>
       </bonus>
       <source>SR4</source>
@@ -1868,9 +1861,6 @@
       <range>Special</range>
       <duration>Special</duration>
       <bonus>
-        <livingpersona>
-          <response>1</response>
-        </livingpersona>
         <matrixinitiativediceadd>1</matrixinitiativediceadd>
       </bonus>
       <source>UN</source>
