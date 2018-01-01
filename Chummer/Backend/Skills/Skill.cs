@@ -532,12 +532,24 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public Guid Id { get; private set; } = Guid.NewGuid();
 
+        private Guid _guidSkillId = Guid.Empty;
         /// <summary>
         /// The ID for this skill. This is persistent for active skills over
         /// multiple characters, ?and predefined knowledge skills,? but not
         /// for skills where the user supplies a name (Exotic and Knowledge)
         /// </summary>
-        public Guid SkillId { get; protected set; } = Guid.Empty;
+        public Guid SkillId
+        {
+            get => _guidSkillId;
+            set
+            {
+                if (_guidSkillId != value)
+                {
+                    _guidSkillId = value;
+                    _objCachedMyXmlNode = null;
+                }
+            }
+        }
 
         public string SkillGroup
         {

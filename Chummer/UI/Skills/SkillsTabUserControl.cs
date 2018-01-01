@@ -491,8 +491,6 @@ namespace Chummer.UI.Skills
                     {
                         WriteableName = form.SelectedItem
                     };
-                    skill.LoadDefaultType(skill.Name);
-
 
                     ObjCharacter.SkillsSection.KnowledgeSkills.Add(skill);
                 }

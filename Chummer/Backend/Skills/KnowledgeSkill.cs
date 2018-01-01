@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Datastructures;
 
@@ -99,7 +100,6 @@ namespace Chummer.Backend.Skills
         public KnowledgeSkill(Character character, string forcedName) : this(character)
         {
             WriteableName = forcedName;
-            LoadDefaultType(Name);
             ForcedName = true;
         }
 
@@ -113,16 +113,37 @@ namespace Chummer.Backend.Skills
             {
                 if (ForcedName)
                     return;
-                Name = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
-                LoadSuggestedSpecializations(Name);
+                string strNewName = value;
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                {
+                    XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
+                    if (xmlSkillDoc != null)
+                    {
+                        XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\" and category = \"" + Type + "\"]");
+                        if (xmlNewNode == null)
+                            xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[translate = \"" + value + "\"]");
+                        if (xmlNewNode != null)
+                            strNewName = xmlNewNode["name"]?.InnerText ?? value;
+                        else
+                            strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                    }
+                    else
+                        strNewName = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+                }
+                if (Name != strNewName)
+                {
+                    Name = strNewName;
+                    LoadDefaultType();
+                    LoadSuggestedSpecializations();
 
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Type));
-                OnPropertyChanged(nameof(Base));
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Type));
+                    OnPropertyChanged(nameof(Base));
+                }
             }
         }
 
-        private void LoadSuggestedSpecializations(string strName)
+        private void LoadSuggestedSpecializations()
         {
             SuggestedSpecializations.Clear();
 
@@ -141,17 +162,34 @@ namespace Chummer.Backend.Skills
             OnPropertyChanged(nameof(CGLSpecializations));
         }
 
-        public void LoadDefaultType(string strName)
+        public bool LoadDefaultType()
         {
-            if (strName == null)
-                return;
-            //TODO: Should this be targeted against guid for uniqueness? Creating a knowledge skill in career always generates a new SkillId instead of using the one from skills.
-            XmlNode xmlSkillNode = XmlManager.Load("skills.xml").SelectSingleNode($"chummer/knowledgeskills/skill[name = \"{strName}\"]");
-            if (xmlSkillNode != null)
+            XmlDocument xmlSkillDoc = XmlManager.Load("skills.xml", GlobalOptions.Language);
+            if (xmlSkillDoc != null)
             {
-                _strType = xmlSkillNode["category"]?.InnerText ?? string.Empty;
-                AttributeObject = CharacterObject.GetAttribute(xmlSkillNode["attribute"]?.InnerText ?? "LOG");
+                XmlNode xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\" and category = \"" + Type + "\"]");
+                if (xmlNewNode == null)
+                    xmlNewNode = xmlSkillDoc.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                if (xmlNewNode != null)
+                {
+                    if (xmlNewNode["id"] != null && Guid.TryParse(xmlNewNode["id"].InnerText, out Guid guidTemp))
+                        SkillId = guidTemp;
+                    else
+                        SkillId = Guid.Empty;
+                    string strCategory = xmlNewNode["category"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strCategory))
+                        Type = strCategory;
+                    string strAttribute = xmlNewNode["attribute"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strAttribute))
+                        AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
+                    return true;
+                }
+                else
+                    SkillId = Guid.Empty;
             }
+            else
+                SkillId = Guid.Empty;
+            return false;
         }
 
         public override string SkillCategory
@@ -203,14 +241,24 @@ namespace Chummer.Backend.Skills
             get { return _strType; }
             set
             {
-                if (!s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue)) return;
-                AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
-                AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
+                if (value != _strType)
+                {
+                    _strType = value;
 
-                AttributeObject.PropertyChanged += OnLinkedAttributeChanged;
-                _strType = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(AttributeModifiers));
+                    if (!LoadDefaultType())
+                    {
+                        if (s_CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
+                        {
+                            CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strNewAttributeValue);
+                            if (objNewAttribute != AttributeObject)
+                            {
+                                AttributeObject = objNewAttribute;
+                            }
+                        }
+                    }
+
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -394,11 +442,11 @@ namespace Chummer.Backend.Skills
             if (SkillId.Equals(Guid.Empty))
             {
                 XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language)?.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
-                if (objDataNode?["id"] != null)
-                    SkillId = Guid.Parse(objDataNode["id"].InnerText);
+                if (objDataNode?["id"] != null && Guid.TryParse(objDataNode["id"].InnerText, out Guid guidTemp))
+                    SkillId = guidTemp;
             }
 
-            LoadSuggestedSpecializations(Name);
+            LoadSuggestedSpecializations();
             string strCategoryString = string.Empty;
             if ((node.TryGetStringFieldQuickly("type", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString))
                 || (node.TryGetStringFieldQuickly("skillcategory", ref strCategoryString) && !string.IsNullOrEmpty(strCategoryString)))

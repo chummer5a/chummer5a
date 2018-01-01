@@ -194,10 +194,5 @@ namespace Chummer.UI.Skills
                 chkKarma.Checked = true;
             }
         }
-
-        private void cboSkill_TextChanged(object sender, EventArgs e)
-        {
-            _skill.LoadDefaultType(_skill.Name);
-        }
     }
 }
