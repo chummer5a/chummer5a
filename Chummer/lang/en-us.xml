@@ -7584,6 +7584,18 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <key>Message_SelectCyberware_CyberwareRestriction</key>
       <text>You cannot select this Cyberware/Bioware because of the following forbidden items you have already taken.</text>
     </string>
+    <string>
+      <key>Checkbox_HideBannedCyberwareGrades</key>
+      <text>Hide Banned Cyberware Grades</text>
+    </string>
+    <string>
+      <key>MessageTitle_BannedGrade</key>
+      <text>Banned Grade!</text>
+    </string>
+    <string>
+      <key>Message_BannedGrade</key>
+      <text>You've selected a Grade that is banned by your gameplay options. Please select a valid Grade.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Cyberware Suite Window -->
     <string>

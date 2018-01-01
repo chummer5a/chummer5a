@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -32,7 +33,7 @@ namespace Chummer
     public partial class frmSelectCyberware : Form
     {
         private readonly Character _objCharacter;
-        private readonly List<Grade> _objGradeList;
+        private List<Grade> _objGradeList;
         private readonly string _strNoneGradeId;
 
         private decimal _decCostMultiplier = 1.0m;
@@ -74,6 +75,7 @@ namespace Chummer
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
+            chkHideBannedGrades.Visible = !objCharacter.Created;
             _objCharacter = objCharacter;
             _objParentNode = objParentNode;
             MoveControls();
@@ -132,7 +134,7 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades(false, true);
+            PopulateGrades(false, true, string.Empty,chkHideBannedGrades.Checked);
 
             if (!string.IsNullOrEmpty(_strSetGrade))
                 cboGrade.SelectedValue = _strSetGrade;
@@ -201,7 +203,7 @@ namespace Chummer
                 strForceGrade = cboGrade.SelectedValue?.ToString();
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             Grade objForcedGrade = string.IsNullOrEmpty(strForceGrade) ? null : _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
-            PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade);
+            PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
             RefreshList(_strSelectedCategory);
         }
 
@@ -300,7 +302,7 @@ namespace Chummer
             }
 
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-            PopulateGrades(objXmlCyberware?["nosecondhand"] != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade);
+            PopulateGrades(objXmlCyberware?["nosecondhand"] != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
 
             if (objXmlCyberware?["notes"] != null)
             {
@@ -346,6 +348,12 @@ namespace Chummer
         private void lblCategory_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)
+        {
+            _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked);
+            PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 
         private void lstCyberware_DoubleClick(object sender, EventArgs e)
@@ -1072,6 +1080,14 @@ namespace Chummer
             string strSelectedId = lstCyberware.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
+            if (cboGrade.Text.StartsWith("*"))
+            {
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_BannedGrade", GlobalOptions.Language),
+                    LanguageManager.GetString("MessageTitle_BannedGrade", GlobalOptions.Language),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[id = \"" + strSelectedId + "\"]");
             if (objCyberwareNode == null)
                 return;
@@ -1137,7 +1153,7 @@ namespace Chummer
         /// Populate the list of Cyberware Grades.
         /// </summary>
         /// <param name="blnIgnoreSecondHand">Whether or not Secon-Hand Grades should be added to the list.</param>
-        private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "")
+        private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true)
         {
             if (_blnPopulatingGrades)
                 return;
@@ -1158,10 +1174,17 @@ namespace Chummer
                         continue;
                     if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
                         continue;
-                    if (!_objCharacter.Created && _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (blnHideBannedGrades && !_objCharacter.Created && _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
-
-                    lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString(), objWareGrade.DisplayName(GlobalOptions.Language)));
+                    if (!blnHideBannedGrades && !_objCharacter.Created &&
+                        _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
+                    {
+                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString(), $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
+                    }
+                    else
+                    {
+                        lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString(), objWareGrade.DisplayName(GlobalOptions.Language)));
+                    }
                 }
                 
                 string strOldSelected = cboGrade.SelectedValue?.ToString();

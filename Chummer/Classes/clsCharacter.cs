@@ -3322,7 +3322,7 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource)
+        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool ignoreBannedGrades = false)
         {
             List<Grade> lstGrades = new List<Grade>();
             string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";
@@ -3336,7 +3336,8 @@ namespace Chummer
 
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
-                if (IgnoreRules || Created || !bannedwaregrades.Any(s => objGrade.Name.Contains(s)))
+                bool bannedGrade = bannedwaregrades.Any(s => objGrade.Name.Contains(s));
+                if (IgnoreRules || Created || !bannedGrade || (bannedGrade && !ignoreBannedGrades))
                     lstGrades.Add(objGrade);
             }
 
