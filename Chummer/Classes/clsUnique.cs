@@ -5534,6 +5534,11 @@ namespace Chummer
             }
         }
 
+        public bool NotMadeMan
+        {
+            get => !MadeMan;
+        }
+
         public bool Blackmail
         {
             get => _blnBlackmail;

@@ -104,21 +104,17 @@ namespace Chummer
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
             // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
             // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            LoyaltyRatingChanged(this);
+            if (!_loading)
+                LoyaltyRatingChanged(this);
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -130,12 +126,8 @@ namespace Chummer
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (_loading)
-                return;
-
-            chkGroup.Enabled = !_objContact.MadeMan;
-
-            GroupStatusChanged?.Invoke(this);
+            if (!_loading)
+                GroupStatusChanged?.Invoke(this);
         }
 
         
@@ -146,52 +138,62 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboSex_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboAge_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboPersonalLife_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboType_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
         {
-            ConnectionRatingChanged(this);
+            if (!_loading)
+                ConnectionRatingChanged(this);
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -315,20 +317,20 @@ namespace Chummer
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Free = chkFree.Checked;
-            FreeRatingChanged?.Invoke(this);
+            if (!_loading)
+                FreeRatingChanged?.Invoke(this);
         }
 
         private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Blackmail = chkBlackmail.Checked;
-            BlackmailChanged?.Invoke(this);
+            if (!_loading)
+                BlackmailChanged?.Invoke(this);
         }
 
         private void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            _objContact.Family = chkFamily.Checked;
-            FamilyChanged?.Invoke(this);
+            if (!_loading)
+                FamilyChanged?.Invoke(this);
         }
         #endregion
 
@@ -527,6 +529,8 @@ namespace Chummer
         {
             chkGroup.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsGroupOrMadeMan), false,
                 DataSourceUpdateMode.OnPropertyChanged);
+            chkGroup.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NotMadeMan), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             chkFree.DataBindings.Add("Checked", _objContact, nameof(_objContact.Free), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.Family), false,
@@ -535,7 +539,7 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             chkBlackmail.DataBindings.Add("Checked", _objContact, nameof(_objContact.Blackmail), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkFamily.DataBindings.Add("Checked", _objContact, nameof(_objContact.IsNotEnemy), false,
+            chkBlackmail.DataBindings.Add("Visible", _objContact, nameof(_objContact.IsNotEnemy), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             lblQuickStats.DataBindings.Add("Text", _objContact, nameof(_objContact.QuickText), false,
                 DataSourceUpdateMode.OnPropertyChanged);
