@@ -28,6 +28,7 @@ namespace Chummer
     public partial class frmSelectProgram : Form
     {
         private string _strSelectedProgram = string.Empty;
+        private string _strForceComplexForm = string.Empty;
 
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
@@ -49,6 +50,13 @@ namespace Chummer
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
+            // If a value is forced, set the name of the complex form and accept the form.
+            if (!string.IsNullOrEmpty(_strForceComplexForm))
+            {
+                _strSelectedProgram = _strForceComplexForm;
+                DialogResult = DialogResult.OK;
+            }
+
             foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith('['))
@@ -167,6 +175,17 @@ namespace Chummer
             get
             {
                 return _blnAddAgain;
+            }
+        }
+
+        /// <summary>
+        /// Force a particular Complex Form to be selected.
+        /// </summary>
+        public string ForceComplexFormName
+        {
+            set
+            {
+                _strForceComplexForm = value;
             }
         }
 

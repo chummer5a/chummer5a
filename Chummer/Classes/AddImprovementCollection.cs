@@ -1259,6 +1259,121 @@ namespace Chummer.Classes
                 _strUnique);
         }
 
+        // Select a Complex Form.
+        public void selectcomplexform(XmlNode bonusNode)
+        {
+            Log.Info("selectcomplexform");
+            // Display the Select ComplexForm window.
+            frmSelectProgram frmPickComplexForm = new frmSelectProgram(_objCharacter);
+
+            Log.Info("selectcomplexform = " + bonusNode.OuterXml);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+
+            if (!string.IsNullOrEmpty(ForcedValue))
+            {
+                frmPickComplexForm.ForceComplexFormName = ForcedValue;
+                frmPickComplexForm.Opacity = 0;
+            }
+
+            frmPickComplexForm.ShowDialog();
+
+            // Make sure the dialogue window was not canceled.
+            if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+            {
+                throw new AbortedException();
+            }
+            // Open the ComplexForms XML file and locate the selected piece.
+            XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
+
+            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickComplexForm.SelectedProgram + "\"]") ??
+                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickComplexForm.SelectedProgram + "\"]");
+            SelectedValue = node["name"].InnerText;
+
+            ComplexForm complexform = new ComplexForm(_objCharacter);
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
+
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description =
+                        LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
+                            .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText)
+                };
+                frmPickText.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickText.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                strExtra = frmPickText.SelectedValue;
+            }
+            complexform.Create(node, new TreeNode(), null, strExtra);
+            if (complexform.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.ComplexForms.Add(complexform);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(complexform.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.ComplexForm,
+                _strUnique);
+        }
+
+        // Add a specific ComplexForm to the Character.
+        public void addcomplexform(XmlNode bonusNode)
+        {
+            Log.Info("addcomplexform");
+
+            Log.Info("addcomplexform = " + bonusNode.OuterXml);
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ")";
+
+            Log.Info("_strSelectedValue = " + SelectedValue);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml");
+
+            XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + bonusNode.InnerText + "\"]");
+
+            if (node == null) return;
+            // Check for SelectText.
+            string strExtra = string.Empty;
+            if (node["bonus"]?["selecttext"] != null)
+            {
+                frmSelectText frmPickText = new frmSelectText
+                {
+                    Description =
+                    LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
+                        .Replace("{0}", node["translate"]?.InnerText ?? node["name"].InnerText)
+                };
+                frmPickText.ShowDialog();
+                // Make sure the dialogue window was not canceled.
+                if (frmPickText.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                strExtra = frmPickText.SelectedValue;
+            }
+
+            ComplexForm complexform = new ComplexForm(_objCharacter);
+            complexform.Create(node, new TreeNode(), null, strExtra);
+            if (complexform.InternalId == Guid.Empty.ToString())
+                return;
+
+            _objCharacter.ComplexForms.Add(complexform);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(complexform.InternalId, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.ComplexForm,
+                _strUnique);
+        }
+
         // Add a specific Gear to the Character.
         public void addgear(XmlNode bonusNode)
         {

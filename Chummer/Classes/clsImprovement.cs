@@ -213,6 +213,7 @@ namespace Chummer
             FreeSpells,
             DrainValue,
             Spell,
+            ComplexForm,
             Gear,
             MentorSpirit,
             Paragon,
@@ -1471,6 +1472,14 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
                             objCharacter.Spells.Remove(objSpell);
+                        }
+                        break;
+                    case Improvement.ImprovementType.ComplexForm:
+                        ComplexForm objComplexForm = objCharacter.ComplexForms.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
+                        if (objComplexForm != null)
+                        {
+                            RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
+                            objCharacter.ComplexForms.Remove(objComplexForm);
                         }
                         break;
                     case Improvement.ImprovementType.MartialArt:
