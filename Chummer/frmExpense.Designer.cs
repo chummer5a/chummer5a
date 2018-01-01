@@ -182,7 +182,7 @@ namespace Chummer
             this.chkKarmaNuyenExchange.Name = "chkKarmaNuyenExchange";
             this.chkKarmaNuyenExchange.Size = new System.Drawing.Size(161, 17);
             this.chkKarmaNuyenExchange.TabIndex = 11;
-            this.chkKarmaNuyenExchange.Tag = "";
+            this.chkKarmaNuyenExchange.Tag = "String_WorkingForTheManPeople";
             this.chkKarmaNuyenExchange.Text = "Working for the Man/People";
             this.chkKarmaNuyenExchange.UseVisualStyleBackColor = true;
             this.chkKarmaNuyenExchange.CheckedChanged += new System.EventHandler(this.chkKarmaNuyenExchange_CheckedChanged);

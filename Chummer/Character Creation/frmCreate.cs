@@ -15471,7 +15471,7 @@ namespace Chummer
                     strQualities = strQualities.Substring(0, strQualities.Length - 2);
                 }
 
-                lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
+                lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                 lblLifestyleQualities.Text += strQualities;
 
                 nudLifestyleMonths.Enabled = true;
@@ -18149,7 +18149,7 @@ namespace Chummer
                         foreach (LifestyleQuality objXmlQuality in objXmlLifestyle.SelectNodes("lifestylequalities/lifestylequality"))
                             objLifestyle.LifestyleQualities.Add(objXmlQuality);
 
-                        objNode.Text = strName;
+                        objNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
                     }
 
                     // Add the Lifestyle to the character and Lifestyle Tree.

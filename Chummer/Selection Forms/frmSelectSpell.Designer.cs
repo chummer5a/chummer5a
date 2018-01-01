@@ -319,7 +319,7 @@ namespace Chummer
             this.chkFreeBonus.Name = "chkFreeBonus";
             this.chkFreeBonus.Size = new System.Drawing.Size(50, 17);
             this.chkFreeBonus.TabIndex = 22;
-            this.chkFreeBonus.Tag = "";
+            this.chkFreeBonus.Tag = "Checkbox_Free";
             this.chkFreeBonus.Text = "Free!";
             this.chkFreeBonus.UseVisualStyleBackColor = true;
             // 

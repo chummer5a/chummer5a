@@ -425,6 +425,7 @@ namespace Chummer
             this.tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
             this.tsCloseOpenCharacter.Size = new System.Drawing.Size(177, 22);
             this.tsCloseOpenCharacter.Text = "&Close this character";
+            this.tsCloseOpenCharacter.Tag = "Menu_Close";
             this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
             // lblSettings

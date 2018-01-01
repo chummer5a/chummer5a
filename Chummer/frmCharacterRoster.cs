@@ -250,6 +250,7 @@ namespace Chummer
                 objCache.Concept = objXmlSourceNode["concept"]?.InnerText;
                 objCache.Karma = objXmlSourceNode["totalkarma"]?.InnerText;
                 objCache.Metatype = objXmlSourceNode["metatype"]?.InnerText;
+                objCache.Metatype = objXmlSourceNode["metavariant"]?.InnerText;
                 objCache.PlayerName = objXmlSourceNode["playername"]?.InnerText;
                 objCache.CharacterName = objXmlSourceNode["name"]?.InnerText;
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
@@ -329,7 +330,6 @@ namespace Chummer
                 txtGameNotes.Text = objCache.GameNotes;
                 txtCharacterConcept.Text = objCache.Concept;
                 lblCareerKarma.Text = objCache.Karma;
-                lblMetatype.Text = objCache.Metatype;
                 lblPlayerName.Text = objCache.PlayerName;
                 lblCharacterName.Text = objCache.CharacterName;
                 lblCharacterAlias.Text = objCache.CharacterAlias;
@@ -338,6 +338,32 @@ namespace Chummer
                 lblSettings.Text = objCache.SettingsFile;
                 tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">"));
                 picMugshot.Image = objCache.Mugshot;
+
+                // Populate character information fields.
+                XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
+                XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                if (objMetatypeNode == null)
+                {
+                    objMetatypeDoc = XmlManager.Load("critters.xml");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
+                }
+
+                string strMetatype = objMetatypeNode["translate"]?.InnerText ?? objCache.Metatype;
+                string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+
+                if (!string.IsNullOrEmpty(objCache.Metavariant))
+                {
+                    objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
+
+                    strMetatype += objMetatypeNode["translate"] != null
+                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
+                        : " (" + objCache.Metavariant + ")";
+
+                    strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                }
+                lblMetatype.Text = strMetatype;
             }
             else
             {
@@ -590,6 +616,7 @@ namespace Chummer
             internal string Concept { get; set; }
             internal string Karma { get; set; }
             internal string Metatype { get; set; }
+            internal string Metavariant { get; set; }
             internal string PlayerName { get; set; }
             internal string CharacterName { get; set; }
             internal string CharacterAlias { get; set; }

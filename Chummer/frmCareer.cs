@@ -20765,7 +20765,7 @@ namespace Chummer
 
                     strQualities += string.Join(", ", objLifestyle.FreeGrids.Select(r => r.DisplayName(GlobalOptions.Language)));
 
-                    lblBaseLifestyle.Text = objLifestyle.BaseLifestyle;
+                    lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                     lblLifestyleQualities.Text += strQualities;
 
                     cmdIncreaseLifestyleMonths.Enabled = true;

@@ -2316,6 +2316,30 @@
       <text>Prototype Transhuman</text>
     </string>
     <string>
+      <key>Label_CyberlimbAGI</key>
+      <text>Agility (AGI):</text>
+    </string>
+    <string>
+      <key>Label_CyberlimbSTR</key>
+      <text>Strength (STR):</text>
+    </string>
+    <string>
+      <key>Label_Overclocker</key>
+      <text>Overclocker:</text>
+    </string>
+    <string>
+      <key>Label_Visibility</key>
+      <text>Visibility:</text>
+    </string>
+    <string>
+      <key>Label_Control</key>
+      <text>Control:</text>
+    </string>
+    <string>
+      <key>Label_Size</key>
+      <text>Size:</text>
+    </string>
+    <string>
       <key>Message_OverPrototypeLimit</key>
       <text>Bioware limit exceeded for Prototype Transhuman. Current: {0} Maximum: {1}</text>
     </string>
@@ -3615,6 +3639,10 @@
       <text>Nuyen:</text>
     </string>
     <string>
+      <key>Node_SelectedQualities</key>
+      <text>Selected Qualities</text>
+    </string>
+    <string>
       <key>Label_Contacts</key>
       <text>Contacts</text>
     </string>
@@ -4696,6 +4724,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Mugshot:</text>
     </string>
     <string>
+      <key>Checkbox_IsMainMugshot</key>
+      <text>Is Main Mugshot</text>
+    </string>
+    <string>
       <key>Checkbox_Created</key>
       <text>Mark character as Created</text>
     </string>
@@ -5232,6 +5264,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Spell Defence Tab-->
     <string>
+      <key>String_SpellDefense</key>
+      <text>Spell Defense</text>
+    </string>
+    <string>
       <key>String_SpellResistanceDice</key>
       <text>Spell Resistance Dice</text>
     </string>
@@ -5378,6 +5414,14 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region -->
     <!-- Region Individual Form- and UserControl-specific strings below this point -->
     <!-- Region Contacts/Enemies -->
+    <string>
+      <key>String_Relationships</key>
+      <text>Relationships</text>
+    </string>
+    <string>
+      <key>Button_SwapOrdering</key>
+      <text>&amp;Swap Ordering</text>
+    </string>
     <string>
       <key>Label_Contact_Connection</key>
       <text>Connection:</text>
@@ -5943,6 +5987,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_WorkingForThePeople</key>
       <text>Working for the People</text>
+    </string>
+    <string>
+      <key>String_WorkingForTheManPeople</key>
+      <text>Working for the Man/People</text>
     </string>
     <!-- End Region-->
     <!-- Region History Window -->

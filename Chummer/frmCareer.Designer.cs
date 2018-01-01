@@ -3688,6 +3688,7 @@ namespace Chummer
             this.tabDefences.Size = new System.Drawing.Size(185, 669);
             this.tabDefences.TabIndex = 4;
             this.tabDefences.Text = "Spell Defence";
+            this.tabDefences.Tag = "String_SpellDefense";
             // 
             // nudCounterspellingDice
             // 
@@ -5116,7 +5117,7 @@ namespace Chummer
             treeNode6.Tag = "Node_SelectedMartialArts";
             treeNode6.Text = "Selected Martial Arts";
             treeNode7.Name = "nodQualities";
-            treeNode7.Tag = "";
+            treeNode7.Tag = "Node_SelectedQualities";
             treeNode7.Text = "Selected Qualities";
             this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode6,
@@ -6671,7 +6672,7 @@ namespace Chummer
             this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
             this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
             this.lblCyberlimbSTRLabel.TabIndex = 218;
-            this.lblCyberlimbSTRLabel.Tag = "";
+            this.lblCyberlimbSTRLabel.Tag = "Label_CyberlimbSTR";
             this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
             this.lblCyberlimbSTRLabel.Visible = false;
             // 
@@ -6682,7 +6683,7 @@ namespace Chummer
             this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
             this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
             this.lblCyberlimbAGILabel.TabIndex = 217;
-            this.lblCyberlimbAGILabel.Tag = "";
+            this.lblCyberlimbAGILabel.Tag = "Label_CyberlimbAGI";
             this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
             this.lblCyberlimbAGILabel.Visible = false;
             // 
@@ -7767,7 +7768,7 @@ namespace Chummer
             this.lblGearOverclocker.Name = "lblGearOverclocker";
             this.lblGearOverclocker.Size = new System.Drawing.Size(75, 13);
             this.lblGearOverclocker.TabIndex = 204;
-            this.lblGearOverclocker.Tag = "";
+            this.lblGearOverclocker.Tag = "Label_Overclocker";
             this.lblGearOverclocker.Text = "Overclocker:";
             // 
             // tabGearMatrixCM
@@ -12202,6 +12203,7 @@ namespace Chummer
             this.chkIsMainMugshot.Size = new System.Drawing.Size(104, 17);
             this.chkIsMainMugshot.TabIndex = 97;
             this.chkIsMainMugshot.Text = "Is Main Mugshot";
+            this.chkIsMainMugshot.Tag = "Checkbox_IsMainMugshot";
             this.chkIsMainMugshot.UseVisualStyleBackColor = true;
             this.chkIsMainMugshot.CheckedChanged += new System.EventHandler(this.chkIsMainMugshot_CheckedChanged);
             // 
@@ -13112,6 +13114,7 @@ namespace Chummer
             this.tabRelationships.Size = new System.Drawing.Size(861, 669);
             this.tabRelationships.TabIndex = 20;
             this.tabRelationships.Text = "Relationships";
+            this.tabRelationships.Tag = "String_Relationships";
             this.tabRelationships.UseVisualStyleBackColor = true;
             // 
             // tabPeople
@@ -13143,6 +13146,7 @@ namespace Chummer
             this.tabContacts.Size = new System.Drawing.Size(847, 637);
             this.tabContacts.TabIndex = 0;
             this.tabContacts.Text = "Contacts";
+            this.tabContacts.Tag = "Label_Contacts";
             // 
             // cmdSwapContactOrder
             // 
@@ -13151,7 +13155,7 @@ namespace Chummer
             this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
             this.cmdSwapContactOrder.Size = new System.Drawing.Size(87, 23);
             this.cmdSwapContactOrder.TabIndex = 51;
-            this.cmdSwapContactOrder.Tag = "";
+            this.cmdSwapContactOrder.Tag = "Button_SwapOrdering";
             this.cmdSwapContactOrder.Text = "&Swap Ordering";
             this.cmdSwapContactOrder.UseVisualStyleBackColor = true;
             this.cmdSwapContactOrder.Click += new System.EventHandler(this.cmdSwapContactOrder_Click);
@@ -13163,7 +13167,7 @@ namespace Chummer
             this.cmdContactsExpansionToggle.Name = "cmdContactsExpansionToggle";
             this.cmdContactsExpansionToggle.Size = new System.Drawing.Size(112, 23);
             this.cmdContactsExpansionToggle.TabIndex = 50;
-            this.cmdContactsExpansionToggle.Tag = "";
+            this.cmdContactsExpansionToggle.Tag = "Button_ContactsExpansionToggle";
             this.cmdContactsExpansionToggle.Text = "&Expand/Collapse All";
             this.cmdContactsExpansionToggle.UseVisualStyleBackColor = true;
             this.cmdContactsExpansionToggle.Click += new System.EventHandler(this.cmdContactsExpansionToggle_Click);
@@ -13239,6 +13243,7 @@ namespace Chummer
             this.tabEnemies.Size = new System.Drawing.Size(847, 637);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Text = "Enemies";
+            this.tabEnemies.Tag = "Label_Enemies";
             // 
             // label10
             // 

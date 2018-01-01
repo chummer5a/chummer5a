@@ -479,6 +479,7 @@ namespace Chummer
             this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
             this.chkPrimaryTenant.TabIndex = 74;
             this.chkPrimaryTenant.Text = "Primary Tenant";
+            this.chkPrimaryTenant.Tag = "Label_SelectAdvancedLifestyle_Tenant";
             this.chkPrimaryTenant.UseVisualStyleBackColor = true;
             this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.chkPrimaryTenant_CheckedChanged);
             // 
