@@ -564,6 +564,7 @@ namespace Translator
             (x, y) => ProcessBioware(x, y),
             (x, y) => ProcessBooks(x, y),
             (x, y) => ProcessComplexForms(x, y),
+            (x, y) => ProcessContacts(x, y),
             (x, y) => ProcessCritterPowers(x, y),
             (x, y) => ProcessCritters(x, y),
             (x, y) => ProcessCyberware(x, y),
@@ -1371,6 +1372,294 @@ namespace Translator
                         xmlComplexFormNodesParent.RemoveChild(xmlComplexFormNode);
                     }
 #endif
+                }
+            }
+        }
+
+        private static void ProcessContacts(XmlDocument objDataDoc, BackgroundWorker objWorker)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(PATH, "data", "contacts.xml"));
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+            XmlNode xmlRootContactFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"contacts.xml\"]");
+            if (xmlRootContactFileNode == null)
+            {
+                xmlRootContactFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "contacts.xml";
+                xmlRootContactFileNode.Attributes.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootContactFileNode);
+            }
+
+            // Process Contacts
+
+            XmlNode xmlContactNodesParent = xmlRootContactFileNode.SelectSingleNode("contacts");
+
+            if (xmlContactNodesParent == null)
+            {
+                xmlContactNodesParent = objDataDoc.CreateElement("contacts");
+                xmlRootContactFileNode.AppendChild(xmlContactNodesParent);
+            }
+
+            XmlNode xmlDataContactNodeList = xmlDataDocument.SelectSingleNode("/chummer/contacts");
+            if (xmlDataContactNodeList != null)
+            {
+                foreach (XmlNode xmlDataContactNode in xmlDataContactNodeList.SelectNodes("contact"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlContactNodesParent.SelectSingleNode("contact[text()=\"" + xmlDataContactNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlContactNode = objDataDoc.CreateElement("contact");
+                        xmlContactNode.InnerText = xmlDataContactNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataContactNode.InnerText;
+                        xmlContactNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlContactNodesParent.AppendChild(xmlContactNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlContactNode in xmlContactNodesParent.SelectNodes("contact"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataContactNodeList?.SelectSingleNode("contact[text() = \"" + xmlContactNode.InnerText + "\"]") == null)
+                {
+                    xmlContactNodesParent.RemoveChild(xmlContactNode);
+                }
+            }
+
+            // Process Sexes
+
+            XmlNode xmlSexNodesParent = xmlRootContactFileNode.SelectSingleNode("sexes");
+
+            if (xmlSexNodesParent == null)
+            {
+                xmlSexNodesParent = objDataDoc.CreateElement("sexes");
+                xmlRootContactFileNode.AppendChild(xmlSexNodesParent);
+            }
+
+            XmlNode xmlDataSexNodeList = xmlDataDocument.SelectSingleNode("/chummer/sexes");
+            if (xmlDataSexNodeList != null)
+            {
+                foreach (XmlNode xmlDataSexNode in xmlDataSexNodeList.SelectNodes("sex"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlSexNodesParent.SelectSingleNode("sex[text()=\"" + xmlDataSexNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlSexNode = objDataDoc.CreateElement("sex");
+                        xmlSexNode.InnerText = xmlDataSexNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataSexNode.InnerText;
+                        xmlSexNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlSexNodesParent.AppendChild(xmlSexNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlSexNode in xmlSexNodesParent.SelectNodes("sex"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataSexNodeList?.SelectSingleNode("sex[text() = \"" + xmlSexNode.InnerText + "\"]") == null)
+                {
+                    xmlSexNodesParent.RemoveChild(xmlSexNode);
+                }
+            }
+
+            // Process Ages
+
+            XmlNode xmlAgeNodesParent = xmlRootContactFileNode.SelectSingleNode("ages");
+
+            if (xmlAgeNodesParent == null)
+            {
+                xmlAgeNodesParent = objDataDoc.CreateElement("ages");
+                xmlRootContactFileNode.AppendChild(xmlAgeNodesParent);
+            }
+
+            XmlNode xmlDataAgeNodeList = xmlDataDocument.SelectSingleNode("/chummer/ages");
+            if (xmlDataAgeNodeList != null)
+            {
+                foreach (XmlNode xmlDataAgeNode in xmlDataAgeNodeList.SelectNodes("age"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlAgeNodesParent.SelectSingleNode("age[text()=\"" + xmlDataAgeNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlAgeNode = objDataDoc.CreateElement("age");
+                        xmlAgeNode.InnerText = xmlDataAgeNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataAgeNode.InnerText;
+                        xmlAgeNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlAgeNodesParent.AppendChild(xmlAgeNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlAgeNode in xmlAgeNodesParent.SelectNodes("age"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataAgeNodeList?.SelectSingleNode("age[text() = \"" + xmlAgeNode.InnerText + "\"]") == null)
+                {
+                    xmlAgeNodesParent.RemoveChild(xmlAgeNode);
+                }
+            }
+
+            // Process Personal Lives
+
+            XmlNode xmlPersonalLifeNodesParent = xmlRootContactFileNode.SelectSingleNode("personallives");
+
+            if (xmlPersonalLifeNodesParent == null)
+            {
+                xmlPersonalLifeNodesParent = objDataDoc.CreateElement("personallives");
+                xmlRootContactFileNode.AppendChild(xmlPersonalLifeNodesParent);
+            }
+
+            XmlNode xmlDataPersonalLifeNodeList = xmlDataDocument.SelectSingleNode("/chummer/personallives");
+            if (xmlDataPersonalLifeNodeList != null)
+            {
+                foreach (XmlNode xmlDataPersonalLifeNode in xmlDataPersonalLifeNodeList.SelectNodes("personallife"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlPersonalLifeNodesParent.SelectSingleNode("personallife[text()=\"" + xmlDataPersonalLifeNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlPersonalLifeNode = objDataDoc.CreateElement("personallife");
+                        xmlPersonalLifeNode.InnerText = xmlDataPersonalLifeNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataPersonalLifeNode.InnerText;
+                        xmlPersonalLifeNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlPersonalLifeNodesParent.AppendChild(xmlPersonalLifeNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlPersonalLifeNode in xmlPersonalLifeNodesParent.SelectNodes("personallife"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataPersonalLifeNodeList?.SelectSingleNode("personallife[text() = \"" + xmlPersonalLifeNode.InnerText + "\"]") == null)
+                {
+                    xmlPersonalLifeNodesParent.RemoveChild(xmlPersonalLifeNode);
+                }
+            }
+
+            // Process Types
+
+            XmlNode xmlTypeNodesParent = xmlRootContactFileNode.SelectSingleNode("types");
+
+            if (xmlTypeNodesParent == null)
+            {
+                xmlTypeNodesParent = objDataDoc.CreateElement("types");
+                xmlRootContactFileNode.AppendChild(xmlTypeNodesParent);
+            }
+
+            XmlNode xmlDataTypeNodeList = xmlDataDocument.SelectSingleNode("/chummer/types");
+            if (xmlDataTypeNodeList != null)
+            {
+                foreach (XmlNode xmlDataTypeNode in xmlDataTypeNodeList.SelectNodes("type"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlTypeNodesParent.SelectSingleNode("type[text()=\"" + xmlDataTypeNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlTypeNode = objDataDoc.CreateElement("type");
+                        xmlTypeNode.InnerText = xmlDataTypeNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataTypeNode.InnerText;
+                        xmlTypeNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlTypeNodesParent.AppendChild(xmlTypeNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlTypeNode in xmlTypeNodesParent.SelectNodes("type"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataTypeNodeList?.SelectSingleNode("type[text() = \"" + xmlTypeNode.InnerText + "\"]") == null)
+                {
+                    xmlTypeNodesParent.RemoveChild(xmlTypeNode);
+                }
+            }
+
+            // Process PreferredPayments
+
+            XmlNode xmlPreferredPaymentNodesParent = xmlRootContactFileNode.SelectSingleNode("preferredpayments");
+
+            if (xmlPreferredPaymentNodesParent == null)
+            {
+                xmlPreferredPaymentNodesParent = objDataDoc.CreateElement("preferredpayments");
+                xmlRootContactFileNode.AppendChild(xmlPreferredPaymentNodesParent);
+            }
+
+            XmlNode xmlDataPreferredPaymentNodeList = xmlDataDocument.SelectSingleNode("/chummer/preferredpayments");
+            if (xmlDataPreferredPaymentNodeList != null)
+            {
+                foreach (XmlNode xmlDataPreferredPaymentNode in xmlDataPreferredPaymentNodeList.SelectNodes("preferredpayment"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlPreferredPaymentNodesParent.SelectSingleNode("preferredpayment[text()=\"" + xmlDataPreferredPaymentNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlPreferredPaymentNode = objDataDoc.CreateElement("preferredpayment");
+                        xmlPreferredPaymentNode.InnerText = xmlDataPreferredPaymentNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataPreferredPaymentNode.InnerText;
+                        xmlPreferredPaymentNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlPreferredPaymentNodesParent.AppendChild(xmlPreferredPaymentNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlPreferredPaymentNode in xmlPreferredPaymentNodesParent.SelectNodes("preferredpayment"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataPreferredPaymentNodeList?.SelectSingleNode("preferredpayment[text() = \"" + xmlPreferredPaymentNode.InnerText + "\"]") == null)
+                {
+                    xmlPreferredPaymentNodesParent.RemoveChild(xmlPreferredPaymentNode);
+                }
+            }
+
+            // Process Hobbies/Vices
+
+            XmlNode xmlHobbyViceNodesParent = xmlRootContactFileNode.SelectSingleNode("hobbiesvices");
+
+            if (xmlHobbyViceNodesParent == null)
+            {
+                xmlHobbyViceNodesParent = objDataDoc.CreateElement("hobbiesvices");
+                xmlRootContactFileNode.AppendChild(xmlHobbyViceNodesParent);
+            }
+
+            XmlNode xmlDataHobbyViceNodeList = xmlDataDocument.SelectSingleNode("/chummer/hobbiesvices");
+            if (xmlDataHobbyViceNodeList != null)
+            {
+                foreach (XmlNode xmlDataHobbyViceNode in xmlDataHobbyViceNodeList.SelectNodes("hobbyvice"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    if (xmlHobbyViceNodesParent.SelectSingleNode("hobbyvice[text()=\"" + xmlDataHobbyViceNode.InnerText + "\"]") == null)
+                    {
+                        XmlNode xmlHobbyViceNode = objDataDoc.CreateElement("hobbyvice");
+                        xmlHobbyViceNode.InnerText = xmlDataHobbyViceNode.InnerText;
+                        XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
+                        xmlTranslateAttribute.Value = xmlDataHobbyViceNode.InnerText;
+                        xmlHobbyViceNode.Attributes.Append(xmlTranslateAttribute);
+                        xmlHobbyViceNodesParent.AppendChild(xmlHobbyViceNode);
+                    }
+                }
+            }
+            foreach (XmlNode xmlHobbyViceNode in xmlHobbyViceNodesParent.SelectNodes("hobbyvice"))
+            {
+                if (objWorker.CancellationPending)
+                    return;
+                if (xmlDataHobbyViceNodeList?.SelectSingleNode("hobbyvice[text() = \"" + xmlHobbyViceNode.InnerText + "\"]") == null)
+                {
+                    xmlHobbyViceNodesParent.RemoveChild(xmlHobbyViceNode);
                 }
             }
         }
