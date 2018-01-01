@@ -3494,7 +3494,7 @@ namespace Chummer
             this.nudMysticAdeptMAGMagician.Size = new System.Drawing.Size(40, 20);
             this.nudMysticAdeptMAGMagician.TabIndex = 60;
             this.nudMysticAdeptMAGMagician.Visible = false;
-            this.nudMysticAdeptMAGMagician.ValueChanged += new System.EventHandler(this.nudMysticAdeptMAGMagician_ValueChanged);
+            this.nudMysticAdeptMAGMagician.ValueChanged += new System.EventHandler(this.MakeDirtyWithCharacterUpdate);
             // 
             // lblMysticAdeptAssignment
             // 

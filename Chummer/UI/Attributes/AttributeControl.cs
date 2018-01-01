@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,21 +94,19 @@ namespace Chummer.UI.Attributes
 		}
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            if (ParentForm is frmCareer parent)
+            int upgradeKarmaCost = attribute.UpgradeKarmaCost();
+
+            if (upgradeKarmaCost == -1) return; //TODO: more descriptive
+            if (upgradeKarmaCost > _objCharacter.Karma)
             {
-                int upgradeKarmaCost = attribute.UpgradeKarmaCost();
-
-                if (upgradeKarmaCost == -1) return; //TODO: more descriptive
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
-                if (upgradeKarmaCost > _objCharacter.Karma)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-
-                if (!parent.ConfirmKarmaExpense(confirmstring))
-                    return;
+                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughKarma", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughKarma", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
+            if (!attribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
+                return;
+
             attribute.Upgrade();
 	        ValueChanged?.Invoke(this, e);
         }

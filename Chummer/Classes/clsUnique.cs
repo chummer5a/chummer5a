@@ -33,6 +33,18 @@ using System.ComponentModel;
 
 namespace Chummer
 {
+    public class TextEventArgs : EventArgs
+    {
+        private readonly string _strText;
+
+        public TextEventArgs(string strText)
+        {
+            _strText = strText;
+        }
+
+        public string Text => _strText;
+    }
+
     /// <summary>
     /// Type of Quality.
     /// </summary>
@@ -1034,6 +1046,7 @@ namespace Chummer
             objWriter.WriteElementString("services", _intServicesOwed.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("force", _intForce.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("bound", _blnBound.ToString());
+            objWriter.WriteElementString("fettered", _blnFettered.ToString());
             objWriter.WriteElementString("type", _objEntityType.ToString());
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
@@ -1062,6 +1075,7 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
             objNode.TryGetInt32FieldQuickly("force", ref _intForce);
             objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
+            objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
             if (objNode["type"] != null)
                 EntityType = ConvertToSpiritType(objNode["type"].InnerText);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
@@ -1091,6 +1105,8 @@ namespace Chummer
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);
+            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("services", ServicesOwed.ToString(objCulture));
             objWriter.WriteElementString("force", Force.ToString(objCulture));
 
@@ -1259,7 +1275,25 @@ namespace Chummer
         public int ServicesOwed
         {
             get => _intServicesOwed;
-            set => _intServicesOwed = value;
+            set
+            {
+                if (_intServicesOwed != value)
+                {
+                    _intServicesOwed = value;
+                    if (!CharacterObject.Created)
+                    {
+                        // Retrieve the character's Summoning Skill Rating.
+                        int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill(EntityType == SpiritType.Spirit ? "Summoning" : "Compiling")?.Rating ?? 0;
+
+                        if (_intServicesOwed > intSkillValue && !CharacterObject.IgnoreRules)
+                        {
+                            MessageBox.Show(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices", GlobalOptions.Language),
+                                LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            _intServicesOwed = intSkillValue;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1337,7 +1371,53 @@ namespace Chummer
             set => _strNotes = value;
         }
 
-        public bool Fettered { get; internal set; }
+        private bool _blnFettered = false;
+        public bool Fettered
+        {
+            get => _blnFettered;
+            set
+            {
+                if (_blnFettered != value)
+                {
+                    if (value)
+                    {
+                        //Only one Fettered spirit is permitted. 
+                        if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                        {
+                            return;
+                        }
+                        if (CharacterObject.Created)
+                        {
+                            int FetteringCost = Force * 3;
+                            if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language)
+                                        .Replace("{0}", Name)
+                                        .Replace("{1}", FetteringCost.ToString())))
+                            {
+                                return;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(FetteringCost * -1,
+                                LanguageManager.GetString("String_ExpenseFetteredSpirit", GlobalOptions.Language) + " " + Name,
+                                ExpenseType.Karma, DateTime.Now);
+                            CharacterObject.ExpenseEntries.Add(objExpense);
+                            CharacterObject.Karma -= FetteringCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                        ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                    }
+                    else
+                    {
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
+                    }
+                    _blnFettered = value;
+                }
+            }
+        }
 
         public string InternalId
         {

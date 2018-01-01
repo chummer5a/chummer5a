@@ -26,10 +26,11 @@ namespace Chummer
     public partial class PetControl : UserControl
     {
         private readonly Contact _objContact;
+        private bool _blnLoading = true;
 
         // Events.
-        public Action<object> DeleteContact { get; set; }
-        public Action<object> FileNameChanged { get; set; }
+        public EventHandler ContactDetailChanged { get; set; }
+        public EventHandler DeleteContact { get; set; }
 
         #region Control Events
         public PetControl(Contact objContact)
@@ -47,21 +48,23 @@ namespace Chummer
         private void PetControl_Load(object sender, EventArgs e)
         {
             Width = cmdDelete.Left + cmdDelete.Width;
-            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
-                DataSourceUpdateMode.OnPropertyChanged);
+
+            DoDataBindings();
+
+            _blnLoading = false;
+        }
+
+        private void txtContactName_TextChanged(object sender, EventArgs e)
+        {
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact(this);
+            DeleteContact?.Invoke(this, e);
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -146,7 +149,7 @@ namespace Chummer
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objContact.RelativeFileName = "../" + uriRelative.ToString();
 
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 Cursor = Cursors.Default;
             }
         }
@@ -160,7 +163,7 @@ namespace Chummer
                 _objContact.RelativeFileName = string.Empty;
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
                 lblMetatype.Text = string.Empty;
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
@@ -189,12 +192,24 @@ namespace Chummer
             lblMetatypeLabel.Left = txtContactName.Left + txtContactName.Width + 16;
             lblMetatype.Left = lblMetatypeLabel.Left + lblMetatypeLabel.Width + 6;
         }
+
+        private void DoDataBindings()
+        {
+            lblMetatype.DataBindings.Add("Text", _objContact, nameof(_objContact.DisplayMetatype), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Text", _objContact, nameof(_objContact.Name), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            txtContactName.DataBindings.Add("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            this.DataBindings.Add("BackColor", _objContact, nameof(_objContact.Colour), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+        }
         #endregion
 
-        #region Properties
-        /// <summary>
-        /// Contact object this is linked to.
-        /// </summary>
+            #region Properties
+            /// <summary>
+            /// Contact object this is linked to.
+            /// </summary>
         public Contact ContactObject
         {
             get

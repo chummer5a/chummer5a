@@ -519,13 +519,9 @@ namespace Chummer
                         Parent = tabForms
                     };
 
-                    if (ActiveMdiChild.GetType() == typeof(frmCareer))
+                    if (ActiveMdiChild is CharacterShared frmCharacterShared)
                     {
-                        tp.Text = ((frmCareer)ActiveMdiChild).CharacterObject.CharacterName;
-                    }
-                    else if (ActiveMdiChild.GetType() == typeof(frmCreate))
-                    {
-                        tp.Text = ((frmCreate)ActiveMdiChild).CharacterObject.CharacterName;
+                        tp.Text = frmCharacterShared.CharacterObject.CharacterName;
                     }
                     else if (ActiveMdiChild.GetType() == typeof(frmCharacterRoster))
                     {
@@ -892,8 +888,7 @@ namespace Chummer
                     frmCreate frmCharacter = new frmCreate(objCharacter)
                     {
                         MdiParent = this,
-                        WindowState = FormWindowState.Maximized,
-                        Loading = true
+                        WindowState = FormWindowState.Maximized
                     };
                     frmCharacter.Show();
                 }
@@ -902,8 +897,7 @@ namespace Chummer
                     frmCareer frmCharacter = new frmCareer(objCharacter)
                     {
                         MdiParent = this,
-                        WindowState = FormWindowState.Maximized,
-                        Loading = true
+                        WindowState = FormWindowState.Maximized
                     };
                     frmCharacter.DiceRollerOpened += objCareer_DiceRollerOpened;
                     frmCharacter.DiceRollerOpenedInt += objCareer_DiceRollerOpenedInt;

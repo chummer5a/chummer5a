@@ -28,20 +28,13 @@ namespace Chummer
     public partial class ContactControl : UserControl
     {
         private readonly Contact _objContact;
-        private readonly bool _blnEnemy = false;
-        private bool _loading = true;
+        private bool _blnLoading = true;
         private readonly int _intLowHeight = 25;
         private readonly int _intFullHeight = 156;
 
         // Events.
-        public Action<object> ConnectionRatingChanged { get; set; }
-        public Action<object> GroupStatusChanged { get; set; }
-        public Action<object> LoyaltyRatingChanged { get; set; }
-        public Action<object> FreeRatingChanged { get; set; }
-        public Action<object> DeleteContact { get; set; }
-        public Action<object> FileNameChanged { get; set; }
-        public Action<object> BlackmailChanged { get; set; }
-        public Action<object> FamilyChanged { get; set; }
+        public EventHandler ContactDetailChanged { get; set; }
+        public EventHandler DeleteContact { get; set; }
 
         #region Control Events
         public ContactControl(Contact objContact)
@@ -99,35 +92,35 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
 
-            _loading = false;
+            _blnLoading = false;
         }
 
         private void nudConnection_ValueChanged(object sender, EventArgs e)
         {
-            // Raise the ConnectionGroupRatingChanged Event when the NumericUpDown's Value changes.
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Connection"));
         }
 
         private void nudLoyalty_ValueChanged(object sender, EventArgs e)
         {
-            // Raise the LoyaltyRatingChanged Event when the NumericUpDown's Value changes.
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            if (!_loading)
-                LoyaltyRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Loyalty"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
         {
             // Raise the DeleteContact Event when the user has confirmed their desire to delete the Contact.
             // The entire ContactControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteContact(this);
+            DeleteContact?.Invoke(this, e);
         }
 
         private void chkGroup_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                GroupStatusChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
         
@@ -138,62 +131,62 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cboSex_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Sex"));
         }
 
         private void cboAge_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
         private void cboPersonalLife_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
         }
 
         private void cboType_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
         private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
         private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                ConnectionRatingChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -280,7 +273,7 @@ namespace Chummer
             Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
             _objContact.RelativeFileName = "../" + uriRelative;
 
-            FileNameChanged(this);
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
         }
 
         private void tsRemoveCharacter_Click(object sender, EventArgs e)
@@ -294,7 +287,7 @@ namespace Chummer
                     _objContact.EntityType == ContactType.Enemy
                         ? LanguageManager.GetString("Tip_Enemy_LinkFile", GlobalOptions.Language)
                         : LanguageManager.GetString("Tip_Contact_LinkFile", GlobalOptions.Language));
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
@@ -317,20 +310,20 @@ namespace Chummer
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                FreeRatingChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Free"));
         }
 
         private void chkBlackmail_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                BlackmailChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Blackmail"));
         }
 
         private void chkFamily_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_loading)
-                FamilyChanged?.Invoke(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
         #endregion
 
@@ -368,7 +361,7 @@ namespace Chummer
         #region Methods
         private void LoadContactList()
         {
-            if (_blnEnemy)
+            if (_objContact.EntityType == ContactType.Enemy)
             {
                 string strContactRole = _objContact.DisplayRole;
                 if (!string.IsNullOrEmpty(strContactRole))

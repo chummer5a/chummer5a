@@ -30,14 +30,11 @@ namespace Chummer
     public partial class SpiritControl : UserControl
     {
         private readonly Spirit _objSpirit;
+        private bool _blnLoading = true;
 
         // Events.
-        public Action<object> ServicesOwedChanged { get; set; }
-        public Action<object> ForceChanged { get; set; }
-        public Action<object> BoundChanged { get; set; }
-        public Action<object> FetteredChanged { get; set; }
-        public Action<object> DeleteSpirit { get; set; }
-        public Action<object> FileNameChanged { get; set; }
+        public EventHandler ContactDetailChanged { get; set; }
+        public EventHandler DeleteSpirit { get; set; }
 
         #region Control Events
         public SpiritControl(Spirit objSpirit)
@@ -49,59 +46,6 @@ namespace Chummer
             {
                 LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
             }
-        }
-
-        private void nudServices_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the ServicesOwedChanged Event when the NumericUpDown's Value changes.
-            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.ServicesOwed = decimal.ToInt32(nudServices.Value);
-            ServicesOwedChanged(this);
-        }
-
-        private void cmdDelete_Click(object sender, EventArgs e)
-        {
-            // Raise the DeleteSpirit Event when the user has confirmed their desire to delete the Spirit.
-            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            DeleteSpirit(this);
-        }
-
-        private void nudForce_ValueChanged(object sender, EventArgs e)
-        {
-            // Raise the ForceChanged Event when the NumericUpDown's Value changes.
-            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.Force = decimal.ToInt32(nudForce.Value);
-            ForceChanged(this);
-        }
-
-        private void chkBound_CheckedChanged(object sender, EventArgs e)
-        {
-            // Raise the BoundChanged Event when the Checkbox's Checked status changes.
-            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            _objSpirit.Bound = chkBound.Checked;
-            BoundChanged(this);
-        }
-        private void chkFettered_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkFettered.Checked)
-            {
-                //Only one Fettered spirit is permitted. 
-                if (_objSpirit.CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
-                {
-                    chkFettered.Checked = false;
-                    return;
-                }
-                ImprovementManager.CreateImprovement(_objSpirit.CharacterObject, "MAG", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
-            }
-            else
-            {
-                ImprovementManager.RemoveImprovements(_objSpirit.CharacterObject, Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
-            }
-            _objSpirit.Fettered = chkFettered.Checked;
-
-            // Raise the FetteredChanged Event when the Checkbox's Checked status changes.
-            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
-            FetteredChanged(this);
         }
 
         private void SpiritControl_Load(object sender, EventArgs e)
@@ -161,18 +105,59 @@ namespace Chummer
                     strTooltip += "\n\n" + _objSpirit.Notes;
                 tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
             }
+
+            _blnLoading = false;
+        }
+
+        private void chkFettered_CheckedChanged(object sender, EventArgs e)
+        {
+            // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
+        }
+
+        private void nudServices_ValueChanged(object sender, EventArgs e)
+        {
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
+        }
+
+        private void cmdDelete_Click(object sender, EventArgs e)
+        {
+            // Raise the DeleteSpirit Event when the user has confirmed their desire to delete the Spirit.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            DeleteSpirit?.Invoke(this, e);
+        }
+
+        private void nudForce_ValueChanged(object sender, EventArgs e)
+        {
+            // Raise the ContactDetailChanged Event when the NumericUpDown's Value changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
+        }
+
+        private void chkBound_CheckedChanged(object sender, EventArgs e)
+        {
+            // Raise the ContactDetailChanged Event when the Checkbox's Checked status changes.
+            // The entire SpiritControl is passed as an argument so the handling event can evaluate its contents.
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
         }
 
         private void cboSpiritName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSpiritName.SelectedValue != null)
-                _objSpirit.Name = cboSpiritName.SelectedValue.ToString();
-            ForceChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
         }
 
         private void txtCritterName_TextChanged(object sender, EventArgs e)
         {
-            ForceChanged(this);
+            if (!_blnLoading)
+                ContactDetailChanged?.Invoke(this, e);
         }
 
         private void tsContactOpen_Click(object sender, EventArgs e)
@@ -233,7 +218,7 @@ namespace Chummer
                 Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
                 _objSpirit.RelativeFileName = "../" + uriRelative.ToString();
 
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, e);
             }
         }
 
@@ -256,7 +241,7 @@ namespace Chummer
                     tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
                 else
                     tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile", GlobalOptions.Language));
-                FileNameChanged(this);
+                ContactDetailChanged?.Invoke(this, e);
             }
         }
 
@@ -435,6 +420,18 @@ namespace Chummer
         /// <param name="intForce">Critter's Force.</param>
         private void CreateCritter(string strCritterName, int intForce)
         {
+            // Code from frmMetatype.
+            XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
+
+            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
+
+            // If the Critter could not be found, show an error and get out of here.
+            if (objXmlMetatype == null)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language).Replace("{0}", strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // The Critter should use the same settings file as the character.
             Character objCharacter = new Character
             {
@@ -471,18 +468,6 @@ namespace Chummer
             }
 
             Cursor = Cursors.WaitCursor;
-
-            // Code from frmMetatype.
-            XmlDocument objXmlDocument = XmlManager.Load("critters.xml");
-
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strCritterName + "\"]");
-
-            // If the Critter could not be found, show an error and get out of here.
-            if (objXmlMetatype == null)
-            {
-                MessageBox.Show(LanguageManager.GetString("Message_UnknownCritterType", GlobalOptions.Language).Replace("{0}", strCritterName), LanguageManager.GetString("MessageTitle_SelectCritterType", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
 
             // Set Metatype information.
             if (strCritterName == "Ally Spirit")
@@ -696,8 +681,8 @@ namespace Chummer
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Spirit_OpenFile", GlobalOptions.Language));
             else
                 tipTooltip.SetToolTip(imgLink, LanguageManager.GetString("Tip_Sprite_OpenFile", GlobalOptions.Language));
-            FileNameChanged(this);
-            
+            ContactDetailChanged?.Invoke(this, null);
+
             Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
             Cursor = Cursors.Default;
             Program.MainForm.OpenCharacter(objOpenCharacter);

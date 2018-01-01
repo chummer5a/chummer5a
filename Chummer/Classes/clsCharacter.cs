@@ -3581,6 +3581,18 @@ namespace Chummer
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
+        /// <summary>
+        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
+        /// </summary>
+        public bool ConfirmKarmaExpense(string strMessage)
+        {
+            if (Options.ConfirmKarmaExpense &&
+                MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return false;
+            else
+                return true;
+        }
+
         #region Tab clearing
         /// <summary>
         /// Clear all Spell tab elements from the character.
@@ -8976,7 +8988,6 @@ namespace Chummer
         {
             get { return AdeptEnabled && MagicianEnabled; }
         }
-
 
         /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled

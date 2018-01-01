@@ -112,17 +112,9 @@ namespace Chummer
             PowerObject.Deleting = true;
             ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
             PowerObject.CharacterObject.Powers.Remove(PowerObject);
-            
-            if (_objPower.CharacterObject.Created)
-            {
-                frmCareer parent = frmParent as frmCareer;
-                parent.ScheduleCharacterUpdate();
-            }
-            else
-            {
-                frmCreate parent = frmParent as frmCreate;
-                parent.ScheduleCharacterUpdate();
-            }
+
+            if (frmParent is CharacterShared objParent)
+                objParent.IsCharacterUpdateRequested = true;
         }
 
         private void imgNotes_Click(object sender, EventArgs e)

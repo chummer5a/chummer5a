@@ -613,9 +613,20 @@ namespace Chummer
             }
         }
 
-        public void ScheduleCharacterUpdate()
+        public void MakeDirtyWithCharacterUpdate()
         {
-            _blnRequestCharacterUpdate = true;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender)
+        {
+            MakeDirtyWithCharacterUpdate();
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
+        {
+            MakeDirtyWithCharacterUpdate();
         }
 
         public bool IsCharacterUpdateRequested

@@ -86,6 +86,7 @@ Application Changes:
 - Added support to the Amend system to be able to use operations other than the default ones. The four currently supported operations are "recurse" (perform amending recursively on children), "replace" (completely replace the target node's InnerXml), "append" (add to the target node's InnerXml), and "remove" (remove the target node). If no operation is specified, "recurse" is the default if the target node(s) have children and "replace" is the default if they do not. The 'remove="yes"' system for marking nodes for removal has been replaced by 'amendoperation="remove"'.
 - Fixed a bug where strings related to contacts were not properly translated.
 - Fixed a bug where certain changes to maximum MAG and/or maximum RES would not properly change the maximum Force/Level values for spirits and sprites tied to the character.
+- Fixed a bug where canceling out of the karma spending prompt to fetter a spirit would still cause the spirit to be fettered.
 
 Data Changes:
 
