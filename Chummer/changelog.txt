@@ -93,6 +93,7 @@ Application Changes:
 - Updated the livingpersona improvement so that it uses SR5e values instead of SR4e ones. Fixes #2239.
 - Added improvements for adding complex forms through bonus nodes via selectcomplexform and addcomplexform, which function almost identically to their spell counterparts. Fixes #2242.
 - Added a checkbox to disable or enable the filter for banned grades of 'ware in create mode. When selecting the cyberware, you will not be permitted to add the item if the grade is in the banned list.
+- Altered requirements checker to test for submersion grade and echo limitations.
 
 Data Changes:
 

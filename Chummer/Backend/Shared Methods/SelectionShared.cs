@@ -150,6 +150,7 @@ namespace Chummer.Backend
                                 objListToCheck = objCharacter.Qualities.Where(objQuality => objQuality.SourceName == strSourceName);
                                 break;
                             }
+                        case "echo":
                         case "metamagic":
                             {
                                 objListToCheck = objCharacter.Metamagics;
@@ -797,6 +798,10 @@ namespace Chummer.Backend
                     name = "\n\t" + LanguageManager.GetString("String_StreetCred", GlobalOptions.Language) + " >= " +
                            LanguageManager.GetString("String_Notoriety", GlobalOptions.Language);
                     return character.StreetCred >= character.Notoriety;
+                case "submersiongrade":
+                    // Character's initiate grade must be higher than or equal to the required value.
+                    name = "\n\t" + LanguageManager.GetString("String_SubmersionGrade", GlobalOptions.Language) + " >= " + strNodeInnerText;
+                    return character.SubmersionGrade >= Convert.ToInt32(strNodeInnerText);
                 case "tradition":
                     // Character needs a specific Tradition.
                     XmlDocument xmlTradition = XmlManager.Load("traditions.xml");
