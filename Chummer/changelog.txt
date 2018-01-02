@@ -94,7 +94,7 @@ Application Changes:
 - Added improvements for adding complex forms through bonus nodes via selectcomplexform and addcomplexform, which function almost identically to their spell counterparts. Fixes #2242.
 - Added a checkbox to disable or enable the filter for banned grades of 'ware in create mode. When selecting the cyberware, you will not be permitted to add the item if the grade is in the banned list.
 - Altered requirements checker to test for submersion grade and echo limitations.
-
+- Fixed a crash when attempting to create spells. 
 Data Changes:
 
 - Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).
@@ -118,6 +118,7 @@ Data Changes:
 - Fixed a bug where the incorrect message was displayed if someone exceeded their maximum amount of negative metagenetic qualities. Fixes #2225.
 - Fixed a bug where loading a character in create mode who had more priority points spent in an attribute than their attribute maximum would cause Chummer to crash. Fixes #2222.
 - Fixed incorrect page reference for Rockblood Signature Armored Shirt. Fixes #2233.
+- Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
 
 New Strings:
 

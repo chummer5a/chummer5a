@@ -25,8 +25,8 @@
     <category>Positive</category>
     <category>Negative</category>
   </categories>
-  <!--Region Shadowrun Core Positive Qualities -->
   <qualities>
+    <!--Region Shadowrun Core Positive Qualities -->
     <quality>
       <id>68cfe94a-fa7e-4129-a9b9-b5d73e3ced99</id>
       <name>Ambidextrous</name>
@@ -15810,6 +15810,138 @@
       </forbidden>
       <source>FA</source>
       <page>47</page>
+    </quality>
+    <!-- End Region -->
+    <!-- Region Focused Awakened -->
+    <quality>
+      <id>4d5e0fd2-dab3-4de0-9756-096a748bb3cc</id>
+      <name>Elementalist (Air)</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspiritcategory>
+          <spirit>Spirit of Air</spirit>
+        </limitspiritcategory>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>de428f71-12d1-4c21-98c5-1b3f86da5ba2</id>
+      <name>Elementalist (Earth)</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspiritcategory>
+          <spirit>Spirit of Earth</spirit>
+        </limitspiritcategory>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>d426f03d-6a3e-4696-a977-a49fb93be9aa</id>
+      <name>Elementalist (Fire)</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspiritcategory>
+          <spirit>Spirit of Fire</spirit>
+        </limitspiritcategory>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>c9c20750-894a-42b8-8119-0e12484698d4</id>
+      <name>Elementalist (Water)</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitspelldescriptor>Elemental</limitspelldescriptor>
+        <limitspiritcategory>
+          <spirit>Spirit of Water</spirit>
+        </limitspiritcategory>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
+    </quality>
+    <quality>
+      <id>d03a9696-2341-4894-8cf2-0537c4e74af2</id>
+      <name>Hedge Witch/Wizard</name>
+      <contributetolimit>False</contributetolimit>
+      <karma>0</karma>
+      <category>Positive</category>
+      <bonus>
+        <limitspellcategory />
+        <skillgroupdisable>Conjuring</skillgroupdisable>
+        <spellcategorydrain>
+          <val>2</val>
+        </spellcategorydrain>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Aware</quality>
+          <quality>Aspected Magician</quality>
+          <quality>Apprentice</quality>
+          <quality>Explorer</quality>
+          <quality>Magician</quality>
+          <quality>Mystic Adept</quality>
+        </oneof>
+      </required>
+      <source>FA</source>
+      <page>43</page>
     </quality>
     <!-- End Region -->
     <!-- End Region -->

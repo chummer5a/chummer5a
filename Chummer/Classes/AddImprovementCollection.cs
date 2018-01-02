@@ -4233,9 +4233,10 @@ namespace Chummer.Classes
         {
             Log.Info("spellcategorydrain");
             Log.Info("spellcategorydrain = " + bonusNode.OuterXml);
-
+            string s = bonusNode["category"]?.InnerText ?? SelectedValue;
+            if (string.IsNullOrWhiteSpace(s)) throw new AbortedException();
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(bonusNode["category"].InnerText, _objImprovementSource, SourceName,
+            CreateImprovement(s, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDrain, _strUnique, ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating));
         }
 
@@ -5029,15 +5030,63 @@ namespace Chummer.Classes
             CreateImprovement(frmPickSpellCategory.SelectedCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellCategory, _strUnique);
         }
 
+        public void limitspelldescriptor(XmlNode bonusNode)
+        {
+            Log.Info("limitspelldescriptor");
+            // Display the Select Spell window.
+            string s = string.Empty;
+            if (!string.IsNullOrWhiteSpace(bonusNode.InnerText))
+            {
+                s = bonusNode.InnerText;
+            }
+            else
+            {
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("Title_SelectSpellDescriptor", GlobalOptions.Language)
+                };
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                s = frmPickItem.SelectedItem;
+            }
+
+            if (string.IsNullOrEmpty(SelectedValue))
+                SelectedValue = s;
+            else
+                SelectedValue += ", " + s;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + s + ")";
+
+            Log.Info("_strSelectedValue = " + s);
+            Log.Info("SourceName = " + SourceName);
+
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(s, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitSpellDescriptor, _strUnique);
+        }
+
         public void limitspiritcategory(XmlNode bonusNode)
         {
             Log.Info("limitspiritcategory");
             XmlDocument spiritDoc = XmlManager.Load("traditions.xml");
             XmlNodeList xmlSpirits = spiritDoc.SelectNodes("/chummer/spirits/spirit");
-
+            XmlNodeList xmlLimitedSpirits = bonusNode.SelectNodes("spirit");
+            HashSet<string> limit = new HashSet<string>();
+            if (xmlLimitedSpirits != null)
+            {
+                foreach (XmlNode n in xmlLimitedSpirits)
+                {
+                    limit.Add(n.InnerText);
+                }
+            }
             List<ListItem> lstSpirits = new List<ListItem>();
             foreach (XmlNode xmlSpirit in xmlSpirits)
             {
+                if (limit.Any(l => xmlSpirit["name"].InnerText != l)) continue;
                 string strSpiritName = xmlSpirit["name"].InnerText;
                 lstSpirits.Add(new ListItem(strSpiritName, xmlSpirit["translate"]?.InnerText ?? strSpiritName));
             }
@@ -5055,7 +5104,7 @@ namespace Chummer.Classes
                 SelectedValue += ", " + frmSelect.SelectedItem;
             if (_blnConcatSelectedValue)
                 SourceName += " (" + frmSelect.SelectedItem + ")";
-
+            
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
 

@@ -431,7 +431,12 @@ namespace Chummer
                     if (!SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter))
                         continue;
                 }
-
+                HashSet<string> limit = new HashSet<string>();
+                foreach (Improvement improvement in _objCharacter.Improvements.Where(improvement => improvement.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor))
+                {
+                    limit.Add(improvement.ImprovedName);
+                }
+                if (limit.Count != 0 && limit.Any(l => objXmlSpell["descriptor"].InnerText.Contains(l))) continue;
                 string strDisplayName = objXmlSpell["translate"]?.InnerText ?? objXmlSpell["name"].InnerText;
                 if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {

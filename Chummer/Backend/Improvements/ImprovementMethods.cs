@@ -447,6 +447,8 @@ namespace Chummer
                     return objImprovementAdder.addskillspecializationoption;
                 case "LIMITSPELLCATEGORY":
                     return objImprovementAdder.limitspellcategory;
+                case "LIMITSPELLDESCRIPTOR":
+                    return objImprovementAdder.limitspelldescriptor;
                 case "LIMITSPIRITCATEGORY":
                     return objImprovementAdder.limitspiritcategory;
                 case "MOVEMENTREPLACE":

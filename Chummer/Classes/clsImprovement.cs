@@ -196,6 +196,7 @@ namespace Chummer
             SwapSkillSpecAttribute,
             SpellResistance,
             LimitSpellCategory,
+            LimitSpellDescriptor,
             LimitSpiritCategory,
             WalkSpeed,
             RunSpeed,
