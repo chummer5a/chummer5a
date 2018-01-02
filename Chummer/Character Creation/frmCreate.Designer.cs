@@ -5192,7 +5192,7 @@ namespace Chummer
             this.lblCyberlimbSTRLabel.Name = "lblCyberlimbSTRLabel";
             this.lblCyberlimbSTRLabel.Size = new System.Drawing.Size(81, 13);
             this.lblCyberlimbSTRLabel.TabIndex = 223;
-            this.lblCyberlimbSTRLabel.Tag = "";
+            this.lblCyberlimbSTRLabel.Tag = "Label_CyberlimbSTR";
             this.lblCyberlimbSTRLabel.Text = "Strength (STR):";
             this.lblCyberlimbSTRLabel.Visible = false;
             // 
@@ -5203,7 +5203,7 @@ namespace Chummer
             this.lblCyberlimbAGILabel.Name = "lblCyberlimbAGILabel";
             this.lblCyberlimbAGILabel.Size = new System.Drawing.Size(64, 13);
             this.lblCyberlimbAGILabel.TabIndex = 222;
-            this.lblCyberlimbAGILabel.Tag = "";
+            this.lblCyberlimbAGILabel.Tag = "Label_CyberlimbAGI";
             this.lblCyberlimbAGILabel.Text = "Agility (AGI):";
             this.lblCyberlimbAGILabel.Visible = false;
             // 

@@ -165,7 +165,7 @@ namespace Chummer
             this.lblAvailabilityLabel.Name = "lblAvailabilityLabel";
             this.lblAvailabilityLabel.Size = new System.Drawing.Size(33, 13);
             this.lblAvailabilityLabel.TabIndex = 30;
-            this.lblAvailabilityLabel.Tag = "";
+            this.lblAvailabilityLabel.Tag = "Label_Avail";
             this.lblAvailabilityLabel.Text = "Avail:";
             // 
             // lblCostLabel
@@ -185,7 +185,7 @@ namespace Chummer
             this.lblAvailability.Name = "lblAvailability";
             this.lblAvailability.Size = new System.Drawing.Size(19, 13);
             this.lblAvailability.TabIndex = 32;
-            this.lblAvailability.Tag = "Label_Avail";
+            this.lblAvailability.Tag = "";
             this.lblAvailability.Text = "+0";
             // 
             // lblCost
