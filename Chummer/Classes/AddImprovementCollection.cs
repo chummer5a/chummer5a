@@ -4108,6 +4108,16 @@ namespace Chummer.Classes
                 ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Drain Resistance.
+        public void drainvalue(XmlNode bonusNode)
+        {
+            Log.Info("drainvalue");
+            Log.Info("drainvalue = " + bonusNode.OuterXml);
+            Log.Info("Calling CreateImprovement");
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, _strUnique,
+                ValueToInt(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Fading Resistance.
         public void fadingresist(XmlNode bonusNode)
         {

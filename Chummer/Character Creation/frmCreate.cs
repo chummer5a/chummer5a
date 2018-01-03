@@ -3662,7 +3662,7 @@ namespace Chummer
 
                 Spell objSpell = new Spell(CharacterObject);
                 TreeNode objNode = new TreeNode();
-                objSpell.Create(objXmlSpell, objNode);
+                objSpell.Create(objXmlSpell, objNode, "", frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                 if (objSpell.InternalId == Guid.Empty.ToString())
                 {
                     frmPickSpell.Dispose();
