@@ -1620,13 +1620,18 @@ namespace Chummer.Backend.Equipment
             int intImprove = 0;
             if (_objCharacter != null)
             {
+                var s = _strCategory;
+                if (s == "Unarmed")
+                {
+                    s = "Unarmed Combat";
+                }
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strCategory || "Cyberware " + objImprovement.ImprovedName == _strCategory))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == s || "Cyberware " + objImprovement.ImprovedName == s))
                         intImprove += objImprovement.Value;
                     if (!string.IsNullOrEmpty(_strUseSkill))
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == _strCategory))
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == s))
                             intImprove += objImprovement.Value;
                     }
                 }

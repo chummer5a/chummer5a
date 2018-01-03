@@ -96,6 +96,7 @@ Application Changes:
 - Altered requirements checker to test for submersion grade and echo limitations.
 - Fixed a crash when attempting to create spells.
 - Fixed spells in create mode not working properly with Limited, Extended and Alchemical settings.
+- Fixed an issue with WeaponCategoryDV improvements such as Critical Strike not properly applying to Unarmed Combat-linked weapons.
 
 Data Changes:
 
