@@ -41,7 +41,7 @@ namespace Chummer
         private string _strPrintLanguage = GlobalOptions.Language;
         private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
-
+        private readonly string strName = Guid.NewGuid() + ".htm";
         #region Control Events
         public frmViewer()
         {
@@ -397,13 +397,12 @@ namespace Chummer
             {
                 // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
                 // Read in the resulting code and pass it to the browser.
-                string strName = Guid.NewGuid().ToString() + ".htm";
+                
                 StreamReader objReader = new StreamReader(objStream);
                 string strOutput = objReader.ReadToEnd();
                 File.WriteAllText(strName, strOutput);
                 string curDir = Directory.GetCurrentDirectory();
                 webBrowser1.Url = new Uri(String.Format("file:///{0}/" + strName, curDir));
-                File.Delete(strName);
             }
         }
 
@@ -416,6 +415,9 @@ namespace Chummer
                 cmdSaveHTML.Enabled = true;
                 tsSaveAsPdf.Enabled = true;
             }
+            if (GlobalOptions.PrintToFileFirst)
+                File.Delete(strName);
+
             Cursor = Cursors.Default;
         }
 
