@@ -40,7 +40,7 @@ namespace Chummer
         private decimal _decESSMultiplier = 1.0m;
         private int _intAvailModifier;
 
-        private string _strSetGrade = string.Empty;
+        private Grade _forcedGrade = null;
         private string _strSubsystems = string.Empty;
         private string _strDisallowedMounts = string.Empty;
         private string _strHasModularMounts = string.Empty;
@@ -134,10 +134,10 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades(false, true, string.Empty,chkHideBannedGrades.Checked);
+            PopulateGrades(false, true, _forcedGrade?.SourceId.ToString() ?? string.Empty, chkHideBannedGrades.Checked);
 
-            if (!string.IsNullOrEmpty(_strSetGrade))
-                cboGrade.SelectedValue = _strSetGrade;
+            if (_forcedGrade != null)
+                cboGrade.SelectedValue = _forcedGrade.SourceId;
             else if (!string.IsNullOrEmpty(s_StrSelectGrade))
                 cboGrade.SelectedValue = s_StrSelectGrade;
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
@@ -202,7 +202,7 @@ namespace Chummer
             if (_blnLockGrade)
                 strForceGrade = cboGrade.SelectedValue?.ToString();
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-            Grade objForcedGrade = string.IsNullOrEmpty(strForceGrade) ? null : _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
+            Grade objForcedGrade = _forcedGrade ?? (string.IsNullOrEmpty(strForceGrade) ? null : _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade));
             PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
             RefreshList(_strSelectedCategory);
         }
@@ -296,8 +296,8 @@ namespace Chummer
                 cboGrade.Enabled = !_blnLockGrade;
                 if (_blnLockGrade)
                 {
-                    strForceGrade = cboGrade.SelectedValue?.ToString();
-                    objForcedGrade = _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
+                    strForceGrade = _forcedGrade?.SourceId.ToString() ?? cboGrade.SelectedValue?.ToString();
+                    objForcedGrade = _forcedGrade ?? _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
                 }
             }
 
@@ -545,12 +545,9 @@ namespace Chummer
         /// <summary>
         /// Manually set the Grade of the piece of Cyberware.
         /// </summary>
-        public string SetGrade
+        public Grade SetGrade
         {
-            set
-            {
-                _strSetGrade = value;
-            }
+            set => _forcedGrade = value;
         }
 
         /// <summary>

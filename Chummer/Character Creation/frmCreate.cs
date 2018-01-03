@@ -8494,7 +8494,7 @@ namespace Chummer
                 frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent?.GetNode() ?? objMod.GetNode());
                 if (objCyberwareParent == null)
                 {
-                    frmPickCyberware.SetGrade = "Standard";
+                    //frmPickCyberware.SetGrade = "Standard";
                     frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
                     frmPickCyberware.Subsystems = objMod.Subsystems;
                     HashSet<string> setDisallowedMounts = new HashSet<string>();
@@ -8528,7 +8528,7 @@ namespace Chummer
                 }
                 else
                 {
-                    frmPickCyberware.SetGrade = objCyberwareParent.Grade.Name;
+                    frmPickCyberware.SetGrade = objCyberwareParent.Grade;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                     if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
                     {
@@ -14970,7 +14970,7 @@ namespace Chummer
 
             if (objSelectedCyberware != null)
             {
-                frmPickCyberware.SetGrade = cboCyberwareGrade.SelectedValue.ToString();
+                frmPickCyberware.SetGrade = objSelectedCyberware.Grade;
                 frmPickCyberware.LockGrade();
                 // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                 if (!objSelectedCyberware.Capacity.Contains('['))
