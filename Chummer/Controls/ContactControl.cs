@@ -455,7 +455,7 @@ namespace Chummer
                 foreach (XmlNode objXmlMetavariantNode in objXmlNode.SelectNodes("metavariants/metavariant"))
                 {
                     string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
-                    if (!lstMetatypes.Any(x => x.Name == strMetavariantName))
+                    if (lstMetatypes.All(x => x.Value != strMetavariantName))
                         lstMetatypes.Add(new ListItem(strMetavariantName, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName));
                 }
             }

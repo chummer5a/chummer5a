@@ -19684,6 +19684,12 @@ namespace Chummer
             lblMovement.Left = lblCMPhysical.Left;
             lblSwim.Left = lblCMPhysical.Left;
             lblFly.Left = lblCMPhysical.Left;
+
+            // Relationships tab
+            cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
+            cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
+            lblContactPoints_Label.Left = cmdSwapContactOrder.Right + 6;
+            lblContactPoints.Left = lblContactPoints_Label.Right + 6;
         }
 
 

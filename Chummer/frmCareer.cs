@@ -22947,6 +22947,10 @@ namespace Chummer
             lblCMPenalty.Left = lblCMPenaltyLabel.Left + intWidth + 6;
             lblCMArmor.Left = lblCMPenalty.Left;
             lblCMDamageResistancePool.Left = lblCMPenalty.Left;
+
+            // Relationships tab
+            cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
+            cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
         }
 
 
