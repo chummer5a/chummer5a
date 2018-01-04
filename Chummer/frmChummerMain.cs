@@ -75,7 +75,7 @@ namespace Chummer
 
 #if !DEBUG
             _workerVersionUpdateChecker.WorkerReportsProgress = false;
-            _workerVersionUpdateChecker.WorkerSupportsCancellation = false;
+            _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
             _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
             _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
             Application.Idle += IdleUpdateCheck;
@@ -190,7 +190,7 @@ namespace Chummer
             }
         }
 
-        private static void DoCacheGitVersion(object sender, EventArgs e)
+        private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
             string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
             if (GlobalOptions.PreferNightlyBuilds)
@@ -213,10 +213,17 @@ namespace Chummer
                 Utils.CachedGitVersion = null;
                 return;
             }
+
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
-            // Get the response.
 
+            // Get the response.
             HttpWebResponse response = null;
             try
             {
@@ -224,31 +231,99 @@ namespace Chummer
             }
             catch (WebException)
             {
+                Utils.CachedGitVersion = null;
+                return;
             }
 
-            // Get the stream containing content returned by the server.
-            Stream dataStream = response?.GetResponseStream();
-            if (dataStream == null)
+            if (response == null)
             {
                 Utils.CachedGitVersion = null;
                 return;
             }
-            Version verLatestVersion = null;
+
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                response.Close();
+                return;
+            }
+
+            // Get the stream containing content returned by the server.
+            Stream dataStream = response.GetResponseStream();
+            if (dataStream == null)
+            {
+                response.Close();
+                Utils.CachedGitVersion = null;
+                return;
+            }
+
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                dataStream.Close();
+                response.Close();
+                return;
+            }
+            
             // Open the stream using a StreamReader for easy access.
             StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
 
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                reader.Close();
+                response.Close();
+                return;
+            }
+
+            // Read the content.
             string responseFromServer = reader.ReadToEnd();
+
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                reader.Close();
+                response.Close();
+                return;
+            }
+
             string[] stringSeparators = new string[] { "," };
             string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                reader.Close();
+                response.Close();
+                return;
+            }
+
             string line = result.FirstOrDefault(x => x.Contains("tag_name"));
+
+            if (_workerVersionUpdateChecker.CancellationPending)
+            {
+                e.Cancel = true;
+                reader.Close();
+                response.Close();
+                return;
+            }
+
+            Version verLatestVersion = null;
             if (!string.IsNullOrEmpty(line))
             {
                 string strVersion = line.Substring(line.IndexOf(':') + 1);
                 if (strVersion.Contains('}'))
                     strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
                 strVersion = strVersion.FastEscape('\"');
+
+                if (_workerVersionUpdateChecker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    reader.Close();
+                    response.Close();
+                    return;
+                }
+
                 // Adds zeroes if minor and/or build version are missing
                 while (strVersion.Count(x => x == '.') < 2)
                 {
@@ -258,16 +333,15 @@ namespace Chummer
             }
             // Cleanup the streams and the response.
             reader.Close();
-            dataStream.Close();
             response.Close();
 
             Utils.CachedGitVersion = verLatestVersion;
             return;
         }
 
-        private void CheckForUpdate(object sender, EventArgs e)
+        private void CheckForUpdate(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (Utils.GitUpdateAvailable() > 0)
+            if (!e.Cancelled && Utils.GitUpdateAvailable() > 0)
             {
                 if (GlobalOptions.AutomaticUpdate)
                 {
@@ -1163,6 +1237,8 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
+            if (_workerVersionUpdateChecker.IsBusy)
+                _workerVersionUpdateChecker.CancelAsync();
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {

@@ -172,22 +172,7 @@ namespace Chummer
                     HttpWebResponse response = null;
                     try
                     {
-                        IAsyncResult objResult = request.BeginGetResponse(new AsyncCallback(FinishWebRequest), null);
-                        void FinishWebRequest(IAsyncResult result)
-                        {
-                            response = request.EndGetResponse(result) as HttpWebResponse;
-                        }
-
-                        while (!objResult.IsCompleted)
-                        {
-                            if (_workerConnectionLoader.CancellationPending)
-                            {
-                                request.EndGetResponse(objResult);
-                                e.Cancel = true;
-                                response?.Close();
-                                return;
-                            }
-                        }
+                        response = request.GetResponse() as HttpWebResponse;
                     }
                     catch (WebException)
                     {
@@ -218,8 +203,34 @@ namespace Chummer
                         StreamReader reader = new StreamReader(dataStream);
                         // Read the content.
 
+                        if (_workerConnectionLoader.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            reader.Close();
+                            response.Close();
+                            return;
+                        }
+
                         string responseFromServer = reader.ReadToEnd();
+
+                        if (_workerConnectionLoader.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            reader.Close();
+                            response.Close();
+                            return;
+                        }
+
                         string[] stringSeparators = new string[] { "," };
+
+                        if (_workerConnectionLoader.CancellationPending)
+                        {
+                            e.Cancel = true;
+                            reader.Close();
+                            response.Close();
+                            return;
+                        }
+
                         string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
                         bool blnFoundTag = false;
@@ -230,7 +241,6 @@ namespace Chummer
                             {
                                 e.Cancel = true;
                                 reader.Close();
-                                dataStream.Close();
                                 response.Close();
                                 return;
                             }
