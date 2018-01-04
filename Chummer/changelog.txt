@@ -101,6 +101,7 @@ Application Changes:
 - Fixed an issue with the XML amendment system that prevented new nodes from being added to the parent object. The main affected entry for this involves Adapsin; characters using this bioware should Reapply Improvements.
 - Fixed an issue with the id node checker that prevented it from properly checking items with ids that were not specifically grandparents of the root chummer node in an xml file (e.g. Metavariants, Life Modules).
 - Fixed issues with the karma value calculator when calculating the karma value of MAG and the karma value of attributes on shapeshifters.
+- Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
 
 Data Changes:
 

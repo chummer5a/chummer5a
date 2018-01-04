@@ -31,7 +31,7 @@
       text-transform: uppercase;
       }
       .indent {
-      padding-left: 2mm;
+      padding-left: 1em;
       }
       .notesrow {
       text-align: justify;

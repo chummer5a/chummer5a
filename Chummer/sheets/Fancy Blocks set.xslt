@@ -670,7 +670,7 @@
             <span style="color:grey;"><xsl:text> </xsl:text><xsl:value-of select="displayattribute" /></span>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
               <xsl:variable name="SpecializationBonus" select="specbonus"/>
-              <p style="text-indent: 10%">
+              <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />
@@ -716,7 +716,7 @@
             </xsl:if>
             <xsl:if test="exotic = 'False' and count(skillspecializations/skillspecialization) &gt; 0">
               <xsl:variable name="SpecializationBonus" select="specbonus"/>
-              <p style="text-indent: 10%">
+              <p style="padding-left: 1em">
                 <xsl:for-each select="skillspecializations/skillspecialization">
                   <xsl:if test="position() != 1">
                     <br />

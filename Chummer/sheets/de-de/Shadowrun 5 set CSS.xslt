@@ -30,7 +30,7 @@
       border: solid 0.0625em #1c4a2d;
       }
       .indent {
-      padding-left: 2mm;
+      padding-left: 1em;
       }
       .notesrow {
       text-align: justify;
