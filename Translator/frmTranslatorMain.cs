@@ -399,7 +399,7 @@ namespace Translator
         private void DoStringsProcessing(object sender, DoWorkEventArgs e)
         {
             string[] strArgs = e.Argument as string[];
-            string strFilePath = Path.Combine(PATH, "lang", strArgs[0] + "_data.xml");
+            string strFilePath = Path.Combine(PATH, "lang", strArgs[0] + ".xml");
 
             XmlDocument objDoc = new XmlDocument();
             if (File.Exists(strFilePath))
@@ -436,7 +436,7 @@ namespace Translator
             }
 
             var xmlDocument = new XmlDocument();
-            xmlDocument.Load(Path.Combine(PATH, "lang", "en-US.xml"));
+            xmlDocument.Load(Path.Combine(PATH, "lang", "en-us.xml"));
             XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
             if (xmlStringsNode != null)
             {
@@ -1097,8 +1097,8 @@ namespace Translator
                         xmlTranslateElement.InnerText = strDataGradeName;
                         xmlGradeNode.AppendChild(xmlTranslateElement);
 
-                        XmlNode xmlPageElement = objDataDoc.CreateElement("page");
-                        xmlPageElement.InnerText = xmlDataGradeNode["altpage"].InnerText;
+                        XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                        xmlPageElement.InnerText = xmlDataGradeNode["page"].InnerText;
                         xmlGradeNode.AppendChild(xmlPageElement);
 
                         xmlGradeNodesParent.AppendChild(xmlGradeNode);
