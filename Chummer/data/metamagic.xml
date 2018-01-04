@@ -603,6 +603,9 @@
       <magician>yes</magician>
       <source>FA</source>
       <page>44</page>
+      <bonus>
+        <drainvalue>-1</drainvalue>
+      </bonus>
     </metamagic>
     <metamagic>
       <id>59d0beab-4fba-48a9-a135-02e396ded7a4</id>

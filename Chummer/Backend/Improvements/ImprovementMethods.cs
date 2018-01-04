@@ -373,6 +373,8 @@ namespace Chummer
                     return objImprovementAdder.concealability;
                 case "DRAINRESIST":
                     return objImprovementAdder.drainresist;
+                case "DRAINVALUE":
+                    return objImprovementAdder.drainvalue;
                 case "FADINGRESIST":
                     return objImprovementAdder.fadingresist;
                 case "NOTORIETY":

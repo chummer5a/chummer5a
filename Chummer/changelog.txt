@@ -95,6 +95,8 @@ Application Changes:
 - Added a checkbox to disable or enable the filter for banned grades of 'ware in create mode. When selecting the cyberware, you will not be permitted to add the item if the grade is in the banned list.
 - Altered requirements checker to test for submersion grade and echo limitations.
 - Fixed a crash when attempting to create spells.
+- Fixed spells in create mode not working properly with Limited, Extended and Alchemical settings.
+- Fixed an issue with WeaponCategoryDV improvements such as Critical Strike not properly applying to Unarmed Combat-linked weapons.
 - Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
 
 Data Changes:
@@ -121,7 +123,7 @@ Data Changes:
 - Fixed a bug where loading a character in create mode who had more priority points spent in an attribute than their attribute maximum would cause Chummer to crash. Fixes #2222.
 - Fixed incorrect page reference for Rockblood Signature Armored Shirt. Fixes #2233.
 - Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
-
+- Implemented the bonus for the Structured Spellcasting metamagic. 
 New Strings:
 
 - Menu_Main_Translator

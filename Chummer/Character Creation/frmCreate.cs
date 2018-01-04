@@ -3662,7 +3662,7 @@ namespace Chummer
 
                 Spell objSpell = new Spell(CharacterObject);
                 TreeNode objNode = new TreeNode();
-                objSpell.Create(objXmlSpell, objNode);
+                objSpell.Create(objXmlSpell, objNode, "", frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
                 if (objSpell.InternalId == Guid.Empty.ToString())
                 {
                     frmPickSpell.Dispose();
@@ -19684,6 +19684,12 @@ namespace Chummer
             lblMovement.Left = lblCMPhysical.Left;
             lblSwim.Left = lblCMPhysical.Left;
             lblFly.Left = lblCMPhysical.Left;
+
+            // Relationships tab
+            cmdContactsExpansionToggle.Left = cmdAddContact.Right + 6;
+            cmdSwapContactOrder.Left = cmdContactsExpansionToggle.Right + 6;
+            lblContactPoints_Label.Left = cmdSwapContactOrder.Right + 6;
+            lblContactPoints.Left = lblContactPoints_Label.Right + 6;
         }
 
 

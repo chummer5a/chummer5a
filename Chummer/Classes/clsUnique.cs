@@ -2284,7 +2284,7 @@ namespace Chummer
             {
                 string strReturn = _strDV;
                 bool force = _strDV.StartsWith('F');
-                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)) || Limited)
                 {
                     string dv = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
@@ -2309,7 +2309,10 @@ namespace Chummer
                     {
                         dv += $" + {imp.Value:0;-0;0}";
                     }
-
+                    if (Limited)
+                    {
+                        dv += " + -2";
+                    }
                     object xprResult = CommonFunctions.EvaluateInvariantXPath(dv.TrimStart('+'));
                     if (force)
                     {

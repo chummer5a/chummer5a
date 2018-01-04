@@ -110,7 +110,6 @@ namespace Chummer
             this.nudLoyalty.Name = "nudLoyalty";
             this.nudLoyalty.Size = new System.Drawing.Size(40, 20);
             this.nudLoyalty.TabIndex = 4;
-            this.tipTooltip.SetToolTip(this.nudLoyalty, "Loyalty");
             this.nudLoyalty.Value = new decimal(new int[] {
             1,
             0,
