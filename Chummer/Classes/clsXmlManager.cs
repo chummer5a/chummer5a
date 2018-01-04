@@ -547,37 +547,62 @@ namespace Chummer
                 strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
             }
 
+            string strOperation = string.Empty;
+            bool blnAddIfNotFound = true;
             XmlAttributeCollection objAmendingNodeAttribs = objAmendingNode.Attributes;
-            string strCustomXPath = objAmendingNodeAttribs?["xpathfilter"]?.InnerText;
-            // We have a custom XPath filter defined for what children to fetch, so add that in.
-            if (!string.IsNullOrEmpty(strCustomXPath))
+            if (objAmendingNodeAttribs != null)
             {
-                if (!string.IsNullOrEmpty(strFilter))
-                    strFilter += " and ";
-                strFilter += '(' + strCustomXPath.Replace("&amp;", "&") + ')';
+                // This attribute is not used by the node itself, so it can be removed to speed up node importing later on.
+                objAmendingNodeAttribs.RemoveNamedItem("isidnode");
+
+                // Gets the custom XPath filter defined for what children to fetch, so add that into the XPath filter for targeting nodes if it exists.
+                XmlNode objCustomXPath = objAmendingNodeAttribs.RemoveNamedItem("xpathfilter");
+                if (objCustomXPath != null)
+                {
+                    if (!string.IsNullOrEmpty(strFilter))
+                        strFilter += " and ";
+                    strFilter += '(' + objCustomXPath.InnerText.Replace("&amp;", "&") + ')';
+                }
+
+                // Gets the specific operation to execute on this node.
+                XmlNode objAmendOperation = objAmendingNodeAttribs.RemoveNamedItem("amendoperation");
+                if (objAmendOperation != null)
+                {
+                    strOperation = objAmendOperation.InnerText;
+                }
+
+                // Get info on whether this node should be appended if no target node is found
+                XmlNode objAddIfNotFound = objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
+                if (objAddIfNotFound != null)
+                {
+                    blnAddIfNotFound = objAddIfNotFound.InnerText == bool.TrueString;
+                }
             }
 
             if (!string.IsNullOrEmpty(strFilter))
                 strFilter = '[' + strFilter + ']';
 
             string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
-            XmlNodeList objNodesToEdit = objDoc.SelectNodes(strNewXPath);
 
-            // We want to treat nodes that have children elements ("grouping" nodes) differently from those that don't ("data" nodes)
-            List<XmlNode> lstElementChildren = new List<XmlNode>();
-            if (objAmendingNode.HasChildNodes)
+            XmlNodeList objNodesToEdit = objDoc.SelectNodes(strNewXPath);
+            
+            List<XmlNode> lstElementChildren = null;
+            // Pre-cache list of elements if we don't have an operation specified or have recurse specified
+            if ((string.IsNullOrEmpty(strOperation) || strOperation == "recurse"))
             {
-                foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                lstElementChildren = new List<XmlNode>();
+                if (objAmendingNode.HasChildNodes)
                 {
-                    if (objChild.NodeType == XmlNodeType.Element)
+                    foreach (XmlNode objChild in objAmendingNode.ChildNodes)
                     {
-                        lstElementChildren.Add(objChild);
+                        if (objChild.NodeType == XmlNodeType.Element)
+                        {
+                            lstElementChildren.Add(objChild);
+                        }
                     }
                 }
             }
 
-            // Gets the specific operation to execute on this node. If the operation is not supported
-            string strOperation = objAmendingNodeAttribs?["amendoperation"]?.InnerText;
             switch (strOperation)
             {
                 // These operations are supported
@@ -603,78 +628,87 @@ namespace Chummer
                         strOperation = "replace";
                     break;
             }
-            // Loop through any nodes that satisfy the XPath filter (as long as we have some way of identifying them, the node is a grouping node and not a data node, and/or we wish to remove the node)
+
+            // We found nodes to target with the amend!
             if (objNodesToEdit.Count > 0)
             {
-                foreach (XmlNode objNodeToEdit in objNodesToEdit)
+                // Recurse is special in that it doesn't directly target nodes, but does so indirectly through strNewXPath...
+                if (strOperation == "recurse")
                 {
-                    // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
-                    if (strOperation == "remove")
+                    foreach (XmlNode objChild in lstElementChildren)
                     {
-                        objNodeToEdit.ParentNode.RemoveChild(objNodeToEdit);
+                        AmendNodeChildern(objDoc, objChild, strNewXPath);
                     }
-                    else
+                }
+                // ... otherwise loop through any nodes that satisfy the XPath filter.
+                else
+                {
+                    foreach (XmlNode objNodeToEdit in objNodesToEdit)
                     {
-                        XmlAttributeCollection objNodeToEditAttribs = objNodeToEdit.Attributes;
-                        switch (strOperation)
+                        XmlNode objParentNode = objNodeToEdit.ParentNode;
+                        // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
+                        if (strOperation == "remove")
                         {
-                            case "recurse":
-                                // Attributes are the only thing that are altered under "recurse" (they are replaced)
-                                if (objNodeToEditAttribs != null && objAmendingNodeAttribs != null && objAmendingNodeAttribs.Count > 0)
-                                {
-                                    objNodeToEditAttribs.RemoveAll();
-                                    foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
+                            objParentNode.RemoveChild(objNodeToEdit);
+                        }
+                        else
+                        {
+                            switch (strOperation)
+                            {
+                                case "append":
+                                    if (objAmendingNode.HasChildNodes)
                                     {
-                                        if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "amendoperation" && objNewAttribute.Name != "addifnotfound")
-                                            objNodeToEditAttribs.Append(objNewAttribute);
+                                        foreach (XmlNode objChild in objAmendingNode.ChildNodes)
+                                        {
+                                            XmlNodeType eChildNodeType = objChild.NodeType;
+
+                                            // Skip adding comments, they're pointless for the purposes of Chummer5a's code
+                                            if (eChildNodeType == XmlNodeType.Comment)
+                                                continue;
+
+                                            // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
+                                            if (eChildNodeType == XmlNodeType.Text ||
+                                                eChildNodeType == XmlNodeType.Attribute ||
+                                                eChildNodeType == XmlNodeType.CDATA)
+                                            {
+                                                bool blnItemFound = false;
+                                                if (objNodeToEdit.HasChildNodes)
+                                                {
+                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                    {
+                                                        if (objChildToEdit.NodeType == eChildNodeType)
+                                                        {
+                                                            if (eChildNodeType != XmlNodeType.Attribute || objChildToEdit.Name == objChild.Name)
+                                                            {
+                                                                objChildToEdit.Value += objChild.Value;
+                                                                blnItemFound = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (blnItemFound)
+                                                    continue;
+                                            }
+
+                                            objNodeToEdit.AppendChild(objDoc.ImportNode(objChild, true));
+                                        }
                                     }
-                                }
-                                foreach (XmlNode objChild in lstElementChildren)
-                                {
-                                    AmendNodeChildern(objDoc, objChild, strNewXPath);
-                                }
-                                break;
-                            case "append":
-                                if (objNodeToEditAttribs != null && objAmendingNodeAttribs != null && objAmendingNodeAttribs.Count > 0)
-                                {
-                                    foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
-                                    {
-                                        if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "amendoperation" && objNewAttribute.Name != "addifnotfound")
-                                            objNodeToEditAttribs.Append(objNewAttribute);
-                                    }
-                                }
-                                objNodeToEdit.InnerXml += objAmendingNode.InnerXml;
-                                break;
-                            case "replace":
-                                if (objNodeToEditAttribs != null && objAmendingNodeAttribs != null && objAmendingNodeAttribs.Count > 0)
-                                {
-                                    objNodeToEditAttribs.RemoveAll();
-                                    foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
-                                    {
-                                        if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "amendoperation" && objNewAttribute.Name != "addifnotfound")
-                                            objNodeToEditAttribs.Append(objNewAttribute);
-                                    }
-                                }
-                                objNodeToEdit.InnerXml = objAmendingNode.InnerXml;
-                                break;
+                                    break;
+                                case "replace":
+                                    objParentNode.ReplaceChild(objDoc.ImportNode(objAmendingNode, true), objNodeToEdit);
+                                    break;
+                            }
                         }
                     }
                 }
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-            else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && objAmendingNodeAttribs?["addifnotfound"]?.InnerText != "no")
+            else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && blnAddIfNotFound)
             {
                 foreach (XmlNode objParentNode in objDoc.SelectNodes(strXPath))
                 {
-                    XmlNode objNewChildNode = objDoc.ImportNode(objAmendingNode, true);
-                    XmlAttributeCollection objNodeToEditAttribs = objNewChildNode.Attributes;
-                    objNodeToEditAttribs.RemoveAll();
-                    foreach (XmlAttribute objNewAttribute in objAmendingNodeAttribs)
-                    {
-                        if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "amendoperation" && objNewAttribute.Name != "addifnotfound")
-                            objNewChildNode.Attributes.Append(objNewAttribute);
-                    }
-                    objParentNode.AppendChild(objNewChildNode);
+                    objParentNode.AppendChild(objDoc.ImportNode(objAmendingNode, true));
                 }
             }
         }
