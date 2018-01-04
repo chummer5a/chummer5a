@@ -63,10 +63,6 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            nudServices.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.ServicesOwed), false,
-                DataSourceUpdateMode.OnPropertyChanged);
-            nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
-                DataSourceUpdateMode.OnPropertyChanged);
             chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
                 DataSourceUpdateMode.OnPropertyChanged);
             if (_objSpirit.EntityType == SpiritType.Spirit)
@@ -75,6 +71,10 @@ namespace Chummer
             else
                 nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpriteLevel), false,
                     DataSourceUpdateMode.OnPropertyChanged);
+            nudServices.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.ServicesOwed), false,
+                DataSourceUpdateMode.OnPropertyChanged);
+            nudForce.DataBindings.Add("Value", _objSpirit, nameof(_objSpirit.Force), false,
+                DataSourceUpdateMode.OnPropertyChanged);
             Width = cmdDelete.Left + cmdDelete.Width;
 
             if (_objSpirit.EntityType == SpiritType.Spirit)
