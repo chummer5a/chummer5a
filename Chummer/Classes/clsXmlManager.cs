@@ -519,8 +519,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objDoc">Document element in which to operate.</param>
         /// <param name="objAmendingNode">The amending (new) node.</param>
-        /// <param name="strXPath">The current XPath in the document element that leads to where the amending node would be applied.</param>
-        /// <param name="blnHasIdentifier">Whether or not the amending node or any of its children have an identifier element ("id" and/or "name" element). Can safely use a dummy boolean if this is the first call in a recursion.</param>
+        /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         private static void AmendNodeChildern(XmlDocument objDoc, XmlNode objAmendingNode, string strXPath)
         {
             // Fetch the old node based on identifiers present in the amending node (id or name)
@@ -539,8 +538,7 @@ namespace Chummer
                 }
             }
             // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-            XmlNodeList objAmendingNodeExtraIds = objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]");
-            foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
+            foreach (XmlNode objExtraId in objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]"))
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";
