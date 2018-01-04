@@ -100,6 +100,7 @@ Application Changes:
 - Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
 - Fixed an issue with the XML amendment system that prevented new nodes from being added to the parent object. The main affected entry for this involves Adapsin; characters using this bioware should Reapply Improvements.
 - Fixed an issue with the id node checker that prevented it from properly checking items with ids that were not specifically grandparents of the root chummer node in an xml file (e.g. Metavariants, Life Modules).
+- Fixed issues with the karma value calculator when calculating the karma value of MAG and the karma value of attributes on shapeshifters.
 
 Data Changes:
 

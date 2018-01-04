@@ -3478,6 +3478,181 @@ namespace Chummer
             }
             return lstReturn;
         }
+
+        public string CalculateKarmaValue(string strLanguage, out int intReturn)
+        {
+            string strMessage = LanguageManager.GetString("Message_KarmaValue", strLanguage) + "\n";
+
+            intReturn = BuildKarma;
+            if (BuildMethod != CharacterBuildMethod.Karma)
+            {
+                // Subtract extra karma cost of a metatype in priority
+                intReturn -= MetatypeBP;
+            }
+            strMessage += "\n" + LanguageManager.GetString("Label_Base", strLanguage) + ": " + intReturn.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+
+            if (BuildMethod != CharacterBuildMethod.Karma)
+            {
+                // Zeroed to -10 because that's Human's value at default settings
+                int intMetatypeQualitiesValue = -2 * Options.KarmaAttribute;
+                // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
+                foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                {
+                    XmlNode xmlQualityNode = objQuality.GetNode();
+                    if (xmlQualityNode?["onlyprioritygiven"] == null)
+                    {
+                        intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText);
+                    }
+                }
+                intReturn += intMetatypeQualitiesValue;
+
+                int intTemp = 0;
+                int intTemp2 = 0;
+                // Value from attribute points and raised attribute minimums
+                foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList)
+                {
+                    string strAttributeName = objLoopAttrib.Abbrev;
+                    if (strAttributeName == "ESS")
+                        continue;
+                    if (strAttributeName == "MAGAdept" && (!IsMysticAdept || !Options.MysAdeptSecondMAGAttribute))
+                        continue;
+                    
+                    int intLoopAttribValue = Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum, objLoopAttrib.TotalMinimum) + objLoopAttrib.AttributeValueModifiers;
+                    if (intLoopAttribValue > 1)
+                    {
+                        intTemp += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * Options.KarmaAttribute;
+                        if (strAttributeName != "MAG" && strAttributeName != "MAGAdept" && strAttributeName != "RES" && strAttributeName != "DEP")
+                        {
+                            int intVanillaAttribValue = Math.Max(objLoopAttrib.Base + objLoopAttrib.FreeBase + objLoopAttrib.RawMinimum - objLoopAttrib.MetatypeMinimum + 1, objLoopAttrib.TotalMinimum - objLoopAttrib.MetatypeMinimum + 1) + objLoopAttrib.AttributeValueModifiers;
+                            intTemp2 += ((intVanillaAttribValue + 1) * intVanillaAttribValue / 2 - 1) * Options.KarmaAttribute;
+                        }
+                        else
+                            intTemp2 += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) * Options.KarmaAttribute;
+                    }
+                }
+                if (intTemp - intTemp2 + intMetatypeQualitiesValue != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage) + " " + (intTemp - intTemp2 + intMetatypeQualitiesValue).ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                }
+                if (intTemp2 != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("Label_SumtoTenAttributes", strLanguage) + " " + intTemp2.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                }
+                intReturn += intTemp;
+
+                intTemp = 0;
+                // This is where we add in "Talent" qualities like Adept and Technomancer
+                foreach (Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
+                {
+                    XmlNode xmlQualityNode = objQuality.GetNode();
+                    if (xmlQualityNode?["onlyprioritygiven"] != null)
+                    {
+                        intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText);
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("String_Qualities", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+
+                // Value from free spells
+                intTemp = SpellLimit * SpellKarmaCost;
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("String_FreeSpells", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+
+                // Value from free complex forms
+                intTemp = CFPLimit * ComplexFormKarmaCost;
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("String_FreeCFs", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+
+                intTemp = 0;
+                // Value from skill points
+                foreach (Skill objLoopActiveSkill in SkillsSection.Skills)
+                {
+                    if (!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
+                    {
+                        int intLoopRating = objLoopActiveSkill.Base;
+                        if (intLoopRating > 0)
+                        {
+                            intTemp += Options.KarmaNewActiveSkill;
+                            intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveActiveSkill;
+                            if (BuildMethod == CharacterBuildMethod.LifeModule)
+                                intTemp += objLoopActiveSkill.Specializations.Count(x => x.Free) * Options.KarmaSpecialization;
+                            else if (!objLoopActiveSkill.BuyWithKarma)
+                                intTemp += objLoopActiveSkill.Specializations.Count * Options.KarmaSpecialization;
+                        }
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("String_SkillPoints", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+
+                intTemp = 0;
+                // Value from skill group points
+                foreach (SkillGroup objLoopSkillGroup in SkillsSection.SkillGroups)
+                {
+                    int intLoopRating = objLoopSkillGroup.Base;
+                    if (intLoopRating > 0)
+                    {
+                        intTemp += Options.KarmaNewSkillGroup;
+                        intTemp += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveSkillGroup;
+                    }
+                }
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("String_SkillGroupPoints", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+
+                // Starting Nuyen karma value
+                intTemp = decimal.ToInt32(decimal.Ceiling(StartingNuyen / Options.NuyenPerBP));
+                if (intTemp != 0)
+                {
+                    strMessage += "\n" + LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen", strLanguage) + ": " + intTemp.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                    intReturn += intTemp;
+                }
+            }
+
+            int intContactPointsValue = ContactPoints * Options.KarmaContact;
+            if (intContactPointsValue != 0)
+            {
+                strMessage += "\n" + LanguageManager.GetString("String_Contacts", strLanguage) + ": " + intContactPointsValue.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                intReturn += intContactPointsValue;
+            }
+
+            int intKnowledgePointsValue = 0;
+            foreach (KnowledgeSkill objLoopKnowledgeSkill in SkillsSection.KnowledgeSkills)
+            {
+                int intLoopRating = objLoopKnowledgeSkill.Base;
+                if (intLoopRating > 0)
+                {
+                    intKnowledgePointsValue += Options.KarmaNewKnowledgeSkill;
+                    intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) * Options.KarmaImproveKnowledgeSkill;
+                    if (BuildMethod == CharacterBuildMethod.LifeModule)
+                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count(x => x.Free) * Options.KarmaKnowledgeSpecialization;
+                    else if (!objLoopKnowledgeSkill.BuyWithKarma)
+                        intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count * Options.KarmaKnowledgeSpecialization;
+                }
+            }
+            if (intKnowledgePointsValue != 0)
+            {
+                strMessage += "\n" + LanguageManager.GetString("Label_KnowledgeSkills", strLanguage) + ": " + intKnowledgePointsValue.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+                intReturn += intKnowledgePointsValue;
+            }
+
+            strMessage += "\n\n" + LanguageManager.GetString("String_Total", strLanguage) + ": " + intReturn.ToString() + " " + LanguageManager.GetString("String_Karma", strLanguage);
+
+            return strMessage;
+        }
         #endregion
 
         #region UI Methods
