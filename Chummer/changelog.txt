@@ -94,7 +94,9 @@ Application Changes:
 - Added improvements for adding complex forms through bonus nodes via selectcomplexform and addcomplexform, which function almost identically to their spell counterparts. Fixes #2242.
 - Added a checkbox to disable or enable the filter for banned grades of 'ware in create mode. When selecting the cyberware, you will not be permitted to add the item if the grade is in the banned list.
 - Altered requirements checker to test for submersion grade and echo limitations.
-- Fixed a crash when attempting to create spells. 
+- Fixed a crash when attempting to create spells.
+- Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
+
 Data Changes:
 
 - Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).

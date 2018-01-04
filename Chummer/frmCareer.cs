@@ -19211,7 +19211,7 @@ namespace Chummer
                 lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
                 lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponRating.Text = string.Empty;
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
                     string strSlotsText = string.Empty;
                     foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
@@ -19257,7 +19257,7 @@ namespace Chummer
                     lblWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
                     lblWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblWeaponRating.Text = string.Empty;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                     {
                         string strSlotsText = string.Empty;
                         foreach (string strMount in objWeapon.AccessoryMounts.Split('/'))
