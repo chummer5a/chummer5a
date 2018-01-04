@@ -97,6 +97,8 @@ Application Changes:
 - Fixed a crash when attempting to create spells.
 - Fixed spells in create mode not working properly with Limited, Extended and Alchemical settings.
 - Fixed an issue with WeaponCategoryDV improvements such as Critical Strike not properly applying to Unarmed Combat-linked weapons.
+- Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
+- Fixed an issue with the XML amendment system that prevented new nodes from being added to the parent object. The main affected entry for this involves Adapsin; characters using this bioware should Reapply Improvements.
 
 Data Changes:
 

@@ -662,7 +662,7 @@ namespace Chummer
                 }
             }
             // If there aren't any old nodes found and the amending node is tagged as needing to be added should this be the case, then append the entire amending node to the XPath.
-            else if (strOperation == "append" || ((strOperation == "recurse" || strOperation == "replace") && objAmendingNodeAttribs?["addifnotfound"]?.InnerText != "no"))
+            else if (strOperation == "append" || (strOperation == "recurse" || strOperation == "replace") && objAmendingNodeAttribs?["addifnotfound"]?.InnerText != "no")
             {
                 foreach (XmlNode objParentNode in objDoc.SelectNodes(strXPath))
                 {
@@ -674,6 +674,7 @@ namespace Chummer
                         if (objNewAttribute.Name != "isidnode" && objNewAttribute.Name != "xpathfilter" && objNewAttribute.Name != "amendoperation" && objNewAttribute.Name != "addifnotfound")
                             objNewChildNode.Attributes.Append(objNewAttribute);
                     }
+                    objParentNode.AppendChild(objNewChildNode);
                 }
             }
         }
