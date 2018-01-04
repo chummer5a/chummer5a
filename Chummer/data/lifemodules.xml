@@ -8782,7 +8782,6 @@
               <name>History</name>
               <group>Street</group>
             </knowledgeskilllevel>
-
             <pushtext>Berlin</pushtext>
             <addqualities>
               <addquality>SINner (National)</addquality>
@@ -8967,7 +8966,7 @@
           </bonus>
         </version>
         <version>
-          <id>61c3a73c-42a3-4b4c-88da-b1b26bc977fa</id>
+          <id>df82484e-4736-4520-8254-0a4094b8ab55</id>
           <name>Other</name>
           <story>$real was born in Pomorya the elven nation north east of the AGS, but not as an elf.</story>
           <forbidden>

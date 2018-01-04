@@ -451,66 +451,72 @@ namespace Chummer
                 }
             }
 
-            //Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
+            // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
             if (strFileName == "improvements.xml" || (objReference.DuplicatesChecked && !blnHasLiveCustomData)) return objDoc;
             {
                 foreach (XmlNode objNode in objDoc.SelectNodes("/chummer/*"))
                 {
-                    //Ignore the version node, if present. 
-                    if (objNode.Name == "version" || !objNode.HasChildNodes) continue;
-                    //Parse the node into an XDocument for LINQ parsing. 
-                    XDocument y = XDocument.Parse(objNode.OuterXml);
-                    string strNode = (from XmlNode o in objNode.ChildNodes where o.NodeType != XmlNodeType.Comment select o.Name).FirstOrDefault();
-
-                    //Grab the first XML node that isn't a comment. 
-                    if (strNode == null) continue;
-                    HashSet<string> lstDuplicateIDs = new HashSet<string>();
-                    List<string> lstItemsWithMalformedIDs = new List<string>();
-                    // Not a dictionary specifically so duplicates can be caught. Item1 is ID, Item2 is the item's name.
-                    List<Tuple<string, string>> lstItemsWithIDs = new List<Tuple<string, string>>();
-                    foreach (XElement objLoopNode in y.Descendants(strNode))
+                    // Only process nodes that have children and are not the version node
+                    if (objNode.Name != "version" && objNode.HasChildNodes)
                     {
-                        string strId = (string)objLoopNode.Element("id") ?? string.Empty;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            string strItemName = (string)objLoopNode.Element("name") ?? (string)objLoopNode.Element("category") ?? strId;
-                            if (!lstDuplicateIDs.Contains(strId) && lstItemsWithIDs.Any(x => x.Item1 == strId))
-                            {
-                                lstDuplicateIDs.Add(strId);
-                                if (strItemName == strId)
-                                    strItemName = string.Empty;
-                            }
-                            if (!strId.IsGuid())
-                                lstItemsWithMalformedIDs.Add(strItemName);
-                            lstItemsWithIDs.Add(new Tuple<string, string>(strId, strItemName));
-                        }
+                        // Parse the node into an XDocument for LINQ parsing.
+                        CheckIdNodes(XDocument.Parse(objNode.OuterXml), strFileName);
                     }
-
-                    if (lstDuplicateIDs.Count > 0)
-                    {
-                        string strDuplicatesNames = string.Join("\n", lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_DuplicateGuidWarning", strLanguage)
-                                .Replace("{0}", lstDuplicateIDs.Count.ToString())
-                                .Replace("{1}", strFileName)
-                                .Replace("{2}", strDuplicatesNames));
-                    }
-
-                    if (lstItemsWithMalformedIDs.Count > 0)
-                    {
-                        string strMalformedIdNames = string.Join("\n", lstItemsWithMalformedIDs);
-                        MessageBox.Show(
-                            LanguageManager.GetString("Message_NonGuidIdWarning", strLanguage)
-                                .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
-                                .Replace("{1}", strFileName)
-                                .Replace("{2}", strMalformedIdNames));
-                    }
-
-                    objReference.DuplicatesChecked = true;
                 }
+
+                objReference.DuplicatesChecked = true;
             }
 
             return objDoc;
+        }
+
+        private static void CheckIdNodes(XContainer xmlParentNode, string strFileName)
+        {
+            HashSet<string> lstDuplicateIDs = new HashSet<string>();
+            List<string> lstItemsWithMalformedIDs = new List<string>();
+            // Not a dictionary specifically so duplicates can be caught. Item1 is ID, Item2 is the item's name.
+            List<Tuple<string, string>> lstItemsWithIDs = new List<Tuple<string, string>>();
+
+            foreach (XElement objLoopNode in xmlParentNode.Elements())
+            {
+                string strId = (string)objLoopNode.Element("id") ?? string.Empty;
+                if (!string.IsNullOrEmpty(strId))
+                {
+                    string strItemName = (string)objLoopNode.Element("name") ?? (string)objLoopNode.Element("stage") ?? (string)objLoopNode.Element("category") ?? strId;
+                    if (!lstDuplicateIDs.Contains(strId) && lstItemsWithIDs.Any(x => x.Item1 == strId))
+                    {
+                        lstDuplicateIDs.Add(strId);
+                        if (strItemName == strId)
+                            strItemName = string.Empty;
+                    }
+                    if (!strId.IsGuid())
+                        lstItemsWithMalformedIDs.Add(strItemName);
+                    lstItemsWithIDs.Add(new Tuple<string, string>(strId, strItemName));
+                }
+
+                // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
+                CheckIdNodes(objLoopNode, strFileName);
+            }
+
+            if (lstDuplicateIDs.Count > 0)
+            {
+                string strDuplicatesNames = string.Join("\n", lstItemsWithIDs.Where(x => lstDuplicateIDs.Contains(x.Item1) && !string.IsNullOrEmpty(x.Item2)).Select(x => x.Item2));
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_DuplicateGuidWarning", GlobalOptions.Language)
+                        .Replace("{0}", lstDuplicateIDs.Count.ToString())
+                        .Replace("{1}", strFileName)
+                        .Replace("{2}", strDuplicatesNames));
+            }
+
+            if (lstItemsWithMalformedIDs.Count > 0)
+            {
+                string strMalformedIdNames = string.Join("\n", lstItemsWithMalformedIDs);
+                MessageBox.Show(
+                    LanguageManager.GetString("Message_NonGuidIdWarning", GlobalOptions.Language)
+                        .Replace("{0}", lstItemsWithMalformedIDs.Count.ToString())
+                        .Replace("{1}", strFileName)
+                        .Replace("{2}", strMalformedIdNames));
+            }
         }
 
         /// <summary>

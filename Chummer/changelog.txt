@@ -99,6 +99,7 @@ Application Changes:
 - Fixed an issue with WeaponCategoryDV improvements such as Critical Strike not properly applying to Unarmed Combat-linked weapons.
 - Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
 - Fixed an issue with the XML amendment system that prevented new nodes from being added to the parent object. The main affected entry for this involves Adapsin; characters using this bioware should Reapply Improvements.
+- Fixed an issue with the id node checker that prevented it from properly checking items with ids that were not specifically grandparents of the root chummer node in an xml file (e.g. Metavariants, Life Modules).
 
 Data Changes:
 
@@ -124,7 +125,9 @@ Data Changes:
 - Fixed a bug where loading a character in create mode who had more priority points spent in an attribute than their attribute maximum would cause Chummer to crash. Fixes #2222.
 - Fixed incorrect page reference for Rockblood Signature Armored Shirt. Fixes #2233.
 - Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
-- Implemented the bonus for the Structured Spellcasting metamagic. 
+- Implemented the bonus for the Structured Spellcasting metamagic.
+- Fixed a duplicate id in the Pomorya Nationality Life Module.
+
 New Strings:
 
 - Menu_Main_Translator
