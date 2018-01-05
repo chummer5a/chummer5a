@@ -1383,8 +1383,8 @@
       <log>F+0</log>
       <wil>F+0</wil>
       <ini>(F*2)+2</ini>
-      <source>SR5</source>
-      <page>304</page>
+      <source>SG</source>
+      <page>88</page>
       <optionalpowers>
         <power>Accident</power>
         <power>Concealment</power>
