@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -321,17 +322,39 @@ namespace Chummer
         /// </summary>
         /// <param name="treSpells">Treenode that will be cleared and populated.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
-        protected static void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        protected static void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Clear the default nodes of entries.
-            foreach (TreeNode objNode in treSpells.Nodes)
+            if (notifyCollectionChangedEventArgs == null)
             {
-                objNode.Nodes.Clear();
+                //Clear the default nodes of entries.
+                foreach (TreeNode objNode in treSpells.Nodes)
+                {
+                    objNode.Nodes.Clear();
+                }
+                //Add the Spells that exist.
+                foreach (Spell s in _objCharacter.Spells)
+                {
+                    treSpells.Add(s, cmsSpell);
+                }
             }
-            //Add the Spells that exist.
-            foreach (Spell s in _objCharacter.Spells)
+            else
             {
-                treSpells.Add(s, cmsSpell);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            treSpells.Add(objSpell, cmsSpell);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode t = treSpells.FindNode(objSpell.InternalId);
+                            treSpells.Nodes.Remove(t);
+                        }
+                        break;
+                }
             }
         }
 
