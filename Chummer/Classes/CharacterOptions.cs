@@ -112,6 +112,7 @@ namespace Chummer
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
         private bool _blnDoNotRoundEssenceInternally;
+        private bool _blnEnemyKarmaQualityLimit = true;
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
@@ -393,6 +394,8 @@ namespace Chummer
             objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString());
             // <donotroundessenceinternally />
             objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString());
+            // <donotroundessenceinternally />
+            objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString());
             // <nuyenformat />
             objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
             // <essencedecimals />
@@ -798,6 +801,8 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
             // Only round essence when its value is displayed
             objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
             // Number of decimal places to round to when calculating Essence.
@@ -2086,6 +2091,15 @@ namespace Chummer
             {
                 _blnDoNotRoundEssenceInternally = value;
             }
+        }
+
+        /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit
+        {
+            get => _blnEnemyKarmaQualityLimit;
+            set => _blnEnemyKarmaQualityLimit = value;
         }
 
         /// <summary>

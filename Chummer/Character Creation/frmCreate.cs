@@ -5555,10 +5555,16 @@ namespace Chummer
                     }
 
                     // Include the BP used by Enemies.
-                    if (lblEnemiesBP.Text.Contains(LanguageManager.GetString("String_BP", GlobalOptions.Language)))
-                        intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
-                    else
-                        intBP += int.Parse(lblEnemiesBP.Text.Replace(" " + LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
+                    if (CharacterObject.Options.EnemyKarmaQualityLimit)
+                    {
+                        //TODO: What the hell is this string comparison for?
+                        if (lblEnemiesBP.Text.Contains(LanguageManager.GetString("String_BP", GlobalOptions.Language)))
+                            intBP += int.Parse(lblEnemiesBP.Text.Replace(
+                                LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
+                        else
+                            intBP += int.Parse(lblEnemiesBP.Text.Replace(
+                                " " + LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
+                    }
 
                     // Include the amount from Free Negative Quality BP cost Improvements.
                     intBP -= (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality);
@@ -16837,15 +16843,16 @@ namespace Chummer
             // a Negative Quality.
             int intPointsUsed = 0;
             int intNegativePoints = 0;
+            int intEnemyPoints = 0;
             foreach (ContactControl objContactControl in panEnemies.Controls)
             {
                 Contact objLoopEnemy = objContactControl.ContactObject;
                 if (!objLoopEnemy.Free)
                 {
-                    intNegativePoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
+                    intEnemyPoints -= (objLoopEnemy.Connection + objLoopEnemy.Loyalty) * CharacterObjectOptions.KarmaEnemy;
                 }
             }
-
+            intNegativePoints = intEnemyPoints;
             // Calculate the BP used by Positive Qualities.
             intPointsUsed = CharacterObject.Qualities.Where(objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP && objQuality.ContributeToLimit).Sum(objQuality => objQuality.BP);
             // Group contacts are counted as positive qualities
@@ -16867,16 +16874,6 @@ namespace Chummer
             intPointsUsed -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
             intNegativePoints -= ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities);
 
-            // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-            if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
-            {
-                int intNegativeQualityLimit = -CharacterObject.GameplayOptionQualityLimit;
-                if (intNegativePoints < intNegativeQualityLimit)
-                {
-                    intNegativePoints = intNegativeQualityLimit;
-                }
-            }
-
             // If the character is allowed to take as many Positive Qualities as they'd like but all costs in excess are doubled, add the excess to their point cost.
             if (CharacterObjectOptions.ExceedPositiveQualitiesCostDoubled)
             {
@@ -16895,14 +16892,26 @@ namespace Chummer
                                   .Replace("{0}", (CharacterObject.GameplayOptionQualityLimit).ToString());
                 blnValid = false;
             }
-
+            int totalNeg = CharacterObject.Options.EnemyKarmaQualityLimit
+                ? intNegativePoints
+                : (intNegativePoints - intEnemyPoints);
             // if negative points > 25
-            if (intNegativePoints < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
+            if (totalNeg < (CharacterObject.GameplayOptionQualityLimit * -1) && !CharacterObjectOptions.ExceedNegativeQualities)
             {
                 strMessage += "\n\t" +
                               LanguageManager.GetString("Message_NegativeQualityLimit", GlobalOptions.Language)
                                   .Replace("{0}", (CharacterObject.GameplayOptionQualityLimit).ToString());
                 blnValid = false;
+            }
+
+            // If the character is only allowed to gain 25 Karma from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
+            if (CharacterObjectOptions.ExceedNegativeQualitiesLimit)
+            {
+                int intNegativeQualityLimit = -CharacterObject.GameplayOptionQualityLimit;
+                if (intNegativePoints < intNegativeQualityLimit)
+                {
+                    intNegativePoints = intNegativeQualityLimit;
+                }
             }
 
             if (CharacterObject.Contacts.Any(x => (!CharacterObject.FriendsInHighPlaces || x.Connection < 8) && (Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty)) > 7 && !x.Free))

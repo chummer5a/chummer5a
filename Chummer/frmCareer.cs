@@ -17094,6 +17094,7 @@ namespace Chummer
         }
         #endregion
         #region Additional Relationships Tab Control Events
+
         private void tsAddFromFile_Click(object sender, EventArgs e)
         {
             // Displays an OpenFileDialog so the user can select the XML to read.  
@@ -17127,7 +17128,6 @@ namespace Chummer
                 {
                     ContactControl cc = new ContactControl(c);
                     // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
-                    cc.ContactDetailChanged += EnemyChanged;
                     cc.DeleteContact += DeleteEnemy;
                     panEnemies.Controls.Add(cc);
                 }
@@ -17141,6 +17141,8 @@ namespace Chummer
                     panPets.Controls.Add(cc);
                 }
             }
+        }
+
         #endregion
 
         #region Additional Improvements Tab Control Events

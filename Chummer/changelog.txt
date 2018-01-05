@@ -103,6 +103,7 @@ Application Changes:
 - Fixed issues with the karma value calculator when calculating the karma value of MAG and the karma value of attributes on shapeshifters.
 - Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
 - Added a dropdown menu option to bulk-add contacts, enemies and pets from a given XML file. To use this, create an XML file that contains valid contacts from an existing Chummer file, or alter this template: https://pastebin.com/W9q8jEnt Note that this system is designed to import ALL valid contacts in the file, irrespective of whether you click on Contacts or Enemies. 
+- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode. 
 
 Data Changes:
 
@@ -160,6 +161,7 @@ New Strings:
 - MessageTitle_BannedGrade
 - Message_BannedGrade
 - Menu_AddFromFile
+- Checkbox_Options_EnemyKarmaQualityLimit
 
 Build 196
 

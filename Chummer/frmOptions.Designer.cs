@@ -287,6 +287,7 @@ namespace Chummer
             this.lblSettingName = new System.Windows.Forms.Label();
             this.txtSettingName = new System.Windows.Forms.TextBox();
             this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
+            this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaComplexFormOption)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
@@ -2887,6 +2888,7 @@ namespace Chummer
             // 
             this.tabHouseRules.AutoScroll = true;
             this.tabHouseRules.BackColor = System.Drawing.SystemColors.Control;
+            this.tabHouseRules.Controls.Add(this.chkEnemyKarmaQualityLimit);
             this.tabHouseRules.Controls.Add(this.chkCompensateSkillGroupKarmaDifference);
             this.tabHouseRules.Controls.Add(this.chkMysAdeptSecondMAGAttribute);
             this.tabHouseRules.Controls.Add(this.chkAllowPointBuySpecializationsOnKarmaSkills);
@@ -3403,6 +3405,17 @@ namespace Chummer
             this.tipTooltip.ReshowDelay = 100;
             this.tipTooltip.TooltipCssClass = "htmltooltip";
             // 
+            // chkEnemyKarmaQualityLimit
+            // 
+            this.chkEnemyKarmaQualityLimit.AutoSize = true;
+            this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(8, 440);
+            this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
+            this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(389, 17);
+            this.chkEnemyKarmaQualityLimit.TabIndex = 37;
+            this.chkEnemyKarmaQualityLimit.Tag = "Checkbox_Options_EnemyKarmaQualityLimit";
+            this.chkEnemyKarmaQualityLimit.Text = "Karma spent on enemies counts towards negative Quality limit in create mode";
+            this.chkEnemyKarmaQualityLimit.UseVisualStyleBackColor = true;
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.cmdOK;
@@ -3766,5 +3779,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkLiveUpdateCleanCharacterFiles;
         private System.Windows.Forms.CheckBox chkCompensateSkillGroupKarmaDifference;
         private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
+        private System.Windows.Forms.CheckBox chkEnemyKarmaQualityLimit;
     }
 }
