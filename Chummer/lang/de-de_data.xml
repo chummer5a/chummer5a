@@ -3081,11 +3081,11 @@
 			<category translate="Echos">Echoes</category>
 		</categories>
 		<powers>
-			<power>
+			<power translated="True">
 				<id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
 				<name>Sense Link</name>
 				<translate>Sinnesverbindung</translate>
-				<altpage>59</altpage>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<id>99af5d63-9f6a-4a32-9bf6-9b8500a3c64c</id>
@@ -3297,77 +3297,77 @@
 				<translate>Wetterbeherrschung</translate>
 				<altpage>402</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>5dad2b71-d7b0-443f-9871-ea01a381b9d0</id>
 				<name>Astral Gateway</name>
 				<translate>Astrales Tor</translate>
-				<altpage>110</altpage>
+				<altpage>224</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>89ad414a-9854-44b0-b505-ad0186ccb29f</id>
 				<name>Aura Masking</name>
 				<translate>Auramaskierung</translate>
-				<altpage>217</altpage>
+				<altpage>224</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ae00c4e4-c036-44b2-894b-1a5cd3fc8fae</id>
 				<name>Banishing Resistance</name>
 				<translate>Verbannungsresistenz</translate>
-				<altpage>224</altpage>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>c3e2ee0c-7c4d-479f-997d-7079cb4dee7a</id>
 				<name>Desire Reflection</name>
 				<translate>Begierdenspiegelung</translate>
-				<altpage>217</altpage>
+				<altpage>224</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>cf03e546-90d9-4c3d-8246-19bf57821731</id>
 				<name>Divining</name>
 				<translate>Weissagung</translate>
-				<altpage>226</altpage>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>de152825-2002-4a58-b2a7-08247aae72be</id>
 				<name>Endowment</name>
 				<translate>Kraftübertragung</translate>
-				<altpage>116</altpage>
+				<altpage>228</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>d10138cc-924a-4f2b-a59b-44e0611fb019</id>
 				<name>Energy Drain</name>
 				<translate>Energieentzug</translate>
-				<altpage>218</altpage>
+				<altpage>227</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>30918b00-6dae-4989-9b6e-219c4bd6ac7e</id>
 				<name>Inhabitation</name>
 				<translate>Bewohnung</translate>
-				<altpage>115</altpage>
+				<altpage>226</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f5a654a0-91e3-4555-aa22-792d012348b8</id>
 				<name>Magical Guard</name>
 				<translate>Magischer Schutz</translate>
-				<altpage>221</altpage>
+				<altpage>228</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>033185f0-bade-4824-8569-8604a734e02b</id>
 				<name>Mind Link</name>
 				<translate>Telepathie</translate>
-				<altpage>223</altpage>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>a142b612-2f4c-4c97-8b1b-fd15c9f68866</id>
 				<name>Possession</name>
 				<translate>Besessenheit</translate>
-				<altpage>217</altpage>
+				<altpage>224</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>21768675-ea17-48f4-abdc-301c3441bf8c</id>
 				<name>Quake</name>
 				<translate>Erdbeben</translate>
-				<altpage>219</altpage>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<id>2381a322-1b0c-4282-b3af-b28828cdf786</id>
@@ -3375,107 +3375,107 @@
 				<translate>Realistische Gestalt</translate>
 				<altpage>222</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>c9045794-c7f7-4517-9156-b74438a2d5f1</id>
 				<name>Shadow Cloak</name>
 				<translate>Schatten</translate>
-				<altpage>223</altpage>
+				<altpage>229</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>4881c2cc-1e45-43ad-89df-9e5b264648f2</id>
 				<name>Silence</name>
 				<translate>Stille</translate>
-				<altpage>223</altpage>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ea7d01c8-50f5-4d2a-9fac-a750b189ca36</id>
 				<name>Storm</name>
 				<translate>Sturm</translate>
-				<altpage>223</altpage>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f1750d16-5dc2-4c4e-afae-1ad86c520fc6</id>
 				<name>Astral Projection</name>
 				<translate>Astrale Projektion</translate>
-				<altpage>124</altpage>
+				<altpage>239</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>189ab2b7-9688-414b-b8ec-35a01db372d4</id>
 				<name>Mutable Form</name>
 				<translate>Veränderliche Gestalt</translate>
-				<altpage>224</altpage>
+				<altpage>239</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>37a152ee-83ce-4a32-b81b-31e79b42c970</id>
 				<name>Personal Domain</name>
-				<translate>Eigene Domäne</translate>
-				<altpage>218</altpage>
+				<translate>Persönliche Domäne</translate>
+				<altpage>239</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>8e1d96d9-53c9-4924-855c-059815ef973c</id>
 				<name>Spirit Pact</name>
 				<translate>Geisterpakt</translate>
-				<altpage>123</altpage>
+				<altpage>239</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e6add326-0ed1-41bd-9d00-40ad5b17a35d</id>
 				<name>Hidden Life</name>
-				<translate>Verstecktes Leben</translate>
-				<altpage>225</altpage>
+				<translate>Verborgenes Leben</translate>
+				<altpage>240</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>9942f3f2-b486-44ff-ad34-c56fd9453d41</id>
 				<name>Vessel Trading</name>
 				<translate>Vertreibung</translate>
-				<altpage>126</altpage>
+				<altpage>240</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ad40556c-6632-4287-bd69-94ff25c7280e</id>
 				<name>Wealth</name>
 				<translate>Reichtum</translate>
-				<altpage>223</altpage>
+				<altpage>240</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>44dd8deb-891e-4361-bc0c-47c4258ea6fd</id>
 				<name>Anaphylaxis</name>
 				<translate>Anaphylaxie</translate>
-				<altpage>216</altpage>
+				<altpage>224</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>3c6b961c-cac8-4e45-91ec-03cf612ac3c3</id>
 				<name>Mutagen</name>
 				<translate>Mutagen</translate>
-				<altpage>222</altpage>
+				<altpage>228</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e525a62b-5762-477d-b242-6e166fdcd6e9</id>
 				<name>Devouring</name>
 				<translate>Fressen</translate>
-				<altpage>220</altpage>
+				<altpage>227</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ea6c345d-1df6-42b9-92bb-b94fef3360f7</id>
 				<name>Hive Mind</name>
-				<translate>Schwarmverstand</translate>
-				<altpage>172</altpage>
+				<translate>Schwarmbewusstsein</translate>
+				<altpage>229</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ecbab218-1ba9-41b6-9add-897ccbbf1d52</id>
 				<name>Pestilence</name>
 				<translate>Pestilenz</translate>
-				<altpage>215</altpage>
+				<altpage>228</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e5859447-89ad-40f1-aea0-8c5f1e53e9de</id>
 				<name>Reinforcement</name>
 				<translate>Härtung</translate>
-				<altpage>172</altpage>
+				<altpage>228</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>d9fdc768-9ce4-4c19-8744-b46833349cea</id>
 				<name>Sonic Projection</name>
 				<translate>Schallentladung</translate>
-				<altpage>223</altpage>
+				<altpage>229</altpage>
 			</power>
 			<power translated="True">
 				<id>94e58008-2ab1-41ed-886c-74773ec60067</id>
@@ -3513,11 +3513,11 @@
 				<translate>Fokuskontrolle</translate>
 				<altpage>192</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f654869b-d381-4f90-82d6-835f5a4aa0ab</id>
 				<name>Deathly Aura</name>
 				<translate>Todesaura</translate>
-				<altpage>224</altpage>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<id>6bd7dbfd-1603-4333-86aa-b4b798caf9d1</id>
@@ -3765,11 +3765,11 @@
 				<translate>Essenzverlust</translate>
 				<altpage>402</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>95dcc093-88b8-4182-b62a-575428b84c84</id>
 				<name>Evanescence</name>
 				<translate>Schwund</translate>
-				<altpage>229</altpage>
+				<altpage>106</altpage>
 			</power>
 			<power translated="True">
 				<id>031c2ae5-80d4-4cda-a2ce-65525970f281</id>
@@ -4038,26 +4038,26 @@
 			<power>
 				<id>f6fb5ceb-91f8-418b-99ee-413e8c16230e</id>
 				<name>Engulf</name>
-				<page>401</page>
 				<translate>Verschlingen</translate>
+				<altpage>401</altpage>
 			</power>
 			<power>
 				<id>71a78fd2-c75a-46a8-a0f3-320e268a9b4d</id>
 				<name>Binding</name>
-				<page>395</page>
 				<translate>Bindung</translate>
+				<altpage>395</altpage>
 			</power>
 			<power>
 				<id>2cadebe7-a32d-4852-ac94-e8b86ca3619a</id>
 				<name>Spirit Pact</name>
-				<page>239</page>
 				<translate>Geisterpakt</translate>
+				<altpage>239</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>b947d60a-8ac6-4185-8a5c-fc7a24ef69eb</id>
 				<name>Gremlins</name>
-				<page>204</page>
 				<translate>Gremlins</translate>
+				<altpage>204</altpage>
 			</power>
 			<power>
 				<id>f861c488-9818-4a40-a985-0138d3f164d5</id>
@@ -4242,38 +4242,38 @@
 			<power>
 				<id>dafb81bd-7b92-487a-a739-465c69bcefcd</id>
 				<name>Adaptive Coloration</name>
-				<page>160</page>
 				<translate>Farbanpassung</translate>
+				<altpage>191</altpage>
 			</power>
 			<power>
 				<id>edd8b53d-ada6-4106-b8ef-111b5cb1fb40</id>
 				<name>Natural Weapon</name>
-				<page>161</page>
 				<translate>Natürliche Waffe</translate>
+				<altpage>399</altpage>
 			</power>
 			<power>
 				<id>185aa4ff-7975-4d06-8fbc-52a07caeb9e2</id>
 				<name>Animal Control</name>
-				<page>161</page>
 				<translate>Tierbeherrschung</translate>
+				<altpage>400</altpage>
 			</power>
 			<power>
 				<id>79bb0c32-985c-47c8-a6ba-a9666884599f</id>
 				<name>Compulsion</name>
-				<page>161</page>
 				<translate>Zwang</translate>
+				<altpage>402</altpage>
 			</power>
 			<power>
 				<id>afa7c218-9171-4354-b694-14b1cecd93ff</id>
 				<name>Corrosive Spit</name>
-				<page>160</page>
 				<translate>Ätzender Speichel</translate>
+				<altpage>395</altpage>
 			</power>
 			<power>
 				<id>4aef932e-2d0f-4226-b00e-19c5398641bd</id>
 				<name>Dragonspeech</name>
-				<page>160</page>
 				<translate>Drachensprache</translate>
+				<altpage>395</altpage>
 			</power>
 			<power>
 				<id>dba6b163-0466-4fa1-998a-0a5ac74edba9</id>
@@ -4302,8 +4302,8 @@
 			<power>
 				<id>dd6b0eda-44a9-4411-b471-d78e76f495fb</id>
 				<name>Fear</name>
-				<page>161</page>
 				<translate>Grauen</translate>
+				<altpage>397</altpage>
 			</power>
 			<power>
 				<id>eda3036b-441c-45bf-9e97-aac7cdd87054</id>
@@ -4356,14 +4356,14 @@
 			<power>
 				<id>dfb8200f-709c-4208-a72f-5a08de55de40</id>
 				<name>Influence</name>
-				<page>160</page>
 				<translate>Einfluss</translate>
+				<altpage>396</altpage>
 			</power>
 			<power>
 				<id>61a58161-f28d-49fb-b24d-e04588f6cdd5</id>
 				<name>Noxious Breath</name>
-				<page>160</page>
 				<translate>Gifthauch</translate>
+				<altpage>397</altpage>
 			</power>
 			<power>
 				<id>a28ec7c9-809e-48cc-8c28-c90634754842</id>
@@ -4386,8 +4386,8 @@
 			<power>
 				<id>96eab5ca-4d3b-4b5a-a8dd-5430c0513d31</id>
 				<name>Venom</name>
-				<page>160</page>
 				<translate>Gift</translate>
+				<altpage>397</altpage>
 			</power>
 			<power translated="True">
 				<id>f8ae2d3f-cd93-47d3-bf4c-652464a871ba</id>
@@ -6420,35 +6420,35 @@
 				<translate>Watcher</translate>
 				<altpage>303</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>19fab76c-5420-4961-905c-336dae200c2b</id>
 				<name>Guardian Spirit</name>
-				<translate>Schutzgeist</translate>
-				<altpage>96</altpage>
+				<translate>Beschützergeist</translate>
+				<altpage>223</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>78985b33-9957-43e1-9095-1fae3242ef1a</id>
 				<name>Guidance Spirit</name>
 				<translate>Ratgebergeist</translate>
-				<altpage>97</altpage>
+				<altpage>224</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>f0fe95d7-0d9a-4615-bb1b-a6a965f6cb81</id>
 				<name>Plant Spirit</name>
 				<translate>Pflanzengeist</translate>
-				<altpage>98</altpage>
+				<altpage>223</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>c527ac71-e69c-400b-a944-f0cbf508fd2a</id>
 				<name>Task Spirit</name>
 				<translate>Helfergeist</translate>
-				<altpage>96</altpage>
+				<altpage>223</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>06c44cd2-528e-48ef-ad60-cfc943a4af9d</id>
 				<name>Abomination Spirit</name>
 				<translate>Abscheulichkeit</translate>
-				<altpage>144</altpage>
+				<altpage>91</altpage>
 			</metatype>
 			<metatype>
 				<id>bce587d2-812e-43d6-855d-3b93cd0b4b4a</id>
@@ -6618,65 +6618,65 @@
 				<translate>Leid</translate>
 				<altpage>145</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>76b09596-4d6c-44a8-befb-01166f9f1ba0</id>
 				<name>Nuclear Spirit</name>
 				<translate>Nuklear</translate>
-				<altpage>146</altpage>
+				<altpage>92</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>ca0367a5-889a-49d1-a8a4-08155b9d737c</id>
 				<name>Sludge Spirit</name>
 				<translate>Schlamm</translate>
-				<altpage>146</altpage>
+				<altpage>92</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>5f9921cb-52f5-4291-aa59-9c2e9577fdd9</id>
 				<name>Caretaker Spirit</name>
 				<translate>Pfleger</translate>
-				<altpage>152</altpage>
+				<altpage>103</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>5d6c8586-fda7-496f-bc4e-8b972ddbc24b</id>
 				<name>Nymph Spirit</name>
 				<translate>Nymphe</translate>
-				<altpage>152</altpage>
+				<altpage>103</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>2d010755-0efa-439b-81ba-b39a42cb0ae5</id>
 				<name>Scout Spirit</name>
 				<translate>Späher</translate>
-				<altpage>152</altpage>
+				<altpage>104</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>81ddedd0-1624-4e4d-94ba-f2614b875e77</id>
 				<name>Soldier Spirit</name>
 				<translate>Soldat</translate>
-				<altpage>152</altpage>
+				<altpage>104</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>ce75e8b1-10a1-43b6-b5a7-5214c360c5b8</id>
 				<name>Worker Spirit</name>
 				<translate>Arbeiter</translate>
-				<altpage>153</altpage>
+				<altpage>103</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>0fda263d-e9f5-475f-8312-2eb4f53480e2</id>
 				<name>Queen/Mother Spirit</name>
-				<translate>Königin-/Muttergeist</translate>
-				<altpage>152</altpage>
+				<translate>Königin/Mutter</translate>
+				<altpage>104</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>67ac70ce-554b-45bb-affc-1de3b29e0696</id>
 				<name>Shedim</name>
 				<translate>Shedim</translate>
-				<altpage>155</altpage>
+				<altpage>98</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>5b122a59-408e-4634-855a-763b25fbad16</id>
 				<name>Master Shedim</name>
 				<translate>Meistershedim</translate>
-				<altpage>155</altpage>
+				<altpage>98</altpage>
 			</metatype>
 			<metatype>
 				<id>500fcf63-30e0-4c96-913e-ab79a3e82931</id>
@@ -7416,35 +7416,35 @@
 				<translate>Massaker</translate>
 				<altpage>163</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>b3172604-44ee-4d9d-94d7-f37ee5f85527</id>
 				<name>Muse</name>
 				<translate>Muse</translate>
-				<altpage>164</altpage>
+				<altpage>96</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>1bb77459-4693-4bbb-9781-e09e758d564e</id>
 				<name>Nightmare</name>
 				<translate>Nachtmahr</translate>
-				<altpage>164</altpage>
+				<altpage>96</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>461c0597-5b0c-4b87-85c0-6ef06f8e49ae</id>
 				<name>Shade</name>
 				<translate>Nachtschatten</translate>
-				<altpage>164</altpage>
+				<altpage>97</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>2a111f59-102f-477c-9e94-a4d015324159</id>
 				<name>Succubus</name>
 				<translate>Sukkubus</translate>
-				<altpage>164</altpage>
+				<altpage>97</altpage>
 			</metatype>
-			<metatype>
+			<metatype translated="True">
 				<id>f093c6e5-f5e1-4678-a927-97e35cd684dd</id>
 				<name>Wraith</name>
 				<translate>Wraith</translate>
-				<altpage>164</altpage>
+				<altpage>97</altpage>
 			</metatype>
 			<metatype>
 				<id>8958c476-e37e-4783-b6d9-54a0acfd846a</id>
@@ -7694,20 +7694,20 @@
 			<metatype>
 				<id>f870f03a-9953-468f-bc15-c1d9e13a81c5</id>
 				<name>Barren Spirit</name>
-				<translate>Barren Spirit</translate>
-				<altpage>88</altpage>
+				<translate>Ödnis</translate>
+				<altpage>92</altpage>
 			</metatype>
 			<metatype>
 				<id>ed2dfa45-8827-4470-8edb-f8203db47e82</id>
 				<name>Plague Spirit</name>
-				<translate>Plague Spirit</translate>
-				<altpage>88</altpage>
+				<translate>Seuche</translate>
+				<altpage>92</altpage>
 			</metatype>
 			<metatype>
 				<id>2e2bf724-7303-4be7-8010-1c59ff65811a</id>
 				<name>Noxious Spirit</name>
-				<translate>Noxious Spirit</translate>
-				<altpage>87</altpage>
+				<translate>Smog</translate>
+				<altpage>93</altpage>
 			</metatype>
 			<metatype>
 				<id>634f4b85-5f11-4069-9479-08512772451d</id>
@@ -7800,8 +7800,8 @@
 			<grade>
 				<id>4db89466-a1e7-4507-9849-9ce3eef56fc9</id>
 				<name>Standard (Burnout's Way) (Adapsin)</name>
-				<translate>Standard (Burnout's Way) (Adapsin)</translate>
-				<altpage>177</altpage>
+				<translate>Standard (Weg des Ausgebrannten) (Adapsin)</translate>
+				<altpage>207</altpage>
 			</grade>
 			<grade>
 				<id>f248cee4-4629-40ca-83c6-fbf6422d0cd9</id>
@@ -10180,7 +10180,7 @@
 			<category translate="Nanotech-Ausrüstung">Nanogear</category>
 			<category translate="Dienstleistungen">Services</category>
 			<category translate="Softwareanpassungen">Software Tweaks</category>
-			<category translate="Alchemical Tools">Alchemical Tools</category>
+			<category translate="Alchemistische Werkzeuge">Alchemical Tools</category>
 			<category translate="Autosofts" translated="True">Autosofts</category>
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
@@ -11042,23 +11042,23 @@
 				<translate>Zen</translate>
 				<altpage>414</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>e7b70355-cf78-4680-93f2-da82b6fc98a5</id>
 				<name>Sage</name>
 				<translate>Weissicht</translate>
-				<altpage>99</altpage>
+				<altpage>255</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b6bbfa14-9b0f-4474-a182-4f374c1efae2</id>
 				<name>Spirit Strength</name>
 				<translate>Geiststärke</translate>
-				<altpage>98</altpage>
+				<altpage>254</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>000dd333-262f-4b51-8c66-01495b0df8ab</id>
 				<name>Witch's Moss</name>
 				<translate>Hexenmoos</translate>
-				<altpage>98</altpage>
+				<altpage>254</altpage>
 			</gear>
 			<gear>
 				<id>8b2b55ed-89d2-4133-b478-41cd9d996c96</id>
@@ -11216,11 +11216,11 @@
 				<translate>Medkit-Nachfüllpack</translate>
 				<altpage>454</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>27a48b54-af7d-4374-b41c-a4f9dd234af5</id>
 				<name>Quicksilver Camera</name>
 				<translate>Quecksilberkamera</translate>
-				<altpage>73</altpage>
+				<altpage>250</altpage>
 			</gear>
 			<gear>
 				<id>691af444-8ffc-406b-9999-4ff2058eff1f</id>
@@ -11564,11 +11564,11 @@
 				<translate>Schnellziehholster</translate>
 				<altpage>435</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>bdb141a3-7104-4d9e-a939-6f2d75678c0f</id>
 				<name>Lot's Curse</name>
 				<translate>Lots Fluch</translate>
-				<altpage>51</altpage>
+				<altpage>250</altpage>
 			</gear>
 			<gear>
 				<id>f486f414-ee2c-46db-92ea-c682861d8fe0</id>
@@ -12824,113 +12824,113 @@
 				<translate>Reagenzien, pro Dram</translate>
 				<altpage>316</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>dfb20beb-a64c-4d75-b606-9e4f24622e02</id>
 				<name>Fetish</name>
 				<translate>Fetisch</translate>
-				<altpage>212</altpage>
+				<altpage>247</altpage>
 			</gear>
 			<gear>
 				<id>95e064d4-74ee-4bd5-83a3-ad9fc3716d75</id>
 				<name>Aqua Fictus</name>
-				<translate>Aqua Fictus</translate>
-				<altpage>211</altpage>
+				<translate>Aqua Ficta</translate>
+				<altpage>245</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d55ecc94-4e6c-42ef-a301-cda5f0953cb5</id>
 				<name>Aqua Fortis</name>
 				<translate>Aqua Fortis</translate>
-				<altpage>211</altpage>
+				<altpage>245</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>dc5007bb-dd53-4bc1-b368-0dc4cc9382a7</id>
 				<name>Aqua Regia</name>
 				<translate>Aqua Regia</translate>
-				<altpage>211</altpage>
+				<altpage>245</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>427ecc59-a167-4f17-9d41-7bfa6c0195b7</id>
 				<name>Aqua Vitae</name>
 				<translate>Aqua Vitae</translate>
-				<altpage>211</altpage>
+				<altpage>245</altpage>
 			</gear>
 			<gear>
 				<id>46df3e72-c366-4cbc-a243-f1e2d6c6ef1c</id>
 				<name>Astral Powder</name>
-				<translate>Astral Powder</translate>
-				<altpage>212</altpage>
+				<translate>Astralpulver</translate>
+				<altpage>246</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>e9853b6e-0051-4476-ac8a-da99ccba8ef3</id>
 				<name>Govi</name>
 				<translate>Govi</translate>
-				<altpage>212</altpage>
+				<altpage>247</altpage>
 			</gear>
 			<gear>
 				<id>77f8fb1a-887a-4160-86c2-66171b43ccf4</id>
 				<name>Hand of Glory</name>
-				<translate>Hand of Glory</translate>
-				<altpage>213</altpage>
+				<translate>Hand des Ruhms</translate>
+				<altpage>248</altpage>
 			</gear>
 			<gear>
 				<id>3ada3fa8-48c6-4128-8456-c67fd5f29296</id>
 				<name>Mana-Sensitive Film Plate</name>
-				<translate>Mana-Sensitive Film Plate</translate>
-				<altpage>214</altpage>
+				<translate>Manasensitive Filmplatte</translate>
+				<altpage>248</altpage>
 			</gear>
 			<gear>
 				<id>cd44c436-e80e-4a67-95e9-a6e262014cd4</id>
 				<name>Mortis Optigram</name>
-				<translate>Mortis Optigram</translate>
-				<altpage>214</altpage>
+				<translate>Mortis-Optigramm</translate>
+				<altpage>248</altpage>
 			</gear>
 			<gear>
 				<id>e30c06c3-50d1-4e44-ab10-908075314fdd</id>
 				<name>Mystic Cuff</name>
-				<translate>Mystic Cuff</translate>
-				<altpage>214</altpage>
+				<translate>Mystische Handschellen</translate>
+				<altpage>248</altpage>
 			</gear>
 			<gear>
 				<id>5dfe1cbd-1a56-40b9-bae4-8358352f40db</id>
 				<name>Mystic Jacket</name>
-				<translate>Mystic Jacket</translate>
-				<altpage>214</altpage>
+				<translate>Mystische Jacke</translate>
+				<altpage>248</altpage>
 			</gear>
 			<gear>
 				<id>563ce20d-60e8-48de-9ef2-d2c65dbc9959</id>
 				<name>Mystic Mask</name>
-				<translate>Mystic Mask</translate>
-				<altpage>214</altpage>
+				<translate>Mystische Maske</translate>
+				<altpage>248</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>21b32de3-683d-4f6f-afd4-3b6c97d35b10</id>
 				<name>Shofar</name>
 				<translate>Shofar</translate>
-				<altpage>216</altpage>
+				<altpage>250</altpage>
 			</gear>
 			<gear>
 				<id>d51852a6-c29a-4e1b-8b88-8b5320c16de3</id>
 				<name>Symbolic Link</name>
-				<translate>Symbolic Link</translate>
-				<altpage>216</altpage>
+				<translate>Symbolische Verbindung</translate>
+				<altpage>250</altpage>
 			</gear>
 			<gear>
 				<id>b68c62de-6dc0-489a-be2e-42f911fc04f3</id>
 				<name>Tool Cleanser (15 Uses)</name>
-				<translate>Tool Cleanser (15 Uses)</translate>
-				<altpage>230</altpage>
+				<translate>Werkzeugreiniger (15 Verwendungen)</translate>
+				<altpage>262</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>08b3bf17-e52a-41d4-b023-af6ee5354fe6</id>
 				<name>AgHexHex</name>
 				<translate>AgHexHex</translate>
-				<altpage>219</altpage>
+				<altpage>253</altpage>
 			</gear>
 			<gear>
 				<id>46e9dca6-bb11-4e33-8436-3dcadc23433c</id>
 				<name>BDNB</name>
-				<translate>BDNB</translate>
-				<altpage>220</altpage>
+				<translate>BHKL</translate>
+				<altpage>254</altpage>
 			</gear>
 			<gear>
 				<id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
@@ -16881,14 +16881,14 @@
 			<gear>
 				<id>c5cb8fca-2af8-43fe-b3ea-d8218d13f330</id>
 				<name>Magecuff</name>
-				<translate>Magecuff</translate>
-				<altpage>215</altpage>
+				<translate>Magierhandschellen</translate>
+				<altpage>249</altpage>
 			</gear>
 			<gear>
 				<id>e78d376c-76e0-479e-b2c1-9b094d89f0c1</id>
 				<name>Magemask</name>
-				<translate>Magemask</translate>
-				<altpage>215</altpage>
+				<translate>Magiermaske</translate>
+				<altpage>249</altpage>
 			</gear>
 			<gear>
 				<id>bf4c8326-13d0-4a58-bcc6-4d8d55b591d7</id>
@@ -19188,7 +19188,7 @@
 				<altdisadvantage>Wenn ein Anhänger von Berg einen Plan gefasst hat, bleibt er dabei. Er muss eine Probe auf Charisma + Willenskraft (3) schaffen, um ein geplantes Vorgehen aufzugeben und einem neuen Plan zu folgen. Wenn die Probe misslingt, muss er dem ursprünglichen Plan folgen - wenn nötig auch alleine. Genauso muss er eine Probe auf Charisma + Willenskraft (3) schaffen, um bei irgendetwas ganz ohne Plan vorzugehen.</altdisadvantage>
 				<altpage>320</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>f58d7493-864f-430d-b75c-a4f78575ed44</id>
 				<name>Mutation</name>
 				<translate>Mutation</translate>
@@ -19437,7 +19437,7 @@
 				<altdisadvantage>Der Charakter muss eine Probe auf Charisma + Willenskraft (3) schaffen, um einem Laster oder einer Neigung (Drogen, BTLs, Sex usw.) nicht bei erster Gelegenheit nachzugeben.</altdisadvantage>
 				<altpage>323</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>796d5046-572e-427e-a49d-3fb66972d07e</id>
 				<name>Berserker</name>
 				<translate>Berserker</translate>
@@ -19495,7 +19495,7 @@
 				<altdisadvantage>Berserker’s followers have very short fuses. Whenever someone strongly disagrees with you (gamemaster’s discretion), you must pass a Charisma + Willpower (3) Test to keep from striking out against the offender. If the test fails, the attack can be in any form you choose (fist, spell, etc.), but it must have the intent to cause damage.</altdisadvantage>
 				<altpage>231</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>2c6a5ac3-0d61-46dd-86a3-a630ebc91070</id>
 				<name>Chaos</name>
 				<translate>Chaos</translate>
@@ -20273,7 +20273,7 @@
 				<altdisadvantage>Gain the Distinctive Style negative quality.</altdisadvantage>
 				<altpage>179</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
 				<name>Klabautermann</name>
 				<translate>Klabautermann</translate>
@@ -20291,7 +20291,7 @@
 				<altdisadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</altdisadvantage>
 				<altpage>232</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>66377dd9-49ee-46cb-a67a-405d796056f0</id>
 				<name>Tatzelwurm</name>
 				<translate>Tatzelwurm</translate>
@@ -20309,7 +20309,7 @@
 				<altdisadvantage>Combat Junkie quality is gained for free.</altdisadvantage>
 				<altpage>234</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
 				<name>Wolpertinger</name>
 				<translate>Wolpertinger</translate>
@@ -20717,65 +20717,65 @@
 				<translate>Abschirmung</translate>
 				<altpage>234</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>fdea34cc-5ffd-4f93-a80a-f1973c08a2c3</id>
 				<name>Channeling</name>
 				<translate>Kanalisierung</translate>
-				<altpage>61</altpage>
+				<altpage>172</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>2cf811cd-1712-4c44-b20e-3f49ad8103a4</id>
 				<name>Cleansing</name>
 				<translate>Reinigung</translate>
-				<altpage>62</altpage>
+				<altpage>180</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>49f33f95-55fd-487f-9753-8b6207d021b9</id>
 				<name>Psychometry</name>
 				<translate>Psychometrie</translate>
-				<altpage>62</altpage>
+				<altpage>170</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>657034b0-7c9d-4f5e-8169-578bf18069e4</id>
 				<name>Sensing</name>
 				<translate>Sensibilisierung</translate>
-				<altpage>62</altpage>
+				<altpage>180</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>9540267c-d53c-4547-9bd2-e1f06723caee</id>
 				<name>Sympathetic Linking</name>
 				<translate>Sympathetische Verbindung</translate>
-				<altpage>63</altpage>
+				<altpage>169</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>94a38b4a-060d-4e95-bd58-665ff47929e7</id>
 				<name>Absorption</name>
 				<translate>Absorption</translate>
-				<altpage>64</altpage>
+				<altpage>176</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>bb1431df-c546-4799-8dd4-ec42125f1a47</id>
 				<name>Anchoring</name>
 				<translate>Verankerung</translate>
-				<altpage>66</altpage>
+				<altpage>179</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>1712175b-66ee-44bd-9149-d2f450cc63d2</id>
 				<name>Extended Masking</name>
 				<translate>Erweiterte Maskierung</translate>
-				<altpage>64</altpage>
+				<altpage>174</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>d1d6cd22-d65c-4218-a783-f7c6a62dfa48</id>
 				<name>Flux</name>
 				<translate>Strömung</translate>
-				<altpage>65</altpage>
+				<altpage>175</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>954aca74-bb3e-493d-8df1-3563803780e5</id>
 				<name>Infusion</name>
 				<translate>Infusion</translate>
-				<altpage>65</altpage>
+				<altpage>181</altpage>
 			</metamagic>
 			<metamagic>
 				<id>099af8f9-6d04-4aa5-8645-f7204a8bf9be</id>
@@ -20798,104 +20798,104 @@
 			<metamagic>
 				<id>f2720e1b-494d-4d5b-9de2-7dc367f5b2a8</id>
 				<name>Danger Sense</name>
-				<translate>Danger Sense</translate>
-				<altpage>145</altpage>
+				<translate>Gefahrsinn</translate>
+				<altpage>171</altpage>
 			</metamagic>
 			<metamagic>
 				<id>283f7a08-7e65-40d6-819c-ac40baf88f73</id>
 				<name>Exorcism</name>
-				<translate>Exorcism</translate>
-				<altpage>148</altpage>
+				<translate>Exorzismus</translate>
+				<altpage>173</altpage>
 			</metamagic>
 			<metamagic>
 				<id>81089c40-2a69-4ac3-b3e2-40ca1c9c4b6c</id>
 				<name>Astral Bluff</name>
-				<translate>Astral Bluff</translate>
-				<altpage>150</altpage>
+				<translate>Astraler Bluff</translate>
+				<altpage>182</altpage>
 			</metamagic>
 			<metamagic>
 				<id>102cc073-ba99-42a5-b5c6-37c9e87c3954</id>
 				<name>Reflection</name>
-				<translate>Reflection</translate>
-				<altpage>151</altpage>
+				<translate>Spiegelung</translate>
+				<altpage>176</altpage>
 			</metamagic>
 			<metamagic>
 				<id>bffb21bd-30d2-4af8-a632-1d10109a1d25</id>
 				<name>Advanced Alchemy</name>
-				<translate>Advanced Alchemy</translate>
-				<altpage>153</altpage>
+				<translate>Fortgeschrittene Alchemie</translate>
+				<altpage>177</altpage>
 			</metamagic>
 			<metamagic>
 				<id>00aa480b-792f-4196-810d-72a91bcb81d0</id>
 				<name>Efficient Ritual</name>
-				<translate>Efficient Ritual</translate>
-				<altpage>153</altpage>
+				<translate>Effizientes Ritual</translate>
+				<altpage>177</altpage>
 			</metamagic>
 			<metamagic>
 				<id>c98c7b04-052c-4f70-bb15-19aaed70d2b7</id>
 				<name>Greater Ritual</name>
-				<translate>Greater Ritual</translate>
-				<altpage>153</altpage>
+				<translate>Großes Ritual</translate>
+				<altpage>177</altpage>
 			</metamagic>
 			<metamagic>
 				<id>433c2fdb-7dfe-4876-988f-2ec868631922</id>
 				<name>Penetrating Spell</name>
-				<translate>Penetrating Spell</translate>
-				<altpage>153</altpage>
+				<translate>Durchdringender Zauber</translate>
+				<altpage>178</altpage>
 			</metamagic>
 			<metamagic>
 				<id>c860a479-4bb4-45f2-b4dd-dfe1ce39c045</id>
 				<name>Qi Sculpt</name>
-				<translate>Qi Sculpt</translate>
-				<altpage>156</altpage>
+				<translate>Qi-Formung</translate>
+				<altpage>181</altpage>
 			</metamagic>
 			<metamagic>
 				<id>69e7b92a-c5f9-4471-957f-839f5e7ac62d</id>
 				<name>Supernatural Prowess</name>
-				<translate>Supernatural Prowess</translate>
-				<altpage>156</altpage>
+				<translate>Übernatürliches Können</translate>
+				<altpage>182</altpage>
 			</metamagic>
 			<metamagic>
 				<id>443b0790-f4f3-40d4-9a13-2c6e42cbb4fa</id>
 				<name>Apex Predator</name>
-				<translate>Apex Predator</translate>
-				<altpage>157</altpage>
+				<translate>Perfektes Raubtier</translate>
+				<altpage>184</altpage>
 			</metamagic>
 			<metamagic>
 				<id>066207e4-dc08-4718-96c2-a6ab4d9d0380</id>
 				<name>Totem Form (Animal)</name>
-				<translate>Totem Form (Animal)</translate>
-				<altpage>157</altpage>
+				<translate>Totemform (Tier)</translate>
+				<altpage>184</altpage>
 			</metamagic>
 			<metamagic>
 				<id>c943ee91-ecad-4e84-bc8c-fab11b29090c</id>
 				<name>Stillness of the Void</name>
-				<translate>Stillness of the Void</translate>
-				<altpage>158</altpage>
+				<translate>Stille der Leere</translate>
+				<altpage>185</altpage>
 			</metamagic>
 			<metamagic>
 				<id>8c433e0e-d1ee-41d8-82bd-ecfc20c6a069</id>
 				<name>Domain of the Spiritual</name>
-				<translate>Domain of the Spiritual</translate>
-				<altpage>158</altpage>
+				<translate>Spirituelle Domäne</translate>
+				<altpage>182</altpage>
 			</metamagic>
 			<metamagic>
 				<id>8d16f0b3-ec2d-445e-b8f5-85ceeb32efe9</id>
 				<name>Fae-Touched</name>
-				<translate>Fae-Touched</translate>
-				<altpage>158</altpage>
+				<translate>Feenberührt</translate>
+				<altpage>184</altpage>
 			</metamagic>
 			<metamagic>
 				<id>67e53002-2302-47c6-bc3c-f0b455e73672</id>
 				<name>Presence</name>
-				<translate>Presence</translate>
-				<altpage>159</altpage>
+				<translate>Präsenz</translate>
+				<altpage>184</altpage>
 			</metamagic>
 			<metamagic>
 				<id>605f3c8e-96c2-40f0-a09a-2857d2c5bbe6</id>
 				<name>Domain of the Warrior</name>
-				<translate>Domain of the Warrior</translate>
-				<altpage>159</altpage>
+				<translate>Domäne des Kriegers</translate>
+				<altpage>182</altpage>
 			</metamagic>
 			<metamagic>
 				<id>d220ba19-5259-4d12-a61e-49c751640b4b</id>
@@ -21022,104 +21022,104 @@
 			<art>
 				<id>5b922bcf-4114-4c49-a4f3-0f3dcb45dd2f</id>
 				<name>Geomancy</name>
-				<translate>Geomancy</translate>
-				<altpage>143</altpage>
+				<translate>Geomantie</translate>
+				<altpage>167</altpage>
 			</art>
 			<art>
 				<id>fa64531c-5f86-45a0-aaaf-b8425a5b6dd1</id>
 				<name>Necromancy</name>
-				<translate>Necromancy</translate>
-				<altpage>143</altpage>
+				<translate>Nekromantie</translate>
+				<altpage>168</altpage>
 			</art>
 			<art>
 				<id>9613228a-6c83-41f4-beaa-20ce6276334f</id>
 				<name>Psychometry</name>
-				<translate>Psychometry</translate>
-				<altpage>144</altpage>
+				<translate>Psychometrie</translate>
+				<altpage>168</altpage>
 			</art>
 			<art>
 				<id>dec1323e-c728-45c6-8d24-59725e885dba</id>
 				<name>Divination</name>
-				<translate>Divination</translate>
-				<altpage>147</altpage>
+				<translate>Weissagung</translate>
+				<altpage>171</altpage>
 			</art>
 			<art>
 				<id>155c3b67-7118-4cd6-90fa-d8d6a3dfe21b</id>
 				<name>Invocation</name>
-				<translate>Invocation</translate>
-				<altpage>147</altpage>
+				<translate>Anrufung</translate>
+				<altpage>172</altpage>
 			</art>
 			<art>
 				<id>adc0e5e6-29b3-4b9c-83ba-d06f30f597e5</id>
 				<name>Channeling</name>
-				<translate>Channeling</translate>
-				<altpage>148</altpage>
+				<translate>Kanalisierung</translate>
+				<altpage>172</altpage>
 			</art>
 			<art>
 				<id>c0fb021c-8dc3-46a5-9a88-7a4e15210d7d</id>
 				<name>Exorcism</name>
-				<translate>Exorcism</translate>
-				<altpage>148</altpage>
+				<translate>Exorzismus</translate>
+				<altpage>173</altpage>
 			</art>
 			<art>
 				<id>04e9d62d-3e45-45b5-8743-0fc8c74ee69b</id>
 				<name>Masking</name>
-				<translate>Masking</translate>
-				<altpage>149</altpage>
+				<translate>Maskierung</translate>
+				<altpage>173</altpage>
 			</art>
 			<art>
 				<id>8691b2b4-dc2d-4ce4-8b75-931ef61ea874</id>
 				<name>Flexible Signature</name>
-				<translate>Flexible Signature</translate>
-				<altpage>149</altpage>
+				<translate>Flexible Signatur</translate>
+				<altpage>174</altpage>
 			</art>
 			<art>
 				<id>dd8b45f3-054d-4b96-a065-0ca249de60cb</id>
 				<name>Apotropaic Magic</name>
-				<translate>Apotropaic Magic</translate>
-				<altpage>150</altpage>
+				<translate>Abwehrmagie</translate>
+				<altpage>175</altpage>
 			</art>
 			<art>
 				<id>022c5efc-cd66-4e6e-8031-800a614d1cd8</id>
 				<name>Quickening</name>
-				<translate>Quickening</translate>
-				<altpage>152</altpage>
+				<translate>Intensivierung</translate>
+				<altpage>178</altpage>
 			</art>
 			<art>
 				<id>1aa93daa-ffee-4e35-9141-a849f739e2b2</id>
 				<name>Advanced Alchemy</name>
-				<translate>Advanced Alchemy</translate>
-				<altpage>153</altpage>
+				<translate>Fortgeschrittene Alchemie</translate>
+				<altpage>177</altpage>
 			</art>
 			<art>
 				<id>28b078bf-22eb-4ba7-8689-e0d9f357ceb1</id>
 				<name>Advanced Ritual Casting</name>
-				<translate>Advanced Ritual Casting</translate>
-				<altpage>153</altpage>
+				<translate>Fortgeschrittene Ritualzauberei</translate>
+				<altpage>177</altpage>
 			</art>
 			<art>
 				<id>10071e27-4cdd-4b17-8e8c-1de28713839b</id>
 				<name>Advanced Spellcasting</name>
-				<translate>Advanced Spellcasting</translate>
-				<altpage>153</altpage>
+				<translate>Fortgeschrittene Spruchzauberei</translate>
+				<altpage>178</altpage>
 			</art>
 			<art>
 				<id>fa4098b8-4075-4656-8c07-35d7dc0e63a8</id>
 				<name>Centering</name>
-				<translate>Centering</translate>
-				<altpage>154</altpage>
+				<translate>Zentrierung</translate>
+				<altpage>178</altpage>
 			</art>
 			<art>
 				<id>1ea5a816-2d5b-4dd2-86b0-0f780c68872f</id>
 				<name>Cleansing</name>
-				<translate>Cleansing</translate>
-				<altpage>154</altpage>
+				<translate>Reinigung</translate>
+				<altpage>180</altpage>
 			</art>
 			<art>
 				<id>4a1e34dc-38c9-48e8-9808-a0cf9b1009af</id>
 				<name>Sensing</name>
-				<translate>Sensing</translate>
-				<altpage>155</altpage>
+				<translate>Sensibilisierung</translate>
+				<altpage>180</altpage>
 			</art>
 			<art>
 				<id>d28fb2f1-e0e6-4ca6-8e26-43d1487d612a</id>
@@ -22788,17 +22788,17 @@
 	</chummer>
 	<chummer file="powers.xml">
 		<powers>
-			<power>
+			<power translated="True">
 				<id>0099ad65-bcc1-47a5-a241-02f621e7c33a</id>
 				<name>Analytics</name>
 				<translate>Analytik</translate>
-				<altpage>206</altpage>
+				<altpage>195</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>870edcf8-cb19-4e15-948c-1b3bf80ac651</id>
 				<name>Animal Empathy</name>
 				<translate>Tierempathie</translate>
-				<altpage>214</altpage>
+				<altpage>205</altpage>
 			</power>
 			<power>
 				<id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
@@ -22812,23 +22812,23 @@
 				<translate>Attributschub</translate>
 				<altpage>308</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>80577dac-7697-4da9-87fd-d4442dc34560</id>
 				<name>Berserk</name>
 				<translate>Berserker</translate>
-				<altpage>207</altpage>
+				<altpage>195</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>f3df89bb-71f6-41d8-a86d-4bde1ab74352</id>
 				<name>Blind Fighting</name>
 				<translate>Blindkampf</translate>
-				<altpage>207</altpage>
+				<altpage>196</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>42baa818-50ca-4c6b-b316-780a51df9c97</id>
 				<name>Cloak</name>
 				<translate>Mystischer Mantel</translate>
-				<altpage>212</altpage>
+				<altpage>203</altpage>
 			</power>
 			<power>
 				<id>76337564-7688-497f-84f9-302c6ece10fe</id>
@@ -22842,17 +22842,17 @@
 				<translate>Befehlsstimme</translate>
 				<altpage>207</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>deec22db-cf2c-47b6-ac34-95a13bcd0bf8</id>
 				<name>Cool Resolve</name>
 				<translate>Kalte Entschlossenheit</translate>
-				<altpage>211</altpage>
+				<altpage>201</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>6770cfab-8c1a-4c6d-add7-f7d96220e9b0</id>
 				<name>Counterstrike</name>
 				<translate>Gegenangriff</translate>
-				<altpage>210</altpage>
+				<altpage>199</altpage>
 			</power>
 			<power>
 				<id>dbf16604-164c-485c-96c8-fe3136cd5caa</id>
@@ -22860,17 +22860,17 @@
 				<translate>Kritischer Schlag</translate>
 				<altpage>310</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>3d27c3bb-9cca-45c2-b8b1-6225a236069b</id>
 				<name>Elemental Strike</name>
 				<translate>Elementarer Schlag</translate>
-				<altpage>208</altpage>
+				<altpage>197</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>6680b68d-77df-4fe4-a722-30464dd3c646</id>
 				<name>Empathic Healing</name>
 				<translate>Empathische Heilung</translate>
-				<altpage>208</altpage>
+				<altpage>198</altpage>
 			</power>
 			<power>
 				<id>974d2aba-1772-474b-aaff-c84a12766e5f</id>
@@ -22878,23 +22878,23 @@
 				<translate>Verbesserte Wahrnehmung</translate>
 				<altpage>311</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>fbd06bae-b3ba-4514-8d90-870eff1c336b</id>
 				<name>Facial Sculpt</name>
 				<translate>Gesichtsformung</translate>
-				<altpage>210</altpage>
+				<altpage>200</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>438fb5de-9c09-4421-a6a8-c3d68ba8aada</id>
 				<name>Flexibility</name>
 				<translate>Flexibilität</translate>
-				<altpage>209</altpage>
+				<altpage>198</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>88bf5626-6cf8-4dcc-bfc0-8abc889cdf4e</id>
 				<name>Freefall</name>
 				<translate>Freier Fall</translate>
-				<altpage>210</altpage>
+				<altpage>198</altpage>
 			</power>
 			<power>
 				<id>901d2af5-246a-447a-a8e2-b2e8c10593df</id>
@@ -22914,17 +22914,17 @@
 				<translate>Geschärfter Sinn</translate>
 				<altpage>309</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>da59618c-059d-4cc5-adb5-c61e6049378c</id>
 				<name>Inertia Strike</name>
 				<translate>Trägheitsschlag</translate>
-				<altpage>214</altpage>
+				<altpage>206</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
 				<name>Keratin Control</name>
 				<translate>Keratinkontrolle</translate>
-				<altpage>209</altpage>
+				<altpage>201</altpage>
 			</power>
 			<power>
 				<id>23636777-44df-44f1-8742-db29dc3c4fdf</id>
@@ -22938,11 +22938,11 @@
 				<translate>Körpersprache</translate>
 				<altpage>309</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>e1e242c3-cb63-476f-9868-90c311b36383</id>
 				<name>Kinesics Mastery</name>
 				<translate>Perfekte Körpersprache</translate>
-				<altpage>209</altpage>
+				<altpage>204</altpage>
 			</power>
 			<power>
 				<id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
@@ -22950,17 +22950,17 @@
 				<translate>Leichte Berührung</translate>
 				<altpage>209</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>44f0bbba-184a-4e76-93de-19862ac6607b</id>
 				<name>Linguistics</name>
 				<translate>Sprachtalent</translate>
-				<altpage>213</altpage>
+				<altpage>205</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
 				<name>Living Focus</name>
 				<translate>Lebender Fokus</translate>
-				<altpage>212</altpage>
+				<altpage>202</altpage>
 			</power>
 			<power>
 				<id>d20f0441-a290-4732-829f-3138d446aad4</id>
@@ -22968,35 +22968,35 @@
 				<translate>Magiegespür</translate>
 				<altpage>212</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>2149818a-22b0-4267-83d6-7b3c27d4ee69</id>
 				<name>Melanin Control</name>
 				<translate>Melaninkontrolle</translate>
-				<altpage>212</altpage>
+				<altpage>203</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>ecd611b4-dda6-4683-b7a9-850a469a3274</id>
 				<name>Metabolic Control</name>
 				<translate>Stoffwechselkontrolle</translate>
-				<altpage>214</altpage>
+				<altpage>205</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1221e699-e61b-4aed-adbb-a8eec02a65e2</id>
 				<name>Missile Mastery</name>
 				<translate>Geschossmeisterschaft</translate>
-				<altpage>210</altpage>
+				<altpage>200</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>c152dcba-8bb7-4a2a-86bb-6f854ea53b55</id>
 				<name>Missile Parry</name>
 				<translate>Geschossparade</translate>
-				<altpage>309</altpage>
+				<altpage>200</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>930ace31-a2a2-4616-8dfb-1074e4be76c9</id>
 				<name>Motion Sense</name>
 				<translate>Bewegungsgespür</translate>
-				<altpage>207</altpage>
+				<altpage>196</altpage>
 			</power>
 			<power>
 				<id>da5f9389-a5fd-48ed-8825-8852ff5c56a8</id>
@@ -23010,23 +23010,23 @@
 				<translate>Natürliche Immunität</translate>
 				<altpage>310</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>d1279546-69a6-4c35-9b3d-0211138050e8</id>
 				<name>Nerve Strike</name>
 				<translate>Nervenschlag</translate>
-				<altpage>212</altpage>
+				<altpage>203</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1ec402f1-6139-4f94-8e86-92aa463bf536</id>
 				<name>Nimble Fingers</name>
 				<translate>Geschickte Finger</translate>
-				<altpage>210</altpage>
+				<altpage>200</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>adda6c9c-703b-4361-a4dd-d7ebfd3c138d</id>
 				<name>Pain Relief</name>
 				<translate>Schmerzerleichterung</translate>
-				<altpage>213</altpage>
+				<altpage>204</altpage>
 			</power>
 			<power>
 				<id>545a4bec-c144-42a1-b553-6d6c0c91f07f</id>
@@ -23034,11 +23034,11 @@
 				<translate>Schmerzresistenz</translate>
 				<altpage>310</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>70311f5c-a019-47b9-be21-e9a8d270e32e</id>
 				<name>Penetrating Strike</name>
 				<translate>Durchdringender Schlag</translate>
-				<altpage>208</altpage>
+				<altpage>197</altpage>
 			</power>
 			<power>
 				<id>4676b6f7-120d-4344-81ac-5922445a521b</id>
@@ -23046,11 +23046,11 @@
 				<translate>Beschleunigte Heilung</translate>
 				<altpage>308</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>1dc0b5c6-94a8-4598-a017-f6399d9175da</id>
 				<name>Smashing Blow</name>
 				<translate>Trümmerschlag</translate>
-				<altpage>214</altpage>
+				<altpage>206</altpage>
 			</power>
 			<power>
 				<id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
@@ -23058,23 +23058,23 @@
 				<translate>Magieresistenz</translate>
 				<altpage>310</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>772e0298-8abf-42b7-9734-359cadcb8d1e</id>
 				<name>Sustenance</name>
 				<translate>Genügsamkeit</translate>
-				<altpage>210</altpage>
+				<altpage>199</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>bf425bd4-f112-4218-b729-2e8bb32f3b2b</id>
 				<name>Temperature Tolerance</name>
 				<translate>Temperaturresistenz</translate>
-				<altpage>214</altpage>
+				<altpage>205</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>61406917-9d88-440f-a756-16bdf6ffb37e</id>
 				<name>Three-Dimensional Memory</name>
 				<translate>Dreidimensionales Gedächtnis</translate>
-				<altpage>207</altpage>
+				<altpage>196</altpage>
 			</power>
 			<power>
 				<id>3f3fcdbc-c046-4a95-bd46-511a76d75b56</id>
@@ -23127,74 +23127,74 @@
 			<power>
 				<id>59455eae-beb5-45fc-b19d-dc3aff65335d</id>
 				<name>Berserker's Rage</name>
-				<translate>Berserker's Rage</translate>
-				<altpage>169</altpage>
+				<translate>Berserkerwut</translate>
+				<altpage>195</altpage>
 			</power>
 			<power>
 				<id>1eb8d3fa-2a67-4b71-a9de-dfbf5236eeda</id>
 				<name>Elemental Body</name>
-				<translate>Elemental Body</translate>
-				<altpage>170</altpage>
+				<translate>Elementarer Körper</translate>
+				<altpage>197</altpage>
 			</power>
 			<power>
 				<id>eb323003-4112-42ad-955a-00211e43e6d1</id>
 				<name>Elemental Weapon</name>
-				<translate>Elemental Weapon</translate>
-				<altpage>170</altpage>
+				<translate>Elementare Waffe</translate>
+				<altpage>197</altpage>
 			</power>
 			<power>
 				<id>c59c1bb0-9b3e-41be-9079-8982b451fe45</id>
 				<name>Hang Time</name>
-				<translate>Hang Time</translate>
-				<altpage>171</altpage>
+				<translate>Fester Halt</translate>
+				<altpage>198</altpage>
 			</power>
 			<power>
 				<id>941225f2-148b-484e-a2b2-0a32cc7debe1</id>
 				<name>Plague Cloud</name>
-				<translate>Plague Cloud</translate>
-				<altpage>173</altpage>
+				<translate>Seuchenwolke</translate>
+				<altpage>204</altpage>
 			</power>
 			<power>
 				<id>832a418d-4d55-433c-8230-4b04f05ba6d9</id>
 				<name>Rapid Draw</name>
-				<translate>Rapid Draw</translate>
-				<altpage>173</altpage>
+				<translate>Schnellziehen</translate>
+				<altpage>204</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<id>11f3fa59-e06d-4816-87a9-b74664d1ae9a</id>
 				<name>Riposte</name>
 				<translate>Riposte</translate>
-				<altpage>174</altpage>
+				<altpage>204</altpage>
 			</power>
 			<power>
 				<id>c0d647dd-4f66-42a6-9040-202b1bba4b71</id>
 				<name>Skate</name>
-				<translate>Skate</translate>
-				<altpage>174</altpage>
+				<translate>Gleiten</translate>
+				<altpage>201</altpage>
 			</power>
 			<power>
 				<id>24bc482d-9ce3-4d0a-bd43-31311b6716d6</id>
 				<name>Spirit Claw</name>
-				<translate>Spirit Claw</translate>
-				<altpage>174</altpage>
+				<translate>Geisterkralle</translate>
+				<altpage>199</altpage>
 			</power>
 			<power>
 				<id>6145977c-5825-4358-b0db-1d189cd9d402</id>
 				<name>Spirit Ram</name>
-				<translate>Spirit Ram</translate>
-				<altpage>174</altpage>
+				<translate>Geisterramme</translate>
+				<altpage>199</altpage>
 			</power>
 			<power>
 				<id>02eb1616-9361-47a8-acc8-030566d9a0ea</id>
 				<name>Stillness</name>
-				<translate>Stillness</translate>
-				<altpage>174</altpage>
+				<translate>Bewegungslosigkeit</translate>
+				<altpage>196</altpage>
 			</power>
 			<power>
 				<id>6ed1a784-1097-4db8-b179-e4198493c2f0</id>
 				<name>Toxic Strike</name>
-				<translate>Toxic Strike</translate>
-				<altpage>176</altpage>
+				<translate>Toxischer Schlag</translate>
+				<altpage>206</altpage>
 			</power>
 			<power>
 				<id>0f0a55a8-5c39-4568-a15d-219b3664b10f</id>
@@ -23385,8 +23385,8 @@
 			<power>
 				<id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
 				<name>Authoritative Tone</name>
-				<translate>Authoritative Tone</translate>
-				<altpage>170</altpage>
+				<translate>Gebieterischer Ton</translate>
+				<altpage>199</altpage>
 			</power>
 			<power>
 				<id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
@@ -24889,11 +24889,11 @@
 				<translate>Schwanger</translate>
 				<altpage>13</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>34d7e834-4fbe-49b1-86e8-a9ff354fd972</id>
 				<name>Spirit Champion</name>
 				<translate>Held der Geisterwelt</translate>
-				<altpage>230</altpage>
+				<altpage>231</altpage>
 			</quality>
 			<quality>
 				<id>94a4cc04-d856-418f-ac60-165f327433d5</id>
@@ -25804,11 +25804,11 @@
 				<translate>Naturliche Waffe: Tritt (Zentaur)</translate>
 				<altpage>81</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
 				<name>Magic Sense</name>
 				<source>SG</source>
-				<translate>Magie Gespühr</translate>
+				<translate>Magiegespühr</translate>
 				<altpage>203</altpage>
 			</quality>
 			<quality>
@@ -28589,10 +28589,6 @@
 					<spec translate="Ratgebergeist">Guidance Spirit</spec>
 					<spec translate="Pflanzengeist">Plant Spirit</spec>
 					<spec translate="Helfergeist">Task Spirit</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
 				</specs>
 				<altpage>143</altpage>
 			</skill>
@@ -28611,10 +28607,6 @@
 					<spec translate="Ratgebergeist">Guidance Spirit</spec>
 					<spec translate="Pflanzengeist">Plant Spirit</spec>
 					<spec translate="Helfergeist">Task Spirit</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
 				</specs>
 				<altpage>143</altpage>
 			</skill>
@@ -29202,10 +29194,10 @@
 					<spec translate="Feuergeister">Spirits of Fire</spec>
 					<spec translate="Geister des Menschen">Spirits of Man</spec>
 					<spec translate="Wassergeister">Spirits of Water</spec>
-					<spec translate="Guardian Spirit">Guardian Spirit</spec>
-					<spec translate="Guidance Spirit">Guidance Spirit</spec>
-					<spec translate="Plant Spirit">Plant Spirit</spec>
-					<spec translate="Task Spirit">Task Spirit</spec>
+					<spec translate="Beschützergeist">Guardian Spirit</spec>
+					<spec translate="Ratgebergeist">Guidance Spirit</spec>
+					<spec translate="Pflanzengeist">Plant Spirit</spec>
+					<spec translate="Helfergeist">Task Spirit</spec>
 				</specs>
 				<altpage>143</altpage>
 			</skill>
@@ -32355,11 +32347,11 @@
 				<translate>Stoß</translate>
 				<altpage>287</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>45d775c9-d12f-4416-a45a-88922ec3c2fd</id>
 				<name>Corrode [Object]</name>
 				<translate>[Objekt] verätzen</translate>
-				<altpage>194</altpage>
+				<altpage>120</altpage>
 			</spell>
 			<spell>
 				<id>9baed162-5e84-4f19-9b94-d543a560c067</id>
@@ -32367,17 +32359,17 @@
 				<translate>Todeshand</translate>
 				<altpage>286</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>da0462d4-f068-449d-a3c3-4678dc0adade</id>
 				<name>Demolish [Object]</name>
 				<translate>[Objekt] vernichten</translate>
-				<altpage>194</altpage>
+				<altpage>120</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>a6f43dcf-c0cc-4da9-af25-1516f2564200</id>
 				<name>Destroy [Free Spirit]</name>
 				<source>SM</source>
-				<translate>[Freien Geist] Vernichten</translate>
+				<translate>[Freien Geist] vernichten</translate>
 				<altpage>119</altpage>
 			</spell>
 			<spell>
@@ -32422,22 +32414,22 @@
 				<translate>Manablitz</translate>
 				<altpage>286</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>7a2101ff-6606-4b3e-b1c1-2f7ea74679dd</id>
 				<name>Melt [Object]</name>
 				<translate>[Objekt] zersetzen</translate>
 				<altpage>120</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>577871f2-f294-4db9-94f0-5790d0576a4b</id>
 				<name>Napalm</name>
 				<translate>Napalm</translate>
 				<altpage>120</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>894e4bea-883e-421b-8a6f-6ca61274cca3</id>
 				<name>One Less [Metatype/Species]</name>
-				<translate>Ein [Metatyp/Spezies] weniger</translate>
+				<translate>Ein [Metatyp/Spezies] Weniger</translate>
 				<altpage>118</altpage>
 			</spell>
 			<spell>
@@ -32458,7 +32450,7 @@
 				<translate>Schlag</translate>
 				<altpage>287</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>f883ce3d-a3a9-4021-b4f3-7812d6a5f7f1</id>
 				<name>Ram [Object]</name>
 				<translate>[Objekt] rammen</translate>
@@ -32476,19 +32468,19 @@
 				<translate>Schildbrecher</translate>
 				<altpage>122</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
 				<name>Slaughter [Metatype/Species]</name>
 				<translate>[Metatyp/Spezies] niedermetzeln</translate>
 				<altpage>118</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
 				<name>Slay [Metatype/Species]</name>
 				<translate>[Metatyp/Spezies] erschlagen</translate>
 				<altpage>118</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>6b12c245-ab52-49df-93fe-670841cb9e3d</id>
 				<name>Sludge [Object]</name>
 				<translate>[Objekt] auflösen</translate>
@@ -32512,7 +32504,7 @@
 				<translate>Säurewelle</translate>
 				<altpage>287</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>f7494736-bf1f-4d2f-a137-6f43a0248d36</id>
 				<name>Wreck [Object]</name>
 				<translate>[Objekt] zertrümmern</translate>
@@ -32650,13 +32642,13 @@
 				<translate>[Objekt] entdecken</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>fdbb2c8e-453b-46cf-8dcd-522c6d3aa3e0</id>
 				<name>Diagnose</name>
 				<translate>Diagnose</translate>
 				<altpage>134</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>96859e68-4051-4805-8de6-4f15ea4dee66</id>
 				<name>Enhance Aim</name>
 				<translate>Zielfähigkeit steigern</translate>
@@ -32734,10 +32726,10 @@
 				<translate>Dolmetschen</translate>
 				<altpage>134</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>ff90355c-5eba-4a35-8bf9-66afff9075ad</id>
 				<name>Alleviate Addiction</name>
-				<translate>Abhängigkeit Lindern</translate>
+				<translate>Abhängigkeit lindern</translate>
 				<altpage>108</altpage>
 			</spell>
 			<spell>
@@ -33082,7 +33074,7 @@
 				<translate>Sanfter Fall</translate>
 				<altpage>131</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>05088798-a160-4080-90bb-fed9880435ba</id>
 				<name>Clean [Element]</name>
 				<translate>[Element] reinigen</translate>
@@ -33397,13 +33389,13 @@
 			<spell>
 				<id>5c9218f6-bdb4-46a5-89ce-00b4adfe0429</id>
 				<name>Disrupt [Object]</name>
-				<translate>Disrupt [Object]</translate>
-				<altpage>102</altpage>
+				<translate>[Fokus] verdrängen</translate>
+				<altpage>119</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>51f04999-1173-43da-94b6-af3749cb3156</id>
 				<name>Destroy [Vehicle]</name>
-				<translate>[Fahrzeug] Zerstören</translate>
+				<translate>[Fahrzeug] zerstören</translate>
 				<altpage>119</altpage>
 			</spell>
 			<spell>
@@ -33424,7 +33416,7 @@
 				<translate>Eissturm</translate>
 				<altpage>118</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>f20e3789-0333-4243-b31c-0dc07f1d8736</id>
 				<name>Radiation Beam</name>
 				<translate>Radioaktiver Strahl</translate>
@@ -33472,28 +33464,28 @@
 				<translate>Beidhändigkeit</translate>
 				<altpage>110</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>fd407eeb-103e-4bef-a719-1098d8387536</id>
 				<name>Alleviate [Allergy]</name>
-				<translate>[Allergie] Lindern</translate>
+				<translate>[Allergie] lindern</translate>
 				<altpage>108</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>b1347682-58ad-4684-a93a-3f7703f1b4bf</id>
 				<name>Forced Defense</name>
-				<translate>Erzwungene Verteidugiung</translate>
+				<translate>Erzwungene Verteidigung</translate>
 				<altpage>110</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>80704822-953b-45c5-aa8e-77ca26e6cef7</id>
 				<name>Increase Inherent Limits</name>
-				<translate>Limit Erhöhen</translate>
+				<translate>Limit erhöhen</translate>
 				<altpage>111</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>4fbbaf9c-15fb-46ec-b899-5fc48829e52a</id>
 				<name>Decrease Inherent Limits</name>
-				<translate>Limit Senken</translate>
+				<translate>Limit senken</translate>
 				<altpage>111</altpage>
 			</spell>
 			<spell>
@@ -33583,254 +33575,254 @@
 			<spell>
 				<id>03b3daef-040d-4377-baf6-9b1919f48050</id>
 				<name>[Critter] Form</name>
-				<translate>[Critter] Form</translate>
-				<altpage>118</altpage>
+				<translate>Verwandlung in [Critter]</translate>
+				<altpage>126</altpage>
 			</spell>
 			<spell>
 				<id>621b881e-5486-4dcb-a26e-2ad66bba09e8</id>
 				<name>Turn To Goo</name>
-				<translate>Turn To Goo</translate>
-				<altpage>119</altpage>
+				<translate>Schleimverwandlung</translate>
+				<altpage>131</altpage>
 			</spell>
 			<spell>
 				<id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
 				<name>Aspect Mana Line</name>
-				<translate>Aspect Mana Line</translate>
-				<altpage>122</altpage>
+				<translate>Manalinie ausrichten</translate>
+				<altpage>154</altpage>
 			</spell>
 			<spell>
 				<id>1dfd942b-ce62-44bd-a74c-8d8254e6d24b</id>
 				<name>Alarm Ward</name>
-				<translate>Alarm Ward</translate>
-				<altpage>122</altpage>
+				<translate>Alarmhüter</translate>
+				<altpage>266</altpage>
 			</spell>
 			<spell>
 				<id>cbab5603-5140-40ec-85a2-4c0706ad440b</id>
 				<name>Ally Conjuration</name>
-				<translate>Ally Conjuration</translate>
-				<altpage>122</altpage>
+				<translate>Verbündetenbeschwörung</translate>
+				<altpage>159</altpage>
 			</spell>
 			<spell>
 				<id>89e47041-6072-42f5-b693-d1b91cadca6e</id>
 				<name>Astral Doppelganger</name>
-				<translate>Astral Doppelganger</translate>
-				<altpage>122</altpage>
+				<translate>Astraler Doppengänger</translate>
+				<altpage>143</altpage>
 			</spell>
 			<spell>
 				<id>317d1173-5c00-4eac-89ff-282b3123cfbb</id>
 				<name>Atonement</name>
-				<translate>Atonement</translate>
-				<altpage>123</altpage>
+				<translate>Sühne</translate>
+				<altpage>158</altpage>
 			</spell>
 			<spell>
 				<id>1e518a3c-fdf9-40c7-af85-0d71a22402e2</id>
 				<name>Attune Animal</name>
-				<translate>Attune Animal</translate>
-				<altpage>123</altpage>
+				<translate>[Tier] einstimmen</translate>
+				<altpage>158</altpage>
 			</spell>
 			<spell>
 				<id>a31197f4-c687-485b-a924-e88f2c76df76</id>
 				<name>Attune Item</name>
-				<translate>Attune Item</translate>
-				<altpage>124</altpage>
+				<translate>[Gegenstand] einstimmen</translate>
+				<altpage>146</altpage>
 			</spell>
 			<spell>
 				<id>b0bde155-75b7-4200-8656-8414e4ba746a</id>
 				<name>Augury and Sortilege</name>
-				<translate>Augury and Sortilege</translate>
-				<altpage>124</altpage>
+				<translate>Prophezeiung und Wahrzauber</translate>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>5e770b01-842f-45a2-adb3-3923a37a8ea3</id>
 				<name>Blood Bond</name>
-				<translate>Blood Bond</translate>
-				<altpage>125</altpage>
+				<translate>Blutsbande</translate>
+				<altpage>144</altpage>
 			</spell>
 			<spell>
 				<id>a6ca2396-f78f-45c1-9293-72bc41bb860b</id>
 				<name>Blood Rite</name>
-				<translate>Blood Rite</translate>
-				<altpage>125</altpage>
+				<translate>Blutritus</translate>
+				<altpage>144</altpage>
 			</spell>
 			<spell>
 				<id>99c41c3c-5895-4a61-bb6c-184475ee7def</id>
 				<name>Calling [Spirit Type]</name>
-				<translate>Calling [Spirit Type]</translate>
-				<altpage>126</altpage>
+				<translate>[Geistart] rufen</translate>
+				<altpage>148</altpage>
 			</spell>
 			<spell>
 				<id>42726082-1595-4de2-81b1-0930ae954718</id>
 				<name>Charged Ward</name>
-				<translate>Charged Ward</translate>
-				<altpage>127</altpage>
+				<translate>Angriffshüter</translate>
+				<altpage>143</altpage>
 			</spell>
 			<spell>
 				<id>0d1969eb-cbb1-4044-8c13-161f4b1d4cb8</id>
 				<name>Circle of Cleansing</name>
-				<translate>Circle of Cleansing</translate>
-				<altpage>127</altpage>
+				<translate>Kreis der Reinigung</translate>
+				<altpage>154</altpage>
 			</spell>
 			<spell>
 				<id>779f8d7e-57a7-49aa-957e-8f31da31feac</id>
 				<name>Create Ally Spirit</name>
-				<translate>Create Ally Spirit</translate>
-				<altpage>127</altpage>
+				<translate>Herstellung einer Verbündetenformel</translate>
+				<altpage>235</altpage>
 			</spell>
 			<spell>
 				<id>d0a24ff2-ca52-4d76-856a-60c30bf0ecf0</id>
 				<name>Death Mark</name>
-				<translate>Death Mark</translate>
-				<altpage>127</altpage>
+				<translate>Todesspur</translate>
+				<altpage>158</altpage>
 			</spell>
 			<spell>
 				<id>444208d1-5cc0-4cb7-981e-52df0c8252a1</id>
 				<name>Dispersion Circle</name>
-				<translate>Dispersion Circle</translate>
-				<altpage>127</altpage>
+				<translate>Verdünnungskreis</translate>
+				<altpage>159</altpage>
 			</spell>
 			<spell>
 				<id>7d1bdbfd-47cb-4992-b83b-4dc815337d5d</id>
 				<name>Door Wards</name>
-				<translate>Door Wards</translate>
-				<altpage>127</altpage>
+				<translate>Türhüter</translate>
+				<altpage>159</altpage>
 			</spell>
 			<spell>
 				<id>47bc1866-ad35-4c9a-8b3d-52502122a33e</id>
 				<name>Empower</name>
-				<translate>Empower</translate>
+				<translate>Stärken</translate>
 				<altpage>128</altpage>
 			</spell>
 			<spell>
 				<id>884b16b4-dc92-4a32-8dde-197b37819b24</id>
 				<name>Grave Binding</name>
-				<translate>Grave Binding</translate>
-				<altpage>129</altpage>
+				<translate>Ewige Ruhe</translate>
+				<altpage>145</altpage>
 			</spell>
 			<spell>
 				<id>548aea9d-a0c6-4e94-b59b-b49fa7e51ab7</id>
 				<name>Group Bond</name>
-				<translate>Group Bond</translate>
-				<altpage>129</altpage>
+				<translate>Gruppenbindung</translate>
+				<altpage>149</altpage>
 			</spell>
 			<spell>
 				<id>0f5308ee-75fc-4f46-ad85-c28d2bd0e3bc</id>
 				<name>Imbue Item</name>
-				<translate>Imbue Item</translate>
-				<altpage>133</altpage>
+				<translate>Gegenstand erfüllen</translate>
+				<altpage>147</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>ff8bc6fc-7361-47e9-a5a0-081927ec9166</id>
 				<name>Kything</name>
 				<translate>Kything</translate>
-				<altpage>133</altpage>
+				<altpage>154</altpage>
 			</spell>
 			<spell>
 				<id>705766cb-ba49-494e-a679-653ff18ef57b</id>
 				<name>Far Sensing</name>
-				<translate>Far Sensing</translate>
-				<altpage>133</altpage>
+				<translate>Ferngespür</translate>
+				<altpage>145</altpage>
 			</spell>
 			<spell>
 				<id>8bd8ac0b-be01-4207-b601-77570305ea10</id>
 				<name>Leeching</name>
-				<translate>Leeching</translate>
-				<altpage>133</altpage>
+				<translate>Aussaugen</translate>
+				<altpage>144</altpage>
 			</spell>
 			<spell>
 				<id>32bfb856-4df9-438a-9122-85f5ec8a647c</id>
 				<name>Ley Sight</name>
-				<translate>Ley Sight</translate>
-				<altpage>134</altpage>
+				<translate>Leysicht</translate>
+				<altpage>154</altpage>
 			</spell>
 			<spell>
 				<id>3917e09a-8e02-4f98-a4d1-7e00e01f3487</id>
 				<name>Light of Dharma</name>
-				<translate>Light of Dharma</translate>
-				<altpage>134</altpage>
+				<translate>Licht des Dharma</translate>
+				<altpage>154</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>6b2838f7-8ecb-455a-a2cc-ae1484e48a9a</id>
 				<name>Living Vessel Preparation</name>
-				<translate>Living Vessel Preparation</translate>
-				<altpage>135</altpage>
+				<translate>Vorbereitung eines lebenden Geistergefäßes</translate>
+				<altpage>159</altpage>
 			</spell>
 			<spell>
 				<id>c7db0147-a077-423a-b617-a5cc8c0d4982</id>
 				<name>Inanimate Vessel Preparation</name>
-				<translate>Inanimate Vessel Preparation</translate>
-				<altpage>214</altpage>
+				<translate>Vorbereitung eines unbelebten Geistergefäßes</translate>
+				<altpage>225</altpage>
 			</spell>
 			<spell>
 				<id>9b61d871-f156-44fc-a703-e19e99933747</id>
 				<name>Manifest Sha</name>
-				<translate>Manifest Sha</translate>
-				<altpage>135</altpage>
+				<translate>Sha manifestieren</translate>
+				<altpage>157</altpage>
 			</spell>
 			<spell>
 				<id>ab135fb5-251e-47ec-a93d-5d22f134f867</id>
 				<name>Masking Ward</name>
-				<translate>Masking Ward</translate>
-				<altpage>135</altpage>
+				<translate>Maskierungshüter</translate>
+				<altpage>155</altpage>
 			</spell>
 			<spell>
 				<id>cde04a23-e0cc-4aed-98e9-0d744757610e</id>
 				<name>Obfuscating Ward</name>
-				<translate>Obfuscating Ward</translate>
-				<altpage>135</altpage>
+				<translate>Täuschungshüter</translate>
+				<altpage>158</altpage>
 			</spell>
 			<spell>
 				<id>10efca5d-c1df-4770-b296-471132b80b98</id>
 				<name>Polarized Ward</name>
-				<translate>Polarized Ward</translate>
-				<altpage>136</altpage>
+				<translate>Polarisierter Hüter</translate>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>e45f4b5d-8969-4e03-ae55-583beee464fc</id>
 				<name>Recharge Reagents</name>
-				<translate>Recharge Reagents</translate>
-				<altpage>136</altpage>
+				<translate>Reagenzien aufladen</translate>
+				<altpage>156</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>a81eedee-cf7b-4582-991b-24d597138aee</id>
 				<name>Shofar</name>
 				<translate>Shofar</translate>
-				<altpage>216</altpage>
+				<altpage>250</altpage>
 			</spell>
 			<spell>
 				<id>e85244ab-038d-4168-b028-3f409d9d9974</id>
 				<name>Ritual of Change</name>
-				<translate>Ritual of Change</translate>
-				<altpage>136</altpage>
+				<translate>Ritual der Veränderung</translate>
+				<altpage>157</altpage>
 			</spell>
 			<spell>
 				<id>e7e508e7-832f-4a61-8f0e-1aced19cfb09</id>
 				<name>Smudging</name>
-				<translate>Smudging</translate>
-				<altpage>136</altpage>
+				<translate>Verwischen</translate>
+				<altpage>159</altpage>
 			</spell>
 			<spell>
 				<id>70b6b4f8-8caf-4100-bb0a-bbb0f40faa84</id>
 				<name>Spirit Pact</name>
-				<translate>Spirit Pact</translate>
-				<altpage>136</altpage>
+				<translate>Geisterpakt</translate>
+				<altpage>149</altpage>
 			</spell>
 			<spell>
 				<id>838a29e8-d154-41a1-a589-2e338d312a1b</id>
 				<name>Summon Great Form Spirit</name>
-				<translate>Summon Great Form Spirit</translate>
-				<altpage>136</altpage>
+				<translate>Geist in Großer Gestalt beschwören</translate>
+				<altpage>148</altpage>
 			</spell>
 			<spell>
 				<id>8ff1dcfc-a725-4698-83f2-7f1fb0f43f4f</id>
 				<name>Trap Ward</name>
-				<translate>Trap Ward</translate>
-				<altpage>137</altpage>
+				<translate>Fallenhüter</translate>
+				<altpage>145</altpage>
 			</spell>
 			<spell>
 				<id>b87ad05f-05fb-461d-a19b-0f1775c480d7</id>
 				<name>Whisper of Bones</name>
-				<translate>Whisper of Bones</translate>
-				<altpage>137</altpage>
+				<translate>Knochenorakel</translate>
+				<altpage>153</altpage>
 			</spell>
 			<spell>
 				<id>3fc55119-a6c3-4b0c-91eb-de107fbdea98</id>
@@ -33847,50 +33839,50 @@
 			<spell>
 				<id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
 				<name>Hemorrhage</name>
-				<translate>Hemorrhage</translate>
-				<altpage>91</altpage>
+				<translate>Blutsturz</translate>
+				<altpage>95</altpage>
 			</spell>
 			<spell>
 				<id>eab0bcfd-9bf5-4482-9cca-2bdecb7f7b59</id>
 				<name>Hand of Glory</name>
-				<translate>Hand of Glory</translate>
-				<altpage>213</altpage>
+				<translate>Hand des Ruhms</translate>
+				<altpage>248</altpage>
 			</spell>
 			<spell>
 				<id>9028a07e-c600-4d18-a911-a0307fc0fe96</id>
 				<name>Mortis Optigram</name>
-				<translate>Mortis Optigram</translate>
-				<altpage>214</altpage>
+				<translate>Mortis-Optigramm</translate>
+				<altpage>248</altpage>
 			</spell>
 			<spell>
 				<id>cd9b8ee6-5116-48aa-9e32-b5b11fc99c3f</id>
 				<name>Symbolic Link</name>
-				<translate>Symbolic Link</translate>
-				<altpage>216</altpage>
+				<translate>Symbolische Verbindung</translate>
+				<altpage>250</altpage>
 			</spell>
 			<spell>
 				<id>68a3c211-ee25-42c3-9c24-8f824956acec</id>
 				<name>Mystic Restraints</name>
-				<translate>Mystic Restraints</translate>
-				<altpage>214</altpage>
+				<translate>Mystische Fesseln</translate>
+				<altpage>248</altpage>
 			</spell>
 			<spell>
 				<id>096db26e-5fbe-461c-afb4-d6b631658aa6</id>
 				<name>Paper Lotus</name>
-				<translate>Paper Lotus</translate>
-				<altpage>215</altpage>
+				<translate>Papierlotus</translate>
+				<altpage>248</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>aaa5044f-ccba-404f-b207-68bdb218d960</id>
 				<name>Govi</name>
 				<translate>Govi</translate>
-				<altpage>212</altpage>
+				<altpage>246</altpage>
 			</spell>
 			<spell>
 				<id>30fb4769-568f-49d8-833a-868e34e34809</id>
 				<name>Astral Powder</name>
-				<translate>Astral Powder</translate>
-				<altpage>212</altpage>
+				<translate>Astralpulver</translate>
+				<altpage>246</altpage>
 			</spell>
 			<spell>
 				<id>b683e8f4-ca91-4c64-932d-757754069a1f</id>
@@ -34771,13 +34763,13 @@
 				<translate>Schamanisch</translate>
 				<altpage>277</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
 				<name>Shinto</name>
 				<translate>Shinto</translate>
 				<altpage>49</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
 				<name>Wuxing</name>
 				<translate>Wuxing</translate>
@@ -34819,7 +34811,7 @@
 				<translate>Kabbalistisch</translate>
 				<altpage>47</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
 				<name>Sioux</name>
 				<translate>Sioux</translate>
@@ -34897,7 +34889,7 @@
 				<translate>Brockenhexen</translate>
 				<altpage>42</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
 				<name>Faustianer</name>
 				<translate>Faustianer</translate>
@@ -43388,138 +43380,138 @@
 			</power>
 			<power>
 				<name>Anaphylaxis</name>
-				<translate>Anaphylaxis</translate>
-				<altpage>193</altpage>
+				<translate>Anaphylaxie</translate>
+				<altpage>224</altpage>
 			</power>
 			<power>
 				<name>Astral Gateaway</name>
-				<translate>Astral Gateaway</translate>
-				<altpage>194</altpage>
+				<translate>Astrales Tor</translate>
+				<altpage>224</altpage>
 			</power>
 			<power>
 				<name>Aura Masking</name>
-				<translate>Aura Masking</translate>
-				<altpage>194</altpage>
+				<translate>Auramaskierung</translate>
+				<altpage>224</altpage>
 			</power>
 			<power>
 				<name>Banishing Resistance</name>
-				<translate>Banishing Resistance</translate>
-				<altpage>194</altpage>
+				<translate>Verbannungsresistenz</translate>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<name>Desire Reflection</name>
-				<translate>Desire Reflection</translate>
-				<altpage>194</altpage>
+				<translate>Begierdenspiegelung</translate>
+				<altpage>224</altpage>
 			</power>
 			<power>
 				<name>Deathly Aura</name>
-				<translate>Deathly Aura</translate>
-				<altpage>194</altpage>
+				<translate>Todesaura</translate>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<name>Devouring</name>
-				<translate>Devouring</translate>
-				<altpage>194</altpage>
+				<translate>Fressen</translate>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<name>Divining</name>
-				<translate>Divining</translate>
-				<altpage>194</altpage>
+				<translate>Weissagung</translate>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<name>Elemental Attack (Pollutant)</name>
-				<translate>Elemental Attack (Pollutant)</translate>
-				<altpage>195</altpage>
+				<translate>Elementarer Angriff (Schadstoff)</translate>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<name>Elemental Attack (Radiation)</name>
-				<translate>Elemental Attack (Radiation)</translate>
-				<altpage>195</altpage>
+				<translate>Elementarer Angriff (Strahlung)</translate>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<name>Endowment</name>
-				<translate>Endowment</translate>
-				<altpage>195</altpage>
+				<translate>Kraftübertragung</translate>
+				<altpage>228</altpage>
 			</power>
 			<power>
 				<name>Energy Drain</name>
-				<translate>Energy Drain</translate>
-				<altpage>195</altpage>
+				<translate>Energieentzug</translate>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<name>Hive Mind</name>
-				<translate>Hive Mind</translate>
-				<altpage>195</altpage>
+				<translate>Schwarmbewusstsein</translate>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<name>Inhabitation</name>
-				<translate>Inhabitation</translate>
-				<altpage>195</altpage>
+				<translate>Bewohnung</translate>
+				<altpage>226</altpage>
 			</power>
 			<power>
 				<name>Magical Guard</name>
-				<translate>Magical Guard</translate>
-				<altpage>196</altpage>
+				<translate>Magischer Schutz</translate>
+				<altpage>228</altpage>
 			</power>
 			<power>
 				<name>Mind Link</name>
-				<translate>Mind Link</translate>
-				<altpage>196</altpage>
+				<translate>Telepathie</translate>
+				<altpage>230</altpage>
 			</power>
-			<power>
+			<power translated="True">
 				<name>Mutagen</name>
 				<translate>Mutagen</translate>
-				<altpage>196</altpage>
+				<altpage>228</altpage>
 			</power>
 			<power>
 				<name>Pestilence</name>
-				<translate>Pestilence</translate>
-				<altpage>197</altpage>
+				<translate>Pestilenz</translate>
+				<altpage>228</altpage>
 			</power>
 			<power>
 				<name>Possession</name>
-				<translate>Possession</translate>
-				<altpage>197</altpage>
+				<translate>Besessenheit</translate>
+				<altpage>224</altpage>
 			</power>
 			<power>
 				<name>Quake</name>
-				<translate>Quake</translate>
-				<altpage>197</altpage>
+				<translate>Erdbeben</translate>
+				<altpage>227</altpage>
 			</power>
 			<power>
 				<name>Realistic Form</name>
-				<translate>Realistic Form</translate>
-				<altpage>198</altpage>
+				<translate>Realistische Gestalt</translate>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<name>Reinforcement</name>
-				<translate>Reinforcement</translate>
-				<altpage>198</altpage>
+				<translate>Härtung</translate>
+				<altpage>228</altpage>
 			</power>
 			<power>
 				<name>Sense Link</name>
-				<translate>Sense Link</translate>
-				<altpage>198</altpage>
+				<translate>Sinnesverbindung</translate>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<name>Shadow Cloak</name>
-				<translate>Shadow Cloak</translate>
-				<altpage>198</altpage>
+				<translate>Schatten</translate>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<name>Silence</name>
-				<translate>Silence</translate>
-				<altpage>199</altpage>
+				<translate>Stille</translate>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<name>Sonic Projection</name>
-				<translate>Sonic Projection</translate>
-				<altpage>199</altpage>
+				<translate>Schallentladung</translate>
+				<altpage>229</altpage>
 			</power>
 			<power>
 				<name>Storm</name>
-				<translate>Storm</translate>
-				<altpage>199</altpage>
+				<translate>Sturm</translate>
+				<altpage>230</altpage>
 			</power>
 			<power>
 				<name>Camouflage</name>
