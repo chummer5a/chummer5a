@@ -374,8 +374,10 @@ namespace Chummer.Backend.Equipment
                         : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
                     List<TreeNode> lstSubWeaponNodes = lstNodes == null ? null : new List<TreeNode>();
-                    Weapon objSubWeapon = new Weapon(_objCharacter);
-                    objSubWeapon.ParentVehicle = ParentVehicle;
+                    Weapon objSubWeapon = new Weapon(_objCharacter)
+                    {
+                        ParentVehicle = ParentVehicle
+                    };
                     objSubWeapon.Create(objXmlSubWeapon, lstSubWeaponNodes, cmsWeapon, cmsWeaponAccessory, objWeapons, cmsWeaponAccessoryGear, blnCreateChildren, blnCreateImprovements);
                     objSubWeapon.ParentID = InternalId;
                     if (lstNodes != null)
@@ -616,8 +618,10 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (XmlNode nodWeapon in objNode.SelectNodes("underbarrel/weapon"))
                 {
-                    Weapon objUnderbarrel = new Weapon(_objCharacter);
-                    objUnderbarrel.ParentVehicle = ParentVehicle;
+                    Weapon objUnderbarrel = new Weapon(_objCharacter)
+                    {
+                        ParentVehicle = ParentVehicle
+                    };
                     objUnderbarrel.Load(nodWeapon, blnCopy);
                     objUnderbarrel.Parent = this;
                     _lstUnderbarrel.Add(objUnderbarrel);

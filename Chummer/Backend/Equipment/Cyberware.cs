@@ -280,8 +280,10 @@ namespace Chummer.Backend.Equipment
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
                     List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
-                    Weapon objGearWeapon = new Weapon(objCharacter);
-                    objGearWeapon.ParentVehicle = ParentVehicle;
+                    Weapon objGearWeapon = new Weapon(objCharacter)
+                    {
+                        ParentVehicle = ParentVehicle
+                    };
                     objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons);
                     objGearWeapon.ParentID = InternalId;
                     foreach (TreeNode objLoopNode in lstGearWeaponNodes)
@@ -347,11 +349,11 @@ namespace Chummer.Backend.Equipment
                     if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
                     {
                         IList<Cyberware> lstCyberwareToCheck = Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                        if (!SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Left") ||
+                        if (!SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, string.Empty, string.Empty, string.Empty, "Left") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Left" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Left" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
                             strForcedSide = "Right";
-                        else if (!SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, null, null, null, string.Empty, string.Empty, string.Empty, "Right") ||
+                        else if (!SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter, string.Empty, string.Empty, string.Empty, "Right") ||
                             (!string.IsNullOrEmpty(BlocksMounts) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount) && x.Location == "Right" && BlocksMounts.Split(',').Contains(x.HasModularMount))) ||
                             (!string.IsNullOrEmpty(HasModularMount) && lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.BlocksMounts) && x.Location == "Right" && x.BlocksMounts.Split(',').Contains(HasModularMount))))
                             strForcedSide = "Left";

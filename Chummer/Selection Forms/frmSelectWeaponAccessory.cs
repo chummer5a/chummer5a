@@ -167,7 +167,7 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter))
                 {
                     string strName = objXmlAccessory["name"]?.InnerText ?? string.Empty;
                     lstAccessories.Add(new ListItem(strName, objXmlAccessory["translate"]?.InnerText ?? strName));
@@ -433,9 +433,12 @@ namespace Chummer
                 nudRating.Visible = true;
                 lblRatingLabel.Visible = true;
                 nudRating.Maximum = intMaxRating;
-                while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                if (chkHideOverAvailLimit.Checked)
                 {
-                    nudRating.Maximum -= 1;
+                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                    {
+                        nudRating.Maximum -= 1;
+                    }
                 }
             }
             else

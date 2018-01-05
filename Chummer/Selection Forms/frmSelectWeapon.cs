@@ -259,11 +259,13 @@ namespace Chummer
                 {
                     if (objXmlWeapon["cyberware"]?.InnerText == "yes")
                         continue;
-                    if (!string.IsNullOrEmpty(objXmlWeapon["mount"]?.InnerText) && !Mounts.Contains(objXmlWeapon["mount"].InnerText))
+                    string strTest = objXmlWeapon["mount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                         continue;
-                    if (!string.IsNullOrEmpty(objXmlWeapon["extramount"]?.InnerText) && !Mounts.Contains(objXmlWeapon["extramount"].InnerText))
+                    strTest = objXmlWeapon["extramount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                         continue;
-                    if (!Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+                    if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                         continue;
 
                     Weapon objWeapon = new Weapon(_objCharacter);
@@ -330,17 +332,22 @@ namespace Chummer
                 List<ListItem> lstWeapons = new List<ListItem>();
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    bool blnHide = objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes";
+                    if (objXmlWeapon["cyberware"]?.InnerText == "yes" || objXmlWeapon["hide"]?.InnerText == "yes")
+                        continue;
 
-                    if (objXmlWeapon["mount"] != null && !blnHide)
+                    string strTest = objXmlWeapon["mount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                     {
-                        blnHide = !Mounts.Contains(objXmlWeapon["mount"].InnerText);
+                        continue;
                     }
-                    if (objXmlWeapon["extramount"] != null && !blnHide)
+
+                    strTest = objXmlWeapon["extramount"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strTest) && !Mounts.Contains(strTest))
                     {
-                        blnHide = !Mounts.Contains(objXmlWeapon["extramount"].InnerText);
+                        continue;
                     }
-                    if (blnHide || !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter, chkHideOverAvailLimit.Checked))
+
+                    if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlWeapon, _objCharacter))
                     {
                         continue;
                     }

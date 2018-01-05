@@ -497,7 +497,7 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
                 {
                     lstMods.Add(new ListItem(objXmlMod["id"].InnerText, objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText));
                 }
@@ -553,9 +553,12 @@ namespace Chummer
                 {
                     nudRating.Enabled = true;
                     nudRating.Maximum = 20;
-                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    if (chkHideOverAvailLimit.Checked)
                     {
-                        nudRating.Maximum -= 1;
+                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                     }
                     nudRating.Minimum = intMinRating;
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
@@ -564,9 +567,12 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "body")
                 {
                     nudRating.Maximum = _objVehicle.Body;
-                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    if (chkHideOverAvailLimit.Checked)
                     {
-                        nudRating.Maximum -= 1;
+                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                     }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
@@ -576,9 +582,12 @@ namespace Chummer
                 else if (objXmlMod["rating"].InnerText.ToLower() == "seats")
                 {
                     nudRating.Maximum = _objVehicle.TotalSeats;
-                    while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                    if (chkHideOverAvailLimit.Checked)
                     {
-                        nudRating.Maximum -= 1;
+                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                     }
                     nudRating.Minimum = intMinRating;
                     nudRating.Enabled = true;
@@ -586,12 +595,16 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Convert.ToInt32(objXmlMod["rating"].InnerText) > 0)
+                    int intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                    if (intRating > 0)
                     {
-                        nudRating.Maximum = Convert.ToInt32(objXmlMod["rating"].InnerText);
-                        while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+                        nudRating.Maximum = intRating;
+                        if (chkHideOverAvailLimit.Checked)
                         {
-                            nudRating.Maximum -= 1;
+                            while (nudRating.Maximum > intMinRating && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                            {
+                                nudRating.Maximum -= 1;
+                            }
                         }
                         nudRating.Minimum = intMinRating;
                         nudRating.Enabled = true;

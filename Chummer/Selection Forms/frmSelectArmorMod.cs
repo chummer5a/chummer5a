@@ -258,9 +258,12 @@ namespace Chummer
             lblA.Text = objXmlMod["armor"].InnerText;
 
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
-            while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+            if (chkHideOverAvailLimit.Checked)
             {
-                nudRating.Maximum -= 1;
+                while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
             }
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
@@ -398,7 +401,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
                 {
                     string strName = objXmlMod["name"].InnerText;
                     lstMods.Add(new ListItem(strName, objXmlMod["translate"]?.InnerText ?? strName));
