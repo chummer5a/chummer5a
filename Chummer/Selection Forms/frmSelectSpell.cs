@@ -209,7 +209,7 @@ namespace Chummer
                             return;
                         }
                     }
-                    if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, null, null, _objXmlDocument, string.Empty, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
+                    if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, string.Empty, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
                     {
                         return;
                     }

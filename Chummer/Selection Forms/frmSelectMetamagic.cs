@@ -39,10 +39,6 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument = null;
 
-        private readonly XmlDocument _objMetatypeDocument;
-        private readonly XmlDocument _objCritterDocument;
-        private readonly XmlDocument _objQualityDocument;
-
         public enum Mode
         {
             Metamagic = 0,
@@ -55,10 +51,7 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-
-            _objMetatypeDocument = XmlManager.Load("metatypes.xml");
-            _objCritterDocument = XmlManager.Load("critters.xml");
-            _objQualityDocument = XmlManager.Load("qualities.xml");
+            
             WindowMode = objMode;
             // Load the Metamagic information.
             switch (_objMode)
@@ -195,7 +188,7 @@ namespace Chummer
                 foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                 {
                     if (!chkLimitList.Checked ||
-                        Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
+                        Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, string.Empty, s))
                     {
                         string strName = objXmlMetamagic["name"]?.InnerText ?? string.Empty;
                         lstMetamagics.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
@@ -231,7 +224,7 @@ namespace Chummer
                 : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
             string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
-            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, _objMetatypeDocument, _objCritterDocument, _objQualityDocument, string.Empty, s))
+            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, string.Empty, s))
                 return;
             
             DialogResult = DialogResult.OK;

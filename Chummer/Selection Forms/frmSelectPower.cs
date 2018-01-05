@@ -225,7 +225,7 @@ namespace Chummer
                     continue;
                 }
 
-                if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, null, null, _objXmlDocument, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (!SelectionShared.RequirementsMet(objXmlPower, false, _objCharacter, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
                 string strName = objXmlPower["name"].InnerText;

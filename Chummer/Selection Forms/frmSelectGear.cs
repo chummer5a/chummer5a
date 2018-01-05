@@ -1002,9 +1002,12 @@ namespace Chummer
                     {
                         nudRating.Minimum = 1;
                     }
-                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                    if (chkHideOverAvailLimit.Checked)
                     {
-                        nudRating.Maximum -= 1;
+                        while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, decimal.ToInt32(nudRating.Maximum), _intAvailModifier))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                     }
 
                     if (nudRating.Minimum == nudRating.Maximum)
@@ -1087,9 +1090,10 @@ namespace Chummer
                 decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                 if (chkBlackMarketDiscount.Checked)
                     decCostMultiplier *= 0.9m;
-                if (!blnDoUIUpdate || (Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, chkHideOverAvailLimit.Checked, 1, _intAvailModifier) &&
+                if (!blnDoUIUpdate ||
+                    ((!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlGear, _objCharacter, 1, _intAvailModifier) &&
                     (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                    Backend.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier))))
+                    Backend.SelectionShared.CheckNuyenRestriction(objXmlGear, _objCharacter, _objCharacter.Nuyen, decCostMultiplier)))))
                 {
                     string strName = objXmlGear["name"].InnerText;
                     string strDisplayName = objXmlGear["translate"]?.InnerText ?? strName;

@@ -7034,12 +7034,11 @@ namespace Chummer
 
                 bool blnRequireUpdate = false;
                 bool blnRequireTreQualitiesRebuild = false;
-                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
                 // Adding a new level
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    if (!Backend.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject, null, null, objXmlDocument))
+                    if (!SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
                         break;
@@ -8658,8 +8657,10 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             List<TreeNode> lstNodes = new List<TreeNode>();
-            Weapon objWeapon = new Weapon(CharacterObject);
-            objWeapon.ParentVehicle = objVehicle;
+            Weapon objWeapon = new Weapon(CharacterObject)
+            {
+                ParentVehicle = objVehicle
+            };
             objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
 
             decimal decCost = objWeapon.TotalCost;
@@ -8936,8 +8937,10 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             List<TreeNode> lstNodes = new List<TreeNode>();
-            Weapon objWeapon = new Weapon(CharacterObject);
-            objWeapon.ParentVehicle = objSelectedWeapon.ParentVehicle;
+            Weapon objWeapon = new Weapon(CharacterObject)
+            {
+                ParentVehicle = objSelectedWeapon.ParentVehicle
+            };
             objWeapon.Create(objXmlWeapon, lstNodes, cmsWeapon, cmsWeaponAccessory, objSelectedWeapon.UnderbarrelWeapons, cmsWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
             objWeapon.Parent = objSelectedWeapon;
@@ -11438,11 +11441,8 @@ namespace Chummer
                 case NuyenExpenseType.AddVehicleGear:
                     {
                         // Locate the Gear that was added.
-                        Vehicle objVehicle = null;
-                        WeaponAccessory objWeaponAccessory = null;
-                        Cyberware objCyberware = null;
                         TreeNode objNode = null;
-                        Gear objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles, out objVehicle, out objWeaponAccessory, out objCyberware);
+                        Gear objGear = CommonFunctions.FindVehicleGear(strUndoId, CharacterObject.Vehicles, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
                         if (objGear == null)
                         {
                             objGear = CharacterObject.Gear.DeepFindById(strUndoId);
@@ -17955,9 +17955,7 @@ namespace Chummer
             HashSet<Contact> existing = new HashSet<Contact>();
             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
             {
-                ContactControl contactControl = panContacts.Controls[i] as ContactControl;
-
-                if (contactControl != null)
+                if (panContacts.Controls[i] is ContactControl contactControl)
                 {
                     Contact objLoopContact = contactControl.ContactObject;
                     if (CharacterObject.Contacts.Contains(objLoopContact))

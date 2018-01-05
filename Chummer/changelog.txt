@@ -102,6 +102,7 @@ Application Changes:
 - Fixed an issue with the id node checker that prevented it from properly checking items with ids that were not specifically grandparents of the root chummer node in an xml file (e.g. Metavariants, Life Modules).
 - Fixed issues with the karma value calculator when calculating the karma value of MAG and the karma value of attributes on shapeshifters.
 - Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
+- Fixed a bug where requirement nodes reliant on having a certain number of spells from a category would not get processed correctly.
 
 Data Changes:
 

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -1460,12 +1460,18 @@ namespace Chummer
             }
 
             string response;
-            using (MemoryStream ms = new MemoryStream(bytes))
+            MemoryStream ms = null;
+            try
             {
+                ms = new MemoryStream(bytes);
                 using (StreamReader reader = new StreamReader(ms))
                 {
                     response = reader.ReadToEnd();
                 }
+            }
+            finally
+            {
+                ms?.Dispose();
             }
             Clipboard.SetText(response);
             #endif

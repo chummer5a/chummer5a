@@ -6838,8 +6838,10 @@ namespace Chummer
                 XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
                 List<TreeNode> lstNodes = new List<TreeNode>();
-                Weapon objWeapon = new Weapon(CharacterObject);
-                objWeapon.ParentMount = wm;
+                Weapon objWeapon = new Weapon(CharacterObject)
+                {
+                    ParentMount = wm
+                };
                 objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, wm.Weapons, cmsVehicleWeaponAccessoryGear);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -6986,8 +6988,10 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + frmPickWeapon.SelectedWeapon + "\"]");
 
             List<TreeNode> lstNodes = new List<TreeNode>();
-            Weapon objWeapon = new Weapon(CharacterObject);
-            objWeapon.ParentVehicle = objSelectedWeapon.ParentVehicle;
+            Weapon objWeapon = new Weapon(CharacterObject)
+            {
+                ParentVehicle = objSelectedWeapon.ParentVehicle
+            };
             objWeapon.Create(objXmlWeapon, lstNodes, cmsVehicleWeapon, cmsVehicleWeaponAccessory, objSelectedWeapon.UnderbarrelWeapons, cmsVehicleWeaponAccessoryGear);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
@@ -9735,15 +9739,14 @@ namespace Chummer
                 // Locate the selected Quality.
                 Quality objSelectedQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
                 int intCurrentLevels = objSelectedQuality.Levels;
-
-                XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
+                
                 bool blnRequireUpdate = false;
                 bool blnRequireTreQualitiesRebuild = false;
                 // Adding new levels
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    if (!Backend.SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject, null, null, objXmlDocument))
+                    if (!SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
                         break;
@@ -13848,9 +13851,7 @@ namespace Chummer
 
             for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
             {
-                ContactControl contactControl = panContacts.Controls[i] as ContactControl;
-
-                if (contactControl != null)
+                if (panContacts.Controls[i] is ContactControl contactControl)
                 {
                     Contact objLoopContact = contactControl.ContactObject;
                     if (CharacterObject.Contacts.Contains(objLoopContact))

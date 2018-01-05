@@ -357,16 +357,14 @@ namespace Chummer
                     strFilter += "and karma <= " + nudMaximumBP.Value;
                 }
             }
-
-            XmlDocument objXmlMetatypeDocument = XmlManager.Load("metatypes.xml");
-            XmlDocument objXmlCrittersDocument = XmlManager.Load("critters.xml");
+            
             bool blnNeedQualityWhitelist = false;
-            XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+            XmlNode objXmlMetatype = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
             if (objXmlMetatype?.SelectSingleNode("qualityrestriction") != null)
                 blnNeedQualityWhitelist = true;
             else
             {
-                objXmlMetatype = objXmlCrittersDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                objXmlMetatype = XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
                 if (objXmlMetatype?.SelectSingleNode("qualityrestriction") != null)
                     blnNeedQualityWhitelist = true;
             }
@@ -399,7 +397,7 @@ namespace Chummer
                         continue;
                     }
                 }
-                if (!chkLimitList.Checked || SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, objXmlMetatypeDocument, objXmlCrittersDocument, _objXmlDocument, IgnoreQuality))
+                if (!chkLimitList.Checked || SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, IgnoreQuality))
                 {
                     string strName = objXmlQuality["name"].InnerText;
                     lstQuality.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
@@ -443,7 +441,7 @@ namespace Chummer
             _strSelectedQuality = objNode["name"]?.InnerText;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
-            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, null, null, _objXmlDocument, IgnoreQuality, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
+            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, IgnoreQuality, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                 return;
             DialogResult = DialogResult.OK;
         }

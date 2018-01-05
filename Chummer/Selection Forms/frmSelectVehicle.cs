@@ -412,7 +412,7 @@ namespace Chummer
             List<ListItem> lstVehicles = new List<ListItem>();
             foreach (XmlNode objXmlVehicle in objXmlVehicleList)
             {
-                if (Backend.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
                 {
                     string strName = objXmlVehicle["name"]?.InnerText;
                     string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? strName;
