@@ -790,17 +790,19 @@ namespace Chummer
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
-            this.cmdAddContact = new System.Windows.Forms.Button();
+            this.cmdAddContact = new SplitButton();
+            this.cmsAddContact = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsAddFromFile = new System.Windows.Forms.ToolStripMenuItem();
             this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
             this.tabEnemies = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddEnemy = new System.Windows.Forms.Button();
+            this.cmdAddEnemy = new SplitButton();
             this.tabPets = new System.Windows.Forms.TabPage();
             this.panPets = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddPet = new System.Windows.Forms.Button();
+            this.cmdAddPet = new SplitButton();
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabBPSummary = new System.Windows.Forms.TabPage();
             this.lblPBuildSpecial = new System.Windows.Forms.Label();
@@ -966,6 +968,7 @@ namespace Chummer
             this.tabRelationships.SuspendLayout();
             this.tabPeople.SuspendLayout();
             this.tabContacts.SuspendLayout();
+            this.cmsAddContact.SuspendLayout();
             this.tabEnemies.SuspendLayout();
             this.tabPets.SuspendLayout();
             this.tabInfo.SuspendLayout();
@@ -2323,7 +2326,7 @@ namespace Chummer
             this.tsVehicleNotes,
             this.tsEditWeaponMount});
             this.cmsWeaponMount.Name = "cmsWeapon";
-            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 92);
+            this.cmsWeaponMount.Size = new System.Drawing.Size(181, 70);
             // 
             // tsVehicleMountWeapon
             // 
@@ -9021,7 +9024,7 @@ namespace Chummer
             // cmdSwapContactOrder
             // 
             this.cmdSwapContactOrder.AutoSize = true;
-            this.cmdSwapContactOrder.Location = new System.Drawing.Point(206, 6);
+            this.cmdSwapContactOrder.Location = new System.Drawing.Point(224, 6);
             this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
             this.cmdSwapContactOrder.Size = new System.Drawing.Size(87, 23);
             this.cmdSwapContactOrder.TabIndex = 50;
@@ -9033,7 +9036,7 @@ namespace Chummer
             // cmdContactsExpansionToggle
             // 
             this.cmdContactsExpansionToggle.AutoSize = true;
-            this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(88, 6);
+            this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(106, 6);
             this.cmdContactsExpansionToggle.Name = "cmdContactsExpansionToggle";
             this.cmdContactsExpansionToggle.Size = new System.Drawing.Size(112, 23);
             this.cmdContactsExpansionToggle.TabIndex = 49;
@@ -9094,14 +9097,31 @@ namespace Chummer
             // cmdAddContact
             // 
             this.cmdAddContact.AutoSize = true;
+            this.cmdAddContact.ContextMenuStrip = this.cmsAddContact;
             this.cmdAddContact.Location = new System.Drawing.Point(6, 6);
             this.cmdAddContact.Name = "cmdAddContact";
-            this.cmdAddContact.Size = new System.Drawing.Size(76, 23);
+            this.cmdAddContact.Size = new System.Drawing.Size(94, 23);
+            this.cmdAddContact.SplitMenuStrip = this.cmsAddContact;
             this.cmdAddContact.TabIndex = 24;
             this.cmdAddContact.Tag = "Button_AddContact";
             this.cmdAddContact.Text = "&Add Contact";
             this.cmdAddContact.UseVisualStyleBackColor = true;
             this.cmdAddContact.Click += new System.EventHandler(this.cmdAddContact_Click);
+            // 
+            // cmsAddContact
+            // 
+            this.cmsAddContact.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsAddFromFile});
+            this.cmsAddContact.Name = "cmsAddContact";
+            this.cmsAddContact.Size = new System.Drawing.Size(153, 48);
+            // 
+            // tsAddFromFile
+            // 
+            this.tsAddFromFile.Name = "tsAddFromFile";
+            this.tsAddFromFile.Size = new System.Drawing.Size(152, 22);
+            this.tsAddFromFile.Tag = "Menu_AddFromFile";
+            this.tsAddFromFile.Text = "&Add From File";
+            this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
             // 
             // panContacts
             // 
@@ -9180,9 +9200,11 @@ namespace Chummer
             // cmdAddEnemy
             // 
             this.cmdAddEnemy.AutoSize = true;
+            this.cmdAddEnemy.ContextMenuStrip = this.cmsAddContact;
             this.cmdAddEnemy.Location = new System.Drawing.Point(6, 6);
             this.cmdAddEnemy.Name = "cmdAddEnemy";
-            this.cmdAddEnemy.Size = new System.Drawing.Size(75, 23);
+            this.cmdAddEnemy.Size = new System.Drawing.Size(89, 23);
+            this.cmdAddEnemy.SplitMenuStrip = this.cmsAddContact;
             this.cmdAddEnemy.TabIndex = 40;
             this.cmdAddEnemy.Tag = "Button_AddEnemy";
             this.cmdAddEnemy.Text = "A&dd Enemy";
@@ -9217,9 +9239,11 @@ namespace Chummer
             // cmdAddPet
             // 
             this.cmdAddPet.AutoSize = true;
+            this.cmdAddPet.ContextMenuStrip = this.cmsAddContact;
             this.cmdAddPet.Location = new System.Drawing.Point(6, 7);
             this.cmdAddPet.Name = "cmdAddPet";
             this.cmdAddPet.Size = new System.Drawing.Size(76, 23);
+            this.cmdAddPet.SplitMenuStrip = this.cmsAddContact;
             this.cmdAddPet.TabIndex = 23;
             this.cmdAddPet.Tag = "Button_AddPet";
             this.cmdAddPet.Text = "&Add Pet";
@@ -10266,6 +10290,7 @@ namespace Chummer
             this.tabPeople.ResumeLayout(false);
             this.tabContacts.ResumeLayout(false);
             this.tabContacts.PerformLayout();
+            this.cmsAddContact.ResumeLayout(false);
             this.tabEnemies.ResumeLayout(false);
             this.tabEnemies.PerformLayout();
             this.tabPets.ResumeLayout(false);
@@ -10780,7 +10805,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponMod;
         private System.Windows.Forms.ToolStripMenuItem tsVehicleWeaponModNotes;
         private System.Windows.Forms.TabPage tabPets;
-        private System.Windows.Forms.Button cmdAddPet;
+        private SplitButton cmdAddPet;
         private System.Windows.Forms.FlowLayoutPanel panPets;
         private System.Windows.Forms.CheckBox chkCritterPowerCount;
         private System.Windows.Forms.CheckBox chkIncludedInArmor;
@@ -10949,11 +10974,11 @@ namespace Chummer
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabControl tabPeople;
         private System.Windows.Forms.TabPage tabContacts;
-        private System.Windows.Forms.Button cmdAddContact;
+        private SplitButton cmdAddContact;
         private System.Windows.Forms.FlowLayoutPanel panContacts;
         private System.Windows.Forms.TabPage tabEnemies;
         private System.Windows.Forms.FlowLayoutPanel panEnemies;
-        private System.Windows.Forms.Button cmdAddEnemy;
+        private SplitButton cmdAddEnemy;
         private System.Windows.Forms.CheckBox chkInitiationSchooling;
         private System.Windows.Forms.ContextMenuStrip cmsInitiationNotes;
         private System.Windows.Forms.ToolStripMenuItem tsInitiationNotes;
@@ -11124,5 +11149,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponAccuracyLabel;
         private System.Windows.Forms.Label lblVehicleWeaponAccuracy;
         private System.Windows.Forms.ToolStripMenuItem tsEditWeaponMount;
+        private System.Windows.Forms.ContextMenuStrip cmsAddContact;
+        private System.Windows.Forms.ToolStripMenuItem tsAddFromFile;
     }
 }

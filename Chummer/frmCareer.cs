@@ -1016,7 +1016,7 @@ namespace Chummer
 
         private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshSpells(treSpells, cmsSpell, CharacterObject);
+            RefreshSpells(treSpells, cmsSpell, CharacterObject, notifyCollectionChangedEventArgs);
         }
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -17092,9 +17092,58 @@ namespace Chummer
         {
             cmdEditWeek_Click(sender, e);
         }
-#endregion
+        #endregion
+        #region Additional Relationships Tab Control Events
+        private void tsAddFromFile_Click(object sender, EventArgs e)
+        {
+            // Displays an OpenFileDialog so the user can select the XML to read.  
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "XML Files|*.xml";
 
-#region Additional Improvements Tab Control Events
+            // Show the Dialog.  
+            // If the user cancels out, return early.
+            if (openFileDialog1.ShowDialog() == DialogResult.Cancel)
+                return;
+            XmlDocument doc = new XmlDocument();
+            doc.Load(openFileDialog1.FileName);
+            XmlNodeList contactXmlList = doc.SelectNodes("/chummer/contacts/contact");
+            // Couldn't find any valid contacts, so return early. 
+            if (contactXmlList == null) return;
+            foreach (XmlNode n in contactXmlList)
+            {
+                Contact c = new Contact(CharacterObject);
+                c.Load(n);
+                if (c.EntityType == ContactType.Contact)
+                {
+                    ContactControl cc = new ContactControl(c);
+                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                    cc.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                    cc.DeleteContact += DeleteContact;
+                    cc.MouseDown += panContactControl_MouseDown;
+
+                    panContacts.Controls.Add(cc);
+                }
+                if (c.EntityType == ContactType.Enemy)
+                {
+                    ContactControl cc = new ContactControl(c);
+                    // Attach an EventHandler for the ConnectioNRatingChanged, LoyaltyRatingChanged, DeleteContact, and FileNameChanged Events.
+                    cc.ContactDetailChanged += EnemyChanged;
+                    cc.DeleteContact += DeleteEnemy;
+                    panEnemies.Controls.Add(cc);
+                }
+                if (c.EntityType == ContactType.Pet)
+                {
+                    PetControl cc = new PetControl(c);
+                    // Attach an EventHandler for the DeleteContact and FileNameChanged Events.
+                    cc.DeleteContact += DeletePet;
+                    cc.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+
+                    panPets.Controls.Add(cc);
+                }
+            }
+        #endregion
+
+        #region Additional Improvements Tab Control Events
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
         {
             lblImprovementType.Text = string.Empty;
