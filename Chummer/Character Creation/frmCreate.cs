@@ -16710,14 +16710,30 @@ namespace Chummer
             {
                 if (objWareGrade.Name == "None" && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != "None"))
                     continue;
-                else if (CharacterObject.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
+                if (CharacterObject.Improvements.Any(x => ((blnBioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (!blnBioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade))
                         && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                     continue;
-                else if (blnIgnoreSecondHand && objWareGrade.SecondHand)
+                if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                     continue;
-                else if (!CharacterObject.AdapsinEnabled && objWareGrade.Adapsin)
+                if (CharacterObject.AdapsinEnabled)
+                {
+                    if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                    {
+                        continue;
+                    }
+                }
+                else if (objWareGrade.Adapsin)
                     continue;
-                else if (CharacterObject.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
+                if (CharacterObject.BurnoutEnabled)
+                {
+                    if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                    {
+                        continue;
+                    }
+                }
+                else if (objWareGrade.Burnout)
+                    continue;
+                if (CharacterObject.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
                     continue;
 
                 lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.DisplayName(GlobalOptions.Language)));

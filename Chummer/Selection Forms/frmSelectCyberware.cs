@@ -1169,7 +1169,23 @@ namespace Chummer
                         continue;
                     if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                         continue;
-                    if (!_objCharacter.AdapsinEnabled && objWareGrade.Adapsin)
+                    if (_objCharacter.AdapsinEnabled)
+                    {
+                        if (!objWareGrade.Adapsin && _objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objWareGrade.Adapsin)
+                        continue;
+                    if (_objCharacter.BurnoutEnabled)
+                    {
+                        if (!objWareGrade.Burnout && _objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (objWareGrade.Burnout)
                         continue;
                     if (blnHideBannedGrades && !_objCharacter.Created && _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
