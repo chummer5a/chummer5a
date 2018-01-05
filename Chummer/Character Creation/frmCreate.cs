@@ -11935,8 +11935,10 @@ namespace Chummer
         private void tsAddFromFile_Click(object sender, EventArgs e)
         {
             // Displays an OpenFileDialog so the user can select the XML to read.  
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "XML Files|*.xml";
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                Filter = "XML Files|*.xml"
+            };
 
             // Show the Dialog.  
             // If the user cancels out, return early.
