@@ -134,6 +134,7 @@ Data Changes:
 - Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
 - Implemented the bonus for the Structured Spellcasting metamagic.
 - Fixed a duplicate id in the Pomorya Nationality Life Module.
+- Fixed incorrect category for Ford Titan. Fixes #2262.
 
 New Strings:
 
