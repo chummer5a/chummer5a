@@ -301,7 +301,10 @@ namespace Chummer.Backend.Equipment
                 if (xmlNodeList != null)
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
-                        var objWeapon = new Weapon(_objCharacter);
+                        var objWeapon = new Weapon(_objCharacter)
+                        {
+                            ParentVehicle = Parent
+                        };
                         objWeapon.Load(nodChild, blnCopy);
                         _lstVehicleWeapons.Add(objWeapon);
                     }
@@ -312,9 +315,11 @@ namespace Chummer.Backend.Equipment
                 if (xmlNodeList != null)
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
-                        Cyberware objCyberware = new Cyberware(_objCharacter);
+                        Cyberware objCyberware = new Cyberware(_objCharacter)
+                        {
+                            ParentVehicle = Parent
+                        };
                         objCyberware.Load(nodChild, blnCopy);
-                        objCyberware.ParentVehicle = Parent;
                         _lstCyberware.Add(objCyberware);
                     }
             }
@@ -1144,7 +1149,8 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]");
+                XmlDocument objDoc = XmlManager.Load("vehicles.xml", strLanguage);
+                _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[name = \"" + Name + "\"]") ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -135,7 +135,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles)
         {
-            return FindVehicleMod(strGuid, lstVehicles, out Vehicle objFoundVehicle);
+            return FindVehicleMod(strGuid, lstVehicles, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount);
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
-        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle)
+        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && strGuid != Guid.Empty.ToString())
             {
@@ -155,13 +155,27 @@ namespace Chummer
                         if (objMod.InternalId == strGuid)
                         {
                             objFoundVehicle = objVehicle;
+                            objFoundWeaponMount = null;
                             return objMod;
+                        }
+                    }
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            if (objMod.InternalId == strGuid)
+                            {
+                                objFoundVehicle = objVehicle;
+                                objFoundWeaponMount = objMount;
+                                return objMod;
+                            }
                         }
                     }
                 }
             }
 
             objFoundVehicle = null;
+            objFoundWeaponMount = null;
             return null;
         }
 
@@ -209,15 +223,27 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    foreach (WeaponMount objMod in objVehicle.WeaponMounts)
+                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                     {
-                        objReturn = objMod.Weapons.DeepFindById(strGuid);
+                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid);
                         if (objReturn != null)
                         {
                             objFoundVehicle = objVehicle;
-                            objFoundWeaponMount = objMod;
+                            objFoundWeaponMount = objWeaponMount;
                             objFoundVehicleMod = null;
                             return objReturn;
+                        }
+
+                        foreach (VehicleMod objMod in objWeaponMount.Mods)
+                        {
+                            objReturn = objMod.Weapons.DeepFindById(strGuid);
+                            if (objReturn != null)
+                            {
+                                objFoundVehicle = objVehicle;
+                                objFoundVehicleMod = objMod;
+                                objFoundWeaponMount = objWeaponMount;
+                                return objReturn;
+                            }
                         }
                     }
 

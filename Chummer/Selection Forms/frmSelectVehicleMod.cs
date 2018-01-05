@@ -429,7 +429,7 @@ namespace Chummer
 
             // Retrieve the list of Mods for the selected Category.
             var objXmlModList = VehicleMountMods
-                ? _objXmlDocument.SelectNodes("/chummer/weaponmounts/mods/mod[" + strFilter + "]")
+                ? _objXmlDocument.SelectNodes("/chummer/weaponmountmods/mod[" + strFilter + "]")
                 : _objXmlDocument.SelectNodes("/chummer/mods/mod[" + strFilter + "]");
             // Update the list of Mods based on the selected Category.
             XmlNode objXmlVehicleNode = _objVehicle.GetNode();
@@ -536,7 +536,7 @@ namespace Chummer
                 // Retireve the information for the selected Mod.
                 // Filtering is also done on the Category in case there are non-unique names across categories.
                 XmlNode objXmlMod = VehicleMountMods
-                    ? _objXmlDocument.SelectSingleNode($"/chummer/weaponmounts/mods/mod[id = \"{lstMod.SelectedValue}\"]")
+                    ? _objXmlDocument.SelectSingleNode($"/chummer/weaponmountmods/mod[id = \"{lstMod.SelectedValue}\"]")
                     : _objXmlDocument.SelectSingleNode($"/chummer/mods/mod[id = \"{lstMod.SelectedValue}\"]");
 
                 // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.

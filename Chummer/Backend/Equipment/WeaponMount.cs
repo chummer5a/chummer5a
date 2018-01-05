@@ -72,9 +72,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, decimal decMarkup = 0)
+        public void Create(XmlNode objXmlMod, TreeNode objNode, decimal decMarkup = 0)
         {
-            Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
             objXmlMod.TryGetStringFieldQuickly("id", ref _strSourceId);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
@@ -211,30 +210,36 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			if (objNode["weapons"] != null)
 			{
-                foreach (XmlNode n in objNode.SelectNodes("weapons/weapon"))
+                foreach (XmlNode xmlWeaponNode in objNode.SelectNodes("weapons/weapon"))
                 {
-                    Weapon w = new Weapon(_character);
-                    w.Load(n, blnCopy);
-                    _weapons.Add(w);
-                    w.ParentMount = this;
+                    Weapon objWeapon = new Weapon(_character)
+                    {
+                        ParentVehicle = Parent,
+                        ParentMount = this
+                    };
+                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                    _weapons.Add(objWeapon);
                 }
             }
             if (objNode["weaponmountoptions"] != null)
             {
-                foreach (XmlNode n in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
+                foreach (XmlNode xmlWeaponMountOptionNode in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
                 {
-                    WeaponMountOption w = new WeaponMountOption(_character);
-                    w.Load(n, _vehicle);
-                    WeaponMountOptions.Add(w);
+                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_character);
+                    objWeaponMountOption.Load(xmlWeaponMountOptionNode, Parent);
+                    WeaponMountOptions.Add(objWeaponMountOption);
                 }
             }
 		    if (objNode["mods"] != null)
 		    {
-		        foreach (XmlNode n in objNode.SelectNodes("mods/mod"))
+		        foreach (XmlNode xmlModNode in objNode.SelectNodes("mods/mod"))
 		        {
-		            var m = new VehicleMod(_character);
-		            m.Load(n);
-		            Mods.Add(m);
+                    var objMod = new VehicleMod(_character)
+                    {
+                        Parent = Parent
+                    };
+                    objMod.Load(xmlModNode);
+		            Mods.Add(objMod);
 		        }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -283,7 +288,7 @@ namespace Chummer.Backend.Equipment
             TreeNode tree = new TreeNode();
             WeaponMount mount = this;
             XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["size"].InnerText}\" and category = \"Size\"]");
-            mount.Create(node, tree, _vehicle);
+            mount.Create(node, tree);
             WeaponMountOption option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["flexibility"].InnerText}\" and category = \"Flexibility\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
@@ -553,10 +558,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-		/// <summary>
-		/// Vehicle that the Mod is attached to. 
-		/// </summary>
-		public Vehicle Parent { internal get; set; }
+        /// <summary>
+        /// Vehicle that the Mod is attached to. 
+        /// </summary>
+        public Vehicle Parent => _vehicle;
 
         /// <summary>
         /// 

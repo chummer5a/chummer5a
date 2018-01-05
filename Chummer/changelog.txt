@@ -104,7 +104,9 @@ Application Changes:
 - Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
 - Added a dropdown menu option to bulk-add contacts, enemies and pets from a given XML file. To use this, create an XML file that contains valid contacts from an existing Chummer file, or alter this template: https://pastebin.com/W9q8jEnt Note that this system is designed to import ALL valid contacts in the file, irrespective of whether you click on Contacts or Enemies.
 - Fixed a bug where requirement nodes reliant on having a certain number of spells from a category would not get processed correctly.
-- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode. 
+- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode.
+- The Translator will now process paragons, vessels, and mods for vehicle weapon mounts.
+- Fixed issues regarding the translation, deletion, and selling of mods to vehicle weapon mounts and weapons added to mods of vehicle weapon mounts.
 
 Data Changes:
 

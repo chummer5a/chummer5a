@@ -10436,8 +10436,8 @@
     </mod>
     <!-- End Region -->
   </mods>
+  <!-- Region Vehicle Mounts -->
   <weaponmounts>
-    <!-- Region Vehicle Mounts -->
     <!-- Region Size -->
     <weaponmount>
       <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
@@ -10793,92 +10793,97 @@
       <slots>0</slots>
     </weaponmount>
     <!-- End Region -->
-    <!-- Region Mods -->
-    <mods>
-      <mod>
-        <id>45d84d77-5461-4441-a529-527aba347334</id>
-        <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>25</cost>
-        <rating>0</rating>
-        <slots>0</slots>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
-        <name>Pop-Out Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>Rating * 100</cost>
-        <rating>7</rating>
-        <slots>1</slots>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
-        <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>50</cost>
-        <rating>0</rating>
-        <slots>1</slots>
-        <ammoreplace>Weapon * 2</ammoreplace>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
-        <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>500</cost>
-        <rating>0</rating>
-        <slots>2</slots>
-        <optionaldrone />
-        <ammobonus>100</ammobonus>
-        <ammoreplace>0(belt)</ammoreplace>
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
-        <name>Ammo Bin</name>
-        <page>159</page>
-        <source>R5</source>
-        <avail>6R</avail>
-        <category>Weapons</category>
-        <cost>200</cost>
-        <rating>0</rating>
-        <slots>1</slots>
-        <ammobonus>250</ammobonus>
-      </mod>
-    </mods>
-    <!-- End Region -->
   </weaponmounts>
+  <!-- End Region -->
+  <!-- Region Weapon Mount Mods -->
+  <weaponmountmods>
+    <!-- Region Drone Weapon Mount Mods -->
+    <mod>
+      <id>45d84d77-5461-4441-a529-527aba347334</id>
+      <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>25</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
+      <name>Pop-Out Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Rating * 100</cost>
+      <rating>7</rating>
+      <slots>1</slots>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+      <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>50</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <ammoreplace>Weapon * 2</ammoreplace>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+      <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>2</slots>
+      <optionaldrone />
+      <ammobonus>100</ammobonus>
+      <ammoreplace>0(belt)</ammoreplace>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Vehicle Weapon Mount Mods -->
+    <mod>
+      <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
+      <name>Ammo Bin</name>
+      <page>159</page>
+      <source>R5</source>
+      <avail>6R</avail>
+      <category>Weapons</category>
+      <cost>200</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <ammobonus>250</ammobonus>
+    </mod>
+    <!-- End Region -->
+  </weaponmountmods>
+  <!-- End Region -->
 </chummer>
