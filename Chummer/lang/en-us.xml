@@ -8859,7 +8859,7 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	</string>
 	<string>
 	  <key>Message_MissingSourceBooks</key>
-	  <text>This character was created with the following books that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	  <text>This character was created with the following books that are not enabled:\n\n{0}\n\nThis may cause issues. Do you want to continue loading the character?</text>
 	</string>
 	<string>
 	  <key>Message_MissingSourceBooks_Title</key>
@@ -8867,12 +8867,20 @@ Only one attribute may be at its Maximum value during character creation.</text>
 	</string>
 	<string>
 	  <key>Message_MissingCustomDataDirectories</key>
-	  <text>This character was created with the following custom data directories that are not enabled:\n {0} This may cause issues. Do you want to continue loading the character?</text>
+	  <text>This character was created with the following custom data directories that are not enabled:\n\n{0}\n\nThis may cause issues. Do you want to continue loading the character?</text>
 	</string>
 	<string>
 	  <key>Message_MissingCustomDataDirectories_Title</key>
 	  <text>Missing Custom Data Directories</text>
 	</string>
+    <string>
+      <key>Message_MissingGameplayOption</key>
+      <text>This character was created with the following gameplay option:\n\n{0}\n\nThis gameplay option could not be found in the current data files. In order to continue loading this character, a new gameplay option must be selected for them.</text>
+    </string>
+    <string>
+      <key>Message_MissingGameplayOption_Title</key>
+      <text>Missing Gameplay Option</text>
+    </string>
 	<string>
 	  <key>Message_Duplicate_CustomDataDirectoryName</key>
 	  <text>Custom data directory of this name already exists.</text>

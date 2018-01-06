@@ -192,7 +192,7 @@ namespace Chummer
         private int _intStunCMFilled = 0;
 
         // Priority Selections.
-        private string _strGameplayOption = string.Empty;
+        private string _strGameplayOption = "Standard";
         private string _strPriorityMetatype = string.Empty;
         private string _strPriorityAttributes = string.Empty;
         private string _strPrioritySpecial = string.Empty;
@@ -1119,7 +1119,25 @@ namespace Chummer
             if (!objXmlCharacter.TryGetStringFieldQuickly("primaryarm", ref _strPrimaryArm))
                 _strPrimaryArm = "Right";
 
-            objXmlCharacter.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption);
+            if (!objXmlCharacter.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
+                _strGameplayOption = "Standard";
+            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+            XmlNode xmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+            if (xmlGameplayOption == null)
+            {
+                string strMessage = LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language).Replace("{0}", GameplayOption);
+                if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language), MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                {
+                    frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
+                    frmPickBP.ShowDialog();
+
+                    if (frmPickBP.DialogResult != DialogResult.OK)
+                        return false;
+                }
+                else
+                    return false;
+            }
+
             objXmlCharacter.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen);
             objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
             objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma);
@@ -1138,24 +1156,17 @@ namespace Chummer
                     _lstPrioritySkills.Add(objXmlSkillName.InnerText);
                 }
             }
-            if (objXmlCharacter["bannedwaregrades"] != null && objXmlCharacter["bannedwaregrades"].HasChildNodes)
+            bannedwaregrades.Clear();
+            XmlNode xmlBannedWareGradesNode = objXmlCharacter["bannedwaregrades"];
+            if (xmlBannedWareGradesNode != null)
             {
-                bannedwaregrades.Clear();
-                XmlNodeList gradeList = objXmlCharacter.SelectNodes("bannedwaregrades/grade");
-                if (gradeList != null)
-                {
-                    foreach (XmlNode g in gradeList)
-                    {
-                        bannedwaregrades.Add(g.InnerText);
-                    }
-                }
+                if (xmlBannedWareGradesNode.HasChildNodes)
+                    foreach (XmlNode xmlNode in xmlBannedWareGradesNode.SelectNodes("grade"))
+                        bannedwaregrades.Add(xmlNode.InnerText);
             }
             else
             {
-                XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-                XmlNodeList lstBannedGradeNodes = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]/bannedwaregrades/grade");
-                bannedwaregrades.Clear();
-                foreach (XmlNode xmlNode in lstBannedGradeNodes)
+                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
                     bannedwaregrades.Add(xmlNode.InnerText);
             }
             string strSkill1 = string.Empty;
