@@ -1120,7 +1120,29 @@ namespace Chummer
                 _strPrimaryArm = "Right";
 
             if (!objXmlCharacter.TryGetStringFieldQuickly("gameplayoption", ref _strGameplayOption))
-                _strGameplayOption = "Standard";
+            {
+                if (objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma) && _intBuildKarma == 35)
+                    _strGameplayOption = "Prime Runner";
+                else
+                    _strGameplayOption = "Standard";
+            }
+
+            objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
+            if (!objXmlCharacter.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen) || _decMaxNuyen == 0)
+                _decMaxNuyen = 25;
+            objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
+            objXmlCharacter.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+            objXmlCharacter.TryGetInt32FieldQuickly("bp", ref _intBuildPoints);
+            objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
+            if (!objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
+                _intMaxKarma = _intBuildKarma;
+
+            //Maximum number of Karma that can be spent/gained on Qualities.
+            objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
+
+            objXmlCharacter.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+            objXmlCharacter.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
+
             XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
             XmlNode xmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
             if (xmlGameplayOption == null)
@@ -1138,9 +1160,6 @@ namespace Chummer
                     return false;
             }
 
-            objXmlCharacter.TryGetDecFieldQuickly("maxnuyen", ref _decMaxNuyen);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
-            objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma);
             objXmlCharacter.TryGetStringFieldQuickly("prioritymetatype", ref _strPriorityMetatype);
             objXmlCharacter.TryGetStringFieldQuickly("priorityattributes", ref _strPriorityAttributes);
             objXmlCharacter.TryGetStringFieldQuickly("priorityspecial", ref _strPrioritySpecial);
@@ -1200,32 +1219,11 @@ namespace Chummer
             objXmlCharacter.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
             objXmlCharacter.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
             objXmlCharacter.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
-            objXmlCharacter.TryGetInt32FieldQuickly("maxavail", ref _intMaxAvail);
             objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
             objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
-            objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
-
-            // Sum to X point value.
-            objXmlCharacter.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-            // Build Points/Karma.
-            objXmlCharacter.TryGetInt32FieldQuickly("bp", ref _intBuildPoints);
-            objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
-            if (_intMaxKarma == 0)
-                _intMaxKarma = _intBuildKarma;
-            if (_intBuildKarma == 35)
-            {
-                if (string.IsNullOrEmpty(_strGameplayOption))
-                    _strGameplayOption = "Prime Runner";
-                if (_decMaxNuyen == 0)
-                    _decMaxNuyen = 25;
-            }
-            //Maximum number of Karma that can be spent/gained on Qualities.
-            objXmlCharacter.TryGetInt32FieldQuickly("gameplayoptionqualitylimit", ref _intGameplayOptionQualityLimit);
-
-            objXmlCharacter.TryGetField("buildmethod", Enum.TryParse, out _objBuildMethod);
-
             objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+
+            objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
             objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
             objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);

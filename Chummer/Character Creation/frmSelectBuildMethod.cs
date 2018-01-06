@@ -136,11 +136,20 @@ namespace Chummer
                     _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
                     break;
             }
-            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-            XmlNodeList lstBannedGradeNodes = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]/bannedwaregrades/grade");
-            _objCharacter.bannedwaregrades.Clear();
-            foreach (XmlNode xmlNode in lstBannedGradeNodes)
-                _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
+
+            XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
+            if (xmlGameplayOption != null)
+            {
+                _objCharacter.bannedwaregrades.Clear();
+                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                    _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
+
+                if (!_objCharacter.Options.FreeContactsMultiplierEnabled)
+                    _objCharacter.ContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
+                _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
+                _objCharacter.MaxNuyen = Convert.ToInt32(xmlGameplayOption["maxnuyen"].InnerText);
+            }
+
             _objCharacter.BuildPoints = 0;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
