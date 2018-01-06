@@ -108,6 +108,7 @@ Application Changes:
 - The Translator will now process paragons, vessels, and mods for vehicle weapon mounts.
 - Fixed issues regarding the translation, deletion, and selling of mods to vehicle weapon mounts and weapons added to mods of vehicle weapon mounts.
 - Fixed issues loading characters made with gameplay options that are not present in the current dataset.
+- Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
 
 Data Changes:
 
