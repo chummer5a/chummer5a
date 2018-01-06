@@ -427,7 +427,7 @@ namespace Chummer
                 lblRC.Visible = false;
                 lblRCLabel.Visible = false;
             }
-            if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out int intMaxRating) && intMaxRating > 1)
+            if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out int intMaxRating) && intMaxRating > 0)
             {
                 nudRating.Enabled = true;
                 nudRating.Visible = true;
