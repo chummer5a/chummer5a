@@ -808,7 +808,8 @@ namespace Chummer
 
             UpdateInitiationGradeTree();
 
-            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
+            //TODO: Do we really need this?
+            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition) && CharacterObject.MagicTradition != "None")
             {
                 objXmlDocument = XmlManager.Load("traditions.xml");
                 XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
