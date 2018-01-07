@@ -8226,7 +8226,6 @@
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
       <conceal>4</conceal>
-      <spec>Microwave</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -8236,10 +8235,11 @@
       <ammo>Internal source</ammo>
       <avail>20R</avail>
       <cost>1000000</cost>
-      <allowaccessory>False</allowaccessory>
-      <range>Light Pistols</range>
       <source>LCD</source>
       <page>209</page>
+      <allowaccessory>False</allowaccessory>
+      <range>Light Pistols</range>
+      <spec>Microwave</spec>
     </weapon>
     <weapon>
       <id>10fb69db-efd0-4f63-80a7-bda5ef0480a4</id>
@@ -8247,7 +8247,6 @@
       <category>Exotic Ranged Weapons</category>
       <type>Ranged</type>
       <conceal>4</conceal>
-      <spec>Microwave</spec>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>10P</damage>
@@ -8257,10 +8256,11 @@
       <ammo>Internal source</ammo>
       <avail>20R</avail>
       <cost>1000000</cost>
-      <allowaccessory>False</allowaccessory>
-      <range>Light Pistols</range>
       <source>LCD</source>
       <page>209</page>
+      <allowaccessory>False</allowaccessory>
+      <range>Light Pistols</range>
+      <spec>Microwave</spec>
     </weapon>
     <weapon>
       <id>bb17f788-f4d2-4a32-a758-2ed47a1beb63</id>
@@ -8277,13 +8277,13 @@
       <ammo>10(c) or Internal source</ammo>
       <avail>16F</avail>
       <cost>1000000</cost>
+      <source>LCD</source>
+      <page>209</page>
       <accessorymounts>
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
       <range>Submachine Guns</range>
-      <source>LCD</source>
-      <page>209</page>
     </weapon>
     <!-- End Region -->
     <!-- Region Shadows in Focus -->
@@ -8294,7 +8294,6 @@
       <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <spec>Semi-Automatics</spec>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>8P</damage>
@@ -8304,19 +8303,20 @@
       <ammo>16(c)</ammo>
       <avail>5R</avail>
       <cost>700</cost>
+      <source>SFM</source>
+      <page>18</page>
+      <accessories>
+        <accessory>
+          <name>Laser Sight</name>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Barrel</mount>
         <mount>Top</mount>
         <mount>Stock</mount>
         <mount>Side</mount>
       </accessorymounts>
-      <accessories>
-        <accessory>
-          <name>Laser Sight</name>
-        </accessory>
-      </accessories>
-      <source>SFM</source>
-      <page>18</page>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <!-- End Region -->
     <!-- End Region -->
@@ -8325,10 +8325,8 @@
       <id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
       <name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
       <category>Shotguns</category>
-      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
-      <spec>Shotguns</spec>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>12P(f)</damage>
@@ -8338,14 +8336,14 @@
       <ammo>2(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>False</allowaccessory>
-      <accessorymounts />
-      <accessories />
-      <useskill>Longarms</useskill>
-      <range>Shotguns</range>
-      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB2</source>
       <page>0</page>
+      <allowaccessory>False</allowaccessory>
+      <alternaterange>Shotguns (flechette)</alternaterange>
+      <hide />
+      <range>Shotguns</range>
+      <spec>Shotguns</spec>
+      <useskill>Longarms</useskill>
     </weapon>
     <weapon>
       <id>026343e0-f47d-4c5a-905d-bbbc2411b5da</id>
@@ -8353,20 +8351,22 @@
       <category>Sporting Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <spec>Sporting Rifles</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>11P</damage>
       <ap>-4</ap>
       <mode>SA</mode>
       <rc>1</rc>
-      <range>Sniper Rifles</range>
       <ammo>6(m)</ammo>
       <avail>5R</avail>
       <cost>1800</cost>
-      <underbarrels>
-        <underbarrel>Mannlicher Marpingen Pro D (Shotgun Barrels)</underbarrel>
-      </underbarrels>
+      <source>SHB2</source>
+      <page>0</page>
+      <accessories>
+        <accessory>
+          <name>Slide Mount</name>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -8375,15 +8375,12 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <accessories>
-        <accessory>
-          <name>Slide Mount</name>
-        </accessory>
-      </accessories>
-      <useskill>Longarms</useskill>
       <range>Sniper Rifles</range>
-      <source>SHB2</source>
-      <page>0</page>
+      <spec>Sporting Rifles</spec>
+      <underbarrels>
+        <underbarrel>Mannlicher Marpingen Pro D (Shotgun Barrels)</underbarrel>
+      </underbarrels>
+      <useskill>Longarms</useskill>
     </weapon>
     <weapon>
       <id>5c04009f-7858-4c9a-bc9e-d21880e420cf</id>
@@ -8400,14 +8397,8 @@
       <ammo>30(c)</ammo>
       <avail>12F</avail>
       <cost>1000</cost>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Internal</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
+      <source>SHB2</source>
+      <page>0</page>
       <accessories>
         <accessory>
           <name>Smartgun System, Internal</name>
@@ -8418,20 +8409,24 @@
         <accessory>
           <name>Gas-Vent 2 System</name>
         </accessory>
-        <useskill>Pistols</useskill>
-        <range>Light Pistols</range>
       </accessories>
-      <source>SHB2</source>
-      <page>0</page>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <range>Light Pistols</range>
+      <useskill>Pistols</useskill>
     </weapon>
     <weapon>
       <id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
       <name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
       <category>Shotguns</category>
-      <hide />
       <type>Ranged</type>
       <conceal>6</conceal>
-      <spec>Shotguns</spec>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>14P(f)</damage>
@@ -8441,13 +8436,14 @@
       <ammo>1(b)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <allowaccessory>False</allowaccessory>
-      <accessorymounts />
-      <useskill>Longarms</useskill>
-      <range>Shotguns</range>
-      <alternaterange>Shotguns (flechette)</alternaterange>
       <source>SHB</source>
       <page>0</page>
+      <allowaccessory>False</allowaccessory>
+      <alternaterange>Shotguns (flechette)</alternaterange>
+      <hide />
+      <range>Shotguns</range>
+      <spec>Shotguns</spec>
+      <useskill>Longarms</useskill>
     </weapon>
     <weapon>
       <id>4dee0b90-b3d0-41a8-a784-8c3342a69719</id>
@@ -9384,7 +9380,6 @@
       <category>Machine Pistols</category>
       <type>Ranged</type>
       <conceal>0</conceal>
-      <spec>Semi-Automatics</spec>
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
@@ -9394,6 +9389,8 @@
       <ammo>40(c)</ammo>
       <avail>5F</avail>
       <cost>950</cost>
+      <source>2050</source>
+      <page>184</page>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -9402,8 +9399,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <source>2050</source>
-      <page>184</page>
+      <spec>Semi-Automatics</spec>
     </weapon>
     <weapon>
       <id>bc343de1-aa17-4fb8-b3dc-5cd44fc973a1</id>

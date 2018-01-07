@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-  <xs:include schemaLocation="../data../conditions.xsd" />
+  <xs:include schemaLocation="conditions.xsd" />
 
   <xs:element name="mods">
     <xs:complexType>
@@ -39,7 +39,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -105,6 +105,7 @@
                     <xs:element name="pilot" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="sensor" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="speed" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="bodymodslots" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="cyberwares" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
@@ -147,6 +148,22 @@
                     <xs:element name="modslots" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="seats" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weaponmodslots" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="weaponmounts" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="weaponmount" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="control" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="flexibility" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="size" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="visibility" minOccurs="1" maxOccurs="1"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                     <xs:element name="weapons" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
@@ -154,22 +171,6 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="weaponmounts" minOccurs="0" maxOccurs="1">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="weaponmount" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:sequence>
-                                <xs:element name="size" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="visibility" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="flexibility" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="control" minOccurs="1" maxOccurs="1"/>
-                              </xs:sequence>
-                            </xs:complexType>                            
-                          </xs:element>
-                        </xs:sequence>
-                      </xs:complexType>
-                    </xs:element>                    
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -207,7 +208,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
 
   <xs:element name="mod">
     <xs:complexType>
@@ -241,10 +242,13 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="ammobonus" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ammoreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="capacity" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="conditionmonitor" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="downgrade" minOccurs="0" maxOccurs="1" />
         <xs:element name="firewall" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="hide" minOccurs="0" maxOccurs="1" />
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="optionaldrone" minOccurs="0" maxOccurs="1" />
@@ -271,7 +275,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
