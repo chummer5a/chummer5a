@@ -803,11 +803,12 @@ namespace Chummer
                                     if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts") && strFile.EndsWith("lifestyles.xml")))
                                     {
                                         string strChildName = objChild.Name;
+                                        XmlNode objTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);
                                         // Look for a matching entry in the Language file.
                                         if (objChild["name"] != null)
                                         {
                                             string strChildNameElement = objChild["name"].InnerText;
-                                            XmlNode objNode = objLanguageRoot.SelectSingleNode(strTypeName + "/" + strChildName + "[name = \"" + strChildNameElement + "\"]");
+                                            XmlNode objNode = objTranslatedType.SelectSingleNode(strChildName + "[name = \"" + strChildNameElement + "\"]");
                                             if (objNode != null)
                                             {
                                                 // A match was found, so see what elements, if any, are missing.
@@ -976,8 +977,7 @@ namespace Chummer
                                         {
                                             string strChildInnerText = objChild.InnerText;
                                             // The item does not have a name which means it should have a translate CharacterAttribute instead.
-                                            XmlNode objNode =
-                                                objLanguageRoot.SelectSingleNode(strTypeName + "/" + strChildName + "[. = \"" + strChildInnerText + "\"]");
+                                            XmlNode objNode = objTranslatedType.SelectSingleNode(strChildName + "[text() = \"" + strChildInnerText + "\"]");
                                             if (objNode != null)
                                             {
                                                 // Make sure the translate attribute is populated.

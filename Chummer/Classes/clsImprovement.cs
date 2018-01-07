@@ -985,47 +985,46 @@ namespace Chummer
 
             /*try
             {*/
-                if (nodBonus == null)
-                {
-                    s_StrForcedValue = string.Empty;
-                    s_StrLimitSelection = string.Empty;
-                    Log.Exit("CreateImprovements");
-                    return true;
-                }
+            if (nodBonus == null)
+            {
+                s_StrForcedValue = string.Empty;
+                s_StrLimitSelection = string.Empty;
+                Log.Exit("CreateImprovements");
+                return true;
+            }
+            
+            s_StrSelectedValue = string.Empty;
 
-                string strUnique = string.Empty;
-                if (nodBonus.Attributes?["unique"] != null)
-                    strUnique = nodBonus.Attributes["unique"].InnerText;
+            Log.Info("_strForcedValue = " + s_StrForcedValue);
+            Log.Info("_strLimitSelection = " + s_StrLimitSelection);
 
-                s_StrSelectedValue = string.Empty;
+            // If there is no character object, don't attempt to add any Improvements.
+            if (objCharacter == null)
+            {
+                Log.Info("_objCharacter = Null");
+                Log.Exit("CreateImprovements");
+                return true;
+            }
 
-                Log.Info(
-                    "_strForcedValue = " + s_StrForcedValue);
-                Log.Info(
-                    "_strLimitSelection = " + s_StrLimitSelection);
+            string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
+            // If no friendly name was provided, use the one from SourceName.
+            if (string.IsNullOrEmpty(strFriendlyName))
+                strFriendlyName = strSourceName;
 
-                // If no friendly name was provided, use the one from SourceName.
-                if (string.IsNullOrEmpty(strFriendlyName))
-                    strFriendlyName = strSourceName;
-
-                if (nodBonus.HasChildNodes)
-                {
-                    Log.Info("Has Child Nodes");
-                }
-                if (NodeExists(nodBonus, "selecttext"))
+            if (nodBonus.HasChildNodes)
+            {
+                Log.Info("Has Child Nodes");
+                if (nodBonus["selecttext"] != null)
                 {
                     Log.Info("selecttext");
 
-                    if (objCharacter != null)
+                    if (!string.IsNullOrEmpty(s_StrForcedValue))
                     {
-                        if (!string.IsNullOrEmpty(s_StrForcedValue))
-                        {
-                            LimitSelection = s_StrForcedValue;
-                        }
-                        else if (objCharacter.Pushtext.Count != 0)
-                        {
-                            LimitSelection = objCharacter.Pushtext.Pop();
-                        }
+                        LimitSelection = s_StrForcedValue;
+                    }
+                    else if (objCharacter.Pushtext.Count != 0)
+                    {
+                        LimitSelection = objCharacter.Pushtext.Pop();
                     }
 
                     Log.Info("_strForcedValue = " + SelectedValue);
@@ -1037,26 +1036,25 @@ namespace Chummer
                     }
                     else
                     {
-                    // Display the Select Text window and record the value that was entered.
-                    frmSelectText frmPickText = new frmSelectText
-                    {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                        .Replace("{0}", strFriendlyName)
-                    };
-                    frmPickText.ShowDialog();
+                        // Display the Select Text window and record the value that was entered.
+                        frmSelectText frmPickText = new frmSelectText
+                        {
+                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", strFriendlyName)
+                        };
+                        frmPickText.ShowDialog();
 
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
-                    {
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        {
 
-                        Rollback(objCharacter);
+                            Rollback(objCharacter);
                             ForcedValue = string.Empty;
                             LimitSelection = string.Empty;
-                        Log.Exit("CreateImprovements");
-                        return false;
-                    }
+                            Log.Exit("CreateImprovements");
+                            return false;
+                        }
 
-                    s_StrSelectedValue = frmPickText.SelectedValue;
+                        s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
                         strSourceName += " (" + SelectedValue + ")";
@@ -1071,14 +1069,6 @@ namespace Chummer
                         strUnique);
                 }
 
-                // If there is no character object, don't attempt to add any Improvements.
-                if (objCharacter == null)
-                {
-                    Log.Info( "_objCharacter = Null");
-                    Log.Exit("CreateImprovements");
-                    return true;
-                }
-
                 // Check to see what bonuses the node grants.
                 foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                 {
@@ -1089,15 +1079,16 @@ namespace Chummer
                         return false;
                     }
                 }
+            }
 
+            // If we've made it this far, everything went OK, so commit the Improvements.
+            Log.Info("Calling Commit");
+            Commit(objCharacter);
+            Log.Info("Returned from Commit");
+            // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
+            s_StrForcedValue = string.Empty;
+            s_StrLimitSelection = string.Empty;
 
-                // If we've made it this far, everything went OK, so commit the Improvements.
-                Log.Info("Calling Commit");
-                Commit(objCharacter);
-                Log.Info("Returned from Commit");
-                // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-                s_StrForcedValue = string.Empty;
-                s_StrLimitSelection = string.Empty;
             /*}
             catch (Exception ex)
             {

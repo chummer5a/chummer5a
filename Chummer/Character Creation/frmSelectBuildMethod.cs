@@ -167,53 +167,43 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboBuildMethod.SelectedValue == null)
+            nudKarma.Visible = false;
+            nudMaxNuyen.Visible = false;
+            nudSumtoTen.Visible = false;
+            lblStartingKarma.Visible = false;
+            lblSumToX.Visible = false;
+            lblMaxNuyen.Visible = false;
+            lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
+
+            string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
+            switch (strSelectedBuildMethod)
             {
-                lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                nudKarma.Visible = false;
-            }
-            else
-            {
-                if (cboBuildMethod.SelectedValue.ToString() == "Karma")
-                {
+                case "Karma":
                     if (_objOptions.BuildMethod == "Karma")
-                    {
                         nudKarma.Value = _objOptions.BuildPoints;
-                    }
                     else
-                    {
                         nudKarma.Value = 800;
-                    }
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language).Replace("{0}", nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    nudMaxNuyen.Visible = true;
+                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
-                    nudSumtoTen.Visible = false;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "Priority")
-                {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                    nudKarma.Visible = false;
-                    nudMaxNuyen.Visible = false;
-                    nudSumtoTen.Visible = false;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "SumtoTen")
-                {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                    nudKarma.Visible = false;
-                    nudMaxNuyen.Visible = false;
-                    nudSumtoTen.Visible = true;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
-                {
+                    nudMaxNuyen.Visible = true;
+                    lblStartingKarma.Visible = true;
+                    lblMaxNuyen.Visible = true;
+                    break;
+                case "LifeModule":
                     nudKarma.Value = 750;
                     lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
-                    nudSumtoTen.Visible = false;
-                }
-                lblStartingKarma.Visible = nudKarma.Visible;
-                lblSumToX.Visible = nudSumtoTen.Visible;
-                lblMaxNuyen.Visible = nudMaxNuyen.Visible;
+                    lblStartingKarma.Visible = true;
+                    lblMaxNuyen.Visible = true;
+                    break;
+                case "SumtoTen":
+                    nudSumtoTen.Visible = true;
+                    lblSumToX.Visible = true;
+                    break;
+                case "Priority":
+                default:
+                    break;
             }
         }
 
@@ -222,7 +212,6 @@ namespace Chummer
             Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);
         }
-        #endregion
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -236,5 +225,6 @@ namespace Chummer
                 decNuyenBP = Convert.ToDecimal(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
         }
+        #endregion
     }
 }
