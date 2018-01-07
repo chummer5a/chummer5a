@@ -1295,11 +1295,12 @@ namespace Chummer
             Quality objLivingPersonaQuality = null;
             objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
             bool blnHasOldQualities = false;
+            XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
             foreach (XmlNode objXmlQuality in objXmlNodeList)
             {
                 if (objXmlQuality["name"] != null)
                 {
-                    if (!CorrectedUnleveledQuality(objXmlQuality))
+                    if (!CorrectedUnleveledQuality(objXmlQuality, xmlQualitiesDocument))
                     {
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
@@ -1939,27 +1940,25 @@ namespace Chummer
                     if (Qualities.Any(x => x.Name.Equals("Resistance to Pathogens/Toxins")) == false &&
                         Qualities.Any(x => x.Name.Equals("Dwarf Resistance")) == false)
                     {
-                        XmlNode objXmlDwarfQuality =
-                            XmlManager.Load("qualities.xml")
-                                .SelectSingleNode(
-                                    "/chummer/qualities/quality[name = \"Resistance to Pathogens/Toxins\"]");
+                        XmlNode xmlRootQualitiesNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities");
+                        if (xmlRootQualitiesNode != null)
+                        {
+                            XmlNode objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Resistance to Pathogens/Toxins\"]");
+                            if (objXmlDwarfQuality == null)
+                                objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
 
-                        if (objXmlDwarfQuality == null)
-                            objXmlDwarfQuality =
-                                XmlManager.Load("qualities.xml")
-                                    .SelectSingleNode("/chummer/qualities/quality[name = \"Dwarf Resistance\"]");
+                            TreeNode objNode = new TreeNode();
+                            List<Weapon> objWeapons = new List<Weapon>();
+                            List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                            Quality objQuality = new Quality(this);
 
-                TreeNode objNode = new TreeNode();
-                List<Weapon> objWeapons = new List<Weapon>();
-                List<TreeNode> objWeaponNodes = new List<TreeNode>();
-                Quality objQuality = new Quality(this);
-
-                        objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, objNode, objWeapons,
-                            objWeaponNodes);
-                        _lstQualities.Add(objQuality);
+                            objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, objNode, objWeapons,
+                                objWeaponNodes);
+                            _lstQualities.Add(objQuality);
+                        }
                     }
-                blnHasOldQualities = true;
-            }
+                    blnHasOldQualities = true;
+                }
             }
 
             Timekeeper.Finish("load_char_dwarffix");
@@ -8266,8 +8265,7 @@ namespace Chummer
         /// </summary>
         private void ConvertOldQualities(XmlNodeList objXmlQualityList)
         {
-            XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
-            XmlDocument objXmlMetatypeDocument = XmlManager.Load("metatypes.xml");
+            XmlNode xmlRootQualitiesNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities");
 
             // Convert the old Qualities.
             foreach (XmlNode objXmlQuality in objXmlQualityList)
@@ -8278,7 +8276,7 @@ namespace Chummer
 
                     string strForceValue = string.Empty;
 
-                    XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + GetQualityName(objXmlQuality.InnerText) + "\"]");
+                    XmlNode objXmlQualityNode = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + GetQualityName(objXmlQuality.InnerText) + "\"]");
 
                     // Re-create the bonuses for the Quality.
                     if (objXmlQualityNode.InnerXml.Contains("<bonus>"))
@@ -8310,11 +8308,11 @@ namespace Chummer
             }
 
             // Take care of the Metatype information.
-            XmlNode objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+            string strXPath = "/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]";
+            XmlNode objXmlMetatype = XmlManager.Load("metatypes.xml").SelectSingleNode(strXPath);
             if (objXmlMetatype == null)
             {
-                objXmlMetatypeDocument = XmlManager.Load("critters.xml");
-                objXmlMetatype = objXmlMetatypeDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _strMetatype + "\"]");
+                objXmlMetatype = XmlManager.Load("critters.xml").SelectSingleNode(strXPath);
             }
 
             // Positive Qualities.
@@ -8343,7 +8341,7 @@ namespace Chummer
                     if (objXmlMetatypeQuality.Attributes["select"] != null)
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
-                    XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
                     objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
                     _lstQualities.Add(objQuality);
 
@@ -8379,7 +8377,7 @@ namespace Chummer
                     if (objXmlMetatypeQuality.Attributes["select"] != null)
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
-                    XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                    XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
                     objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
                     _lstQualities.Add(objQuality);
 
@@ -8420,7 +8418,7 @@ namespace Chummer
                         if (objXmlMetatypeQuality.Attributes["select"] != null)
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
-                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                        XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
                         objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
                         _lstQualities.Add(objQuality);
 
@@ -8456,7 +8454,7 @@ namespace Chummer
                         if (objXmlMetatypeQuality.Attributes["select"] != null)
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
-                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
+                        XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
                         objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
                         _lstQualities.Add(objQuality);
 
@@ -8485,430 +8483,429 @@ namespace Chummer
         /// Returns true if it's a corrected quality, false otherwise
         /// </summary>
         /// <param name="strQuality">String to parse.</param>
-        private bool CorrectedUnleveledQuality(XmlNode objOldXmlQuality)
+        private bool CorrectedUnleveledQuality(XmlNode objOldXmlQuality, XmlDocument xmlQualitiesDocument)
         {
-            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             XmlNode objXmlNewQuality = null;
             int intRanks = 0;
             switch (objOldXmlQuality["name"].InnerText)
             {
                 case "Focused Concentration (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Focused Concentration (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Focused Concentration (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Focused Concentration (Rating 4)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Focused Concentration (Rating 5)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 5;
                         break;
                     }
                 case "Focused Concentration (Rating 6)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Focused Concentration\"]");
                         intRanks = 6;
                         break;
                     }
                 case "High Pain Tolerance (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "High Pain Tolerance (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "High Pain Tolerance (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"High Pain Tolerance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Magic Resistance (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Magic Resistance (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Magic Resistance (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Magic Resistance (Rating 4)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Magic Resistance\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Will to Live (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Will to Live (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Will to Live (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Will to Live\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Gremlins (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Gremlins (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Gremlins (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Gremlins (Rating 4)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Gremlins\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Aged (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Aged (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Aged (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Aged\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Illness (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Illness (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Illness (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Illness\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Perceptive I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Perceptive II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Perceptive\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Spike Resistance I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Spike Resistance II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Spike Resistance III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Spike Resistance\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Tough as Nails Physical I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Tough as Nails Physical II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Tough as Nails Physical III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Physical)\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Tough as Nails Stun I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Tough as Nails Stun II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Tough as Nails Stun III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Tough as Nails (Stun)\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Dimmer Bulb I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Dimmer Bulb II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Dimmer Bulb III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Dimmer Bulb\"]");
                         intRanks = 3;
                         break;
                     }
                 case "In Debt I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 1;
                         break;
                     }
                 case "In Debt II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 2;
                         break;
                     }
                 case "In Debt III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 3;
                         break;
                     }
                 case "In Debt IV":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 4;
                         break;
                     }
                 case "In Debt V":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 5;
                         break;
                     }
                 case "In Debt VI":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 6;
                         break;
                     }
                 case "In Debt VII":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 7;
                         break;
                     }
                 case "In Debt VIII":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 8;
                         break;
                     }
                 case "In Debt IX":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 9;
                         break;
                     }
                 case "In Debt X":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 10;
                         break;
                     }
                 case "In Debt XI":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 11;
                         break;
                     }
                 case "In Debt XII":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 12;
                         break;
                     }
                 case "In Debt XIII":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 13;
                         break;
                     }
                 case "In Debt XIV":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 14;
                         break;
                     }
                 case "In Debt XV":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"In Debt\"]");
                         intRanks = 15;
                         break;
                     }
                 case "Infirm I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Infirm II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Infirm III":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Infirm IV":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
                         intRanks = 4;
                         break;
                     }
                 case "Infirm V":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Infirm\"]");
                         intRanks = 5;
                         break;
                     }
                 case "Shiva Arms (1 Pair)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Shiva Arms (2 Pair)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Shiva Arms (Pair)\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Arcane Arrester I":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Arcane Arrester II":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Arcane Arrester\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Pilot Origins (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Pilot Origins (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Pilot Origins (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Pilot Origins\"]");
                         intRanks = 3;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 1)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 1;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 2)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 2;
                         break;
                     }
                 case "Social Appearance Anxiety (Rating 3)":
                     {
-                        objXmlNewQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
+                        objXmlNewQuality = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Social Appearance Anxiety\"]");
                         intRanks = 3;
                         break;
                     }
