@@ -440,27 +440,37 @@ namespace Translator
             XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
             if (xmlStringsNode != null)
             {
-                foreach (XmlNode xmlStringNode in xmlStringsNode.SelectNodes("string"))
+                try
                 {
-                    if (_workerStringsProcessor.CancellationPending)
-                        break;
-                    string strKey = xmlStringNode["key"].InnerText;
-                    XmlNode xmlTranslatedStringNode = xmlTranslatedStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
-                    if (xmlTranslatedStringNode == null)
+
+                    foreach (XmlNode xmlStringNode in xmlStringsNode.SelectNodes("string"))
                     {
-                        xmlTranslatedStringsNode.AppendChild(objDoc.ImportNode(xmlStringNode, true));
+                        if (_workerStringsProcessor.CancellationPending)
+                            break;
+                        string strKey = xmlStringNode["key"].InnerText;
+                        XmlNode xmlTranslatedStringNode = xmlTranslatedStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                        if (xmlTranslatedStringNode == null)
+                        {
+                            xmlTranslatedStringsNode.AppendChild(objDoc.ImportNode(xmlStringNode, true));
+                        }
+                    }
+                    foreach (XmlNode xmlTranslatedStringNode in xmlTranslatedStringsNode.SelectNodes("string"))
+                    {
+                        if (_workerStringsProcessor.CancellationPending)
+                            break;
+                        string strKey = xmlTranslatedStringNode["key"].InnerText;
+                        XmlNode xmlStringNode = xmlStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
+                        if (xmlStringNode == null)
+                        {
+                            xmlTranslatedStringsNode.RemoveChild(xmlTranslatedStringNode);
+                        }
                     }
                 }
-                foreach (XmlNode xmlTranslatedStringNode in xmlTranslatedStringsNode.SelectNodes("string"))
+                catch (Exception ex)
                 {
-                    if (_workerStringsProcessor.CancellationPending)
-                        break;
-                    string strKey = xmlTranslatedStringNode["key"].InnerText;
-                    XmlNode xmlStringNode = xmlStringsNode.SelectSingleNode("string[key = \"" + strKey + "\"]");
-                    if (xmlStringNode == null)
-                    {
-                        xmlTranslatedStringsNode.RemoveChild(xmlTranslatedStringNode);
-                    }
+                    MessageBox.Show(ex.ToString());
+                    e.Cancel = true;
+                    _objDataDocWithPath = null;
                 }
             }
             if (_workerStringsProcessor.CancellationPending)
@@ -510,12 +520,22 @@ namespace Translator
             }
 
             int intFunctionCount = s_LstProcessFunctions.Length;
-            for (int i = 0; i < intFunctionCount; ++i)
+            try
             {
-                if (_workerDataProcessor.CancellationPending)
-                    break;
-                s_LstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor);
-                _workerDataProcessor.ReportProgress(i * 100 / (intFunctionCount));
+                for (int i = 0; i < intFunctionCount; ++i)
+                {
+                    if (_workerDataProcessor.CancellationPending)
+                        break;
+                    s_LstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor);
+                
+                    _workerDataProcessor.ReportProgress(i * 100 / (intFunctionCount));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+                e.Cancel = true;
+                _objDataDocWithPath = null;
             }
 
             if (_workerDataProcessor.CancellationPending)

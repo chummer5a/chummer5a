@@ -117,6 +117,7 @@ Application Changes:
 - Fixed a bug where characters with Ex-Con could still buy (non-modular) Restricted and/or Forbidden 'ware. Getting Ex-Con in Create mode will now remove all ineligible 'ware from the character, and getting Ex-Con in Career mode will do the same for all 'ware that does not have a "None" grade (so e.g. genemods are kept).
 - Fixed a bug where characters with Erased did not have their Public Awareness capped to 1.
 - Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
+- Fixed a crash in the Translator when a user attempts to search for an item while having no cell selected.
 
 Data Changes:
 
@@ -146,6 +147,8 @@ Data Changes:
 - Fixed a duplicate id in the Pomorya Nationality Life Module.
 - Fixed incorrect category for Ford Titan. Fixes #2262.
 - Fixed an issue where characters could take the Trust Fund quality multiple times.
+- Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
+- Added missing id nodes to vessels in vessels.xml.
 
 New Strings:
 
