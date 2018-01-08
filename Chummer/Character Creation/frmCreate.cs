@@ -1641,6 +1641,41 @@ namespace Chummer
             ChangeMetatype();
         }
 
+        private void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
+        {
+            string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
+            if (!File.Exists(strFilePath))
+            {
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_OpenOptions", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    Cursor = Cursors.WaitCursor;
+                    frmOptions frmOptions = new frmOptions();
+                    frmOptions.ShowDialog();
+                    Cursor = Cursors.Default;
+                }
+            }
+            Cursor = Cursors.WaitCursor;
+            Character objCharacter = new Character();
+            string settingsPath = Path.Combine(Application.StartupPath, "settings");
+            string[] settingsFiles = Directory.GetFiles(settingsPath, "*.xml");
+
+            if (settingsFiles.Length > 1)
+            {
+                frmSelectSetting frmPickSetting = new frmSelectSetting();
+                frmPickSetting.ShowDialog(this);
+
+                if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                    return;
+
+                objCharacter.SettingsFile = frmPickSetting.SettingsFile;
+            }
+            else
+            {
+                string strSettingsFile = settingsFiles[0];
+                objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
+            }
+        }
+
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
         {
             bool blnEssence = true;

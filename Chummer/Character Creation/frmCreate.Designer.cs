@@ -216,6 +216,7 @@ namespace Chummer
             this.mnuSpecialAddPACKSKit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialCreatePACKSKit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialChangeMetatype = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSpecialChangeOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialMutantCritter = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialToxicCritter = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSpecialCyberzombie = new System.Windows.Forms.ToolStripMenuItem();
@@ -2507,6 +2508,7 @@ namespace Chummer
             this.mnuSpecialAddPACKSKit,
             this.mnuSpecialCreatePACKSKit,
             this.mnuSpecialChangeMetatype,
+            this.mnuSpecialChangeOptions,
             this.mnuSpecialMutantCritter,
             this.mnuSpecialToxicCritter,
             this.mnuSpecialCyberzombie,
@@ -2584,6 +2586,15 @@ namespace Chummer
             this.mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangeMetatype";
             this.mnuSpecialChangeMetatype.Text = "Change &Metatype";
             this.mnuSpecialChangeMetatype.Click += new System.EventHandler(this.mnuSpecialChangeMetatype_Click);
+            // 
+            // mnuSpecialChangeOptions
+            // 
+            this.mnuSpecialChangeOptions.Image = global::Chummer.Properties.Resources.user_go;
+            this.mnuSpecialChangeOptions.Name = "mnuSpecialChangeMetatype";
+            this.mnuSpecialChangeOptions.Size = new System.Drawing.Size(213, 22);
+            this.mnuSpecialChangeOptions.Tag = "Menu_SpecialChangeOptions";
+            this.mnuSpecialChangeOptions.Text = "Change &Options File";
+            this.mnuSpecialChangeOptions.Click += new System.EventHandler(this.mnuSpecialChangeOptions_Click);
             // 
             // mnuSpecialMutantCritter
             // 
@@ -10672,6 +10683,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCritterPowerPointCost;
         private System.Windows.Forms.Label lblCritterPowerPointCostLabel;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialChangeMetatype;
+        private System.Windows.Forms.ToolStripMenuItem mnuSpecialChangeOptions;
         private System.Windows.Forms.ToolStripMenuItem mnuSpecialCreatePACKSKit;
         private System.Windows.Forms.Label lblMemory;
         private System.Windows.Forms.Label lblMemoryLabel;

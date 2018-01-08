@@ -1264,6 +1264,10 @@
       <text>Change Priority Selection</text>
     </string>
     <string>
+      <key>Menu_SpecialChangeOptions</key>
+      <text>"Change &amp;Options File</text>
+    </string>
+    <string>
       <key>Menu_SpecialConvertToMutantCritter</key>
       <text>Convert to Mutant Critter</text>
     </string>

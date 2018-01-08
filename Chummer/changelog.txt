@@ -110,6 +110,7 @@ Application Changes:
 - Fixed issues loading characters made with gameplay options that are not present in the current dataset.
 - Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
 - Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
+- Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load. 
 
 Data Changes:
 
@@ -171,6 +172,7 @@ New Strings:
 - Checkbox_Options_EnemyKarmaQualityLimit
 - Message_MissingGameplayOption
 - Message_MissingGameplayOption_Title
+- Menu_SpecialChangeOptions
 
 Build 196
 
