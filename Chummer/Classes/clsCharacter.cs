@@ -9059,12 +9059,12 @@ namespace Chummer
                 RedlinerBonus = 0;
                 return intOldRedlinerBonus == 0;
             }
-
+            
             //Calculate bonus from cyberlimbs
             int count = 0;
             foreach (Cyberware objCyberware in Cyberware)
             {
-                count += objCyberware.CyberlimbCount;
+                count += objCyberware.GetCyberlimbCount("skull", "torso");
             }
             count = Math.Min(count / 2, 2);
             if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))

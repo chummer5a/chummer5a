@@ -118,6 +118,7 @@ Application Changes:
 - Fixed a bug where characters with Erased did not have their Public Awareness capped to 1.
 - Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
 - Fixed a crash in the Translator when a user attempts to search for an item while having no cell selected.
+- Fixed an issue where Redliner would not trigger off of modular full cyberlimbs. Fixes #2275.
 
 Data Changes:
 
