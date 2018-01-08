@@ -40,7 +40,7 @@ namespace Chummer
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
-            this.lblMetatype = new System.Windows.Forms.Label();
+            this.cboMetatype = new System.Windows.Forms.ComboBox();
             this.cmsContact.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
@@ -157,20 +157,21 @@ namespace Chummer
             this.lblMetatypeLabel.Tag = "Label_Metatype";
             this.lblMetatypeLabel.Text = "Metatype:";
             // 
-            // lblMetatype
+            // cboMetatype
             // 
-            this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(285, 5);
-            this.lblMetatype.Name = "lblMetatype";
-            this.lblMetatype.Size = new System.Drawing.Size(57, 13);
-            this.lblMetatype.TabIndex = 24;
-            this.lblMetatype.Text = "[Metatype]";
+            this.cboMetatype.FormattingEnabled = true;
+            this.cboMetatype.Location = new System.Drawing.Point(285, 1);
+            this.cboMetatype.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cboMetatype.Name = "cboMetatype";
+            this.cboMetatype.Size = new System.Drawing.Size(350, 21);
+            this.cboMetatype.TabIndex = 24;
+            this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // PetControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lblMetatype);
+            this.Controls.Add(this.cboMetatype);
             this.Controls.Add(this.lblMetatypeLabel);
             this.Controls.Add(this.lblName);
             this.Controls.Add(this.imgLink);
@@ -201,6 +202,6 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsContact;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblMetatypeLabel;
-        private System.Windows.Forms.Label lblMetatype;
+        private System.Windows.Forms.ComboBox cboMetatype;
     }
 }

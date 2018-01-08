@@ -110,6 +110,8 @@ Application Changes:
 - Fixed issues loading characters made with gameplay options that are not present in the current dataset.
 - Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
 - Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
+- Fixed a crash when loading characters in career mode that have access to the Spells and Spirits tab, but don't have a Tradition.
+- Metatypes for pets/cohorts are now alterable as a combobox if there is no character linked to a given pet/cohort. The suggested values loaded for the combobox are populated based on content in critters.xml. Fixes #2269.
 - Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load. 
 
 Data Changes:
