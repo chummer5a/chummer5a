@@ -527,8 +527,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strAvailExpr))
             {
                 lblAvail.Text = strAvailExpr;
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" ||
-                    strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     if (strAvail == "R")
@@ -555,11 +554,11 @@ namespace Chummer
                 if (objXmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
                     strCost = strCost.Replace("Weapon Cost", _decWeaponCost.ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
-                if (strCost.StartsWith("Variable"))
+                if (strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    strCost = strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');

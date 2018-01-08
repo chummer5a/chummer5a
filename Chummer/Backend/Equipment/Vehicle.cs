@@ -178,11 +178,11 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strCost))
             {
                 // Check for a Variable Cost.
-                if (_strCost.StartsWith("Variable"))
+                if (_strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');

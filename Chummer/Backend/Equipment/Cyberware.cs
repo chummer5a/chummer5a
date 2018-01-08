@@ -223,46 +223,39 @@ namespace Chummer.Backend.Equipment
                 _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
             }
 
+            _strCost = objXmlCyberware["cost"]?.InnerText ?? "0";
             // Check for a Variable Cost.
-            if (objXmlCyberware["cost"] != null)
+            if (_strCost.StartsWith("Variable("))
             {
-                if (objXmlCyberware["cost"].InnerText.StartsWith("Variable"))
+                decimal decMin = 0.0m;
+                decimal decMax = decimal.MaxValue;
+                string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                if (strCost.Contains('-'))
                 {
-                    decimal decMin = 0.0m;
-                    decimal decMax = decimal.MaxValue;
-                    char[] charParentheses = { '(', ')' };
-                    string strCost = objXmlCyberware["cost"].InnerText.TrimStart("Variable", true).Trim(charParentheses);
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                    if (decMin != 0 || decMax != decimal.MaxValue)
-                    {
-                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-                        frmPickNumber.Minimum = decMin;
-                        frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
-                        frmPickNumber.AllowCancel = false;
-                        frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
-                    }
+                    string[] strValues = strCost.Split('-');
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                 }
                 else
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                if (decMin != 0 || decMax != decimal.MaxValue)
                 {
-                    _strCost = objXmlCyberware["cost"].InnerText;
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    if (decMax > 1000000)
+                        decMax = 1000000;
+                    frmPickNumber.Minimum = decMin;
+                    frmPickNumber.Maximum = decMax;
+                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                    frmPickNumber.AllowCancel = false;
+                    frmPickNumber.ShowDialog();
+                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                 }
             }
 
@@ -1966,7 +1959,7 @@ namespace Chummer.Backend.Equipment
                     string strAvail = string.Empty;
                     string strAvailExpr = _strAvail.Substring(1, _strAvail.Length - 1);
 
-                    if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                    if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
                     {
                         strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                         // Remove the trailing character if it is "F" or "R".
@@ -1981,9 +1974,9 @@ namespace Chummer.Backend.Equipment
             }
 
             string strBaseAvail = _strAvail;
-            if (strBaseAvail.StartsWith("FixedValues"))
+            if (strBaseAvail.StartsWith("FixedValues("))
             {
-                string[] strValues = strBaseAvail.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strBaseAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 strBaseAvail = strValues[Math.Min(Rating, strValues.Length) - 1];
             }
             bool blnCheckGearAvail = strBaseAvail.Contains(" or Gear");
@@ -2001,7 +1994,7 @@ namespace Chummer.Backend.Equipment
                 string strAvail = string.Empty;
                 string strAvailExpr = strBaseAvail;
 
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
@@ -2104,6 +2097,7 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        private static readonly char[] lstBracketChars = { '[', ']' };
         /// <summary>
         /// Caculated Capacity of the Cyberware.
         /// </summary>
@@ -2112,9 +2106,9 @@ namespace Chummer.Backend.Equipment
             get
             {
                 string strCapacity = _strCapacity;
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[Math.Min(Rating, strValues.Length) - 1];
                 }
                 if (string.IsNullOrEmpty(strCapacity))
@@ -2150,7 +2144,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
 
-                    strSecondHalf = strSecondHalf.Trim("[]".ToArray());
+                    strSecondHalf = strSecondHalf.Trim(lstBracketChars);
                     try
                     {
                         strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", Rating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
@@ -2208,9 +2202,9 @@ namespace Chummer.Backend.Equipment
             decimal decReturn = 0;
 
             string strESS = _strESS;
-            if (strESS.StartsWith("FixedValues"))
+            if (strESS.StartsWith("FixedValues("))
             {
-                string[] strValues = strESS.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strESS.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 strESS = strValues[Math.Min(Rating, strValues.Length) - 1];
             }
             if (strESS.Contains("Rating"))
@@ -2335,11 +2329,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (strExpression.StartsWith("FixedValues"))
+            if (strExpression.StartsWith("FixedValues("))
             {
-                string[] strValues = strExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 if (Rating > 0)
-                    strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToCharArray());
+                    strExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim(lstBracketChars);
             }
             if (strExpression.Contains('{') || strExpression.Contains('+') || strExpression.Contains('-') || strExpression.Contains('*') || strExpression.Contains("div"))
             {
@@ -2421,11 +2415,11 @@ namespace Chummer.Backend.Equipment
                 decimal decCost = 0;
                 string strCostExpression = _strCost;
 
-                if (strCostExpression.StartsWith("FixedValues"))
+                if (strCostExpression.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCostExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (Rating > 0)
-                        strCostExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim("[]".ToArray());
+                        strCostExpression = strValues[Math.Min(Rating, strValues.Length) - 1].Trim(lstBracketChars);
                 }
 
                 string strParentCost = string.Empty;

@@ -541,22 +541,22 @@ namespace Chummer
             TreeNode objNode = new TreeNode();
             List<Weapon> lstWeapons = new List<Weapon>();
             objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
-
-            // Check for a Variable Cost.
-            XmlElement xmlCostElement = objXmlArmor["cost"];
-            if (xmlCostElement != null)
+            
+            decimal decItemCost = 0.0m;
+            if (chkFreeItem.Checked)
             {
-                decimal decItemCost = 0.0m;
-                if (chkFreeItem.Checked)
-                {
-                    lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    decItemCost = 0;
-                }
-                else if (xmlCostElement.InnerText.StartsWith("Variable"))
+                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                decItemCost = 0;
+            }
+            // Check for a Variable Cost.
+            else
+            {
+                string strCostElement = objXmlArmor["cost"]?.InnerText ?? string.Empty;
+                if (strCostElement.StartsWith("Variable("))
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = xmlCostElement.InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -575,9 +575,9 @@ namespace Chummer
 
                     decItemCost = decMin;
                 }
-                else if (xmlCostElement.InnerText.Contains("Rating"))
+                else if (strCostElement.Contains("Rating"))
                 {
-                    decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(xmlCostElement.InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
+                    decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCostElement.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
                     decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
@@ -587,7 +587,7 @@ namespace Chummer
                 }
                 else
                 {
-                    decItemCost = Convert.ToDecimal(xmlCostElement.InnerText, GlobalOptions.InvariantCultureInfo);
+                    decItemCost = Convert.ToDecimal(strCostElement, GlobalOptions.InvariantCultureInfo);
                     decItemCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {
@@ -595,22 +595,22 @@ namespace Chummer
                     }
                     lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 }
-
-                lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;
-
-                lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
-
-                string strBook = CommonFunctions.LanguageBookShort(objXmlArmor["source"]?.InnerText, GlobalOptions.Language);
-                string strPage = objXmlArmor["page"]?.InnerText;
-                if (objXmlArmor["altpage"] != null)
-                    strPage = objXmlArmor["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
-
-
-                tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(objXmlArmor["source"]?.InnerText, GlobalOptions.Language) + " " +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
+
+            lblCapacity.Text = objXmlArmor["armorcapacity"]?.InnerText;
+
+            lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
+
+            string strBook = CommonFunctions.LanguageBookShort(objXmlArmor["source"]?.InnerText, GlobalOptions.Language);
+            string strPage = objXmlArmor["page"]?.InnerText;
+            if (objXmlArmor["altpage"] != null)
+                strPage = objXmlArmor["altpage"].InnerText;
+            lblSource.Text = strBook + " " + strPage;
+
+
+            tipTooltip.SetToolTip(lblSource,
+                CommonFunctions.LanguageBookLong(objXmlArmor["source"]?.InnerText, GlobalOptions.Language) + " " +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion
     }

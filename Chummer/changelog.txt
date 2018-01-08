@@ -112,7 +112,11 @@ Application Changes:
 - Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
 - Fixed a crash when loading characters in career mode that have access to the Spells and Spirits tab, but don't have a Tradition.
 - Metatypes for pets/cohorts are now alterable as a combobox if there is no character linked to a given pet/cohort. The suggested values loaded for the combobox are populated based on content in critters.xml. Fixes #2269.
-- Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load. 
+- Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load.
+- Fixed an issue where characters' trust fund-enabled lifestyles would be kept free after they lose their trust found source.
+- Fixed a bug where characters with Ex-Con could still buy (non-modular) Restricted and/or Forbidden 'ware. Getting Ex-Con in Create mode will now remove all ineligible 'ware from the character, and getting Ex-Con in Career mode will do the same for all 'ware that does not have a "None" grade (so e.g. genemods are kept).
+- Fixed a bug where characters with Erased did not have their Public Awareness capped to 1.
+- Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
 
 Data Changes:
 
@@ -141,6 +145,7 @@ Data Changes:
 - Implemented the bonus for the Structured Spellcasting metamagic.
 - Fixed a duplicate id in the Pomorya Nationality Life Module.
 - Fixed incorrect category for Ford Titan. Fixes #2262.
+- Fixed an issue where characters could take the Trust Fund quality multiple times.
 
 New Strings:
 

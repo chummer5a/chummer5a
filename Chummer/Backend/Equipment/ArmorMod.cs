@@ -98,12 +98,11 @@ namespace Chummer.Backend.Equipment
             {
                 XmlNode objXmlArmorCostNode = objXmlArmorNode["cost"];
 
-                if (objXmlArmorCostNode.InnerText.StartsWith("Variable"))
+                if (objXmlArmorCostNode.InnerText.StartsWith("Variable("))
                 {
                     decimal decMin = 0.0m;
                     decimal decMax = decimal.MaxValue;
-                    char[] charParentheses = { '(', ')' };
-                    string strCost = objXmlArmorNode["cost"].InnerText.TrimStart("Variable", true).Trim(charParentheses);
+                    string strCost = objXmlArmorNode["cost"].InnerText.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -765,7 +764,7 @@ namespace Chummer.Backend.Equipment
                 string strAvail = string.Empty;
                 string strAvailExpr = _strAvail;
 
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
@@ -849,9 +848,9 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strGearCapacity))
                     return "0";
                 string strCapacity = _strGearCapacity;
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
                 strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
@@ -917,9 +916,9 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strArmorCapacity))
                     return "0";
                 string strCapacity = _strArmorCapacity;
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
                 strCapacity = strCapacity.CheapReplace("Capacity", () => Convert.ToDecimal(_objParent.ArmorCapacity, GlobalOptions.CultureInfo).ToString(GlobalOptions.InvariantCultureInfo));
@@ -946,9 +945,9 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decReturn = 0.0m;
                 string strCostExpr = _strCost;
-                if (strCostExpr.StartsWith("FixedValues"))
+                if (strCostExpr.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCostExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCostExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (_intRating > 0)
                         strCostExpr = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }

@@ -166,13 +166,14 @@ namespace Chummer
                 lblWeaponCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 decItemCost = 0;
             }
-            else if (objXmlWeapon["cost"] != null)
+            else
             {
-                if (objXmlWeapon["cost"].InnerText.StartsWith("Variable"))
+                string strCostElement = objXmlWeapon["cost"]?.InnerText ?? string.Empty;
+                if (strCostElement.StartsWith("Variable("))
                 {
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlWeapon["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -191,7 +192,10 @@ namespace Chummer
                 }
                 else
                 {
-                    objXmlWeapon.TryGetDecFieldQuickly("cost", ref decCost);
+                    if (decimal.TryParse(strCostElement, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTmp))
+                    {
+                        decCost = decTmp;
+                    }
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
                     if (chkBlackMarketDiscount.Checked)
                     {

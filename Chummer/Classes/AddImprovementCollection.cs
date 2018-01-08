@@ -2089,9 +2089,9 @@ namespace Chummer.Classes
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2108,9 +2108,9 @@ namespace Chummer.Classes
             strBonus = bonusNode["programlimit"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2127,9 +2127,9 @@ namespace Chummer.Classes
             strBonus = bonusNode["attack"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2146,9 +2146,9 @@ namespace Chummer.Classes
             strBonus = bonusNode["sleaze"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2165,9 +2165,9 @@ namespace Chummer.Classes
             strBonus = bonusNode["dataprocessing"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2184,9 +2184,9 @@ namespace Chummer.Classes
             strBonus = bonusNode["firewall"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
             {
-                if (strBonus.Contains("FixedValues"))
+                if (strBonus.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strBonus.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strBonus.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (strValues.Length >= _intRating)
                         strBonus = strValues[_intRating - 1];
                     else
@@ -2841,16 +2841,6 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MadeMan, _strUnique);
             _objCharacter.MadeMan = true;
-        }
-
-        // Check for LightningReflexes modifiers.
-        public void lightningreflexes(XmlNode bonusNode)
-        {
-            Log.Info("LightningReflexes");
-            Log.Info("LightningReflexes = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LightningReflexes, _strUnique);
-            _objCharacter.LightningReflexes = true;
         }
 
         // Check for Fame modifiers.

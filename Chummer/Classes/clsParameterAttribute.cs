@@ -59,7 +59,7 @@ namespace Chummer
             //If we have FixedValues use that
             //I wan't to create array with rating as index for future, but
             //this is keept for backwards/laziness
-            if (_attribute.StartsWith("FixedValues"))
+            if (_attribute.StartsWith("FixedValues("))
             {
                 //Regex to extracxt anything between ( ) in Param
                 Match m = FixedExtract.Match(_attribute);

@@ -111,11 +111,12 @@ namespace Chummer
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
             int intBP = 0;
-            if (objXmlQuality["karma"]?.InnerText.StartsWith("Variable") == true)
+            string strKarma = objXmlQuality["karma"]?.InnerText ?? string.Empty;
+            if (strKarma.StartsWith("Variable("))
             {
                 int intMin = 0;
                 int intMax = int.MaxValue;
-                string strCost = objXmlQuality["karma"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
+                string strCost = strKarma.TrimStart("Variable(", true).TrimEnd(')');
                 if (strCost.Contains('-'))
                 {
                     string[] strValues = strCost.Split('-');
@@ -136,16 +137,17 @@ namespace Chummer
             }
             else
             {
-                int.TryParse(objXmlQuality["karma"]?.InnerText, out intBP);
+                int.TryParse(strKarma, out intBP);
             }
-            bool doubleCostCareer = true;
-            if (objXmlQuality["doublecareer"] != null)
+            bool blnDoubleCostCareer = true;
+            string strDoubleCostCareer = objXmlQuality["doublecareer"]?.InnerText;
+            if (!string.IsNullOrEmpty(strDoubleCostCareer))
             {
-                doubleCostCareer = bool.Parse(objXmlQuality["doublecareer"].InnerText);
+                blnDoubleCostCareer = bool.Parse(strDoubleCostCareer);
             }
 
 
-            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && doubleCostCareer)
+            if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && blnDoubleCostCareer)
             {
                 intBP *= 2;
             }
@@ -153,13 +155,12 @@ namespace Chummer
             if (chkFree.Checked)
                 lblBP.Text = "0";
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["source"]?.InnerText, GlobalOptions.Language);
-            string strPage = objXmlQuality["page"]?.InnerText;
-            if (objXmlQuality["altpage"] != null)
-                strPage = objXmlQuality["altpage"].InnerText;
+            string strSource = objXmlQuality["source"]?.InnerText;
+            string strBook = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language);
+            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? string.Empty;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

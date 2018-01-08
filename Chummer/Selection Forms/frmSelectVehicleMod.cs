@@ -623,10 +623,10 @@ namespace Chummer
                 // If avail contains "F" or "R", remove it from the string so we can use the expression.
                 string strAvail = string.Empty;
                 string strAvailExpr = objXmlMod["avail"].InnerText;
-                if (strAvailExpr.StartsWith("FixedValues"))
+                if (strAvailExpr.StartsWith("FixedValues("))
                 {
                     int intRating = decimal.ToInt32(nudRating.Value - 1);
-                    strAvailExpr = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray());
+                    strAvailExpr = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')');
                     string[] strValues = strAvailExpr.Split(',');
                     if (intRating > strValues.Length || intRating < 0)
                     {
@@ -658,49 +658,44 @@ namespace Chummer
 
                 // Cost.
                 decimal decItemCost = 0;
-                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
-                {
-                    decimal decMin = 0;
-                    decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlMod["cost"].InnerText;
-                    strCost = strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                    if (decMax == decimal.MaxValue)
-                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
-                    else
-                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
-                    decItemCost = decMin;
-                }
+                if (chkFreeItem.Checked)
+                    lblCost.Text = "0";
                 else
                 {
-                    string strCost = string.Empty;
-                    if (chkFreeItem.Checked)
-                        strCost = "0";
-                    else
+                    string strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+                    if (strCost.StartsWith("Variable("))
                     {
-                        strCost = objXmlMod["cost"].InnerText;
-                        if (strCost.StartsWith("FixedValues"))
+                        decimal decMin = 0;
+                        decimal decMax = decimal.MaxValue;
+                        strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
+                        if (strCost.Contains('-'))
                         {
-                            int intRating = decimal.ToInt32(nudRating.Value) - 1;
-                            strCost = strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray());
-                            string[] strValues = strCost.Split(',');
-                            if (intRating < 0 || intRating > strValues.Length)
-                            {
-                                intRating = 0;
-                            }
-                            strCost = strValues[intRating];
+                            string[] strValues = strCost.Split('-');
+                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
                         }
-                        strCost = ReplaceStrings(strCost);
+                        else
+                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                        if (decMax == decimal.MaxValue)
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                        else
+                            lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                        decItemCost = decMin;
                     }
+                    else if (strCost.StartsWith("FixedValues("))
+                    {
+                        int intRating = decimal.ToInt32(nudRating.Value) - 1;
+                        strCost = strCost.TrimStart("FixedValues(", true).TrimEnd(')');
+                        string[] strValues = strCost.Split(',');
+                        if (intRating < 0 || intRating > strValues.Length)
+                        {
+                            intRating = 0;
+                        }
+                        strCost = strValues[intRating];
+                    }
+                    strCost = ReplaceStrings(strCost);
 
                     decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                     decItemCost *= _intModMultiplier;
@@ -721,15 +716,11 @@ namespace Chummer
 
                 // Slots.
 
-                string strSlots = string.Empty;
-                if (objXmlMod["slots"].InnerText.StartsWith("FixedValues"))
+                string strSlots = objXmlMod["slots"].InnerText;
+                if (strSlots.StartsWith("FixedValues("))
                 {
-                    string[] strValues = objXmlMod["slots"].InnerText.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strSlots.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
-                }
-                else
-                {
-                    strSlots = objXmlMod["slots"].InnerText;
                 }
                 strSlots = ReplaceStrings(strSlots);
                 lblSlots.Text = CommonFunctions.EvaluateInvariantXPath(strSlots).ToString();

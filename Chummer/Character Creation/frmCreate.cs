@@ -85,16 +85,10 @@ namespace Chummer
             CharacterObject.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             CharacterObject.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
             CharacterObject.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
-            CharacterObject.FriendsInHighPlacesChanged += objCharacter_FriendsInHighPlacesChanged;
             CharacterObject.ExConChanged += objCharacter_ExConChanged;
-            CharacterObject.TrustFundChanged += objCharacter_TrustFundChanged;
             CharacterObject.RestrictedGearChanged += objCharacter_RestrictedGearChanged;
-            CharacterObject.OverclockerChanged += objCharacter_OverclockerChanged;
             CharacterObject.MadeManChanged += objCharacter_MadeManChanged;
-            CharacterObject.LightningReflexesChanged += objCharacter_LightningReflexesChanged;
-            CharacterObject.FameChanged += objCharacter_FameChanged;
             CharacterObject.BornRichChanged += objCharacter_BornRichChanged;
-            CharacterObject.ErasedChanged += objCharacter_ErasedChanged;
 
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
@@ -923,7 +917,10 @@ namespace Chummer
                 CharacterObject.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 CharacterObject.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
                 CharacterObject.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
-                CharacterObject.FriendsInHighPlacesChanged -= objCharacter_FriendsInHighPlacesChanged;
+                CharacterObject.ExConChanged -= objCharacter_ExConChanged;
+                CharacterObject.RestrictedGearChanged -= objCharacter_RestrictedGearChanged;
+                CharacterObject.MadeManChanged -= objCharacter_MadeManChanged;
+                CharacterObject.BornRichChanged -= objCharacter_BornRichChanged;
                 GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -1404,15 +1401,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-        }
-        
-        private void objCharacter_FriendsInHighPlacesChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (CharacterObject.FriendsInHighPlaces)
+            if (CharacterObject.BlackMarketDiscount)
             {
 
             }
@@ -1421,33 +1410,55 @@ namespace Chummer
 
             }
         }
+
         private void objCharacter_ExConChanged(object sender)
         {
             if (_blnReapplyImprovements)
                 return;
 
-
             if (CharacterObject.ExCon)
             {
+                bool blnDoRefresh = false;
+                string strSelectedCyberware = treCyberware.SelectedNode?.Tag.ToString();
+                bool funcExConIneligibleWare(Cyberware x)
+                {
+                    Cyberware objParent = x;
+                    bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                    while (x.Parent != null && blnNoParentIsModular)
+                    {
+                        objParent = x.Parent;
+                        blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                    }
 
-            }
-            else
-            {
+                    return blnNoParentIsModular;
+                }
+                foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, funcExConIneligibleWare))
+                {
+                    string strAvail = objCyberware.Avail;
+                    if (strAvail.StartsWith("FixedValues("))
+                    {
+                        string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        strAvail = strValues[Math.Min(objCyberware.Rating, strValues.Length) - 1];
+                    }
+                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
+                    {
+                        objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                        if (objCyberware.Parent != null)
+                            objCyberware.Parent.Children.Remove(objCyberware);
+                        else
+                            CharacterObject.Cyberware.Remove(objCyberware);
+                        treCyberware.FindNode(objCyberware.InternalId)?.Remove();
+                        blnDoRefresh = true;
+                        if (objCyberware.InternalId == strSelectedCyberware)
+                            RefreshSelectedCyberware();
+                    }
+                }
 
-            }
-        }
-
-        private void objCharacter_TrustFundChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-            if (CharacterObject.TrustFund> 0)
-            {
-
-            }
-            else
-            {
+                if (blnDoRefresh)
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
         }
 
@@ -1467,22 +1478,6 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_OverclockerChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (CharacterObject.Overclocker)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
         private void objCharacter_MadeManChanged(object sender)
         {
             if (_blnReapplyImprovements)
@@ -1490,38 +1485,6 @@ namespace Chummer
 
 
             if (CharacterObject.MadeMan)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-        private void objCharacter_LightningReflexesChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (CharacterObject.LightningReflexes)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-        private void objCharacter_FameChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (CharacterObject.Fame)
             {
 
             }
@@ -1549,32 +1512,14 @@ namespace Chummer
 
         }
 
-        private void objCharacter_ErasedChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
-
-
-            if (CharacterObject.Erased)
-            {
-
-            }
-            else
-            {
-
-            }
-        }
-
-
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            IsDirty = true;
-
             if (PowerPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
             PowerPropertyChanged_StopWatch.Restart();
             tabPowerUc.CalculatePowerPoints();
             IsCharacterUpdateRequested = true;
+            IsDirty = true;
         }
 
         private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1674,6 +1619,8 @@ namespace Chummer
                 string strSettingsFile = settingsFiles[0];
                 objCharacter.SettingsFile = Path.GetFileName(strSettingsFile);
             }
+
+            IsCharacterUpdateRequested = true;
         }
 
         private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
@@ -1858,7 +1805,6 @@ namespace Chummer
             bool blnMAGEnabled = CharacterObject.MAGEnabled;
             bool blnRESEnabled = CharacterObject.RESEnabled;
             bool blnDEPEnabled = CharacterObject.DEPEnabled;
-            bool blnFriendsInHighPlaces = CharacterObject.FriendsInHighPlaces;
 
             _blnReapplyImprovements = true;
 
@@ -2362,8 +2308,6 @@ namespace Chummer
                 objCharacter_RESEnabledChanged(this);
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
                 objCharacter_DEPEnabledChanged(this);
-            if (blnFriendsInHighPlaces != CharacterObject.FriendsInHighPlaces)
-                objCharacter_FriendsInHighPlacesChanged(this);
 
             RefreshQualities(treQualities, cmsQuality, true);
             treQualities.SortCustom();
@@ -3277,7 +3221,7 @@ namespace Chummer
             frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(CharacterObject, true);
             frmPickBP.ShowDialog(this);
 
-            if (frmPickBP.DialogResult == DialogResult.Cancel)
+            if (frmPickBP.DialogResult != DialogResult.Cancel)
                 IsCharacterUpdateRequested = true;
         }
 
@@ -6528,11 +6472,11 @@ namespace Chummer
                 {
                     objAccessory.Cost = "0";
                 }
-                else if (objAccessory.Cost.StartsWith("Variable"))
+                else if (objAccessory.Cost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objAccessory.Cost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = objAccessory.Cost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -12499,8 +12443,7 @@ namespace Chummer
 
                 if (objContactControl.ContactObject.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
                 {
-                    intHighPlacesFriends += (objContactControl.ContactObject.Connection +
-                                            objContactControl.ContactObject.Loyalty);
+                    intHighPlacesFriends += (objContactControl.ContactObject.Connection + objContactControl.ContactObject.Loyalty);
                 }
                 else if (objContactControl.ContactObject.IsGroup == false)
                 {
@@ -16885,14 +16828,11 @@ namespace Chummer
                     }
                     else if (objLoopContact.Connection >= 8 && CharacterObject.FriendsInHighPlaces)
                     {
-                        intHighPlaces += (objLoopContact.Connection +
-                                          objLoopContact.Loyalty);
+                        intHighPlaces += objLoopContact.Connection + objLoopContact.Loyalty;
                     }
                     else
                     {
-                        // The Contact's BP cost = their Connection + Loyalty Rating.
-                        intContactPointsUsed += (objLoopContact.Connection +
-                                                 objLoopContact.Loyalty) * CharacterObjectOptions.BPContact;
+                        intContactPointsUsed += objLoopContact.Connection + objLoopContact.Loyalty;
                     }
 
                 }
