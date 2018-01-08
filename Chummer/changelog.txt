@@ -111,6 +111,7 @@ Application Changes:
 - Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
 - Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
 - Fixed a crash when loading characters in career mode that have access to the Spells and Spirits tab, but don't have a Tradition.
+- Metatypes for pets/cohorts are now alterable as a combobox if there is no character linked to a given pet/cohort. The suggested values loaded for the combobox are populated based on content in critters.xml. Fixes #2269.
 
 Data Changes:
 
