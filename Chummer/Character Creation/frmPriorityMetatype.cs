@@ -216,7 +216,7 @@ namespace Chummer
                 lblSumtoTen.Visible = true;
             }
             // Populate the Priority Category list.
-            XmlNode xmlBasePrioritiesNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities/");
+            XmlNode xmlBasePrioritiesNode = objXmlDocumentPriority.SelectSingleNode("/chummer/priorities");
             foreach (XmlNode objXmlPriorityCategory in objXmlDocumentPriority.SelectNodes("/chummer/categories/category"))
             {
                 XmlNodeList objItems = xmlBasePrioritiesNode.SelectNodes("priority[category = \"" + objXmlPriorityCategory.InnerText + "\" and gameplayoption = \"" + _objCharacter.GameplayOption + "\"]");
@@ -744,7 +744,7 @@ namespace Chummer
                 {
                     if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                     {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue.ToString() + "\"]");
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
                         if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -875,7 +875,7 @@ namespace Chummer
                 {
                     if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                     {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue.ToString() + "\"]");
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
                         if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
