@@ -2682,7 +2682,6 @@
           <bonus>1</bonus>
         </skillcategory>
       </bonus>
-
       <forbidden>
         <oneof>
           <quality>Fame: National</quality>
@@ -2860,7 +2859,6 @@
         <dodge>1</dodge>
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
-        <lightningreflexes />
       </bonus>
       <source>RF</source>
       <page>148</page>
@@ -3197,13 +3195,19 @@
       <bonus>
         <trustfund>1</trustfund>
       </bonus>
-
       <required>
         <oneof>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate)</quality>
         </oneof>
       </required>
+      <forbidden>
+        <oneof>
+          <quality>Trust Fund II</quality>
+          <quality>Trust Fund III</quality>
+          <quality>Trust Fund IV</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3215,13 +3219,19 @@
       <bonus>
         <trustfund>2</trustfund>
       </bonus>
-
       <required>
         <oneof>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate)</quality>
         </oneof>
       </required>
+      <forbidden>
+        <oneof>
+          <quality>Trust Fund I</quality>
+          <quality>Trust Fund III</quality>
+          <quality>Trust Fund IV</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3233,13 +3243,19 @@
       <bonus>
         <trustfund>3</trustfund>
       </bonus>
-
       <required>
         <oneof>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate)</quality>
         </oneof>
       </required>
+      <forbidden>
+        <oneof>
+          <quality>Trust Fund I</quality>
+          <quality>Trust Fund II</quality>
+          <quality>Trust Fund IV</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3251,13 +3267,19 @@
       <bonus>
         <trustfund>4</trustfund>
       </bonus>
-
       <required>
         <oneof>
           <quality>SINner (National)</quality>
           <quality>SINner (Corporate)</quality>
         </oneof>
       </required>
+      <forbidden>
+        <oneof>
+          <quality>Trust Fund I</quality>
+          <quality>Trust Fund II</quality>
+          <quality>Trust Fund III</quality>
+        </oneof>
+      </forbidden>
       <source>RF</source>
       <page>151</page>
     </quality>
@@ -3632,7 +3654,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>154</page>
     </quality>
@@ -3659,7 +3680,6 @@
         </addqualities>
         <excon />
       </bonus>
-
       <source>RF</source>
       <page>155</page>
     </quality>
@@ -3672,7 +3692,6 @@
       <bonus>
         <selecttext />
       </bonus>
-
       <source>RF</source>
       <page>155</page>
     </quality>

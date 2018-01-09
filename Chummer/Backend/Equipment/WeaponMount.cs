@@ -84,14 +84,14 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
-            if (objXmlMod["cost"] != null)
+            _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(_strCost))
             {
-                _strCost = objXmlMod["cost"].InnerText;
-                if (_strCost.StartsWith("Variable"))
+                if (_strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -777,44 +777,39 @@ namespace Chummer.Backend.Equipment
 
             // Check for a Variable Cost.
             // ReSharper disable once PossibleNullReferenceException
-            if (objXmlMod["cost"] != null)
+            _strCost = objXmlMod["cost"]?.InnerText ?? "0";
+            if (_strCost.StartsWith("Variable("))
             {
-                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+                int intMin;
+                var intMax = 0;
+                string strCost = _strCost.Replace("Variable(", string.Empty).TrimEnd(')');
+                if (strCost.Contains("-"))
                 {
-                    int intMin;
-                    var intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
-                    if (strCost.Contains("-"))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
-                    }
-                    else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
-
-                    if (intMin != 0 || intMax != 0)
-                    {
-                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
-                        frmPickNumber.AllowCancel = false;
-                        frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
-                    }
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
                 }
                 else
-                    _strCost = objXmlMod["cost"].InnerText;
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                if (intMin != 0 || intMax != 0)
+                {
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    if (intMax == 0)
+                        intMax = 1000000;
+                    frmPickNumber.Minimum = intMin;
+                    frmPickNumber.Maximum = intMax;
+                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
+                    frmPickNumber.AllowCancel = false;
+                    frmPickNumber.ShowDialog();
+                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                }
             }
             list.Add(this);
         }

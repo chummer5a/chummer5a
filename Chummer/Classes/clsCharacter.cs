@@ -155,7 +155,6 @@ namespace Chummer
         private bool _blnRestrictedGear = false;
         private bool _blnOverclocker = false;
         private bool _blnMadeMan = false;
-        private bool _blnLightningReflexes = false;
         private bool _blnFame = false;
         private bool _blnBornRich = false;
         private bool _blnErased = false;
@@ -253,18 +252,14 @@ namespace Chummer
         public Action<object> AmbidextrousChanged { get; set; }
         public Action<object> CritterTabEnabledChanged { get; set; }
         public Action<object> MAGEnabledChanged { get; set; }
-        public Action<object> BlackMarketEnabledChanged { get; set; }
         public Action<object> BornRichChanged { get; set; }
         public Action<object> CharacterNameChanged { get; set; }
-        public Action<object> ErasedChanged { get; set; }
         public Action<object> ExConChanged { get; set; }
+        public Action<object> BlackMarketEnabledChanged { get; set; }
         public Action<object> FameChanged { get; set; }
-        public Action<object> FriendsInHighPlacesChanged { get; set; }
         public Action<object> InitiationTabEnabledChanged { get; set; }
-        public Action<object> LightningReflexesChanged { get; set; }
         public Action<object> MadeManChanged { get; set; }
         public Action<object> MagicianTabEnabledChanged { get; set; }
-        public Action<object> OverclockerChanged { get; set; }
         public Action<object> PrototypeTranshumanChanged { get; set; }
         public Action<object> RESEnabledChanged { get; set; }
         public Action<object> DEPEnabledChanged { get; set; }
@@ -272,7 +267,6 @@ namespace Chummer
         public Action<object> TechnomancerTabEnabledChanged { get; set; }
         public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
         public Action<object> CyberwareTabDisabledChanged { get; set; }
-        public Action<object> TrustFundChanged { get; set; }
 
         private frmViewer _frmPrintView;
 
@@ -533,8 +527,6 @@ namespace Chummer
             objWriter.WriteElementString("mademan", _blnMadeMan.ToString());
 
             objWriter.WriteElementString("ambidextrous", _blnAmbidextrous.ToString());
-
-            objWriter.WriteElementString("lightningreflexes", _blnLightningReflexes.ToString());
 
             objWriter.WriteElementString("fame", _blnFame.ToString());
 
@@ -1240,7 +1232,6 @@ namespace Chummer
             objXmlCharacter.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
             objXmlCharacter.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
             objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
-            objXmlCharacter.TryGetBoolFieldQuickly("lightningreflexes", ref _blnLightningReflexes);
             objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
             objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
             objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
@@ -6375,7 +6366,10 @@ namespace Chummer
         {
             get
             {
-                return PublicAwareness;
+                int intReturn = PublicAwareness;
+                if (Erased && intReturn >= 1)
+                    return 1;
+                return intReturn;
             }
         }
 
@@ -7969,11 +7963,7 @@ namespace Chummer
             }
             set
             {
-                if (_blnFriendsInHighPlaces != value)
-                {
-                    _blnFriendsInHighPlaces = value;
-                    FriendsInHighPlacesChanged?.Invoke(this);
-                }
+                _blnFriendsInHighPlaces = value;
             }
         }
 
@@ -8006,11 +7996,7 @@ namespace Chummer
             }
             set
             {
-                if (_intTrustFund != value)
-                {
-                    _intTrustFund = value;
-                    TrustFundChanged?.Invoke(this);
-                }
+                _intTrustFund = value;
             }
         }
 
@@ -8043,11 +8029,7 @@ namespace Chummer
             }
             set
             {
-                if (_blnOverclocker != value)
-                {
-                    _blnOverclocker = value;
-                    OverclockerChanged?.Invoke(this);
-                }
+                _blnOverclocker = value;
             }
         }
         /// <summary>
@@ -8066,22 +8048,6 @@ namespace Chummer
                     _blnMadeMan = value;
                     MadeManChanged?.Invoke(this);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not LightningReflexes is enabled.
-        /// </summary>
-        public bool LightningReflexes
-        {
-            get
-            {
-                return _blnLightningReflexes;
-            }
-            set
-            {
-                _blnLightningReflexes = value;
-
             }
         }
         /// <summary>
@@ -8131,11 +8097,7 @@ namespace Chummer
             }
             set
             {
-                if (_blnErased != value)
-                {
-                    _blnErased = value;
-                    ErasedChanged?.Invoke(this);
-                }
+                _blnErased = value;
             }
         }
         /// <summary>
@@ -9097,12 +9059,12 @@ namespace Chummer
                 RedlinerBonus = 0;
                 return intOldRedlinerBonus == 0;
             }
-
+            
             //Calculate bonus from cyberlimbs
             int count = 0;
             foreach (Cyberware objCyberware in Cyberware)
             {
-                count += objCyberware.CyberlimbCount;
+                count += objCyberware.GetCyberlimbCount("skull", "torso");
             }
             count = Math.Min(count / 2, 2);
             if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))

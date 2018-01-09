@@ -116,13 +116,14 @@ namespace Chummer
             }
         }
 
+        private static readonly char[] lstInvalidFileNameChars = " _/:*?<>|\\".ToCharArray();
         /// <summary>
         /// Remove unsafe path characters from the file name.
         /// </summary>
         /// <param name="strValue">File name to parse.</param>
         private static string FileSafe(string strValue)
         {
-            return strValue.FastEscape(" _/:*?<>|\\".ToCharArray());
+            return strValue.FastEscape(lstInvalidFileNameChars);
         }
 
         private void MoveControls()

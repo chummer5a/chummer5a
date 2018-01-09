@@ -195,12 +195,11 @@ namespace Chummer
             if (objKarmaNode != null)
             {
                 string strKarmaNodeTest = objKarmaNode.InnerText;
-                if (strKarmaNodeTest.StartsWith("Variable"))
+                if (strKarmaNodeTest.StartsWith("Variable("))
                 {
                     decimal decMin = 0.0m;
                     decimal decMax = decimal.MaxValue;
-                    char[] charParentheses = { '(', ')' };
-                    string strCost = strKarmaNodeTest.TrimStart("Variable", true).Trim(charParentheses);
+                    string strCost = strKarmaNodeTest.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');

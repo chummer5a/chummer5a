@@ -364,7 +364,7 @@ namespace Chummer.Backend.Equipment
             }
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
-            objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
+            objWriter.WriteElementString("trustfund", TrustFund.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
@@ -638,7 +638,23 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool TrustFund
         {
-            get => _blnTrustFund;
+            get
+            {
+                if (_blnTrustFund)
+                {
+                    switch (_objCharacter.TrustFund)
+                    {
+                        case 1:
+                        case 3:
+                            return BaseLifestyle == "Medium";
+                        case 2:
+                            return BaseLifestyle == "Low";
+                        case 4:
+                            return BaseLifestyle == "High";
+                    }
+                }
+                return false;
+            }
             set => _blnTrustFund = value;
         }
 
@@ -764,7 +780,7 @@ namespace Chummer.Backend.Equipment
                         decExtraAssetCost += objQuality.Cost;
                 }
 
-                if (!_blnTrustFund)
+                if (!TrustFund)
                 {
                     decReturn += BaseCost;
                 }

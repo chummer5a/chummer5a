@@ -909,9 +909,9 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            if (strValue.Contains("FixedValues"))
+            if (strValue.StartsWith("FixedValues("))
             {
-                string[] strValues = strValue.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strValue.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 if (strValues.Length >= intRating)
                     strValue = strValues[intRating - 1];
                 else
@@ -1371,10 +1371,6 @@ namespace Chummer
                     case Improvement.ImprovementType.Fame:
                         if (!blnHasDuplicate)
                             objCharacter.Fame = false;
-                        break;
-                    case Improvement.ImprovementType.LightningReflexes:
-                        if (!blnHasDuplicate)
-                            objCharacter.LightningReflexes = false;
                         break;
                     case Improvement.ImprovementType.MadeMan:
                         if (!blnHasDuplicate)

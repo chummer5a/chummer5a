@@ -84,7 +84,7 @@ namespace Chummer
             CharacterObject.AdvancedProgramsTabEnabledChanged += objCharacter_AdvancedProgramsTabEnabledChanged;
             CharacterObject.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             CharacterObject.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-            CharacterObject.FameChanged += objCharacter_FameChanged;
+            CharacterObject.ExConChanged += objCharacter_ExConChanged;
 
             tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
             tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
@@ -1091,6 +1091,7 @@ namespace Chummer
                 CharacterObject.AdvancedProgramsTabEnabledChanged -= objCharacter_AdvancedProgramsTabEnabledChanged;
                 CharacterObject.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 CharacterObject.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
+                CharacterObject.ExConChanged -= objCharacter_ExConChanged;
                 GlobalOptions.MRUChanged -= DoNothing;
 
                 treGear.ItemDrag -= treGear_ItemDrag;
@@ -1543,9 +1544,77 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_FameChanged(object sender)
+        private void objCharacter_ExConChanged(object sender)
         {
-            //_objCharacter.TotalPublicAwareness
+            if (_blnReapplyImprovements)
+                return;
+
+            if (CharacterObject.ExCon)
+            {
+                bool blnDoRefresh = false;
+                string strSelectedCyberware = treCyberware.SelectedNode?.Tag.ToString();
+                bool funcExConIneligibleWare(Cyberware x)
+                {
+                    if (x.Grade.Name == "None")
+                        return false;
+                    Cyberware objParent = x;
+                    bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                    while (x.Parent != null && blnNoParentIsModular)
+                    {
+                        objParent = x.Parent;
+                        blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
+                    }
+
+                    return blnNoParentIsModular;
+                }
+                string strExConString = CharacterObject.Qualities.FirstOrDefault(x => x.Name == "Ex-Con")?.DisplayNameShort(GlobalOptions.Language);
+                if (string.IsNullOrEmpty(strExConString))
+                {
+                    XmlNode xmlErasedQuality = XmlManager.Load("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Ex-Con\"]");
+                    if (xmlErasedQuality != null)
+                    {
+                        strExConString = xmlErasedQuality["translate"]?.InnerText ?? xmlErasedQuality["name"]?.InnerText ?? string.Empty;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strExConString))
+                    strExConString = " (" + strExConString + ")";
+                foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, funcExConIneligibleWare))
+                {
+                    string strAvail = objCyberware.Avail;
+                    if (strAvail.StartsWith("FixedValues("))
+                    {
+                        string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        strAvail = strValues[Math.Min(objCyberware.Rating, strValues.Length) - 1];
+                    }
+                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
+                    {
+                        objCyberware.DeleteCyberware(treWeapons, treVehicles);
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
+                        objExpense.Create(0, strEntry + strExConString + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        CharacterObject.ExpenseEntries.Add(objExpense);
+
+                        if (objCyberware.Parent != null)
+                            objCyberware.Parent.Children.Remove(objCyberware);
+                        else
+                            CharacterObject.Cyberware.Remove(objCyberware);
+
+                        IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
+
+                        treCyberware.FindNode(objCyberware.InternalId)?.Remove();
+                        blnDoRefresh = true;
+                        if (objCyberware.InternalId == strSelectedCyberware)
+                            RefreshSelectedCyberware();
+                    }
+                }
+
+                if (blnDoRefresh)
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
         }
 
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
@@ -8097,11 +8166,11 @@ namespace Chummer
                 objAccessory.Create(objXmlWeapon, objNode, frmPickWeaponAccessory.SelectedMount, Convert.ToInt32(frmPickWeaponAccessory.SelectedRating), cmsWeaponAccessoryGear);
                 objAccessory.Parent = objWeapon;
 
-                if (objAccessory.Cost.StartsWith("Variable"))
+                if (objAccessory.Cost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objAccessory.Cost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = objAccessory.Cost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -9775,30 +9844,21 @@ namespace Chummer
                         // Create the Expense Log Entry for the sale.
                         decimal decAmount = objCyberware.TotalCost * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        string strEntry = string.Empty;
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                            strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware", GlobalOptions.Language);
-                        else
-                            strEntry = LanguageManager.GetString("String_ExpenseSoldBioware", GlobalOptions.Language);
+                        string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
                         decAmount += objCyberware.DeleteCyberware(treWeapons, treVehicles) * frmSell.SellPercent;
                         objExpense.Create(decAmount, strEntry + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
-
-                        // Remove the Children.
-                        objCyberware.Children.Clear();
-
-                        // Remove any Improvements created by the piece of Cyberware.
-                        ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
-                        CharacterObject.Cyberware.Remove(objCyberware);
+                        
+                        if (objCyberware.Parent != null)
+                            objCyberware.Parent.Children.Remove(objCyberware);
+                        else
+                            CharacterObject.Cyberware.Remove(objCyberware);
 
                         IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100));
 
                         // Remove the item from the TreeView.
                         treCyberware.Nodes.Remove(treCyberware.SelectedNode);
-
-                        // If the Parent is populated, remove the item from its Parent.
-                        objParent?.Children.Remove(objCyberware);
                     }
                     else
                     {
@@ -23233,7 +23293,25 @@ namespace Chummer
         {
             lblStreetCredTotal.Text = " + " + CharacterObject.CalculatedStreetCred.ToString() + " = " + CharacterObject.TotalStreetCred.ToString();
             lblNotorietyTotal.Text = " + " + CharacterObject.CalculatedNotoriety.ToString() + " = " + CharacterObject.TotalNotoriety.ToString();
-            lblPublicAwareTotal.Text = " + " + CharacterObject.CalculatedPublicAwareness.ToString() + " = " + (CharacterObject.TotalPublicAwareness + CharacterObject.CalculatedPublicAwareness).ToString();
+            lblPublicAwareTotal.Text = " + " + CharacterObject.CalculatedPublicAwareness.ToString();
+            int intTotalPublicAwareness = CharacterObject.TotalPublicAwareness + CharacterObject.CalculatedPublicAwareness;
+            if (CharacterObject.Erased && intTotalPublicAwareness > 1)
+            {
+                string strErasedString = CharacterObject.Qualities.FirstOrDefault(x => x.Name == "Erased")?.DisplayNameShort(GlobalOptions.Language);
+                if (string.IsNullOrEmpty(strErasedString))
+                {
+                    XmlNode xmlErasedQuality = XmlManager.Load("qualities.xml").SelectSingleNode("chummer/qualities/quality[name = \"Erased\"]");
+                    if (xmlErasedQuality != null)
+                    {
+                        strErasedString = xmlErasedQuality["translate"]?.InnerText ?? xmlErasedQuality["name"]?.InnerText ?? string.Empty;
+                    }
+                }
+                if (!string.IsNullOrEmpty(strErasedString))
+                    strErasedString = " (" + strErasedString + ")";
+                lblPublicAwareTotal.Text += " - " + (intTotalPublicAwareness - 1).ToString() + strErasedString;
+                intTotalPublicAwareness = 1;
+            }
+            lblPublicAwareTotal.Text += " = " + intTotalPublicAwareness.ToString();
             cmdBurnStreetCred.Left = lblStreetCredTotal.Left + lblStreetCredTotal.Width + 6;
             cmdBurnStreetCred.Enabled = CharacterObject.TotalStreetCred >= 2;
 

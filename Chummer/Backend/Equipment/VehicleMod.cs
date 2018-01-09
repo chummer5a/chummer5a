@@ -126,43 +126,40 @@ namespace Chummer.Backend.Equipment
                 _strSubsystems = objSubsystem.ToString();
             }
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
-            
-            // Check for a Variable Cost.
-            if (objXmlMod["cost"] != null)
-            {
-                _strCost = objXmlMod["cost"].InnerText;
-                if (_strCost.StartsWith("Variable"))
-                {
-                    decimal decMin = 0;
-                    decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    if (decMin != 0 || decMax != decimal.MaxValue)
-                    {
-                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-                        frmPickNumber.Minimum = decMin;
-                        frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
-                        frmPickNumber.AllowCancel = false;
-                        frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
-                    }
+            _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+            // Check for a Variable Cost.
+            if (_strCost.StartsWith("Variable("))
+            {
+                decimal decMin = 0;
+                decimal decMax = decimal.MaxValue;
+                string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                if (strCost.Contains('-'))
+                {
+                    string[] strValues = strCost.Split('-');
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                }
+                else
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                if (decMin != 0 || decMax != decimal.MaxValue)
+                {
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    if (decMax > 1000000)
+                        decMax = 1000000;
+                    frmPickNumber.Minimum = decMin;
+                    frmPickNumber.Maximum = decMax;
+                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                    frmPickNumber.AllowCancel = false;
+                    frmPickNumber.ShowDialog();
+                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                 }
             }
             _decMarkup = decMarkup;
@@ -680,6 +677,7 @@ namespace Chummer.Backend.Equipment
         #endregion
 
         #region Complex Properties
+        private static readonly char[] lstBracketChars = { '[', ']' };
         /// <summary>
         /// Total Availablility of the VehicleMod.
         /// </summary>
@@ -692,19 +690,19 @@ namespace Chummer.Backend.Equipment
             string strCalculated = _strAvail;
 
             // Reordered to process fixed value strings
-            if (strCalculated.StartsWith("FixedValues"))
+            if (strCalculated.StartsWith("FixedValues("))
             {
-                string[] strValues = strCalculated.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strCalculated.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 if (strValues.Length >= _intRating)
                     strCalculated = strValues[_intRating - 1];
             }
-            else if (strCalculated.StartsWith("Range"))
+            else if (strCalculated.StartsWith("Range("))
             {
                 // If the Availability code is based on the current Rating of the item, separate the Availability string into an array and find the first bracket that the Rating is lower than or equal to.
-                string[] strValues = strCalculated.Replace("MaxRating", MaxRating).Replace("Range", string.Empty).Trim("()".ToCharArray()).Split(',');
+                string[] strValues = strCalculated.Replace("MaxRating", MaxRating).TrimStart("Range(", true).TrimEnd(')').Split(',');
                 foreach (string strValue in strValues)
                 {
-                    string strAvailCode = strValue.Split('[')[1].Trim("[]".ToCharArray());
+                    string strAvailCode = strValue.Split('[')[1].Trim(lstBracketChars);
                     int intMax = Convert.ToInt32(strValue.Split('[')[0]);
                     if (Rating > intMax) continue;
                     strCalculated = $"{Rating}{strAvailCode}";
@@ -815,9 +813,9 @@ namespace Chummer.Backend.Equipment
                         strReturn = "*";
                     else
                     {
-                        if (_strCapacity.StartsWith("FixedValues"))
+                        if (_strCapacity.StartsWith("FixedValues("))
                         {
-                            string[] strValues = _strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                            string[] strValues = _strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                             if (_intRating <= strValues.Length)
                                 strReturn = strValues[_intRating - 1];
                             else
@@ -848,7 +846,7 @@ namespace Chummer.Backend.Equipment
 
                     if (strSecondHalf.Contains("Rating"))
                     {
-                        strSecondHalf = strSecondHalf.Trim("[]".ToCharArray());
+                        strSecondHalf = strSecondHalf.Trim(lstBracketChars);
                         try
                         {
                             strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
@@ -883,9 +881,9 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (_strCapacity.StartsWith("FixedValues"))
+                    if (_strCapacity.StartsWith("FixedValues("))
                     {
-                        string[] strValues = _strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                        string[] strValues = _strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                         if (strValues.Length >= _intRating)
                             strReturn = strValues[_intRating - 1];
                     }
@@ -976,9 +974,9 @@ namespace Chummer.Backend.Equipment
             {
                 // If the cost is determined by the Rating, evaluate the expression.
                 string strCostExpression = _strCost;
-                if (strCostExpression.StartsWith("FixedValues"))
+                if (strCostExpression.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCostExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (_intRating > 0)
                         strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }
@@ -1017,9 +1015,9 @@ namespace Chummer.Backend.Equipment
             {
                 // If the slots is determined by the Rating, evaluate the expression.
                 string strSlotsExpression = _strSlots;
-                if (strSlotsExpression.StartsWith("FixedValues"))
+                if (strSlotsExpression.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strSlotsExpression.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strSlotsExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (_intRating > 0)
                         strSlotsExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
                 }

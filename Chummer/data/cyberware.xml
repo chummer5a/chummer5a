@@ -498,7 +498,8 @@
       <source>SR5</source>
       <page>453</page>
       <allowgear>
-        <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
+        <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
         <category>Eyeware</category>
@@ -644,7 +645,8 @@
       <source>SR5</source>
       <page>453</page>
       <allowgear>
-        <gearcategory>Audio Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
+        <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
         <category>Earware</category>
@@ -6829,7 +6831,8 @@
       <source>2050</source>
       <page>201</page>
       <allowgear>
-        <gearcategory>Vision Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
+        <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
         <category>Eyeware</category>
@@ -6943,7 +6946,8 @@
       <source>2050</source>
       <page>201</page>
       <allowgear>
-        <gearcategory>Audio Enhancements</gearcategory>
+        <gearcategory>Custom</gearcategory>
+        <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
         <category>Earware</category>
