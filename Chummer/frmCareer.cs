@@ -632,16 +632,20 @@ namespace Chummer
             for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
             {
                 Spirit objSpirit = CharacterObject.Spirits[i];
+                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
                 SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
                 // Attach an EventHandler for the ServicesOwedChanged Event.
                 objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                 objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                objSpiritControl.RebuildSpiritList(objSpirit.EntityType == SpiritType.Spirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
+                objSpiritControl.RebuildSpiritList(blnIsSpirit ? CharacterObject.MagicTradition : CharacterObject.TechnomancerStream);
 
                 objSpiritControl.Top = i * objSpiritControl.Height;
-                panSpirits.Controls.Add(objSpiritControl);
+                if (blnIsSpirit)
+                    panSpirits.Controls.Add(objSpiritControl);
+                else
+                    panSprites.Controls.Add(objSpiritControl);
             }
 
             // Populate Technomancer Complex Forms/Programs.
@@ -1137,6 +1141,12 @@ namespace Chummer
                 }
 
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
+                {
+                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                }
+
+                foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
                 {
                     objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                     objSpiritControl.DeleteSpirit -= DeleteSpirit;
@@ -3606,11 +3616,13 @@ namespace Chummer
         {
             SpiritControl objSender = (SpiritControl)sender;
             Spirit objSpirit = objSender.SpiritObject;
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(objSpirit.EntityType == SpiritType.Spirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
+            bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", GlobalOptions.Language)))
                 return;
-            
+
+            Panel panControlContainer = blnIsSpirit ? panSpirits : panSprites;
             int intRemovedControlHeight = 0;
-            foreach (SpiritControl objSpiritControl in panSpirits.Controls)
+            foreach (SpiritControl objSpiritControl in panControlContainer.Controls)
             {
                 // Set the flag to show that we have found the Spirit.
                 if (objSpiritControl == objSender)
@@ -3626,7 +3638,7 @@ namespace Chummer
                 }
             }
             // Remove the SpiritControl that raised the Event.
-            panSpirits.Controls.Remove(objSender);
+            panControlContainer.Controls.Remove(objSender);
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
