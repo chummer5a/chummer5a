@@ -186,21 +186,28 @@ namespace Chummer
         private int _intKarmaNewAIAdvancedProgram = 8;
 
         // Karma Foci variables.
+        // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
-        private int _intKarmaBanishingFocus = 2;
-        private int _intKarmaBindingFocus = 2;
-        private int _intKarmaCenteringFocus = 3;
-        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaDisenchantingFocus = 3;
+        // Metamagic
+        private int _intKarmaCenteringFocus = 3;
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
+        private int _intKarmaSpellShapingFocus = 3;
+        // Power
         private int _intKarmaPowerFocus = 6;
+        // Qi
         private int _intKarmaQiFocus = 2;
+        // Spell
+        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
-        private int _intKarmaSpellShapingFocus = 3;
-        private int _intKarmaSummoningFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+        // Spirit
+        private int _intKarmaBanishingFocus = 2;
+        private int _intKarmaBindingFocus = 2;
+        private int _intKarmaSummoningFocus = 2;
+        // Weapon
         private int _intKarmaWeaponFocus = 3;
 
         // Default build settings.

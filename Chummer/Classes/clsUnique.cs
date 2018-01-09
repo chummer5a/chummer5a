@@ -2762,7 +2762,7 @@ namespace Chummer
                         strFocusName = strFocusName.Substring(0, intPosition - 1);
                     intPosition = strFocusName.IndexOf(',');
                     if (intPosition > -1)
-                        strFocusName = strFocusName.Substring(0, intPosition - 1);
+                        strFocusName = strFocusName.Substring(0, intPosition);
                     int intKarmaMultiplier = 1;
                     int intExtraKarmaCost = 0;
                     switch (strFocusName)
