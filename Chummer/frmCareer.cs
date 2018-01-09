@@ -1559,9 +1559,9 @@ namespace Chummer
                         return false;
                     Cyberware objParent = x;
                     bool blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
-                    while (x.Parent != null && blnNoParentIsModular)
+                    while (objParent.Parent != null && blnNoParentIsModular)
                     {
-                        objParent = x.Parent;
+                        objParent = objParent.Parent;
                         blnNoParentIsModular = string.IsNullOrEmpty(objParent.PlugsIntoModularMount);
                     }
 
