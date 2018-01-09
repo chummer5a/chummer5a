@@ -1924,8 +1924,8 @@ namespace Chummer
                     if (strFirstHalfLastWord == strFirstHalfLastWord.ToUpperInvariant())
                     {
                         string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1) : string.Empty;
-                        intLastWhitespace = Math.Min(strSecondHalf.LastIndexOf(' '), strSecondHalf.LastIndexOf('\n'));
-                        string strSecondHalfFirstWord = strSecondHalf.Substring(0, intLastWhitespace);
+                        intLastWhitespace = Math.Max(strSecondHalf.IndexOf(' '), strSecondHalf.IndexOf('\n'));
+                        string strSecondHalfFirstWord = intLastWhitespace == -1 ? strSecondHalf : strSecondHalf.Substring(0, intLastWhitespace);
                         if (strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
                         {
                             strPageText = strFirstHalf + ' ' + strSecondHalf;
