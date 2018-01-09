@@ -358,6 +358,11 @@ namespace Chummer
             if (objQualitySource == QualitySource.Metatype || objQualitySource == QualitySource.MetatypeRemovable)
                 objNode.ForeColor = SystemColors.GrayText;
 
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }
+
             objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = InternalId;
         }
@@ -1801,6 +1806,11 @@ namespace Chummer
                 }
                 _strDV = strDV;
             }
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
 
             //TreeNode objNode = new TreeNode();
             objNode.Text = DisplayName(GlobalOptions.Language);
@@ -2908,7 +2918,12 @@ namespace Chummer
                     _objCachedMyXmlNode = null;
                 }
             }
-            
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
+
             if (_objCharacter.SubmersionGrade > 0)
                 objNode.Text = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
             else
@@ -3168,6 +3183,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
 
             objNode.Text = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
@@ -3404,6 +3424,11 @@ namespace Chummer
                     _objCachedMyXmlNode = null;
                 }
             }
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
 
             objNode.Text = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
@@ -3637,6 +3662,12 @@ namespace Chummer
             _strExtra = strExtra;
 
             objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
 
             objNode.Text = DisplayName;
             objNode.Tag = _guiID.ToString();
@@ -4128,6 +4159,12 @@ namespace Chummer
                 ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
                     objXmlArtNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language));
             }
+
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
 
             objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
@@ -5989,6 +6026,12 @@ namespace Chummer
             objXmlPowerNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
+
             // Create the TreeNode for the new item.
             objNode.Text = DisplayName(GlobalOptions.Language);
             objNode.Tag = _guiID.ToString();
@@ -6970,6 +7013,12 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
                 ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString(), Improvement.ImprovementType.DrainValue, string.Empty, -1);
             }
+
+            /*
+            if (_strNotes == string.Empty)
+            {
+                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+            }*/
         }
 
         /// <summary>

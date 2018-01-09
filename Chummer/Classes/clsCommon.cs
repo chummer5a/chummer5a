@@ -22,11 +22,14 @@ using System.Diagnostics;
  using System.Text;
  using System.Windows.Forms;
  using System.Drawing;
+ using System.IO;
  using System.Linq;
  using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
+ using iTextSharp.text.pdf;
+ using iTextSharp.text.pdf.parser;
 
 namespace Chummer
 {
@@ -1847,6 +1850,106 @@ namespace Chummer
                 Arguments = strParams
             };
             Process.Start(objProgress);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <returns></returns>
+        public static string GetText(string strSource, string strText = "")
+        {
+            string[] strTemp = strSource.Split(' ');
+            if (strTemp.Length < 2)
+                return string.Empty;
+            if (!int.TryParse(strTemp[1], out int intPage))
+                return string.Empty;
+
+            // Make sure the page is actually a number that we can use as well as being 1 or higher.
+            if (intPage < 1)
+                return string.Empty;
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = CommonFunctions.LanguageBookShort(strTemp[0], GlobalOptions.Language);
+
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo =>
+                objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            // If the sourcebook was not found, we can't open anything.
+            if (objBookInfo == null)
+                return string.Empty;
+
+            Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath)) return string.Empty;
+            string strReturn = string.Empty;
+            PdfReader reader = new PdfReader($"{uriPath.LocalPath}");
+            ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
+            // Loop through each page, starting at the listed page + offset.
+            for (int page = intPage + objBookInfo.Offset; page <= reader.NumberOfPages; page++)
+            {
+                String s = PdfTextExtractor.GetTextFromPage(reader, page, its);
+
+                s = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8,
+                    Encoding.Default.GetBytes(s)));
+                //Listed start page didn't contain the text we're looking for and we're not looking at a second page. Fail out (relatively) early.
+                if (strReturn == string.Empty && !s.Contains(strText.ToUpperInvariant()) && !s.Contains($"{strText}:")) return strReturn;
+                // Found the relevant string, so trim everything before it. 
+                string sOut = s.Substring(s.IndexOf(strText.ToUpperInvariant(), StringComparison.Ordinal));
+                // Split the resulting string into an array using newlines as the separator. 
+                string[] sOutArray = sOut.Split('\n');
+                for (int i = 0; i <= sOutArray.Length; i++)
+                {
+                    // We don't want to include the name of thw quality again. 
+                    if (sOutArray[i] == strText.ToUpperInvariant()) i++;
+                    else if (sOutArray[i] == sOutArray[i].ToUpperInvariant())
+                    {
+                        //We found an ALLCAPS string element that isn't the title. We've found our full textblock.
+                        reader.Close();
+                        return NormalizeWhiteSpace(strReturn);
+                    }
+                    // Add to the existing string. TODO: Something to preserve newlines that we actually want?
+                    strReturn += $"{sOutArray[i]} ";
+                }
+            }
+            reader.Close();
+            return NormalizeWhiteSpace(strReturn);
+        }
+
+        /// <summary>
+        /// Normalises whitespace for a given textblock. Removes extra spaces.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="normalizeTo"></param>
+        /// <returns></returns>
+        internal static string NormalizeWhiteSpace(string input, char normalizeTo = ' ')
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            int current = 0;
+            char[] output = new char[input.Length];
+            bool skipped = false;
+
+            foreach (char c in input)
+            {
+                if (char.IsWhiteSpace(c))
+                {
+                    if (skipped) continue;
+                    if (current > 0)
+                        output[current++] = normalizeTo;
+
+                    skipped = true;
+                }
+                else
+                {
+                    skipped = false;
+                    output[current++] = c;
+                }
+            }
+
+            return new string(output, 0, skipped ? current - 1 : current);
         }
         #endregion
     }

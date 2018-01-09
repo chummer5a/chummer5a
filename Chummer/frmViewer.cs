@@ -442,8 +442,6 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-            //PdfDocument objpdf = TheArtOfDev.HtmlRenderer.PdfSharp.PdfGenerator.GeneratePdf(webBrowser1.DocumentText, PdfSharp.PageSize.A4);
-            //objpdf.Save(strSaveFile);
 
             if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)))
             {
