@@ -6530,14 +6530,14 @@ namespace Translator
                 {
                     if (objWorker.CancellationPending)
                         return;
-                    if (xmlCategoryNodesParent.SelectSingleNode("category[text()=\"" + xmlDataCategoryNode.InnerText + "\"]") == null)
+                    if (xmlModCategoryNodesParent.SelectSingleNode("category[text()=\"" + xmlDataCategoryNode.InnerText + "\"]") == null)
                     {
                         XmlNode xmlCategoryNode = objDataDoc.CreateElement("category");
                         xmlCategoryNode.InnerText = xmlDataCategoryNode.InnerText;
                         XmlAttribute xmlTranslateAttribute = objDataDoc.CreateAttribute("translate");
                         xmlTranslateAttribute.Value = xmlDataCategoryNode.InnerText;
                         xmlCategoryNode.Attributes.Append(xmlTranslateAttribute);
-                        xmlCategoryNodesParent.AppendChild(xmlCategoryNode);
+                        xmlModCategoryNodesParent.AppendChild(xmlCategoryNode);
                     }
                 }
             }
