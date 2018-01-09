@@ -520,7 +520,7 @@ namespace Chummer
                 {
                     if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                     {
-                        objXmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + strSelectedTalents + "\"]");
+                        objXmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + strSelectedTalents + "\"]");
                         break;
                     }
                 }
@@ -744,7 +744,7 @@ namespace Chummer
                 {
                     if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                     {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
                         if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
@@ -875,7 +875,7 @@ namespace Chummer
                 {
                     if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                     {
-                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[name = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
+                        XmlNode objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = \"" + cboTalents.SelectedValue?.ToString() + "\"]");
                         if (int.TryParse(objXmlTalentsNode?["specialattribpoints"]?.InnerText, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
