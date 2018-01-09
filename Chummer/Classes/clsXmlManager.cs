@@ -755,9 +755,16 @@ namespace Chummer
             foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
             {
                 string strFileName = Path.GetFileName(strFile);
-
-                // Do not bother to check custom files.
-                if (!string.IsNullOrEmpty(strFileName) && !strFileName.StartsWith("custom") && !strFile.StartsWith("override") && !strFile.Contains("packs.xml") && !strFile.Contains("ranges.xml"))
+                
+                if (!string.IsNullOrEmpty(strFileName) &&
+                    // Do not bother to check custom files.
+                    !strFileName.StartsWith("amend") &&
+                    !strFileName.StartsWith("custom") &&
+                    !strFileName.StartsWith("override") &&
+                    // These file types don't have translations and/or don't properly support them
+                    !strFile.EndsWith("packs.xml") &&
+                    !strFile.EndsWith("lifemodules.xml") &&
+                    !strFile.EndsWith("sheets.xml"))
                 {
                     // Load the current English file.
                     XmlDocument objEnglishDoc = Load(strFileName);
@@ -769,17 +776,16 @@ namespace Chummer
                     if (objLanguageRoot != null)
                         blnExists = true;
 
-                    // <file name="x" exists="y">
+                    // <file name="x" needstobeadded="y">
                     objWriter.WriteStartElement("file");
                     objWriter.WriteAttributeString("name", strFileName);
-                    objWriter.WriteAttributeString("exists", blnExists.ToString());
 
                     if (blnExists)
                     {
                         foreach (XmlNode objType in objEnglishRoot.ChildNodes)
                         {
                             string strTypeName = objType.Name;
-                            objWriter.WriteStartElement(strTypeName);
+                            bool blnTypeWritten = false;
                             foreach (XmlNode objChild in objType.ChildNodes)
                             {
                                 // If the Node has a source element, check it and see if it's in the list of books that were specified.
@@ -800,7 +806,7 @@ namespace Chummer
 
                                 if (blnContinue)
                                 {
-                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts") && strFile.EndsWith("lifestyles.xml")))
+                                    if (strTypeName != "version" && !((strTypeName == "costs" || strTypeName == "safehousecosts" || strTypeName == "comforts" || strTypeName == "neighborhoods" || strTypeName == "securities") && strFile.EndsWith("lifestyles.xml")))
                                     {
                                         string strChildName = objChild.Name;
                                         XmlNode objTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);
@@ -808,7 +814,7 @@ namespace Chummer
                                         if (objChild["name"] != null)
                                         {
                                             string strChildNameElement = objChild["name"].InnerText;
-                                            XmlNode objNode = objTranslatedType.SelectSingleNode(strChildName + "[name = \"" + strChildNameElement + "\"]");
+                                            XmlNode objNode = objTranslatedType?.SelectSingleNode(strChildName + "[name = \"" + strChildNameElement + "\"]");
                                             if (objNode != null)
                                             {
                                                 // A match was found, so see what elements, if any, are missing.
@@ -854,9 +860,13 @@ namespace Chummer
                                                 // At least one pice of data was missing so write out the result node.
                                                 if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
                                                 {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
                                                     // <results>
                                                     objWriter.WriteStartElement(strChildName);
-                                                    objWriter.WriteAttributeString("exists", "True");
                                                     objWriter.WriteElementString("name", strChildNameElement);
                                                     if (!blnTranslate)
                                                         objWriter.WriteElementString("missing", "translate");
@@ -872,10 +882,15 @@ namespace Chummer
                                             }
                                             else
                                             {
+                                                if (!blnTypeWritten)
+                                                {
+                                                    blnTypeWritten = true;
+                                                    objWriter.WriteStartElement(strTypeName);
+                                                }
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
                                                 objWriter.WriteStartElement(strChildName);
-                                                objWriter.WriteAttributeString("exists", "False");
+                                                objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
                                                 objWriter.WriteElementString("name", strChildNameElement);
                                                 // </result>
                                                 objWriter.WriteEndElement();
@@ -902,10 +917,14 @@ namespace Chummer
                                                             // Item exists, so make sure it has its translate attribute populated.
                                                             if (!blnTranslate || !blnAltPage)
                                                             {
+                                                                if (!blnTypeWritten)
+                                                                {
+                                                                    blnTypeWritten = true;
+                                                                    objWriter.WriteStartElement(strTypeName);
+                                                                }
                                                                 // <result>
                                                                 objWriter.WriteStartElement("metavariants");
                                                                 objWriter.WriteStartElement("metavariant");
-                                                                objWriter.WriteAttributeString("exists", "True");
                                                                 objWriter.WriteElementString("name", strMetavariantName);
                                                                 if (!blnTranslate)
                                                                     objWriter.WriteElementString("missing", "translate");
@@ -918,10 +937,15 @@ namespace Chummer
                                                         }
                                                         else
                                                         {
+                                                            if (!blnTypeWritten)
+                                                            {
+                                                                blnTypeWritten = true;
+                                                                objWriter.WriteStartElement(strTypeName);
+                                                            }
                                                             // <result>
                                                             objWriter.WriteStartElement("metavariants");
                                                             objWriter.WriteStartElement("metavariant");
-                                                            objWriter.WriteAttributeString("exists", "False");
+                                                            objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
                                                             objWriter.WriteElementString("name", objMetavariant.InnerText);
                                                             objWriter.WriteEndElement();
                                                             // </result>
@@ -943,10 +967,14 @@ namespace Chummer
                                                             // Item exists, so make sure it has its translate attribute populated.
                                                             if (objTranslate.Attributes?["translate"] == null)
                                                             {
+                                                                if (!blnTypeWritten)
+                                                                {
+                                                                    blnTypeWritten = true;
+                                                                    objWriter.WriteStartElement(strTypeName);
+                                                                }
                                                                 // <result>
                                                                 objWriter.WriteStartElement("martialarts");
                                                                 objWriter.WriteStartElement("advantage");
-                                                                objWriter.WriteAttributeString("exists", "True");
                                                                 objWriter.WriteElementString("name", objAdvantage.InnerText);
                                                                 objWriter.WriteElementString("missing", "translate");
                                                                 objWriter.WriteEndElement();
@@ -956,10 +984,15 @@ namespace Chummer
                                                         }
                                                         else
                                                         {
+                                                            if (!blnTypeWritten)
+                                                            {
+                                                                blnTypeWritten = true;
+                                                                objWriter.WriteStartElement(strTypeName);
+                                                            }
                                                             // <result>
                                                             objWriter.WriteStartElement("martialarts");
                                                             objWriter.WriteStartElement("advantage");
-                                                            objWriter.WriteAttributeString("exists", "False");
+                                                            objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
                                                             objWriter.WriteElementString("name", objAdvantage.InnerText);
                                                             objWriter.WriteEndElement();
                                                             // </result>
@@ -977,15 +1010,19 @@ namespace Chummer
                                         {
                                             string strChildInnerText = objChild.InnerText;
                                             // The item does not have a name which means it should have a translate CharacterAttribute instead.
-                                            XmlNode objNode = objTranslatedType.SelectSingleNode(strChildName + "[text() = \"" + strChildInnerText + "\"]");
+                                            XmlNode objNode = objTranslatedType?.SelectSingleNode(strChildName + "[text() = \"" + strChildInnerText + "\"]");
                                             if (objNode != null)
                                             {
                                                 // Make sure the translate attribute is populated.
                                                 if (objNode.Attributes?["translate"] == null)
                                                 {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        objWriter.WriteStartElement(strTypeName);
+                                                    }
                                                     // <result>
                                                     objWriter.WriteStartElement(strChildName);
-                                                    objWriter.WriteAttributeString("exists", "True");
                                                     objWriter.WriteElementString("name", strChildInnerText);
                                                     objWriter.WriteElementString("missing", "translate");
                                                     // </result>
@@ -994,10 +1031,15 @@ namespace Chummer
                                             }
                                             else
                                             {
+                                                if (!blnTypeWritten)
+                                                {
+                                                    blnTypeWritten = true;
+                                                    objWriter.WriteStartElement(strTypeName);
+                                                }
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
                                                 objWriter.WriteStartElement(strChildName);
-                                                objWriter.WriteAttributeString("exists", "False");
+                                                objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
                                                 objWriter.WriteElementString("name", strChildInnerText);
                                                 // </result>
                                                 objWriter.WriteEndElement();
@@ -1006,7 +1048,8 @@ namespace Chummer
                                     }
                                 }
                             }
-                            objWriter.WriteEndElement();
+                            if (blnTypeWritten)
+                                objWriter.WriteEndElement();
                         }
 
                         // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
@@ -1034,6 +1077,8 @@ namespace Chummer
                             }
                         }
                     }
+                    else
+                        objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
 
                     // </file>
                     objWriter.WriteEndElement();

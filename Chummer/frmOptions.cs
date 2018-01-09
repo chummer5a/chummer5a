@@ -297,11 +297,14 @@ namespace Chummer
 
         private void cmdVerify_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             LanguageManager.VerifyStrings(_strSelectedLanguage);
+            Cursor = Cursors.Default;
         }
 
         private void cmdVerifyData_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             // Build a list of Sourcebooks that will be passed to the Verify method.
             // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
             List<string> lstBooks = new List<string>();
@@ -328,6 +331,7 @@ namespace Chummer
 
             string strFilePath = Path.Combine(Application.StartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
             MessageBox.Show("Results were written to " + strFilePath, "Validation Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Cursor = Cursors.Default;
         }
 
         private void chkExceedNegativeQualities_CheckedChanged(object sender, EventArgs e)
