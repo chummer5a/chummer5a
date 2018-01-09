@@ -325,7 +325,7 @@ namespace Chummer
                 if (chkUsedVehicle.Checked)
                 {
                     string strSuffix = string.Empty;
-                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
+                    if (strAvail.EndsWith('R', 'F'))
                     {
                         strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
                         // Translate the Avail string.

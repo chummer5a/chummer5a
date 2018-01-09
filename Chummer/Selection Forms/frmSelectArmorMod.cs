@@ -281,7 +281,7 @@ namespace Chummer
             string strAvailExpr = string.Empty;
             strAvailExpr = objXmlMod["avail"].InnerText;
             
-            if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+            if (strAvailExpr.EndsWith('F', 'R'))
             {
                 strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                 if (strAvail == "R")

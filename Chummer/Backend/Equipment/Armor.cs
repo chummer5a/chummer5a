@@ -1051,7 +1051,7 @@ namespace Chummer.Backend.Equipment
             string strCalculated;
 
             // Just a straight cost, so return the value.
-            if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
+            if (_strAvail.EndsWith('F', 'R'))
             {
                 strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
             }
@@ -1060,7 +1060,7 @@ namespace Chummer.Backend.Equipment
 
             int intAvail;
             string strAvailText = string.Empty;
-            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
+            if (strCalculated.EndsWith('F', 'R'))
             {
                 strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                 intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
@@ -1079,7 +1079,7 @@ namespace Chummer.Backend.Equipment
                         string strAvailExpression = (objChild.Avail);
 
                         string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
-                        if (strAvailability.EndsWith('R') || strAvailability.EndsWith('F'))
+                        if (strAvailability.EndsWith('R', 'F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = objChild.Avail.Substring(strAvailability.Length - 1);
@@ -1091,7 +1091,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        if (objChild.Avail.EndsWith('R') || objChild.Avail.EndsWith('F'))
+                        if (objChild.Avail.EndsWith('R', 'F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
@@ -1108,7 +1108,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (objChild.Avail.Contains('+') && !objChild.IncludedInArmor)
                 {
-                    if (objChild.Avail.EndsWith('R') || objChild.Avail.EndsWith('F'))
+                    if (objChild.Avail.EndsWith('R', 'F'))
                     {
                         if (strAvailText != "F")
                             strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
@@ -1129,8 +1129,7 @@ namespace Chummer.Backend.Equipment
 
             return strReturn;
         }
-
-        private static readonly char[] lstBracketChars = { '[', ']' };
+        
         /// <summary>
         /// Calculated Capacity of the Armor.
         /// </summary>
@@ -1172,7 +1171,7 @@ namespace Chummer.Backend.Equipment
                         // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                         string strCapacity = objArmorMod.ArmorCapacity;
                         strCapacity = strCapacity.Replace("[-", string.Empty);
-                        strCapacity = strCapacity.FastEscape(lstBracketChars);
+                        strCapacity = strCapacity.FastEscape('[', ']');
                         strCapacity = strCapacity.Replace("Capacity", _strArmorCapacity);
                         strCapacity = strCapacity.Replace("Rating", _intRating.ToString());
 

@@ -1958,7 +1958,7 @@ namespace Chummer.Backend.Equipment
                     string strAvail = string.Empty;
                     string strAvailExpr = _strAvail.Substring(1, _strAvail.Length - 1);
 
-                    if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                    if (strAvailExpr.EndsWith('F', 'R'))
                     {
                         strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                         // Remove the trailing character if it is "F" or "R".
@@ -1993,7 +1993,7 @@ namespace Chummer.Backend.Equipment
                 string strAvail = string.Empty;
                 string strAvailExpr = strBaseAvail;
 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
@@ -2004,7 +2004,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Just a straight cost, so return the value.
-                if (strBaseAvail.EndsWith('F') || strBaseAvail.EndsWith('R'))
+                if (strBaseAvail.EndsWith('F', 'R'))
                 {
                     strCalculated = (Convert.ToInt32(strBaseAvail.Substring(0, strBaseAvail.Length - 1)) + intAvailModifier).ToString() + strBaseAvail.Substring(strBaseAvail.Length - 1, 1);
                 }
@@ -2014,7 +2014,7 @@ namespace Chummer.Backend.Equipment
 
             int intAvail = 0;
             string strAvailText = string.Empty;
-            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
+            if (strCalculated.EndsWith('F', 'R'))
             {
                 strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                 intAvail = Convert.ToInt32(strCalculated.Substring(0, strCalculated.Length - 1));
@@ -2033,7 +2033,7 @@ namespace Chummer.Backend.Equipment
                         strChildAvail = strChildAvail.CheapReplace("MinRating", () => objChild.MinRating.ToString());
                         strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
                         string strChildAvailText = string.Empty;
-                        if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                        if (strChildAvail.EndsWith('R', 'F'))
                         {
                             strChildAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
                             strChildAvail = strChildAvail.Substring(0, strChildAvail.Length - 1);
@@ -2048,7 +2048,7 @@ namespace Chummer.Backend.Equipment
                             strChildAvail += strChildAvailText;
                     }
 
-                    if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                    if (strChildAvail.EndsWith('R', 'F'))
                     {
                         if (strAvailText != "F")
                             strAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
@@ -2070,16 +2070,18 @@ namespace Chummer.Backend.Equipment
                 foreach (Gear objLoopGear in Gear)
                 {
                     string strLoopAvail = objLoopGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage, false);
-                    if (strLoopAvail.EndsWith('R') || strLoopAvail.EndsWith('F'))
+                    if (strLoopAvail.EndsWith('F'))
                     {
-                        if (strAvailText != "F" && strLoopAvail.EndsWith('F'))
-                            strAvailText = "F";
-                        else
-                            strAvailText = "R";
-                        intLoopAvail = Convert.ToInt32(strLoopAvail.Substring(0, strLoopAvail.Length - 1));
+                        strAvailText = "F";
+                        strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
                     }
-                    else
-                        intLoopAvail = Convert.ToInt32(strLoopAvail);
+                    else if (strLoopAvail.EndsWith('R'))
+                    {
+                        if (strAvailText != "F")
+                            strAvailText = "R";
+                        strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                    }
+                    intLoopAvail = Convert.ToInt32(strLoopAvail);
                     if (intAvail < intLoopAvail)
                         intAvail = intLoopAvail;
                 }

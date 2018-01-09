@@ -640,13 +640,20 @@ namespace Chummer.Backend.Equipment
                     string strAccAvail = wm.Avail;
                     int intAccAvail = 0;
 
-                    if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
+                    if (strAccAvail.StartsWith('+', '-'))
                     {
                         strAccAvail += wm.TotalAvail(GlobalOptions.DefaultLanguage);
                         if (strAccAvail.EndsWith('F'))
+                        {
                             strAvail = "F";
-                        if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
                             strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                        }
+                        else if (strAccAvail.EndsWith('R'))
+                        {
+                            if (strAvail != "F")
+                                strAvail = "R";
+                            strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                        }
                         intAccAvail = Convert.ToInt32(strAccAvail);
                         intAvail += intAccAvail;
                     }

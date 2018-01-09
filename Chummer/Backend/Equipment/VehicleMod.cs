@@ -710,7 +710,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             string strAvailText = string.Empty;
-            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
+            if (strCalculated.EndsWith('F', 'R'))
             {
                 strAvailText = strCalculated.Substring(strCalculated.Length - 1, 1);
                 strCalculated = strCalculated.Substring(0, strCalculated.Length - 1);
@@ -754,7 +754,7 @@ namespace Chummer.Backend.Equipment
                             strChildAvail = strChildAvail.CheapReplace("MinRating", () => objChild.MinRating.ToString());
                             strChildAvail = strChildAvail.Replace("Rating", objChild.Rating.ToString());
                             string strChildAvailText = string.Empty;
-                            if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                            if (strChildAvail.EndsWith('R', 'F'))
                             {
                                 strChildAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);
                                 strChildAvail = strChildAvail.Substring(0, strChildAvail.Length - 1);
@@ -769,7 +769,7 @@ namespace Chummer.Backend.Equipment
                                 strChildAvail += strChildAvailText;
                         }
 
-                        if (strChildAvail.EndsWith('R') || strChildAvail.EndsWith('F'))
+                        if (strChildAvail.EndsWith('R', 'F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = strChildAvail.Substring(objChild.Avail.Length - 1);

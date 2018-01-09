@@ -357,9 +357,13 @@ namespace Chummer
             if (objQualitySource == QualitySource.Metatype || objQualitySource == QualitySource.MetatypeRemovable)
                 objNode.ForeColor = SystemColors.GrayText;
 
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }
 
             objNode.Text = DisplayName(GlobalOptions.Language);
@@ -2177,11 +2181,11 @@ namespace Chummer
                         break;
                     }
                 }
-                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)))
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category)))
                 {
                     strTip += $"\n {LanguageManager.GetString("Label_Bonus", GlobalOptions.Language)}";
                     strTip = _objCharacter.Improvements
-                        .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category))
+                        .Where(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category))
                         .Aggregate(strTip, (current, imp) => current + $"\n {_objCharacter.GetObjectName(imp, GlobalOptions.Language)} ({imp.Value:0;-0;0})");
                 }
 
@@ -2293,7 +2297,7 @@ namespace Chummer
             {
                 string strReturn = _strDV;
                 bool force = _strDV.StartsWith('F');
-                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (o.ImprovedName == string.Empty || o.ImprovedName == Category)) || Limited)
+                if (_objCharacter.Improvements.Any(o => (o.ImproveType == Improvement.ImprovementType.DrainValue || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) && (string.IsNullOrEmpty(o.ImprovedName) || o.ImprovedName == Category)) || Limited)
                 {
                     string dv = strReturn.TrimStart('F');
                     //Navigator can't do math on a single value, so inject a mathable value.
@@ -2314,7 +2318,7 @@ namespace Chummer
                         _objCharacter.Improvements.Where(
                             i =>
                                 (i.ImproveType == Improvement.ImprovementType.DrainValue || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain) &&
-                                (i.ImprovedName == string.Empty || i.ImprovedName == Category) && i.Enabled))
+                                (string.IsNullOrEmpty(i.ImprovedName) || i.ImprovedName == Category) && i.Enabled))
                     {
                         dv += $" + {imp.Value:0;-0;0}";
                     }
@@ -2918,9 +2922,13 @@ namespace Chummer
                 }
             }
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             if (_objCharacter.SubmersionGrade > 0)
@@ -3183,9 +3191,13 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ")";
             }
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             objNode.Text = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
@@ -3424,9 +3436,13 @@ namespace Chummer
                 }
             }
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             objNode.Text = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
@@ -3663,9 +3679,13 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             objNode.Text = DisplayName;
@@ -4160,9 +4180,13 @@ namespace Chummer
             }
 
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             objNode.Text = DisplayName(GlobalOptions.Language);
@@ -6026,9 +6050,13 @@ namespace Chummer
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
 
             // Create the TreeNode for the new item.
@@ -7014,9 +7042,13 @@ namespace Chummer
             }
 
             /*
-            if (_strNotes == string.Empty)
+            if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                }
             }*/
         }
 

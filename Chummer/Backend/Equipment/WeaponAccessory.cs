@@ -810,7 +810,7 @@ namespace Chummer.Backend.Equipment
                 string strAvail = string.Empty;
                 string strAvailExpr = _strAvail;
 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
@@ -821,7 +821,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Just a straight cost, so return the value.
-                if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
+                if (_strAvail.EndsWith('F', 'R'))
                 {
                     strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                 }

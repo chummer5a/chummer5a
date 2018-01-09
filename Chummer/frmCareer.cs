@@ -1586,7 +1586,7 @@ namespace Chummer
                         string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                         strAvail = strValues[Math.Min(objCyberware.Rating, strValues.Length) - 1];
                     }
-                    if (strAvail.EndsWith('R') || strAvail.EndsWith('F'))
+                    if (strAvail.EndsWith('R', 'F'))
                     {
                         objCyberware.DeleteCyberware(treWeapons, treVehicles);
 

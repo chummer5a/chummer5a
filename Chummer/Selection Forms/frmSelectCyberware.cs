@@ -671,7 +671,7 @@ namespace Chummer
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
                 }
 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strSuffix = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.
@@ -1049,7 +1049,7 @@ namespace Chummer
                             string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                             strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
                         }
-                        if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                        if (strAvailExpr.EndsWith('F', 'R'))
                         {
                             continue;
                         }

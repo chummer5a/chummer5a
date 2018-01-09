@@ -1838,6 +1838,9 @@ namespace Chummer
                 return;
 
             Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath))
+                return;
             intPage += objBookInfo.Offset;
 
             string strParams = strPDFParamaters;
@@ -1858,8 +1861,11 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <returns></returns>
-        public static string GetText(string strSource, string strText = "")
+        public static string GetTextFromPDF(string strSource, string strText)
         {
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+
             string[] strTemp = strSource.Split(' ');
             if (strTemp.Length < 2)
                 return string.Empty;
@@ -1871,85 +1877,100 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = CommonFunctions.LanguageBookShort(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo =>
-                objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;
-
+            
             Uri uriPath = new Uri(objBookInfo.Path);
             // Check if the file actually exists.
-            if (!File.Exists(uriPath.LocalPath)) return string.Empty;
-            string strReturn = string.Empty;
-            PdfReader reader = new PdfReader($"{uriPath.LocalPath}");
+            if (!File.Exists(uriPath.LocalPath))
+                return string.Empty;
+            intPage += objBookInfo.Offset;
+            
+            List<string> lstTextsToSearch = new List<string>();
+            foreach (string strLoopText in strText.Split(':'))
+            {
+                string strLoopTextTrimmed = strLoopText.Trim();
+                lstTextsToSearch.Add(strLoopTextTrimmed.ToUpperInvariant());
+                lstTextsToSearch.Add($"{strLoopTextTrimmed}:");
+                string strTextWithoutNumerals = strLoopTextTrimmed.TrimEnd(" I", " II", " III", " IV");
+                if (strTextWithoutNumerals != strLoopTextTrimmed)
+                {
+                    lstTextsToSearch.Add(strTextWithoutNumerals.ToUpperInvariant());
+                    lstTextsToSearch.Add($"{strTextWithoutNumerals}:");
+                }
+            }
+
+            StringBuilder strbldReturn = new StringBuilder();
+            PdfReader reader = new PdfReader(uriPath.LocalPath);
             ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
             // Loop through each page, starting at the listed page + offset.
-            for (int page = intPage + objBookInfo.Offset; page <= reader.NumberOfPages; page++)
+            for (; intPage <= reader.NumberOfPages; ++intPage)
             {
-                String s = PdfTextExtractor.GetTextFromPage(reader, page, its);
+                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, its);
 
-                s = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8,
-                    Encoding.Default.GetBytes(s)));
-                //Listed start page didn't contain the text we're looking for and we're not looking at a second page. Fail out (relatively) early.
-                if (strReturn == string.Empty && !s.Contains(strText.ToUpperInvariant()) && !s.Contains($"{strText}:")) return strReturn;
-                // Found the relevant string, so trim everything before it. 
-                string sOut = s.Substring(s.IndexOf(strText.ToUpperInvariant(), StringComparison.Ordinal));
-                // Split the resulting string into an array using newlines as the separator. 
-                string[] sOutArray = sOut.Split('\n');
-                for (int i = 0; i <= sOutArray.Length; i++)
+                strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText)));
+
+                // Sometimes names are split across multiple lines. This shimmer removes the newline characters between words that are written in all caps.
+                for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = strPageText.IndexOf('\n', intNewlineIndex + 1))
                 {
-                    // We don't want to include the name of thw quality again. 
-                    if (sOutArray[i] == strText.ToUpperInvariant()) i++;
-                    else if (sOutArray[i] == sOutArray[i].ToUpperInvariant())
+                    string strFirstHalf = strPageText.Substring(0, intNewlineIndex);
+                    int intLastWhitespace = Math.Max(strFirstHalf.LastIndexOf(' '), strFirstHalf.LastIndexOf('\n'));
+                    string strFirstHalfLastWord = strFirstHalf.Substring(intLastWhitespace + 1);
+                    if (strFirstHalfLastWord == strFirstHalfLastWord.ToUpperInvariant())
                     {
-                        //We found an ALLCAPS string element that isn't the title. We've found our full textblock.
-                        reader.Close();
-                        return NormalizeWhiteSpace(strReturn);
+                        string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1) : string.Empty;
+                        intLastWhitespace = Math.Min(strSecondHalf.LastIndexOf(' '), strSecondHalf.LastIndexOf('\n'));
+                        string strSecondHalfFirstWord = strSecondHalf.Substring(0, intLastWhitespace);
+                        if (strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
+                        {
+                            strPageText = strFirstHalf + ' ' + strSecondHalf;
+                        }
                     }
+                }
+                
+                // If our string builder is empty, look for our text to know where to start, otherwise we're continuing our textblock from a previous page
+                if (strbldReturn.Length == 0)
+                {
+                    int intTextLocation = -1;
+                    foreach (string strNeedle in lstTextsToSearch)
+                    {
+                        intTextLocation = strPageText.IndexOf(strNeedle, StringComparison.Ordinal);
+                        if (intTextLocation != -1)
+                            break;
+                    }
+                    // Listed start page didn't contain the text we're looking for and we're not looking at a second page. Fail out (relatively) early.
+                    if (intTextLocation == -1)
+                    {
+                        goto EndPdfReading;
+                    }
+                    // Found the relevant string, so trim everything before it. 
+                    strPageText = strPageText.Substring(intTextLocation).TrimStart(lstTextsToSearch.ToArray());
+                }
+
+                string[] astrOut = strPageText.Split('\n');
+                string strStack = string.Empty;
+                for (int i = 0; i <= astrOut.Length; i++)
+                {
+                    string strLoop = astrOut[i];
+                    // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
+                    if (strLoop == strLoop.ToUpperInvariant())
+                    {
+                        goto EndPdfReading;
+                    }
+
                     // Add to the existing string. TODO: Something to preserve newlines that we actually want?
-                    strReturn += $"{sOutArray[i]} ";
+                    strbldReturn.Append(strLoop);
+                    strbldReturn.Append(' ');
                 }
             }
+            EndPdfReading:
             reader.Close();
-            return NormalizeWhiteSpace(strReturn);
-        }
-
-        /// <summary>
-        /// Normalises whitespace for a given textblock. Removes extra spaces.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="normalizeTo"></param>
-        /// <returns></returns>
-        internal static string NormalizeWhiteSpace(string input, char normalizeTo = ' ')
-        {
-            if (string.IsNullOrEmpty(input))
-                return string.Empty;
-
-            int current = 0;
-            char[] output = new char[input.Length];
-            bool skipped = false;
-
-            foreach (char c in input)
-            {
-                if (char.IsWhiteSpace(c))
-                {
-                    if (skipped) continue;
-                    if (current > 0)
-                        output[current++] = normalizeTo;
-
-                    skipped = true;
-                }
-                else
-                {
-                    skipped = false;
-                    output[current++] = c;
-                }
-            }
-
-            return new string(output, 0, skipped ? current - 1 : current);
+            return strbldReturn.ToString().NormalizeWhiteSpace();
         }
         #endregion
     }

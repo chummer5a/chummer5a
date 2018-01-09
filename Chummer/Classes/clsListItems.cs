@@ -65,8 +65,6 @@ namespace Chummer
     #region Sorting Classes
     public static class CompareTreeNodes
     {
-        private static readonly char[] s_LstBrackets = { '[', ']' };
-
         /// <summary>
         /// Sort TreeNodes in alphabetical order, ignoring [].
         /// </summary>
@@ -81,7 +79,7 @@ namespace Chummer
             }
             else if (ty == null)
                 return 1;
-            return string.Compare(tx.Text.FastEscape(s_LstBrackets), ty.Text.FastEscape(s_LstBrackets));
+            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'));
         }
 
         public class TextComparer : IComparer
@@ -132,8 +130,7 @@ namespace Chummer
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
         private readonly CaseInsensitiveComparer _objObjectCompare = new CaseInsensitiveComparer();
-
-        private static readonly char[] s_LstCurrencyTrim = { '¥', ',', ' ' };
+        
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
@@ -151,7 +148,7 @@ namespace Chummer
             if (_intColumnToSort == 0)
                 compareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
             else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape(s_LstCurrencyTrim)), Convert.ToInt32(strY.FastEscape(s_LstCurrencyTrim)));
+                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape('¥', ',', ' ')), Convert.ToInt32(strY.FastEscape('¥', ',', ' ')));
             else
                 compareResult = _objObjectCompare.Compare(strX, strY);
 

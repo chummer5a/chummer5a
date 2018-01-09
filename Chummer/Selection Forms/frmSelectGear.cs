@@ -104,9 +104,7 @@ namespace Chummer
             // Populate the Gear Category list.
             if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
-                if (_strAllowedCategories.EndsWith(','))
-                    _strAllowedCategories = _strAllowedCategories.Substring(0, _strAllowedCategories.Length - 1);
-
+                _strAllowedCategories = _strAllowedCategories.TrimEnd(',');
                 string[] strAllowed = _strAllowedCategories.Split(',');
                 string strMount = string.Empty;
                 foreach (string strAllowedMount in strAllowed)
@@ -723,7 +721,7 @@ namespace Chummer
                 }
                 strAvailExpr = objAvailNode.InnerText;
                 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     if (strAvail == "R")

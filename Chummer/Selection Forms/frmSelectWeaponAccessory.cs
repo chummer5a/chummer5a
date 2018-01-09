@@ -527,7 +527,7 @@ namespace Chummer
             if (!string.IsNullOrWhiteSpace(strAvailExpr))
             {
                 lblAvail.Text = strAvailExpr;
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     if (strAvail == "R")

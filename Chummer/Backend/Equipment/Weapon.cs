@@ -2845,7 +2845,7 @@ namespace Chummer.Backend.Equipment
                 }
                 string s = Name.ToLower();
                 intAccuracy += _objCharacter.Improvements
-                    .Where(i => i.ImproveType == Improvement.ImprovementType.WeaponAccuracy && (i.ImprovedName == string.Empty || i.ImprovedName == Name || i.ImprovedName.Contains("[contains]") && s.Contains(i.ImprovedName.Replace("[contains]",string.Empty).ToLower())))
+                    .Where(i => i.ImproveType == Improvement.ImprovementType.WeaponAccuracy && (string.IsNullOrEmpty(i.ImprovedName) || i.ImprovedName == Name || i.ImprovedName.Contains("[contains]") && s.Contains(i.ImprovedName.Replace("[contains]",string.Empty).ToLower())))
                     .Sum(objImprovement => objImprovement.Value);
 
                 // Look for Powers that increase accuracy
@@ -3626,7 +3626,7 @@ namespace Chummer.Backend.Equipment
                             intMaxChildAvail = objLoopAvail.Item1;
                         if (objLoopAvail.Item2.EndsWith('F'))
                             strAvail = "F";
-                        else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
+                        else if (strAvail != "F" && objLoopAvail.Item2.EndsWith('R'))
                             strAvail = "R";
                     }
                     strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
@@ -3647,7 +3647,7 @@ namespace Chummer.Backend.Equipment
 
                     if (!objAccessory.IncludedInWeapon)
                     {
-                        if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
+                        if (strAccAvail.StartsWith('+', '-'))
                         {
                             strAccAvail = objAccessory.TotalAvail(GlobalOptions.DefaultLanguage);
                             if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)))

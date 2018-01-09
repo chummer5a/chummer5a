@@ -635,7 +635,7 @@ namespace Chummer
                     strAvailExpr = strValues[intRating];
                 }
 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.

@@ -764,7 +764,7 @@ namespace Chummer.Backend.Equipment
                 string strAvail = string.Empty;
                 string strAvailExpr = _strAvail;
 
-                if (strAvailExpr.EndsWith('F') || strAvailExpr.EndsWith('R'))
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Remove the trailing character if it is "F" or "R".
@@ -775,7 +775,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 // Just a straight cost, so return the value.
-                if (_strAvail.EndsWith('F') || _strAvail.EndsWith('R'))
+                if (_strAvail.EndsWith('F', 'R'))
                 {
                     strCalculated = Convert.ToInt32(_strAvail.Substring(0, _strAvail.Length - 1)).ToString() + _strAvail.Substring(_strAvail.Length - 1, 1);
                 }
@@ -785,7 +785,7 @@ namespace Chummer.Backend.Equipment
 
             int intAvail;
             string strAvailText = string.Empty;
-            if (strCalculated.EndsWith('F') || strCalculated.EndsWith('R'))
+            if (strCalculated.EndsWith('F', 'R'))
             {
                 strAvailText = strCalculated.Substring(strCalculated.Length - 1);
                 // Translate the Avail string.
@@ -809,7 +809,7 @@ namespace Chummer.Backend.Equipment
                         string strAvailExpression = (objChild.Avail);
 
                         string strAvailability = strAvailExpression.Replace("Rating", objChild.Rating.ToString());
-                        if (strAvailability.EndsWith('R') || strAvailability.EndsWith('F'))
+                        if (strAvailability.EndsWith('R', 'F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = objChild.Avail.Substring(strAvailability.Length - 1);
@@ -821,7 +821,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        if (objChild.Avail.EndsWith('R') || objChild.Avail.EndsWith('F'))
+                        if (objChild.Avail.EndsWith('R', 'F'))
                         {
                             if (strAvailText != "F")
                                 strAvailText = objChild.Avail.Substring(objChild.Avail.Length - 1);
