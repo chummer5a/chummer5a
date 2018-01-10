@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.ComponentModel;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -103,8 +104,8 @@ namespace Chummer
         private bool _blnDoubleCostCareer = true;
         private bool _blnCanBuyWithSpellPoints = false;
         private int _intBP = 0;
-        private QualityType _objQualityType = QualityType.Positive;
-        private QualitySource _objQualitySource = QualitySource.Selected;
+        private QualityType _eQualityType = QualityType.Positive;
+        private QualitySource _eQualitySource = QualitySource.Selected;
         private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodFirstLevelBonus;
@@ -231,8 +232,8 @@ namespace Chummer
                     _intBP = Convert.ToInt32(strKarmaNodeTest);
                 }
             }
-            _objQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
-            _objQualitySource = objQualitySource;
+            _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
+            _eQualitySource = objQualitySource;
             objXmlQuality.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objXmlQuality.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             objXmlQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
@@ -243,7 +244,7 @@ namespace Chummer
             if (objXmlQuality["mutant"] != null)
                 _strMutant = "yes";
 
-            if (_objQualityType == QualityType.LifeModule)
+            if (_eQualityType == QualityType.LifeModule)
             {
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _stage);
             }
@@ -322,10 +323,7 @@ namespace Chummer
                     _objCharacter.Weapons.Add(objWeapon);
                 }
             }
-            if (objXmlQuality.InnerXml.Contains("<costdiscount>"))
-            {
-                _nodDiscounts = objXmlQuality["costdiscount"];
-            }
+            _nodDiscounts = objXmlQuality["costdiscount"];
             // If the item grants a bonus, pass the information to the Improvement Manager.
             _nodBonus = objXmlQuality["bonus"];
             if (_nodBonus?.ChildNodes.Count > 0)
@@ -393,8 +391,8 @@ namespace Chummer
                 objWriter.WriteElementString("metagenetic", _strMetagenetic);
             }
             objWriter.WriteElementString("print", _blnPrint.ToString());
-            objWriter.WriteElementString("qualitytype", _objQualityType.ToString());
-            objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
+            objWriter.WriteElementString("qualitytype", _eQualityType.ToString());
+            objWriter.WriteElementString("qualitysource", _eQualitySource.ToString());
             if (!string.IsNullOrEmpty(_strMutant))
                 objWriter.WriteElementString("mutant", _strMutant);
             objWriter.WriteElementString("source", _strSource);
@@ -413,7 +411,7 @@ namespace Chummer
             if (_nodDiscounts != null)
                 objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
             objWriter.WriteElementString("notes", _strNotes);
-            if (_objQualityType == QualityType.LifeModule)
+            if (_eQualityType == QualityType.LifeModule)
             {
                 objWriter.WriteElementString("stage", _stage);
             }
@@ -442,8 +440,8 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objNode.TryGetBoolFieldQuickly("doublecareer", ref _blnDoubleCostCareer);
             objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
-            _objQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
-            _objQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
+            _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
+            _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
             objNode.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
             objNode.TryGetStringFieldQuickly("mutant", ref _strMutant);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -455,7 +453,7 @@ namespace Chummer
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
-            if (_objQualityType == QualityType.LifeModule)
+            if (_eQualityType == QualityType.LifeModule)
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _stage);
             }
@@ -486,21 +484,21 @@ namespace Chummer
                 objWriter.WriteStartElement("quality");
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
                 objWriter.WriteElementString("name_english", Name + strRatingString);
-                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint) + strRatingString + strSourceName);
-                objWriter.WriteElementString("bp", _intBP.ToString(objCulture));
-                string strQualityType = _objQualityType.ToString();
+                objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
+                objWriter.WriteElementString("bp", BP.ToString(objCulture));
+                string strQualityType = Type.ToString();
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
                     XmlNode objNode = XmlManager.Load("qualities.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]");
                     strQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
-                objWriter.WriteElementString("qualitytype_english", _objQualityType.ToString());
-                objWriter.WriteElementString("qualitysource", _objQualitySource.ToString());
+                objWriter.WriteElementString("qualitytype_english", Type.ToString());
+                objWriter.WriteElementString("qualitysource", OriginSource.ToString());
                 objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
                 objWriter.WriteElementString("page", Page(strLanguageToPrint));
                 if (_objCharacter.Options.PrintNotes)
-                    objWriter.WriteElementString("notes", _strNotes);
+                    objWriter.WriteElementString("notes", Notes);
                 objWriter.WriteEndElement();
             }
         }
@@ -608,8 +606,8 @@ namespace Chummer
         /// </summary>
         public QualityType Type
         {
-            get => _objQualityType;
-            set => _objQualityType = value;
+            get => _eQualityType;
+            set => _eQualityType = value;
         }
 
         /// <summary>
@@ -617,8 +615,8 @@ namespace Chummer
         /// </summary>
         public QualitySource OriginSource
         {
-            get => _objQualitySource;
-            set => _objQualitySource = value;
+            get => _eQualitySource;
+            set => _eQualitySource = value;
         }
 
         /// <summary>
@@ -626,7 +624,25 @@ namespace Chummer
         /// </summary>
         public int BP
         {
-            get => CalculatedBP();
+            get
+            {
+                string strValue = _nodDiscounts?["value"]?.InnerText;
+                if (string.IsNullOrEmpty(strValue))
+                    return _intBP;
+                int intReturn = _intBP;
+                if (_nodDiscounts.RequirementsMet(_objCharacter))
+                {
+                    if (Type == QualityType.Positive)
+                    {
+                        intReturn += Convert.ToInt32(strValue);
+                    }
+                    else if (Type == QualityType.Negative)
+                    {
+                        intReturn -= Convert.ToInt32(strValue);
+                    }
+                }
+                return intReturn;
+            }
             set => _intBP = value;
         }
 
@@ -716,7 +732,7 @@ namespace Chummer
         {
             get
             {
-                if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
@@ -739,7 +755,7 @@ namespace Chummer
         {
             get
             {
-                if (_objQualitySource == QualitySource.Metatype || _objQualitySource == QualitySource.MetatypeRemovable)
+                if (_eQualitySource == QualitySource.Metatype || _eQualitySource == QualitySource.MetatypeRemovable)
                     return false;
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
@@ -779,29 +795,6 @@ namespace Chummer
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
-        }
-
-        /// <summary>
-        /// Evaluates whether the Quality qualifies for any discounts/increases to its cost and returns the total cost.
-        /// </summary>
-        /// <returns></returns>
-        private int CalculatedBP()
-        {
-            int intReturn = _intBP;
-            if (_nodDiscounts == null) return intReturn;
-            string strValue = _nodDiscounts?["value"]?.InnerText;
-            if (!string.IsNullOrEmpty(strValue) && Backend.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
-            {
-                if (Type == QualityType.Positive)
-                {
-                    intReturn += Convert.ToInt32(strValue);
-                }
-                else if (Type == QualityType.Negative)
-                {
-                    intReturn -= Convert.ToInt32(strValue);
-                }
-            }
-            return intReturn;
         }
         #endregion
 

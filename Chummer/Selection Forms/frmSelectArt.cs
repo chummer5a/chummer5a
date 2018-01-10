@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -219,7 +220,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
             {
-                if (!chkLimitList.Checked || Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, string.Empty, _strLocalName))
+                if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
                 {
                     string strName = objXmlMetamagic["name"].InnerText;
                     lstArts.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
@@ -239,23 +240,24 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstArt.Text))
+            string strSelectedItem = lstArt.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedItem))
                 return;
 
-            _strSelectedItem = lstArt.SelectedValue.ToString();
+            _strSelectedItem = strSelectedItem;
 
             // Make sure the selected Metamagic or Echo meets its requirements.
             XmlNode objXmlMetamagic;
             if (_objMode == Mode.Art)
-                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + lstArt.SelectedValue + "\"]");
+                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/arts/art[name = \"" + strSelectedItem + "\"]");
             else if (_objMode == Mode.Enchantment)
-                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Enchantments\" and name = \"" + lstArt.SelectedValue + "\"]");
+                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Enchantments\" and name = \"" + strSelectedItem + "\"]");
             else if (_objMode == Mode.Enhancement)
-                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + lstArt.SelectedValue + "\"]");
+                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/enhancements/enhancement[name = \"" + strSelectedItem + "\"]");
             else
-                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + lstArt.SelectedValue + "\"]");
+                objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/spells/spell[category = \"Rituals\" and name = \"" + strSelectedItem + "\"]");
 
-            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, string.Empty, _strLocalName))
+            if (!objXmlMetamagic.RequirementsMet(_objCharacter))
                 return;
 
             DialogResult = DialogResult.OK;

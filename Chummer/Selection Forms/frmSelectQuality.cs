@@ -398,7 +398,7 @@ namespace Chummer
                         continue;
                     }
                 }
-                if (!chkLimitList.Checked || SelectionShared.RequirementsMet(objXmlQuality, false, _objCharacter, IgnoreQuality))
+                if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, IgnoreQuality))
                 {
                     string strName = objXmlQuality["name"].InnerText;
                     lstQuality.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
@@ -418,10 +418,11 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstQualities.Text))
+            string strSelectedQuality = lstQualities.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedQuality))
                 return;
             //Test for whether we're adding a "Special" quality. This should probably be a separate function at some point.
-            switch (lstQualities.SelectedValue.ToString())
+            switch (strSelectedQuality)
             {
                 case "Changeling (Class I SURGE)":
                     _objCharacter.MetageneticLimit = 10;
@@ -436,14 +437,13 @@ namespace Chummer
                     break;
             }
 
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstQualities.SelectedValue + "\"]");
-            if (objNode == null)
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strSelectedQuality + "\"]");
+            
+            if (!objNode.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), IgnoreQuality))
                 return;
-            _strSelectedQuality = objNode["name"]?.InnerText;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
-            if (!SelectionShared.RequirementsMet(objNode, true, _objCharacter, IgnoreQuality, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
-                return;
+            _strSelectedQuality = strSelectedQuality;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
             DialogResult = DialogResult.OK;
         }
 

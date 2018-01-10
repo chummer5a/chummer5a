@@ -7150,7 +7150,7 @@ namespace Chummer
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                    if (!SelectionShared.RequirementsMet(objXmlSelectedQuality, true, CharacterObject))
+                    if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                     {
                         nudQualityLevel_UpdateValue(objSelectedQuality);
                         break;

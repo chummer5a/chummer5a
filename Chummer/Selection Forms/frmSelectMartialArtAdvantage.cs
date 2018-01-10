@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -70,7 +71,7 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
+                if (objXmlAdvantage.RequirementsMet(_objCharacter))
                 {
                     lstAdvantage.Add(new ListItem(strAdvantageName, objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName));
                 }

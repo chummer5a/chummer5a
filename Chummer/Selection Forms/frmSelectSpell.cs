@@ -209,7 +209,7 @@ namespace Chummer
                             return;
                         }
                     }
-                    if (!SelectionShared.RequirementsMet(objXmlSpell, true, _objCharacter, string.Empty, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
+                    if (!objXmlSpell.RequirementsMet(_objCharacter, LanguageManager.GetString("String_DescSpell", GlobalOptions.Language)))
                     {
                         return;
                     }
@@ -428,7 +428,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (!SelectionShared.RequirementsMet(objXmlSpell, false, _objCharacter))
+                    if (!objXmlSpell.RequirementsMet(_objCharacter))
                         continue;
                 }
                 HashSet<string> limit = new HashSet<string>();

@@ -27,6 +27,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
 using System.Text;
+using Chummer.Backend;
 
 namespace Chummer
 {
@@ -1057,7 +1058,7 @@ namespace Chummer
                 }
                 if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter, intMinRating, objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
                     continue;
-                if (ParentVehicle == null && !Backend.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter))
+                if (ParentVehicle == null && !objXmlCyberware.RequirementsMet(_objCharacter))
                     continue;
                 
                 lstCyberwares.Add(new ListItem(objXmlCyberware["id"]?.InnerText, objXmlCyberware["translate"]?.InnerText ?? objXmlCyberware["name"]?.InnerText));
@@ -1146,7 +1147,7 @@ namespace Chummer
                     return;
                 }
             }
-            if (ParentVehicle == null && !Backend.SelectionShared.RequirementsMet(objCyberwareNode, true, _objCharacter))
+            if (ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", GlobalOptions.Language)))
                 return;
 
             string strForceGrade = objCyberwareNode["forcegrade"]?.InnerText;

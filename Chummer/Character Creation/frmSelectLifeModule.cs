@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -81,7 +82,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || Backend.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
+                if (!chkLimitList.Checked || xmlNode.RequirementsMet(_objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode
