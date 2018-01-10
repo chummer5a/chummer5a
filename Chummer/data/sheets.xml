@@ -554,4 +554,111 @@
       <filename>Vehicles</filename>
     </sheet>
   </sheets>
+  <sheets lang="pt-br">
+    <sheet>
+      <id>8b16e238-18c6-40e0-85ca-a3a6c1854bd9</id>
+      <name>Calendário</name>
+      <filename>Calendar</filename>
+    </sheet>
+    <sheet>
+      <id>88ffe3f4-f216-44bf-85f5-4dd27034599b</id>
+      <name>Com-Links</name>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>57ba779b-c7aa-4699-bd3b-4d0cbc1f8bd7</id>
+      <name>Contatos</name>
+      <filename>Contacts</filename>
+    </sheet>
+    <sheet>
+      <id>4feb3343-b759-47a6-a4e4-2fe308d30afa</id>
+      <name>Dossiê</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>ee596d7a-300b-4cd6-8fb0-2d180b8a1cd0</id>
+      <name>Despesas</name>
+      <filename>Expenses</filename>
+    </sheet>
+    <sheet>
+      <id>1ce3583c-d6b4-4ad4-b64c-67361ec53997</id>
+      <name>Blocos Chiques</name>
+      <filename>Fancy Blocks</filename>
+    </sheet>
+    <sheet>
+      <id>32949e5b-49ec-4231-8954-30366c5364a1</id>
+      <name>Somente Texto Formatado</name>
+      <filename>Formatted Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>0a04bce3-5d9f-4aee-a54d-4514eaf86ee0</id>
+      <name>Sumário do Mestre</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+    <sheet>
+      <id>682a0fff-e064-4208-91fd-e386acf8fdda</id>
+      <name>Observações</name>
+      <filename>Notes</filename>
+    </sheet>
+    <sheet>
+      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <name>Shadowrun 5 (Principal)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
+      <name>Shadowrun 5 (Perícias Agrupadas por Nome)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+    </sheet>
+    <sheet>
+      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <name>Shadowrun 5 (Perícias Agrupadas por Nível)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <name>Shadowrun 5 (Nível > 0)</name>
+      <filename>Shadowrun 5 (Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
+      <name>Shadowrun 5 (Principal, Agrupado por Categoria)</name>
+      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>3fd617db-e7a2-4623-85d4-d4299f10b8b4</id>
+      <name>Shadowrun 5 (Perícias Agrupadas por Nome e Categoria)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+    </sheet>
+    <sheet>
+      <id>65060a99-e5e2-4b3f-b720-96094fa3f11a</id>
+      <name>Shadowrun 5 (Perícias Agrupadas por Nível e Categoria)</name>
+      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
+    </sheet>
+    <sheet>
+      <id>069371fc-2d43-4b2c-811c-473a3496956b</id>
+      <name>Shadowrun 5 (Nível > 0, Agrupadas por Categoria)</name>
+      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>d5a78a6b-53d2-4671-896d-6c0cd3976858</id>
+      <name>Shadowrun 5 (Agrupadas por Categoria)</name>
+      <filename>Shadowrun 5 (Grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
+      <name>Somente Texto</name>
+      <filename>Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>995ad8c4-2c0b-4aaa-876e-5d3ae962ee84</id>
+      <name>Veículos</name>
+      <filename>Vehicles</filename>
+    </sheet>
+</sheets>
 </chummer>
