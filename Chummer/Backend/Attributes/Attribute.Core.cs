@@ -263,10 +263,10 @@ namespace Chummer.Backend.Attributes
         public int TotalBase
         {
             //TODO: Ugly ugly ugly, may cause UI confusion.
-            get { return Math.Max(Base + FreeBase + RawMinimum, TotalMinimum); }
+            get { return Math.Max(Base + FreeBase + TotalMinimum, TotalMinimum); }
             set
             {
-                Base = Math.Max(value - FreeBase - RawMinimum, 0);
+                Base = Math.Max(value - FreeBase - TotalMinimum, 0);
             }
         }
 
@@ -754,7 +754,7 @@ namespace Chummer.Backend.Attributes
                 int intReturn = RawMinimum;
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG")
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || _objCharacter.EssencePenalty != 0 && (Abbrev == "MAG" || Abbrev == "RES" || Abbrev == "DEP"))
                         intReturn = 0;
                     else
                         intReturn = 1;
