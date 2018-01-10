@@ -46,11 +46,11 @@ namespace Chummer.Backend
         /// <returns></returns>
         public static bool RequirementsMet(this XmlNode xmlNode, Character objCharacter, string strLocalName = "", string strIgnoreQuality = "", string strSourceName = "", string strLocation = "", bool blnIgnoreLimit = false)
         {
+            if (xmlNode == null || objCharacter == null)
+                return false;
             // Ignore the rules.
             if (objCharacter.IgnoreRules)
                 return true;
-            if (xmlNode == null || objCharacter == null)
-                return false;
             bool blnShowMessage = !string.IsNullOrEmpty(strLocalName);
             // See if the character is in career mode but would want to add a chargen-only Quality
             if (objCharacter.Created)
