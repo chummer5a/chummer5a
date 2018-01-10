@@ -788,7 +788,8 @@ namespace Chummer
         private int CalculatedBP()
         {
             int intReturn = _intBP;
-            string strValue = _nodDiscounts["value"]?.InnerText;
+            if (_nodDiscounts == null) return intReturn;
+            string strValue = _nodDiscounts?["value"]?.InnerText;
             if (!string.IsNullOrEmpty(strValue) && Backend.SelectionShared.RequirementsMet(_nodDiscounts, false, _objCharacter))
             {
                 if (Type == QualityType.Positive)

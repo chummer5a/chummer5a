@@ -328,13 +328,7 @@ namespace Chummer
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                return DisplayNameMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplayName => DisplayNameMethod(GlobalOptions.Language);
 
         /// <summary>
         /// The translated name of the Power (Name + any Extra text).
@@ -362,10 +356,7 @@ namespace Chummer
                 decimal decReturn = Convert.ToDecimal(_strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
-            set
-            {
-                _strPointsPerLevel = value.ToString(GlobalOptions.InvariantCultureInfo);
-            }
+            set => _strPointsPerLevel = value.ToString(GlobalOptions.InvariantCultureInfo);
         }
 
         /// <summary>
@@ -374,8 +365,8 @@ namespace Chummer
         /// </summary>
         public decimal ExtraPointCost
         {
-            get { return _decExtraPointCost; }
-            set { _decExtraPointCost = value; }
+            get => _decExtraPointCost;
+            set => _decExtraPointCost = value;
         }
 
         /// <summary>
@@ -388,10 +379,7 @@ namespace Chummer
                 decimal decReturn = Convert.ToDecimal(_strAdeptWayDiscount, GlobalOptions.InvariantCultureInfo);
                 return decReturn;
             }
-            set
-            {
-                _strAdeptWayDiscount = value.ToString(GlobalOptions.InvariantCultureInfo);
-            }
+            set => _strAdeptWayDiscount = value.ToString(GlobalOptions.InvariantCultureInfo);
         }
 
         /// <summary>
@@ -414,7 +402,7 @@ namespace Chummer
         /// </summary>
         public int TotalRating
         {
-            get { return Math.Min(Rating + FreeLevels, TotalMaximumLevels); }
+            get => Math.Min(Rating + FreeLevels, TotalMaximumLevels);
             set
             {
                 Rating = Math.Max(value - FreeLevels, 0);
@@ -497,7 +485,7 @@ namespace Chummer
                 else
                     return PowerPoints.ToString("G29", GlobalOptions.CultureInfo);
             }
-            set { _displayPoints = value; }
+            set => _displayPoints = value;
         }
 
         /// <summary>
@@ -505,14 +493,8 @@ namespace Chummer
         /// </summary>
         public string BonusSource
         {
-            get
-            {
-                return _strBonusSource;
-            }
-            set
-            {
-                _strBonusSource = value;
-            }
+            get => _strBonusSource;
+            set => _strBonusSource = value;
         }
 
         /// <summary>
@@ -533,14 +515,8 @@ namespace Chummer
         /// </summary>
         public string Source
         {
-            get
-            {
-                return _strSource;
-            }
-            set
-            {
-                _strSource = value;
-            }
+            get => _strSource;
+            set => _strSource = value;
         }
 
         /// <summary>
@@ -570,14 +546,8 @@ namespace Chummer
         /// </summary>
         public int MaxLevels
         {
-            get
-            {
-                return _intMaxLevel;
-            }
-            set
-            {
-                _intMaxLevel = value;
-            }
+            get => _intMaxLevel;
+            set => _intMaxLevel = value;
         }
 
         /// <summary>
@@ -585,13 +555,12 @@ namespace Chummer
         /// </summary>
         public bool DiscountedAdeptWay
         {
-            get
-            {
-                return _blnDiscountedAdeptWay;
-            }
+            get => _blnDiscountedAdeptWay;
             set
             {
+                if (value == _blnDiscountedAdeptWay) return;
                 _blnDiscountedAdeptWay = value;
+                OnPropertyChanged();
             }
         }
 
@@ -600,14 +569,8 @@ namespace Chummer
         /// </summary>
         public bool DiscountedGeas
         {
-            get
-            {
-                return _blnDiscountedGeas;
-            }
-            set
-            {
-                _blnDiscountedGeas = value;
-            }
+            get => _blnDiscountedGeas;
+            set => _blnDiscountedGeas = value;
         }
 
         /// <summary>
@@ -615,14 +578,8 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get
-            {
-                return _strNotes;
-            }
-            set
-            {
-                _strNotes = value;
-            }
+            get => _strNotes;
+            set => _strNotes = value;
         }
 
         /// <summary>
@@ -630,26 +587,14 @@ namespace Chummer
         /// </summary>
         public string Action
         {
-            get
-            {
-                return _strAction;
-            }
-            set
-            {
-                _strAction = value;
-            }
+            get => _strAction;
+            set => _strAction = value;
         }
 
         /// <summary>
         /// Translated Action.
         /// </summary>
-        public string DisplayAction
-        {
-            get
-            {
-                return DisplayActionMethod(GlobalOptions.Language);
-            }
-        }
+        public string DisplayAction => DisplayActionMethod(GlobalOptions.Language);
 
         /// <summary>
         /// Translated Action.
