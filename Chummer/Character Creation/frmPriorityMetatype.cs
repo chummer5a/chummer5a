@@ -1026,6 +1026,8 @@ namespace Chummer
                 return;
             }
 
+            Cursor = Cursors.WaitCursor;
+
             bool boolHalveAttributePriorityPoints = false;
 
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -1333,6 +1335,7 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            Cursor = Cursors.Default;
         }
 
         private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type)

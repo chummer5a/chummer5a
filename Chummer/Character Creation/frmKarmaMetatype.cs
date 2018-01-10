@@ -461,6 +461,7 @@ namespace Chummer
         /// </summary>
         private void MetatypeSelected()
         {
+            Cursor = Cursors.WaitCursor;
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
@@ -830,7 +831,7 @@ namespace Chummer
             {
                 MessageBox.Show(LanguageManager.GetString("Message_Metatype_SelectMetatype", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
+            Cursor = Cursors.Default;
         }
 
         /// <summary>

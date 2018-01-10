@@ -113,39 +113,64 @@ namespace Chummer.UI.Attributes
         private void nudBase_ValueChanged(object sender, EventArgs e)
         {
             decimal d = ((NumericUpDownEx) sender).Value;
-            if (!ShowAttributeRule(d + nudKarma.Value))
+            if (d != _oldBase)
             {
-                nudBase.Value = _oldBase;
-                return;
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudKarma.Value) + attribute.FreeBase + attribute.RawMinimum + attribute.AttributeValueModifiers, attribute.TotalMaximum), attribute.TotalMinimum)))
+                {
+                    nudBase.Value = _oldBase;
+                    return;
+                }
+                ValueChanged?.Invoke(this, e);
+                _oldBase = d;
             }
-            ValueChanged?.Invoke(this, e);
-            _oldBase = d;
         }
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             decimal d = ((NumericUpDownEx)sender).Value;
-            if (!ShowAttributeRule(d + nudBase.Value))
+            if (d != _oldKarma)
             {
-                nudKarma.Value = _oldKarma;
-                return;
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudBase.Value) + attribute.FreeBase + attribute.RawMinimum + attribute.AttributeValueModifiers, attribute.TotalMaximum), attribute.TotalMinimum)))
+                {
+                    nudKarma.Value = _oldKarma;
+                    return;
+                }
+                ValueChanged?.Invoke(this, e);
+                _oldKarma = d;
             }
-            ValueChanged?.Invoke(this, e);
-            _oldKarma = d;
         }
 
         /// <summary>
         /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
         /// </summary>
-        private bool ShowAttributeRule(decimal value)
+        private bool ShowAttributeRule(int intValue)
         {
-            if (_objCharacter.IgnoreRules || value < attribute.TotalMaximum || attribute.TotalMaximum == 0) return true;
-            bool any = _objCharacter.AttributeSection.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
-            if (!any || attribute.AtMetatypeMaximum || _objCharacter.AttributeSection.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
-            MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
-                LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            return false;
+            if (!_objCharacter.IgnoreRules)
+            {
+                int intTotalMaximum = attribute.TotalMaximum;
+                if (intValue >= intTotalMaximum && intTotalMaximum != 0)
+                {
+                    bool blnAttributeListContainsThisAbbrev = false;
+                    bool blnAnyOtherAttributeAtMax = false;
+                    foreach (CharacterAttrib objLoopAttrib in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        if (objLoopAttrib.Abbrev == AttributeName)
+                            blnAttributeListContainsThisAbbrev = true;
+                        else if (objLoopAttrib.AtMetatypeMaximum)
+                            blnAnyOtherAttributeAtMax = true;
+                        if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                            break;
+                    }
+                    if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public string AttributeName

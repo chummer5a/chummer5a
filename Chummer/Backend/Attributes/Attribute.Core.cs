@@ -1196,7 +1196,7 @@ namespace Chummer.Backend.Attributes
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
         public int KarmaMaximum => TotalMaximum - TotalBase;
-        public int PriorityMaximum => TotalMaximum - Karma;
+        public int PriorityMaximum => TotalMaximum - Math.Max(Karma + RawMinimum, TotalMinimum);
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
