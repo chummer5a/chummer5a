@@ -42061,22 +42061,22 @@
       <gameplayoption>
         <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
         <name>Standard</name>
-        <translate>Standard</translate>
+        <translate>Padrão</translate>
       </gameplayoption>
       <gameplayoption>
         <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
         <name>Prime Runner</name>
-        <translate>Prime Runner</translate>
+        <translate>Runner Principal</translate>
       </gameplayoption>
       <gameplayoption>
         <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
         <name>Street Level</name>
-        <translate>Street Level</translate>
+        <translate>Nível de Rua</translate>
       </gameplayoption>
       <gameplayoption>
         <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
         <name>Street Scum</name>
-        <translate>Street Scum</translate>
+        <translate>Escória de Rua</translate>
       </gameplayoption>
     </gameplayoptions>
   </chummer>
