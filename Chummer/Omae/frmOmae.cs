@@ -115,14 +115,14 @@ namespace Chummer
                 cboFilterQuality3.Items.Add(objNode["name"].InnerText);
             }
         }
-
+        
         /// <summary>
         /// Remove unsafe path characters from the file name.
         /// </summary>
         /// <param name="strValue">File name to parse.</param>
         private static string FileSafe(string strValue)
         {
-            return strValue.FastEscape(" _/:*?<>|\\".ToCharArray());
+            return strValue.FastEscape(' ', '_', '/', ':', '*', '?', '<', '>', '|', '\\');
         }
 
         private void MoveControls()

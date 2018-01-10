@@ -22,11 +22,14 @@ using System.Diagnostics;
  using System.Text;
  using System.Windows.Forms;
  using System.Drawing;
+ using System.IO;
  using System.Linq;
  using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
+ using iTextSharp.text.pdf;
+ using iTextSharp.text.pdf.parser;
 
 namespace Chummer
 {
@@ -135,7 +138,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles)
         {
-            return FindVehicleMod(strGuid, lstVehicles, out Vehicle objFoundVehicle);
+            return FindVehicleMod(strGuid, lstVehicles, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount);
         }
 
         /// <summary>
@@ -144,7 +147,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the VehicleMod to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="objFoundVehicle">Vehicle that the VehicleMod was found in.</param>
-        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle)
+        public static VehicleMod FindVehicleMod(string strGuid, IEnumerable<Vehicle> lstVehicles, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && strGuid != Guid.Empty.ToString())
             {
@@ -155,13 +158,27 @@ namespace Chummer
                         if (objMod.InternalId == strGuid)
                         {
                             objFoundVehicle = objVehicle;
+                            objFoundWeaponMount = null;
                             return objMod;
+                        }
+                    }
+                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            if (objMod.InternalId == strGuid)
+                            {
+                                objFoundVehicle = objVehicle;
+                                objFoundWeaponMount = objMount;
+                                return objMod;
+                            }
                         }
                     }
                 }
             }
 
             objFoundVehicle = null;
+            objFoundWeaponMount = null;
             return null;
         }
 
@@ -209,15 +226,27 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    foreach (WeaponMount objMod in objVehicle.WeaponMounts)
+                    foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                     {
-                        objReturn = objMod.Weapons.DeepFindById(strGuid);
+                        objReturn = objWeaponMount.Weapons.DeepFindById(strGuid);
                         if (objReturn != null)
                         {
                             objFoundVehicle = objVehicle;
-                            objFoundWeaponMount = objMod;
+                            objFoundWeaponMount = objWeaponMount;
                             objFoundVehicleMod = null;
                             return objReturn;
+                        }
+
+                        foreach (VehicleMod objMod in objWeaponMount.Mods)
+                        {
+                            objReturn = objMod.Weapons.DeepFindById(strGuid);
+                            if (objReturn != null)
+                            {
+                                objFoundVehicle = objVehicle;
+                                objFoundVehicleMod = objMod;
+                                objFoundWeaponMount = objWeaponMount;
+                                return objReturn;
+                            }
                         }
                     }
 
@@ -1809,6 +1838,9 @@ namespace Chummer
                 return;
 
             Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath))
+                return;
             intPage += objBookInfo.Offset;
 
             string strParams = strPDFParamaters;
@@ -1821,6 +1853,124 @@ namespace Chummer
                 Arguments = strParams
             };
             Process.Start(objProgress);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <returns></returns>
+        public static string GetTextFromPDF(string strSource, string strText)
+        {
+            if (string.IsNullOrEmpty(strText))
+                return strText;
+
+            string[] strTemp = strSource.Split(' ');
+            if (strTemp.Length < 2)
+                return string.Empty;
+            if (!int.TryParse(strTemp[1], out int intPage))
+                return string.Empty;
+
+            // Make sure the page is actually a number that we can use as well as being 1 or higher.
+            if (intPage < 1)
+                return string.Empty;
+
+            // Revert the sourcebook code to the one from the XML file if necessary.
+            string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
+
+            // Retrieve the sourcebook information including page offset and PDF application name.
+            SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
+            // If the sourcebook was not found, we can't open anything.
+            if (objBookInfo == null)
+                return string.Empty;
+            
+            Uri uriPath = new Uri(objBookInfo.Path);
+            // Check if the file actually exists.
+            if (!File.Exists(uriPath.LocalPath))
+                return string.Empty;
+            intPage += objBookInfo.Offset;
+            
+            List<string> lstTextsToSearch = new List<string>();
+            foreach (string strLoopText in strText.Split(':'))
+            {
+                string strLoopTextTrimmed = strLoopText.Trim();
+                lstTextsToSearch.Add(strLoopTextTrimmed.ToUpperInvariant());
+                lstTextsToSearch.Add($"{strLoopTextTrimmed}:");
+                string strTextWithoutNumerals = strLoopTextTrimmed.TrimEnd(" I", " II", " III", " IV");
+                if (strTextWithoutNumerals != strLoopTextTrimmed)
+                {
+                    lstTextsToSearch.Add(strTextWithoutNumerals.ToUpperInvariant());
+                    lstTextsToSearch.Add($"{strTextWithoutNumerals}:");
+                }
+            }
+
+            StringBuilder strbldReturn = new StringBuilder();
+            PdfReader reader = new PdfReader(uriPath.LocalPath);
+            ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
+            // Loop through each page, starting at the listed page + offset.
+            for (; intPage <= reader.NumberOfPages; ++intPage)
+            {
+                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, its);
+
+                strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText)));
+
+                // Sometimes names are split across multiple lines. This shimmer removes the newline characters between words that are written in all caps.
+                for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = strPageText.IndexOf('\n', intNewlineIndex + 1))
+                {
+                    string strFirstHalf = strPageText.Substring(0, intNewlineIndex);
+                    int intLastWhitespace = Math.Max(strFirstHalf.LastIndexOf(' '), strFirstHalf.LastIndexOf('\n'));
+                    string strFirstHalfLastWord = strFirstHalf.Substring(intLastWhitespace + 1);
+                    if (strFirstHalfLastWord == strFirstHalfLastWord.ToUpperInvariant())
+                    {
+                        string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1) : string.Empty;
+                        intLastWhitespace = Math.Max(strSecondHalf.IndexOf(' '), strSecondHalf.IndexOf('\n'));
+                        string strSecondHalfFirstWord = intLastWhitespace == -1 ? strSecondHalf : strSecondHalf.Substring(0, intLastWhitespace);
+                        if (strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
+                        {
+                            strPageText = strFirstHalf + ' ' + strSecondHalf;
+                        }
+                    }
+                }
+                
+                // If our string builder is empty, look for our text to know where to start, otherwise we're continuing our textblock from a previous page
+                if (strbldReturn.Length == 0)
+                {
+                    int intTextLocation = -1;
+                    foreach (string strNeedle in lstTextsToSearch)
+                    {
+                        intTextLocation = strPageText.IndexOf(strNeedle, StringComparison.Ordinal);
+                        if (intTextLocation != -1)
+                            break;
+                    }
+                    // Listed start page didn't contain the text we're looking for and we're not looking at a second page. Fail out (relatively) early.
+                    if (intTextLocation == -1)
+                    {
+                        goto EndPdfReading;
+                    }
+                    // Found the relevant string, so trim everything before it. 
+                    strPageText = strPageText.Substring(intTextLocation).TrimStart(lstTextsToSearch.ToArray());
+                }
+
+                string[] astrOut = strPageText.Split('\n');
+                string strStack = string.Empty;
+                for (int i = 0; i <= astrOut.Length; i++)
+                {
+                    string strLoop = astrOut[i];
+                    // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
+                    if (strLoop == strLoop.ToUpperInvariant())
+                    {
+                        goto EndPdfReading;
+                    }
+
+                    // Add to the existing string. TODO: Something to preserve newlines that we actually want?
+                    strbldReturn.Append(strLoop);
+                    strbldReturn.Append(' ');
+                }
+            }
+            EndPdfReading:
+            reader.Close();
+            return strbldReturn.ToString().NormalizeWhiteSpace();
         }
         #endregion
     }

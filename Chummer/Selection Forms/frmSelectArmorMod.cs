@@ -281,7 +281,7 @@ namespace Chummer
             string strAvailExpr = string.Empty;
             strAvailExpr = objXmlMod["avail"].InnerText;
             
-            if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+            if (strAvailExpr.EndsWith('F', 'R'))
             {
                 strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                 if (strAvail == "R")
@@ -303,39 +303,43 @@ namespace Chummer
             // Cost.
             if (chkFreeItem.Checked)
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            else if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
-            {
-                decimal decMin = 0;
-                decimal decMax = decimal.MaxValue;
-                string strCost = objXmlMod["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
-                if (strCost.Contains('-'))
-                {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                }
-                else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                if (decMax == decimal.MaxValue)
-                {
-                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
-                }
-                else
-                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            }
             else
             {
-                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
+                string strCostElement = objXmlMod["cost"]?.InnerText ?? string.Empty;
+                if (strCostElement.StartsWith("Variable("))
+                {
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
+                    if (strCost.Contains('-'))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                // Apply any markup.
-                decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
-                decCost *= 1 + (nudMarkup.Value / 100.0m);
+                    if (decMax == decimal.MaxValue)
+                    {
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                    }
+                    else
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                }
+                else
+                {
+                    string strCost = strCostElement.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
 
-                lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    // Apply any markup.
+                    decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                    lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
+                }
             }
 
             // Capacity.
@@ -349,9 +353,9 @@ namespace Chummer
             }
             else
             {
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 

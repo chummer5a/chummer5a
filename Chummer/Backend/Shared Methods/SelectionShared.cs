@@ -868,9 +868,10 @@ namespace Chummer.Backend
                     }
                 case "spelldescriptor":
                     {
+                        string strCount = node["count"].InnerText;
                         // Check for a specified amount of a particular Spell Descriptor.
-                        name = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + node["count"].InnerText;
-                        return character.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(node["count"].InnerText);
+                        name = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + strCount;
+                        return character.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(strCount);
                     }
                 case "streetcredvsnotoriety":
                     {
@@ -901,8 +902,7 @@ namespace Chummer.Backend
             name = strNodeInnerText;
             return false;
         }
-
-        private static readonly char[] chrAvailChars = { 'F', 'R' };
+        
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
@@ -922,7 +922,7 @@ namespace Chummer.Backend
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objXmlGear["avail"]?.InnerText ?? string.Empty;
-            if (strAvailExpr.StartsWith("FixedValues"))
+            if (strAvailExpr.StartsWith("FixedValues("))
             {
                 string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                 strAvailExpr = strValues[Math.Max(Math.Min(intRating - 1, strValues.Length - 1), 0)];
@@ -933,7 +933,7 @@ namespace Chummer.Backend
             if (strAvailExpr[0] == '+')
                 return true;
 
-            strAvailExpr = strAvailExpr.TrimEnd(chrAvailChars);
+            strAvailExpr = strAvailExpr.TrimEnd('F', 'R');
             int intAvail = intAvailModifier;
             try
             {
@@ -945,6 +945,7 @@ namespace Chummer.Backend
             return intAvail <= objCharacter.MaximumAvailability;
         }
 
+        private static readonly char[] lstBracketChars = { '[', ']' };
         public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
         {
             // Cost.
@@ -981,10 +982,10 @@ namespace Chummer.Backend
                     }
                 }
 
-                if (objCostNode.InnerText.StartsWith("FixedValues"))
+                if (objCostNode.InnerText.StartsWith("FixedValues("))
                 {
                     string[] strValues = objCostNode.InnerText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    decCost = Convert.ToDecimal(strValues[0].Trim("[]".ToCharArray()), GlobalOptions.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal(strValues[0].Trim(lstBracketChars), GlobalOptions.InvariantCultureInfo);
                 }
                 else if (objCostNode.InnerText.StartsWith("Variable"))
                 {

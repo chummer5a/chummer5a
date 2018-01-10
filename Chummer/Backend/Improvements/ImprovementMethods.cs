@@ -223,8 +223,6 @@ namespace Chummer
                     return objImprovementAdder.trustfund;
                 case "MADEMAN":
                     return objImprovementAdder.mademan;
-                case "LIGHTNINGREFLEXES":
-                    return objImprovementAdder.lightningreflexes;
                 case "FAME":
                     return objImprovementAdder.fame;
                 case "BORNRICH":

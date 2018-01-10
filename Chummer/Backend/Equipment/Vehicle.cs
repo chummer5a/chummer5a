@@ -178,11 +178,11 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strCost))
             {
                 // Check for a Variable Cost.
-                if (_strCost.StartsWith("Variable"))
+                if (_strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -710,10 +710,7 @@ namespace Chummer.Backend.Equipment
                 XmlNodeList nodChildren = objNode.SelectNodes("weaponmounts/weaponmount");
                 foreach (XmlNode nodChild in nodChildren)
                 {
-                    WeaponMount wm = new WeaponMount(_objCharacter, this)
-                    {
-                        Parent = this
-                    };
+                    WeaponMount wm = new WeaponMount(_objCharacter, this);
                     wm.Load(nodChild, this, blnCopy);
                     WeaponMounts.Add(wm);
                 }

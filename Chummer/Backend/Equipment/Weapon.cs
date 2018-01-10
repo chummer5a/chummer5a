@@ -148,11 +148,11 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strCostElement))
             {
                 // Check for a Variable Cost.
-                if (strCostElement.StartsWith("Variable"))
+                if (strCostElement.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = strCostElement.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -1454,7 +1454,7 @@ namespace Chummer.Backend.Equipment
 
             return strReturn;
         }
-
+        
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
@@ -1562,20 +1562,21 @@ namespace Chummer.Backend.Equipment
             }
 
             // Evaluate the min expression if there is one.
-            if (strDamage.Contains("min") && !strDamage.Contains("mini") && !strDamage.Contains("mine"))
+            if (strDamage.Contains("min("))
             {
                 string strMin = string.Empty;
-                int intStart = strDamage.IndexOf("min");
+                int intStart = strDamage.IndexOf("min(");
                 int intEnd = strDamage.IndexOf(')', intStart);
                 strMin = strDamage.Substring(intStart, intEnd - intStart + 1);
+                
+                string[] strValue = strMin.TrimStart("min(", true).TrimEnd(')').Split(',');
+                int intMinValue = Convert.ToInt32(strValue[0]);
+                for (int i = 1; i < strValue.Length; ++i)
+                {
+                    intMinValue = Math.Min(intMinValue,Convert.ToInt32(strValue[i]));
+                }
 
-                string strExpression = strMin;
-                strExpression = strExpression.Replace("min", string.Empty).FastEscape("()".ToCharArray());
-
-                string[] strValue = strExpression.Split(',');
-                strExpression = Math.Min(Convert.ToInt32(strValue[0]), Convert.ToInt32(strValue[1])).ToString();
-
-                strDamage = strDamage.Replace(strMin, strExpression);
+                strDamage = strDamage.Replace(strMin, intMinValue.ToString());
             }
 
             // Place the Damage Type (P or S) into a string and remove it from the expression.
@@ -2433,6 +2434,7 @@ namespace Chummer.Backend.Equipment
                 return intAP.ToString();
         }
 
+        private static readonly char[] lstParenthesesChars = "()".ToCharArray();
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
@@ -2480,7 +2482,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 intRCBase = Convert.ToInt32(strRCBase);
-                intRCFull = Convert.ToInt32(strRCFull.Trim("()".ToCharArray()));
+                intRCFull = Convert.ToInt32(strRCFull.Trim(lstParenthesesChars));
 
                 if (intRCBase < 0)
                 {
@@ -2843,7 +2845,7 @@ namespace Chummer.Backend.Equipment
                 }
                 string s = Name.ToLower();
                 intAccuracy += _objCharacter.Improvements
-                    .Where(i => i.ImproveType == Improvement.ImprovementType.WeaponAccuracy && (i.ImprovedName == string.Empty || i.ImprovedName == Name || i.ImprovedName.Contains("[contains]") && s.Contains(i.ImprovedName.Replace("[contains]",string.Empty).ToLower())))
+                    .Where(i => i.ImproveType == Improvement.ImprovementType.WeaponAccuracy && (string.IsNullOrEmpty(i.ImprovedName) || i.ImprovedName == Name || i.ImprovedName.Contains("[contains]") && s.Contains(i.ImprovedName.Replace("[contains]",string.Empty).ToLower())))
                     .Sum(objImprovement => objImprovement.Value);
 
                 // Look for Powers that increase accuracy
@@ -3624,7 +3626,7 @@ namespace Chummer.Backend.Equipment
                             intMaxChildAvail = objLoopAvail.Item1;
                         if (objLoopAvail.Item2.EndsWith('F'))
                             strAvail = "F";
-                        else if (objLoopAvail.Item2.EndsWith('R') && strAvail != "F")
+                        else if (strAvail != "F" && objLoopAvail.Item2.EndsWith('R'))
                             strAvail = "R";
                     }
                     strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
@@ -3645,7 +3647,7 @@ namespace Chummer.Backend.Equipment
 
                     if (!objAccessory.IncludedInWeapon)
                     {
-                        if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
+                        if (strAccAvail.StartsWith('+', '-'))
                         {
                             strAccAvail = objAccessory.TotalAvail(GlobalOptions.DefaultLanguage);
                             if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)))

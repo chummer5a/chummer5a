@@ -71,10 +71,11 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(cboXSLT.Text))
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
                 return;
 
-            if (cboXSLT.Text == "Export JSON")
+            if (strXSLT == "Export JSON")
             {
                 ExportJson();
             }
@@ -86,15 +87,16 @@ namespace Chummer
 
         private void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboXSLT.Text == string.Empty)
+            string strXSLT = cboXSLT.Text;
+            if (string.IsNullOrEmpty(strXSLT))
                 return;
 
-            if (_dictCache.TryGetValue(cboXSLT.Text, out string strBoxText))
+            if (_dictCache.TryGetValue(strXSLT, out string strBoxText))
             {
                 rtbText.Text = strBoxText;
             }
 
-            if (cboXSLT.Text == "Export JSON")
+            if (strXSLT == "Export JSON")
             {
                 GenerateJson();
             }

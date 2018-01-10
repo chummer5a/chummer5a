@@ -31,6 +31,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private readonly bool _blnUseCurrentValues = false;
+        private readonly string _strDefaultOption = "Standard";
         int intQualityLimits = 0;
         decimal decNuyenBP = 0;
 
@@ -67,7 +68,6 @@ namespace Chummer
             nudMaxAvail.Value = _objOptions.Availability;
 
             // Populate the Gameplay Options list.
-            string strDefault = string.Empty;
             XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
             XmlNodeList objXmlGameplayOptionList = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption");
 
@@ -76,7 +76,7 @@ namespace Chummer
             {
                 string strName = objXmlGameplayOption["name"].InnerText;
                 if (objXmlGameplayOption["default"]?.InnerText == "yes")
-                    strDefault = strName;
+                    _strDefaultOption = strName;
                 lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
             }
 
@@ -84,7 +84,7 @@ namespace Chummer
             cboGamePlay.ValueMember = "Value";
             cboGamePlay.DisplayMember = "Name";
             cboGamePlay.DataSource = lstGameplayOptions;
-            cboGamePlay.SelectedValue = strDefault;
+            cboGamePlay.SelectedValue = _strDefaultOption;
             cboGamePlay.EndUpdate();
 
             toolTip1.SetToolTip(chkIgnoreRules, LanguageManager.GetString("Tip_SelectKarma_IgnoreRules", GlobalOptions.Language));
@@ -92,9 +92,11 @@ namespace Chummer
             if (blnUseCurrentValues)
             {
                 cboGamePlay.SelectedValue = _objCharacter.GameplayOption;
+                if (cboGamePlay.SelectedIndex == -1)
+                    cboGamePlay.SelectedValue = _strDefaultOption;
 
                 cboBuildMethod.Enabled = false;
-                cboBuildMethod.SelectedValue = Enum.GetName(Type.GetType(nameof(CharacterBuildMethod)), _objCharacter.BuildMethod);
+                cboBuildMethod.SelectedValue = _objCharacter.BuildMethod.ToString();
 
                 nudKarma.Value = objCharacter.BuildKarma;
                 nudMaxNuyen.Value = decNuyenBP = _objCharacter.NuyenMaximumBP;
@@ -134,11 +136,20 @@ namespace Chummer
                     _objCharacter.BuildMethod = CharacterBuildMethod.LifeModule;
                     break;
             }
-            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-            XmlNodeList lstBannedGradeNodes = objXmlDocumentGameplayOptions.SelectNodes("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]/bannedwaregrades/grade");
-            _objCharacter.bannedwaregrades.Clear();
-            foreach (XmlNode xmlNode in lstBannedGradeNodes)
-                _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
+
+            XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
+            if (xmlGameplayOption != null)
+            {
+                _objCharacter.bannedwaregrades.Clear();
+                foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                    _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
+
+                if (!_objCharacter.Options.FreeContactsMultiplierEnabled)
+                    _objCharacter.ContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
+                _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
+                _objCharacter.MaxNuyen = Convert.ToInt32(xmlGameplayOption["maxnuyen"].InnerText);
+            }
+
             _objCharacter.BuildPoints = 0;
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
@@ -156,53 +167,43 @@ namespace Chummer
 
         private void cboBuildMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboBuildMethod.SelectedValue == null)
+            nudKarma.Visible = false;
+            nudMaxNuyen.Visible = false;
+            nudSumtoTen.Visible = false;
+            lblStartingKarma.Visible = false;
+            lblSumToX.Visible = false;
+            lblMaxNuyen.Visible = false;
+            lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
+
+            string strSelectedBuildMethod = cboBuildMethod.SelectedValue?.ToString();
+            switch (strSelectedBuildMethod)
             {
-                lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                nudKarma.Visible = false;
-            }
-            else
-            {
-                if (cboBuildMethod.SelectedValue.ToString() == "Karma")
-                {
+                case "Karma":
                     if (_objOptions.BuildMethod == "Karma")
-                    {
                         nudKarma.Value = _objOptions.BuildPoints;
-                    }
                     else
-                    {
                         nudKarma.Value = 800;
-                    }
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language).Replace("{0}", nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    nudMaxNuyen.Visible = true;
+                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
-                    nudSumtoTen.Visible = false;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "Priority")
-                {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                    nudKarma.Visible = false;
-                    nudMaxNuyen.Visible = false;
-                    nudSumtoTen.Visible = false;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "SumtoTen")
-                {
-                    lblDescription.Text = LanguageManager.GetString("String_SelectBP_PrioritySummary", GlobalOptions.Language);
-                    nudKarma.Visible = false;
-                    nudMaxNuyen.Visible = false;
-                    nudSumtoTen.Visible = true;
-                }
-                else if (cboBuildMethod.SelectedValue.ToString() == "LifeModule")
-                {
+                    nudMaxNuyen.Visible = true;
+                    lblStartingKarma.Visible = true;
+                    lblMaxNuyen.Visible = true;
+                    break;
+                case "LifeModule":
                     nudKarma.Value = 750;
                     lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
-                    nudSumtoTen.Visible = false;
-                }
-                lblStartingKarma.Visible = nudKarma.Visible;
-                lblSumToX.Visible = nudSumtoTen.Visible;
-                lblMaxNuyen.Visible = nudMaxNuyen.Visible;
+                    lblStartingKarma.Visible = true;
+                    lblMaxNuyen.Visible = true;
+                    break;
+                case "SumtoTen":
+                    nudSumtoTen.Visible = true;
+                    lblSumToX.Visible = true;
+                    break;
+                case "Priority":
+                default:
+                    break;
             }
         }
 
@@ -211,16 +212,19 @@ namespace Chummer
             Height = cmdOK.Bottom + 40;
             cboBuildMethod_SelectedIndexChanged(this, e);
         }
-        #endregion
 
         private void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Load the Priority information.
             XmlDocument objXmlDocumentGameplayOption = XmlManager.Load("gameplayoptions.xml");
-            XmlNode objXmlGameplayOption = objXmlDocumentGameplayOption.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
-            nudMaxAvail.Value = Convert.ToInt32(objXmlGameplayOption["maxavailability"].InnerText);
-            intQualityLimits = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
-            decNuyenBP = Convert.ToDecimal(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+            XmlNode objXmlGameplayOption = objXmlDocumentGameplayOption.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue?.ToString() + "\"]");
+            if (objXmlGameplayOption != null)
+            {
+                nudMaxAvail.Value = Convert.ToInt32(objXmlGameplayOption["maxavailability"].InnerText);
+                intQualityLimits = Convert.ToInt32(objXmlGameplayOption["karma"].InnerText);
+                decNuyenBP = Convert.ToDecimal(objXmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+            }
         }
+        #endregion
     }
 }

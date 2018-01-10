@@ -72,9 +72,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objParent">Vehicle that the mod will be attached to.</param>
         /// <param name="decMarkup">Discount or markup that applies to the base cost of the mod.</param>
-        public void Create(XmlNode objXmlMod, TreeNode objNode, Vehicle objParent, decimal decMarkup = 0)
+        public void Create(XmlNode objXmlMod, TreeNode objNode, decimal decMarkup = 0)
         {
-            Parent = objParent ?? throw new ArgumentNullException(nameof(objParent));
             if (objXmlMod == null) Utils.BreakIfDebug();
             objXmlMod.TryGetStringFieldQuickly("id", ref _strSourceId);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
@@ -85,14 +84,14 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
-            if (objXmlMod["cost"] != null)
+            _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(_strCost))
             {
-                _strCost = objXmlMod["cost"].InnerText;
-                if (_strCost.StartsWith("Variable"))
+                if (_strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -211,30 +210,36 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
 			if (objNode["weapons"] != null)
 			{
-                foreach (XmlNode n in objNode.SelectNodes("weapons/weapon"))
+                foreach (XmlNode xmlWeaponNode in objNode.SelectNodes("weapons/weapon"))
                 {
-                    Weapon w = new Weapon(_character);
-                    w.Load(n, blnCopy);
-                    _weapons.Add(w);
-                    w.ParentMount = this;
+                    Weapon objWeapon = new Weapon(_character)
+                    {
+                        ParentVehicle = Parent,
+                        ParentMount = this
+                    };
+                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                    _weapons.Add(objWeapon);
                 }
             }
             if (objNode["weaponmountoptions"] != null)
             {
-                foreach (XmlNode n in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
+                foreach (XmlNode xmlWeaponMountOptionNode in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
                 {
-                    WeaponMountOption w = new WeaponMountOption(_character);
-                    w.Load(n, _vehicle);
-                    WeaponMountOptions.Add(w);
+                    WeaponMountOption objWeaponMountOption = new WeaponMountOption(_character);
+                    objWeaponMountOption.Load(xmlWeaponMountOptionNode, Parent);
+                    WeaponMountOptions.Add(objWeaponMountOption);
                 }
             }
 		    if (objNode["mods"] != null)
 		    {
-		        foreach (XmlNode n in objNode.SelectNodes("mods/mod"))
+		        foreach (XmlNode xmlModNode in objNode.SelectNodes("mods/mod"))
 		        {
-		            var m = new VehicleMod(_character);
-		            m.Load(n);
-		            Mods.Add(m);
+                    var objMod = new VehicleMod(_character)
+                    {
+                        Parent = Parent
+                    };
+                    objMod.Load(xmlModNode);
+		            Mods.Add(objMod);
 		        }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -283,7 +288,7 @@ namespace Chummer.Backend.Equipment
             TreeNode tree = new TreeNode();
             WeaponMount mount = this;
             XmlNode node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["size"].InnerText}\" and category = \"Size\"]");
-            mount.Create(node, tree, _vehicle);
+            mount.Create(node, tree);
             WeaponMountOption option = new WeaponMountOption(_character);
             node = doc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{n["flexibility"].InnerText}\" and category = \"Flexibility\"]");
             option.Create(node["id"].InnerText, mount.WeaponMountOptions);
@@ -553,10 +558,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-		/// <summary>
-		/// Vehicle that the Mod is attached to. 
-		/// </summary>
-		public Vehicle Parent { internal get; set; }
+        /// <summary>
+        /// Vehicle that the Mod is attached to. 
+        /// </summary>
+        public Vehicle Parent => _vehicle;
 
         /// <summary>
         /// 
@@ -635,13 +640,20 @@ namespace Chummer.Backend.Equipment
                     string strAccAvail = wm.Avail;
                     int intAccAvail = 0;
 
-                    if (strAccAvail.StartsWith('+') || strAccAvail.StartsWith('-'))
+                    if (strAccAvail.StartsWith('+', '-'))
                     {
                         strAccAvail += wm.TotalAvail(GlobalOptions.DefaultLanguage);
                         if (strAccAvail.EndsWith('F'))
+                        {
                             strAvail = "F";
-                        if (strAccAvail.EndsWith('F') || strAccAvail.EndsWith('R'))
                             strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                        }
+                        else if (strAccAvail.EndsWith('R'))
+                        {
+                            if (strAvail != "F")
+                                strAvail = "R";
+                            strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
+                        }
                         intAccAvail = Convert.ToInt32(strAccAvail);
                         intAvail += intAccAvail;
                     }
@@ -772,44 +784,39 @@ namespace Chummer.Backend.Equipment
 
             // Check for a Variable Cost.
             // ReSharper disable once PossibleNullReferenceException
-            if (objXmlMod["cost"] != null)
+            _strCost = objXmlMod["cost"]?.InnerText ?? "0";
+            if (_strCost.StartsWith("Variable("))
             {
-                if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
+                int intMin;
+                var intMax = 0;
+                string strCost = _strCost.Replace("Variable(", string.Empty).TrimEnd(')');
+                if (strCost.Contains("-"))
                 {
-                    int intMin;
-                    var intMax = 0;
-                    char[] chrParentheses = { '(', ')' };
-                    string strCost = objXmlMod["cost"].InnerText.Replace("Variable", string.Empty).Trim(chrParentheses);
-                    if (strCost.Contains("-"))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        intMin = Convert.ToInt32(strValues[0]);
-                        intMax = Convert.ToInt32(strValues[1]);
-                    }
-                    else
-                        intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
-
-                    if (intMin != 0 || intMax != 0)
-                    {
-                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                        if (intDecimalPlaces == -1)
-                            intDecimalPlaces = 0;
-                        else
-                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
-                        if (intMax == 0)
-                            intMax = 1000000;
-                        frmPickNumber.Minimum = intMin;
-                        frmPickNumber.Maximum = intMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
-                        frmPickNumber.AllowCancel = false;
-                        frmPickNumber.ShowDialog();
-                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
-                    }
+                    string[] strValues = strCost.Split('-');
+                    intMin = Convert.ToInt32(strValues[0]);
+                    intMax = Convert.ToInt32(strValues[1]);
                 }
                 else
-                    _strCost = objXmlMod["cost"].InnerText;
+                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+
+                if (intMin != 0 || intMax != 0)
+                {
+                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                    if (intMax == 0)
+                        intMax = 1000000;
+                    frmPickNumber.Minimum = intMin;
+                    frmPickNumber.Maximum = intMax;
+                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayName(GlobalOptions.Language));
+                    frmPickNumber.AllowCancel = false;
+                    frmPickNumber.ShowDialog();
+                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                }
             }
             list.Add(this);
         }

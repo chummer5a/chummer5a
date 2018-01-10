@@ -26,6 +26,7 @@
   </categories>
   <metatypes>
     <metatype>
+      <id>523fff8a-2875-4830-b390-5a965a3ca468</id>
       <name>Plasteel Homunculus</name>
       <category>Inanimate Vessels</category>
       <bp>0</bp>
@@ -79,6 +80,7 @@
       <page>87</page>
     </metatype>
     <metatype>
+      <id>81ff437c-9482-41f1-bb05-991561962234</id>
       <name>Stone Homunculus</name>
       <category>Inanimate Vessels</category>
       <bp>0</bp>
@@ -132,6 +134,7 @@
       <page>87</page>
     </metatype>
     <metatype>
+      <id>aa573527-2e55-4ef7-8351-de0d10b32ce2</id>
       <name>Wicker Man</name>
       <category>Inanimate Vessels</category>
       <bp>0</bp>

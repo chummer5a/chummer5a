@@ -183,7 +183,7 @@ namespace Chummer
 		    if (_mount == null)
 		    {
 		        _mount = new WeaponMount(_objCharacter, _vehicle);
-		        _mount.Create(node, tree, _vehicle);
+		        _mount.Create(node, tree);
 		    }
 		    else
 		    {
@@ -240,10 +240,11 @@ namespace Chummer
 	        string availSuffix = string.Empty;
 	        int slots = Convert.ToInt32(node?["slots"]?.InnerText);
 
-	        if (node["avail"].InnerText.EndsWith('F') || node["avail"].InnerText.EndsWith('R'))
+            string strAvail = node["avail"]?.InnerText ?? string.Empty;
+            if (strAvail.EndsWith('F', 'R'))
 	        {
-	            availSuffix = node["avail"].InnerText.Substring(node["avail"].InnerText.Length - 1, 1);
-	            avail = Convert.ToInt32(node["avail"].InnerText.Substring(0, node["avail"].InnerText.Length - 1));
+	            availSuffix = strAvail.Substring(strAvail.Length - 1, 1);
+	            avail = Convert.ToInt32(strAvail.Substring(0, strAvail.Length - 1));
 	        }
 	        List<object> boxes = new List<object>
 	        {
@@ -292,7 +293,7 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickVehicleMod.AddAgain;
                 XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmounts/mods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
+                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
 
                 TreeNode objNode = new TreeNode();
                 VehicleMod objMod = new VehicleMod(_objCharacter);

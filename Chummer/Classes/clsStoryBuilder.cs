@@ -101,6 +101,7 @@ namespace Chummer
             return string.Empty;
         }
 
+        private static readonly char[] lstLineEndChars = " \n\r\t".ToCharArray();
         private void Write(StringBuilder story, string innerText, int levels, XmlDocument xmlDoc)
         {
             if (levels <= 0) return;
@@ -110,11 +111,11 @@ namespace Chummer
             String[] words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText, xmlDoc).Split(" \n\r\t".ToCharArray());
+                words = Macro(innerText, xmlDoc).Split(lstLineEndChars);
             }
             else
             {
-                words = innerText.Split(" \n\r\t".ToCharArray());
+                words = innerText.Split(lstLineEndChars);
             }
 
             bool mfix = false;
@@ -152,11 +153,12 @@ namespace Chummer
             }
         }
 
+        private static readonly char[] lstPunctuationChars = ",.".ToCharArray();
         public string Macro(string innerText, XmlDocument xmlDoc)
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            string endString = innerText.ToLower().Substring(1).TrimEnd(lstPunctuationChars);
             string macroName, macroPool;
             if (endString.Contains('_'))
             {

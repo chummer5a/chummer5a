@@ -646,6 +646,8 @@
       <id>9147b372-b55f-4b4b-8f24-04a4dd05aa1a</id>
       <name>Armanentradition</name>
       <drain>WIL + LOG</drain>
+      <source>SAG</source>
+      <page>111</page>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
         <spiritdetection>Spirit of Guidance</spiritdetection>
@@ -653,13 +655,13 @@
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Task Spirit</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>111</page>
     </tradition>
     <tradition>
       <id>7d2ee0fa-92ab-4fec-86c9-e2f3964456e7</id>
       <name>Dianism</name>
       <drain>WIL + INT</drain>
+      <source>SAG</source>
+      <page>112</page>
       <spirits>
         <spiritcombat>Spirit of Beasts</spiritcombat>
         <spiritdetection>Spirit of Fire</spiritdetection>
@@ -667,13 +669,13 @@
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>112</page>
     </tradition>
     <tradition>
       <id>a8f9687a-0999-4509-87a2-4b122fb2187c</id>
       <name>Frisian Magic</name>
       <drain>WIL + LOG</drain>
+      <source>SAG</source>
+      <page>113</page>
       <spirits>
         <spiritcombat>Spirit of Water</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
@@ -681,13 +683,13 @@
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Plants</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>113</page>
     </tradition>
     <tradition>
       <id>27109795-aead-463c-848c-fa63e5aa11cd</id>
       <name>Magic of Roma and Street Nomads</name>
       <drain>WIL + CHA</drain>
+      <source>SAG</source>
+      <page>114</page>
       <spirits>
         <spiritcombat>Guardian Spirit</spiritcombat>
         <spiritdetection>Spirit of Beasts</spiritdetection>
@@ -695,13 +697,13 @@
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>114</page>
     </tradition>
     <tradition>
       <id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
       <name>Svetoid</name>
       <drain>WIL + CHA</drain>
+      <source>SAG</source>
+      <page>115</page>
       <spirits>
         <spiritcombat>Spirit of Earth</spiritcombat>
         <spiritdetection>Spirit of Guidance</spiritdetection>
@@ -709,13 +711,13 @@
         <spiritillusion>Spirit of Man</spiritillusion>
         <spiritmanipulation>Spirit of Water</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>115</page>
     </tradition>
     <tradition>
       <id>232c8cfe-b70a-4fb8-9dc3-ecc993cf6203</id>
       <name>Troll Shamanism</name>
       <drain>WIL + CHA</drain>
+      <source>SAG</source>
+      <page>115</page>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
@@ -723,8 +725,6 @@
         <spiritillusion>Spirit of Water</spiritillusion>
         <spiritmanipulation>Spirit of Plants</spiritmanipulation>
       </spirits>
-      <source>SAG</source>
-      <page>115</page>
     </tradition>
     <!-- End Region -->
     <!-- Region Dark Terrors -->
@@ -732,6 +732,8 @@
       <id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
       <name>Dark Magic</name>
       <drain>WIL + CHA</drain>
+      <source>DTR</source>
+      <page>165</page>
       <spirits>
         <spiritcombat>Spirit of Fire</spiritcombat>
         <spiritdetection>Spirit of Earth</spiritdetection>
@@ -739,8 +741,6 @@
         <spiritillusion>Spirit of Air</spiritillusion>
         <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
-      <source>DTR</source>
-      <page>165</page>
     </tradition>
     <!-- End Region -->
   </traditions>
@@ -1383,8 +1383,8 @@
       <log>F+0</log>
       <wil>F+0</wil>
       <ini>(F*2)+2</ini>
-      <source>SR5</source>
-      <page>304</page>
+      <source>SG</source>
+      <page>88</page>
       <optionalpowers>
         <power>Accident</power>
         <power>Concealment</power>

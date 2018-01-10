@@ -1347,8 +1347,10 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
-        <name>Special Equipment</name>
       </gears>
+      <mods>
+        <name>Special Equipment</name>
+      </mods>
       <seats>2</seats>
     </vehicle>
     <vehicle>
@@ -1368,8 +1370,10 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
-        <name>Special Equipment</name>
       </gears>
+      <mods>
+        <name>Special Equipment</name>
+      </mods>
       <seats>2</seats>
     </vehicle>
     <vehicle>
@@ -1389,8 +1393,10 @@
       <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="7">Sensor Array</gear>
-        <name>Special Equipment</name>
       </gears>
+      <mods>
+        <name>Special Equipment</name>
+      </mods>
       <seats>2</seats>
     </vehicle>
     <vehicle>
@@ -1410,8 +1416,10 @@
       <speed>3</speed>
       <gears>
         <gear rating="3" maxrating="7">Sensor Array</gear>
-        <name>Special Equipment</name>
       </gears>
+      <mods>
+        <name>Special Equipment</name>
+      </mods>
       <seats>2</seats>
     </vehicle>
     <vehicle>
@@ -1529,16 +1537,16 @@
       <seats>2</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1563,28 +1571,28 @@
       <seats>5</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1615,22 +1623,22 @@
       <seats>3</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1711,22 +1719,22 @@
       <seats>4</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Turret</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1751,16 +1759,16 @@
       <seats>4</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Turret</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1792,10 +1800,10 @@
       <seats>8</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>Concealed</visibility>
-          <flexibility>Turret</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -1910,22 +1918,22 @@
       <seats>9</seats>
       <weaponmounts>
         <weaponmount>
-          <size>Standard</size>
-          <visibility>External</visibility>
+          <control>Remote</control>
           <flexibility>Flexible</flexibility>
-          <control>Remote</control>
-        </weaponmount>
-        <weaponmount>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
+        </weaponmount>
+        <weaponmount>
           <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard</size>
+          <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2005,28 +2013,28 @@
       <seats>4</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2118,22 +2126,22 @@
       <seats>8</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2516,34 +2524,34 @@
       <seats>8</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2578,34 +2586,34 @@
       <seats>8</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2638,40 +2646,40 @@
       <seats>8</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2809,22 +2817,22 @@
       <seats>16</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
         <weaponmount>
+          <control>Manual</control>
+          <flexibility>Flexible</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Flexible</flexibility>
-          <control>Manual</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -2882,22 +2890,22 @@
       <seats>2</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -5046,16 +5054,16 @@
       <seats>12</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -5081,10 +5089,10 @@
       <seats>1</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -5362,16 +5370,16 @@
       </mods>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -5445,10 +5453,10 @@
       </gears>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Standard [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -5602,10 +5610,10 @@
       </gears>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
     </vehicle>
@@ -5675,19 +5683,19 @@
         <gear rating="3" maxrating="4">Sensor Array</gear>
         <gear rating="3" select="Stoner-Ares M202">[Weapon] Targeting Autosoft</gear>
       </gears>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Heavy [SR5]</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <weapons>
         <weapon>
           <name>Stoner-Ares M202</name>
         </weapon>
       </weapons>
-      <weaponmounts>
-        <weaponmount>
-          <size>Heavy [SR5]</size>
-          <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
-        </weaponmount>
-      </weaponmounts>
     </vehicle>
     <vehicle>
       <id>57f83415-4b13-47d2-8a80-20483d356a09</id>
@@ -7479,7 +7487,7 @@
       <armor>8</armor>
       <avail>0</avail>
       <body>16</body>
-      <category>Bikes</category>
+      <category>Cars</category>
       <cost>32500</cost>
       <handling>3/2</handling>
       <pilot>2</pilot>
@@ -7498,108 +7506,108 @@
     <vehicle>
       <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
       <name>Mercury Cruiser</name>
-      <handling>4/3</handling>
-      <speed>3</speed>
+      <page>51</page>
+      <source>R5G</source>
       <accel>3</accel>
-      <body>14</body>
       <armor>11</armor>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>21000</cost>
+      <handling>4/3</handling>
       <pilot>1</pilot>
       <sensor>2</sensor>
-      <seats>5</seats>
-      <avail>0</avail>
-      <cost>21000</cost>
-      <source>R5G</source>
-      <page>51</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
+      <seats>5</seats>
     </vehicle>
     <vehicle>
       <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
       <name>Mercedes-Benz CityMog</name>
-      <handling>5/4</handling>
-      <speed>3</speed>
+      <page>64</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>18</body>
       <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>44000</cost>
+      <handling>5/4</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>3</seats>
-      <avail>0</avail>
-      <cost>44000</cost>
-      <source>R5G</source>
-      <page>64</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
+      <seats>3</seats>
     </vehicle>
     <vehicle>
       <id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
       <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
-      <handling>5/4</handling>
-      <speed>3</speed>
+      <page>64</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>18</body>
       <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>42000</cost>
+      <handling>5/4</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>5</seats>
-      <avail>0</avail>
-      <cost>42000</cost>
-      <source>R5G</source>
-      <page>64</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
+      <seats>5</seats>
     </vehicle>
     <vehicle>
       <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
       <name>Mercedes-Benz CityMog Traveller</name>
-      <handling>5/4</handling>
-      <speed>3</speed>
+      <page>64</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>18</body>
       <armor>10</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>56000</cost>
+      <handling>5/4</handling>
       <pilot>3</pilot>
       <sensor>2</sensor>
-      <seats>20</seats>
-      <avail>0</avail>
-      <cost>56000</cost>
-      <source>R5G</source>
-      <page>64</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
       <mods>
         <name>Amenities (Middle)</name>
       </mods>
+      <seats>20</seats>
     </vehicle>
     <vehicle>
       <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
       <name>Mercedes-Benz CityMog Elite</name>
-      <handling>5/3</handling>
-      <speed>3</speed>
+      <page>64</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>18</body>
       <armor>12</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>96000</cost>
+      <handling>5/3</handling>
       <pilot>3</pilot>
       <sensor>4</sensor>
-      <seats>12</seats>
-      <avail>0</avail>
-      <cost>96000</cost>
-      <source>R5G</source>
-      <page>64</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
       <mods>
         <name>Amenities (High)</name>
       </mods>
+      <seats>12</seats>
     </vehicle>
     <vehicle>
       <id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
@@ -7624,19 +7632,18 @@
     <vehicle>
       <id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
       <name>Volkswagen Urban Explorer</name>
-      <handling>3/3</handling>
-      <speed>3</speed>
+      <page>65</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>13</body>
       <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>28000</cost>
+      <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>4</seats>
-      <avail>0</avail>
-      <cost>28000</cost>
-      <source>R5G</source>
-      <page>65</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -7644,63 +7651,63 @@
         <name>Amenities (Middle)</name>
         <name>SunCell</name>
       </mods>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
       <name>Volkswagen Urban Transporter</name>
-      <handling>3/3</handling>
-      <speed>3</speed>
+      <page>65</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>13</body>
       <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>19500</cost>
+      <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>2</seats>
-      <avail>0</avail>
-      <cost>19500</cost>
-      <source>R5G</source>
-      <page>65</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
+      <seats>2</seats>
     </vehicle>
     <vehicle>
       <id>61c57dad-8683-464e-92e1-3ad57776365e</id>
       <name>Volkswagen Urban Traveller</name>
-      <handling>3/3</handling>
-      <speed>3</speed>
+      <page>65</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>13</body>
       <armor>6</armor>
+      <avail>0</avail>
+      <body>13</body>
+      <category>Cars</category>
+      <cost>29500</cost>
+      <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>9</seats>
-      <avail>0</avail>
-      <cost>29500</cost>
-      <source>R5G</source>
-      <page>65</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
+      <seats>9</seats>
     </vehicle>
     <vehicle>
       <id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
       <name>Volkswagen Urban Watcher</name>
-      <handling>3/3</handling>
-      <speed>3</speed>
+      <page>65</page>
+      <source>R5G</source>
       <accel>1</accel>
-      <body>16</body>
       <armor>10</armor>
+      <avail>12R</avail>
+      <body>16</body>
+      <category>Cars</category>
+      <cost>65000</cost>
+      <handling>3/3</handling>
       <pilot>2</pilot>
       <sensor>2</sensor>
-      <seats>4</seats>
-      <avail>12R</avail>
-      <cost>65000</cost>
-      <source>R5G</source>
-      <page>65</page>
-      <category>Cars</category>
+      <speed>3</speed>
       <gears>
         <gear rating="2" maxrating="2">Sensor Array</gear>
       </gears>
@@ -7711,26 +7718,27 @@
         <name>Landing Drone Rack (Medium)</name>
         <name>Retrans Unit</name>
       </mods>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
       <name>Ares Minotaurus</name>
-      <handling>4/5</handling>
-      <speed>5</speed>
+      <page>81</page>
+      <source>R5G</source>
       <accel>2</accel>
-      <body>14</body>
       <armor>8</armor>
+      <avail>12F</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>45000</cost>
+      <handling>4/5</handling>
       <pilot>4</pilot>
       <sensor>4</sensor>
-      <seats>4</seats>
-      <avail>12F</avail>
-      <cost>45000</cost>
-      <source>R5G</source>
-      <page>81</page>
-      <category>Cars</category>
+      <speed>5</speed>
       <gears>
         <gear rating="4" maxrating="4">Sensor Array</gear>
       </gears>
+      <seats>4</seats>
     </vehicle>
     <vehicle>
       <id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
@@ -7828,7 +7836,6 @@
       <handling>5</handling>
       <pilot>3</pilot>
       <sensor>3</sensor>
-      <seats>5</seats>
       <speed>6</speed>
       <gears>
         <gear rating="3" maxrating="3">Sensor Array</gear>
@@ -7841,25 +7848,25 @@
         <name>Manual Controls</name>
         <name>Avibras-Nissan AN 822 Device Rating Upgrade</name>
       </mods>
+      <seats>5</seats>
     </vehicle>
     <!-- End Region -->
     <!--Region Shadows in Focus: Metropole-->
     <vehicle>
       <id>f2993dbf-6800-4dad-b9ff-b6324a73b54e</id>
       <name>Ares Citymaster</name>
-      <handling>4/3</handling>
-      <speed>4/3</speed>
+      <page>40</page>
+      <source>SPS</source>
       <accel>2</accel>
-      <body>18</body>
       <armor>22</armor>
+      <avail>0</avail>
+      <body>18</body>
+      <category>Cars</category>
+      <cost>0</cost>
+      <handling>4/3</handling>
       <pilot>5</pilot>
       <sensor>5</sensor>
-      <seats>12</seats>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>SPS</source>
-      <page>40</page>
-      <category>Cars</category>
+      <speed>4/3</speed>
       <gears>
         <gear rating="5" maxrating="5">Sensor Array</gear>
       </gears>
@@ -7867,12 +7874,13 @@
         <name>Rigger Interface</name>
         <name select="Chemical Seal">Special Equipment</name>
       </mods>
+      <seats>12</seats>
       <weaponmounts>
         <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
           <size>Heavy [SR5]</size>
           <visibility>External</visibility>
-          <flexibility>Fixed</flexibility>
-          <control>Remote</control>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -10436,8 +10444,8 @@
     </mod>
     <!-- End Region -->
   </mods>
+  <!-- Region Vehicle Mounts -->
   <weaponmounts>
-    <!-- Region Vehicle Mounts -->
     <!-- Region Size -->
     <weaponmount>
       <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
@@ -10793,92 +10801,97 @@
       <slots>0</slots>
     </weaponmount>
     <!-- End Region -->
-    <!-- Region Mods -->
-    <mods>
-      <mod>
-        <id>45d84d77-5461-4441-a529-527aba347334</id>
-        <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>25</cost>
-        <rating>0</rating>
-        <slots>0</slots>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
-        <name>Pop-Out Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>Rating * 100</cost>
-        <rating>7</rating>
-        <slots>1</slots>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
-        <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>50</cost>
-        <rating>0</rating>
-        <slots>1</slots>
-        <ammoreplace>Weapon * 2</ammoreplace>
-        <optionaldrone />
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
-        <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
-        <page>124</page>
-        <source>R5</source>
-        <avail>0</avail>
-        <category>All</category>
-        <cost>500</cost>
-        <rating>0</rating>
-        <slots>2</slots>
-        <optionaldrone />
-        <ammobonus>100</ammobonus>
-        <ammoreplace>0(belt)</ammoreplace>
-        <required>
-          <vehicledetails>
-            <category operation="contains">Drones</category>
-          </vehicledetails>
-        </required>
-      </mod>
-      <mod>
-        <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
-        <name>Ammo Bin</name>
-        <page>159</page>
-        <source>R5</source>
-        <avail>6R</avail>
-        <category>Weapons</category>
-        <cost>200</cost>
-        <rating>0</rating>
-        <slots>1</slots>
-        <ammobonus>250</ammobonus>
-      </mod>
-    </mods>
-    <!-- End Region -->
   </weaponmounts>
+  <!-- End Region -->
+  <!-- Region Weapon Mount Mods -->
+  <weaponmountmods>
+    <!-- Region Drone Weapon Mount Mods -->
+    <mod>
+      <id>45d84d77-5461-4441-a529-527aba347334</id>
+      <name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>25</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
+      <name>Pop-Out Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Rating * 100</cost>
+      <rating>7</rating>
+      <slots>1</slots>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+      <name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>50</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <ammoreplace>Weapon * 2</ammoreplace>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+      <name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+      <page>124</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>2</slots>
+      <ammobonus>100</ammobonus>
+      <ammoreplace>0(belt)</ammoreplace>
+      <optionaldrone />
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- End Region -->
+    <!-- Region Vehicle Weapon Mount Mods -->
+    <mod>
+      <id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
+      <name>Ammo Bin</name>
+      <page>159</page>
+      <source>R5</source>
+      <avail>6R</avail>
+      <category>Weapons</category>
+      <cost>200</cost>
+      <rating>0</rating>
+      <slots>1</slots>
+      <ammobonus>250</ammobonus>
+    </mod>
+    <!-- End Region -->
+  </weaponmountmods>
+  <!-- End Region -->
 </chummer>

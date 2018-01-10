@@ -448,15 +448,16 @@ namespace Chummer
                 string strName = objXmlNode.InnerText;
                 lstHobbiesVices.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
             }
-            foreach (XmlNode objXmlNode in XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype"))
+            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype"))
             {
-                string strName = objXmlNode["name"].InnerText;
-                lstMetatypes.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
-                foreach (XmlNode objXmlMetavariantNode in objXmlNode.SelectNodes("metavariants/metavariant"))
+                string strName = xmlMetatypeNode["name"].InnerText;
+                string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;
+                lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
+                foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
                 {
                     string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
                     if (lstMetatypes.All(x => x.Value != strMetavariantName))
-                        lstMetatypes.Add(new ListItem(strMetavariantName, objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName));
+                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ")"));
                 }
             }
             

@@ -502,10 +502,7 @@ namespace Chummer
             objCharacter.BuildPoints = 0;
 
             // Show the Metatype selection window.
-            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter)
-            {
-                XmlFile = "critters.xml"
-            };
+            frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml");
             frmSelectMetatype.ShowDialog();
             Cursor = Cursors.Default;
 

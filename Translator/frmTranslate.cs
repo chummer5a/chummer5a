@@ -78,7 +78,7 @@ namespace Translator
             int columnCount = dgvSection.ColumnCount;
             pbTranslateProgressBar.Step = 1;
             pbTranslateProgressBar.Maximum = rowCount * columnCount;
-            int rowIndex = dgvSection.SelectedCells[0].RowIndex;
+            int rowIndex = dgvSection.SelectedCells?.Count > 0 ? dgvSection.SelectedCells[0].RowIndex : 0;
             for (int i = rowIndex; i < rowCount; ++i)
             {
                 DataGridViewCellCollection objCurrentRowCells = dgvSection.Rows[i].Cells;

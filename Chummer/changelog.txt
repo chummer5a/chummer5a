@@ -104,7 +104,22 @@ Application Changes:
 - Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
 - Added a dropdown menu option to bulk-add contacts, enemies and pets from a given XML file. To use this, create an XML file that contains valid contacts from an existing Chummer file, or alter this template: https://pastebin.com/W9q8jEnt Note that this system is designed to import ALL valid contacts in the file, irrespective of whether you click on Contacts or Enemies.
 - Fixed a bug where requirement nodes reliant on having a certain number of spells from a category would not get processed correctly.
-- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode. 
+- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode.
+- The Translator will now process paragons, vessels, and mods for vehicle weapon mounts.
+- Fixed issues regarding the translation, deletion, and selling of mods to vehicle weapon mounts and weapons added to mods of vehicle weapon mounts.
+- Fixed issues loading characters made with gameplay options that are not present in the current dataset.
+- Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
+- Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
+- Fixed a crash when loading characters in career mode that have access to the Spells and Spirits tab, but don't have a Tradition.
+- Metatypes for pets/cohorts are now alterable as a combobox if there is no character linked to a given pet/cohort. The suggested values loaded for the combobox are populated based on content in critters.xml. Fixes #2269.
+- Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load.
+- Fixed an issue where characters' trust fund-enabled lifestyles would be kept free after they lose their trust found source.
+- Fixed a bug where characters with Ex-Con could still buy (non-modular) Restricted and/or Forbidden 'ware. Getting Ex-Con in Create mode will now remove all ineligible 'ware from the character, and getting Ex-Con in Career mode will do the same for all 'ware that does not have a "None" grade (so e.g. genemods are kept).
+- Fixed a bug where characters with Erased did not have their Public Awareness capped to 1.
+- Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
+- Fixed a crash in the Translator when a user attempts to search for an item while having no cell selected.
+- Fixed an issue where Redliner would not trigger off of modular full cyberlimbs. Fixes #2275.
+- Implemented a proof-of-concept system for extracting text from the sourcebook for a given object. Currently only works with qualities that are being created, because string manipulation with unreliable formats is annoying. If you can think of a reliable way to parse paragraphs out of a plaintext block, feel free to let me know. 
 
 Data Changes:
 
@@ -132,6 +147,10 @@ Data Changes:
 - Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
 - Implemented the bonus for the Structured Spellcasting metamagic.
 - Fixed a duplicate id in the Pomorya Nationality Life Module.
+- Fixed incorrect category for Ford Titan. Fixes #2262.
+- Fixed an issue where characters could take the Trust Fund quality multiple times.
+- Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
+- Added missing id nodes to vessels in vessels.xml.
 
 New Strings:
 
@@ -163,6 +182,9 @@ New Strings:
 - Message_BannedGrade
 - Menu_AddFromFile
 - Checkbox_Options_EnemyKarmaQualityLimit
+- Message_MissingGameplayOption
+- Message_MissingGameplayOption_Title
+- Menu_SpecialChangeOptions
 
 Build 196
 

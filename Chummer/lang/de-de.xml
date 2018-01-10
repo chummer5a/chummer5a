@@ -2573,23 +2573,23 @@
 		</string>
 		<string>
 			<key>Node_SelectedCombatSpells</key>
-			<text>Kampfzauber auswählen</text>
+			<text>Ausgewählte Kampfzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedDetectionSpells</key>
-			<text>Wahrnehmungszauber auswählen</text>
+			<text>Ausgewählte Wahrnehmungszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedHealthSpells</key>
-			<text>Heilzauber auswählen</text>
+			<text>Ausgewählte Heilzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedIllusionSpells</key>
-			<text>Illusionszauber auswählen</text>
+			<text>Ausgewählte Illusionszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedManipulationSpells</key>
-			<text>Manipulationszauber auswählen</text>
+			<text>Ausgewählte Manipulationszauber</text>
 		</string>
 		<string>
 			<key>Tip_SpellsSelectedSpells</key>
@@ -6541,7 +6541,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGeomancyRituals</key>
-			<text>Ausgewählte Geomantie Rituale</text>
+			<text>Ausgewählte Rituale</text>
 		</string>
 		<!-- Version 439 -->
 		<string>
@@ -6706,7 +6706,7 @@
 		</string>
 		<string>
 			<key>String_Art</key>
-			<text>Art</text>
+			<text>Kunst</text>
 		</string>
 		<string>
 			<key>String_Ritual</key>
@@ -6730,7 +6730,7 @@
 		</string>
 		<string>
 			<key>Label_Art</key>
-			<text>Art:</text>
+			<text>Kunst:</text>
 		</string>
 		<string>
 			<key>Label_Ritual</key>
@@ -6874,7 +6874,7 @@
 		</string>
 		<string>
 			<key>Message_DeleteArt</key>
-			<text>Are you sure you want to delete this Art?</text>
+			<text>Möchten Sie diese Kunst wirklich löschen?</text>
 		</string>
 		<string>
 			<key>Message_DeleteEnhancement</key>
@@ -7010,7 +7010,7 @@
 		</string>
 		<string>
 			<key>String_DescOrganicLink</key>
-			<text>Organic Link</text>
+			<text>Biologische Verbindung</text>
 		</string>
 		<string>
 			<key>String_DescSpell</key>
@@ -7090,7 +7090,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedEnchantments</key>
-			<text>Selected Enchantments</text>
+			<text>Ausgewählte Verzauberungen</text>
 		</string>
 		<string>
 			<key>Tab_Limits</key>
@@ -7226,7 +7226,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_IgnoreArt</key>
-			<text>Ignore Art Requirements from Street Grimoire</text>
+			<text>Ignoriere Anforderungen für Künste aus dem Strasengrimoire</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_CyberlegMovement</key>
@@ -8245,6 +8245,42 @@
 		<string>
 			<key>Menu_KarmaValue</key>
 			<text>Berechne Karmawert</text>
+		</string>
+		<string>
+			<key>Label_CyberlimbAGI</key>
+			<text>Geschicklichkeit (GES):</text>
+		</string>
+		<string>
+			<key>Label_CyberlimbSTR</key>
+			<text>Stärke (STR):</text>
+		</string>
+		<string>
+			<key>Node_SelectedQualities</key>
+			<text>Ausgewählte Gaben</text>
+		</string>
+		<string>
+			<key>Label_QualityLevel</key>
+			<text>Gaben Stufe:</text>
+		</string>
+		<string>
+			<key>Checkbox_IsMainMugshot</key>
+			<text>Ist Hauptfoto</text>
+		</string>
+		<string>
+			<key>String_SpellDefense</key>
+			<text>Zauberwiderstand</text>
+		</string>
+		<string>
+			<key>String_Relationships</key>
+			<text>Beziehungen</text>
+		</string>
+		<string>
+			<key>Button_SwapOrdering</key>
+			<text>Ordnung &amp;Tauschen</text>
+		</string>
+		<string>
+			<key>Checkbox_Spirit_Fettered</key>
+			<text>Gefesselt</text>
 		</string>
 	</strings>
 </chummer>

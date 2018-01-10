@@ -33,7 +33,7 @@ namespace Chummer.UI.Attributes
         // ConnectionRatingChanged Event Handler.
         public delegate void ValueChangedHandler(Object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
-        private readonly CharacterAttrib attribute;
+        private readonly CharacterAttrib _objAttribute;
         private readonly object sender;
         private decimal _oldBase;
         private decimal _oldKarma;
@@ -42,7 +42,7 @@ namespace Chummer.UI.Attributes
 
         public AttributeControl(CharacterAttrib attribute)
         {
-            this.attribute = attribute;
+            _objAttribute = attribute;
             _objCharacter = attribute.CharacterObject;
             InitializeComponent();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
@@ -64,9 +64,8 @@ namespace Chummer.UI.Attributes
             }
             else
             {
-                nudBase.DataBindings.Add("Minimum", _dataSource, nameof(CharacterAttrib.TotalMinimum), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudBase.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.TotalBase), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudBase.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.Base), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudBase.DataBindings.Add("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
@@ -92,9 +91,10 @@ namespace Chummer.UI.Attributes
 		{
 			_dataSource.DataSource = attrib;
 		}
+
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = attribute.UpgradeKarmaCost();
+            int upgradeKarmaCost = _objAttribute.UpgradeKarmaCost();
 
             if (upgradeKarmaCost == -1) return; //TODO: more descriptive
             if (upgradeKarmaCost > _objCharacter.Karma)
@@ -103,61 +103,86 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
-            if (!attribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), _objAttribute.DisplayNameFormatted, _objAttribute.Value + 1, upgradeKarmaCost);
+            if (!_objAttribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            attribute.Upgrade();
+            _objAttribute.Upgrade();
 	        ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_ValueChanged(object sender, EventArgs e)
         {
             decimal d = ((NumericUpDownEx) sender).Value;
-            if (!ShowAttributeRule(d + nudKarma.Value))
+            if (d != _oldBase)
             {
-                nudBase.Value = _oldBase;
-                return;
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
+                {
+                    nudBase.Value = _oldBase;
+                    return;
+                }
+                ValueChanged?.Invoke(this, e);
+                _oldBase = d;
             }
-            ValueChanged?.Invoke(this, e);
-            _oldBase = d;
         }
 
         private void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             decimal d = ((NumericUpDownEx)sender).Value;
-            if (!ShowAttributeRule(d + nudBase.Value))
+            if (d != _oldKarma)
             {
-                nudKarma.Value = _oldKarma;
-                return;
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
+                {
+                    nudKarma.Value = _oldKarma;
+                    return;
+                }
+                ValueChanged?.Invoke(this, e);
+                _oldKarma = d;
             }
-            ValueChanged?.Invoke(this, e);
-            _oldKarma = d;
         }
 
         /// <summary>
         /// Show the dialogue that notifies the user that characters cannot have more than 1 Attribute at its maximum value during character creation.
         /// </summary>
-        private bool ShowAttributeRule(decimal value)
+        private bool ShowAttributeRule(int intValue)
         {
-            if (_objCharacter.IgnoreRules || value < attribute.TotalMaximum || attribute.TotalMaximum == 0) return true;
-            bool any = _objCharacter.AttributeSection.AttributeList.Any(att => att.AtMetatypeMaximum && att.Abbrev != AttributeName);
-            if (!any || attribute.AtMetatypeMaximum || _objCharacter.AttributeSection.AttributeList.All(att => att.Abbrev != AttributeName)) return true;
-            MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
-                LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            return false;
+            if (!_objCharacter.IgnoreRules)
+            {
+                int intTotalMaximum = _objAttribute.TotalMaximum;
+                if (intValue >= intTotalMaximum && intTotalMaximum != 0)
+                {
+                    bool blnAttributeListContainsThisAbbrev = false;
+                    bool blnAnyOtherAttributeAtMax = false;
+                    foreach (CharacterAttrib objLoopAttrib in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        if (objLoopAttrib.Abbrev == AttributeName)
+                            blnAttributeListContainsThisAbbrev = true;
+                        else if (objLoopAttrib.AtMetatypeMaximum)
+                            blnAnyOtherAttributeAtMax = true;
+                        if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                            break;
+                    }
+                    if (blnAnyOtherAttributeAtMax && blnAttributeListContainsThisAbbrev)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_AttributeMaximum", GlobalOptions.Language),
+                            LanguageManager.GetString("MessageTitle_Attribute", GlobalOptions.Language), MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         public string AttributeName
 	    {
-		    get { return attribute.Abbrev; }
+		    get { return _objAttribute.Abbrev; }
 	    }
 
         private void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (attribute.Value == 0)
+            if (_objAttribute.Value == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotBurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotBurnEdge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -167,14 +192,14 @@ namespace Chummer.UI.Attributes
             if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BurnEdge", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-			attribute.Degrade(1);
+			_objAttribute.Degrade(1);
 			ValueChanged?.Invoke(this, e);
 		}
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attribute.TotalMaximum ||
-                nudKarma.Value == nudKarma.Minimum) return;
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != _objAttribute.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
+                return;
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
                 nudKarma.Value -= nudBase.Increment;
@@ -187,7 +212,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value != attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
+            if (nudBase.Value + nudKarma.Value != _objAttribute.TotalMaximum || nudBase.Value == nudBase.Minimum)
+                return;
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;

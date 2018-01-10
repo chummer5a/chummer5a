@@ -610,6 +610,7 @@ namespace Chummer
         #endregion
 
         #region Methods
+        private static readonly char[] lstBracketChars = { '[', ']' };
         /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
@@ -658,9 +659,9 @@ namespace Chummer
             if (objXmlCyberware?["avail"] != null)
             {
                 string strAvailExpr = objXmlCyberware["avail"].InnerText;
-                if (strAvailExpr.StartsWith("FixedValues"))
+                if (strAvailExpr.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strAvailExpr.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (decimal.ToInt32(nudRating.Value) > 0)
                         strAvailExpr = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
@@ -670,7 +671,7 @@ namespace Chummer
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
                 }
 
-                if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+                if (strAvailExpr.EndsWith('F', 'R'))
                 {
                     strSuffix = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                     // Translate the Avail string.
@@ -708,18 +709,18 @@ namespace Chummer
             else if (objXmlCyberware["cost"] != null)
             {
                 string strCost = objXmlCyberware["cost"].InnerText;
-                if (strCost.StartsWith("FixedValues"))
+                if (strCost.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCost.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (decimal.ToInt32(nudRating.Value) > 0)
                         strCost = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 // Check for a Variable Cost.
-                if (strCost.StartsWith("Variable"))
+                if (strCost.StartsWith("Variable("))
                 {
                     decimal decMin = 0;
                     decimal decMax = decimal.MaxValue;
-                    strCost = strCost.TrimStart("Variable", true).Trim("()".ToCharArray());
+                    strCost = strCost.TrimStart("Variable(", true).TrimEnd(')');
                     if (strCost.Contains('-'))
                     {
                         string[] strValues = strCost.Split('-');
@@ -802,9 +803,9 @@ namespace Chummer
                     decCharacterESSModifier *= CharacterTotalESSMultiplier;
                 }
                 string strEss = objXmlCyberware["ess"].InnerText;
-                if (strEss.StartsWith("FixedValues"))
+                if (strEss.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strEss.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strEss.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (decimal.ToInt32(nudRating.Value) > 0)
                     strEss = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
@@ -826,9 +827,9 @@ namespace Chummer
             }
             else
             {
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     if (Convert.ToInt32(nudRating.Value, GlobalOptions.InvariantCultureInfo) > 0)
                         strCapacity = strValues[Math.Min(Convert.ToInt32(nudRating.Value, GlobalOptions.InvariantCultureInfo), strValues.Length) - 1];
                 }
@@ -849,7 +850,7 @@ namespace Chummer
                         if (blnSquareBrackets)
                             lblCapacity.Text = $"[{lblCapacity.Text}]";
 
-                        strSecondHalf = strSecondHalf.Trim("[]".ToCharArray());
+                        strSecondHalf = strSecondHalf.Trim(lstBracketChars);
                         strSecondHalf = "[" + CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + "]";
 
                         lblCapacity.Text += "/" + strSecondHalf;
@@ -1029,6 +1030,31 @@ namespace Chummer
                     if (intMaxRating < intMinRating)
                         continue;
                 }
+                // Ex-Cons cannot have forbidden or restricted 'ware
+                if (_objCharacter.ExCon && ParentVehicle == null && objXmlCyberware["mountsto"] == null)
+                {
+                    Cyberware objParent = CyberwareParent;
+                    bool blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                    while (objParent != null && !blnAnyParentIsModular)
+                    {
+                        objParent = CyberwareParent;
+                        blnAnyParentIsModular = !string.IsNullOrEmpty(objParent?.PlugsIntoModularMount);
+                    }
+
+                    if (!blnAnyParentIsModular)
+                    {
+                        string strAvailExpr = objXmlCyberware["avail"]?.InnerText ?? string.Empty;
+                        if (strAvailExpr.StartsWith("FixedValues("))
+                        {
+                            string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                            strAvailExpr = strValues[Math.Max(Math.Min(intMinRating - 1, strValues.Length - 1), 0)];
+                        }
+                        if (strAvailExpr.EndsWith('F', 'R'))
+                        {
+                            continue;
+                        }
+                    }
+                }
                 if (chkHideOverAvailLimit.Checked && !Backend.SelectionShared.CheckAvailRestriction(objXmlCyberware, _objCharacter, intMinRating, objXmlCyberware["forcegrade"]?.InnerText == "None" ? 0 : _intAvailModifier))
                     continue;
                 if (ParentVehicle == null && !Backend.SelectionShared.RequirementsMet(objXmlCyberware, false, _objCharacter))
@@ -1098,9 +1124,9 @@ namespace Chummer
                 // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
                 string strCapacity = objCyberwareNode["capacity"].InnerText;
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
                 }
                 decimal decCapacity = 0;
