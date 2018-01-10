@@ -671,6 +671,7 @@ Data Changes:
 - Fixed being able to get Way of Unified Mana (Hapsum-Do) without being an Adept or Mystic Adept. Fixed Way of Unified Mana (Hapsum-Do) costing 7 karma instead of 15.
 - Fixed an incorrect tag used in the options menu.
 - Fixed incorrect drain and duration values on the Comet spell.
+- Fixed Thundercloud Morgan's mod selection to properly include the Manual Operation mod.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
