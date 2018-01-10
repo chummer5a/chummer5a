@@ -1,4 +1,4 @@
-/*  This file is part of Chummer5a.
+﻿/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ namespace Chummer
             }
             else
             {
-                XmlNode objXmlSelectedGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
+                XmlNode objXmlSelectedGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
                 intQualityLimits = Convert.ToInt32(objXmlSelectedGameplayOption["karma"].InnerText);
                 decNuyenBP = Convert.ToDecimal(objXmlSelectedGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
@@ -137,7 +137,7 @@ namespace Chummer
                     break;
             }
 
-            XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.Text + "\"]");
+            XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
             if (xmlGameplayOption != null)
             {
                 _objCharacter.bannedwaregrades.Clear();
