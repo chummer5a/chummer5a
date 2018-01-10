@@ -33,7 +33,7 @@ namespace Chummer.UI.Attributes
         // ConnectionRatingChanged Event Handler.
         public delegate void ValueChangedHandler(Object sender, EventArgs e);
         public event ValueChangedHandler ValueChanged;
-        private readonly CharacterAttrib attribute;
+        private readonly CharacterAttrib _objAttribute;
         private readonly object sender;
         private decimal _oldBase;
         private decimal _oldKarma;
@@ -42,7 +42,7 @@ namespace Chummer.UI.Attributes
 
         public AttributeControl(CharacterAttrib attribute)
         {
-            this.attribute = attribute;
+            _objAttribute = attribute;
             _objCharacter = attribute.CharacterObject;
             InitializeComponent();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
@@ -91,9 +91,10 @@ namespace Chummer.UI.Attributes
 		{
 			_dataSource.DataSource = attrib;
 		}
+
 		private void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = attribute.UpgradeKarmaCost();
+            int upgradeKarmaCost = _objAttribute.UpgradeKarmaCost();
 
             if (upgradeKarmaCost == -1) return; //TODO: more descriptive
             if (upgradeKarmaCost > _objCharacter.Karma)
@@ -102,11 +103,11 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), attribute.DisplayNameFormatted, attribute.Value + 1, upgradeKarmaCost);
-            if (!attribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language), _objAttribute.DisplayNameFormatted, _objAttribute.Value + 1, upgradeKarmaCost);
+            if (!_objAttribute.CharacterObject.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            attribute.Upgrade();
+            _objAttribute.Upgrade();
 	        ValueChanged?.Invoke(this, e);
         }
 
@@ -115,7 +116,7 @@ namespace Chummer.UI.Attributes
             decimal d = ((NumericUpDownEx) sender).Value;
             if (d != _oldBase)
             {
-                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudKarma.Value) + attribute.FreeBase + attribute.RawMinimum + attribute.AttributeValueModifiers, attribute.TotalMaximum), attribute.TotalMinimum)))
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
                 {
                     nudBase.Value = _oldBase;
                     return;
@@ -130,7 +131,7 @@ namespace Chummer.UI.Attributes
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d != _oldKarma)
             {
-                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudBase.Value) + attribute.FreeBase + attribute.RawMinimum + attribute.AttributeValueModifiers, attribute.TotalMaximum), attribute.TotalMinimum)))
+                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
                 {
                     nudKarma.Value = _oldKarma;
                     return;
@@ -147,7 +148,7 @@ namespace Chummer.UI.Attributes
         {
             if (!_objCharacter.IgnoreRules)
             {
-                int intTotalMaximum = attribute.TotalMaximum;
+                int intTotalMaximum = _objAttribute.TotalMaximum;
                 if (intValue >= intTotalMaximum && intTotalMaximum != 0)
                 {
                     bool blnAttributeListContainsThisAbbrev = false;
@@ -175,13 +176,13 @@ namespace Chummer.UI.Attributes
 
         public string AttributeName
 	    {
-		    get { return attribute.Abbrev; }
+		    get { return _objAttribute.Abbrev; }
 	    }
 
         private void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (attribute.Value == 0)
+            if (_objAttribute.Value == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CannotBurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotBurnEdge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -191,14 +192,14 @@ namespace Chummer.UI.Attributes
             if (MessageBox.Show(LanguageManager.GetString("Message_BurnEdge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_BurnEdge", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-			attribute.Degrade(1);
+			_objAttribute.Degrade(1);
 			ValueChanged?.Invoke(this, e);
 		}
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attribute.TotalMaximum ||
-                nudKarma.Value == nudKarma.Minimum) return;
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != _objAttribute.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
+                return;
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
                 nudKarma.Value -= nudBase.Increment;
@@ -211,7 +212,8 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            if (nudBase.Value + nudKarma.Value != attribute.TotalMaximum || nudBase.Value == nudBase.Minimum) return;
+            if (nudBase.Value + nudKarma.Value != _objAttribute.TotalMaximum || nudBase.Value == nudBase.Minimum)
+                return;
             if (nudBase.Value - nudKarma.Increment >= 0)
             {
                 nudBase.Value -= nudKarma.Increment;

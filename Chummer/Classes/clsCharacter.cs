@@ -8879,9 +8879,7 @@ namespace Chummer
                     Quality objQuality = new Quality(this);
                     if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
-                    QualitySource objQualitySource = QualitySource.Selected;
-                    if (objOldXmlQuality["qualitysource"] != null)
-                        objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"].InnerText);
+                    QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
                     objQuality.Create(objXmlNewQuality, this, objQualitySource, new TreeNode(), new List<Weapon>(), new List<TreeNode>(), objOldXmlQuality["extra"]?.InnerText);
                     if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;

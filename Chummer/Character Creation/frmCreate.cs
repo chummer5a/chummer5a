@@ -12948,7 +12948,7 @@ namespace Chummer
             {
                 intInitiationPoints += objGrade.KarmaCost;
                 // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-                int metamagicKarma = Math.Max(CharacterObject.Metamagics.Where(x => x.Grade == objGrade.Grade).Count() - 1, 0);
+                int metamagicKarma = Math.Max(CharacterObject.Metamagics.Count(x => x.Grade == objGrade.Grade) - 1, 0);
                 intInitiationPoints += CharacterObjectOptions.KarmaMetamagic * metamagicKarma;
             }
 

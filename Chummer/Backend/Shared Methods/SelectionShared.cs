@@ -868,9 +868,10 @@ namespace Chummer.Backend
                     }
                 case "spelldescriptor":
                     {
+                        string strCount = node["count"].InnerText;
                         // Check for a specified amount of a particular Spell Descriptor.
-                        name = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + node["count"].InnerText;
-                        return character.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(node["count"].InnerText);
+                        name = "\n\t" + LanguageManager.GetString("Label_Descriptors", GlobalOptions.Language) + " >= " + strCount;
+                        return character.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(strCount);
                     }
                 case "streetcredvsnotoriety":
                     {
@@ -901,8 +902,7 @@ namespace Chummer.Backend
             name = strNodeInnerText;
             return false;
         }
-
-        private static readonly char[] chrAvailChars = { 'F', 'R' };
+        
         /// <summary>
         ///     Evaluates the availability of a given node against Availability Limits in Create Mode
         /// </summary>
@@ -933,7 +933,7 @@ namespace Chummer.Backend
             if (strAvailExpr[0] == '+')
                 return true;
 
-            strAvailExpr = strAvailExpr.TrimEnd(chrAvailChars);
+            strAvailExpr = strAvailExpr.TrimEnd('F', 'R');
             int intAvail = intAvailModifier;
             try
             {
