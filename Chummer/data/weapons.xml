@@ -13682,6 +13682,11 @@
       <rating>0</rating>
       <avail>16F</avail>
       <cost>1000</cost>
+      <required>
+        <weapondetails>
+          <name>HK Urban Fighter</name>
+        </weapondetails>
+      </required>
       <source>SAG</source>
       <page>21</page>
     </accessory>
@@ -13692,6 +13697,11 @@
       <rating>0</rating>
       <avail>14F</avail>
       <cost>900</cost>
+      <required>
+        <weapondetails>
+          <name>Onotari Arms Pressure KS-X</name>
+        </weapondetails>
+      </required>
       <source>SAG</source>
       <page>35</page>
     </accessory>

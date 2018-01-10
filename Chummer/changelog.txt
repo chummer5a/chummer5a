@@ -672,6 +672,7 @@ Data Changes:
 - Fixed an incorrect tag used in the options menu.
 - Fixed incorrect drain and duration values on the Comet spell.
 - Fixed Thundercloud Morgan's mod selection to properly include the Manual Operation mod.
+- Fixed missing requirements for the HK Urban Fighter and Onotri Arms Pressure KS-X custom silencers.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
