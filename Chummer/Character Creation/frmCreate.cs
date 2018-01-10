@@ -12946,15 +12946,7 @@ namespace Chummer
             int intInitiationPoints = 0;
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
             {
-                decimal decMultiplier = 1.0m;
-                if (objGrade.Group == true)
-                    decMultiplier -= 0.1m;
-                if (objGrade.Ordeal == true)
-                    decMultiplier -= CharacterObject.TechnomancerEnabled ? 0.2m : 0.1m;
-                if (objGrade.Schooling == true)
-                    decMultiplier -= 0.1m;
-
-                intInitiationPoints += decimal.ToInt32(decimal.Ceiling(decMultiplier * objGrade.KarmaCost));
+                intInitiationPoints += objGrade.KarmaCost;
                 // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
                 int metamagicKarma = Math.Max(CharacterObject.Metamagics.Where(x => x.Grade == objGrade.Grade).Count() - 1, 0);
                 intInitiationPoints += CharacterObjectOptions.KarmaMetamagic * metamagicKarma;

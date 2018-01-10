@@ -5278,7 +5278,8 @@ namespace Chummer
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + LinkedCharacter.Metavariant + "\"]");
 
-                    strReturn += objMetatypeNode["translate"] != null ? " (" + objMetatypeNode["translate"].InnerText + ")" : " (" + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ")";
+                    string strMetatypeTranslate = objMetatypeNode["translate"]?.InnerText;
+                    strReturn += !string.IsNullOrEmpty(strMetatypeTranslate) ? " (" + strMetatypeTranslate + ")" : " (" + LanguageManager.TranslateExtra(LinkedCharacter.Metavariant, strLanguage) + ")";
                 }
             }
             else
@@ -6598,19 +6599,19 @@ namespace Chummer
         {
             get
             {
-                decimal decCost = _objOptions.KarmaInititationFlat + (_intGrade * _objOptions.KarmaInitiation);
+                decimal decCost = _objOptions.KarmaInititationFlat + (Grade * _objOptions.KarmaInitiation);
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
-                if (_blnGroup)
+                if (Group)
                     decMultiplier -= 0.1m;
 
                 // Discount for Ordeal.
-                if (_blnOrdeal)
-                    decMultiplier -= 0.1m;
+                if (Ordeal)
+                    decMultiplier -= Technomancer ? 0.2m : 0.1m;
 
                 // Discount for Schooling.
-                if (_blnSchooling)
+                if (Schooling)
                     decMultiplier -= 0.1m;
 
                 return decimal.ToInt32(decimal.Ceiling(decCost * decMultiplier));
@@ -6622,36 +6623,38 @@ namespace Chummer
         /// </summary>
         public string Text(string strLanguage)
         {
-            string strReturn = LanguageManager.GetString("String_Grade", strLanguage) + " " + _intGrade.ToString();
-            if (_blnGroup || _blnOrdeal)
+            StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
+            strReturn.Append(' ');
+            strReturn.Append(_intGrade.ToString());
+            if (Group || Ordeal)
             {
-                strReturn += " (";
-                if (_blnGroup)
+                strReturn.Append(" (");
+                if (Group)
                 {
                     if (_blnTechnomancer)
-                        strReturn += LanguageManager.GetString("String_Network", strLanguage);
+                        strReturn.Append(LanguageManager.GetString("String_Network", strLanguage));
                     else
-                        strReturn += LanguageManager.GetString("String_Group", strLanguage);
-                    if (_blnOrdeal || _blnSchooling)
-                        strReturn += ", ";
+                        strReturn.Append(LanguageManager.GetString("String_Group", strLanguage));
+                    if (Ordeal || Schooling)
+                        strReturn.Append(", ");
                 }
-                if (_blnOrdeal)
+                if (Ordeal)
                 {
-                    if (_blnTechnomancer)
-                        strReturn += LanguageManager.GetString("String_Task", strLanguage);
+                    if (Technomancer)
+                        strReturn.Append(LanguageManager.GetString("String_Task", strLanguage));
                     else
-                        strReturn += LanguageManager.GetString("String_Ordeal", strLanguage);
-                    if (_blnSchooling)
-                        strReturn += ", ";
+                        strReturn.Append(LanguageManager.GetString("String_Ordeal", strLanguage));
+                    if (Schooling)
+                        strReturn.Append(", ");
                 }
-                if (_blnSchooling)
+                if (Schooling)
                 {
-                    strReturn += LanguageManager.GetString("String_Schooling", strLanguage);
+                    strReturn.Append(LanguageManager.GetString("String_Schooling", strLanguage));
                 }
-                strReturn += ")";
+                strReturn.Append(')');
             }
 
-            return strReturn;
+            return strReturn.ToString();
         }
 
         /// <summary>

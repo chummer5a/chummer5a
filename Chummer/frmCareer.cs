@@ -5279,7 +5279,7 @@ namespace Chummer
                 if (chkInitiationGroup.Checked)
                     decMultiplier -= 0.1m;
                 if (chkInitiationOrdeal.Checked)
-                    decMultiplier -= CharacterObject.TechnomancerEnabled ? 0.2m : 0.1m;
+                    decMultiplier -= 0.1m;
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= 0.1m;
 
@@ -5378,7 +5378,7 @@ namespace Chummer
                 // Make sure the character has enough Karma.
                 decimal decMultiplier = 1.0m;
                 if (chkInitiationOrdeal.Checked)
-                    decMultiplier -= 0.1m;
+                    decMultiplier -= 0.2m;
 
                 int intKarmaExpense = decimal.ToInt32(decimal.Ceiling(Convert.ToDecimal(CharacterObjectOptions.KarmaInititationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectOptions.KarmaInitiation, GlobalOptions.InvariantCultureInfo) * decMultiplier));
 
