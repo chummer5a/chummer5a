@@ -1195,6 +1195,8 @@ namespace Chummer
                 objCharacter.Improvements.Remove(objImprovement);
                 ClearCachedValue(new Tuple<Character, Improvement.ImprovementType>(objCharacter, objImprovement.ImproveType));
             }
+            bool blnDoSkillsSectionForceProperyChangedNotificationAll = false;
+            bool blnDoAttributeSectionForceProperyChangedNotificationAll = false;
             // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
             foreach (Improvement objImprovement in objImprovementList)
             {
@@ -1230,7 +1232,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                        objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+                        blnDoSkillsSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SkillsoftAccess:
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
@@ -1257,7 +1259,7 @@ namespace Chummer
                                     break;
                             }
                         }
-                        objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
+                        blnDoAttributeSectionForceProperyChangedNotificationAll = true;
                         break;
                     case Improvement.ImprovementType.SpecialTab:
                         // Determine if access to any special tabs have been lost.
@@ -1544,8 +1546,10 @@ namespace Chummer
                         break;
                 }
             }
-
-
+            if (blnDoSkillsSectionForceProperyChangedNotificationAll)
+                objCharacter.SkillsSection.ForceProperyChangedNotificationAll(nameof(Skill.PoolToolTip));
+            if (blnDoAttributeSectionForceProperyChangedNotificationAll)
+                objCharacter.AttributeSection.ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.AttributeModifiers));
             objCharacter.ImprovementHook(objImprovementList);
 
             Log.Exit("RemoveImprovements");

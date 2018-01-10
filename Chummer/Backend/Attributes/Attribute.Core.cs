@@ -198,8 +198,11 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intMetatypeMin = value;
-                OnPropertyChanged(nameof(TotalMinimum));
+                if (value != _intMetatypeMin)
+                {
+                    _intMetatypeMin = value;
+                    OnPropertyChanged(nameof(TotalMinimum));
+                }
             }
         }
 
@@ -220,8 +223,11 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intMetatypeMax = value;
-                OnPropertyChanged(nameof(TotalMaximum));
+                if (value != _intMetatypeMax)
+                {
+                    _intMetatypeMax = value;
+                    OnPropertyChanged(nameof(TotalMaximum));
+                }
             }
         }
 
@@ -236,13 +242,16 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intMetatypeAugMax = value;
-                OnPropertyChanged(nameof(TotalAugmentedMaximum));
+                if (value != _intMetatypeAugMax)
+                {
+                    _intMetatypeAugMax = value;
+                    OnPropertyChanged(nameof(TotalAugmentedMaximum));
+                }
             }
         }
 
         /// <summary>
-        /// Current base value of the CharacterAttribute.
+        /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
         public int Base
         {
@@ -252,21 +261,22 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intBase = value;
-                OnPropertyChanged(nameof(Base));
+                if (value != _intBase)
+                {
+                    _intBase = value;
+                    OnPropertyChanged(nameof(Base));
+                }
             }
         }
 
         /// <summary>
-        /// Value of Base as used for attribute controls. 
+        /// Total Value of Base Points as used by internal methods
         /// </summary>
         public int TotalBase
         {
-            //TODO: Ugly ugly ugly, may cause UI confusion.
-            get { return Math.Max(Base + FreeBase + TotalMinimum, TotalMinimum); }
-            set
+            get
             {
-                Base = Math.Max(value - FreeBase - TotalMinimum, 0);
+                return Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
             }
         }
 
@@ -289,8 +299,11 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intKarma = value;
-                OnPropertyChanged(nameof(Karma));
+                if (value != _intKarma)
+                {
+                    _intKarma = value;
+                    OnPropertyChanged(nameof(Karma));
+                }
             }
         }
 
@@ -301,7 +314,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Min(Base + FreeBase + Karma + TotalMinimum + AttributeValueModifiers, TotalMaximum);
+                return Math.Max(Math.Min(Base + FreeBase + Karma + RawMinimum + AttributeValueModifiers, TotalMaximum), TotalMinimum);
             }
         }
 
@@ -328,8 +341,11 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                _intAugModifier = value;
-                OnPropertyChanged(nameof(Augmented));
+                if (value != _intAugModifier)
+                {
+                    _intAugModifier = value;
+                    OnPropertyChanged(nameof(Augmented));
+                }
             }
         }
 
@@ -341,7 +357,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Value + _intAugModifier;
+                return Value + AugmentModifier;
             }
         }
 
@@ -657,7 +673,7 @@ namespace Chummer.Backend.Attributes
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
         {
             // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-            if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
             int intMeat = Value + AttributeModifiers;
@@ -698,7 +714,7 @@ namespace Chummer.Backend.Attributes
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
             if (intReturn < 1)
             {
-                if ((_objCharacter.CritterEnabled || Abbrev == "EDG" || _intMetatypeMax == 0 || (Abbrev == "RES" && _objCharacter.EssencePenalty != 0) || ((Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG != 0) || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP")))
+                if ((_objCharacter.CritterEnabled || Abbrev == "EDG" || _intMetatypeMax == 0 || (Abbrev == "RES" && _objCharacter.EssencePenalty > 0) || ((Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG > 0) || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP")))
                     return 0;
                 else
                     return 1;
@@ -748,13 +764,13 @@ namespace Chummer.Backend.Attributes
             get
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
                 int intReturn = RawMinimum;
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || _objCharacter.EssencePenalty != 0 && (Abbrev == "MAG" || Abbrev == "RES" || Abbrev == "DEP"))
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                         intReturn = 0;
                     else
                         intReturn = 1;
@@ -770,14 +786,14 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                    return 1;
+
                 int intReturn = MetatypeMaximum + MaximumModifiers;
 
                 if (intReturn < 0)
                     intReturn = 0;
-
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
-                    intReturn = 1;
 
                 return intReturn;
             }
@@ -790,8 +806,12 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                    return 1;
+
                 int intReturn = 0;
-                if (Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES")
+                if (Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                     intReturn = TotalMaximum + AugmentedMaximumModifiers;
                 else
                     intReturn = TotalMaximum + 4 + AugmentedMaximumModifiers;
@@ -799,10 +819,6 @@ namespace Chummer.Backend.Attributes
 
                 if (intReturn < 0)
                     intReturn = 0;
-
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && Abbrev == "MAG")
-                    intReturn = 1;
 
                 return intReturn;
             }
@@ -1341,12 +1357,12 @@ namespace Chummer.Backend.Attributes
                     new ReverseTree<string>(nameof(Augmented),
                         new ReverseTree<string>(nameof(TotalValue),
                             new ReverseTree<string>(nameof(AttributeModifiers)),
-                                        new ReverseTree<string>(nameof(Karma)),
-                                        new ReverseTree<string>(nameof(Base)),
-                                            new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
-                                                new ReverseTree<string>(nameof(TotalMinimum)),
-                                                new ReverseTree<string>(nameof(TotalMaximum)),
-                                                new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
+                            new ReverseTree<string>(nameof(Karma)),
+                            new ReverseTree<string>(nameof(Base)),
+                            new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
+                                new ReverseTree<string>(nameof(TotalMinimum)),
+                                new ReverseTree<string>(nameof(TotalMaximum)),
+                                new ReverseTree<string>(nameof(TotalAugmentedMaximum)))))));
 
         public string UpgradeKarmaCostString
         {

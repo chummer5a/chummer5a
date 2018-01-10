@@ -1103,8 +1103,8 @@ namespace Chummer
             this.lblAttributesBase.Name = "lblAttributesBase";
             this.lblAttributesBase.Size = new System.Drawing.Size(31, 13);
             this.lblAttributesBase.TabIndex = 54;
-            this.lblAttributesBase.Tag = "Label_Base";
-            this.lblAttributesBase.Text = "Base";
+            this.lblAttributesBase.Tag = "String_Points";
+            this.lblAttributesBase.Text = "Points";
             this.tipTooltip.SetToolTip(this.lblAttributesBase, "Base Attribute value.");
             // 
             // lblAttributesMetatype
