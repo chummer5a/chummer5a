@@ -659,7 +659,7 @@ namespace Chummer
                                 {
                                     XmlNode objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
                                     if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
-                                        objXmlMetatypePriorityNode = objXmlMetatypePriorityNode.SelectSingleNode("/metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
+                                        objXmlMetatypePriorityNode = objXmlMetatypePriorityNode.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                                     if (int.TryParse(objXmlMetatypePriorityNode?["value"]?.InnerText, out int intTemp))
                                         intSpecialAttribPoints += intTemp;
                                     break;
