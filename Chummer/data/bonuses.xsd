@@ -317,7 +317,12 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
+              <xs:attribute name="knowledgeskill" type="xs:string" use="optional" />
+              <xs:attribute name="skillgroup" type="xs:string" use="optional" />
+              <xs:attribute name="skillcategory" type="xs:string" use="optional" />
               <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+              <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+              <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
