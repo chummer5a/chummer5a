@@ -27908,7 +27908,7 @@
       <skill translated="True">
         <id>ba624682-a5c0-4cf5-b47b-1021e6a1800d</id>
         <name>Biotechnology</name>
-        <translate>Biotecnologia</translate>
+        <translate>Engenharia Genética</translate>
         <specs>
           <spec translate="Bioinformática">Bioinformatics</spec>
           <spec translate="Biônicos">Bioware</spec>
@@ -27916,7 +27916,7 @@
           <spec translate="Terapia Genética">Gene Therapy</spec>
           <spec translate="Manutenção de Tanque">Vat Maintenance</spec>
         </specs>
-        <altpage>143</altpage>
+        <altpage>144</altpage>
       </skill>
       <skill translated="True">
         <id>48763fa5-4b89-48c7-80ff-d0a2761de4c0</id>
@@ -28360,7 +28360,7 @@
           <spec translate="Reconhecimento de Voz">Voice Recognition</spec>
           <spec translate="[Tipo de Trava]">[Lock Type]</spec>
         </specs>
-        <altpage>144</altpage>
+        <altpage>143</altpage>
       </skill>
       <skill translated="True">
         <id>64088b25-de37-4d71-8800-4a430fde08af</id>
@@ -34399,14 +34399,6 @@
       <category translate="Drones: Grande">Drones: Large</category>
       <category translate="Drones: Enorme">Drones: Huge</category>
       <category translate="Drones: Projétil">Drones: Missile</category>
-			<category translate="Carroceria">Body</category>
-			<category translate="Cosmético">Cosmetic</category>
-			<category translate="Eletromagnético">Electromagnetic</category>
-			<category translate="Específico do Modelo">Model-Specific</category>
-			<category translate="Mecânica">Powertrain</category>
-			<category translate="Proteção">Protection</category>
-			<category translate="Suporte de Arma de Veículo">Vehicle Weapon Mount</category>
-			<category translate="Armas">Weapons</category>
     </categories>
     <modcategories>
       <category translate="Carroceria">Body</category>
@@ -42069,22 +42061,22 @@
       <gameplayoption>
         <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
         <name>Standard</name>
-        <translate>Standard</translate>
+        <translate>Padrão</translate>
       </gameplayoption>
       <gameplayoption>
         <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
         <name>Prime Runner</name>
-        <translate>Prime Runner</translate>
+        <translate>Runner Principal</translate>
       </gameplayoption>
       <gameplayoption>
         <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
         <name>Street Level</name>
-        <translate>Street Level</translate>
+        <translate>Nível de Rua</translate>
       </gameplayoption>
       <gameplayoption>
         <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
         <name>Street Scum</name>
-        <translate>Street Scum</translate>
+        <translate>Escória de Rua</translate>
       </gameplayoption>
     </gameplayoptions>
   </chummer>
@@ -42609,7 +42601,7 @@
   </chummer>
   <chummer file="vessels.xml">
     <categories>
-      <category translate="Inanimate Vessels">Inanimate Vessels</category>
+      <category translate="Receptáculos Inanimados">Inanimate Vessels</category>
     </categories>
     <metatypes>
       <metatype>
