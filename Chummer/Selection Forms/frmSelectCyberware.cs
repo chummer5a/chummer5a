@@ -50,7 +50,7 @@ namespace Chummer
         private bool _blnLoading = true;
 
         private Mode _objMode = Mode.Cyberware;
-        private string _strNode = "cyberware";
+        private string _strNodeXPath = "/chummer/cyberwares/cyberware";
         private static string s_StrSelectCategory = string.Empty;
         private static string s_StrSelectGrade = string.Empty;
         private string _strSelectedCategory = string.Empty;
@@ -103,7 +103,7 @@ namespace Chummer
         private void frmSelectCyberware_Load(object sender, EventArgs e)
         {
             // Update the window title if needed.
-            if (_strNode == "bioware")
+            if (_objMode == Mode.Bioware)
                 Text = LanguageManager.GetString("Title_SelectCyberware_Bioware", GlobalOptions.Language);
 
             foreach (Label objLabel in Controls.OfType<Label>())
@@ -215,7 +215,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Cyberware.
-                objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[id = \"" + strSelectedId + "\"]");
+                objXmlCyberware = _objXmlDocument.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             }
 
             // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
@@ -492,10 +492,10 @@ namespace Chummer
                 switch (_objMode)
                 {
                     case Mode.Cyberware:
-                        _strNode = "cyberware";
+                        _strNodeXPath = "/chummer/cyberwares/cyberware";
                         break;
                     case Mode.Bioware:
-                        _strNode = "bioware";
+                        _strNodeXPath = "/chummer/biowares/bioware";
                         break;
                 }
             }
@@ -622,7 +622,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Cyberware.
-                objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[id = \"" + strSelectedId + "\"]");
+                objXmlCyberware = _objXmlDocument.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             }
             if (objXmlCyberware == null)
             {
@@ -655,11 +655,12 @@ namespace Chummer
 
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
-            string strSuffix = string.Empty;
-            string strPrefix = string.Empty;
-            if (objXmlCyberware?["avail"] != null)
+            string strAvail = objXmlCyberware["avail"]?.InnerText;
+            if (!string.IsNullOrEmpty(strAvail))
             {
-                string strAvailExpr = objXmlCyberware["avail"].InnerText;
+                string strAvailExpr = strAvail;
+                string strSuffix = string.Empty;
+                string strPrefix = string.Empty;
                 if (strAvailExpr.StartsWith("FixedValues("))
                 {
                     string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
@@ -697,8 +698,12 @@ namespace Chummer
                 }
                 catch (XPathException)
                 {
-                    lblAvail.Text = objXmlCyberware["avail"].InnerText;
+                    lblAvail.Text = strAvail;
                 }
+            }
+            else
+            {
+                lblAvail.Text = string.Empty;
             }
 
             // Cost.
@@ -924,7 +929,7 @@ namespace Chummer
                     strFilter += " and not(nosecondhand)";
             }
 
-            return BuildCyberwareList(_objXmlDocument.SelectNodes("/chummer/" + _strNode + "s/" + _strNode + "[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildCyberwareList(_objXmlDocument.SelectNodes(_strNodeXPath + "[" + strFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
         private IList<ListItem> BuildCyberwareList(XmlNodeList objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
@@ -1115,7 +1120,7 @@ namespace Chummer
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode("/chummer/" + _strNode + "s/" + _strNode + "[id = \"" + strSelectedId + "\"]");
+            XmlNode objCyberwareNode = _objXmlDocument.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             if (objCyberwareNode == null)
                 return;
 
