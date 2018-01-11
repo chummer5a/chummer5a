@@ -3507,7 +3507,7 @@ namespace Chummer.Classes
                 strForceValue = bonusNode.Attributes["select"].InnerText;
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-            if (SelectionShared.RequirementsMet(objXmlSelectedMetamagic, true, _objCharacter, string.Empty, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), _strFriendlyName))
+            if (objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, new TreeNode(), Improvement.ImprovementSource.Metamagic);
@@ -3539,7 +3539,7 @@ namespace Chummer.Classes
                         strForceValue = objXmlAddMetamagic.Attributes["select"].InnerText;
 
                     // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                    if (SelectionShared.RequirementsMet(objXmlAddMetamagic, false, _objCharacter, string.Empty, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), _strFriendlyName))
+                    if (objXmlAddMetamagic.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                     {
                         XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + objXmlAddMetamagic.InnerText + "\"]");
                         string strName = objXmlMetamagic["name"].InnerText;
@@ -3591,7 +3591,7 @@ namespace Chummer.Classes
                 strForceValue = bonusNode.Attributes["select"].InnerText;
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
-            if (SelectionShared.RequirementsMet(objXmlSelectedEcho, true, _objCharacter, string.Empty, LanguageManager.GetString("String_Echo", GlobalOptions.Language), _strFriendlyName))
+            if (objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, new TreeNode(), Improvement.ImprovementSource.Echo);
@@ -3623,7 +3623,7 @@ namespace Chummer.Classes
                         strForceValue = objXmlAddEcho.Attributes["select"].InnerText;
 
                     // Makes sure we aren't over our limits for this particular echo from this overall source
-                    if (SelectionShared.RequirementsMet(objXmlAddEcho, false, _objCharacter, string.Empty, LanguageManager.GetString("String_Echo", GlobalOptions.Language), _strFriendlyName))
+                    if (objXmlAddEcho.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                     {
                         XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + objXmlAddEcho.InnerText + "\"]");
                         string strName = objXmlEcho["name"].InnerText;
@@ -4832,7 +4832,7 @@ namespace Chummer.Classes
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
                 
                 // Makes sure we aren't over our limits for this particular quality from this overall source
-                if (SelectionShared.RequirementsMet(objXmlSelectedQuality, true, _objCharacter, string.Empty, LanguageManager.GetString("String_Quality", GlobalOptions.Language), _strFriendlyName))
+                if (objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
                 {
                     TreeNode objAddQualityNode = new TreeNode();
                     List<Weapon> objWeapons = new List<Weapon>();
@@ -4867,7 +4867,7 @@ namespace Chummer.Classes
                     strForceValue = objXmlAddQuality.Attributes["select"].InnerText;
 
                 // Makes sure we aren't over our limits for this particular quality from this overall source
-                if (SelectionShared.RequirementsMet(objXmlAddQuality, false, _objCharacter, string.Empty, LanguageManager.GetString("String_Quality", GlobalOptions.Language), _strFriendlyName))
+                if (objXmlAddQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                 {
                     XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlAddQuality.InnerText + "\"]");
                     string strName = objXmlQuality["name"].InnerText;

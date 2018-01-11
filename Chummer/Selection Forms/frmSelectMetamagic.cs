@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
  using System.Diagnostics;
  using System.Linq;
@@ -181,14 +182,12 @@ namespace Chummer
             }
             else
                 objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
 
             if (objXmlMetamagicList != null)
             {
                 foreach (XmlNode objXmlMetamagic in objXmlMetamagicList)
                 {
-                    if (!chkLimitList.Checked ||
-                        Backend.SelectionShared.RequirementsMet(objXmlMetamagic, false, _objCharacter, string.Empty, s))
+                    if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
                     {
                         string strName = objXmlMetamagic["name"]?.InnerText ?? string.Empty;
                         lstMetamagics.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
@@ -213,18 +212,18 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstMetamagic.Text))
+            string strSelectedMetamagic = lstMetamagic.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedMetamagic))
                 return;
 
-            _strSelectedMetamagic = lstMetamagic.SelectedValue.ToString();
+            _strSelectedMetamagic = strSelectedMetamagic;
 
             // Make sure the selected Metamagic or Echo meets its requirements.
             XmlNode objXmlMetamagic = _objMode == Mode.Metamagic
-                ? _objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + lstMetamagic.SelectedValue + "\"]")
-                : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + lstMetamagic.SelectedValue + "\"]");
-
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
-            if (!Backend.SelectionShared.RequirementsMet(objXmlMetamagic, true, _objCharacter, string.Empty, s))
+                ? _objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strSelectedMetamagic + "\"]")
+                : _objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strSelectedMetamagic + "\"]");
+            
+            if (!objXmlMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString(_objMode == Mode.Metamagic ? "String_Metamagic" : "String_Echo", GlobalOptions.Language)))
                 return;
             
             DialogResult = DialogResult.OK;

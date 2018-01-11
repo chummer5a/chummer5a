@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -66,10 +67,7 @@ namespace Chummer
                 objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlArt in objArtList)
             {
-                XmlNode objXmlQuality = objXmlArt["quality"];
-                if (_blnShowQualities != (objXmlQuality != null))
-                    continue;
-                if (Backend.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
+                if (_blnShowQualities == (objXmlArt["quality"] != null) && objXmlArt.RequirementsMet(_objCharacter))
                 {
                     string strName = objXmlArt["name"].InnerText;
                     lstMartialArt.Add(new ListItem(strName, objXmlArt["translate"]?.InnerText ?? strName));
