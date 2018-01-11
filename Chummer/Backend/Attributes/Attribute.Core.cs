@@ -314,7 +314,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Max(Math.Min(Base + FreeBase + Karma + RawMinimum + AttributeValueModifiers, TotalMaximum), TotalMinimum);
+                return Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
             }
         }
 
