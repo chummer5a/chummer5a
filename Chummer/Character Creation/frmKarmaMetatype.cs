@@ -246,7 +246,7 @@ namespace Chummer
             {
                 objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
                 string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
-                if (objXmlMetatype != null && string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
+                if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                 {
                     objXmlMetavariant = objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = \"" + strSelectedMetavariant + "\"]");
                 }
