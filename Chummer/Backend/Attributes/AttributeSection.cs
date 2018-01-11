@@ -225,8 +225,9 @@ namespace Chummer.Backend.Attributes
 			target.MetatypeMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}max"].InnerText);
 			target.MetatypeAugmentedMaximum = Convert.ToInt32(node[$"{strSourceAbbrev}aug"].InnerText);
 			target.Base = source.Base;
-			target.Karma = source.Karma;
-		}
+			target.CareerKarma = source.CareerKarma;
+            target.CreateKarma = source.CreateKarma;
+        }
 
 		internal void Reset()
 		{

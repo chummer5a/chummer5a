@@ -1971,7 +1971,7 @@ namespace Chummer
                     _intMaxKarma = Convert.ToInt32(strKarma);
                     _decMaxNuyen = Convert.ToDecimal(strNuyen);
                     _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                    _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
+                    _intContactPoints = (CHA.Base + CHA.TotalKarma) * _intContactMultiplier;
                 }
             }
 

@@ -20911,7 +20911,8 @@ namespace Chummer
                             }
                         }
                         objAttrib.Base = 0;
-                        objAttrib.Karma = 0;
+                        objAttrib.CareerKarma = 0;
+                        objAttrib.CreateKarma = 0;
                     }
                     break;
             }

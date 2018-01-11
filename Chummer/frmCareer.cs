@@ -18432,12 +18432,14 @@ namespace Chummer
                     (CharacterObject.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAG.TotalMaximum))
                     {
                         CharacterObject.MAG.Base = CharacterObject.MAGAdept.Base;
-                        CharacterObject.MAG.Karma = CharacterObject.MAGAdept.Karma;
+                        CharacterObject.MAG.CareerKarma = CharacterObject.MAGAdept.CareerKarma;
+                        CharacterObject.MAG.CreateKarma = CharacterObject.MAGAdept.CreateKarma;
                         CharacterObject.MAG.MetatypeMinimum = CharacterObject.MAGAdept.MetatypeMinimum;
                         CharacterObject.MAG.MetatypeMaximum = CharacterObject.MAGAdept.MetatypeMaximum;
                         CharacterObject.MAG.MetatypeAugmentedMaximum = CharacterObject.MAGAdept.MetatypeAugmentedMaximum;
                         CharacterObject.MAGAdept.Base = 0;
-                        CharacterObject.MAGAdept.Karma = 0;
+                        CharacterObject.MAGAdept.CareerKarma = 0;
+                        CharacterObject.MAGAdept.CreateKarma = 0;
                         CharacterObject.MAGAdept.MetatypeMinimum = 0;
                         CharacterObject.MAGAdept.MetatypeMaximum = 0;
                         CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
@@ -18448,7 +18450,8 @@ namespace Chummer
                     (CharacterObject.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAGAdept.TotalMaximum))
                     {
                         CharacterObject.MAGAdept.Base = 0;
-                        CharacterObject.MAGAdept.Karma = 0;
+                        CharacterObject.MAGAdept.CareerKarma = 0;
+                        CharacterObject.MAGAdept.CreateKarma = 0;
                         CharacterObject.MAGAdept.MetatypeMinimum = 0;
                         CharacterObject.MAGAdept.MetatypeMaximum = 0;
                         CharacterObject.MAGAdept.MetatypeAugmentedMaximum = 0;
@@ -18462,7 +18465,8 @@ namespace Chummer
                     (CharacterObject.Options.SpecialKarmaCostBasedOnShownValue && intMagReduction >= CharacterObject.MAG.TotalMaximum))
                 {
                     CharacterObject.MAG.Base = 0;
-                    CharacterObject.MAG.Karma = 0;
+                    CharacterObject.MAG.CareerKarma = 0;
+                    CharacterObject.MAG.CreateKarma = 0;
                     CharacterObject.MAG.MetatypeMinimum = 0;
                     CharacterObject.MAG.MetatypeMaximum = 0;
                     CharacterObject.MAG.MetatypeAugmentedMaximum = 0;
@@ -18475,7 +18479,8 @@ namespace Chummer
             if (CharacterObject.RES.TotalMaximum < 1 && CharacterObject.RESEnabled && (!CharacterObject.Options.SpecialKarmaCostBasedOnShownValue || intReduction >= CharacterObject.RES.TotalMaximum))
             {
                 CharacterObject.RES.Base = 0;
-                CharacterObject.RES.Karma = 0;
+                CharacterObject.RES.CareerKarma = 0;
+                CharacterObject.RES.CreateKarma = 0;
                 CharacterObject.RES.MetatypeMinimum = 0;
                 CharacterObject.RES.MetatypeMinimum = 0;
                 CharacterObject.RES.MetatypeAugmentedMaximum = 0;
