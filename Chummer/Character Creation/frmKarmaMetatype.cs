@@ -797,11 +797,10 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strRating))
                             intRating = ExpressionToInt(strRating, decimal.ToInt32(nudForce.Value), 0);
                         string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
-                        TreeNode objNode = new TreeNode();
                         Gear objGear = new Gear(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                        objGear.Create(objXmlGearItem, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
+                        objGear.Create(objXmlGearItem, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                         objGear.Cost = "0";
                         _objCharacter.Gear.Add(objGear);
                     }

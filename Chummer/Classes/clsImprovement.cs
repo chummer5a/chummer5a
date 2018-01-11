@@ -1329,6 +1329,52 @@ namespace Chummer
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
                                         objMod.DiscountCost = false;
+                                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                        {
+                                            objWeapon.DiscountCost = false;
+                                            foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                            {
+                                                objWeaponAccessory.DiscountCost = false;
+                                                foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                                {
+                                                    objLoopGear.DiscountCost = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                                    {
+                                        objMount.DiscountCost = false;
+
+                                        foreach (VehicleMod objMod in objMount.Mods)
+                                        {
+                                            objMod.DiscountCost = false;
+                                            foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                            {
+                                                objWeapon.DiscountCost = false;
+                                                foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                                {
+                                                    objWeaponAccessory.DiscountCost = false;
+                                                    foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                                    {
+                                                        objLoopGear.DiscountCost = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                                        {
+                                            objWeapon.DiscountCost = false;
+                                            foreach (WeaponAccessory objWeaponAccessory in objWeapon.WeaponAccessories)
+                                            {
+                                                objWeaponAccessory.DiscountCost = false;
+                                                foreach (Gear objLoopGear in objWeaponAccessory.Gear.GetAllDescendants(x => x.Children))
+                                                {
+                                                    objLoopGear.DiscountCost = false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 foreach (Weapon objWeapon in objCharacter.Weapons.GetAllDescendants(x => x.Children))

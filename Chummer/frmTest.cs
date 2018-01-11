@@ -437,11 +437,10 @@ namespace Chummer
                 Application.DoEvents();
                 try
                 {
-                    TreeNode objTempNode = new TreeNode();
                     Gear objTemp = new Gear(objCharacter);
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objTempNode, 1, lstWeapons, lstNodes);
+                    objTemp.Create(objXmlGear, 1, lstWeapons, lstNodes);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;
@@ -519,13 +518,12 @@ namespace Chummer
                 Application.DoEvents();
                 try
                 {
-                    TreeNode objTempNode = new TreeNode();
                     Cyberware objTemp = new Cyberware(objCharacter);
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstNodes = new List<TreeNode>();
                     List<Vehicle> objVehicles = new List<Vehicle>();
                     List<TreeNode> objVehicleNodes = new List<TreeNode>();
-                    objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, objTempNode, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
+                    objTemp.Create(objXmlGear, objCharacter, objTestGrade, objSource, 1, lstWeapons, lstNodes, objVehicles, objVehicleNodes);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;
@@ -913,11 +911,10 @@ namespace Chummer
                         if (objXmlGear.Attributes["select"] != null)
                             strForceValue = objXmlGear.Attributes["select"].InnerText;
                         XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
-                        TreeNode objNode = new TreeNode();
                         Gear objGear = new Gear(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();
                         List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-                        objGear.Create(objXmlGearItem, objNode, intRating, lstWeapons, lstWeaponNodes, strForceValue);
+                        objGear.Create(objXmlGearItem, intRating, lstWeapons, lstWeaponNodes, strForceValue);
                         objGear.Cost = "0";
                         _objCharacter.Gear.Add(objGear);
                     }

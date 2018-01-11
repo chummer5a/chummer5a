@@ -303,12 +303,11 @@ namespace Chummer.Backend.Equipment
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
-
-                    TreeNode objGearNode = new TreeNode();
+                    
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, objGearNode, intRating, lstWeapons, lstWeaponNodes, strForceValue, !blnSkipCost && !blnSkipSelectForms);
+                    objGear.Create(objXmlGear, intRating, lstWeapons, lstWeaponNodes, strForceValue, !blnSkipCost && !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
@@ -317,9 +316,8 @@ namespace Chummer.Backend.Equipment
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
                     _lstGear.Add(objGear);
-
-                    objGearNode.ForeColor = SystemColors.GrayText;
-                    objNode.Nodes.Add(objGearNode);
+                    
+                    objNode.Nodes.Add(objGear.CreateTreeNode(cmsArmorGear));
                     objNode.Expand();
                 }
             }

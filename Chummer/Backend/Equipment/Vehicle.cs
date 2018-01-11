@@ -329,21 +329,19 @@ namespace Chummer.Backend.Equipment
                         List<Weapon> objWeapons = new List<Weapon>();
                         List<TreeNode> objWeaponNodes = new List<TreeNode>();
 
-                        objGear.Create(objXmlGear, objGearNode, intRating, objWeapons, objWeaponNodes, strForceValue);
+                        objGear.Create(objXmlGear, intRating, objWeapons, objWeaponNodes, strForceValue);
 
                         objGear.Cost = "0";
                         objGear.Quantity = decQty;
                         objGear.MaxRating = intMaxRating;
                         objGear.ParentID = InternalId;
-                        objGearNode.Text = objGear.DisplayName(GlobalOptions.Language);
-                        objGearNode.ContextMenuStrip = cmsVehicleGear;
 
                         foreach (Weapon objWeapon in objWeapons)
                             objWeapon.ParentVehicle = this;
 
                         _lstGear.Add(objGear);
 
-                        objNode.Nodes.Add(objGearNode);
+                        objNode.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
                         objNode.Expand();
                     }
                 }

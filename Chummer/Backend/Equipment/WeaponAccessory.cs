@@ -193,12 +193,11 @@ namespace Chummer.Backend.Equipment
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
-
-                    TreeNode objGearNode = new TreeNode();
+                    
                     List<Weapon> lstWeapons = new List<Weapon>();
                     List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                    objGear.Create(objXmlGear, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
                     objGear.Quantity = decGearQty;
                     objGear.Cost = "0";
@@ -214,9 +213,7 @@ namespace Chummer.Backend.Equipment
                     // Change the Capacity of the child if necessary.
                     if (objXmlAccessoryGear["capacity"] != null)
                         objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
-                    objGearNode.ContextMenuStrip = cmsAccessoryGear;
-                    objGearNode.ForeColor = SystemColors.GrayText;
-                    objNode.Nodes.Add(objGearNode);
+                    objNode.Nodes.Add(objGear.CreateTreeNode(cmsAccessoryGear));
                     if (!blnStartCollapsed)
                         objNode.Expand();
                 }

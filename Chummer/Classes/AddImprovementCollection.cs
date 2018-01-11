@@ -1406,7 +1406,7 @@ namespace Chummer.Classes
             List<Weapon> objWeapons = new List<Weapon>();
 
             Gear objNewGear = new Gear(_objCharacter);
-            objNewGear.Create(node, new TreeNode(), intRating, objWeapons, new List<TreeNode>(), ForcedValue);
+            objNewGear.Create(node, intRating, objWeapons, new List<TreeNode>(), ForcedValue);
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
@@ -5610,7 +5610,6 @@ namespace Chummer.Classes
             // Create the new piece of ware.
             Cyberware objCyberware = new Cyberware(_objCharacter);
             List<Weapon> objWeapons = new List<Weapon>();
-            TreeNode objNode = new TreeNode();
             List<TreeNode> objWeaponNodes = new List<TreeNode>();
             List<Vehicle> objVehicles = new List<Vehicle>();
             List<TreeNode> objVehicleNodes = new List<TreeNode>();
@@ -5619,7 +5618,7 @@ namespace Chummer.Classes
             objCyberware.Create(node, _objCharacter, g,
                 bonusNode["type"].InnerText == "bioware"
                     ? Improvement.ImprovementSource.Bioware
-                    : Improvement.ImprovementSource.Cyberware, intRating, objNode, objWeapons, objWeaponNodes,
+                    : Improvement.ImprovementSource.Cyberware, intRating, objWeapons, objWeaponNodes,
                 objVehicles, objVehicleNodes, true, true, string.Empty);
 
 

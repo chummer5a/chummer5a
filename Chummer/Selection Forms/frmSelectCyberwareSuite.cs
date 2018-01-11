@@ -238,14 +238,13 @@ namespace Chummer
 
                 // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
                 XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-
-                TreeNode objTreeNode = new TreeNode();
+                
                 List<Weapon> lstWeapons = new List<Weapon>();
                 List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                 List<Vehicle> objVehicles = new List<Vehicle>();
                 List<TreeNode> objVehicleNodes = new List<TreeNode>();
                 Cyberware objCyberware = new Cyberware(_objCharacter);
-                objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, objTreeNode, lstWeapons, lstWeaponNodes, objVehicles, objVehicleNodes, false, false);
+                objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, lstWeapons, lstWeaponNodes, objVehicles, objVehicleNodes, false, false);
                 objCyberware.Suite = true;
 
                 if (objParent == null)

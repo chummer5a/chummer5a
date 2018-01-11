@@ -318,12 +318,11 @@ namespace Chummer.Backend.Equipment
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
-
-                            TreeNode objGearNode = new TreeNode();
+                            
                             List<Weapon> lstWeapons = new List<Weapon>();
                             List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                            objGear.Create(objXmlGear, objGearNode, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                            objGear.Create(objXmlGear, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
@@ -339,10 +338,8 @@ namespace Chummer.Backend.Equipment
                             // Change the Capacity of the child if necessary.
                             if (objXmlAccessoryGear["capacity"] != null)
                                 objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
-
-                            objGearNode.ContextMenuStrip = cmsWeaponAccessoryGear;
-                            objGearNode.ForeColor = SystemColors.GrayText;
-                            objAccessoryNode.Nodes.Add(objGearNode);
+                            
+                            objAccessoryNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
                             if (!blnStartCollapsed)
                                 objAccessoryNode.Expand();
                         }
@@ -796,7 +793,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 string strAmmoGuid = guiAmmo.ToString();
-                Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? CommonFunctions.FindVehicleGear(strAmmoGuid, _objCharacter.Vehicles);
+                Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid);
 
                 if (objAmmo != null)
                     return objAmmo.DisplayNameShort(strLanguage);
@@ -1478,7 +1475,7 @@ namespace Chummer.Backend.Equipment
                         intUseSTR = ParentVehicle.TotalBody;
                         intUseAGI = ParentVehicle.Pilot;
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = CommonFunctions.FindVehicleCyberware(ParentID, _objCharacter.Vehicles, out VehicleMod objVehicleMod);
+                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
@@ -1699,7 +1696,7 @@ namespace Chummer.Backend.Equipment
                 Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
-                    objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
+                    objGear = _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
                 }
                 if (objGear != null)
                 {
@@ -1956,7 +1953,7 @@ namespace Chummer.Backend.Equipment
                 Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
-                    objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
+                    objGear = _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
                 }
                 if (objGear != null)
                 {
@@ -2217,7 +2214,7 @@ namespace Chummer.Backend.Equipment
                 Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                 if (objGear == null)
                 {
-                    objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
+                    objGear = _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
                 }
                 if (objGear?.WeaponBonus != null)
                 {
@@ -2297,7 +2294,7 @@ namespace Chummer.Backend.Equipment
                         intUseAGI = ParentVehicle.Pilot;
                         intUseAGIBase = intUseAGI;
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = CommonFunctions.FindVehicleCyberware(ParentID, _objCharacter.Vehicles, out VehicleMod objVehicleMod);
+                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
@@ -2496,7 +2493,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                     if (objGear == null)
                     {
-                        objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
+                        objGear = _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
                     }
 
                     // Change the Weapon's Damage Type.
@@ -2569,7 +2566,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intUseSTR = ParentVehicle.TotalBody;
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = CommonFunctions.FindVehicleCyberware(ParentID, _objCharacter.Vehicles, out VehicleMod objVehicleMod);
+                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
@@ -2694,7 +2691,7 @@ namespace Chummer.Backend.Equipment
                             intUseAGI = ParentVehicle.Pilot;
                             intUseAGIBase = intUseAGI;
                             // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                            Cyberware objWeaponParent = CommonFunctions.FindVehicleCyberware(ParentID, _objCharacter.Vehicles, out VehicleMod objVehicleMod);
+                            Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
@@ -3058,7 +3055,7 @@ namespace Chummer.Backend.Equipment
                         intUseSTR = ParentVehicle.TotalBody;
                         intUseAGI = ParentVehicle.Pilot;
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = CommonFunctions.FindVehicleCyberware(ParentID, _objCharacter.Vehicles, out VehicleMod objVehicleMod);
+                        Cyberware objWeaponParent = _objCharacter.Vehicles.FindVehicleCyberware(ParentID, out VehicleMod objVehicleMod);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
@@ -3167,7 +3164,7 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded);
                     if (objGear == null)
                     {
-                        objGear = CommonFunctions.FindVehicleGear(AmmoLoaded, _objCharacter.Vehicles);
+                        objGear = _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
                     }
 
                     if (objGear != null)

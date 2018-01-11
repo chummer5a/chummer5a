@@ -24,22 +24,8 @@ namespace Chummer
 {
     static class IEnumerableExtensions
     {
-        // Made into a not extension method as Collection.Append is confusing and no clear name could be devised
-        public static IEnumerable<T> Both<T>(IEnumerable<T> first, IEnumerable<T> second)
-        {
-            foreach (T t in first)
-            {
-                yield return t;
-            }
-
-            foreach (T t in second)
-            {
-                yield return t;
-            }
-        }
-
         /// <summary>
-        /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match and non-zero name.
+        /// Locate an object (Needle) within a list and its children (Haystack) based on GUID match.
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
@@ -54,7 +40,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate an object (Needle) within a list (Haystack) based on GUID match and non-zero name.
+        /// Locate an object (Needle) within a list (Haystack) based on GUID match.
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>

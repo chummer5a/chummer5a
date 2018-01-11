@@ -108,7 +108,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
         /// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
-        public void Create(XmlNode objXmlGear, TreeNode objNode, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
+        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
         {
             if (objXmlGear == null)
                 return;
@@ -211,9 +211,6 @@ namespace Chummer.Backend.Equipment
 
             string strSource = _guiID.ToString();
 
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
-
             // If the Gear is Ammunition, ask the user to select a Weapon Category for it to be limited to.
             if (_strCategory == "Ammunition" && (_strName.StartsWith("Ammo:") || _strName.StartsWith("Arrow:") || _strName.StartsWith("Bolt:")))
             {
@@ -263,7 +260,6 @@ namespace Chummer.Backend.Equipment
                 frmPickWeaponCategory.ShowDialog();
 
                 _strExtra = frmPickWeaponCategory.SelectedCategory;
-                objNode.Text += " (" + _strExtra + ")";
             }
 
             // Add Gear Weapons if applicable.
@@ -292,7 +288,6 @@ namespace Chummer.Backend.Equipment
                             objGearWeapon.Range = "Aerodynamic Grenades";
                             objLoopNode.Text = objGearWeapon.DisplayName(GlobalOptions.Language);
                             _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic", GlobalOptions.Language) + ")";
-                            objNode.Text = DisplayName(GlobalOptions.Language);
                         }
                         objWeaponNodes.Add(objLoopNode);
                     }
@@ -320,7 +315,6 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                     {
                         _strExtra = ImprovementManager.SelectedValue;
-                        objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                     }
                 }
             }
@@ -329,12 +323,11 @@ namespace Chummer.Backend.Equipment
             if (blnCreateChildren)
             {
                 // Check to see if there are any child elements.
-                CreateChildren(objXmlDocument, objXmlGear, this, objNode, blnAddImprovements);
+                CreateChildren(objXmlDocument, objXmlGear, this, blnAddImprovements);
             }
 
             // If the item grants a Weapon bonus (Ammunition), just fill the WeaponBonus XmlNode.
             _nodWeaponBonus = objXmlGear["weaponbonus"];
-            objNode.Text = DisplayName(GlobalOptions.Language);
 
             if (!objXmlGear.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
             {
@@ -361,7 +354,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
         }
 
-        public void CreateChildren(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Gear objParent, TreeNode objNode, bool blnAddImprovements)
+        public void CreateChildren(XmlDocument objXmlGearDocument, XmlNode objXmlGear, Gear objParent, bool blnAddImprovements)
         {
             XmlNode objGearsNode = objXmlGear["gears"];
             if (objGearsNode != null)
@@ -372,7 +365,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (XmlNode objXmlChild in objGearsNode.SelectNodes("usegear"))
                     {
-                        CreateChild(objXmlGearDocument, objXmlChild, objParent, objNode, blnAddImprovements);
+                        CreateChild(objXmlGearDocument, objXmlChild, objParent, blnAddImprovements);
                     }
                 }
                 // Create Gear by choosing from pre-determined lists.
@@ -469,17 +462,14 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode objXmlChild in lstChildrenToCreate)
                         {
-                            CreateChild(objXmlGearDocument, objXmlChild, objParent, objNode, blnAddImprovements);
+                            CreateChild(objXmlGearDocument, objXmlChild, objParent, blnAddImprovements);
                         }
                     }
                 }
-
-                if (!blnStartCollapsed && objNode.GetNodeCount(false) > 0)
-                    objNode.Expand();
             }
         }
 
-        protected void CreateChild(XmlDocument objXmlGearDocument, XmlNode objXmlChild, Gear objParent, TreeNode objNode, bool blnAddImprovements)
+        protected void CreateChild(XmlDocument objXmlGearDocument, XmlNode objXmlChild, Gear objParent, bool blnAddImprovements)
         {
             XmlNode objXmlChildName = objXmlChild["name"];
             XmlAttributeCollection objXmlChildNameAttributes = objXmlChildName.Attributes;
@@ -507,10 +497,9 @@ namespace Chummer.Backend.Equipment
                 strChildForcePage = objXmlChild["page"].InnerText;
 
             Gear objChild = new Gear(_objCharacter);
-            TreeNode objChildNode = new TreeNode();
             List<Weapon> lstChildWeapons = new List<Weapon>();
             List<TreeNode> lstChildWeaponNodes = new List<TreeNode>();
-            objChild.Create(objXmlGearNode, objChildNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
+            objChild.Create(objXmlGearNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
             objChild.MinRating = intChildRating;
@@ -521,8 +510,6 @@ namespace Chummer.Backend.Equipment
                 objChild.Source = strChildForceSource;
             if (!string.IsNullOrEmpty(strChildForcePage))
                 objChild.Page = strChildForcePage;
-            objChildNode.ForeColor = SystemColors.GrayText;
-            objChildNode.ContextMenuStrip = objNode.ContextMenuStrip;
             objParent.Children.Add(objChild);
             this.RefreshMatrixAttributeArray();
 
@@ -530,9 +517,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlChild["capacity"] != null)
                 objChild.Capacity = "[" + objXmlChild["capacity"].InnerText + "]";
 
-            objNode.Nodes.Add(objChildNode);
-
-            CreateChildren(objXmlGearDocument, objXmlChild, objChild, objChildNode, blnAddChildImprovements);
+            CreateChildren(objXmlGearDocument, objXmlChild, objChild, blnAddChildImprovements);
         }
 
         /// <summary>
@@ -782,7 +767,7 @@ namespace Chummer.Backend.Equipment
                     if (Rating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
-                        objNuyenGear.Create(objNuyenNode, new TreeNode(), 0, new List<Weapon>(), new List<TreeNode>());
+                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(), new List<TreeNode>());
                         objNuyenGear.Parent = this;
                         objNuyenGear.Quantity = Rating;
                         _objChildren.Add(objNuyenGear);
@@ -2838,37 +2823,107 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public void ReaddImprovements(TreeView treGears, ref string strOutdatedItems, ICollection<string> lstInternalIdFilter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
+        {
+            // We're only re-apply improvements a list of items, not all of them
+            if (lstInternalIdFilter == null || lstInternalIdFilter.Contains(InternalId))
+            {
+                XmlNode objNode = GetNode();
+                if (objNode != null)
+                {
+                    if (Category == "Stacked Focus")
+                    {
+                        StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                        if (objStack != null)
+                        {
+                            foreach (Gear objFociGear in objStack.Gear)
+                            {
+                                objFociGear.ReaddImprovements(treGears, ref strOutdatedItems, lstInternalIdFilter, Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
+                            }
+                        }
+                    }
+                    Bonus = objNode["bonus"];
+                    WirelessBonus = objNode["wirelessbonus"];
+                    if (blnStackEquipped && Equipped)
+                    {
+                        if (Bonus != null)
+                        {
+                            ImprovementManager.ForcedValue = Extra;
+                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, Bonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                Extra = ImprovementManager.SelectedValue;
+                                TreeNode objGearNode = treGears.FindNode(InternalId);
+                                if (objGearNode != null)
+                                    objGearNode.Text = DisplayName(GlobalOptions.Language);
+                            }
+                        }
+                        if (WirelessOn && WirelessBonus != null)
+                        {
+                            ImprovementManager.ForcedValue = Extra;
+                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, WirelessBonus, false, Rating, DisplayNameShort(GlobalOptions.Language));
+                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                            {
+                                Extra = ImprovementManager.SelectedValue;
+                                TreeNode objGearNode = treGears.FindNode(InternalId);
+                                if (objGearNode != null)
+                                    objGearNode.Text = DisplayName(GlobalOptions.Language);
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    strOutdatedItems += DisplayName(GlobalOptions.Language) + "\n";
+                }
+            }
+            foreach (Gear objChild in Children)
+                objChild.ReaddImprovements(treGears, ref strOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
+        }
+
         #region UI Methods
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
         /// </summary>
-        /// <param name="objNode">TreeNode to append to.</param>
-        /// <param name="objMenu">ContextMenuStrip that the new TreeNodes should use.</param>
-        public void BuildGearTree(TreeNode objNode, ContextMenuStrip objMenu)
+        /// <param name="objParentNode">TreeNode to append to.</param>
+        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsGear)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsGear
+            };
+            if (!string.IsNullOrEmpty(Notes))
+                objNode.ForeColor = Color.SaddleBrown;
+            else if (IncludedInParent)
+                objNode.ForeColor = SystemColors.GrayText;
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            BuildChildrenGearTree(objNode, cmsGear);
+
+            return objNode;
+        }
+
+        /// <summary>
+        /// Build up the Tree for the current piece of Gear and all of its children.
+        /// </summary>
+        /// <param name="objParentNode">TreeNode to append to.</param>
+        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
         {
             bool blnExpandNode = false;
             foreach (Gear objChild in Children)
             {
-                TreeNode objChildNode = new TreeNode
-                {
-                    Text = objChild.DisplayName(GlobalOptions.Language),
-                    Tag = objChild.InternalId,
-                    ContextMenuStrip = objMenu
-                };
-                if (!string.IsNullOrEmpty(objChild.Notes))
-                    objChildNode.ForeColor = Color.SaddleBrown;
-                else if (objChild.IncludedInParent)
-                    objChildNode.ForeColor = SystemColors.GrayText;
-                objChildNode.ToolTipText = objChild.Notes;
-
-                objNode.Nodes.Add(objChildNode);
+                TreeNode objChildNode = objChild.CreateTreeNode(cmsGear);
+                objParentNode.Nodes.Add(objChildNode);
                 if (objChild.ParentID != InternalId || (GetNode()?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
                     blnExpandNode = true;
-
-                objChild.BuildGearTree(objChildNode, objMenu);
             }
             if (blnExpandNode)
-                objNode.Expand();
+                objParentNode.Expand();
         }
         #endregion
         #endregion
