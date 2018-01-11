@@ -678,29 +678,27 @@ namespace Chummer
                     return false;
                 }
                 bool blnReturn = false;
-                if (_nodAdeptWayRequirements != null)
+                //If the Adept Way Requirements node is missing OR the Adept Way Requirements node doesn't have magicianswayforbids, check for the magician's way discount. 
+                if (_nodAdeptWayRequirements?["magicianswayforbids"] == null)
                 {
-                    if (_nodAdeptWayRequirements["magicianswayforbids"] == null)
+                    blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
+                }
+                if (!blnReturn)
+                {
+                    foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
                     {
-                        blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
-                    }
-                    if (!blnReturn)
-                    {
-                        foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
+                        string strExtra = objNode.Attributes?["extra"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strExtra))
                         {
-                            string strExtra = objNode.Attributes?["extra"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strExtra))
-                            {
-                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && objQuality.Extra == strExtra);
-                                if (blnReturn)
-                                    break;
-                            }
-                            else
-                            {
-                                blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
-                                if (blnReturn)
-                                    break;
-                            }
+                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText && objQuality.Extra == strExtra);
+                            if (blnReturn)
+                                break;
+                        }
+                        else
+                        {
+                            blnReturn = CharacterObject.Qualities.Any(objQuality => objQuality.Name == objNode.InnerText);
+                            if (blnReturn)
+                                break;
                         }
                     }
                 }
