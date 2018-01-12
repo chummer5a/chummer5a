@@ -572,9 +572,10 @@ namespace Chummer
                                 foreach (XmlNode objXmlSkill in objXmlSkillsList)
                                 {
                                     string strName = objXmlSkill["name"]?.InnerText ?? string.Empty;
-                                    lstSkills.Add(new ListItem(strName, objXmlSkill.Attributes["translate"]?.InnerText ?? strName));
+                                    lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
                                 }
                             }
+                            lstSkills.Sort(CompareListItems.CompareNames);
                             bool blnOldInitializing = _blnInitializing;
                             int intOldSelectedIndex = cboSkill1.SelectedIndex;
                             int intOldDataSourceSize = cboSkill1.Items.Count;
@@ -640,8 +641,11 @@ namespace Chummer
                                     }
                                 }
                             }
-                            lblMetatypeSkillSelection.Text = string.Format(LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Language),
-                                LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Language), strSkillCount, strSkillType, strSkillVal);
+                            string strMetamagicSkillSelection = string.Format(LanguageManager.GetString("String_MetamagicSkillBase", GlobalOptions.Language),
+                                LanguageManager.GetString("String_MetamagicSkills", GlobalOptions.Language));
+                            // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
+                            // So the language file should contain each of those like String_MetamagicSkillType_magic
+                            lblMetatypeSkillSelection.Text = string.Format(strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType, GlobalOptions.Language), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
