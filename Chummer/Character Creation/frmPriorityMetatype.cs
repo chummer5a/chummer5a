@@ -575,7 +575,7 @@ namespace Chummer
                                     lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
                                 }
                             }
-
+                            lstSkills.Sort((a, b) => a.Name.CompareTo(b.Name));
                             bool blnOldInitializing = _blnInitializing;
                             int intOldSelectedIndex = cboSkill1.SelectedIndex;
                             int intOldDataSourceSize = cboSkill1.Items.Count;
