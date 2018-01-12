@@ -6550,7 +6550,7 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickQuality.AddAgain;
 
-                XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickQuality.SelectedQuality + "\"]");
+                XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPickQuality.SelectedQuality + "\"]");
 
                 TreeNode objNode = new TreeNode();
                 List<Weapon> objWeapons = new List<Weapon>();
@@ -6769,7 +6769,7 @@ namespace Chummer
                 return;
 
             XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
-            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickQuality.SelectedQuality + "\"]");
+            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmPickQuality.SelectedQuality + "\"]");
 
             TreeNode objNode = new TreeNode();
             List<Weapon> objWeapons = new List<Weapon>();

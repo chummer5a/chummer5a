@@ -379,7 +379,7 @@ namespace Chummer
                 return;
 
             XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
 
             TreeNode objNode = new TreeNode();
             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
