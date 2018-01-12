@@ -6884,8 +6884,8 @@ namespace Chummer
                 if (objQuality.WeaponID != Guid.Empty.ToString())
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
-                    List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId).ToList();
-                    foreach (Weapon objWeapon in lstWeapons)
+                    List<Weapon> lstOldWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId).ToList();
+                    foreach (Weapon objWeapon in lstOldWeapons)
                     {
                         lstNodesToRemoveIds.Add(objWeapon.InternalId);
                         objWeapon.DeleteWeapon(treWeapons, treVehicles);
