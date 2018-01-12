@@ -8827,7 +8827,31 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>String_MetamagicSkills</key>
-      <text>{0} {1} skill(s) to start at rating {2}</text>
+      <text>{0} {1} to start at rating {2}</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_magic</key>
+      <text>magic skill(s)</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_resonance</key>
+      <text>resonance skill(s)</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_matrix</key>
+      <text>matrix skill(s)</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_active</key>
+      <text>active skill(s)</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_specific</key>
+      <text>specific skill(s)</text>
+    </string>
+    <string>
+      <key>String_MetamagicSkillType_grouped</key>
+      <text>skill group(s)</text>
     </string>
     <string>
       <key>Message_Metatype_Duplicate</key>
