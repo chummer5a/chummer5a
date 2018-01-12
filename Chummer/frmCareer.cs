@@ -301,7 +301,7 @@ namespace Chummer
             string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
+            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
             {
                 objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
                 strMetatype += $" ({objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant})";
