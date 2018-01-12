@@ -119,7 +119,8 @@ Application Changes:
 - Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
 - Fixed a crash in the Translator when a user attempts to search for an item while having no cell selected.
 - Fixed an issue where Redliner would not trigger off of modular full cyberlimbs. Fixes #2275.
-- Implemented a proof-of-concept system for extracting text from the sourcebook for a given object. Currently only works with qualities that are being created, because string manipulation with unreliable formats is annoying. If you can think of a reliable way to parse paragraphs out of a plaintext block, feel free to let me know. 
+- Implemented a proof-of-concept system for extracting text from the sourcebook for a given object. Currently only works with qualities that are being created, because string manipulation with unreliable formats is annoying. If you can think of a reliable way to parse paragraphs out of a plaintext block, feel free to let me know.
+- Fixed an issue where knowledge hardwires would not let the user choose a knowledge skill.
 
 Data Changes:
 
@@ -151,6 +152,7 @@ Data Changes:
 - Fixed an issue where characters could take the Trust Fund quality multiple times.
 - Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
 - Added missing id nodes to vessels in vessels.xml.
+- Fixed an issue where characters were limited to only one active hardwire and one knowledge hardwire. Fixes #2289.
 
 New Strings:
 

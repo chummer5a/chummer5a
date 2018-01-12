@@ -3690,7 +3690,10 @@ namespace Chummer.Classes
                 Log.Info("_strForcedValue = " + ForcedValue);
 
                 // Display the Select Skill window and record which Skill was selected.
-                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter);
+                frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter)
+                {
+                    ShowKnowledgeSkills = bonusNode.Attributes?["knowledgeskill"]?.InnerText == bool.TrueString
+                };
                 if (!string.IsNullOrEmpty(_strFriendlyName))
                     frmPickSkill.Description = LanguageManager.GetString("String_Improvement_SelectSkillNamed", GlobalOptions.Language)
                         .Replace("{0}", _strFriendlyName);

@@ -51,10 +51,10 @@ namespace Chummer.Properties
             "AMDX9",
             "David Dashifen Kees<dashifen>",
             "Kadrack",
+            "luizbgomide",
             "mudge6",
             "Richard Zang<richard-zang>",
             "Claire<MachineMuse>",
-            "DeastinY<DeastinY>",
         };
     }
 }

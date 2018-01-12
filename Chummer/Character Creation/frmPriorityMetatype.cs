@@ -924,7 +924,10 @@ namespace Chummer
             }
             string strMetatype = lstMetatypes.SelectedValue?.ToString();
             LoadMetatypes();
-            lstMetatypes.SelectedValue = strMetatype;
+            if (string.IsNullOrEmpty(strMetatype))
+                lstMetatypes.SelectedIndex = -1;
+            else
+                lstMetatypes.SelectedValue = strMetatype;
         }
 
         private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)

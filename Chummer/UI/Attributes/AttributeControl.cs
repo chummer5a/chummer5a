@@ -116,7 +116,7 @@ namespace Chummer.UI.Attributes
             decimal d = ((NumericUpDownEx) sender).Value;
             if (d != _oldBase)
             {
-                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudKarma.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
+                if (!ShowAttributeRule(Math.Max(decimal.ToInt32(d) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(nudKarma.Value)))
                 {
                     nudBase.Value = _oldBase;
                     return;
@@ -131,7 +131,7 @@ namespace Chummer.UI.Attributes
             decimal d = ((NumericUpDownEx)sender).Value;
             if (d != _oldKarma)
             {
-                if (!ShowAttributeRule(Math.Max(Math.Min(decimal.ToInt32(d + nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMaximum), _objAttribute.TotalMinimum)))
+                if (!ShowAttributeRule(Math.Max(decimal.ToInt32(nudBase.Value) + _objAttribute.FreeBase + _objAttribute.RawMinimum + _objAttribute.AttributeValueModifiers, _objAttribute.TotalMinimum) + decimal.ToInt32(d)))
                 {
                     nudKarma.Value = _oldKarma;
                     return;

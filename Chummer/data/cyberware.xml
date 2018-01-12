@@ -2009,6 +2009,7 @@
     <cyberware>
       <id>56a5fcc1-5da7-4728-aae9-073c92f67c2b</id>
       <name>Knowledge Hardwires</name>
+      <limit>no</limit>
       <category>Headware</category>
       <ess>Rating * 0.05</ess>
       <capacity>0</capacity>
@@ -2016,6 +2017,9 @@
       <cost>Rating * 2000</cost>
       <source>CF</source>
       <page>80</page>
+      <bonus>
+        <hardwires knowledgeskill="True">Rating</hardwires>
+      </bonus>
       <rating>6</rating>
     </cyberware>
     <cyberware>
@@ -2723,6 +2727,7 @@
     <cyberware>
       <id>b330ed31-20d4-4e5a-823b-4ef6d6270685</id>
       <name>Active Hardwires</name>
+      <limit>no</limit>
       <category>Bodyware</category>
       <ess>Rating * 0.05</ess>
       <capacity>0</capacity>
