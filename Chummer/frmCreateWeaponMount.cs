@@ -134,7 +134,6 @@ namespace Chummer
 
 		private void cmdOK_Click(object sender, EventArgs e)
 		{
-            var tree = new TreeNode();
             //TODO: THIS IS UGLY AS SHIT, FIX BETTER
             var node = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + cboSize.SelectedValue + "\"]");
             if (node?["forbidden"] != null)
@@ -183,7 +182,7 @@ namespace Chummer
 		    if (_mount == null)
 		    {
 		        _mount = new WeaponMount(_objCharacter, _vehicle);
-		        _mount.Create(node, tree);
+		        _mount.Create(node);
 		    }
 		    else
 		    {
@@ -201,7 +200,6 @@ namespace Chummer
 		    {
 		        WeaponMount.Mods.Add(v);
 		    }
-            tree.Text = _mount.DisplayName(GlobalOptions.Language);
             DialogResult = DialogResult.OK;
         }
 
@@ -294,10 +292,9 @@ namespace Chummer
                 blnAddAgain = frmPickVehicleMod.AddAgain;
                 XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = \"" + frmPickVehicleMod.SelectedMod + "\"]");
-
-                TreeNode objNode = new TreeNode();
+                
                 VehicleMod objMod = new VehicleMod(_objCharacter);
-                objMod.Create(objXmlMod, objNode, frmPickVehicleMod.SelectedRating, _vehicle, frmPickVehicleMod.Markup);
+                objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _vehicle, frmPickVehicleMod.Markup);
                 // Check the item's Cost and make sure the character can afford it.
                 decimal decOriginalCost = _vehicle.TotalCost;
                 if (frmPickVehicleMod.FreeCost)
@@ -370,8 +367,6 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
                 _lstMods.Add(objMod);
-                treMods.Nodes[0].Nodes.Add(objNode);
-                treMods.Nodes[0].Expand();
 
                 // Check for Improved Sensor bonus.
                 if (objMod.Bonus?["selecttext"] != null)
@@ -382,9 +377,11 @@ namespace Chummer
                     };
                     frmPickText.ShowDialog(this);
                     objMod.Extra = frmPickText.SelectedValue;
-                    objNode.Text = objMod.DisplayName(GlobalOptions.Language);
                     frmPickText.Dispose();
                 }
+
+                treMods.Nodes[0].Nodes.Add(objMod.CreateTreeNode(null, null, null, null, null, null));
+                treMods.Nodes[0].Expand();
                 frmPickVehicleMod.Dispose();
             }
             while (blnAddAgain);

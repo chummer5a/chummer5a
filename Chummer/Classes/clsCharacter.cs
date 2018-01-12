@@ -1912,7 +1912,7 @@ namespace Chummer
                 if (objXmlWeapon != null)
                 {
                     Weapon objWeapon = new Weapon(this);
-                    objWeapon.Create(objXmlWeapon, null, null, null, Weapons);
+                    objWeapon.Create(objXmlWeapon, _lstWeapons);
                     objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                     _lstWeapons.Add(objWeapon);
                 }
@@ -1937,14 +1937,11 @@ namespace Chummer
                             XmlNode objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Resistance to Pathogens/Toxins\"]");
                             if (objXmlDwarfQuality == null)
                                 objXmlDwarfQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"Dwarf Resistance\"]");
-
-                            TreeNode objNode = new TreeNode();
+                            
                             List<Weapon> objWeapons = new List<Weapon>();
-                            List<TreeNode> objWeaponNodes = new List<TreeNode>();
                             Quality objQuality = new Quality(this);
 
-                            objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, objNode, objWeapons,
-                                objWeaponNodes);
+                            objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, objWeapons);
                             _lstQualities.Add(objQuality);
                         }
                     }
@@ -8257,15 +8254,8 @@ namespace Chummer
 
                     // Convert the item to the new Quality class.
                     Quality objQuality = new Quality(this);
-                    List<Weapon> objWeapons = new List<Weapon>();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
-                    TreeNode objNode = new TreeNode();
-                    objQuality.Create(objXmlQualityNode, this, QualitySource.Selected, objNode, objWeapons, objWeaponNodes, strForceValue);
+                    objQuality.Create(objXmlQualityNode, this, QualitySource.Selected, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in objWeapons)
-                        _lstWeapons.Add(objWeapon);
                 }
             }
 
@@ -8295,21 +8285,14 @@ namespace Chummer
                 if (!blnFound)
                 {
                     string strForceValue = string.Empty;
-                    TreeNode objNode = new TreeNode();
-                    List<Weapon> objWeapons = new List<Weapon>();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
                     Quality objQuality = new Quality(this);
 
                     if (objXmlMetatypeQuality.Attributes["select"] != null)
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
+                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in objWeapons)
-                        _lstWeapons.Add(objWeapon);
                 }
             }
 
@@ -8331,21 +8314,14 @@ namespace Chummer
                 if (!blnFound)
                 {
                     string strForceValue = string.Empty;
-                    TreeNode objNode = new TreeNode();
-                    List<Weapon> objWeapons = new List<Weapon>();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
                     Quality objQuality = new Quality(this);
 
                     if (objXmlMetatypeQuality.Attributes["select"] != null)
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
+                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in objWeapons)
-                        _lstWeapons.Add(objWeapon);
                 }
             }
 
@@ -8372,21 +8348,14 @@ namespace Chummer
                     if (!blnFound)
                     {
                         string strForceValue = string.Empty;
-                        TreeNode objNode = new TreeNode();
-                        List<Weapon> objWeapons = new List<Weapon>();
-                        List<TreeNode> objWeaponNodes = new List<TreeNode>();
                         Quality objQuality = new Quality(this);
 
                         if (objXmlMetatypeQuality.Attributes["select"] != null)
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
+                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in objWeapons)
-                            _lstWeapons.Add(objWeapon);
                     }
                 }
 
@@ -8408,21 +8377,14 @@ namespace Chummer
                     if (!blnFound)
                     {
                         string strForceValue = string.Empty;
-                        TreeNode objNode = new TreeNode();
-                        List<Weapon> objWeapons = new List<Weapon>();
-                        List<TreeNode> objWeaponNodes = new List<TreeNode>();
                         Quality objQuality = new Quality(this);
 
                         if (objXmlMetatypeQuality.Attributes["select"] != null)
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, objNode, objWeapons, objWeaponNodes, strForceValue);
+                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in objWeapons)
-                            _lstWeapons.Add(objWeapon);
                     }
                 }
             }
@@ -8880,7 +8842,7 @@ namespace Chummer
                     if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
-                    objQuality.Create(objXmlNewQuality, this, objQualitySource, new TreeNode(), new List<Weapon>(), new List<TreeNode>(), objOldXmlQuality["extra"]?.InnerText);
+                    objQuality.Create(objXmlNewQuality, this, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
                     if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 

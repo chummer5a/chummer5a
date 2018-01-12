@@ -1194,10 +1194,10 @@ namespace Chummer.Classes
                 }
                 strExtra = frmPickText.SelectedValue;
             }
-            spell.Create(node, new TreeNode(), strExtra);
+            spell.Create(node, strExtra);
             if (spell.InternalId == Guid.Empty.ToString())
                 return;
-
+            spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 
             Log.Info("Calling CreateImprovement");
@@ -1247,10 +1247,10 @@ namespace Chummer.Classes
             }
 
             Spell spell = new Spell(_objCharacter);
-            spell.Create(node, new TreeNode(), strExtra);
+            spell.Create(node, strExtra);
             if (spell.InternalId == Guid.Empty.ToString())
                 return;
-
+            spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 
             Log.Info("Calling CreateImprovement");
@@ -1310,7 +1310,7 @@ namespace Chummer.Classes
                 }
                 strExtra = frmPickText.SelectedValue;
             }
-            complexform.Create(node, new TreeNode(), null, strExtra);
+            complexform.Create(node, strExtra);
             if (complexform.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -1362,7 +1362,7 @@ namespace Chummer.Classes
             }
 
             ComplexForm complexform = new ComplexForm(_objCharacter);
-            complexform.Create(node, new TreeNode(), null, strExtra);
+            complexform.Create(node, strExtra);
             if (complexform.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -1403,10 +1403,10 @@ namespace Chummer.Classes
                 decQty = Convert.ToDecimal(bonusNode["quantity"].InnerText, GlobalOptions.InvariantCultureInfo);
 
             // Create the new piece of Gear.
-            List<Weapon> objWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>();
 
             Gear objNewGear = new Gear(_objCharacter);
-            objNewGear.Create(node, intRating, objWeapons, new List<TreeNode>(), ForcedValue);
+            objNewGear.Create(node, intRating, lstWeapons, ForcedValue);
 
             if (objNewGear.InternalId == Guid.Empty.ToString())
                 return;
@@ -1421,7 +1421,7 @@ namespace Chummer.Classes
 
             objNewGear.Cost = "0";
             // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in objWeapons)
+            foreach (Weapon objWeapon in lstWeapons)
                 _objCharacter.Weapons.Add(objWeapon);
 
             objNewGear.ParentID = SourceName;
@@ -1495,11 +1495,9 @@ namespace Chummer.Classes
                         strExtra = frmPickText.SelectedValue;
                     }
                 }
-
-                TreeNode objNode = new TreeNode();
+                
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, objNode,
-                    objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId == Guid.Empty.ToString())
                     return;
 
@@ -1572,11 +1570,9 @@ namespace Chummer.Classes
                         strExtra = frmPickText.SelectedValue;
                     }
                 }
-
-                TreeNode objNode = new TreeNode();
+                
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, objNode,
-                    objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId == Guid.Empty.ToString())
                     return;
 
@@ -2258,13 +2254,10 @@ namespace Chummer.Classes
             Log.Info("martialart");
             Log.Info("martialart = " + bonusNode.OuterXml);
             XmlDocument _objXmlDocument = XmlManager.Load("martialarts.xml");
-            XmlNode objXmlArt =
-                _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + bonusNode.InnerText +
-                                                 "\"]");
-
-            TreeNode objNode = new TreeNode();
+            XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + bonusNode.InnerText + "\"]");
+            
             MartialArt objMartialArt = new MartialArt(_objCharacter);
-            objMartialArt.Create(objXmlArt, objNode);
+            objMartialArt.Create(objXmlArt);
             objMartialArt.IsQuality = true;
             _objCharacter.MartialArts.Add(objMartialArt);
 
@@ -3510,7 +3503,7 @@ namespace Chummer.Classes
             if (objXmlSelectedMetamagic.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Metamagic", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
-                objAddMetamagic.Create(objXmlSelectedMetamagic, new TreeNode(), Improvement.ImprovementSource.Metamagic);
+                objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
                 objAddMetamagic.Grade = -1;
                 if (objAddMetamagic.InternalId == Guid.Empty.ToString())
                     return;
@@ -3573,7 +3566,7 @@ namespace Chummer.Classes
             XmlNode objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strSelectedItem + "\"]");
             XmlNode objXmlBonusMetamagic = bonusNode.SelectSingleNode("metamagic[name = \"" + strSelectedItem + "\"]");
             Metamagic objAddMetamagic = new Metamagic(_objCharacter);
-            objAddMetamagic.Create(objXmlSelectedMetamagic, new TreeNode(), Improvement.ImprovementSource.Metamagic);
+            objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
             objAddMetamagic.Grade = -1;
             if (objAddMetamagic.InternalId == Guid.Empty.ToString())
                 return;
@@ -3586,15 +3579,13 @@ namespace Chummer.Classes
         {
             XmlDocument objXmlDocument = XmlManager.Load("echoes.xml");
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + bonusNode.InnerText + "\"]");
-            string strForceValue = string.Empty;
-            if (bonusNode.Attributes["select"] != null)
-                strForceValue = bonusNode.Attributes["select"].InnerText;
+            string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
             if (objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
-                objAddEcho.Create(objXmlSelectedEcho, new TreeNode(), Improvement.ImprovementSource.Echo);
+                objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
                 objAddEcho.Grade = -1;
                 if (objAddEcho.InternalId == Guid.Empty.ToString())
                     return;
@@ -3657,7 +3648,7 @@ namespace Chummer.Classes
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strSelectedItem + "\"]");
             XmlNode objXmlBonusEcho = bonusNode.SelectSingleNode("echo[name = \"" + strSelectedItem + "\"]");
             Metamagic objAddEcho = new Metamagic(_objCharacter);
-            objAddEcho.Create(objXmlSelectedEcho, new TreeNode(), Improvement.ImprovementSource.Echo);
+            objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
             objAddEcho.Grade = -1;
             if (objAddEcho.InternalId == Guid.Empty.ToString())
                 return;
@@ -4675,10 +4666,9 @@ namespace Chummer.Classes
             XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
             XmlNode objXmlPowerNode =
                 objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
-            TreeNode objPowerNode = new TreeNode();
             CritterPower objPower = new CritterPower(_objCharacter);
 
-            objPower.Create(objXmlPowerNode, objPowerNode, 0, strForcedValue);
+            objPower.Create(objXmlPowerNode, 0, strForcedValue);
             _objCharacter.CritterPowers.Add(objPower);
             CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
         }
@@ -4689,7 +4679,6 @@ namespace Chummer.Classes
             foreach (XmlNode objXmlPower in bonusNode.SelectNodes("power"))
             {
                 XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                TreeNode objPowerNode = new TreeNode();
                 CritterPower objPower = new CritterPower(_objCharacter);
                 string strForcedValue = string.Empty;
                 int intRating = 0;
@@ -4699,7 +4688,7 @@ namespace Chummer.Classes
                     strForcedValue = objXmlPower.Attributes["select"]?.InnerText;
                 }
 
-                objPower.Create(objXmlCritterPower, objPowerNode, intRating, strForcedValue);
+                objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                 _objCharacter.CritterPowers.Add(objPower);
                 CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
             }
@@ -4837,11 +4826,9 @@ namespace Chummer.Classes
                 // Makes sure we aren't over our limits for this particular quality from this overall source
                 if (objXmlSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality", GlobalOptions.Language), string.Empty, _strFriendlyName))
                 {
-                    TreeNode objAddQualityNode = new TreeNode();
-                    List<Weapon> objWeapons = new List<Weapon>();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                    List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objAddQuality = new Quality(_objCharacter);
-                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, objWeapons, objWeaponNodes, strForceValue, _strFriendlyName);
+                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
 
                     if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
                     {
@@ -4849,6 +4836,8 @@ namespace Chummer.Classes
                         objAddQuality.ContributeToLimit = false;
                     }
                     _objCharacter.Qualities.Add(objAddQuality);
+                    foreach (Weapon objWeapon in lstWeapons)
+                        _objCharacter.Weapons.Add(objWeapon);
                     CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
                 }
                 else
@@ -4890,11 +4879,10 @@ namespace Chummer.Classes
                 throw new AbortedException();
             XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
             XmlNode objXmlBonusQuality = bonusNode.SelectSingleNode("quality[\"" + frmPickItem.SelectedItem + "\"]");
-            TreeNode objAddQualityNode = new TreeNode();
             Quality objAddQuality = new Quality(_objCharacter);
-
+            List<Weapon> lstWeapons = new List<Weapon>();
             strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
+            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
             if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText != bool.TrueString)
             {
                 objAddQuality.BP = 0;
@@ -4933,13 +4921,12 @@ namespace Chummer.Classes
                     objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmPickItem.SelectedItem + "\"]");
                     objXmlBonusQuality = bonusNode.SelectSingleNode("discountqualities/quality[\"" + frmPickItem.SelectedItem + "\"]");
                     int qualityDiscount = Convert.ToInt32(objXmlBonusQuality?.Attributes?["discount"].InnerText);
-                    objAddQualityNode = new TreeNode();
                     Quality discountQuality = new Quality(_objCharacter)
                     {
                         BP = 0
                     };
                     strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-                    discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, objAddQualityNode, null, null, strForceValue, _strFriendlyName);
+                    discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                     _objCharacter.Qualities.Add(discountQuality);
                     objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
                     CreateImprovement(discountQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
@@ -4947,6 +4934,8 @@ namespace Chummer.Classes
             }
 
             _objCharacter.Qualities.Add(objAddQuality);
+            foreach (Weapon objWeapon in lstWeapons)
+                _objCharacter.Weapons.Add(objWeapon);
             CreateImprovement(objAddQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
         }
 
@@ -5612,26 +5601,22 @@ namespace Chummer.Classes
 
             // Create the new piece of ware.
             Cyberware objCyberware = new Cyberware(_objCharacter);
-            List<Weapon> objWeapons = new List<Weapon>();
-            List<TreeNode> objWeaponNodes = new List<TreeNode>();
-            List<Vehicle> objVehicles = new List<Vehicle>();
-            List<TreeNode> objVehicleNodes = new List<TreeNode>();
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
 
-            Grade g = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter);
-            objCyberware.Create(node, _objCharacter, g,
-                bonusNode["type"].InnerText == "bioware"
-                    ? Improvement.ImprovementSource.Bioware
-                    : Improvement.ImprovementSource.Cyberware, intRating, objWeapons, objWeaponNodes,
-                objVehicles, objVehicleNodes, true, true, string.Empty);
-
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter);
+            objCyberware.Create(node, _objCharacter, objGrade, bonusNode["type"].InnerText == "bioware" ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, true, true, string.Empty);
 
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return;
 
             objCyberware.Cost = "0";
             // Create any Weapons that came with this ware.
-            foreach (Weapon objWeapon in objWeapons)
+            foreach (Weapon objWeapon in lstWeapons)
                 _objCharacter.Weapons.Add(objWeapon);
+            // Create any Vehicles that came with this ware.
+            foreach (Vehicle objVehicle in lstVehicles)
+                _objCharacter.Vehicles.Add(objVehicle);
 
             objCyberware.ParentID = SourceName;
 

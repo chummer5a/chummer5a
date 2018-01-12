@@ -1103,18 +1103,16 @@ namespace Chummer
                 if (xmlBonusNode != null)
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Metatype, strSelectedMetatype, xmlBonusNode, false, 1, strSelectedMetatype);
 
-                List<Weapon> objWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>();
 
                 // Create the Qualities that come with the Metatype.
                 foreach (XmlNode objXmlQualityItem in charNode?.SelectNodes("qualities/*/quality"))
                 {
                     XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                    TreeNode objNode = new TreeNode();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+                    objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
                     objQuality.ContributeToLimit = false;
                     _objCharacter.Qualities.Add(objQuality);
                 }
@@ -1124,12 +1122,11 @@ namespace Chummer
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                 {
                     XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
-                    TreeNode objNode = new TreeNode();
                     CritterPower objPower = new CritterPower(_objCharacter);
                     string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
                     int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText);
 
-                    objPower.Create(objXmlCritterPower, objNode, intRating, strForcedValue);
+                    objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                     objPower.CountTowardsLimit = false;
                     _objCharacter.CritterPowers.Add(objPower);
                 }
@@ -1211,12 +1208,10 @@ namespace Chummer
                             foreach (XmlNode objXmlQualityItem in xmlTalentPriorityNode.SelectNodes("qualities/quality"))
                             {
                                 XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                                TreeNode objNode = new TreeNode();
-                                List<TreeNode> objWeaponNodes = new List<TreeNode>();
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                                 QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                                objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+                                objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
                                 _objCharacter.Qualities.Add(objQuality);
                             }
 
@@ -1296,7 +1291,7 @@ namespace Chummer
                 }
                 
                 // Add any created Weapons to the character.
-                foreach (Weapon objWeapon in objWeapons)
+                foreach (Weapon objWeapon in lstWeapons)
                     _objCharacter.Weapons.Add(objWeapon);
 
                 // Sprites can never have Physical Attributes

@@ -297,12 +297,10 @@ namespace Chummer
             //Remove the old LimitModifier to ensure we don't double up.
             _objCharacter.LimitModifiers.Remove(objLimitModifier);
             // Create the new limit modifier.
-            TreeNode objNode = new TreeNode();
             objLimitModifier = new LimitModifier(_objCharacter);
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
-                strCondition, objNode);
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
             objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
@@ -310,10 +308,7 @@ namespace Chummer
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             //Add the new treeview node for the LimitModifier.
-            objNode.ContextMenuStrip = cmsLimitModifier;
-            objNode.Text = objLimitModifier.DisplayName;
-            objNode.Tag = objLimitModifier.InternalId;
-            objSelectedNode.Parent.Nodes.Add(objNode);
+            objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
             objSelectedNode.Remove();
         }
 
@@ -373,15 +368,7 @@ namespace Chummer
             //Add the Critter Powers that exist.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objPower.DisplayName(GlobalOptions.Language),
-                    Tag = objPower.InternalId,
-                    ContextMenuStrip = cmsCritterPowers
-                };
-                if (!string.IsNullOrEmpty(objPower.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = objPower.Notes.WordWrap(100);
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
 
                 if (objPower.Category != "Weakness")
                 {
@@ -432,22 +419,7 @@ namespace Chummer
                 {
                     if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra))
                         continue;
-                    TreeNode objNode = new TreeNode
-                    {
-                        Text = objQuality.DisplayName(GlobalOptions.Language),
-                        Tag = objQuality.InternalId,
-                        ContextMenuStrip = cmsQuality
-                    };
-
-                    if (!string.IsNullOrEmpty(objQuality.Notes))
-                        objNode.ForeColor = Color.SaddleBrown;
-                    else if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                            objQuality.OriginSource == QualitySource.Improvement)
-                    {
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
-                    objNode.ToolTipText = objQuality.Notes.WordWrap(100);
+                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
 
                     switch (objQuality.Type)
                     {

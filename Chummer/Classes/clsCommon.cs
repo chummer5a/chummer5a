@@ -330,16 +330,6 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static WeaponAccessory FindVehicleWeaponAccessory(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            return lstVehicles.FindVehicleWeaponAccessory(strGuid, out Weapon objFoundWeapon);
-        }
-
-        /// <summary>
-        /// Locate a Weapon Accessory within the character's Vehicles.
-        /// </summary>
-        /// <param name="strGuid">InternalId of the Weapon Accessory to find.</param>
-        /// <param name="lstVehicles">List of Vehicles to search.</param>
-        public static WeaponAccessory FindVehicleWeaponAccessory(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Weapon objFoundWeapon)
-        {
             if (!string.IsNullOrWhiteSpace(strGuid) && strGuid != Guid.Empty.ToString())
             {
                 WeaponAccessory objReturn;
@@ -348,7 +338,6 @@ namespace Chummer
                     objReturn = objVehicle.Weapons.FindWeaponAccessory(strGuid);
                     if (objReturn != null)
                     {
-                        objFoundWeapon = objReturn.Parent;
                         return objReturn;
                     }
 
@@ -357,7 +346,6 @@ namespace Chummer
                         objReturn = objMod.Weapons.FindWeaponAccessory(strGuid);
                         if (objReturn != null)
                         {
-                            objFoundWeapon = objReturn.Parent;
                             return objReturn;
                         }
                     }
@@ -367,14 +355,12 @@ namespace Chummer
                         objReturn = objMod.Weapons.FindWeaponAccessory(strGuid);
                         if (objReturn != null)
                         {
-                            objFoundWeapon = objReturn.Parent;
                             return objReturn;
                         }
                     }
                 }
             }
-
-            objFoundWeapon = null;
+            
             return null;
         }
 
@@ -652,307 +638,6 @@ namespace Chummer
 
             objFoundMartialArt = null;
             return null;
-        }
-        #endregion
-        
-        #region TreeNode Creation Methods
-        /// <summary>
-        /// Add a piece of Armor to the Armor TreeView.
-        /// </summary>
-        /// <param name="objArmor">Armor to add.</param>
-        /// <param name="treArmor">Armor TreeView.</param>
-        /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
-        /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
-        /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
-        public static void CreateArmorTreeNode(Armor objArmor, TreeView treArmor, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
-        {
-            TreeNode objNode = new TreeNode
-            {
-                Text = objArmor.DisplayName(GlobalOptions.Language),
-                Tag = objArmor.InternalId
-            };
-            if (!string.IsNullOrEmpty(objArmor.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = objArmor.Notes;
-
-            TreeNodeCollection lstChildNodes = objNode.Nodes;
-            foreach (ArmorMod objMod in objArmor.ArmorMods)
-            {
-                TreeNode objChild = new TreeNode
-                {
-                    Text = objMod.DisplayName(GlobalOptions.Language),
-                    Tag = objMod.InternalId,
-                    ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear
-                };
-                if (!string.IsNullOrEmpty(objMod.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objMod.IncludedInArmor)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objMod.Notes;
-                TreeNodeCollection lstModChildNodes = objChild.Nodes;
-                foreach (Gear objGear in objMod.Gear)
-                {
-                    lstModChildNodes.Add(objGear.CreateTreeNode(cmsArmorGear));
-                }
-                if (lstModChildNodes.Count > 0)
-                    objChild.Expand();
-                lstChildNodes.Add(objChild);
-            }
-
-            foreach (Gear objGear in objArmor.Gear)
-            {
-                lstChildNodes.Add(objGear.CreateTreeNode(cmsArmorGear));
-            }
-            if (lstChildNodes.Count > 0)
-                objNode.Expand();
-
-            TreeNode objParent = treArmor.Nodes[0];
-            if (!string.IsNullOrEmpty(objArmor.Location))
-            {
-                foreach (TreeNode objFind in treArmor.Nodes)
-                {
-                    if (objFind.Text == objArmor.Location)
-                    {
-                        objParent = objFind;
-                        break;
-                    }
-                }
-            }
-
-            objNode.ContextMenuStrip = cmsArmor;
-            objParent.Nodes.Add(objNode);
-            objParent.Expand();
-        }
-
-        /// <summary>
-        /// Add a Vehicle to the TreeView.
-        /// </summary>
-        /// <param name="objVehicle">Vehicle to add.</param>
-        /// <param name="treVehicles">Vehicle TreeView.</param>
-        /// <param name="cmsVehicle">ContextMenuStrip for the Vehicle Node.</param>
-        /// <param name="cmsVehicleLocation">ContextMenuStrip for Vehicle Location Nodes.</param>
-        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapon Nodes.</param>
-        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear"></param>
-        /// <param name="cmsVehicleGear">ContextMenuStrip for Vehicle Gear Nodes.</param>
-        /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts.</param>
-        public static void CreateVehicleTreeNode(Vehicle objVehicle, TreeView treVehicles, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount)
-        {
-            TreeNode objNode = new TreeNode
-            {
-                Text = objVehicle.DisplayName(GlobalOptions.Language),
-                Tag = objVehicle.InternalId
-            };
-            if (!string.IsNullOrEmpty(objVehicle.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (!string.IsNullOrEmpty(objVehicle.ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-            objNode.ToolTipText = objVehicle.Notes;
-
-            // Populate the list of Vehicle Locations.
-            foreach (string strLocation in objVehicle.Locations)
-            {
-                TreeNode objLocation = new TreeNode
-                {
-                    Tag = strLocation,
-                    Text = strLocation,
-                    ContextMenuStrip = cmsVehicleLocation
-                };
-                objNode.Nodes.Add(objLocation);
-            }
-
-            // VehicleMods.
-            foreach (VehicleMod objMod in objVehicle.Mods)
-            {
-                TreeNode objChildNode = new TreeNode
-                {
-                    Text = objMod.DisplayName(GlobalOptions.Language),
-                    Tag = objMod.InternalId
-                };
-                if (!string.IsNullOrEmpty(objMod.Notes))
-                    objChildNode.ForeColor = Color.SaddleBrown;
-                else if (objMod.IncludedInVehicle)
-                    objChildNode.ForeColor = SystemColors.GrayText;
-                objChildNode.ToolTipText = objMod.Notes;
-
-                // Cyberware.
-                foreach (Cyberware objCyberware in objMod.Cyberware)
-                {
-                    TreeNode objCyberwareNode = new TreeNode
-                    {
-                        Text = objCyberware.DisplayName(GlobalOptions.Language),
-                        Tag = objCyberware.InternalId
-                    };
-                    if (!string.IsNullOrEmpty(objCyberware.Notes))
-                        objCyberwareNode.ForeColor = Color.SaddleBrown;
-                    else if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                        objCyberwareNode.ForeColor = SystemColors.GrayText;
-                    objCyberwareNode.ToolTipText = objCyberware.Notes;
-                    objChildNode.Nodes.Add(objCyberwareNode);
-                    objChildNode.Expand();
-                }
-
-                // VehicleWeapons.
-                foreach (Weapon objWeapon in objMod.Weapons)
-                    CreateWeaponTreeNode(objWeapon, objChildNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
-                // Attach the ContextMenuStrip.
-                objChildNode.ContextMenuStrip = cmsVehicle;
-
-                objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
-            }
-            if (objVehicle.WeaponMounts.Count > 0)
-            {
-                TreeNode mountsNode = new TreeNode
-                {
-                    Tag = "String_WeaponMounts",
-                    Text = LanguageManager.GetString("String_WeaponMounts", GlobalOptions.Language)
-                };
-                objNode.Nodes.Add(mountsNode);
-                // Weapon Mounts
-                foreach (WeaponMount wm in objVehicle.WeaponMounts)
-                    CreateWeaponMountTreeNode(wm, mountsNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsVehicleWeaponMount);
-            }
-            // Vehicle Weapons (not attached to a mount).
-            foreach (Weapon objWeapon in objVehicle.Weapons)
-                CreateWeaponTreeNode(objWeapon, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-
-            TreeNodeCollection lstChildNodes = objNode.Nodes;
-            // Vehicle Gear.
-            foreach (Gear objGear in objVehicle.Gear)
-            {
-                TreeNode objParent = objNode;
-                if (!string.IsNullOrEmpty(objGear.Location))
-                {
-                    foreach (TreeNode objFind in lstChildNodes)
-                    {
-                        if (objFind.Text == objGear.Location)
-                        {
-                            objParent = objFind;
-                            break;
-                        }
-                    }
-                }
-
-                objParent.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
-                objParent.Expand();
-            }
-
-            objNode.ContextMenuStrip = cmsVehicle;
-            treVehicles.Nodes[0].Nodes.Add(objNode);
-            treVehicles.Nodes[0].Expand();
-        }
-
-        /// <summary>
-        /// Add a Weapon Mount to the TreeView
-        /// </summary>
-        /// <param name="wm">WeaponMount that we're creating.</param>
-        /// <param name="parentNode">Parent treenode to add to.</param>
-        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapons</param>
-        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessories</param>
-        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Gear</param>
-        /// <param name="cmsVehicleWeaponMount">ContextMenuStrip for Vehicle Weapon Mounts</param>
-        public static void CreateWeaponMountTreeNode(WeaponMount wm, TreeNode parentNode, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, ContextMenuStrip cmsVehicleWeaponMount)
-        {
-            TreeNode objNode = new TreeNode
-            {
-                Text = wm.DisplayName(GlobalOptions.Language),
-                Tag = wm.InternalId,
-                ContextMenuStrip = cmsVehicleWeaponMount
-            };
-            if (!string.IsNullOrEmpty(wm.Notes))
-            {
-                objNode.ToolTipText = wm.Notes;
-                objNode.ForeColor = Color.SaddleBrown;
-            }
-            else if (wm.IncludedInVehicle)
-            {
-                objNode.ForeColor = SystemColors.GrayText;
-            }
-            foreach (Weapon w in wm.Weapons)
-            {
-                CreateWeaponTreeNode(w, objNode, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            }
-            parentNode.Nodes.Add(objNode);
-        }
-
-        /// <summary>
-        /// Add a Weapon to the TreeView.
-        /// </summary>
-        /// <param name="objWeapon">Weapon to add.</param>
-        /// <param name="objWeaponsNode">Node to append the Weapon Node to.</param>
-        /// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
-        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
-        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
-        /// <param name="WeaponID">The weapon </param>
-        public static void CreateWeaponTreeNode(Weapon objWeapon, TreeNode objWeaponsNode, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, string WeaponID = null)
-        {
-            TreeNode objNode = new TreeNode
-            {
-                Text = objWeapon.DisplayName(GlobalOptions.Language),
-                Tag = WeaponID ?? objWeapon.InternalId
-            };
-            if (!string.IsNullOrEmpty(objWeapon.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            else if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || WeaponID != null || !string.IsNullOrEmpty(objWeapon.ParentID))
-                objNode.ForeColor = SystemColors.GrayText;
-
-            objNode.ToolTipText = objWeapon.Notes;
-
-            TreeNodeCollection lstChildNodes = objNode.Nodes;
-            // Add attached Weapon Accessories.
-            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-            {
-                TreeNode objChild = new TreeNode
-                {
-                    Text = objAccessory.DisplayName(GlobalOptions.Language),
-                    Tag = objAccessory.InternalId,
-                    ContextMenuStrip = cmsWeaponAccessory
-                };
-                if (!string.IsNullOrEmpty(objAccessory.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objAccessory.IncludedInWeapon)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objAccessory.Notes;
-
-                // Add any Gear attached to the Weapon Accessory.
-                TreeNodeCollection lstAccessoryChildNodes = objChild.Nodes;
-                foreach (Gear objGear in objAccessory.Gear)
-                {
-                    lstAccessoryChildNodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                }
-                if (lstAccessoryChildNodes.Count > 0)
-                    objChild.Expand();
-
-                lstChildNodes.Add(objChild);
-            }
-
-            // Add Underbarrel Weapons.
-            if (objWeapon.UnderbarrelWeapons.Count > 0)
-            {
-                foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-                    CreateWeaponTreeNode(objUnderbarrelWeapon, objNode, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            }
-            else if (lstChildNodes.Count > 0)
-                objNode.Expand();
-
-            // If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.
-            if (!objWeapon.IsUnderbarrelWeapon && !string.IsNullOrEmpty(objWeapon.Location))
-            {
-                foreach (TreeNode objLocationNode in objWeaponsNode.TreeView.Nodes)
-                {
-                    if (objLocationNode.Text == objWeapon.Location)
-                    {
-                        objWeaponsNode = objLocationNode;
-                        break;
-                    }
-                }
-            }
-
-            objNode.ContextMenuStrip = cmsWeapon;
-            objWeaponsNode.Nodes.Add(objNode);
-            objWeaponsNode.Expand();
         }
         #endregion
 

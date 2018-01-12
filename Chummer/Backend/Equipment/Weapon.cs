@@ -110,7 +110,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        public void Create(XmlNode objXmlWeapon, IList<TreeNode> lstNodes, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, IList<Weapon> objWeapons, ContextMenuStrip cmsWeaponAccessoryGear = null, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        public void Create(XmlNode objXmlWeapon, List<Weapon> lstWeapons, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             if (objXmlWeapon.TryGetField("id", Guid.TryParse, out _sourceID))
                 _objCachedMyXmlNode = null;
@@ -213,41 +213,21 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("spec2", ref _strSpec2);
             objXmlWeapon.TryGetBoolFieldQuickly("allowaccessory", ref _blnAllowAccessory);
 
-            TreeNode objNode = null;
-            if (lstNodes != null)
-            {
-                objNode = new TreeNode
-                {
-                    Text = DisplayName(GlobalOptions.Language),
-                    Tag = _guiID.ToString()
-                };
-                lstNodes.Add(objNode);
-            }
-
             // If the Weapon comes with an Underbarrel Weapon, add it.
             if (objXmlWeapon.InnerXml.Contains("<underbarrels>") && blnCreateChildren)
             {
                 foreach (XmlNode objXmlUnderbarrel in objXmlWeapon["underbarrels"].ChildNodes)
                 {
                     Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-                    List<TreeNode> lstUnderbarrelNodes = lstNodes == null ? null : new List<TreeNode>();
                     XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlUnderbarrel.InnerText + "\"]");
-                    objUnderbarrelWeapon.Create(objXmlWeaponNode, lstUnderbarrelNodes, cmsWeapon, cmsWeaponAccessory, objWeapons, cmsWeaponAccessoryGear, true, blnCreateImprovements);
+                    objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements);
                     if (!AllowAccessory)
                         objUnderbarrelWeapon.AllowAccessory = false;
                     objUnderbarrelWeapon.ParentID = InternalId;
                     objUnderbarrelWeapon.IncludedInWeapon = true;
                     objUnderbarrelWeapon.Parent = this;
+                    objUnderbarrelWeapon.ParentVehicle = ParentVehicle;
                     _lstUnderbarrel.Add(objUnderbarrelWeapon);
-                    if (lstNodes != null)
-                    {
-                        foreach (TreeNode objLoopNode in lstUnderbarrelNodes)
-                        {
-                            objLoopNode.ContextMenuStrip = cmsWeapon;
-                            objLoopNode.ForeColor = SystemColors.GrayText;
-                            objNode.Nodes.Add(objLoopNode);
-                        }
-                    }
                 }
             }
 
@@ -265,7 +245,6 @@ namespace Chummer.Backend.Equipment
                 foreach (XmlNode objXmlWeaponAccessory in objXmlAccessoryList)
                 {
                     XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"].InnerText + "\"]");
-                    TreeNode objAccessoryNode = new TreeNode();
                     WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                     int intAccessoryRating = 0;
                     if (objXmlWeaponAccessory["rating"] != null)
@@ -276,16 +255,16 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objXmlWeaponAccessory.InnerXml.Contains("<extramount>"))
                         {
-                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren, blnCreateImprovements);
+                            objAccessory.Create(objXmlAccessory, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
                         }
                         else
                         {
-                            objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren, blnCreateImprovements);
+                            objAccessory.Create(objXmlAccessory, new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
                         }
                     }
                     else
                     {
-                        objAccessory.Create(objXmlAccessory, objAccessoryNode, new Tuple<string, string>("Internal", "None"), intAccessoryRating, cmsWeaponAccessoryGear, false, blnCreateChildren, blnCreateImprovements);
+                        objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
                     }
                     // Add any extra Gear that comes with the Weapon Accessory.
                     if (objXmlWeaponAccessory["gears"] != null)
@@ -318,11 +297,8 @@ namespace Chummer.Backend.Equipment
 
                             XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                             Gear objGear = new Gear(_objCharacter);
-                            
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                            objGear.Create(objXmlGear, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
                             objGear.Quantity = decGearQty;
                             objGear.Cost = "0";
@@ -338,29 +314,17 @@ namespace Chummer.Backend.Equipment
                             // Change the Capacity of the child if necessary.
                             if (objXmlAccessoryGear["capacity"] != null)
                                 objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
-                            
-                            objAccessoryNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                            if (!blnStartCollapsed)
-                                objAccessoryNode.Expand();
                         }
                     }
 
                     objAccessory.IncludedInWeapon = true;
                     objAccessory.Parent = this;
-                    objAccessoryNode.ContextMenuStrip = cmsWeaponAccessory;
                     _lstAccessories.Add(objAccessory);
-                    objAccessoryNode.Text = objAccessory.DisplayName(GlobalOptions.Language);
-                    objAccessoryNode.ForeColor = SystemColors.GrayText;
-                    if (objNode != null)
-                    {
-                        objNode.Nodes.Add(objAccessoryNode);
-                        objNode.Expand();
-                    }
                 }
             }
 
             // Add Subweapons (not underbarrels) if applicable.
-            if (objWeapons != null && objXmlWeapon.InnerXml.Contains("<addweapon>"))
+            if (lstWeapons != null && objXmlWeapon.InnerXml.Contains("<addweapon>"))
             {
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddWeapon in objXmlWeapon.SelectNodes("addweapon"))
@@ -369,25 +333,19 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlSubWeapon = strLoopID.IsGuid()
                         ? objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                         : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                    List<TreeNode> lstSubWeaponNodes = lstNodes == null ? null : new List<TreeNode>();
+                    
                     Weapon objSubWeapon = new Weapon(_objCharacter)
                     {
                         ParentVehicle = ParentVehicle
                     };
-                    objSubWeapon.Create(objXmlSubWeapon, lstSubWeaponNodes, cmsWeapon, cmsWeaponAccessory, objWeapons, cmsWeaponAccessoryGear, blnCreateChildren, blnCreateImprovements);
+                    objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements);
                     objSubWeapon.ParentID = InternalId;
-                    if (lstNodes != null)
-                    {
-                        foreach (TreeNode objLoopNode in lstSubWeaponNodes)
-                        {
-                            objLoopNode.ForeColor = SystemColors.GrayText;
-                            lstNodes.Add(objLoopNode);
-                        }
-                    }
-                    objWeapons.Add(objSubWeapon);
+                    lstWeapons.Add(objSubWeapon);
                 }
             }
+
+            foreach (Weapon objLoopWeapon in lstWeapons)
+                objLoopWeapon.ParentVehicle = ParentVehicle;
         }
 
         /// <summary>
@@ -3824,6 +3782,69 @@ namespace Chummer.Backend.Equipment
             }
 
             return decReturn;
+        }
+
+        /// <summary>
+        /// Add a Weapon to the TreeView.
+        /// </summary>
+        /// <param name="objWeapon">Weapon to add.</param>
+        /// <param name="objWeaponsNode">Node to append the Weapon Node to.</param>
+        /// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
+        /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
+        /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsWeapon
+            };
+            if (!string.IsNullOrEmpty(Notes))
+                objNode.ForeColor = Color.SaddleBrown;
+            else if (Cyberware || Category == "Gear" || Category.StartsWith("Quality") || !string.IsNullOrEmpty(ParentID))
+                objNode.ForeColor = SystemColors.GrayText;
+
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
+            // Add attached Weapon Accessories.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                TreeNode objChild = new TreeNode
+                {
+                    Text = objAccessory.DisplayName(GlobalOptions.Language),
+                    Tag = objAccessory.InternalId,
+                    ContextMenuStrip = cmsWeaponAccessory
+                };
+                if (!string.IsNullOrEmpty(objAccessory.Notes))
+                    objChild.ForeColor = Color.SaddleBrown;
+                else if (objAccessory.IncludedInWeapon)
+                    objChild.ForeColor = SystemColors.GrayText;
+                objChild.ToolTipText = objAccessory.Notes.WordWrap(100);
+
+                // Add any Gear attached to the Weapon Accessory.
+                TreeNodeCollection lstAccessoryChildNodes = objChild.Nodes;
+                foreach (Gear objGear in objAccessory.Gear)
+                {
+                    lstAccessoryChildNodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
+                }
+                if (lstAccessoryChildNodes.Count > 0)
+                    objChild.Expand();
+
+                lstChildNodes.Add(objChild);
+            }
+
+            // Add Underbarrel Weapons.
+            foreach (Weapon objUnderbarrelWeapon in UnderbarrelWeapons)
+            {
+                lstChildNodes.Add(objUnderbarrelWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+            }
+
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
+
+            return objNode;
         }
         #endregion
 

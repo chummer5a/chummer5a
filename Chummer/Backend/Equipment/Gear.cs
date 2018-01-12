@@ -108,7 +108,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
         /// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
-        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
+        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> objWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
         {
             if (objXmlGear == null)
                 return;
@@ -274,23 +274,10 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeapon = strLoopID.IsGuid()
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                    List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
+                    
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons, null, true, blnAddImprovements);
+                    objGearWeapon.Create(objXmlWeapon, objWeapons, true, blnAddImprovements);
                     objGearWeapon.ParentID = InternalId;
-                    foreach (TreeNode objLoopNode in lstGearWeaponNodes)
-                    {
-                        objLoopNode.ForeColor = SystemColors.GrayText;
-                        if (blnAerodynamic)
-                        {
-                            objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic", GlobalOptions.Language) + ")";
-                            objGearWeapon.Range = "Aerodynamic Grenades";
-                            objLoopNode.Text = objGearWeapon.DisplayName(GlobalOptions.Language);
-                            _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic", GlobalOptions.Language) + ")";
-                        }
-                        objWeaponNodes.Add(objLoopNode);
-                    }
                     objWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
@@ -498,8 +485,7 @@ namespace Chummer.Backend.Equipment
 
             Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>();
-            List<TreeNode> lstChildWeaponNodes = new List<TreeNode>();
-            objChild.Create(objXmlGearNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
+            objChild.Create(objXmlGearNode, intChildRating, lstChildWeapons, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
             objChild.MinRating = intChildRating;
@@ -767,7 +753,7 @@ namespace Chummer.Backend.Equipment
                     if (Rating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
-                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(), new List<TreeNode>());
+                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>());
                         objNuyenGear.Parent = this;
                         objNuyenGear.Quantity = Rating;
                         _objChildren.Add(objNuyenGear);

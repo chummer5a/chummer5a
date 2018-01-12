@@ -101,13 +101,13 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Create a LifestyleQuality from an XmlNode and return the TreeNodes for it.
+        /// Create a LifestyleQuality from an XmlNode.
         /// </summary>
         /// <param name="objXmlLifestyleQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the LifestyleQuality will be added to.</param>
-        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param>
+        /// <param name="objLifestyleQualitySource">Source of the LifestyleQuality.</param
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, TreeNode objNode)
+        public void Create(XmlNode objXmlLifestyleQuality, Lifestyle objParentLifestyle, Character objCharacter, QualitySource objLifestyleQualitySource, string strExtra = "")
         {
             _objParentLifestyle = objParentLifestyle;
             _SourceGuid = Guid.Parse(objXmlLifestyleQuality["id"].InnerText);
@@ -130,9 +130,9 @@ namespace Chummer.Backend.Equipment
             string strAllowedFreeLifestyles = string.Empty;
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
                 _lstAllowedFreeLifestyles = strAllowedFreeLifestyles.Split(',').ToList();
-            if (objNode.Text.Contains('('))
+            if (strExtra.Contains('('))
             {
-                _strExtra = objNode.Text.Split('(')[1].TrimEnd(')');
+                _strExtra = strExtra.Split('(')[1].TrimEnd(')');
             }
 
             // If the item grants a bonus, pass the information to the Improvement Manager.
@@ -153,12 +153,8 @@ namespace Chummer.Backend.Equipment
             // Built-In Qualities appear as grey text to show that they cannot be removed.
             if (objLifestyleQualitySource == QualitySource.BuiltIn)
             {
-                objNode.ForeColor = SystemColors.GrayText;
                 Free = true;
             }
-            objNode.Name = Name;
-            objNode.Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            objNode.Tag = InternalId;
         }
 
         /// <summary>
@@ -655,6 +651,28 @@ namespace Chummer.Backend.Equipment
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode()
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Name = Name,
+                Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
+                Tag = InternalId,
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (_objLifestyleQualitySource == QualitySource.BuiltIn)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
         }
         #endregion
     }

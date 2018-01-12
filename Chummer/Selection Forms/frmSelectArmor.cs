@@ -140,9 +140,8 @@ namespace Chummer
             if (objXmlArmor == null) return;
             // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
             Armor objArmor = new Armor(_objCharacter);
-            TreeNode objNode = new TreeNode();
             List<Weapon> lstWeapons = new List<Weapon>();
-            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
+            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
             lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
             lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
@@ -409,10 +408,9 @@ namespace Chummer
                     {
                         if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
                         {
-                            TreeNode objNode = new TreeNode();
                             Armor objArmor = new Armor(_objCharacter);
                             List<Weapon> lstWeapons = new List<Weapon>();
-                            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
+                            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
                             string strArmorGuid = objArmor.SourceID.ToString();
                             string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
@@ -538,9 +536,8 @@ namespace Chummer
             if (objXmlArmor == null) return;
             // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
             Armor objArmor = new Armor(_objCharacter);
-            TreeNode objNode = new TreeNode();
             List<Weapon> lstWeapons = new List<Weapon>();
-            objArmor.Create(objXmlArmor, objNode, null, null, 0, lstWeapons, true, true, true);
+            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
             
             decimal decItemCost = 0.0m;
             if (chkFreeItem.Checked)

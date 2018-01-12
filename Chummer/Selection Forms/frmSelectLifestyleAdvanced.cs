@@ -256,9 +256,8 @@ namespace Chummer
                     {
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Not a Home\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        TreeNode objNode = new TreeNode();
-                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn, objNode);
-                        treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
+                        treLifestyleQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode());
                         treLifestyleQualities.Nodes[1].Expand();
                         _objLifestyle.LifestyleQualities.Add(objQuality);
                     }
@@ -335,15 +334,13 @@ namespace Chummer
                     {
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlNode.InnerText + "\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        TreeNode objNode = new TreeNode();
                         string push = objXmlNode.Attributes?["select"]?.InnerText;
                         if (!string.IsNullOrWhiteSpace(push))
                         {
                             _objCharacter.Pushtext.Push(push);
                         }
-                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn, objNode);
-                        objNode.Text = objQuality.DisplayName(GlobalOptions.Language);
-                        treLifestyleQualities.Nodes[3].Nodes.Add(objNode);
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
+                        treLifestyleQualities.Nodes[3].Nodes.Add(objQuality.CreateTreeNode());
                         treLifestyleQualities.Nodes[3].Expand();
                         _objLifestyle.FreeGrids.Add(objQuality);
                     }
@@ -380,11 +377,10 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
             XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
-
-            TreeNode objNode = new TreeNode();
+            
             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
-            objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected, objNode);
+            objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
             //objNode.ContextMenuStrip = cmsQuality;
             if (objQuality.InternalId == Guid.Empty.ToString())
                 return;
@@ -399,17 +395,17 @@ namespace Chummer
                 // Add the Quality to the appropriate parent node.
                 if (objQuality.Type == QualityType.Positive)
                 {
-                    treLifestyleQualities.Nodes[0].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[0].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[0].Expand();
                 }
                 else if (objQuality.Type == QualityType.Negative)
                 {
-                    treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[1].Expand();
                 }
                 else
                 {
-                    treLifestyleQualities.Nodes[2].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[2].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[2].Expand();
                 }
                 _objLifestyle.LifestyleQualities.Add(objQuality);

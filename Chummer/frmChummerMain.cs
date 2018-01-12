@@ -515,9 +515,13 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
+                List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, null, null, null, objCharacter.Weapons);
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
+                foreach (Weapon objLoopWeapon in lstWeapons)
+                    objCharacter.Weapons.Add(objLoopWeapon);
             }
 
             frmCareer frmNewCharacter = new frmCareer(objCharacter)
@@ -881,9 +885,13 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
+                List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, null, null, null, objCharacter.Weapons);
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
+                foreach (Weapon objLoopWeapon in lstWeapons)
+                    objCharacter.Weapons.Add(objLoopWeapon);
             }
 
             frmCreate frmNewCharacter = new frmCreate(objCharacter)

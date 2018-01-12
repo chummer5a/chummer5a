@@ -148,7 +148,7 @@ namespace Chummer
                 return;
 
             Weapon objWeapon = new Weapon(_objCharacter);
-            objWeapon.Create(objXmlWeapon, null, null, null, null, null, true, false);
+            objWeapon.Create(objXmlWeapon, null, true, false);
 
             lblWeaponReach.Text = objWeapon.TotalReach.ToString();
             lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -273,7 +273,7 @@ namespace Chummer
                         continue;
 
                     Weapon objWeapon = new Weapon(_objCharacter);
-                    objWeapon.Create(objXmlWeapon, null, null, null, null, null, true, false);
+                    objWeapon.Create(objXmlWeapon, null, true, false);
 
                     string strID = objWeapon.SourceID.ToString();
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);

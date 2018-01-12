@@ -86,7 +86,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
-        public void Create(XmlNode objXmlAccessory, TreeNode objNode, Tuple<string, string> strMount, int intRating, ContextMenuStrip cmsAccessoryGear, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
         {
             if (objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -195,9 +195,8 @@ namespace Chummer.Backend.Equipment
                     Gear objGear = new Gear(_objCharacter);
                     
                     List<Weapon> lstWeapons = new List<Weapon>();
-                    List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, intGearRating, lstWeapons, lstWeaponNodes, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                    objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
 
                     objGear.Quantity = decGearQty;
                     objGear.Cost = "0";
@@ -213,14 +212,8 @@ namespace Chummer.Backend.Equipment
                     // Change the Capacity of the child if necessary.
                     if (objXmlAccessoryGear["capacity"] != null)
                         objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
-                    objNode.Nodes.Add(objGear.CreateTreeNode(cmsAccessoryGear));
-                    if (!blnStartCollapsed)
-                        objNode.Expand();
                 }
             }
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -1102,6 +1095,34 @@ namespace Chummer.Backend.Equipment
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsWeaponAccessory
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (IncludedInWeapon)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            foreach (Gear objGear in Gear)
+            {
+                objNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
+                objNode.Expand();
+            }
+
+            return objNode;
         }
         #endregion
     }
