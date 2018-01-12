@@ -116,10 +116,11 @@ namespace Chummer
 
         private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
+            string strSelectedLifestyleId = lstLifestyleQualities.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedLifestyleId))
                 return;
 
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
+            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedLifestyleId + "\"]");
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
             lblBP.Text = intBP.ToString();
             if (chkFree.Checked)
@@ -244,7 +245,7 @@ namespace Chummer
             {
                 if (lstLifestyleQualities.SelectedIndex + 1 < lstLifestyleQualities.Items.Count)
                 {
-                    lstLifestyleQualities.SelectedIndex++;
+                    lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
                     {
@@ -255,7 +256,7 @@ namespace Chummer
             {
                 if (lstLifestyleQualities.SelectedIndex - 1 >= 0)
                 {
-                    lstLifestyleQualities.SelectedIndex--;
+                    lstLifestyleQualities.SelectedIndex -= 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
                     {
@@ -363,19 +364,20 @@ namespace Chummer
                 strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
             }
 
+            if (_strSelectedLifestyle != "Bolt Hole")
+            {
+                strFilter += " and (name != \"Dug a Hole\")";
+            }
+
             XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]");
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
             foreach (XmlNode objXmlQuality in objXmlQualityList)
             {
-                string strQualityName = objXmlQuality["name"].InnerText;
-                if (strQualityName != "Dug a Hole" || _strSelectedLifestyle == "Bolt Hole")
+                if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
                 {
-                    if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
-                    {
-                        lstLifestyleQuality.Add(new ListItem(strQualityName, objXmlQuality["translate"]?.InnerText ?? strQualityName));
-                        if (blnTerminateAfterFirst)
-                            break;
-                    }
+                    lstLifestyleQuality.Add(new ListItem(objXmlQuality["id"].InnerText, objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText));
+                    if (blnTerminateAfterFirst)
+                        break;
                 }
             }
             if (blnDoUIUpdate)
@@ -397,10 +399,11 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
+            string strSelectedQualityId = lstLifestyleQualities.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedQualityId))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
-            _strSelectedQuality = objNode["name"].InnerText;
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQualityId + "\"]");
+            _strSelectedQuality = strSelectedQualityId;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
 
             if (!RequirementMet(objNode, true))
