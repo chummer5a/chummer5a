@@ -213,55 +213,52 @@ namespace Chummer
         {
             lblPowerPoints.Visible = false;
             lblPowerPointsLabel.Visible = false;
-            if (!string.IsNullOrEmpty(trePowers.SelectedNode.Tag.ToString()))
+            string strSelectedPower = trePowers.SelectedNode.Tag?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedPower))
             {
-                XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + trePowers.SelectedNode.Tag + "\"]");
+                XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedPower + "\"]");
                 if (objXmlPower != null)
                 {
-                    if (objXmlPower["category"] != null)
-                        lblCritterPowerCategory.Text = objXmlPower["category"].InnerText;
+                    lblCritterPowerCategory.Text = objXmlPower["category"]?.InnerText ?? string.Empty;
 
-                    if (objXmlPower["type"] != null)
+                    switch (objXmlPower["type"]?.InnerText)
                     {
-                        switch (objXmlPower["type"].InnerText)
-                        {
-                            case "M":
-                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Language);
-                                break;
-                            case "P":
-                                lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
-                                break;
-                            default:
-                                lblCritterPowerType.Text = string.Empty;
-                                break;
-                        }
+                        case "M":
+                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana", GlobalOptions.Language);
+                            break;
+                        case "P":
+                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical", GlobalOptions.Language);
+                            break;
+                        default:
+                            lblCritterPowerType.Text = string.Empty;
+                            break;
                     }
 
-                    if (objXmlPower["action"] != null)
+                    switch (objXmlPower["action"]?.InnerText)
                     {
-                        switch (objXmlPower["action"].InnerText)
-                        {
-                            case "Auto":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic", GlobalOptions.Language);
-                                break;
-                            case "Free":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree", GlobalOptions.Language);
-                                break;
-                            case "Simple":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple", GlobalOptions.Language);
-                                break;
-                            case "Complex":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex", GlobalOptions.Language);
-                                break;
-                            case "Special":
-                                lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
-                                break;
-                        }
+                        case "Auto":
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic", GlobalOptions.Language);
+                            break;
+                        case "Free":
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree", GlobalOptions.Language);
+                            break;
+                        case "Simple":
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple", GlobalOptions.Language);
+                            break;
+                        case "Complex":
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex", GlobalOptions.Language);
+                            break;
+                        case "Special":
+                            lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
+                            break;
+                        default:
+                            lblCritterPowerAction.Text = string.Empty;
+                            break;
                     }
 
-                    if (objXmlPower["range"] != null)
+                    string strRange = objXmlPower["range"]?.InnerText ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strRange))
                     {
-                        string strRange = objXmlPower["range"].InnerText;
                         strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", GlobalOptions.Language));
                         strRange = strRange.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language));
                         strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language));
@@ -269,52 +266,44 @@ namespace Chummer
                         strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language));
                         strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ")");
                         strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
-                        lblCritterPowerRange.Text = strRange;
                     }
+                    lblCritterPowerRange.Text = strRange;
 
-                    if (objXmlPower["duration"] != null)
+                    string strDuration = objXmlPower["duration"]?.InnerText ?? string.Empty;
+                    switch (strDuration)
                     {
-                        switch (objXmlPower["duration"].InnerText)
-                        {
-                            case "Instant":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Language);
-                                break;
-                            case "Sustained":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
-                                break;
-                            case "Always":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways", GlobalOptions.Language);
-                                break;
-                            case "Special":
-                                lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
-                                break;
-                            default:
-                                lblCritterPowerDuration.Text = objXmlPower["duration"].InnerText;
-                                break;
-                        }
+                        case "Instant":
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong", GlobalOptions.Language);
+                            break;
+                        case "Sustained":
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained", GlobalOptions.Language);
+                            break;
+                        case "Always":
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways", GlobalOptions.Language);
+                            break;
+                        case "Special":
+                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial", GlobalOptions.Language);
+                            break;
+                        default:
+                            lblCritterPowerDuration.Text = strDuration;
+                            break;
                     }
 
-                    string strBook = string.Empty;
-                    string strPage = string.Empty;
-                    if (objXmlPower["source"] != null)
-                        strBook = CommonFunctions.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
-                    if (objXmlPower["page"] != null)
-                        strPage = objXmlPower["page"].InnerText;
-                    if (objXmlPower["altpage"] != null)
-                        strPage = objXmlPower["altpage"].InnerText;
-                    lblCritterPowerSource.Text = strBook + " " + strPage;
-                    if (objXmlPower["source"] != null)
-                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    string strSource = objXmlPower["altsource"]?.InnerText ?? objXmlPower["source"]?.InnerText ?? string.Empty;
+                    string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"]?.InnerText ?? string.Empty;
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + " " + strPage;
+                    if (!string.IsNullOrEmpty(strSource))
+                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 
-                    lblKarma.Text = objXmlPower["karma"] != null ? objXmlPower["karma"]?.InnerText : "0";
+                    lblKarma.Text = objXmlPower["karma"]?.InnerText ?? "0";
 
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
                         XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                        XmlNode objXmlCritterPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
+                        XmlNode objXmlCritterPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]");
                         lblPowerPoints.Text = objXmlCritterPower.Attributes["cost"].InnerText;
                         lblPowerPoints.Visible = true;
                         lblPowerPointsLabel.Visible = true;
@@ -331,12 +320,14 @@ namespace Chummer
 
             string strCategory = cboCategory.SelectedValue?.ToString();
 
-            List<string> lstPowerWhitelist = null;
+            List<string> lstPowerWhitelist = new List<string>();
 
             // If the Critter is only allowed certain Powers, display only those.
-            if (objXmlCritter["optionalpowers"] != null)
+            XmlNode xmlOptionalPowers = objXmlCritter["optionalpowers"];
+            if (xmlOptionalPowers != null)
             {
-                lstPowerWhitelist = objXmlCritter.SelectNodes("optionalpowers/power").Cast<XmlNode>().Select(x => x.InnerText).ToList();
+                foreach (XmlNode xmlNode in xmlOptionalPowers.SelectNodes("power"))
+                    lstPowerWhitelist.Add(xmlNode.InnerText);
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
                 bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
@@ -459,13 +450,14 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (trePowers.SelectedNode == null)
+            string strSelectedPower = trePowers.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelectedPower))
                 return;
 
             if (nudCritterPowerRating.Enabled)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
-            _strSelectedPower = trePowers.SelectedNode.Tag.ToString();
+            _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
             if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)

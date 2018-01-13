@@ -180,16 +180,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Create a Quality from an XmlNode and return the TreeNodes for it.
+        /// Create a Quality from an XmlNode.
         /// </summary>
         /// <param name="objXmlQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the Quality will be added to.</param>
         /// <param name="objQualitySource">Source of the Quality.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
-        /// <param name="objWeaponNodes">List of TreeNodes to represent the Weapons added.</param>
+        /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -269,17 +267,11 @@ namespace Chummer
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                        List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
+                        
                         Weapon objGearWeapon = new Weapon(objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons);
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
-                        foreach (TreeNode objLoopNode in lstGearWeaponNodes)
-                        {
-                            objLoopNode.ForeColor = SystemColors.GrayText;
-                            objWeaponNodes.Add(objLoopNode);
-                        }
-                        objWeapons.Add(objGearWeapon);
+                        lstWeapons.Add(objGearWeapon);
 
                         _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
                     }
@@ -290,7 +282,6 @@ namespace Chummer
             {
                 foreach (XmlNode objXmlNaturalWeapon in objXmlQuality["naturalweapons"].SelectNodes("naturalweapon"))
                 {
-                    TreeNode objGearWeaponNode = new TreeNode();
                     Weapon objWeapon = new Weapon(_objCharacter);
                     if (objXmlNaturalWeapon["name"] != null)
                         objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
@@ -315,10 +306,6 @@ namespace Chummer
                         objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
                     if (objXmlNaturalWeapon["page"] != null)
                         objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
-                    objGearWeaponNode.ForeColor = SystemColors.GrayText;
-                    objGearWeaponNode.Text = objWeapon.Name;
-                    objGearWeaponNode.Tag = objWeapon.InternalId;
-                    objWeaponNodes.Add(objGearWeaponNode);
 
                     _objCharacter.Weapons.Add(objWeapon);
                 }
@@ -354,10 +341,6 @@ namespace Chummer
                 }
             }
 
-            // Metatype Qualities appear as grey text to show that they cannot be removed.
-            if (objQualitySource == QualitySource.Metatype || objQualitySource == QualitySource.MetatypeRemovable)
-                objNode.ForeColor = SystemColors.GrayText;
-
             if (string.IsNullOrEmpty(_strNotes))
             {
                 _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
@@ -366,9 +349,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = InternalId;
         }
 
         /// <summary>
@@ -795,6 +775,36 @@ namespace Chummer
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsQuality
+            };
+            if (!Implemented)
+            {
+                objNode.ForeColor = Color.Red;
+            }
+            else if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (OriginSource == QualitySource.BuiltIn ||
+                OriginSource == QualitySource.Improvement ||
+                OriginSource == QualitySource.LifeModule ||
+                OriginSource == QualitySource.Metatype)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
         }
         #endregion
 
@@ -1717,13 +1727,12 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Spell from an XmlNode and return the TreeNodes for it.
+        /// Create a Spell from an XmlNode.
         /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
-        public void Create(XmlNode objXmlSpellNode, TreeNode objNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
+        public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             if (objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -1792,12 +1801,6 @@ namespace Chummer
             {
                 _strNotes = CommonFunctions.GetText($"{_strSource} {_strPage}", Name);
             }*/
-
-            //TreeNode objNode = new TreeNode();
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
-
-            //return objNode;
         }
 
         /// <summary>
@@ -2543,6 +2546,37 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
+        {
+            string strCategory = string.Empty;
+            if (blnAddCategory)
+            {
+                if (Category == "Rituals")
+                    strCategory = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + ' ';
+                if (Category == "Enchantments")
+                    strCategory = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + ' ';
+            }
+            TreeNode objNode = new TreeNode
+            {
+                Text = strCategory + DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsSpell
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade == -1)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -2837,6 +2871,19 @@ namespace Chummer
             get => _lstGear;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
+        {
+            TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
+
+            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.Language);
+            objNode.Tag = InternalId;
+            objNode.Checked = Bonded;
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -2864,12 +2911,11 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Metamagic from an XmlNode and return the TreeNodes for it.
+        /// Create a Metamagic from an XmlNode.
         /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlMetamagicNode, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource)
         {
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -2907,12 +2953,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            if (_objCharacter.SubmersionGrade > 0)
-                objNode.Text = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
-            else
-                objNode.Text = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -3116,6 +3156,29 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMetamagic)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsMetamagic
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade == -1)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -3142,12 +3205,11 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create an Art from an XmlNode and return the TreeNodes for it.
+        /// Create an Art from an XmlNode.
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource)
         {
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -3176,9 +3238,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            objNode.Text = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -3357,6 +3416,29 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsArt)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsArt
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade == -1)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -3384,12 +3466,11 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create an Enhancement from an XmlNode and return the TreeNodes for it.
+        /// Create an Enhancement from an XmlNode.
         /// <param name="objXmlEnhancementNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Enhancement is being added to.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlArtNode, TreeNode objNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource)
         {
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -3421,9 +3502,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            objNode.Text = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -3611,6 +3689,28 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsEnhancement
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade == -1)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -3639,9 +3739,8 @@ namespace Chummer
 
         /// Create a Complex Form from an XmlNode.
         /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlComplexFormNode, TreeNode objNode, ContextMenuStrip cms, string strExtra = "")
+        public void Create(XmlNode objXmlComplexFormNode, string strExtra = "")
         {
             if (objXmlComplexFormNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -3664,10 +3763,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            objNode.Text = DisplayName;
-            objNode.Tag = _guiID.ToString();
-            objNode.ContextMenuStrip = cms;
         }
 
         /// <summary>
@@ -3863,6 +3958,24 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName,
+                Tag = InternalId,
+                ContextMenuStrip = cmsComplexForm
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -3891,9 +4004,8 @@ namespace Chummer
 
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlProgramNode, TreeNode objNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
+        public void Create(XmlNode objXmlProgramNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
         {
             if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -3907,9 +4019,6 @@ namespace Chummer
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
 
             objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-
-            objNode.Text = DisplayName;
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -4112,6 +4221,28 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsAIProgram)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName,
+                Tag = InternalId,
+                ContextMenuStrip = cmsAIProgram
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (!CanDelete)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -4137,10 +4268,9 @@ namespace Chummer
             _guiID = Guid.NewGuid();
         }
 
-        /// Create a Martial Art from an XmlNode and return the TreeNodes for it.
+        /// Create a Martial Art from an XmlNode.
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlArtNode, TreeNode objNode)
+        public void Create(XmlNode objXmlArtNode)
         {
             if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -4165,9 +4295,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -4370,6 +4497,35 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtAdvantage)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsMartialArt
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (IsQuality)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            foreach (MartialArtAdvantage objAdvantage in Advantages)
+            {
+                objNode.Nodes.Add(objAdvantage.CreateTreeNode(cmsMartialArtAdvantage));
+                objNode.Expand();
+            }
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -4392,11 +4548,10 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Martial Art Advantage from an XmlNode and return the TreeNodes for it.
+        /// Create a Martial Art Advantage from an XmlNode.
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlAdvantageNode, TreeNode objNode)
+        public void Create(XmlNode objXmlAdvantageNode)
         {
             if (objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -4412,9 +4567,6 @@ namespace Chummer
                     return;
                 }
             }
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -4545,6 +4697,25 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtAdvantage)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsMartialArtAdvantage
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -4567,18 +4738,15 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Martial Art Maneuver from an XmlNode and return the TreeNodes for it.
+        /// Create a Martial Art Maneuver from an XmlNode.
         /// <param name="objXmlManeuverNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlManeuverNode, TreeNode objNode)
+        public void Create(XmlNode objXmlManeuverNode)
         {
             if (objXmlManeuverNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -4719,6 +4887,25 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsMartialArtTechnique
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -4752,11 +4939,10 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Skill Limit Modifier from an XmlNode and return the TreeNodes for it.
+        /// Create a Skill Limit Modifier from an XmlNode.
         /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlLimitModifierNode, TreeNode objNode)
+        public void Create(XmlNode objXmlLimitModifierNode)
         {
             _strName = objXmlLimitModifierNode["name"].InnerText;
 
@@ -4769,24 +4955,18 @@ namespace Chummer
                 }
             }
             objXmlLimitModifierNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objNode.Text = DisplayName;
-            objNode.Tag = _guiID.ToString();
         }
 
-        /// Create a Skill Limit Modifier from properties and return the TreeNodes for it.
+        /// Create a Skill Limit Modifier from properties.
         /// <param name="strName">The name of the modifier.</param>
         /// <param name="intBonus">The bonus amount.</param>
         /// <param name="strLimit">The limit this modifies.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(string strName, int intBonus, string strLimit, string strCondition, TreeNode objNode)
+        public void Create(string strName, int intBonus, string strLimit, string strCondition)
         {
             _strName = strName;
             _strLimit = strLimit;
             _intBonus = intBonus;
             _strCondition = strCondition;
-
-            objNode.Text = DisplayName;
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -4926,6 +5106,24 @@ namespace Chummer
                     strReturn += " (" + _strCondition + ")";
                 return strReturn;
             }
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                ContextMenuStrip = cmsLimitModifier,
+                Text = DisplayName,
+                Tag = InternalId
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
         }
         #endregion
     }
@@ -5987,12 +6185,11 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        /// Create a Critter Power from an XmlNode and return the TreeNodes for it.
+        /// Create a Critter Power from an XmlNode.
         /// <param name="objXmlPowerNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlPowerNode, TreeNode objNode, int intRating = 0, string strForcedValue = "")
+        public void Create(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "")
         {
             if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -6011,7 +6208,6 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
-                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
                 else if (intRating != 0)
                     _strExtra = intRating.ToString();
@@ -6038,10 +6234,6 @@ namespace Chummer
                     _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
                 }
             }*/
-
-            // Create the TreeNode for the new item.
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -6444,6 +6636,24 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
         #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsCritterPower)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                ContextMenuStrip = cmsCritterPower,
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -6469,7 +6679,7 @@ namespace Chummer
             _objOptions = objCharacter.Options;
         }
 
-        /// Create an Intiation Grade from an XmlNode and return the TreeNodes for it.
+        /// Create an Intiation Grade from an XmlNode.
         /// <param name="intGrade">Grade number.</param>
         /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
         /// <param name="blnGroup">Whether or not a Group was used.</param>

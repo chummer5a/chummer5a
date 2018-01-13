@@ -305,7 +305,7 @@ namespace Chummer
                                                     foreach (XmlNode xmlSpec in xmlSpecsNode.SelectNodes("spec"))
                                                     {
                                                         strTranslate = xmlSpec.Attributes?["translate"].InnerXml;
-                                                        if (xmlLoopNode != null)
+                                                        if (xmlItem != null)
                                                         {
                                                             XmlElement objSpecItem = xmlItem.SelectSingleNode("specs/spec[. = \"" + xmlSpec.InnerXml + "\"]") as XmlElement;
                                                             objSpecItem?.SetAttribute("translate", strTranslate);

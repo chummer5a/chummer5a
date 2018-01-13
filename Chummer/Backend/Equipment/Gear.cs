@@ -102,13 +102,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlGear">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
-        /// <param name="objWeapons">List of Weapons that should be added to the character.</param>
+        /// <param name="lstWeapons">List of Weapons that should be added to the character.</param>
         /// <param name="objWeaponNodes">List of TreeNodes to represent the added Weapons</param>
         /// <param name="strForceValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnAddImprovements">Whether or not Improvements should be added to the character.</param>
         /// <param name="blnCreateChildren">Whether or not child Gear should be created.</param>
         /// <param name="blnAerodynamic">Whether or not Weapons should be created as Aerodynamic.</param>
-        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
+        public void Create(XmlNode objXmlGear, int intRating, List<Weapon> lstWeapons, string strForceValue = "", bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnAerodynamic = false)
         {
             if (objXmlGear == null)
                 return;
@@ -274,24 +274,11 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeapon = strLoopID.IsGuid()
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-
-                    List<TreeNode> lstGearWeaponNodes = new List<TreeNode>();
+                    
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstGearWeaponNodes, null, null, objWeapons, null, true, blnAddImprovements);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements);
                     objGearWeapon.ParentID = InternalId;
-                    foreach (TreeNode objLoopNode in lstGearWeaponNodes)
-                    {
-                        objLoopNode.ForeColor = SystemColors.GrayText;
-                        if (blnAerodynamic)
-                        {
-                            objGearWeapon.Name += " (" + LanguageManager.GetString("Checkbox_Aerodynamic", GlobalOptions.Language) + ")";
-                            objGearWeapon.Range = "Aerodynamic Grenades";
-                            objLoopNode.Text = objGearWeapon.DisplayName(GlobalOptions.Language);
-                            _strName += " (" + LanguageManager.GetString("Checkbox_Aerodynamic", GlobalOptions.Language) + ")";
-                        }
-                        objWeaponNodes.Add(objLoopNode);
-                    }
-                    objWeapons.Add(objGearWeapon);
+                    lstWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
                 }
@@ -498,8 +485,7 @@ namespace Chummer.Backend.Equipment
 
             Gear objChild = new Gear(_objCharacter);
             List<Weapon> lstChildWeapons = new List<Weapon>();
-            List<TreeNode> lstChildWeaponNodes = new List<TreeNode>();
-            objChild.Create(objXmlGearNode, intChildRating, lstChildWeapons, lstChildWeaponNodes, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
+            objChild.Create(objXmlGearNode, intChildRating, lstChildWeapons, strChildForceValue, blnAddChildImprovements, blnCreateChildren);
             objChild.Quantity = decChildQty;
             objChild.Cost = "0";
             objChild.MinRating = intChildRating;
@@ -524,10 +510,8 @@ namespace Chummer.Backend.Equipment
         /// Copy a piece of Gear.
         /// </summary>
         /// <param name="objGear">Gear object to copy.</param>
-        /// <param name="objNode">TreeNode for the copied item.</param>
-        /// <param name="objWeapons">List of Weapons created by the copied item.</param>
-        /// <param name="objWeaponNodes">List of TreeNodes for the Weapons created by the copied item.</param>
-        public void Copy(Gear objGear, TreeNode objNode, List<Weapon> objWeapons, List<TreeNode> objWeaponNodes)
+        /// <param name="lstWeapons">List of Weapons created by the copied item.</param>
+        public void Copy(Gear objGear, List<Weapon> lstWeapons)
         {
             _objCachedMyXmlNode = objGear.GetNode();
             _SourceGuid = objGear._SourceGuid;
@@ -563,18 +547,11 @@ namespace Chummer.Backend.Equipment
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
 
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
-
             foreach (Gear objGearChild in objGear.Children)
             {
-                TreeNode objChildNode = new TreeNode();
                 Gear objChild = new Gear(_objCharacter);
-                objChild.Copy(objGearChild, objChildNode, objWeapons, objWeaponNodes);
+                objChild.Copy(objGearChild, lstWeapons);
                 _objChildren.Add(objChild);
-
-                objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
             }
 
             _strOverclocked = objGear.Overclocked;
@@ -767,7 +744,7 @@ namespace Chummer.Backend.Equipment
                     if (Rating > 0)
                     {
                         Gear objNuyenGear = new Gear(_objCharacter);
-                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>(), new List<TreeNode>());
+                        objNuyenGear.Create(objNuyenNode, 0, new List<Weapon>());
                         objNuyenGear.Parent = this;
                         objNuyenGear.Quantity = Rating;
                         _objChildren.Add(objNuyenGear);
@@ -2886,8 +2863,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
         /// </summary>
-        /// <param name="objParentNode">TreeNode to append to.</param>
-        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsGear)
         {
             TreeNode objNode = new TreeNode
@@ -2908,10 +2884,9 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Build up the Tree for the current piece of Gear and all of its children.
+        /// Build up the Tree for the current piece of Gear's children.
         /// </summary>
-        /// <param name="objParentNode">TreeNode to append to.</param>
-        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
         public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
         {
             bool blnExpandNode = false;

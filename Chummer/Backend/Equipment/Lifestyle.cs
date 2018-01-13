@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -95,7 +96,7 @@ namespace Chummer.Backend.Equipment
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlLifestyle">XmlNode to create the object from.</param>
         /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        public void Create(XmlNode objXmlLifestyle, TreeNode objNode)
+        public void Create(XmlNode objXmlLifestyle)
         {
             objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strBaseLifestyle);
             objXmlLifestyle.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -113,9 +114,6 @@ namespace Chummer.Backend.Equipment
             }
             else
                 _objCachedMyXmlNode = null;
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID;
         }
 
         /// <summary>
@@ -819,6 +817,23 @@ namespace Chummer.Backend.Equipment
         public void SetInternalId(string strInternalId)
         {
             _guiID = Guid.Parse(strInternalId);
+        }
+
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Name = Name,
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
         }
         #endregion
     }

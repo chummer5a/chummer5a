@@ -31,6 +31,7 @@ namespace Chummer
 {
     public partial class frmSelectLifestyleQuality : Form
     {
+        private bool _blnLoading = true;
         private string _strSelectedQuality = string.Empty;
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
@@ -91,11 +92,9 @@ namespace Chummer
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
             cboCategory.DataSource = _lstCategory;
+            cboCategory.Enabled = _lstCategory.Count > 1;
 
-            // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else
+            if (!string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
@@ -103,32 +102,40 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.Priority || _objCharacter.Created)
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma || _objCharacter.BuildMethod == CharacterBuildMethod.LifeModule || _objCharacter.Created)
                 lblBPLabel.Text = LanguageManager.GetString("Label_LP", GlobalOptions.Language);
+
+            _blnLoading = false;
 
             BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BuildQualityList(cboCategory.SelectedValue?.ToString());
+            if (!_blnLoading)
+                BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
-                return;
+            string strSelectedLifestyleId = lstLifestyleQualities.SelectedValue?.ToString();
+            if (_blnLoading || string.IsNullOrEmpty(strSelectedLifestyleId))
+            {
+                lblMinimum.Visible = false;
+                lblMinimumLabel.Visible = false;
+                lblCost.Visible = false;
+                lblCostLabel.Visible = false;
+                lblBP.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
 
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + lstLifestyleQualities.SelectedValue + "\"]");
+            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedLifestyleId + "\"]");
             int intBP = Convert.ToInt32(objXmlQuality["lp"].InnerText);
-            lblBP.Text = intBP.ToString();
-            if (chkFree.Checked)
-                lblBP.Text = LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language);
+            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free", GlobalOptions.Language) : intBP.ToString();
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlQuality["page"].InnerText;
-            if (objXmlQuality["altpage"] != null)
-                strPage = objXmlQuality["altpage"].InnerText;
+            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"].InnerText;
             lblSource.Text = strBook + " " + strPage;
             if (objXmlQuality["allowed"] != null)
             {
@@ -220,22 +227,26 @@ namespace Chummer
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildQualityList(cboCategory.SelectedValue?.ToString());
+            if (!_blnLoading)
+                BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
-            lstLifestyleQualities_SelectedIndexChanged(sender, e);
+            if (!_blnLoading)
+                BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void chkMetagenetic_CheckedChanged(object sender, EventArgs e)
         {
-            BuildQualityList(cboCategory.SelectedValue?.ToString());
+            if (!_blnLoading)
+                BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildQualityList(cboCategory.SelectedValue?.ToString());
+            if (!_blnLoading)
+                BuildQualityList(cboCategory.SelectedValue?.ToString());
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -244,7 +255,7 @@ namespace Chummer
             {
                 if (lstLifestyleQualities.SelectedIndex + 1 < lstLifestyleQualities.Items.Count)
                 {
-                    lstLifestyleQualities.SelectedIndex++;
+                    lstLifestyleQualities.SelectedIndex += 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
                     {
@@ -255,7 +266,7 @@ namespace Chummer
             {
                 if (lstLifestyleQualities.SelectedIndex - 1 >= 0)
                 {
-                    lstLifestyleQualities.SelectedIndex--;
+                    lstLifestyleQualities.SelectedIndex -= 1;
                 }
                 else if (lstLifestyleQualities.Items.Count > 0)
                     {
@@ -291,8 +302,8 @@ namespace Chummer
             set
             {
                 cboCategory.BeginUpdate();
-                cboCategory.DataSource = null;
-                cboCategory.Items.Add(value);
+                cboCategory.SelectedValue = value;
+                cboCategory.Enabled = false;
                 cboCategory.EndUpdate();
             }
         }
@@ -363,15 +374,18 @@ namespace Chummer
                 strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
             }
 
+            if (_strSelectedLifestyle != "Bolt Hole")
+            {
+                strFilter += " and (name != \"Dug a Hole\")";
+            }
+
             XmlNodeList objXmlQualityList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[" + strFilter + "]");
             List<ListItem> lstLifestyleQuality = new List<ListItem>();
             foreach (XmlNode objXmlQuality in objXmlQualityList)
             {
-                string strQualityName = objXmlQuality["name"].InnerText;
-                if (strQualityName == "Dug a Hole" && _strSelectedLifestyle != "Bolt Hole") continue;
-                if (!blnDoUIUpdate || !chkLimitList.Checked || (chkLimitList.Checked && RequirementMet(objXmlQuality, false)))
+                if (!blnDoUIUpdate || !chkLimitList.Checked || RequirementMet(objXmlQuality, false))
                 {
-                    lstLifestyleQuality.Add(new ListItem(objXmlQuality["id"].InnerText, objXmlQuality["translate"]?.InnerText ?? strQualityName));
+                    lstLifestyleQuality.Add(new ListItem(objXmlQuality["id"].InnerText, objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText));
                     if (blnTerminateAfterFirst)
                         break;
                 }
@@ -379,11 +393,19 @@ namespace Chummer
             if (blnDoUIUpdate)
             {
                 lstLifestyleQuality.Sort(CompareListItems.CompareNames);
+
+                string strOldSelectedQuality = lstLifestyleQualities.SelectedValue?.ToString();
+                _blnLoading = true;
                 lstLifestyleQualities.BeginUpdate();
-                lstLifestyleQualities.DataSource = null;
                 lstLifestyleQualities.ValueMember = "Value";
                 lstLifestyleQualities.DisplayMember = "Name";
                 lstLifestyleQualities.DataSource = lstLifestyleQuality;
+                _blnLoading = false;
+                if (string.IsNullOrEmpty(strOldSelectedQuality))
+                    lstLifestyleQualities.SelectedIndex = -1;
+                else
+                    lstLifestyleQualities.SelectedValue = strOldSelectedQuality;
+
                 lstLifestyleQualities.EndUpdate();
             }
 
@@ -395,10 +417,11 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstLifestyleQualities.Text))
+            string strSelectedQualityId = lstLifestyleQualities.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedQualityId))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + lstLifestyleQualities.SelectedValue + "\"]");
-            _strSelectedQuality = objNode["id"].InnerText;
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQualityId + "\"]");
+            _strSelectedQuality = strSelectedQualityId;
             s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
 
             if (!RequirementMet(objNode, true))

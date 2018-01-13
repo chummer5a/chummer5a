@@ -433,9 +433,14 @@ namespace Chummer
             frmShowAbout.ShowDialog(this);
         }
 
-        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.chummergen.com/chummer/wiki/");
+        }
+
+        private void mnuChummerDiscord_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://discord.gg/mJB7st9");
         }
 
         private void mnuHelpDumpshock_Click(object sender, EventArgs e)
@@ -515,9 +520,13 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
+                List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, null, null, null, objCharacter.Weapons);
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
+                foreach (Weapon objLoopWeapon in lstWeapons)
+                    objCharacter.Weapons.Add(objLoopWeapon);
             }
 
             frmCareer frmNewCharacter = new frmCareer(objCharacter)
@@ -881,9 +890,13 @@ namespace Chummer
             XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
             if (objXmlWeapon != null)
             {
+                List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
-                objWeapon.Create(objXmlWeapon, null, null, null, objCharacter.Weapons);
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
+                foreach (Weapon objLoopWeapon in lstWeapons)
+                    objCharacter.Weapons.Add(objLoopWeapon);
             }
 
             frmCreate frmNewCharacter = new frmCreate(objCharacter)

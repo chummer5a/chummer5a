@@ -68,16 +68,14 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
         }
 
-        /// Create an Armor from an XmlNode and return the TreeNodes for it.
+        /// Create an Armor from an XmlNode.
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
-        /// <param name="objNode">TreeNode to populate a TreeView.</param>
-        /// <param name="cmsArmorMod">ContextMenuStrip to apply to Armor Mode TreeNodes.</param>
         /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="intRating">Rating of the item.</param>
-        /// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
+        /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
-        public void Create(XmlNode objXmlArmorNode, TreeNode objNode, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
             if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -154,7 +152,6 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
-                    objNode.Text += " (" + ImprovementManager.SelectedValue + ")";
                 }
             }
 
@@ -181,49 +178,32 @@ namespace Chummer.Backend.Equipment
                     if (objXmlMod != null)
                     {
                         ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                        TreeNode objModNode = new TreeNode();
-
-                        objMod.Create(objXmlMod, objModNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes, blnSkipCost);
+                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
                         objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
                         objMod.Cost = "0";
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
-
-                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
-                        objModNode.ForeColor = SystemColors.GrayText;
-                        objNode.Nodes.Add(objModNode);
-                        objNode.Expand();
                     }
                     else
                     {
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        List<TreeNode> lstWeaponNodes = new List<TreeNode>();
-
-                        TreeNode objModNode = new TreeNode();
-
-                        objMod.Name = _strName;
-                        objMod.Category = "Features";
-                        objMod.Avail = "0";
-                        objMod.Source = _strSource;
-                        objMod.Page = _strPage;
-                        objMod.Parent = this;
-                        objMod.IncludedInArmor = true;
-                        objMod.ArmorCapacity = "[0]";
-                        objMod.Cost = "0";
-                        objMod.Rating = 0;
-                        objMod.MaximumRating = objMod.Rating;
+                        ArmorMod objMod = new ArmorMod(_objCharacter)
+                        {
+                            Name = _strName,
+                            Category = "Features",
+                            Avail = "0",
+                            Source = _strSource,
+                            Page = _strPage,
+                            Parent = this,
+                            IncludedInArmor = true,
+                            ArmorCapacity = "[0]",
+                            Cost = "0",
+                            Rating = 0,
+                            MaximumRating = 0
+                        };
                         _lstArmorMods.Add(objMod);
-
-                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
-                        objModNode.ForeColor = SystemColors.GrayText;
-                        objNode.Nodes.Add(objModNode);
-                        objNode.Expand();
                     }
                 }
             }
@@ -244,48 +224,32 @@ namespace Chummer.Backend.Equipment
                     if (objXmlMod != null)
                     {
                         ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                        TreeNode objModNode = new TreeNode();
-
-                        objMod.Create(objXmlMod, objModNode, cmsArmorGear, intRating, lstWeapons, lstWeaponNodes, blnSkipCost, blnSkipSelectForms);
+                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
                         objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
                         objMod.Cost = "0";
                         objMod.MaximumRating = objMod.Rating;
                         _lstArmorMods.Add(objMod);
-
-                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
-                        objModNode.ForeColor = SystemColors.GrayText;
-                        objNode.Nodes.Add(objModNode);
-                        objNode.Expand();
                     }
                     else
                     {
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-
-                        TreeNode objModNode = new TreeNode();
-
-                        objMod.Name = _strName;
-                        objMod.Category = "Features";
-                        objMod.Avail = "0";
-                        objMod.Source = _strSource;
-                        objMod.Page = _strPage;
-                        objMod.Parent = this;
-                        objMod.IncludedInArmor = true;
-                        objMod.ArmorCapacity = "[0]";
-                        objMod.Cost = "0";
-                        objMod.Rating = 0;
-                        objMod.MaximumRating = objMod.Rating;
+                        ArmorMod objMod = new ArmorMod(_objCharacter)
+                        {
+                            Name = _strName,
+                            Category = "Features",
+                            Avail = "0",
+                            Source = _strSource,
+                            Page = _strPage,
+                            Parent = this,
+                            IncludedInArmor = true,
+                            ArmorCapacity = "[0]",
+                            Cost = "0",
+                            Rating = 0,
+                            MaximumRating = 0
+                        };
                         _lstArmorMods.Add(objMod);
-
-                        objModNode.ContextMenuStrip = string.IsNullOrEmpty(objMod.GearCapacity) ? cmsArmorMod : cmsArmorGear;
-                        objModNode.ForeColor = SystemColors.GrayText;
-                        objNode.Nodes.Add(objModNode);
-                        objNode.Expand();
                     }
                 }
             }
@@ -303,11 +267,8 @@ namespace Chummer.Backend.Equipment
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
-                    
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<TreeNode> lstWeaponNodes = new List<TreeNode>();
 
-                    objGear.Create(objXmlGear, intRating, lstWeapons, lstWeaponNodes, strForceValue, !blnSkipCost && !blnSkipSelectForms);
+                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipCost && !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
@@ -316,35 +277,26 @@ namespace Chummer.Backend.Equipment
                     objGear.MinRating = objGear.Rating;
                     objGear.ParentID = InternalId;
                     _lstGear.Add(objGear);
-                    
-                    objNode.Nodes.Add(objGear.CreateTreeNode(cmsArmorGear));
-                    objNode.Expand();
                 }
             }
 
-            if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+
+            // More than one Weapon can be added, so loop through all occurrences.
+            foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                string strLoopID = objXmlAddWeapon.InnerText;
+                XmlNode objXmlWeapon = strLoopID.IsGuid()
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
-                {
-                    string strLoopID = objXmlAddWeapon.InnerText;
-                    XmlNode objXmlWeapon = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                Weapon objGearWeapon = new Weapon(_objCharacter);
+                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipCost && !blnSkipSelectForms);
+                objGearWeapon.ParentID = InternalId;
+                lstWeapons.Add(objGearWeapon);
 
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, null, null, null, objWeapons, null, true, !blnSkipCost && !blnSkipSelectForms);
-                    objGearWeapon.ParentID = InternalId;
-                    objWeapons.Add(objGearWeapon);
-
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
-                }
+                _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
             }
-
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
         }
 
         /// <summary>
@@ -1431,6 +1383,40 @@ namespace Chummer.Backend.Equipment
             }
 
             return decReturn;
+        }
+
+        /// <summary>
+        /// Add a piece of Armor to the Armor TreeView.
+        /// </summary>
+        /// <param name="treArmor">Armor TreeView.</param>
+        /// <param name="cmsArmor">ContextMenuStrip for the Armor Node.</param>
+        /// <param name="cmsArmorMod">ContextMenuStrip for Armor Mod Nodes.</param>
+        /// <param name="cmsArmorGear">ContextMenuStrip for Armor Gear Nodes.</param>
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Text = DisplayName(GlobalOptions.Language),
+                Tag = InternalId,
+                ContextMenuStrip = cmsArmor
+            };
+            if (!string.IsNullOrEmpty(Notes))
+                objNode.ForeColor = Color.SaddleBrown;
+            objNode.ToolTipText = Notes.WordWrap(100);
+
+            TreeNodeCollection lstChildNodes = objNode.Nodes;
+            foreach (ArmorMod objMod in ArmorMods)
+            {
+                lstChildNodes.Add(objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear));
+            }
+            foreach (Gear objGear in Gear)
+            {
+                lstChildNodes.Add(objGear.CreateTreeNode(cmsArmorGear));
+            }
+            if (lstChildNodes.Count > 0)
+                objNode.Expand();
+
+            return objNode;
         }
         #endregion
     }

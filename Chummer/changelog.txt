@@ -121,6 +121,7 @@ Application Changes:
 - Fixed an issue where Redliner would not trigger off of modular full cyberlimbs. Fixes #2275.
 - Implemented a proof-of-concept system for extracting text from the sourcebook for a given object. Currently only works with qualities that are being created, because string manipulation with unreliable formats is annoying. If you can think of a reliable way to parse paragraphs out of a plaintext block, feel free to let me know.
 - Fixed an issue where knowledge hardwires would not let the user choose a knowledge skill.
+- Added an invite link to the Chummer Discord to the help menu toolstrip.
 
 Data Changes:
 
@@ -187,6 +188,7 @@ New Strings:
 - Message_MissingGameplayOption
 - Message_MissingGameplayOption_Title
 - Menu_SpecialChangeOptions
+- Menu_Main_ChummerDiscord
 
 Build 196
 

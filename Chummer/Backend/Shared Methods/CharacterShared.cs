@@ -281,7 +281,8 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(treLimit.SelectedNode.Tag.ToString());
+            string strGuid = objSelectedNode.Tag.ToString();
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
@@ -297,23 +298,18 @@ namespace Chummer
             //Remove the old LimitModifier to ensure we don't double up.
             _objCharacter.LimitModifiers.Remove(objLimitModifier);
             // Create the new limit modifier.
-            TreeNode objNode = new TreeNode();
             objLimitModifier = new LimitModifier(_objCharacter);
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
-                strCondition, objNode);
-            objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+            objLimitModifier.Guid = new Guid(strGuid);
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             //Add the new treeview node for the LimitModifier.
-            objNode.ContextMenuStrip = cmsLimitModifier;
-            objNode.Text = objLimitModifier.DisplayName;
-            objNode.Tag = objLimitModifier.InternalId;
-            objSelectedNode.Parent.Nodes.Add(objNode);
+            objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
             objSelectedNode.Remove();
         }
 
@@ -332,9 +328,9 @@ namespace Chummer
                     objNode.Nodes.Clear();
                 }
                 //Add the Spells that exist.
-                foreach (Spell s in _objCharacter.Spells)
+                foreach (Spell objSpell in _objCharacter.Spells)
                 {
-                    treSpells.Add(s, cmsSpell);
+                    treSpells.Add(objSpell, cmsSpell);
                 }
             }
             else
@@ -373,15 +369,7 @@ namespace Chummer
             //Add the Critter Powers that exist.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objPower.DisplayName(GlobalOptions.Language),
-                    Tag = objPower.InternalId,
-                    ContextMenuStrip = cmsCritterPowers
-                };
-                if (!string.IsNullOrEmpty(objPower.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = objPower.Notes.WordWrap(100);
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
 
                 if (objPower.Category != "Weakness")
                 {
@@ -432,22 +420,7 @@ namespace Chummer
                 {
                     if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra))
                         continue;
-                    TreeNode objNode = new TreeNode
-                    {
-                        Text = objQuality.DisplayName(GlobalOptions.Language),
-                        Tag = objQuality.InternalId,
-                        ContextMenuStrip = cmsQuality
-                    };
-
-                    if (!string.IsNullOrEmpty(objQuality.Notes))
-                        objNode.ForeColor = Color.SaddleBrown;
-                    else if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                            objQuality.OriginSource == QualitySource.Improvement)
-                    {
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
-                    objNode.ToolTipText = objQuality.Notes.WordWrap(100);
+                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
 
                     switch (objQuality.Type)
                     {
@@ -474,23 +447,12 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         protected void RefreshQualityNames(TreeView treQualities)
         {
-            TreeNode objSelectedNode = null;
+            TreeNode objSelectedNode = treQualities.SelectedNode;
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
-                for (int i = 0; i <= 1; i++)
-                {
-                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
-                    {
-                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
-                            objSelectedNode = objTreeNode;
-                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
-                        {
-                            objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
-                            goto NextQuality;
-                        }
-                    }
-                }
-                NextQuality:;
+                TreeNode objQualityNode = treQualities.FindNode(objQuality.InternalId);
+                if (objQualityNode != null)
+                    objQualityNode.Text = objQuality.DisplayName(GlobalOptions.Language);
             }
             if (objSelectedNode != null)
                 treQualities.SelectedNode = objSelectedNode;

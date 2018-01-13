@@ -2175,6 +2175,7 @@
     <Content Include="icons\html_delete.png" />
     <Content Include="icons\html_go.png" />
     <Content Include="icons\html_valid.png" />
+    <Content Include="icons\icons8-discord-16.png" />
     <Content Include="icons\image.png" />
     <Content Include="icons\images.png" />
     <Content Include="icons\image_add.png" />
