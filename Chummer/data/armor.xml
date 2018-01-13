@@ -20,11 +20,11 @@
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema armor.xsd">
   <version>0</version>
   <categories>
-    <category>Armor</category>
-    <category>Clothing</category>
-    <category>Cloaks</category>
-    <category>High-Fashion Armor Clothing</category>
-    <category>Specialty Armor</category>
+    <category blackmarket="Armor">Armor</category>
+    <category blackmarket="Armor">Clothing</category>
+    <category blackmarket="Armor">Cloaks</category>
+    <category blackmarket="Armor">High-Fashion Armor Clothing</category>
+    <category blackmarket="Armor">Specialty Armor</category>
   </categories>
   <armors>
     <!-- Region Shadowrun 5 -->

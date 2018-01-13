@@ -24,33 +24,33 @@
   <version>0</version>
   <categories>
     <category>Alchemical Tools</category>
-    <category>Ammunition</category>
-    <category>Armor Enhancements</category>
-    <category>Audio Devices</category>
-    <category>Audio Enhancements</category>
-    <category>Autosofts</category>
-    <category>Biotech</category>
+    <category blackmarket="Weapons">Ammunition</category>
+    <category blackmarket="Armor">Armor Enhancements</category>
+    <category blackmarket="Electronics">Audio Devices</category>
+    <category blackmarket="Electronics">Audio Enhancements</category>
+    <category blackmarket="Electronics">Autosofts</category>
+    <category blackmarket="Drugs">Biotech</category>
     <category>Breaking and Entering Gear</category>
-    <category>BTLs</category>
-    <category>Chemicals</category>
-    <category>Commlinks</category>
-    <category>Commlink/Cyberdeck Form Factors</category>
-    <category>Commlink Accessories</category>
-    <category>Commlink Apps</category>
-    <category>Common Programs</category>
-    <category>Communications and Countermeasures</category>
+    <category blackmarket="Drugs">BTLs</category>
+    <category blackmarket="Drugs">Chemicals</category>
+    <category blackmarket="Electronics">Commlinks</category>
+    <category blackmarket="Electronics">Commlink/Cyberdeck Form Factors</category>
+    <category blackmarket="Electronics">Commlink Accessories</category>
+    <category blackmarket="Electronics">Commlink Apps</category>
+    <category blackmarket="Electronics">Common Programs</category>
+    <category blackmarket="Electronics">Communications and Countermeasures</category>
     <category>Contracts/Upkeep</category>
     <category>Critter Gear</category>
     <category>Currency</category>
     <category>Custom</category>
-    <category>Cyberdeck Modules</category>
-    <category>Cyberdecks</category>
-    <category>Cyberterminals</category>
+    <category blackmarket="Electronics">Cyberdeck Modules</category>
+    <category blackmarket="Electronics">Cyberdecks</category>
+    <category blackmarket="Electronics">Cyberterminals</category>
     <category>Disguises</category>
-    <category>Drugs</category>
-    <category>Electronics Accessories</category>
-    <category>Electronic Modification</category>
-    <category>Electronic Parts</category>
+    <category blackmarket="Drugs">Drugs</category>
+    <category blackmarket="Electronics">Electronics Accessories</category>
+    <category blackmarket="Electronics">Electronic Modification</category>
+    <category blackmarket="Electronics">Electronic Parts</category>
     <category>Entertainment</category>
     <category>Explosives</category>
     <category>Extraction Devices</category>
@@ -58,7 +58,7 @@
     <category>Food</category>
     <category>Formulae</category>
     <category>Grapple Gun</category>
-    <category>Hacking Programs</category>
+    <category blackmarket="Electronics">Hacking Programs</category>
     <category>Housewares</category>
     <category>ID/Credsticks</category>
     <category>Magical Compounds</category>
@@ -66,24 +66,24 @@
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
     <category>Nanogear</category>
-    <category>PI-Tac</category>
+    <category blackmarket="Electronics">PI-Tac"</category>
     <category>RFID Tags</category>
-    <category>Rigger Command Consoles</category>
+    <category blackmarket="Electronics,Vehicles">Rigger Command Consoles</category>
     <category>Security Devices</category>
-    <category>Sensors</category>
-    <category>Sensor Functions</category>
-    <category>Sensor Housings</category>
+    <category blackmarket="Electronics">Sensors</category>
+    <category blackmarket="Electronics">Sensor Functions</category>
+    <category blackmarket="Electronics">Sensor Housings</category>
     <category>Services</category>
     <category>Skillsofts</category>
-    <category>Software</category>
-    <category>Software Tweaks</category>
+    <category blackmarket="Electronics">Software</category>
+    <category blackmarket="Electronics">Software Tweaks</category>
     <category>Survival Gear</category>
     <category>Tailored Perfume/Cologne</category>
     <category>Tools</category>
     <category>Tools of the Trade</category>
-    <category>Toxins</category>
-    <category>Vision Devices</category>
-    <category>Vision Enhancements</category>
+    <category blackmarket="Drugs">Toxins</category>
+    <category blackmarket="Electronics">Vision Devices</category>
+    <category blackmarket="Electronics">Vision Enhancements</category>
   </categories>
   <gears>
     <!-- Region Ammo -->

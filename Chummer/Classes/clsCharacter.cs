@@ -1228,7 +1228,7 @@ namespace Chummer
 
             objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
             objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
-            objXmlCharacter.TryGetBoolFieldQuickly("blackmarket", ref _blnBlackMarketDiscount);
+            objXmlCharacter.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
             objXmlCharacter.TryGetBoolFieldQuickly("excon", ref _blnExCon);
             objXmlCharacter.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
             objXmlCharacter.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);

@@ -22,36 +22,36 @@
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema weapons.xsd">
   <version>0</version>
   <categories>
-    <category type="melee">Blades</category>
-    <category type="melee">Clubs</category>
-    <category type="melee">Improvised Weapons</category>
-    <category type="melee">Exotic Melee Weapons</category>
-    <category type="exotic">Exotic Ranged Weapons</category>
-    <category type="melee">Bio-Weapon</category>
-    <category type="melee">Cyberweapon</category>
-    <category type="melee">Unarmed</category>
-    <category type="bow">Bows</category>
-    <category type="crossbow">Crossbows</category>
-    <category type="taser">Tasers</category>
-    <category type="gun">Holdouts</category>
-    <category type="gun">Light Pistols</category>
-    <category type="gun">Heavy Pistols</category>
-    <category type="gun">Machine Pistols</category>
-    <category type="gun">Submachine Guns</category>
-    <category type="gun">Assault Rifles</category>
-    <category type="gun">Sporting Rifles</category>
-    <category type="gun">Sniper Rifles</category>
-    <category type="gun">Shotguns</category>
-    <category type="gun">Light Machine Guns</category>
-    <category type="gun">Medium Machine Guns</category>
-    <category type="gun">Heavy Machine Guns</category>
-    <category type="gun">Underbarrel Weapons</category>
-    <category type="gun">Micro-Drone Weapons</category>
-    <category type="cannon">Assault Cannons</category>
-    <category type="flame">Flamethrowers</category>
-    <category type="laser">Laser Weapons</category>
-    <category type="glauncher">Grenade Launchers</category>
-    <category type="mlauncher">Missile Launchers</category>
+    <category blackmarket="Weapons" type="melee">Blades</category>
+    <category blackmarket="Weapons" type="melee">Clubs</category>
+    <category blackmarket="Weapons" type="melee">Improvised Weapons</category>
+    <category blackmarket="Weapons" type="melee">Exotic Melee Weapons</category>
+    <category blackmarket="Weapons" type="exotic">Exotic Ranged Weapons</category>
+    <category blackmarket="Weapons" type="melee">Bio-Weapon</category>
+    <category blackmarket="Weapons" type="melee">Cyberweapon</category>
+    <category blackmarket="Weapons" type="melee">Unarmed</category>
+    <category blackmarket="Weapons" type="bow">Bows</category>
+    <category blackmarket="Weapons" type="crossbow">Crossbows</category>
+    <category blackmarket="Weapons" type="taser">Tasers</category>
+    <category blackmarket="Weapons" type="gun">Holdouts</category>
+    <category blackmarket="Weapons" type="gun">Light Pistols</category>
+    <category blackmarket="Weapons" type="gun">Heavy Pistols</category>
+    <category blackmarket="Weapons" type="gun">Machine Pistols</category>
+    <category blackmarket="Weapons" type="gun">Submachine Guns</category>
+    <category blackmarket="Weapons" type="gun">Assault Rifles</category>
+    <category blackmarket="Weapons" type="gun">Sporting Rifles</category>
+    <category blackmarket="Weapons" type="gun">Sniper Rifles</category>
+    <category blackmarket="Weapons" type="gun">Shotguns</category>
+    <category blackmarket="Weapons" type="gun">Light Machine Guns</category>
+    <category blackmarket="Weapons" type="gun">Medium Machine Guns</category>
+    <category blackmarket="Weapons" type="gun">Heavy Machine Guns</category>
+    <category blackmarket="Weapons" type="gun">Underbarrel Weapons</category>
+    <category blackmarket="Weapons" type="gun">Micro-Drone Weapons</category>
+    <category blackmarket="Weapons" type="cannon">Assault Cannons</category>
+    <category blackmarket="Weapons" type="flame">Flamethrowers</category>
+    <category blackmarket="Weapons" type="laser">Laser Weapons</category>
+    <category blackmarket="Weapons" type="glauncher">Grenade Launchers</category>
+    <category blackmarket="Weapons" type="mlauncher">Missile Launchers</category>
   </categories>
   <weapons>
     <!-- Region Shadowrun 5 -->

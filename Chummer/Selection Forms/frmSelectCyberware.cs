@@ -51,15 +51,15 @@ namespace Chummer
 
         private Mode _objMode = Mode.Cyberware;
         private string _strNodeXPath = "/chummer/cyberwares/cyberware";
-        private static string s_StrSelectCategory = string.Empty;
-        private static string s_StrSelectGrade = string.Empty;
+        private static string _sStrSelectCategory = string.Empty;
+        private static string _sStrSelectGrade = string.Empty;
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
         private bool _blnIgnoreSecondHand = false;
         private string _strForceGrade = string.Empty;
         private readonly XmlNode _objParentNode = null;
-        private Dictionary<string, List<string>> _BlackMarketMaps;
+        private readonly List<string> _blackMarketMaps = new List<string>();
         private readonly XmlDocument _objXmlDocument = null;
 
         private enum Mode
@@ -98,7 +98,7 @@ namespace Chummer
 
             _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString();
-            GenerateBlackMarketMappings();
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter,_objXmlDocument,_blackMarketMaps);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -128,8 +128,8 @@ namespace Chummer
 
             PopulateCategories();
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_sStrSelectCategory))
+                cboCategory.SelectedValue = _sStrSelectCategory;
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
 
@@ -140,8 +140,8 @@ namespace Chummer
 
             if (_forcedGrade != null)
                 cboGrade.SelectedValue = _forcedGrade.SourceId;
-            else if (!string.IsNullOrEmpty(s_StrSelectGrade))
-                cboGrade.SelectedValue = s_StrSelectGrade;
+            else if (!string.IsNullOrEmpty(_sStrSelectGrade))
+                cboGrade.SelectedValue = _sStrSelectGrade;
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
                 cboGrade.SelectedIndex = 0;
 
@@ -180,30 +180,6 @@ namespace Chummer
 
             UpdateCyberwareInfo();
         }
-
-        /// <summary>
-        /// Creates a list of keywords for each category of 'ware. Used to preselect whether the 'ware is discounted by the Black Market Pipeline quality.
-        /// </summary>
-        private void GenerateBlackMarketMappings()
-        {
-            if (!_objCharacter.BlackMarketDiscount) return;
-            var names = _objCharacter.Improvements.Where(i => i.ImproveType != Improvement.ImprovementType.BlackMarketDiscount).Select(i => i.ImprovedName).ToList();
-            var categories = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            if (categories == null)
-            {
-                Utils.BreakIfDebug();
-                return;
-            }
-            foreach (XmlNode n in categories)
-            {
-                if (n.Attributes?["blackmarket"] == null) continue;
-                var strings = n.Attributes?["blackmarket"].InnerText.Split(',').ToList();
-                if (strings.Any(s => names.Contains(s)))
-                {
-                    _BlackMarketMaps.Add(n.InnerText, strings);
-                }
-            }
-        }
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
@@ -240,6 +216,7 @@ namespace Chummer
                 // Retrieve the information for the selected piece of Cyberware.
                 objXmlCyberware = _objXmlDocument.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             }
+            if (objXmlCyberware == null) return;
             // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
             if (objXmlCyberware?["rating"] != null)
             {
@@ -327,9 +304,9 @@ namespace Chummer
                     objForcedGrade = _forcedGrade ?? _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
                 }
             }
-            if (_BlackMarketMaps != null)
+            if (_blackMarketMaps != null)
                 chkBlackMarketDiscount.Checked =
-                    _BlackMarketMaps.Any(c => c.Key == cboCategory.SelectedItem.ToString());
+                    _blackMarketMaps.Contains(objXmlCyberware["category"]?.InnerText);
 
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             PopulateGrades(objXmlCyberware?["nosecondhand"] != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
@@ -1194,8 +1171,8 @@ namespace Chummer
                 else
                     return;
             }
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode["category"]?.InnerText;
-            s_StrSelectGrade = SelectedGrade.SourceId.ToString();
+            _sStrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : objCyberwareNode["category"]?.InnerText;
+            _sStrSelectGrade = SelectedGrade.SourceId.ToString();
             SelectedCyberware = objCyberwareNode["name"]?.InnerText;
             SelectedRating = decimal.ToInt32(nudRating.Value);
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;

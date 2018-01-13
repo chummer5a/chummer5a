@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.XPath;
  using Chummer.Backend.Equipment;
 using System.Text;
 // ReSharper disable LocalizableElement
@@ -34,13 +33,14 @@ namespace Chummer
         private string _strSelectedArmor = string.Empty;
 
         private bool _blnAddAgain;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private decimal _decMarkup;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<string> _blackMarketMaps = new List<string>();
         private int _intRating;
         private bool _blnBlackMarketDiscount;
 
@@ -56,6 +56,7 @@ namespace Chummer
             MoveControls();
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)
@@ -87,11 +88,13 @@ namespace Chummer
 
             // Populate the Armor Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-            foreach (XmlNode objXmlCategory in objXmlCategoryList)
-            {
-                string strInnerText = objXmlCategory.InnerText;
-                _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
-            }
+            if (objXmlCategoryList != null)
+                foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                {
+                    string strInnerText = objXmlCategory.InnerText;
+                    _lstCategory.Add(new ListItem(strInnerText,
+                        objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                }
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             if (_lstCategory.Count > 0)
@@ -105,10 +108,10 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -143,7 +146,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
-            lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+            lblArmor.Text = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
             lblArmorValue.Text = objXmlArmor["armor"]?.InnerText;
             lblAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
 
@@ -257,17 +260,15 @@ namespace Chummer
 
         private void dgvArmor_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
         {
-            if (e.Column.Index == 1)
-            {
-                int intResult = 1;
-                if (int.TryParse(e.CellValue1.ToString(), out int intTmp1) &&
-                        int.TryParse(e.CellValue2.ToString(), out int intTmp2) &&
-                        intTmp1 < intTmp2)
-                    intResult = -1;
+            if (e.Column.Index != 1) return;
+            int intResult = 1;
+            if (int.TryParse(e.CellValue1.ToString(), out int intTmp1) &&
+                int.TryParse(e.CellValue2.ToString(), out int intTmp2) &&
+                intTmp1 < intTmp2)
+                intResult = -1;
 
-                e.SortResult = intResult;
-                e.Handled = true;
-            }
+            e.SortResult = intResult;
+            e.Handled = true;
         }
 
         private void dgvArmor_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -280,69 +281,34 @@ namespace Chummer
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
-        public bool AddAgain
-        {
-            get
-            {
-                return _blnAddAgain;
-            }
-        }
+        public bool AddAgain => _blnAddAgain;
 
         /// <summary>
         /// Whether or not the selected Vehicle is used.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                return _blnBlackMarketDiscount;
-            }
-        }
+        public bool BlackMarketDiscount => _blnBlackMarketDiscount;
 
         /// <summary>
         /// Armor that was selected in the dialogue.
         /// </summary>
-        public string SelectedArmor
-        {
-            get
-            {
-                return _strSelectedArmor;
-            }
-        }
+        public string SelectedArmor => _strSelectedArmor;
 
         /// <summary>
         /// Whether or not the item should be added for free.
         /// </summary>
-        public bool FreeCost
-        {
-            get
-            {
-                return chkFreeItem.Checked;
-            }
-        }
+        public bool FreeCost => chkFreeItem.Checked;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public decimal Markup
-        {
-            get
-            {
-                return _decMarkup;
-            }
-        }
+        public decimal Markup => _decMarkup;
 
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Rating
-        {
-            get
-            {
-                return _intRating;
-            }
-        }
+        public int Rating => _intRating;
+
         #endregion
 
         #region Methods
@@ -451,7 +417,7 @@ namespace Chummer
                     {
                         if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
                         {
-                            string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"].InnerText;
+                            string strDisplayName = objXmlArmor["translate"]?.InnerText ?? objXmlArmor["name"]?.InnerText;
                             if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                             {
                                 string strCategory = objXmlArmor["category"]?.InnerText;
@@ -498,7 +464,7 @@ namespace Chummer
             }
             if (objNode != null)
             {
-                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                 _strSelectedArmor = objNode["name"]?.InnerText;
                 _decMarkup = nudMarkup.Value;
                 _intRating = decimal.ToInt32(nudRating.Value);
@@ -539,7 +505,12 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
             
-            decimal decItemCost = 0.0m;
+            decimal decItemCost;
+
+            if (_blackMarketMaps != null)
+                chkBlackMarketDiscount.Checked =
+                    _blackMarketMaps.Contains(objXmlArmor["category"]?.InnerText);
+
             if (chkFreeItem.Checked)
             {
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';

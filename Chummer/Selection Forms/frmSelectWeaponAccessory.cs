@@ -43,6 +43,7 @@ namespace Chummer
         private int _intAccessoryMultiplier = 1;
         private bool _blnBlackMarketDiscount;
         private List<WeaponAccessory> _lstAccessories;
+        //private readonly List<string> _blackMarketMaps = new List<string>();
 
         #region Control Events
         public frmSelectWeaponAccessory(Character objCharacter)
@@ -56,6 +57,8 @@ namespace Chummer
             MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
+            //TODO: Accessories don't use a category mapping, so this doesn't work.
+            //CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
@@ -600,7 +603,11 @@ namespace Chummer
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
-
+            /*TODO: Accessories don't use a category mapping, so this doesn't work. 
+            if (_blackMarketMaps != null)
+                chkBlackMarketDiscount.Checked =
+                    _blackMarketMaps.Contains(objXmlAccessory["category"]?.InnerText);
+            */
             string strBookCode = objXmlAccessory["source"]?.InnerText;
             string strBook = CommonFunctions.LanguageBookShort(strBookCode, GlobalOptions.Language);
             string strPage = objXmlAccessory["page"]?.InnerText;

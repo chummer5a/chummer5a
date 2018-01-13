@@ -1225,6 +1225,27 @@ namespace Chummer
             return string.Empty;
         }
 
+        /// <summary>
+        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
+        /// </summary>
+        public static void GenerateBlackMarketMappings(Character objCharacter, XmlDocument doc, List<string> blackMarketMaps)
+        {
+            // Character has no Black Market discount qualities. Fail out early. 
+            if (!objCharacter.BlackMarketDiscount) return;
+            // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
+            var names = objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.BlackMarketDiscount).Select(i => i.ImprovedName).ToList();
+            var categories = doc.SelectNodes("/chummer/categories/category");
+            if (categories == null)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
+            //For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+            blackMarketMaps.AddRange(from XmlNode n in categories where n.Attributes?["blackmarket"] != null
+                                     let strings = n.Attributes?["blackmarket"].InnerText.Split(',').ToList()
+                                     where strings.Any(s => names.Contains(s)) select n.InnerText);
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.

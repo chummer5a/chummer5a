@@ -43,6 +43,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument = null;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<string> _blackMarketMaps = new List<string>();
 
         #region Control Events
         public frmSelectWeapon(Character objCharacter)
@@ -56,6 +57,7 @@ namespace Chummer
             MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
@@ -231,6 +233,11 @@ namespace Chummer
                                 : objXmlItem["name"].InnerText + "\n";
                     }
                 }
+
+            if (_blackMarketMaps != null)
+                chkBlackMarketDiscount.Checked =
+                    _blackMarketMaps.Contains(objXmlWeapon["category"]?.InnerText);
+
             lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories;
 
             tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlWeapon["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);

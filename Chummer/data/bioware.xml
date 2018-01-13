@@ -114,15 +114,15 @@
     </grade>
   </grades>
   <categories>
-    <category>Basic</category>
-    <category>Biosculpting</category>
-    <category>Bio-Weapons</category>
-    <category>Chemical Gland Modifications</category>
-    <category>Cosmetic Bioware</category>
-    <category>Cultured</category>
-    <category>Genemods</category>
-    <category>Orthoskin Upgrades</category>
-    <category>Symbionts</category>
+    <category blackmarket="Bioware">Basic</category>
+    <category blackmarket="Bioware">Biosculpting</category>
+    <category blackmarket="Bioware">Bio-Weapons</category>
+    <category blackmarket="Bioware">Chemical Gland Modifications</category>
+    <category blackmarket="Bioware">Cosmetic Bioware</category>
+    <category blackmarket="Bioware">Cultured</category>
+    <category blackmarket="Bioware">Genemods</category>
+    <category blackmarket="Bioware">Orthoskin Upgrades</category>
+    <category blackmarket="Bioware">Symbionts</category>
   </categories>
   <biowares>
     <!-- Region Shadowrun 5-->

@@ -48,6 +48,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
         private string _strLimitToCategories = string.Empty;
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<string> _blackMarketMaps = new List<string>();
         private List<VehicleMod> _lstMods;
 
         #region Control Events
@@ -62,6 +63,7 @@ namespace Chummer
             MoveControls();
             // Load the Vehicle information.
             _objXmlDocument = XmlManager.Load("vehicles.xml");
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectVehicleMod_Load(object sender, EventArgs e)
@@ -657,6 +659,10 @@ namespace Chummer
                 lblAvail.Text = lblAvail.Text + strAvail;
 
                 // Cost.
+                if (_blackMarketMaps != null)
+                    chkBlackMarketDiscount.Checked =
+                        _blackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
+
                 decimal decItemCost = 0;
                 if (chkFreeItem.Checked)
                     lblCost.Text = "0";

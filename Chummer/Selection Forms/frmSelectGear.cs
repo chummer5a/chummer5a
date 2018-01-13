@@ -54,6 +54,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<string> _blackMarketMaps = new List<string>();
 
         #region Control Events
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
@@ -77,6 +78,7 @@ namespace Chummer
             MoveControls();
             // Load the Gear information.
             _objXmlDocument = XmlManager.Load("gear.xml");
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectGear_Load(object sender, EventArgs e)
@@ -749,8 +751,11 @@ namespace Chummer
                 decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
                 if (chkDoItYourself.Checked)
                     decMultiplier *= 0.5m;
-                
+
                 // Cost.
+                if (_blackMarketMaps != null)
+                    chkBlackMarketDiscount.Checked =
+                        _blackMarketMaps.Contains(objXmlGear["category"]?.InnerText);
                 if (chkFreeItem.Checked)
                 {
                     lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
