@@ -56,5 +56,12 @@
         <value>-p {page} "{localpath}"</value>
       </pdfargument>
     </pdfarguments>
+    <blackmarketpipelinecategories>
+      <category>Armor</category>
+      <category>Bioware</category>
+      <category>Cyberware</category>
+      <category>Vehicles</category>
+      <category>Weapons</category>
+    </blackmarketpipelinecategories>
   </options>
 </chummer>

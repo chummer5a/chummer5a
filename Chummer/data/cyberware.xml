@@ -201,20 +201,20 @@
     <!-- End Region -->
   </grades>
   <categories>
-    <category>Bodyware</category>
-    <category>Cosmetic Enhancement</category>
-    <category>Cyberlimb</category>
-    <category>Cyberlimb Accessory</category>
-    <category>Cyberlimb Enhancement</category>
-    <category>Cybersuite</category>
-    <category>Cyber Implant Weapon</category>
-    <category>Earware</category>
-    <category>Eyeware</category>
-    <category>Hard Nanoware</category>
-    <category>Headware</category>
-    <category>Nanocybernetics</category>
-    <category>Soft Nanoware</category>
-    <category>Special Biodrone Cyberware</category>
+    <category blackmarket="Cyberware">Bodyware</category>
+    <category blackmarket="Cyberware">Cosmetic Enhancement</category>
+    <category blackmarket="Cyberware">Cyberlimb</category>
+    <category blackmarket="Cyberware">Cyberlimb Accessory</category>
+    <category blackmarket="Cyberware">Cyberlimb Enhancement</category>
+    <category blackmarket="Cyberware">Cybersuite</category>
+    <category blackmarket="Cyberware">Cyber Implant Weapon</category>
+    <category blackmarket="Cyberware">Earware</category>
+    <category blackmarket="Cyberware">Eyeware</category>
+    <category blackmarket="Cyberware">Hard Nanoware</category>
+    <category blackmarket="Cyberware">Headware</category>
+    <category blackmarket="Cyberware">Nanocybernetics</category>
+    <category blackmarket="Cyberware">Soft Nanoware</category>
+    <category blackmarket="Cyberware">Special Biodrone Cyberware</category>
   </categories>
   <cyberwares>
     <!-- Region Shadowrun 5 -->

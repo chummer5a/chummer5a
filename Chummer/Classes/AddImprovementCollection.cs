@@ -4399,8 +4399,48 @@ namespace Chummer.Classes
         {
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
+            XmlDocument doc = XmlManager.Load("options.xml");
+            XmlNodeList nodeList = doc.SelectNodes("/chummer/options/blackmarketpipelinecategories/category");
+            SelectedValue = string.Empty;
+            if (nodeList != null)
+            {
+                List<ListItem> itemList = (from XmlNode objNode in nodeList
+                    select new ListItem(objNode.InnerText,
+                        objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText)).ToList();
+
+                frmSelectItem frmPickItem = new frmSelectItem
+                {
+                    Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
+                        .Replace("{0}", _strFriendlyName),
+                    GeneralItems = itemList
+                };
+
+                Log.Info("_strLimitSelection = " + LimitSelection);
+                Log.Info("_strForcedValue = " + ForcedValue);
+
+                if (!string.IsNullOrEmpty(LimitSelection))
+                {
+                    frmPickItem.ForceItem = LimitSelection;
+                    frmPickItem.Opacity = 0;
+                }
+
+                frmPickItem.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+                SelectedValue = frmPickItem.SelectedName;
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + frmPickItem.SelectedName + ")";
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SelectedValue = " + SelectedValue);
+            }
+            // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BlackMarketDiscount,
+            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.BlackMarketDiscount,
                 _strUnique);
             _objCharacter.BlackMarketDiscount = true;
         }

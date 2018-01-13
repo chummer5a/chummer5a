@@ -58,8 +58,8 @@ namespace Chummer
         private bool _blnOldGradeEnabled = true;
         private bool _blnIgnoreSecondHand = false;
         private string _strForceGrade = string.Empty;
-        private XmlNode _objParentNode = null;
-
+        private readonly XmlNode _objParentNode = null;
+        private Dictionary<string, List<string>> _BlackMarketMaps;
         private readonly XmlDocument _objXmlDocument = null;
 
         private enum Mode
@@ -98,6 +98,7 @@ namespace Chummer
 
             _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString();
+            GenerateBlackMarketMappings();
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -154,7 +155,6 @@ namespace Chummer
                 chkTransgenic.Visible = false;
 
             _blnLoading = false;
-
             RefreshList(_strSelectedCategory);
         }
 
@@ -181,6 +181,29 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
+        /// <summary>
+        /// Creates a list of keywords for each category of 'ware. Used to preselect whether the 'ware is discounted by the Black Market Pipeline quality.
+        /// </summary>
+        private void GenerateBlackMarketMappings()
+        {
+            if (!_objCharacter.BlackMarketDiscount) return;
+            var names = _objCharacter.Improvements.Where(i => i.ImproveType != Improvement.ImprovementType.BlackMarketDiscount).Select(i => i.ImprovedName).ToList();
+            var categories = _objXmlDocument.SelectNodes("/chummer/categories/category");
+            if (categories == null)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
+            foreach (XmlNode n in categories)
+            {
+                if (n.Attributes?["blackmarket"] == null) continue;
+                var strings = n.Attributes?["blackmarket"].InnerText.Split(',').ToList();
+                if (strings.Any(s => names.Contains(s)))
+                {
+                    _BlackMarketMaps.Add(n.InnerText, strings);
+                }
+            }
+        }
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
@@ -217,7 +240,6 @@ namespace Chummer
                 // Retrieve the information for the selected piece of Cyberware.
                 objXmlCyberware = _objXmlDocument.SelectSingleNode(_strNodeXPath + "[id = \"" + strSelectedId + "\"]");
             }
-
             // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
             if (objXmlCyberware?["rating"] != null)
             {
@@ -230,8 +252,8 @@ namespace Chummer
                 {
                     strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
                     strMinRating = strMinRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
-                    strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
+                    strMinRating = strMinRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
                     try
                     {
                         intMinRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMinRating));
@@ -250,8 +272,8 @@ namespace Chummer
                 {
                     strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString());
                     strMaxRating = strMaxRating.CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString());
-                    strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle != null ? ParentVehicle.TotalBody : 3).ToString());
-                    strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle != null ? ParentVehicle.Pilot : 3).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString());
+                    strMaxRating = strMaxRating.CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString());
                     try
                     {
                         intMaxRating = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strMaxRating));
@@ -305,11 +327,14 @@ namespace Chummer
                     objForcedGrade = _forcedGrade ?? _objGradeList.FirstOrDefault(x => x.SourceId.ToString() == strForceGrade);
                 }
             }
+            if (_BlackMarketMaps != null)
+                chkBlackMarketDiscount.Checked =
+                    _BlackMarketMaps.Any(c => c.Key == cboCategory.SelectedItem.ToString());
 
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             PopulateGrades(objXmlCyberware?["nosecondhand"] != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
 
-            if (objXmlCyberware?["notes"] != null)
+            if (objXmlCyberware["notes"] != null)
             {
                 lblCyberwareNotes.Visible = true;
                 lblCyberwareNotesLabel.Visible = true;

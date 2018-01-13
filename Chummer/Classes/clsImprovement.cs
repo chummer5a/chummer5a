@@ -161,7 +161,6 @@ namespace Chummer
             TechSchool,
             TrustFund,
             ExCon,
-            BlackMarket,
             ContactMadeMan,
             SelectArmor,
             Attributelevel,
