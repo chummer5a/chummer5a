@@ -125,6 +125,7 @@ Application Changes:
 - Fixed an issue with loading the Black Market Discount property. Existing characters will need to reapply improvements to fix it. 
 - Fully implemented the automatic system for Black Market Pipeline to apply to all valid object types (Armor, Armor Mod, Bio/Cyberware, Gear, Vehicles, Vehicle Mods, Weapons). Weapon Accessories don't use the category system that this binds to, so another solution will need to be found for them. I'm unsure what to bind most of the Gear categories to, so I've just been rather generous with Drugs and Electronics for now. 
 - Fixed a crash when selecting a character with a 'None' metavariant in the roster. Shouldn't happen, but just in case.
+- Fixed an issue where the Life Modules root node would not get translated.
 
 Data Changes:
 
@@ -192,6 +193,7 @@ New Strings:
 - Message_MissingGameplayOption_Title
 - Menu_SpecialChangeOptions
 - Menu_Main_ChummerDiscord
+- String_LifeModules
 
 Build 196
 

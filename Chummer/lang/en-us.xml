@@ -823,6 +823,10 @@
       <key>String_Immune</key>
       <text>Immune</text>
     </string>
+    <string>
+      <key>String_LifeModules</key>
+      <text>Life Modules</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>

@@ -366,7 +366,7 @@ namespace Chummer
             if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
                 cmdLifeModule.Visible = true;
-                treQualities.Nodes.Add(new TreeNode("Life Modules"));
+                treQualities.Nodes.Add(new TreeNode(LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)) { Tag = "String_LifeModules" });
                 btnCreateBackstory.Visible = true;
                 btnCreateBackstory.Visible = CharacterObject.Options.AutomaticBackstory;
             }
@@ -4193,7 +4193,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private bool AddVehicle(TreeNode n)
+        private bool AddVehicle(TreeNode objParentNode)
         {
             frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject);
             frmPickVehicle.ShowDialog(this);
@@ -4223,8 +4223,8 @@ namespace Chummer
             CharacterObject.Vehicles.Add(objVehicle);
             
             TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
-            n.Nodes.Add(objNode);
-            n.Expand();
+            objParentNode.Nodes.Add(objNode);
+            objParentNode.Expand();
             treVehicles.SelectedNode = objNode;
 
             IsCharacterUpdateRequested = true;

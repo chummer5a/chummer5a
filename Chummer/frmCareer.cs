@@ -343,7 +343,7 @@ namespace Chummer
 
             if (CharacterObject.BuildMethod == CharacterBuildMethod.LifeModule)
             {
-                treQualities.Nodes.Add(new TreeNode("Life Modules"));
+                treQualities.Nodes.Add(new TreeNode(LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)) { Tag = "String_LifeModules" });
             }
 
             RefreshQualities(treQualities,cmsQuality, true);
