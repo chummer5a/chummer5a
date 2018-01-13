@@ -433,9 +433,14 @@ namespace Chummer
             frmShowAbout.ShowDialog(this);
         }
 
-        private void contentsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.chummergen.com/chummer/wiki/");
+        }
+
+        private void mnuChummerDiscord_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://discord.gg/mJB7st9");
         }
 
         private void mnuHelpDumpshock_Click(object sender, EventArgs e)

@@ -1132,6 +1132,10 @@
       <text>Chummer Wiki</text>
     </string>
     <string>
+      <key>Menu_Main_ChummerDiscord</key>
+      <text>Chummer Discord</text>
+    </string>
+    <string>
       <key>Menu_Main_RevisionHistory</key>
       <text>&amp;Revision History</text>
     </string>
