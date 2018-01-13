@@ -3806,37 +3806,15 @@ namespace Chummer.Backend.Equipment
             objNode.ToolTipText = Notes.WordWrap(100);
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            // Add attached Weapon Accessories.
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                TreeNode objChild = new TreeNode
-                {
-                    Text = objAccessory.DisplayName(GlobalOptions.Language),
-                    Tag = objAccessory.InternalId,
-                    ContextMenuStrip = cmsWeaponAccessory
-                };
-                if (!string.IsNullOrEmpty(objAccessory.Notes))
-                    objChild.ForeColor = Color.SaddleBrown;
-                else if (objAccessory.IncludedInWeapon)
-                    objChild.ForeColor = SystemColors.GrayText;
-                objChild.ToolTipText = objAccessory.Notes.WordWrap(100);
-
-                // Add any Gear attached to the Weapon Accessory.
-                TreeNodeCollection lstAccessoryChildNodes = objChild.Nodes;
-                foreach (Gear objGear in objAccessory.Gear)
-                {
-                    lstAccessoryChildNodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                }
-                if (lstAccessoryChildNodes.Count > 0)
-                    objChild.Expand();
-
-                lstChildNodes.Add(objChild);
-            }
-
             // Add Underbarrel Weapons.
             foreach (Weapon objUnderbarrelWeapon in UnderbarrelWeapons)
             {
                 lstChildNodes.Add(objUnderbarrelWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+            }
+            // Add attached Weapon Accessories.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                lstChildNodes.Add(objAccessory.CreateTreeNode(cmsWeaponAccessory, cmsWeaponAccessoryGear));
             }
 
             if (lstChildNodes.Count > 0)

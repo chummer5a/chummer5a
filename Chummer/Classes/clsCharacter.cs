@@ -657,9 +657,9 @@ namespace Chummer
 
             // <complexforms>
             objWriter.WriteStartElement("complexforms");
-            foreach (ComplexForm objProgram in _lstComplexForms)
+            foreach (ComplexForm objComplexForm in _lstComplexForms)
             {
-                objProgram.Save(objWriter);
+                objComplexForm.Save(objWriter);
             }
             // </complexforms>
             objWriter.WriteEndElement();
@@ -1610,11 +1610,11 @@ namespace Chummer
 
             // Compex Forms/Technomancer Programs.
             objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            foreach (XmlNode objXmlComplexForm in objXmlNodeList)
             {
-                ComplexForm objProgram = new ComplexForm(this);
-                objProgram.Load(objXmlProgram);
-                _lstComplexForms.Add(objProgram);
+                ComplexForm objComplexForm = new ComplexForm(this);
+                objComplexForm.Load(objXmlComplexForm);
+                _lstComplexForms.Add(objComplexForm);
             }
 
             Timekeeper.Finish("load_char_complex");
@@ -2687,9 +2687,9 @@ namespace Chummer
 
             // <complexforms>
             objWriter.WriteStartElement("complexforms");
-            foreach (ComplexForm objProgram in ComplexForms)
+            foreach (ComplexForm objComplexForm in ComplexForms)
             {
-                objProgram.Print(objWriter, strLanguageToPrint);
+                objComplexForm.Print(objWriter, strLanguageToPrint);
             }
             // </complexforms>
             objWriter.WriteEndElement();
@@ -3223,11 +3223,11 @@ namespace Chummer
                     }
                     break;
                 case Improvement.ImprovementSource.ComplexForm:
-                    foreach (ComplexForm objProgram in ComplexForms)
+                    foreach (ComplexForm objComplexForm in ComplexForms)
                     {
-                        if (objProgram.InternalId == objImprovement.SourceName)
+                        if (objComplexForm.InternalId == objImprovement.SourceName)
                         {
-                            return objProgram.DisplayNameShort(strLanguage);
+                            return objComplexForm.DisplayNameShort(strLanguage);
                         }
                     }
                     break;

@@ -909,7 +909,6 @@ namespace Chummer.Classes
             // string strBonus = bonusNode["value"].InnerText;
             int intBonus = intAug;
             string strName = _strFriendlyName;
-            TreeNode nodTemp = new TreeNode();
             Improvement.ImprovementType objType = Improvement.ImprovementType.PhysicalLimit;
 
             switch (strLimit)
@@ -2286,7 +2285,6 @@ namespace Chummer.Classes
             else
                 intBonus = Convert.ToInt32(strBonus);
             string strName = _strFriendlyName;
-            TreeNode nodTemp = new TreeNode();
             Log.Info("Calling CreateImprovement");
             CreateImprovement(strLimit, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
                 _strFriendlyName, intBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);

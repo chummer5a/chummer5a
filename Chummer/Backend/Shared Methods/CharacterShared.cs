@@ -281,8 +281,8 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            string strModifierGuid = objSelectedNode.Tag.ToString();
-            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strModifierGuid);
+            string strGuid = objSelectedNode.Tag.ToString();
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
@@ -302,7 +302,7 @@ namespace Chummer
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
-            objLimitModifier.Guid = new Guid(strModifierGuid);
+            objLimitModifier.Guid = new Guid(strGuid);
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -328,9 +328,9 @@ namespace Chummer
                     objNode.Nodes.Clear();
                 }
                 //Add the Spells that exist.
-                foreach (Spell s in _objCharacter.Spells)
+                foreach (Spell objSpell in _objCharacter.Spells)
                 {
-                    treSpells.Add(s, cmsSpell);
+                    treSpells.Add(objSpell, cmsSpell);
                 }
             }
             else

@@ -819,14 +819,14 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.Parse(strInternalId);
         }
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLifestyle)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
             TreeNode objNode = new TreeNode
             {
                 Name = Name,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsLifestyle
+                ContextMenuStrip = StyleType == LifestyleType.Standard ? cmsBasicLifestyle : cmsAdvancedLifestyle
             };
             if (!string.IsNullOrEmpty(Notes))
             {

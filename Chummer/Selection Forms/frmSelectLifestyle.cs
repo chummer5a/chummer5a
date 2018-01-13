@@ -93,7 +93,7 @@ namespace Chummer
                     nodMultiplier = objXmlOption["multiplierbaseonly"];
                     strBaseString = " " + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
                 }
-                nodOption.Tag = nodOption.Tag = objXmlOption["id"]?.InnerText;
+                nodOption.Tag = objXmlOption["id"]?.InnerText;
                 if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
                 {
                     nodOption.Text = intCost > 0

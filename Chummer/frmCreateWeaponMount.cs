@@ -120,12 +120,12 @@ namespace Chummer
             {
                 foreach (VehicleMod objMod in _objMount.Mods)
                 {
-                    TreeNode n = new TreeNode
+                    TreeNode objModNode = new TreeNode
                     {
                         Text = objMod.DisplayName(GlobalOptions.Language),
                         Tag = objMod
                     };
-                    treMods.Nodes[0].Nodes.Add(n);
+                    treMods.Nodes[0].Nodes.Add(objModNode);
                 }
                 _lstMods.AddRange(_objMount.Mods);
 

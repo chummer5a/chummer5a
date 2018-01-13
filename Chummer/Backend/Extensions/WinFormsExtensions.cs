@@ -91,18 +91,11 @@ namespace Chummer
             TreeNode nodeToAddTo = treView.Nodes[(int)Enum.Parse(typeof(LimitType), input.Limit)];
             if (!nodeToAddTo.Nodes.ContainsKey(input.DisplayName))
             {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = newNode.Name = input.DisplayName;
-                newNode.Tag = input.InternalId;
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = input.Notes.WordWrap(100);
-                newNode.ContextMenuStrip = strip;
-
-                nodeToAddTo.Nodes.Add(newNode);
+                nodeToAddTo.Nodes.Add(input.CreateTreeNode(strip));
                 nodeToAddTo.Expand();
             }
         }
+
         public static void Add(this TreeView treView, Improvement input, ContextMenuStrip strip)
         {
             if (treView == null)
@@ -116,13 +109,16 @@ namespace Chummer
                 strName += ", " + input.Condition;
             if (!nodeToAddTo.Nodes.ContainsKey(strName))
             {
-                TreeNode newNode = new TreeNode();
-                newNode.Text = newNode.Name = strName;
-                newNode.Tag = input.SourceName;
+                TreeNode newNode = new TreeNode
+                {
+                    Name = strName,
+                    Text = strName,
+                    Tag = input.SourceName,
+                    ContextMenuStrip = strip
+                };
                 if (!string.IsNullOrEmpty(input.Notes))
                     newNode.ForeColor = Color.SaddleBrown;
                 newNode.ToolTipText = input.Notes.WordWrap(100);
-                newNode.ContextMenuStrip = strip;
                 if (string.IsNullOrEmpty(input.ImprovedName))
                 {
                     if (input.ImproveType == Improvement.ImprovementType.SocialLimit)
@@ -137,78 +133,12 @@ namespace Chummer
                 nodeToAddTo.Expand();
             }
         }
-        public static void Add(this TreeView treView, MartialArt input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode objTargetNode = treView.Nodes[input.IsQuality ? 1 : 0];
-            if (objTargetNode != null)
-            {
-                TreeNode newNode = new TreeNode
-                {
-                    Text = input.DisplayName(GlobalOptions.Language),
-                    Tag = input.InternalId,
-                    ContextMenuStrip = strip
-                };
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                newNode.ToolTipText = input.Notes.WordWrap(100);
 
-                foreach (MartialArtAdvantage objAdvantage in input.Advantages)
-                {
-                    TreeNode objAdvantageNode = new TreeNode
-                    {
-                        Text = objAdvantage.DisplayName(GlobalOptions.Language),
-                        Tag = objAdvantage.InternalId
-                    };
-                    newNode.Nodes.Add(objAdvantageNode);
-                    newNode.Expand();
-                }
-
-                objTargetNode.Nodes.Add(newNode);
-                objTargetNode.Expand();
-            }
-        }
-        public static void Add(this TreeView treView, Quality input, ContextMenuStrip strip)
-        {
-            if (treView == null)
-                return;
-            TreeNode nodeToAddTo = treView.Nodes[(int)input.Type];
-            string strName = input.DisplayName(GlobalOptions.Language);
-            if (!nodeToAddTo.Nodes.ContainsKey(strName))
-            {
-                TreeNode newNode = new TreeNode
-                {
-                    Text = strName,
-                    Tag = input.InternalId,
-                    ContextMenuStrip = strip
-                };
-
-                if (!string.IsNullOrEmpty(input.Notes))
-                    newNode.ForeColor = Color.SaddleBrown;
-                else if (input.OriginSource == QualitySource.Metatype || input.OriginSource == QualitySource.MetatypeRemovable || input.OriginSource == QualitySource.Improvement)
-                    newNode.ForeColor = SystemColors.GrayText;
-                if (!input.Implemented)
-                    newNode.ForeColor = Color.Red;
-                newNode.ToolTipText = input.Notes.WordWrap(100);
-
-                nodeToAddTo.Nodes.Add(newNode);
-                nodeToAddTo.Expand();
-            }
-        }
         public static void Add(this TreeView treView, Spell input, ContextMenuStrip strip)
         {
             if (treView == null)
                 return;
-            TreeNode objNode = new TreeNode
-            {
-                Text = input.DisplayName(GlobalOptions.Language),
-                Tag = input.InternalId,
-                ContextMenuStrip = strip
-            };
-            if (!string.IsNullOrEmpty(input.Notes))
-                objNode.ForeColor = Color.SaddleBrown;
-            objNode.ToolTipText = input.Notes.WordWrap(100);
+            TreeNode objNode = input.CreateTreeNode(strip);
 
             TreeNode objSpellTypeNode = null;
             switch (input.Category)

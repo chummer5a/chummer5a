@@ -619,80 +619,30 @@ namespace Chummer
             }
 
             // Populate Technomancer Complex Forms/Programs.
-            foreach (ComplexForm objProgram in CharacterObject.ComplexForms)
+            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
             {
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objProgram.DisplayName,
-                    Tag = objProgram.InternalId
-                };
-                if (!string.IsNullOrEmpty(objProgram.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = objProgram.Notes.WordWrap(100);
-                treComplexForms.Nodes[0].Nodes.Add(objNode);
+                treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
                 treComplexForms.Nodes[0].Expand();
             }
 
             // Populate AI Programs and Advanced Programs.
             foreach (AIProgram objProgram in CharacterObject.AIPrograms)
             {
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objProgram.DisplayName,
-                    Tag = objProgram.InternalId
-                };
-                if (!string.IsNullOrEmpty(objProgram.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                else if (!objProgram.CanDelete)
-                    objNode.ForeColor = SystemColors.GrayText;
-                else
-                    objNode.ForeColor = SystemColors.WindowText;
-                objNode.ToolTipText = objProgram.Notes.WordWrap(100);
-                objNode.ContextMenuStrip = cmsAdvancedProgram;
-                treAIPrograms.Nodes[0].Nodes.Add(objNode);
+                treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
                 treAIPrograms.Nodes[0].Expand();
             }
 
             // Populate Martial Arts.
             foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
             {
-                TreeNode objMartialArtNode = new TreeNode
-                {
-                    Text = objMartialArt.DisplayName(GlobalOptions.Language),
-                    Tag = objMartialArt.InternalId,
-                    ContextMenuStrip = cmsMartialArts
-                };
-                if (!string.IsNullOrEmpty(objMartialArt.Notes))
-                    objMartialArtNode.ForeColor = Color.SaddleBrown;
-                objMartialArtNode.ToolTipText = objMartialArt.Notes.WordWrap(100);
-
-                foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
-                {
-                    TreeNode objAdvantageNode = new TreeNode
-                    {
-                        Text = objAdvantage.DisplayName(GlobalOptions.Language),
-                        Tag = objAdvantage.InternalId,
-                        ContextMenuStrip = cmsTechnique
-                    };
-
-                    if (!string.IsNullOrEmpty(objAdvantage.Notes))
-                        objAdvantageNode.ForeColor = Color.SaddleBrown;
-                    else
-                        objAdvantageNode.ForeColor = SystemColors.WindowText;
-                    objAdvantageNode.ToolTipText = objAdvantage.Notes.WordWrap(100);
-
-                    objMartialArtNode.Nodes.Add(objAdvantageNode);
-                    objMartialArtNode.Expand();
-                }
-
                 if (objMartialArt.IsQuality)
                 {
-                    treMartialArts.Nodes[1].Nodes.Add(objMartialArtNode);
+                    treMartialArts.Nodes[1].Nodes.Add(objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique));
                     treMartialArts.Nodes[1].Expand();
                 }
                 else
                 {
-                    treMartialArts.Nodes[0].Nodes.Add(objMartialArtNode);
+                    treMartialArts.Nodes[0].Nodes.Add(objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique));
                     treMartialArts.Nodes[0].Expand();
                 }
             }
@@ -700,29 +650,18 @@ namespace Chummer
             // Populate Limit Modifiers.
             foreach (LimitModifier objLimitModifier in CharacterObject.LimitModifiers)
             {
-                TreeNode objLimitModifierNode = new TreeNode
-                {
-                    Text = objLimitModifier.DisplayName,
-                    Tag = objLimitModifier.Name,
-                    ContextMenuStrip = cmsMartialArts
-                };
-                if (!string.IsNullOrEmpty(objLimitModifier.Notes))
-                    objLimitModifierNode.ForeColor = Color.SaddleBrown;
-                objLimitModifierNode.ToolTipText = objLimitModifier.Notes.WordWrap(100);
-                objLimitModifierNode.ContextMenuStrip = cmsLimitModifier;
-
                 switch (objLimitModifier.Limit)
                 {
                     case "Physical":
-                        treLimit.Nodes[0].Nodes.Add(objLimitModifierNode);
+                        treLimit.Nodes[0].Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
                         treLimit.Nodes[0].Expand();
                         break;
                     case "Mental":
-                        treLimit.Nodes[1].Nodes.Add(objLimitModifierNode);
+                        treLimit.Nodes[1].Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
                         treLimit.Nodes[1].Expand();
                         break;
                     case "Social":
-                        treLimit.Nodes[2].Nodes.Add(objLimitModifierNode);
+                        treLimit.Nodes[2].Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
                         treLimit.Nodes[2].Expand();
                         break;
                 }
@@ -731,19 +670,7 @@ namespace Chummer
             // Populate Lifestyles.
             foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
             {
-                TreeNode objLifestyleNode = new TreeNode
-                {
-                    Text = objLifestyle.DisplayName(GlobalOptions.Language),
-                    Tag = objLifestyle.InternalId
-                };
-                if (objLifestyle.StyleType.ToString() != "Standard")
-                    objLifestyleNode.ContextMenuStrip = cmsAdvancedLifestyle;
-                else
-                    objLifestyleNode.ContextMenuStrip = cmsLifestyleNotes;
-                if (!string.IsNullOrEmpty(objLifestyle.Notes))
-                    objLifestyleNode.ForeColor = Color.SaddleBrown;
-                objLifestyleNode.ToolTipText = objLifestyle.Notes.WordWrap(100);
-                treLifestyles.Nodes[0].Nodes.Add(objLifestyleNode);
+                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
             }
             treLifestyles.Nodes[0].Expand();
 
@@ -765,16 +692,7 @@ namespace Chummer
             {
                 foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                 {
-                    TreeNode objNode = new TreeNode
-                    {
-                        Text = objMetamagic.DisplayName(GlobalOptions.Language),
-                        Tag = objMetamagic.InternalId,
-                        ContextMenuStrip = cmsMetamagic
-                    };
-                    if (!string.IsNullOrEmpty(objMetamagic.Notes))
-                        objNode.ForeColor = Color.SaddleBrown;
-                    objNode.ToolTipText = objMetamagic.Notes.WordWrap(100);
-                    treMetamagic.Nodes.Add(objNode);
+                    treMetamagic.Nodes.Add(objMetamagic.CreateTreeNode(cmsMetamagic));
                 }
             }
 
@@ -1735,7 +1653,7 @@ namespace Chummer
                 objLifestyle.Create(objXmlLifestyle);
                 CharacterObject.Lifestyles.Add(objLifestyle);
 
-                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(!string.IsNullOrEmpty(objLifestyle.BaseLifestyle) ? cmsAdvancedLifestyle : cmsLifestyleNotes));
+                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
                 treLifestyles.Nodes[0].Expand();
             }
 
@@ -2851,16 +2769,7 @@ namespace Chummer
 
                         CharacterObject.Lifestyles.Add(objLifestyle);
 
-                        TreeNode objLifestyleNode = new TreeNode
-                        {
-                            Text = objLifestyle.DisplayName(GlobalOptions.Language),
-                            Tag = objLifestyle.InternalId,
-                            ContextMenuStrip = objLifestyle.StyleType.ToString() != "Standard" ? cmsAdvancedLifestyle : cmsLifestyleNotes,
-                            ToolTipText = objLifestyle.Notes.WordWrap(100)
-                        };
-                        if (!string.IsNullOrEmpty(objLifestyle.Notes))
-                            objLifestyleNode.ForeColor = Color.SaddleBrown;
-                        treLifestyles.Nodes[0].Nodes.Add(objLifestyleNode);
+                        treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
 
                         IsCharacterUpdateRequested = true;
                         IsDirty = true;
@@ -3923,50 +3832,7 @@ namespace Chummer
                     // Change the Location for the Armor.
                     objArmor.Location = string.Empty;
 
-                    TreeNode nodNewNode = new TreeNode
-                    {
-                        Text = objNode.Text,
-                        Tag = objNode.Tag,
-                        ContextMenuStrip = cmsArmor
-                    };
-
-                    // Add child nodes.
-                    foreach (ArmorMod objChild in objArmor.ArmorMods)
-                    {
-                        TreeNode nodChildNode = new TreeNode
-                        {
-                            Text = objChild.DisplayName(GlobalOptions.Language),
-                            Tag = objChild.InternalId,
-                            ContextMenuStrip = string.IsNullOrEmpty(objChild.GearCapacity) ? cmsArmorMod : cmsArmorGear
-                        };
-                        foreach (Gear objChildGear in objChild.Gear)
-                        {
-                            TreeNode nodChildGearNode = new TreeNode
-                            {
-                                Text = objChildGear.DisplayName(GlobalOptions.Language),
-                                Tag = objChildGear.InternalId,
-                                ContextMenuStrip = cmsArmorGear
-                            };
-                            nodChildNode.Nodes.Add(nodChildGearNode);
-                            nodChildNode.Expand();
-                        }
-                        nodNewNode.Nodes.Add(nodChildNode);
-                        nodNewNode.Expand();
-                    }
-
-                    foreach (Gear objChild in objArmor.Gear)
-                    {
-                        TreeNode nodChildNode = new TreeNode
-                        {
-                            Text = objChild.DisplayName(GlobalOptions.Language),
-                            Tag = objChild.InternalId,
-                            ContextMenuStrip = cmsArmorGear
-                        };
-                        nodNewNode.Nodes.Add(nodChildNode);
-                        nodNewNode.Expand();
-                    }
-
-                    treArmor.Nodes[0].Nodes.Add(nodNewNode);
+                    treArmor.Nodes[0].Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
                     treArmor.Nodes[0].Expand();
                 }
 
@@ -4215,7 +4081,7 @@ namespace Chummer
 
                 CharacterObject.Lifestyles.Add(objLifestyle);
 
-                TreeNode objNode = objLifestyle.CreateTreeNode(cmsLifestyleNotes);
+                TreeNode objNode = objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle);
                 treLifestyles.Nodes[0].Nodes.Add(objNode);
                 treLifestyles.Nodes[0].Expand();
                 treLifestyles.SelectedNode = objNode;
@@ -5258,14 +5124,14 @@ namespace Chummer
                     return;
 
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
+                ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
-                if (objProgram == null)
+                if (objComplexForm == null)
                     return;
 
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objProgram.InternalId);
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
 
-                CharacterObject.ComplexForms.Remove(objProgram);
+                CharacterObject.ComplexForms.Remove(objComplexForm);
                 treComplexForms.SelectedNode.Remove();
 
                 lblComplexFormsBP.Text = string.Format("{0} " + LanguageManager.GetString("String_Of", GlobalOptions.Language) + " {1}", (CharacterObject.CFPLimit - CharacterObject.ComplexForms.Count).ToString(), CharacterObject.CFPLimit.ToString());
@@ -5958,22 +5824,18 @@ namespace Chummer
                 Cost = decCost.ToString(GlobalOptions.CultureInfo),
                 Avail = "0"
             };
-
-            TreeNode nodStackNode = new TreeNode
-            {
-                Text = objStackItem.DisplayNameShort(GlobalOptions.Language),
-                Tag = objStackItem.InternalId
-            };
-
-            treGear.Nodes[0].Nodes.Add(nodStackNode);
+            
+            treGear.Nodes[0].Nodes.Add(objStackItem.CreateTreeNode(cmsGear));
 
             CharacterObject.Gear.Add(objStackItem);
 
             objStack.GearId = objStackItem.InternalId;
+            
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
+
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-            CharacterObject.PopulateFocusList(treFoci, cmsGear);
-            IsCharacterUpdateRequested = true;
         }
 
         private void cmdAddArmor_Click(object sender, EventArgs e)
@@ -7203,7 +7065,7 @@ namespace Chummer
 
             CharacterObject.Lifestyles.Add(objLifestyle);
             
-            treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsAdvancedLifestyle));
+            treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
             treLifestyles.Nodes[0].Expand();
 
             if (frmPickLifestyle.AddAgain)
@@ -7368,27 +7230,8 @@ namespace Chummer
                 return;
 
             Gear objGear = frmPickNexus.SelectedNexus;
-
-            TreeNode nodNexus = new TreeNode
-            {
-                Text = objGear.Name,
-                Tag = objGear.InternalId,
-                ContextMenuStrip = cmsGear
-            };
-
-            foreach (Gear objChild in objGear.Children)
-            {
-                TreeNode nodModule = new TreeNode
-                {
-                    Text = objChild.Name,
-                    Tag = objChild.InternalId,
-                    ContextMenuStrip = cmsGear
-                };
-                nodNexus.Nodes.Add(nodModule);
-                nodNexus.Expand();
-            }
-
-            treGear.Nodes[0].Nodes.Add(nodNexus);
+            
+            treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
             treGear.Nodes[0].Expand();
 
             CharacterObject.Gear.Add(objGear);
@@ -7443,27 +7286,8 @@ namespace Chummer
                 return;
 
             Gear objGear = frmPickNexus.SelectedNexus;
-
-            TreeNode nodNexus = new TreeNode
-            {
-                Text = objGear.Name,
-                Tag = objGear.InternalId,
-                ContextMenuStrip = cmsVehicleGear
-            };
-
-            foreach (Gear objChild in objGear.Children)
-            {
-                TreeNode nodModule = new TreeNode
-                {
-                    Text = objChild.Name,
-                    Tag = objChild.InternalId,
-                    ContextMenuStrip = cmsVehicleGear
-                };
-                nodNexus.Nodes.Add(nodModule);
-                nodNexus.Expand();
-            }
-
-            treVehicles.SelectedNode.Nodes.Add(nodNexus);
+            
+            treVehicles.SelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsVehicleGear));
             treVehicles.SelectedNode.Expand();
 
             objSelectedVehicle.Gear.Add(objGear);
@@ -8550,7 +8374,6 @@ namespace Chummer
 
         private void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
-            string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
@@ -8560,13 +8383,13 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            strNewLocation = frmPickText.SelectedValue;
+            string strNewLocation = frmPickText.SelectedValue;
 
-            int i = -1;
-            foreach (string strLocation in CharacterObject.GearLocations)
+            string strSelectedText = treGear.SelectedNode.Text;
+            for (int i = 0; i < CharacterObject.GearLocations.Count; ++i)
             {
-                i++;
-                if (strLocation == treGear.SelectedNode.Text)
+                string strLocation = CharacterObject.GearLocations[i];
+                if (strLocation == strSelectedText)
                 {
                     foreach (Gear objGear in CharacterObject.Gear)
                     {
@@ -8585,7 +8408,6 @@ namespace Chummer
 
         private void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
-            string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
@@ -8595,13 +8417,13 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            strNewLocation = frmPickText.SelectedValue;
+            string strNewLocation = frmPickText.SelectedValue;
 
-            int i = -1;
-            foreach (string strLocation in CharacterObject.WeaponLocations)
+            string strSelectedText = treWeapons.SelectedNode.Text;
+            for (int i = 0; i < CharacterObject.WeaponLocations.Count; ++i)
             {
-                i++;
-                if (strLocation == treWeapons.SelectedNode.Text)
+                string strLocation = CharacterObject.WeaponLocations[i];
+                if (strLocation == strSelectedText)
                 {
                     foreach (Weapon objWeapon in CharacterObject.Weapons)
                     {
@@ -8648,12 +8470,7 @@ namespace Chummer
                 return;
 
             Spell objSpell = frmSpell.SelectedSpell;
-            TreeNode objNode = new TreeNode
-            {
-                Text = objSpell.DisplayName(GlobalOptions.Language),
-                Tag = objSpell.InternalId,
-                ContextMenuStrip = cmsSpell
-            };
+            TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
 
             CharacterObject.Spells.Add(objSpell);
 
@@ -8699,7 +8516,6 @@ namespace Chummer
 
         private void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
-            string strNewLocation = string.Empty;
             frmSelectText frmPickText = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_AddLocation", GlobalOptions.Language)
@@ -8709,13 +8525,13 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            strNewLocation = frmPickText.SelectedValue;
+            string strNewLocation = frmPickText.SelectedValue;
 
-            int i = -1;
-            foreach (string strLocation in CharacterObject.ArmorLocations)
+            string strSelectedText = treArmor.SelectedNode.Text;
+            for (int i = 0; i < CharacterObject.ArmorLocations.Count; ++i)
             {
-                i++;
-                if (strLocation == treArmor.SelectedNode.Text)
+                string strLocation = CharacterObject.ArmorLocations[i];
+                if (strLocation == strSelectedText)
                 {
                     foreach (Armor objArmor in CharacterObject.Armor)
                     {
@@ -8728,6 +8544,8 @@ namespace Chummer
                     break;
                 }
             }
+
+            IsDirty = true;
         }
 
         private void tsCyberwareAddGear_Click(object sender, EventArgs e)
@@ -10015,7 +9833,9 @@ namespace Chummer
                 }
             }
 
-            Lifestyle objNewLifestyle = new Lifestyle(CharacterObject);
+            if (objLifestyle == null)
+                return;
+            
             if (objLifestyle.StyleType != LifestyleType.Standard)
             {
                 // Edit Advanced Lifestyle.
@@ -11501,22 +11321,18 @@ namespace Chummer
             if (treComplexForms.SelectedNode != null && treComplexForms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
+                ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
-                if (objProgram != null)
+                if (objComplexForm != null)
                 {
-                    string strDuration = objProgram.Duration;
-                    string strTarget = objProgram.Target;
-                    string strFV = objProgram.FV;
+                    lblDuration.Text = objComplexForm.Duration;
+                    lblTarget.Text = objComplexForm.Target;
+                    lblFV.Text = objComplexForm.FV;
 
-                    lblDuration.Text = strDuration;
-                    lblTarget.Text = strTarget;
-                    lblFV.Text = strFV;
-
-                    string strBook = CommonFunctions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
-                    string strPage = objProgram.Page(GlobalOptions.Language);
+                    string strBook = CommonFunctions.LanguageBookShort(objComplexForm.Source, GlobalOptions.Language);
+                    string strPage = objComplexForm.Page(GlobalOptions.Language);
                     lblComplexFormSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objComplexForm.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
                 }
             }
         }
@@ -11529,11 +11345,11 @@ namespace Chummer
             if (treComplexForms.SelectedNode.Level == 1)
             {
                 // Locate the Program that is selected in the tree.
-                ComplexForm objProgram = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
+                ComplexForm objComplexForm = CharacterObject.ComplexForms.FindById(treComplexForms.SelectedNode.Tag.ToString());
 
-                if (objProgram != null)
+                if (objComplexForm != null)
                 {
-                    treComplexForms.SelectedNode.Text = objProgram.DisplayName;
+                    treComplexForms.SelectedNode.Text = objComplexForm.DisplayName;
                     IsCharacterUpdateRequested = true;
 
                     IsDirty = true;
@@ -12628,7 +12444,7 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Complex Forms.
             int intFormsPointsUsed = 0;
-            foreach (ComplexForm objProgram in CharacterObject.ComplexForms)
+            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
             {
                 intFormsPointsUsed += 1;
             }
@@ -13720,20 +13536,7 @@ namespace Chummer
             // Populate AI Programs.
             foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
             {
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objAIProgram.DisplayName,
-                    Tag = objAIProgram.InternalId,
-                    ContextMenuStrip = cmsAdvancedProgram,
-                    ToolTipText = objAIProgram.Notes.WordWrap(100)
-                };
-                if (!string.IsNullOrEmpty(objAIProgram.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                else if (!objAIProgram.CanDelete)
-                    objNode.ForeColor = SystemColors.GrayText;
-                else
-                    objNode.ForeColor = SystemColors.WindowText;
-                treAIPrograms.Nodes[0].Nodes.Add(objNode);
+                treAIPrograms.Nodes[0].Nodes.Add(objAIProgram.CreateTreeNode(cmsAdvancedProgram));
             }
             treAIPrograms.Nodes[0].Expand();
         }
@@ -13746,7 +13549,9 @@ namespace Chummer
             // Populate Martial Arts.
             foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
             {
-                treMartialArts.Add(objMartialArt, cmsMartialArts);
+                TreeNode objTargetNode = treMartialArts.Nodes[objMartialArt.IsQuality ? 1 : 0];
+                objTargetNode.Nodes.Add(objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique));
+                objTargetNode.Expand();
             }
         }
 
@@ -17442,7 +17247,7 @@ namespace Chummer
                     XmlNode objXmlLifestyle = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
                     objLifestyle.Create(objXmlLifestyle);
-                    treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(!string.IsNullOrEmpty(objLifestyle.BaseLifestyle) ? cmsAdvancedLifestyle : cmsLifestyleNotes));
+                    treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
                     treLifestyles.Nodes[0].Expand();
 
                     CharacterObject.Lifestyles.Add(objLifestyle);
@@ -17831,7 +17636,7 @@ namespace Chummer
                         Spell objSpell = new Spell(CharacterObject);
                         objSpell.Create(objXmlSpellNode, strForceValue);
                         CharacterObject.Spells.Add(objSpell);
-                        objCategoryNode.Nodes.Add(objSpell.CreateTreeNode(cmsSpell, false));
+                        objCategoryNode.Nodes.Add(objSpell.CreateTreeNode(cmsSpell));
                         objCategoryNode.Expand();
                     }
                 }
@@ -17909,7 +17714,7 @@ namespace Chummer
 
                     // Add the Lifestyle to the character and Lifestyle Tree.
                     CharacterObject.Lifestyles.Add(objLifestyle);
-                    treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(!string.IsNullOrEmpty(objLifestyle.BaseLifestyle) ? cmsAdvancedLifestyle : cmsLifestyleNotes));
+                    treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
                     treLifestyles.Nodes[0].Expand();
                 }
             }
@@ -20159,10 +19964,10 @@ namespace Chummer
 
             CharacterObject.Spells.Add(objNewSpell);
 
-            treMetamagic.SelectedNode.Nodes.Add(objNewSpell.CreateTreeNode(cmsInitiationNotes, false));
+            treMetamagic.SelectedNode.Nodes.Add(objNewSpell.CreateTreeNode(cmsInitiationNotes));
             treMetamagic.SelectedNode.Expand();
 
-            treSpells.Nodes[6].Nodes.Add(objNewSpell.CreateTreeNode(cmsSpell));
+            treSpells.Nodes[6].Nodes.Add(objNewSpell.CreateTreeNode(cmsSpell, true));
             treSpells.Nodes[6].Expand();
 
             IsCharacterUpdateRequested = true;
@@ -20207,10 +20012,10 @@ namespace Chummer
 
             CharacterObject.Spells.Add(objNewSpell);
 
-            treMetamagic.SelectedNode.Nodes.Add(objNewSpell.CreateTreeNode(cmsInitiationNotes, false));
+            treMetamagic.SelectedNode.Nodes.Add(objNewSpell.CreateTreeNode(cmsInitiationNotes));
             treMetamagic.SelectedNode.Expand();
 
-            treSpells.Nodes[5].Nodes.Add(objNewSpell.CreateTreeNode(cmsSpell));
+            treSpells.Nodes[5].Nodes.Add(objNewSpell.CreateTreeNode(cmsSpell, true));
             treSpells.Nodes[5].Expand();
 
             IsCharacterUpdateRequested = true;

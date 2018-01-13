@@ -510,10 +510,8 @@ namespace Chummer.Backend.Equipment
         /// Copy a piece of Gear.
         /// </summary>
         /// <param name="objGear">Gear object to copy.</param>
-        /// <param name="objNode">TreeNode for the copied item.</param>
         /// <param name="lstWeapons">List of Weapons created by the copied item.</param>
-        /// <param name="objWeaponNodes">List of TreeNodes for the Weapons created by the copied item.</param>
-        public void Copy(Gear objGear, TreeNode objNode, List<Weapon> lstWeapons, List<TreeNode> objWeaponNodes)
+        public void Copy(Gear objGear, List<Weapon> lstWeapons)
         {
             _objCachedMyXmlNode = objGear.GetNode();
             _SourceGuid = objGear._SourceGuid;
@@ -549,18 +547,11 @@ namespace Chummer.Backend.Equipment
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
 
-            objNode.Text = DisplayName(GlobalOptions.Language);
-            objNode.Tag = _guiID.ToString();
-
             foreach (Gear objGearChild in objGear.Children)
             {
-                TreeNode objChildNode = new TreeNode();
                 Gear objChild = new Gear(_objCharacter);
-                objChild.Copy(objGearChild, objChildNode, lstWeapons, objWeaponNodes);
+                objChild.Copy(objGearChild, lstWeapons);
                 _objChildren.Add(objChild);
-
-                objNode.Nodes.Add(objChildNode);
-                objNode.Expand();
             }
 
             _strOverclocked = objGear.Overclocked;
@@ -2872,8 +2863,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
         /// </summary>
-        /// <param name="objParentNode">TreeNode to append to.</param>
-        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        /// <param name="cmsGear">ContextMenuStrip for the Gear to use.</param>
         public TreeNode CreateTreeNode(ContextMenuStrip cmsGear)
         {
             TreeNode objNode = new TreeNode
@@ -2894,10 +2884,9 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Build up the Tree for the current piece of Gear and all of its children.
+        /// Build up the Tree for the current piece of Gear's children.
         /// </summary>
-        /// <param name="objParentNode">TreeNode to append to.</param>
-        /// <param name="cmsGear">ContextMenuStrip that the new TreeNodes should use.</param>
+        /// <param name="cmsGear">ContextMenuStrip for the Gear's children to use to use.</param>
         public void BuildChildrenGearTree(TreeNode objParentNode, ContextMenuStrip cmsGear)
         {
             bool blnExpandNode = false;

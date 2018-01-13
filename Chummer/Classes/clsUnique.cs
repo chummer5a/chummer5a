@@ -787,7 +787,11 @@ namespace Chummer
                 Tag = InternalId,
                 ContextMenuStrip = cmsQuality
             };
-            if (!string.IsNullOrEmpty(Notes))
+            if (!Implemented)
+            {
+                objNode.ForeColor = Color.Red;
+            }
+            else if (!string.IsNullOrEmpty(Notes))
             {
                 objNode.ForeColor = Color.SaddleBrown;
             }
@@ -2544,7 +2548,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = true)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
         {
             string strCategory = string.Empty;
             if (blnAddCategory)

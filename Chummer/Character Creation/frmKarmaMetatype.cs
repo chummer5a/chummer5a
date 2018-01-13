@@ -751,9 +751,9 @@ namespace Chummer
                     if (objXmlComplexFormData != null)
                     {
                         string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                        ComplexForm objProgram = new ComplexForm(_objCharacter);
-                        objProgram.Create(objXmlComplexFormData, strForceValue);
-                        _objCharacter.ComplexForms.Add(objProgram);
+                        ComplexForm objComplexForm = new ComplexForm(_objCharacter);
+                        objComplexForm.Create(objXmlComplexFormData, strForceValue);
+                        _objCharacter.ComplexForms.Add(objComplexForm);
                     }
                 }
 

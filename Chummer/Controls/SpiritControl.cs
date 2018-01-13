@@ -590,10 +590,10 @@ namespace Chummer
             foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
             {
                 string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
-                ComplexForm objProgram = new ComplexForm(objCharacter);
-                objProgram.Create(objXmlProgram, strForceValue);
-                objCharacter.ComplexForms.Add(objProgram);
+                XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                ComplexForm objComplexForm = new ComplexForm(objCharacter);
+                objComplexForm.Create(objXmlComplexFormData, strForceValue);
+                objCharacter.ComplexForms.Add(objComplexForm);
             }
 
             // Add any Gear the Critter comes with (typically Programs for A.I.s)

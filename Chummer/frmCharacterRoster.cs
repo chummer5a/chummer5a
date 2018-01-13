@@ -540,7 +540,8 @@ namespace Chummer
                 TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
                 if (nodDestinationNode.Level > 0)
                     nodDestinationNode = nodDestinationNode.Parent;
-                if (nodDestinationNode.Tag.ToString() != "Watch")
+                string strDestinationNode = nodDestinationNode.Tag.ToString();
+                if (strDestinationNode != "Watch")
                 {
                     TreeNode nodNewNode = e.Data.GetData("System.Windows.Forms.TreeNode") as TreeNode;
                     if (nodNewNode == null)
@@ -554,7 +555,7 @@ namespace Chummer
 
                         if (objCache == null)
                             return;
-                        switch (nodDestinationNode.Tag.ToString())
+                        switch (strDestinationNode)
                         {
                             case "Recent":
                                 GlobalOptions.RemoveFromMRUList(objCache.FilePath, "stickymru", false);

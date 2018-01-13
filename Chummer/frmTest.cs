@@ -387,8 +387,8 @@ namespace Chummer
                 try
                 {
                     ArmorMod objTemp = new ArmorMod(objCharacter);
-                    List<Weapon> lstWeaopns = new List<Weapon>();
-                    objTemp.Create(objXmlGear, 1, lstWeaopns);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    objTemp.Create(objXmlGear, 1, lstWeapons);
                     try
                     {
                         string objValue = objTemp.TotalAvail(GlobalOptions.Language);
@@ -761,13 +761,11 @@ namespace Chummer
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + objXmlPower.InnerText + "\"]");
                         CritterPower objPower = new CritterPower(_objCharacter);
-                        string strForcedValue = string.Empty;
+                        string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
                         int intRating = 0;
 
                         if (objXmlPower.Attributes["rating"] != null)
                             intRating = Convert.ToInt32(objXmlPower.Attributes["rating"].InnerText);
-                        if (objXmlPower.Attributes["select"] != null)
-                            strForcedValue = objXmlPower.Attributes["select"].InnerText;
 
                         objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                         _objCharacter.CritterPowers.Add(objPower);
@@ -873,13 +871,11 @@ namespace Chummer
                         int intRating = 0;
                         if (objXmlComplexForm.Attributes["rating"] != null)
                             intRating = ExpressionToInt(objXmlComplexForm.Attributes["rating"].InnerText, intForce, 0);
-                        string strForceValue = string.Empty;
-                        if (objXmlComplexForm.Attributes["select"] != null)
-                            strForceValue = objXmlComplexForm.Attributes["select"].InnerText;
-                        XmlNode objXmlProgram = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
-                        ComplexForm objProgram = new ComplexForm(_objCharacter);
-                        objProgram.Create(objXmlProgram, strForceValue);
-                        _objCharacter.ComplexForms.Add(objProgram);
+                        string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
+                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + objXmlComplexForm.InnerText + "\"]");
+                        ComplexForm objComplexForm = new ComplexForm(_objCharacter);
+                        objComplexForm.Create(objXmlComplexFormData, strForceValue);
+                        _objCharacter.ComplexForms.Add(objComplexForm);
                     }
 
                     // Add any Gear the Critter comes with (typically Programs for A.I.s)
@@ -889,9 +885,7 @@ namespace Chummer
                         int intRating = 0;
                         if (objXmlGear.Attributes["rating"] != null)
                             intRating = ExpressionToInt(objXmlGear.Attributes["rating"].InnerText, intForce, 0);
-                        string strForceValue = string.Empty;
-                        if (objXmlGear.Attributes["select"] != null)
-                            strForceValue = objXmlGear.Attributes["select"].InnerText;
+                        string strForceValue = objXmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
                         XmlNode objXmlGearItem = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlGear.InnerText + "\"]");
                         Gear objGear = new Gear(_objCharacter);
                         List<Weapon> lstWeapons = new List<Weapon>();

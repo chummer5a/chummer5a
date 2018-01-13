@@ -341,12 +341,12 @@ namespace Chummer
             {
                 // <programs>
                 objWriter.WriteStartElement("complexforms");
-                foreach (ComplexForm objProgram in _objCharacter.ComplexForms)
+                foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
                 {
                     // <program>
                     objWriter.WriteStartElement("complexform");
                     objWriter.WriteStartElement("name");
-                    objWriter.WriteValue(objProgram.Name);
+                    objWriter.WriteValue(objComplexForm.Name);
                     objWriter.WriteEndElement();
                     // </program>
                     objWriter.WriteEndElement();
