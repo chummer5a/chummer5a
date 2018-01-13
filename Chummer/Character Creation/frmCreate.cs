@@ -8470,45 +8470,10 @@ namespace Chummer
                 return;
 
             Spell objSpell = frmSpell.SelectedSpell;
-            TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
-
             CharacterObject.Spells.Add(objSpell);
 
-            switch (objSpell.Category)
-            {
-                case "Combat":
-                    treSpells.Nodes[0].Nodes.Add(objNode);
-                    treSpells.Nodes[0].Expand();
-                    break;
-                case "Detection":
-                    treSpells.Nodes[1].Nodes.Add(objNode);
-                    treSpells.Nodes[1].Expand();
-                    break;
-                case "Health":
-                    treSpells.Nodes[2].Nodes.Add(objNode);
-                    treSpells.Nodes[2].Expand();
-                    break;
-                case "Illusion":
-                    treSpells.Nodes[3].Nodes.Add(objNode);
-                    treSpells.Nodes[3].Expand();
-                    break;
-                case "Manipulation":
-                    treSpells.Nodes[4].Nodes.Add(objNode);
-                    treSpells.Nodes[4].Expand();
-                    break;
-                case "Rituals":
-                    treSpells.Nodes[5].Nodes.Add(objNode);
-                    treSpells.Nodes[5].Expand();
-                    break;
-                case "Enchantments":
-                    treSpells.Nodes[6].Nodes.Add(objNode);
-                    treSpells.Nodes[6].Expand();
-                    break;
-            }
+            treSpells.Add(objSpell, cmsSpell, true, true);
 
-            treSpells.SelectedNode = objNode;
-
-            treSpells.SortCustom();
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -17366,93 +17331,83 @@ namespace Chummer
             XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
             bool blnDoQualityTreeUpdate = false;
             // Update Qualities.
-            if (objXmlKit["qualities"] != null)
+            XmlNode xmlQualities = objXmlKit["qualities"];
+            if (xmlQualities != null)
             {
                 XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
 
+                TreeNode objPositiveQualitiesNode = treQualities.Nodes[0];
+                TreeNode objNegativeQualitiesNode = treQualities.Nodes[1];
                 // Positive Qualities.
-                foreach (XmlNode objXmlQuality in objXmlKit.SelectNodes("qualities/positive/quality"))
+                foreach (XmlNode objXmlQuality in xmlQualities.SelectNodes("positive/quality"))
                 {
                     XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
 
-                    if (objXmlQualityNode == null)
-                        continue;
-                    
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    Quality objQuality = new Quality(CharacterObject);
-                    string strForceValue = string.Empty;
-
-                    if (objXmlQuality.Attributes["select"] != null)
-                        strForceValue = objXmlQuality.Attributes["select"].InnerText;
-
-                    objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
-                    if (!CharacterObject.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                    if (objXmlQualityNode != null)
                     {
-                        treQualities.Nodes[0].Nodes.Add(objQuality.CreateTreeNode(cmsQuality));
-                        treQualities.Nodes[0].Expand();
-                    }
-                    else
-                        blnDoQualityTreeUpdate = true;
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        Quality objQuality = new Quality(CharacterObject);
+                        string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                    CharacterObject.Qualities.Add(objQuality);
+                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        if (!CharacterObject.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                            objPositiveQualitiesNode.Nodes.Add(objQuality.CreateTreeNode(cmsQuality));
+                        else
+                            blnDoQualityTreeUpdate = true;
 
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                        objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        objWeaponTreeNodes.Expand();
+                        CharacterObject.Qualities.Add(objQuality);
+
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                            objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                            objWeaponTreeNodes.Expand();
+                        }
                     }
                 }
+                objPositiveQualitiesNode.Expand();
 
                 // Negative Qualities.
-                foreach (XmlNode objXmlQuality in objXmlKit.SelectNodes("qualities/negative/quality"))
+                foreach (XmlNode objXmlQuality in xmlQualities.SelectNodes("negative/quality"))
                 {
                     XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlQuality.InnerText + "\"]");
 
-                    if (objXmlQualityNode == null)
-                        continue;
-                    
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<TreeNode> objWeaponNodes = new List<TreeNode>();
-                    Quality objQuality = new Quality(CharacterObject);
-                    string strForceValue = string.Empty;
-
-                    if (objXmlQuality.Attributes["select"] != null)
-                        strForceValue = objXmlQuality.Attributes["select"].InnerText;
-
-                    objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
-                    CharacterObject.Qualities.Add(objQuality);
-
-                    if (!CharacterObject.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                    if (objXmlQualityNode != null)
                     {
-                        treQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode(cmsQuality));
-                        treQualities.Nodes[1].Expand();
-                    }
-                    else
-                        blnDoQualityTreeUpdate = true;
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        Quality objQuality = new Quality(CharacterObject);
+                        string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                        objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        objWeaponTreeNodes.Expand();
+                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        CharacterObject.Qualities.Add(objQuality);
+
+                        if (!CharacterObject.Qualities.Any(objExistingQuality => objExistingQuality.QualityId == objQuality.QualityId && objExistingQuality.Extra == objQuality.Extra))
+                            objNegativeQualitiesNode.Nodes.Add(objQuality.CreateTreeNode(cmsQuality));
+                        else
+                            blnDoQualityTreeUpdate = true;
+
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                            objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                            objWeaponTreeNodes.Expand();
+                        }
                     }
                 }
+                objNegativeQualitiesNode.Expand();
             }
 
-           //TODO: PACKS SKILLS?
+            //TODO: PACKS SKILLS?
 
+            TreeNode objMartialArtsNode = treMartialArts.Nodes[0];
             // Select a Martial Art.
-            if (objXmlKit["selectmartialart"] != null)
+            XmlNode xmlSelectMartialArt = objXmlKit["selectmartialart"];
+            if (xmlSelectMartialArt != null)
             {
-                string strForcedValue = string.Empty;
-                int intRating = 1;
-                if (objXmlKit["selectmartialart"].Attributes["select"] != null)
-                    strForcedValue = objXmlKit["selectmartialart"].Attributes["select"].InnerText;
-                if (objXmlKit["selectmartialart"].Attributes["rating"] != null)
-                    intRating = Convert.ToInt32(objXmlKit["selectmartialart"].Attributes["rating"].InnerText);
+                string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
+                int intRating = Convert.ToInt32(xmlSelectMartialArt.Attributes?["rating"]?.InnerText ?? "1");
 
                 frmSelectMartialArt frmPickMartialArt = new frmSelectMartialArt(CharacterObject)
                 {
@@ -17474,41 +17429,43 @@ namespace Chummer
 
                     TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
 
-                    treMartialArts.Nodes[0].Nodes.Add(objNode);
-                    treMartialArts.Nodes[0].Expand();
+                    objMartialArtsNode.Nodes.Add(objNode);
+                    objMartialArtsNode.Expand();
 
                     treMartialArts.SelectedNode = objNode;
                 }
             }
 
             // Update Martial Arts.
-            if (objXmlKit["martialarts"] != null)
+            XmlNode xmlMartialArts = objXmlKit["martialarts"];
+            if (xmlMartialArts != null)
             {
                 // Open the Martial Arts XML file and locate the selected art.
                 XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml");
 
-                foreach (XmlNode objXmlArt in objXmlKit.SelectNodes("martialarts/martialart"))
+                foreach (XmlNode objXmlArt in xmlMartialArts.SelectNodes("martialart"))
                 {
                     MartialArt objArt = new MartialArt(CharacterObject);
                     XmlNode objXmlArtNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlArt["name"].InnerText + "\"]");
-                    if (objXmlArtNode == null)
-                        continue;
-                    objArt.Create(objXmlArtNode);
-                    objArt.Rating = Convert.ToInt32(objXmlArt["rating"].InnerText);
-                    CharacterObject.MartialArts.Add(objArt);
-
-                    // Check for Advantages.
-                    foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
+                    if (objXmlArtNode != null)
                     {
-                        MartialArtAdvantage objAdvantage = new MartialArtAdvantage(CharacterObject);
-                        XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
-                        objAdvantage.Create(objXmlAdvantageNode);
-                        objArt.Advantages.Add(objAdvantage);
-                    }
+                        objArt.Create(objXmlArtNode);
+                        objArt.Rating = Convert.ToInt32(objXmlArt["rating"].InnerText);
+                        CharacterObject.MartialArts.Add(objArt);
 
-                    treMartialArts.Nodes[0].Nodes.Add(objArt.CreateTreeNode(cmsMartialArts, cmsTechnique));
-                    treMartialArts.Nodes[0].Expand();
+                        // Check for Advantages.
+                        foreach (XmlNode objXmlAdvantage in objXmlArt.SelectNodes("techniques/technique"))
+                        {
+                            MartialArtAdvantage objAdvantage = new MartialArtAdvantage(CharacterObject);
+                            XmlNode objXmlAdvantageNode = objXmlMartialArtDocument.SelectSingleNode("/chummer/techniques/technique[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAdvantage["name"].InnerText + "\"]");
+                            objAdvantage.Create(objXmlAdvantageNode);
+                            objArt.Advantages.Add(objAdvantage);
+                        }
+
+                        objMartialArtsNode.Nodes.Add(objArt.CreateTreeNode(cmsMartialArts, cmsTechnique));
+                    }
                 }
+                objMartialArtsNode.Expand();
             }
 
             // Update Adept Powers.
@@ -17524,61 +17481,66 @@ namespace Chummer
             }
 
             // Update Complex Forms.
-            if (objXmlKit["complexforms"] != null)
+            XmlNode xmlComplexForms = objXmlKit["complexforms"];
+            if (xmlComplexForms != null)
             {
                 // Open the Programs XML file and locate the selected program.
-                XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
+                XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml");
 
-                foreach (XmlNode objXmlProgram in objXmlKit.SelectNodes("complexforms/complexform"))
+                TreeNode objComplexFormsNode = treComplexForms.Nodes[0];
+                foreach (XmlNode objXmlComplexForm in xmlComplexForms.SelectNodes("complexform"))
                 {
-                    XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
-                    if (objXmlProgramNode == null)
-                        continue;
+                    XmlNode objXmlComplexFormNode = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlComplexForm["name"].InnerText + "\"]");
+                    if (objXmlComplexFormNode != null)
+                    {
+                        string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                    string strForceValue = objXmlProgram.Attributes?["select"]?.InnerText ?? string.Empty;
+                        ComplexForm objComplexForm = new ComplexForm(CharacterObject);
+                        objComplexForm.Create(objXmlComplexFormNode, strForceValue);
 
-                    ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                    objComplexForm.Create(objXmlProgramNode, strForceValue);
+                        CharacterObject.ComplexForms.Add(objComplexForm);
 
-                    treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
-                    treComplexForms.Nodes[0].Expand();
-
-                    CharacterObject.ComplexForms.Add(objComplexForm);
-
-                    treComplexForms.SortCustom();
+                        objComplexFormsNode.Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
+                    }
                 }
+
+                objComplexFormsNode.Expand();
+                treComplexForms.SortCustom();
             }
 
             // Update AI Programs.
-            if (objXmlKit["programs"] != null)
+            XmlNode xmlPrograms = objXmlKit["programs"];
+            if (xmlPrograms != null)
             {
                 // Open the Programs XML file and locate the selected program.
                 XmlDocument objXmlProgramDocument = XmlManager.Load("programs.xml");
 
-                foreach (XmlNode objXmlProgram in objXmlKit.SelectNodes("programs/program"))
+                TreeNode objProgramsNode = treAIPrograms.Nodes[0];
+                foreach (XmlNode objXmlProgram in xmlPrograms.SelectNodes("program"))
                 {
                     XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/programs/program[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
-                    if (objXmlProgramNode == null)
-                        continue;
-                    
-                    AIProgram objProgram = new AIProgram(CharacterObject);
-                    objProgram.Create(objXmlProgramNode, objXmlProgram["category"]?.InnerText == "Advanced Programs");
+                    if (objXmlProgramNode != null)
+                    {
+                        AIProgram objProgram = new AIProgram(CharacterObject);
+                        objProgram.Create(objXmlProgramNode, objXmlProgram["category"]?.InnerText == "Advanced Programs");
 
-                    treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-                    treAIPrograms.Nodes[0].Expand();
+                        objProgramsNode.Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
 
-                    CharacterObject.AIPrograms.Add(objProgram);
-
-                    treAIPrograms.SortCustom();
+                        CharacterObject.AIPrograms.Add(objProgram);
+                    }
                 }
+
+                objProgramsNode.Expand();
+                treAIPrograms.SortCustom();
             }
 
             // Update Spells.
-            if (objXmlKit["spells"] != null)
+            XmlNode xmlSpells = objXmlKit["spells"];
+            if (xmlSpells != null)
             {
                 XmlDocument objXmlSpellDocument = XmlManager.Load("spells.xml");
 
-                foreach (XmlNode objXmlSpell in objXmlKit.SelectNodes("spells/spell"))
+                foreach (XmlNode objXmlSpell in xmlSpells.SelectNodes("spell"))
                 {
                     TreeNode objCategoryNode = null;
                     switch (objXmlSpell["category"]?.InnerText)
@@ -17606,10 +17568,8 @@ namespace Chummer
                             break;
                     }
                     // Make sure the Spell has not already been added to the character.
-                    bool blnFound = false;
-                    if (objCategoryNode == null)
-                        blnFound = true;
-                    else
+                    bool blnFound = objCategoryNode == null;
+                    if (!blnFound)
                     {
                         foreach (TreeNode nodSpell in objCategoryNode.Nodes)
                         {
@@ -17619,34 +17579,32 @@ namespace Chummer
                                 break;
                             }
                         }
-                    }
 
-                    // The Spell is not in the list, so add it.
-                    if (!blnFound)
-                    {
-                        string strForceValue = string.Empty;
-                        if (objXmlSpell.Attributes["select"] != null)
-                            strForceValue = objXmlSpell.Attributes["select"].InnerText;
+                        // The Spell is not in the list, so add it.
+                        if (!blnFound)
+                        {
+                            XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlSpell.InnerText + "\"]");
 
-                        XmlNode objXmlSpellNode = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlSpell.InnerText + "\"]");
+                            if (objXmlSpellNode == null)
+                                continue;
 
-                        if (objXmlSpellNode == null)
-                            continue;
-
-                        Spell objSpell = new Spell(CharacterObject);
-                        objSpell.Create(objXmlSpellNode, strForceValue);
-                        CharacterObject.Spells.Add(objSpell);
-                        objCategoryNode.Nodes.Add(objSpell.CreateTreeNode(cmsSpell));
-                        objCategoryNode.Expand();
+                            Spell objSpell = new Spell(CharacterObject);
+                            string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
+                            objSpell.Create(objXmlSpellNode, strForceValue);
+                            CharacterObject.Spells.Add(objSpell);
+                            objCategoryNode.Nodes.Add(objSpell.CreateTreeNode(cmsSpell));
+                            objCategoryNode.Expand();
+                        }
                     }
                 }
                 treSpells.SortCustom();
             }
 
             // Update Spirits.
-            if (objXmlKit["spirits"] != null)
+            XmlNode xmlSpirits = objXmlKit["spirits"];
+            if (xmlSpirits != null)
             {
-                foreach (XmlNode objXmlSpirit in objXmlKit.SelectNodes("spirits/spirit"))
+                foreach (XmlNode objXmlSpirit in xmlSpirits.SelectNodes("spirit"))
                 {
                     int i = panSpirits.Controls.Count;
 
@@ -17671,11 +17629,13 @@ namespace Chummer
             }
 
             // Update Lifestyles.
-            if (objXmlKit["lifestyles"] != null)
+            XmlNode xmlLifestyles = objXmlKit["lifestyles"];
+            if (xmlLifestyles != null)
             {
                 XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
 
-                foreach (XmlNode objXmlLifestyle in objXmlKit.SelectNodes("lifestyles/lifestyle"))
+                TreeNode objLifestylesNode = treLifestyles.Nodes[0];
+                foreach (XmlNode objXmlLifestyle in xmlLifestyles.SelectNodes("lifestyle"))
                 {
                     string strName = objXmlLifestyle["name"].InnerText;
                     int intMonths = Convert.ToInt32(objXmlLifestyle["months"].InnerText);
@@ -17714,15 +17674,16 @@ namespace Chummer
 
                     // Add the Lifestyle to the character and Lifestyle Tree.
                     CharacterObject.Lifestyles.Add(objLifestyle);
-                    treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-                    treLifestyles.Nodes[0].Expand();
+                    objLifestylesNode.Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
                 }
+                objLifestylesNode.Expand();
             }
 
             // Update NuyenBP.
-            if (objXmlKit["nuyenbp"] != null)
+            string strNuyenBP = objXmlKit["nuyenbp"]?.InnerText;
+            if (!string.IsNullOrEmpty(strNuyenBP))
             {
-                int intAmount = Convert.ToInt32(objXmlKit["nuyenbp"].InnerText);
+                int intAmount = Convert.ToInt32(strNuyenBP);
                 //if (_objCharacter.BuildMethod == CharacterBuildMethod.Karma)
                 //intAmount *= 2;
 
@@ -17733,142 +17694,165 @@ namespace Chummer
                     nudNuyen.Value += intAmount;
             }
 
+            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+
             // Update Armor.
-            if (objXmlKit["armors"] != null)
+            XmlNode xmlArmors = objXmlKit["armors"];
+            if (xmlArmors != null)
             {
                 XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
-
-                foreach (XmlNode objXmlArmor in objXmlKit.SelectNodes("armors/armor"))
+                TreeNode objArmorsNode = treArmor.Nodes[0];
+                foreach (XmlNode objXmlArmor in xmlArmors.SelectNodes("armor"))
                 {
                     XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlArmor["name"].InnerText + "\"]");
-                    if (objXmlArmorNode == null)
-                        continue;
-
-                    Armor objArmor = new Armor(CharacterObject);
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    
-                    objArmor.Create(objXmlArmorNode, Convert.ToInt32(objXmlArmor["rating"]?.InnerText), lstWeapons, false, blnCreateChildren);
-                    CharacterObject.Armor.Add(objArmor);
-
-                    // Look for Armor Mods.
-                    if (objXmlArmor["mods"] != null)
+                    if (objXmlArmorNode != null)
                     {
+                        Armor objArmor = new Armor(CharacterObject);
+                        List<Weapon> lstWeapons = new List<Weapon>();
+
+                        objArmor.Create(objXmlArmorNode, Convert.ToInt32(objXmlArmor["rating"]?.InnerText), lstWeapons, false, blnCreateChildren);
+                        CharacterObject.Armor.Add(objArmor);
+
+                        // Look for Armor Mods.
                         foreach (XmlNode objXmlMod in objXmlArmor.SelectNodes("mods/mod"))
                         {
                             XmlNode objXmlModNode = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlMod["name"].InnerText + "\"]");
-                            if (objXmlModNode == null)
-                                continue;
-                            ArmorMod objMod = new ArmorMod(CharacterObject);
-                            int intRating = 0;
-                            if (objXmlMod["rating"] != null)
-                                intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
-                            objMod.Create(objXmlModNode, intRating, lstWeapons);
-                            objMod.Parent = objArmor;
-
-                            objArmor.ArmorMods.Add(objMod);
-                        }
-                    }
-
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                        TreeNode objParent = objWeaponTreeNodes;
-                        // If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.
-                        if (!objWeapon.IsUnderbarrelWeapon && !string.IsNullOrEmpty(objWeapon.Location))
-                        {
-                            foreach (TreeNode objLocationNode in treWeapons.Nodes)
+                            if (objXmlModNode != null)
                             {
-                                if (objLocationNode.Text == objWeapon.Location)
-                                {
-                                    objParent = objLocationNode;
-                                    break;
-                                }
+                                ArmorMod objMod = new ArmorMod(CharacterObject);
+                                int intRating = 0;
+                                if (objXmlMod["rating"] != null)
+                                    intRating = Convert.ToInt32(objXmlMod["rating"].InnerText);
+                                objMod.Create(objXmlModNode, intRating, lstWeapons);
+                                objMod.Parent = objArmor;
+
+                                foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
+                                    AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+
+                                objArmor.ArmorMods.Add(objMod);
                             }
                         }
-                        objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        objParent.Expand();
-                    }
 
-                    XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                    foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
-                        AddPACKSGear(objXmlGearDocument, objXmlGear, objArmor, blnCreateChildren);
-                    
-                    treArmor.Nodes[0].Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
-                    treArmor.Nodes[0].Expand();
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objWeapon);
+                            TreeNode objParent = objWeaponTreeNodes;
+                            // If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.
+                            if (!objWeapon.IsUnderbarrelWeapon && !string.IsNullOrEmpty(objWeapon.Location))
+                            {
+                                foreach (TreeNode objLocationNode in treWeapons.Nodes)
+                                {
+                                    if (objLocationNode.Text == objWeapon.Location)
+                                    {
+                                        objParent = objLocationNode;
+                                        break;
+                                    }
+                                }
+                            }
+                            objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                            objParent.Expand();
+                        }
+
+                        foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
+                            AddPACKSGear(objXmlGearDocument, objXmlGear, objArmor, blnCreateChildren);
+
+                        objArmorsNode.Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
+                    }
                 }
+
+                objArmorsNode.Expand();
             }
 
             // Update Weapons.
-            if (objXmlKit["weapons"] != null)
+            XmlNode xmlWeapons = objXmlKit["weapons"];
+            if (xmlWeapons != null)
             {
                 XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
+                XmlNodeList xmlWeaponsList = xmlWeapons.SelectNodes("weapon");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
-                pgbProgress.Maximum = objXmlKit.SelectNodes("weapons/weapon").Count;
+                pgbProgress.Maximum = xmlWeaponsList.Count;
                 int i = 0;
-                foreach (XmlNode objXmlWeapon in objXmlKit.SelectNodes("weapons/weapon"))
+                foreach (XmlNode objXmlWeapon in xmlWeaponsList)
                 {
                     i++;
                     pgbProgress.Value = i;
                     Application.DoEvents();
 
                     XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                    if (objXmlWeaponNode == null)
-                        continue;
-
-                    Weapon objWeapon = new Weapon(CharacterObject);
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    objWeapon.Create(objXmlWeaponNode, lstWeapons, blnCreateChildren);
-                    CharacterObject.Weapons.Add(objWeapon);
-
-                    // Look for Weapon Accessories.
-                    if (objXmlWeapon["accessories"] != null)
+                    if (objXmlWeaponNode != null)
                     {
+                        Weapon objWeapon = new Weapon(CharacterObject);
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        objWeapon.Create(objXmlWeaponNode, lstWeapons, blnCreateChildren);
+                        CharacterObject.Weapons.Add(objWeapon);
+
+                        // Look for Weapon Accessories.
                         foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                         {
                             XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-                            if (objXmlAccessoryNode == null)
-                                continue;
-                            WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
-                            string strMount =  objXmlAccessory["mount"]?.InnerText ?? "Internal";
-                            int intRating = 0;
-                            string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
-                            objMod.Create(objXmlAccessoryNode, new Tuple<string,string> (strMount, strExtraMount), intRating, false, blnCreateChildren);
-                            objMod.Parent = objWeapon;
+                            if (objXmlAccessoryNode != null)
+                            {
+                                WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                                objMod.Parent = objWeapon;
 
-                            objWeapon.WeaponAccessories.Add(objMod);
+                                objWeapon.WeaponAccessories.Add(objMod);
 
-                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-                            foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
-                                AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
+                                    AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                            }
                         }
-                    }
 
-                    // Look for an Underbarrel Weapon.
-                    if (objXmlWeapon["underbarrel"] != null)
-                    {
-                        XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
-                        if (objXmlUnderbarrelNode == null)
-                            continue;
-                        List<Weapon> lstLoopWeapons = new List<Weapon>();
-                        Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
-                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
-                        objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
-                        if (objWeapon.AllowAccessory == false)
-                            objUnderbarrelWeapon.AllowAccessory = false;
-                        foreach (Weapon objLoopWeapon in lstLoopWeapons)
+                        // Look for an Underbarrel Weapon.
+                        XmlNode xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
+                        if (xmlUnderbarrelNode != null)
                         {
-                            if (objWeapon.AllowAccessory == false)
-                                objLoopWeapon.AllowAccessory = false;
-                            objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
-                        }
-                    }
+                            XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
+                            if (objXmlUnderbarrelNode == null)
+                            {
+                                List<Weapon> lstLoopWeapons = new List<Weapon>();
+                                Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
+                                objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
+                                objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
+                                if (objWeapon.AllowAccessory == false)
+                                    objUnderbarrelWeapon.AllowAccessory = false;
 
-                    foreach (Weapon objLoopWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objLoopWeapon);
-                        objWeaponTreeNodes.Nodes.Add(objLoopWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                                foreach (Weapon objLoopWeapon in lstLoopWeapons)
+                                {
+                                    if (objWeapon.AllowAccessory == false)
+                                        objLoopWeapon.AllowAccessory = false;
+                                    objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                                }
+
+                                foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes("accessories/accessory"))
+                                {
+                                    XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                    if (objXmlAccessoryNode != null)
+                                    {
+                                        WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                        string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                        string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                        objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                                        objMod.Parent = objWeapon;
+
+                                        objUnderbarrelWeapon.WeaponAccessories.Add(objMod);
+
+                                        foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
+                                            AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objLoopWeapon);
+                            objWeaponTreeNodes.Nodes.Add(objLoopWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                        }
                     }
                     objWeaponTreeNodes.Expand();
 
@@ -17876,175 +17860,107 @@ namespace Chummer
                 }
             }
 
-            // Update Cyberware.
-            if (objXmlKit["cyberwares"] != null)
-            {
-                XmlDocument objXmlCyberwareDocument = XmlManager.Load("cyberware.xml");
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
+            XmlDocument objXmlCyberwareDocument = XmlManager.Load("cyberware.xml");
+            XmlDocument objXmlBiowareDocument = XmlManager.Load("bioware.xml");
 
+            // Update Cyberware.
+            XmlNode xmlCyberwares = objXmlKit["cyberwares"];
+            if (xmlCyberwares != null)
+            {
+                XmlNodeList xmlCyberwaresList = xmlWeapons.SelectNodes("cyberware");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
-                pgbProgress.Maximum = objXmlKit.SelectNodes("cyberwares/cyberware").Count;
+                pgbProgress.Maximum = xmlCyberwaresList.Count;
+
+                TreeNode objCyberwaresNode = treCyberware.Nodes[0];
+                TreeNode objModularNode = treCyberware.Nodes[2];
                 int i = 0;
-                foreach (XmlNode objXmlCyberware in objXmlKit.SelectNodes("cyberwares/cyberware"))
+                foreach (XmlNode objXmlCyberware in xmlCyberwaresList)
                 {
                     i++;
                     pgbProgress.Value = i;
                     Application.DoEvents();
 
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<Vehicle> lstVehicles = new List<Vehicle>();
-                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject);
-
-                    int intRating = 0;
-                    if (objXmlCyberware["rating"] != null)
-                        intRating = Convert.ToInt32(objXmlCyberware["rating"].InnerText);
-
-                    XmlNode objXmlCyberwareNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlCyberware["name"].InnerText + "\"]");
-                    if (objXmlCyberwareNode == null)
-                        continue;
-                    Cyberware objCyberware = new Cyberware(CharacterObject);
-                    objCyberware.Create(objXmlCyberwareNode, CharacterObject, objGrade, Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, true, blnCreateChildren);
-                    CharacterObject.Cyberware.Add(objCyberware);
-
-                    // Add any children.
-                    if (objXmlCyberware["cyberwares"] != null)
-                    {
-                        foreach (XmlNode objXmlChild in objXmlCyberware.SelectNodes("cyberwares/cyberware"))
-                        {
-                            Cyberware objChildCyberware = new Cyberware(CharacterObject);
-
-                            int intChildRating = 0;
-                            if (objXmlChild["rating"] != null)
-                                intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-
-                            XmlNode objXmlChildNode = objXmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlChild["name"].InnerText + "\"]");
-                            if (objXmlChildNode == null)
-                                continue;
-                            objChildCyberware.Create(objXmlChildNode, CharacterObject, objGrade, Improvement.ImprovementSource.Cyberware, intChildRating, lstWeapons, lstVehicles, true, blnCreateChildren);
-                            objCyberware.Children.Add(objChildCyberware);
-
-                            foreach (XmlNode objXmlGear in objXmlChild.SelectNodes("gears/gear"))
-                                AddPACKSGear(objXmlGearDocument, objXmlGear, objChildCyberware, blnCreateChildren);
-                        }
-                    }
-
-                    foreach (XmlNode objXmlGear in objXmlCyberware.SelectNodes("gears/gear"))
-                        AddPACKSGear(objXmlGearDocument, objXmlGear, objCyberware, blnCreateChildren);
-
-                    int intNode = objCyberware.IsModularCurrentlyEquipped ? 0 : 2;
-                    treCyberware.Nodes[intNode].Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
-                    treCyberware.Nodes[intNode].Expand();
-
-                    // Add any Weapons created by the Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                        objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        objWeaponTreeNodes.Expand();
-                    }
-
-                    foreach (Vehicle objVehicle in lstVehicles)
-                    {
-                        CharacterObject.Vehicles.Add(objVehicle);
-                        objVehicleTreeNodes.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                        objVehicleTreeNodes.Expand();
-                    }
+                    Cyberware objCyberware = AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlCyberware, CharacterObject, blnCreateChildren);
+                    if (objCyberware.IsModularCurrentlyEquipped)
+                        objCyberwaresNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
+                    else
+                        objModularNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
 
                     Application.DoEvents();
                 }
 
+                objCyberwaresNode.Expand();
+                objModularNode.Expand();
                 treCyberware.SortCustom();
             }
 
             // Update Bioware.
-            if (objXmlKit["biowares"] != null)
+            XmlNode xmlBiowares = objXmlKit["biowares"];
+            if (xmlBiowares != null)
             {
-                XmlDocument objXmlBiowareDocument = XmlManager.Load("bioware.xml");
-
+                XmlNodeList xmlBiowaresList = xmlBiowares.SelectNodes("bioware");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
-                pgbProgress.Maximum = objXmlKit.SelectNodes("biowares/bioware").Count;
-                int i = 0;
+                pgbProgress.Maximum = xmlBiowaresList.Count;
 
-                foreach (XmlNode objXmlBioware in objXmlKit.SelectNodes("biowares/bioware"))
+                TreeNode objBiowaresNode = treCyberware.Nodes[1];
+                TreeNode objModularNode = treCyberware.Nodes[2];
+                int i = 0;
+                foreach (XmlNode objXmlBioware in xmlBiowaresList)
                 {
                     i++;
                     pgbProgress.Value = i;
                     Application.DoEvents();
 
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    List<Vehicle> lstVehicles = new List<Vehicle>();
-                    Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlBioware["grade"].InnerText, Improvement.ImprovementSource.Bioware, CharacterObject);
-
-                    int intRating = 0;
-                    if (objXmlBioware["rating"] != null)
-                        intRating = Convert.ToInt32(objXmlBioware["rating"].InnerText);
-
-                    XmlNode objXmlBiowareNode = objXmlBiowareDocument.SelectSingleNode("/chummer/biowares/bioware[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlBioware["name"].InnerText + "\"]");
-                    if (objXmlBiowareNode == null)
-                        continue;
-                    Cyberware objCyberware = new Cyberware(CharacterObject);
-                    objCyberware.Create(objXmlBiowareNode, CharacterObject, objGrade, Improvement.ImprovementSource.Bioware, intRating, lstWeapons, lstVehicles, true, blnCreateChildren);
-                    CharacterObject.Cyberware.Add(objCyberware);
-
-                    treCyberware.Nodes[1].Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
-                    treCyberware.Nodes[1].Expand();
-
-                    // Add any Weapons created by the Gear.
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        CharacterObject.Weapons.Add(objWeapon);
-                        objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        objWeaponTreeNodes.Expand();
-                    }
-
-                    foreach (Vehicle objVehicle in lstVehicles)
-                    {
-                        CharacterObject.Vehicles.Add(objVehicle);
-                        objVehicleTreeNodes.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                        objVehicleTreeNodes.Expand();
-                    }
+                    Cyberware objCyberware = AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlBioware, CharacterObject, blnCreateChildren);
+                    if (objCyberware.IsModularCurrentlyEquipped)
+                        objBiowaresNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
+                    else
+                        objModularNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
 
                     Application.DoEvents();
                 }
 
+                objBiowaresNode.Expand();
+                objModularNode.Expand();
                 treCyberware.SortCustom();
             }
 
             // Update Gear.
-            if (objXmlKit["gears"] != null)
+            XmlNode xmlGears = objXmlKit["gears"];
+            if (xmlGears != null)
             {
-                XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-
+                XmlNodeList xmlGearsList = xmlGears.SelectNodes("gear");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
-                pgbProgress.Maximum = objXmlKit.SelectNodes("gears/gear").Count;
+                pgbProgress.Maximum = xmlGearsList.Count;
                 int i = 0;
 
-                foreach (XmlNode objXmlGear in objXmlKit.SelectNodes("gears/gear"))
+                foreach (XmlNode objXmlGear in xmlGearsList)
                 {
                     i++;
                     pgbProgress.Value = i;
                     Application.DoEvents();
 
-                    treGear.Nodes[0].Nodes.Add(AddPACKSGear(objXmlGearDocument, objXmlGear, CharacterObject, blnCreateChildren).CreateTreeNode(cmsGear));
+                    AddPACKSGear(objXmlGearDocument, objXmlGear, CharacterObject, blnCreateChildren);
 
                     Application.DoEvents();
                 }
             }
 
             // Update Vehicles.
-            if (objXmlKit["vehicles"] != null)
+            XmlNode xmlVehicles = objXmlKit["vehicles"];
+            if (xmlVehicles != null)
             {
                 XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
-
+                XmlNodeList xmlVehiclesList = xmlVehicles.SelectNodes("vehicle");
                 pgbProgress.Visible = true;
                 pgbProgress.Value = 0;
-                pgbProgress.Maximum = objXmlKit.SelectNodes("vehicles/vehicle").Count;
+                pgbProgress.Maximum = xmlVehiclesList.Count;
                 int i = 0;
 
-                foreach (XmlNode objXmlVehicle in objXmlKit.SelectNodes("vehicles/vehicle"))
+                foreach (XmlNode objXmlVehicle in xmlVehiclesList)
                 {
                     i++;
                     pgbProgress.Value = i;
@@ -18053,142 +17969,144 @@ namespace Chummer
                     Gear objDefaultSensor = null;
 
                     XmlNode objXmlVehicleNode = objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlVehicle["name"].InnerText + "\"]");
-                    if (objXmlVehicleNode == null)
-                        continue;
-                    Vehicle objVehicle = new Vehicle(CharacterObject);
-                    objVehicle.Create(objXmlVehicleNode, blnCreateChildren);
-                    CharacterObject.Vehicles.Add(objVehicle);
-
-                    // Grab the default Sensor that comes with the Vehicle.
-                    foreach (Gear objSensorGear in objVehicle.Gear)
+                    if (objXmlVehicleNode != null)
                     {
-                        if (objSensorGear.Category == "Sensors" && objSensorGear.Cost == "0" && objSensorGear.Rating == 0)
+                        Vehicle objVehicle = new Vehicle(CharacterObject);
+                        objVehicle.Create(objXmlVehicleNode, blnCreateChildren);
+                        CharacterObject.Vehicles.Add(objVehicle);
+
+                        // Grab the default Sensor that comes with the Vehicle.
+                        foreach (Gear objSensorGear in objVehicle.Gear)
                         {
-                            objDefaultSensor = objSensorGear;
-                            break;
+                            if (objSensorGear.Category == "Sensors" && objSensorGear.Cost == "0" && objSensorGear.Rating == 0)
+                            {
+                                objDefaultSensor = objSensorGear;
+                                break;
+                            }
                         }
-                    }
 
-                    // Add any Vehicle Mods.
-                    if (objXmlVehicle["mods"] != null)
-                    {
+                        // Add any Vehicle Mods.
                         foreach (XmlNode objXmlMod in objXmlVehicle.SelectNodes("mods/mod"))
                         {
-                            int intRating = 0;
-                            objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
-                            int intMarkup = 0;
-                            objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
-
                             XmlNode objXmlModNode = objXmlVehicleDocument.SelectSingleNode("/chummer/mods/mod[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlMod["name"].InnerText + "\"]");
-                            if (objXmlModNode == null)
-                                continue;
-                            VehicleMod objMod = new VehicleMod(CharacterObject);
-                            objMod.Create(objXmlModNode, intRating, objVehicle, intMarkup);
-                            objVehicle.Mods.Add(objMod);
+                            if (objXmlModNode != null)
+                            {
+                                int intRating = 0;
+                                objXmlMod.TryGetInt32FieldQuickly("rating", ref intRating);
+                                int intMarkup = 0;
+                                objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
+                                VehicleMod objMod = new VehicleMod(CharacterObject);
+                                objMod.Create(objXmlModNode, intRating, objVehicle, intMarkup);
+                                objVehicle.Mods.Add(objMod);
+
+                                foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
+                                    AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlCyberware, objMod, blnCreateChildren);
+                            }
                         }
-                    }
 
-                    // Add any Vehicle Gear.
-                    if (objXmlVehicle["gears"] != null)
-                    {
-                        XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-
+                        // Add any Vehicle Gear.
                         foreach (XmlNode objXmlGear in objXmlVehicle.SelectNodes("gears/gear"))
                         {
-                            XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlGear["name"].InnerText + "\"]");
-                            if (objXmlGearNode == null)
-                                continue;
-                            List<Weapon> lstWeapons = new List<Weapon>();
-                            Gear objGear = new Gear(CharacterObject);
-                            decimal decQty = 1;
-
-                            int intRating = 0;
-                            if (objXmlGear["rating"] != null)
-                                intRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
-                            string strForceValue = string.Empty;
-                            if (objXmlGear["name"].Attributes["select"] != null)
-                                strForceValue = objXmlGear["name"].Attributes["select"].InnerText;
-                            if (objXmlGear["qty"] != null)
-                                decQty = Convert.ToDecimal(objXmlGear["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-
-                            objGear.Create(objXmlGearNode, intRating, lstWeapons, strForceValue, false, blnCreateChildren, false);
-                            objGear.Quantity = decQty;
-                            objVehicle.Gear.Add(objGear);
-
-                            // Look for child components.
-                            if (objXmlGear["gears"] != null)
-                            {
-                                foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))
-                                {
-                                    AddPACKSGear(objXmlGearDocument, objXmlChild, objGear, blnCreateChildren);
-                                }
-                            }
-
+                            Gear objGear = AddPACKSGear(objXmlGearDocument, objXmlGear, objVehicle, blnCreateChildren);
                             // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
-                            if (objGear.Category == "Sensors" && objGear.Cost == "0" && objGear.Rating == 0)
+                            if (objGear != null && objGear.Category == "Sensors" && objGear.Cost == "0" && objGear.Rating == 0)
                             {
                                 objVehicle.Gear.Remove(objDefaultSensor);
                             }
                         }
-                    }
 
-                    // Add any Vehicle Weapons.
-                    if (objXmlVehicle["weapons"] != null)
-                    {
-                        XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
-                        foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
+                        // Add any Vehicle Weapons.
+                        if (objXmlVehicle["weapons"] != null)
                         {
-                            Weapon objWeapon = new Weapon(CharacterObject);
+                            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
-                            List<Weapon> lstSubWeapons = new List<Weapon>();
-                            XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                            if (objXmlWeaponNode == null)
-                                continue;
-                            objWeapon.ParentVehicle = objVehicle;
-                            objWeapon.Create(objXmlWeaponNode, lstSubWeapons, blnCreateChildren);
-
-                            // Find the first Weapon Mount in the Vehicle.
-                            foreach (VehicleMod objMod in objVehicle.Mods)
+                            foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
                             {
-                                if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                Weapon objWeapon = new Weapon(CharacterObject);
+
+                                List<Weapon> lstSubWeapons = new List<Weapon>();
+                                XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                                if (objXmlWeaponNode == null)
+                                    continue;
+                                objWeapon.ParentVehicle = objVehicle;
+                                objWeapon.Create(objXmlWeaponNode, lstSubWeapons, blnCreateChildren);
+
+                                // Find the first Weapon Mount in the Vehicle.
+                                foreach (VehicleMod objMod in objVehicle.Mods)
                                 {
-                                    objMod.Weapons.Add(objWeapon);
-                                    ((List<Weapon>)objMod.Weapons).AddRange(lstSubWeapons);
-                                    break;
+                                    if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                    {
+                                        objMod.Weapons.Add(objWeapon);
+                                        ((List<Weapon>)objMod.Weapons).AddRange(lstSubWeapons);
+                                        break;
+                                    }
                                 }
-                            }
 
-                            // Look for Weapon Accessories.
-                            if (objXmlWeapon["accessories"] != null)
-                            {
+                                // Look for Weapon Accessories.
                                 foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
                                 {
                                     XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-                                    if (objXmlAccessoryNode == null)
-                                        continue;
-                                    WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
-                                    string strMount = "Internal";
-                                    int intRating = 0;
-                                    if (objXmlAccessory["mount"] != null)
-                                        strMount = objXmlAccessory["mount"].InnerText;
-                                    string strExtraMount = "None";
-                                    if (objXmlAccessory.InnerXml.Contains("<extramount>"))
-                                        strMount = objXmlAccessory["extramount"].InnerText;
-                                    objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), intRating, false, blnCreateChildren);
-                                    objMod.Parent = objWeapon;
+                                    if (objXmlAccessoryNode != null)
+                                    {
+                                        WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                        string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                        string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                        objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                                        objMod.Parent = objWeapon;
 
-                                    objWeapon.WeaponAccessories.Add(objMod);
+                                        objWeapon.WeaponAccessories.Add(objMod);
+                                    }
+                                }
+
+                                // Look for an Underbarrel Weapon.
+                                XmlNode xmlUnderbarrelNode = objXmlWeapon["underbarrel"];
+                                if (xmlUnderbarrelNode != null)
+                                {
+                                    XmlNode objXmlUnderbarrelNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlWeapon["underbarrel"].InnerText + "\"]");
+                                    if (objXmlUnderbarrelNode != null)
+                                    {
+                                        List<Weapon> lstLoopWeapons = new List<Weapon>();
+                                        Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
+                                        objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
+                                        objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
+                                        if (objWeapon.AllowAccessory == false)
+                                            objUnderbarrelWeapon.AllowAccessory = false;
+
+                                        foreach (Weapon objLoopWeapon in lstLoopWeapons)
+                                        {
+                                            if (objWeapon.AllowAccessory == false)
+                                                objLoopWeapon.AllowAccessory = false;
+                                            objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                                        }
+
+                                        foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes("accessories/accessory"))
+                                        {
+                                            XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                            if (objXmlAccessoryNode != null)
+                                            {
+                                                WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                                string strMount = objXmlAccessory["mount"]?.InnerText ?? "Internal";
+                                                string strExtraMount = objXmlAccessory["extramount"]?.InnerText ?? "None";
+                                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                                                objMod.Parent = objWeapon;
+
+                                                objUnderbarrelWeapon.WeaponAccessories.Add(objMod);
+
+                                                foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
+                                                    AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                    
-                    objVehicleTreeNodes.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                    objVehicleTreeNodes.Expand();
 
-                    Application.DoEvents();
+                        objVehicleTreeNodes.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
+
+                        Application.DoEvents();
+                    }
                 }
+                objVehicleTreeNodes.Expand();
             }
 
             pgbProgress.Visible = false;
@@ -18226,69 +18144,34 @@ namespace Chummer
             treMetamagic.Nodes.Clear();
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
             {
-                TreeNode nodGrade = treMetamagic.Nodes.Add(objGrade.Grade.ToString(), objGrade.Text(GlobalOptions.Language));
-                nodGrade.Tag = objGrade.InternalId;
-                nodGrade.ContextMenuStrip = cmsMetamagic;
-                if (!string.IsNullOrEmpty(objGrade.Notes))
-                    nodGrade.ForeColor = Color.SaddleBrown;
-                nodGrade.ToolTipText = objGrade.Notes;
+                TreeNode nodGrade = objGrade.CreateTreeNode(cmsMetamagic);
 
                 foreach (Art objArt in CharacterObject.Arts)
                 {
                     if (objArt.Grade == objGrade.Grade)
                     {
-                        TreeNode nodArt = nodGrade.Nodes.Add(objArt.InternalId, LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + objArt.DisplayName(GlobalOptions.Language));
-                        nodArt.Tag = objArt.InternalId;
-                        nodArt.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objArt.Notes))
-                            nodArt.ForeColor = Color.SaddleBrown;
-                        nodArt.ToolTipText = objArt.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objArt.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                 {
                     if (objMetamagic.Grade == objGrade.Grade)
                     {
-                        string strName = string.Empty;
-                        if (CharacterObject.MAGEnabled)
-                            strName = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                        else
-                            strName = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                        TreeNode nodMetamagic = nodGrade.Nodes.Add(objMetamagic.InternalId, strName);
-                        nodMetamagic.Tag = objMetamagic.InternalId;
-                        nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objMetamagic.Notes))
-                            nodMetamagic.ForeColor = Color.SaddleBrown;
-                        nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Spell objSpell in CharacterObject.Spells)
                 {
                     if (objSpell.Grade == objGrade.Grade)
                     {
-                        string strCategory = string.Empty;
-                        if (objSpell.Category == "Rituals")
-                            strCategory = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language);
-                        if (objSpell.Category == "Enchantments")
-                            strCategory = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language);
-                        TreeNode nodSpell = nodGrade.Nodes.Add(objSpell.InternalId, strCategory + " " + objSpell.DisplayName(GlobalOptions.Language));
-                        nodSpell.Tag = objSpell.InternalId;
-                        nodSpell.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objSpell.Notes))
-                            nodSpell.ForeColor = Color.SaddleBrown;
-                        nodSpell.ToolTipText = objSpell.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objSpell.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
                 {
                     if (objEnhancement.Grade == objGrade.Grade)
                     {
-                        TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + objEnhancement.DisplayName(GlobalOptions.Language));
-                        nodEnhancement.Tag = objEnhancement.InternalId;
-                        nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objEnhancement.Notes))
-                            nodEnhancement.ForeColor = Color.SaddleBrown;
-                        nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Power objPower in CharacterObject.Powers)
@@ -18297,31 +18180,15 @@ namespace Chummer
                     {
                         if (objEnhancement.Grade == objGrade.Grade)
                         {
-                            TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + objEnhancement.DisplayName(GlobalOptions.Language));
-                            nodEnhancement.Tag = objEnhancement.InternalId;
-                            nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
-                            if (!string.IsNullOrEmpty(objEnhancement.Notes))
-                                nodEnhancement.ForeColor = Color.SaddleBrown;
-                            nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
+                            nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
                         }
                     }
                 }
+                treMetamagic.Nodes.Add(nodGrade);
             }
             foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(x => x.Grade < 0))
             {
-                string strName = string.Empty;
-                if (CharacterObject.MAGEnabled)
-                    strName = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                else
-                    strName = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                TreeNode nodMetamagic = treMetamagic.Nodes.Add(objMetamagic.InternalId, strName);
-                nodMetamagic.Tag = objMetamagic.InternalId;
-                nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
-                if (!string.IsNullOrEmpty(objMetamagic.Notes))
-                    nodMetamagic.ForeColor = Color.SaddleBrown;
-                else
-                    nodMetamagic.ForeColor = SystemColors.GrayText;
-                nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
+                treMetamagic.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
             }
             treMetamagic.ExpandAll();
         }
@@ -19570,12 +19437,11 @@ namespace Chummer
             if (objXmlGearNode == null)
                 return null;
 
-            int intRating = 0;
-            if (objXmlGear["rating"] != null)
-                intRating = Convert.ToInt32(objXmlGear["rating"].InnerText);
+            int intRating = Convert.ToInt32(objXmlGear["rating"]?.InnerText);
             decimal decQty = 1;
-            if (objXmlGear["qty"] != null)
-                decQty = Convert.ToDecimal(objXmlGear["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
+            string strQty = objXmlGear["qty"]?.InnerText;
+            if (!string.IsNullOrEmpty(strQty))
+                decQty = Convert.ToDecimal(strQty, GlobalOptions.InvariantCultureInfo);
 
             List<Weapon> lstWeapons = new List<Weapon>();
             string strForceValue = objXmlGear["name"].Attributes?["select"]?.InnerText ?? string.Empty;
@@ -19586,37 +19452,103 @@ namespace Chummer
 
             if (objParentObject.GetType() == typeof(Character))
                 ((Character)objParentObject).Gear.Add(objNewGear);
-            if (objParentObject.GetType() == typeof(Gear) || objParentObject.GetType() == typeof(OperatingSystem))
+            else if (objParentObject.GetType() == typeof(Gear) || objParentObject.GetType() == typeof(OperatingSystem))
             {
                 ((Gear)objParentObject).Children.Add(objNewGear);
                 objNewGear.Parent = (Gear)objParentObject;
                 objNewGear.Parent.RefreshMatrixAttributeArray();
             }
-            if (objParentObject.GetType() == typeof(Armor))
+            else if (objParentObject.GetType() == typeof(Armor))
                 ((Armor)objParentObject).Gear.Add(objNewGear);
-            if (objParentObject.GetType() == typeof(WeaponAccessory))
+            else if (objParentObject.GetType() == typeof(ArmorMod))
+                ((ArmorMod)objParentObject).Gear.Add(objNewGear);
+            else if (objParentObject.GetType() == typeof(WeaponAccessory))
                 ((WeaponAccessory)objParentObject).Gear.Add(objNewGear);
-            if (objParentObject.GetType() == typeof(Cyberware))
+            else if (objParentObject.GetType() == typeof(Cyberware))
                 ((Cyberware)objParentObject).Gear.Add(objNewGear);
+            else if (objParentObject.GetType() == typeof(Vehicle))
+                ((Vehicle)objParentObject).Gear.Add(objNewGear);
 
             // Look for child components.
-            if (objXmlGear["gears"] != null)
+            foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))
             {
-                foreach (XmlNode objXmlChild in objXmlGear.SelectNodes("gears/gear"))
-                {
-                    AddPACKSGear(objXmlGearDocument, objXmlChild, objNewGear, blnCreateChildren);
-                }
+                AddPACKSGear(objXmlGearDocument, objXmlChild, objNewGear, blnCreateChildren);
             }
 
             // Add any Weapons created by the Gear.
-            foreach (Weapon objWeapon in lstWeapons)
+            if (lstWeapons.Count > 0)
             {
-                CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
+                TreeNode objWeaponsNode = treWeapons.Nodes[0];
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    CharacterObject.Weapons.Add(objWeapon);
+                    objWeaponsNode.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                }
+                objWeaponsNode.Expand();
             }
 
             return objNewGear;
+        }
+
+        private Cyberware AddPACKSCyberware(XmlDocument xmlCyberwareDocument, XmlDocument xmlBiowareDocument, XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject, bool blnCreateChildren)
+        {
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(xmlCyberware["grade"].InnerText, Improvement.ImprovementSource.Cyberware, CharacterObject);
+
+            int intRating = Convert.ToInt32(xmlCyberware["rating"]?.InnerText);
+
+            Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware;
+            XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("/chummer/cyberwares/cyberware[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + xmlCyberware["name"].InnerText + "\"]");
+            if (objXmlCyberwareNode == null)
+            {
+                eSource = Improvement.ImprovementSource.Bioware;
+                objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode("/chummer/biowares/bioware[(" + CharacterObject.Options.BookXPath() + ") and name = \"" + xmlCyberware["name"].InnerText + "\"]");
+                if (objXmlCyberwareNode == null)
+                {
+                    return null;
+                }
+            }
+            Cyberware objCyberware = new Cyberware(CharacterObject);
+            objCyberware.Create(objXmlCyberwareNode, CharacterObject, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, blnCreateChildren);
+
+            if (objParentObject.GetType() == typeof(Character))
+                ((Character)objParentObject).Cyberware.Add(objCyberware);
+            else if (objParentObject.GetType() == typeof(Cyberware))
+                ((Cyberware)objParentObject).Children.Add(objCyberware);
+            else if (objParentObject.GetType() == typeof(VehicleMod))
+                ((VehicleMod)objParentObject).Cyberware.Add(objCyberware);
+
+            // Add any children.
+            foreach (XmlNode objXmlChild in xmlCyberware.SelectNodes("cyberwares/cyberware"))
+                AddPACKSCyberware(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument, xmlCyberware, objCyberware, blnCreateChildren);
+
+            foreach (XmlNode objXmlGear in xmlCyberware.SelectNodes("gears/gear"))
+                AddPACKSGear(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren);
+
+            if (lstWeapons.Count > 0)
+            {
+                TreeNode objWeaponsNode = treWeapons.Nodes[0];
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    CharacterObject.Weapons.Add(objWeapon);
+                    objWeaponsNode.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                }
+                objWeaponsNode.Expand();
+            }
+
+            if (lstVehicles.Count > 0)
+            {
+                TreeNode objVehiclesNode = treVehicles.Nodes[0];
+                foreach (Vehicle objVehicle in lstVehicles)
+                {
+                    CharacterObject.Vehicles.Add(objVehicle);
+                    objVehiclesNode.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
+                }
+                objVehiclesNode.Expand();
+            }
+
+            return objCyberware;
         }
 
         /// <summary>

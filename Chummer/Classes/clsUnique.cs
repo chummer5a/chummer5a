@@ -2550,17 +2550,17 @@ namespace Chummer
         #region Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
         {
-            string strCategory = string.Empty;
+            string strText = DisplayName(GlobalOptions.Language);
             if (blnAddCategory)
             {
                 if (Category == "Rituals")
-                    strCategory = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + ' ';
+                    strText = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + ' ' + strText;
                 if (Category == "Enchantments")
-                    strCategory = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + ' ';
+                    strText = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + ' ' + strText;
             }
             TreeNode objNode = new TreeNode
             {
-                Text = strCategory + DisplayName(GlobalOptions.Language),
+                Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsSpell
             };
@@ -3158,11 +3158,14 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsMetamagic)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMetamagic, bool blnAddCategory = false)
         {
+            string strText = DisplayName(GlobalOptions.Language);
+            if (blnAddCategory)
+                strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
-                Text = DisplayName(GlobalOptions.Language),
+                Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsMetamagic
             };
@@ -3418,11 +3421,14 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsArt)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsArt, bool blnAddCategory = false)
         {
+            string strText = DisplayName(GlobalOptions.Language);
+            if (blnAddCategory)
+                strText = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
-                Text = DisplayName(GlobalOptions.Language),
+                Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsArt
             };
@@ -3691,11 +3697,14 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false)
         {
+            string strText = DisplayName(GlobalOptions.Language);
+            if (blnAddCategory)
+                strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
-                Text = DisplayName(GlobalOptions.Language),
+                Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsEnhancement
             };
@@ -6853,6 +6862,25 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsInitiationGrade)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                ContextMenuStrip = cmsInitiationGrade,
+                Name = Grade.ToString(),
+                Text = Text(GlobalOptions.Language),
+                Tag = InternalId
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
         }
         #endregion
     }

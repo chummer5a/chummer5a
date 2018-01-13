@@ -134,14 +134,14 @@ namespace Chummer
             }
         }
 
-        public static void Add(this TreeView treView, Spell input, ContextMenuStrip strip)
+        public static void Add(this TreeView treView, Spell objInput, ContextMenuStrip cmsSpell, bool blnCustomSort = false, bool blnSelectNode = false)
         {
             if (treView == null)
                 return;
-            TreeNode objNode = input.CreateTreeNode(strip);
+            TreeNode objNode = objInput.CreateTreeNode(cmsSpell);
 
             TreeNode objSpellTypeNode = null;
-            switch (input.Category)
+            switch (objInput.Category)
             {
                 case "Combat":
                     objSpellTypeNode = treView.Nodes[0];
@@ -167,6 +167,15 @@ namespace Chummer
             }
             objSpellTypeNode.Nodes.Add(objNode);
             objSpellTypeNode.Expand();
+
+            if (blnCustomSort)
+            {
+                treView.SortCustom();
+                if (blnSelectNode)
+                    treView.SelectedNode = treView.FindNode(objInput.InternalId);
+            }
+            else if (blnSelectNode)
+                treView.SelectedNode = objNode;
         }
 
         /// <summary>

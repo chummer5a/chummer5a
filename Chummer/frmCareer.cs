@@ -599,46 +599,7 @@ namespace Chummer
             // Populate Spell list.
             foreach (Spell objSpell in CharacterObject.Spells)
             {
-                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
-
-                switch (objSpell.Category)
-                {
-                    case "Combat":
-                        treSpells.Nodes[0].Nodes.Add(objNode);
-                        treSpells.Nodes[0].Expand();
-                        break;
-                    case "Detection":
-                        treSpells.Nodes[1].Nodes.Add(objNode);
-                        treSpells.Nodes[1].Expand();
-                        break;
-                    case "Health":
-                        treSpells.Nodes[2].Nodes.Add(objNode);
-                        treSpells.Nodes[2].Expand();
-                        break;
-                    case "Illusion":
-                        treSpells.Nodes[3].Nodes.Add(objNode);
-                        treSpells.Nodes[3].Expand();
-                        break;
-                    case "Manipulation":
-                        treSpells.Nodes[4].Nodes.Add(objNode);
-                        treSpells.Nodes[4].Expand();
-                        break;
-                    case "Rituals":
-                        /*
-                        int intNode = 5;
-                        if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                            intNode = 0;
-                        treSpells.Nodes[intNode].Nodes.Add(objNode);
-                        treSpells.Nodes[intNode].Expand();
-                        */
-                        treSpells.Nodes[5].Nodes.Add(objNode);
-                        treSpells.Nodes[5].Expand();
-                        break;
-                    case "Enchantments":
-                        treSpells.Nodes[6].Nodes.Add(objNode);
-                        treSpells.Nodes[6].Expand();
-                        break;
-                }
+                treSpells.Add(objSpell, cmsSpell);
             }
 
             // Populate Magician Spirits and Technomancer Sprites.
@@ -12843,50 +12804,9 @@ namespace Chummer
             if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend", GlobalOptions.Language).Replace("{0}", objSpell.DisplayName(GlobalOptions.Language)).Replace("{1}", intSpellKarmaCost.ToString())))
                 return;
 
-            TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
-
             CharacterObject.Spells.Add(objSpell);
 
-            switch (objSpell.Category)
-            {
-                case "Combat":
-                    treSpells.Nodes[0].Nodes.Add(objNode);
-                    treSpells.Nodes[0].Expand();
-                    break;
-                case "Detection":
-                    treSpells.Nodes[1].Nodes.Add(objNode);
-                    treSpells.Nodes[1].Expand();
-                    break;
-                case "Health":
-                    treSpells.Nodes[2].Nodes.Add(objNode);
-                    treSpells.Nodes[2].Expand();
-                    break;
-                case "Illusion":
-                    treSpells.Nodes[3].Nodes.Add(objNode);
-                    treSpells.Nodes[3].Expand();
-                    break;
-                case "Manipulation":
-                    treSpells.Nodes[4].Nodes.Add(objNode);
-                    treSpells.Nodes[4].Expand();
-                    break;
-                case "Rituals":
-                    /*
-                    int intNode = 5;
-                    if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
-                        intNode = 0;
-                    treSpells.Nodes[intNode].Nodes.Add(objNode);
-                    treSpells.Nodes[intNode].Expand();
-                    */
-                    treSpells.Nodes[5].Nodes.Add(objNode);
-                    treSpells.Nodes[5].Expand();
-                    break;
-                case "Enchantments":
-                    treSpells.Nodes[6].Nodes.Add(objNode);
-                    treSpells.Nodes[6].Expand();
-                    break;
-            }
-
-            treSpells.SelectedNode = objNode;
+            treSpells.Add(objSpell, cmsSpell, true, true);
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
@@ -12897,9 +12817,7 @@ namespace Chummer
             ExpenseUndo objUndo = new ExpenseUndo();
             objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
             objEntry.Undo = objUndo;
-
-
-            treSpells.SortCustom();
+            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -21882,69 +21800,34 @@ namespace Chummer
             treMetamagic.Nodes.Clear();
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
             {
-                TreeNode nodGrade = treMetamagic.Nodes.Add(objGrade.Grade.ToString(), objGrade.Text(GlobalOptions.Language));
-                nodGrade.Tag = objGrade.InternalId;
-                nodGrade.ContextMenuStrip = cmsMetamagic;
-                if (!string.IsNullOrEmpty(objGrade.Notes))
-                    nodGrade.ForeColor = Color.SaddleBrown;
-                nodGrade.ToolTipText = objGrade.Notes.WordWrap(100);
+                TreeNode nodGrade = objGrade.CreateTreeNode(cmsMetamagic);
 
                 foreach (Art objArt in CharacterObject.Arts)
                 {
                     if (objArt.Grade == objGrade.Grade)
                     {
-                        TreeNode nodArt = nodGrade.Nodes.Add(objArt.InternalId, LanguageManager.GetString("Label_Art", GlobalOptions.Language) + " " + objArt.DisplayName(GlobalOptions.Language));
-                        nodArt.Tag = objArt.InternalId;
-                        nodArt.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objArt.Notes))
-                            nodArt.ForeColor = Color.SaddleBrown;
-                        nodArt.ToolTipText = objArt.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objArt.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                 {
                     if (objMetamagic.Grade == objGrade.Grade)
                     {
-                        string strName = string.Empty;
-                        if (CharacterObject.MAGEnabled)
-                            strName = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                        else
-                            strName = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                        TreeNode nodMetamagic = nodGrade.Nodes.Add(objMetamagic.InternalId, strName);
-                        nodMetamagic.Tag = objMetamagic.InternalId;
-                        nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objMetamagic.Notes))
-                            nodMetamagic.ForeColor = Color.SaddleBrown;
-                        nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Spell objSpell in CharacterObject.Spells)
                 {
                     if (objSpell.Grade == objGrade.Grade)
                     {
-                        string strCategory = string.Empty;
-                        if (objSpell.Category == "Rituals")
-                            strCategory = LanguageManager.GetString("Label_Ritual", GlobalOptions.Language) + " ";
-                        if (objSpell.Category == "Enchantments")
-                            strCategory = LanguageManager.GetString("Label_Enchantment", GlobalOptions.Language) + " ";
-                        TreeNode nodSpell = nodGrade.Nodes.Add(objSpell.InternalId, strCategory + " " + objSpell.DisplayName(GlobalOptions.Language));
-                        nodSpell.Tag = objSpell.InternalId;
-                        nodSpell.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objSpell.Notes))
-                            nodSpell.ForeColor = Color.SaddleBrown;
-                        nodSpell.ToolTipText = objSpell.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objSpell.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
                 {
                     if (objEnhancement.Grade == objGrade.Grade)
                     {
-                        TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + objEnhancement.DisplayName(GlobalOptions.Language));
-                        nodEnhancement.Tag = objEnhancement.InternalId;
-                        nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
-                        if (!string.IsNullOrEmpty(objEnhancement.Notes))
-                            nodEnhancement.ForeColor = Color.SaddleBrown;
-                        nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
+                        nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
                     }
                 }
                 foreach (Power objPower in CharacterObject.Powers)
@@ -21953,31 +21836,15 @@ namespace Chummer
                     {
                         if (objEnhancement.Grade == objGrade.Grade)
                         {
-                            TreeNode nodEnhancement = nodGrade.Nodes.Add(objEnhancement.InternalId, LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + " " + objEnhancement.DisplayName(GlobalOptions.Language));
-                            nodEnhancement.Tag = objEnhancement.InternalId;
-                            nodEnhancement.ContextMenuStrip = cmsInitiationNotes;
-                            if (!string.IsNullOrEmpty(objEnhancement.Notes))
-                                nodEnhancement.ForeColor = Color.SaddleBrown;
-                            nodEnhancement.ToolTipText = objEnhancement.Notes.WordWrap(100);
+                            nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
                         }
                     }
                 }
+                treMetamagic.Nodes.Add(nodGrade);
             }
             foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(x => x.Grade < 0))
             {
-                string strName = string.Empty;
-                if (CharacterObject.MAGEnabled)
-                    strName = LanguageManager.GetString("Label_Metamagic", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                else
-                    strName = LanguageManager.GetString("Label_Echo", GlobalOptions.Language) + " " + objMetamagic.DisplayName(GlobalOptions.Language);
-                TreeNode nodMetamagic = treMetamagic.Nodes.Add(objMetamagic.InternalId, strName);
-                nodMetamagic.Tag = objMetamagic.InternalId;
-                nodMetamagic.ContextMenuStrip = cmsInitiationNotes;
-                if (!string.IsNullOrEmpty(objMetamagic.Notes))
-                    nodMetamagic.ForeColor = Color.SaddleBrown;
-                else
-                    nodMetamagic.ForeColor = SystemColors.GrayText;
-                nodMetamagic.ToolTipText = objMetamagic.Notes.WordWrap(100);
+                treMetamagic.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
             }
             treMetamagic.ExpandAll();
             UpdateInitiationCost();
