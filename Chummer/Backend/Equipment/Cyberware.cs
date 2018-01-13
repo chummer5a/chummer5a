@@ -258,50 +258,44 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add Cyberweapons if applicable.
-            if (objXmlCyberware.InnerXml.Contains("<addweapon>"))
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+
+            // More than one Weapon can be added, so loop through all occurrences.
+            foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                string strLoopID = objXmlAddWeapon.InnerText;
+                XmlNode objXmlWeapon = strLoopID.IsGuid()
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
+                Weapon objGearWeapon = new Weapon(objCharacter)
                 {
-                    string strLoopID = objXmlAddWeapon.InnerText;
-                    XmlNode objXmlWeapon = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-                    
-                    Weapon objGearWeapon = new Weapon(objCharacter)
-                    {
-                        ParentVehicle = ParentVehicle
-                    };
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons);
-                    objGearWeapon.ParentID = InternalId;
-                    lstWeapons.Add(objGearWeapon);
+                    ParentVehicle = ParentVehicle
+                };
+                objGearWeapon.Create(objXmlWeapon, lstWeapons);
+                objGearWeapon.ParentID = InternalId;
+                lstWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
-                }
+                _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
             }
 
             // Add Drone Bodyparts if applicable.
-            if (objXmlCyberware.InnerXml.Contains("<addvehicle>"))
+            XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
+
+            // More than one Weapon can be added, so loop through all occurrences.
+            foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
             {
-                XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
+                string strLoopID = objXmlAddVehicle.InnerText;
+                var objXmlVehicle = strLoopID.IsGuid()
+                    ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strLoopID + "\"]")
+                    : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + strLoopID + "\"]");
 
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
-                {
-                    string strLoopID = objXmlAddVehicle.InnerText;
-                    var objXmlVehicle = strLoopID.IsGuid()
-                        ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strLoopID + "\"]")
-                        : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + strLoopID + "\"]");
-                    
-                    Vehicle objVehicle = new Vehicle(_objCharacter);
-                    objVehicle.Create(objXmlVehicle);
-                    objVehicle.ParentID = InternalId;
-                    lstVehicles.Add(objVehicle);
+                Vehicle objVehicle = new Vehicle(_objCharacter);
+                objVehicle.Create(objXmlVehicle);
+                objVehicle.ParentID = InternalId;
+                lstVehicles.Add(objVehicle);
 
-                    _guiVehicleID = Guid.Parse(objVehicle.InternalId);
-                }
+                _guiVehicleID = Guid.Parse(objVehicle.InternalId);
             }
 
             /*
@@ -446,7 +440,7 @@ namespace Chummer.Backend.Equipment
                 CreateChildren(objXmlCyberware, objGrade, lstWeapons, lstVehicles, blnCreateImprovements && string.IsNullOrEmpty(_strPlugsIntoModularMount));
         }
 
-        private void CreateChildren(XmlNode objParentNode, Grade objGrade, List<Weapon> objWeapons, List<Vehicle> objVehicles, bool blnCreateImprovements = true)
+        private void CreateChildren(XmlNode objParentNode, Grade objGrade, List<Weapon> lstWeapons, List<Vehicle> objVehicles, bool blnCreateImprovements = true)
         {
             // If we've just added a new base item, see if there are any subsystems that should automatically be added.
             if (objParentNode.InnerXml.Contains("<subsystems>"))
@@ -461,11 +455,11 @@ namespace Chummer.Backend.Equipment
 
                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, objWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Cyberware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
                     objSubsystem.Cost = "0";
                     // If the <subsystem> tag itself contains extra children, add those, too
-                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, objWeapons, objVehicles, blnCreateImprovements);
+                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
 
                     _objChildren.Add(objSubsystem);
                 }
@@ -480,11 +474,11 @@ namespace Chummer.Backend.Equipment
 
                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                     int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText);
-                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, objWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
+                    objSubsystem.Create(objXmlSubsystem, _objCharacter, objGrade, Improvement.ImprovementSource.Bioware, intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true, objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
                     objSubsystem.ParentID = InternalId;
                     objSubsystem.Cost = "0";
                     // If the <subsystem> tag itself contains extra children, add those, too
-                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, objWeapons, objVehicles, blnCreateImprovements);
+                    objSubsystem.CreateChildren(objXmlSubsystemNode, objGrade, lstWeapons, objVehicles, blnCreateImprovements);
 
                     _objChildren.Add(objSubsystem);
                 }
@@ -534,7 +528,7 @@ namespace Chummer.Backend.Equipment
                         objChild.Capacity = "[" + objXmlChild["capacity"].InnerText + "]";
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in objChildWeapons)
-                        objWeapons.Add(objWeapon);
+                        lstWeapons.Add(objWeapon);
                     
                     _lstGear.Add(objChild);
                 }

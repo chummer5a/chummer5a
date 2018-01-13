@@ -185,9 +185,9 @@ namespace Chummer
         /// <param name="objXmlQuality">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character object the Quality will be added to.</param>
         /// <param name="objQualitySource">Source of the Quality.</param>
-        /// <param name="objWeapons">List of Weapons that should be added to the Character.</param>
+        /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, List<Weapon> objWeapons, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -269,9 +269,9 @@ namespace Chummer
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                         
                         Weapon objGearWeapon = new Weapon(objCharacter);
-                        objGearWeapon.Create(objXmlWeapon, objWeapons);
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
-                        objWeapons.Add(objGearWeapon);
+                        lstWeapons.Add(objGearWeapon);
 
                         _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
                     }
@@ -2865,6 +2865,19 @@ namespace Chummer
         public IList<Gear> Gear
         {
             get => _lstGear;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
+        {
+            TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
+
+            objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.Language);
+            objNode.Tag = InternalId;
+            objNode.Checked = Bonded;
+
+            return objNode;
         }
         #endregion
     }

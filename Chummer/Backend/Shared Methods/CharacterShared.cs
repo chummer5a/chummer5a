@@ -281,7 +281,8 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(treLimit.SelectedNode.Tag.ToString());
+            string strModifierGuid = objSelectedNode.Tag.ToString();
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strModifierGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
@@ -301,7 +302,7 @@ namespace Chummer
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
-            objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
+            objLimitModifier.Guid = new Guid(strModifierGuid);
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
 
@@ -446,23 +447,12 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         protected void RefreshQualityNames(TreeView treQualities)
         {
-            TreeNode objSelectedNode = null;
+            TreeNode objSelectedNode = treQualities.SelectedNode;
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
-                for (int i = 0; i <= 1; i++)
-                {
-                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
-                    {
-                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
-                            objSelectedNode = objTreeNode;
-                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
-                        {
-                            objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
-                            goto NextQuality;
-                        }
-                    }
-                }
-                NextQuality:;
+                TreeNode objQualityNode = treQualities.FindNode(objQuality.InternalId);
+                if (objQualityNode != null)
+                    objQualityNode.Text = objQuality.DisplayName(GlobalOptions.Language);
             }
             if (objSelectedNode != null)
                 treQualities.SelectedNode = objSelectedNode;

@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectLifestyleAdvanced : Form
     {
         private bool _blnAddAgain = false;
-        private Lifestyle _objLifestyle;
+        private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
@@ -40,12 +40,12 @@ namespace Chummer
         private int _intTravelerRdmLP = 0;
 
         #region Control Events
-        public frmSelectLifestyleAdvanced(Lifestyle objLifestyle, Character objCharacter)
+        public frmSelectLifestyleAdvanced(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _objLifestyle = objLifestyle;
+            _objLifestyle = new Lifestyle(objCharacter);
             MoveControls();
             // Load the Lifestyles information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
@@ -438,16 +438,17 @@ namespace Chummer
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
-            lblQualitySource.Text = string.Empty;
-            lblQualityLp.Text = string.Empty;
-            tipTooltip.SetToolTip(lblQualitySource, null);
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0)
             {
+                lblQualityLp.Text = string.Empty;
+                lblQualityCost.Text = string.Empty;
+                lblQualitySource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblQualitySource, null);
+                cmdDeleteQuality.Enabled = false;
                 return;
             }
-            LifestyleQuality objQuality =
-                    _objLifestyle.LifestyleQualities.FindById(treLifestyleQualities.SelectedNode.Tag.ToString()) ??
-                    _objLifestyle.FreeGrids.FindById(treLifestyleQualities.SelectedNode.Tag.ToString());
+            string strSelectedQuality = treLifestyleQualities.SelectedNode.Tag.ToString();
+            LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FindById(strSelectedQuality) ?? _objLifestyle.FreeGrids.FindById(strSelectedQuality);
             lblQualityLp.Text = objQuality.LP.ToString();
             lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page(GlobalOptions.Language)}";

@@ -338,8 +338,8 @@ namespace Chummer
                 try
                 {
                     Armor objTemp = new Armor(objCharacter);
-                    List<Weapon> objWeapons = new List<Weapon>();
-                    objTemp.Create(objXmlGear, 0, objWeapons);
+                    List<Weapon> lstWeapons = new List<Weapon>();
+                    objTemp.Create(objXmlGear, 0, lstWeapons);
                     try
                     {
                         decimal objValue = objTemp.TotalCost;
@@ -595,9 +595,9 @@ namespace Chummer
                 Application.DoEvents();
                 try
                 {
-                    List<Weapon> objWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objTemp = new Quality(objCharacter);
-                    objTemp.Create(objXmlGear, objCharacter, QualitySource.Selected, objWeapons);
+                    objTemp.Create(objXmlGear, objCharacter, QualitySource.Selected, lstWeapons);
                 }
                 catch
                 {
@@ -712,9 +712,7 @@ namespace Chummer
                     foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/positive/quality"))
                     {
                         XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                        TreeNode objNode = new TreeNode();
-                        List<Weapon> objWeapons = new List<Weapon>();
-                        List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                        List<Weapon> lstWeapons = new List<Weapon>();
                         Quality objQuality = new Quality(_objCharacter);
                         string strForceValue = string.Empty;
                         if (objXmlQualityItem.Attributes["select"] != null)
@@ -723,15 +721,13 @@ namespace Chummer
                         objSource = QualitySource.Metatype;
                         if (objXmlQualityItem.Attributes["removable"] != null)
                             objSource = QualitySource.MetatypeRemovable;
-                        objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+                        objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
                         _objCharacter.Qualities.Add(objQuality);
                     }
                     foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/negative/quality"))
                     {
                         XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlQualityItem.InnerText + "\"]");
-                        TreeNode objNode = new TreeNode();
-                        List<Weapon> objWeapons = new List<Weapon>();
-                        List<TreeNode> objWeaponNodes = new List<TreeNode>();
+                        List<Weapon> lstWeapons = new List<Weapon>();
                         Quality objQuality = new Quality(_objCharacter);
                         string strForceValue = string.Empty;
                         if (objXmlQualityItem.Attributes["select"] != null)
@@ -740,7 +736,7 @@ namespace Chummer
                         objSource = QualitySource.Metatype;
                         if (objXmlQualityItem.Attributes["removable"] != null)
                             objSource = QualitySource.MetatypeRemovable;
-                        objQuality.Create(objXmlQuality, _objCharacter, objSource, objNode, objWeapons, objWeaponNodes, strForceValue);
+                        objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
                         _objCharacter.Qualities.Add(objQuality);
                     }
 

@@ -235,229 +235,240 @@ namespace Chummer.Backend.Equipment
 
             objXmlVehicle.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
-            // If there are any VehicleMods that come with the Vehicle, add them.
-            if (objXmlVehicle.InnerXml.Contains("<mods>") && blnCreateChildren)
+            if (blnCreateChildren)
             {
-                XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
-
-                XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("mods/name");
-                foreach (XmlNode objXmlVehicleMod in objXmlModList)
+                // If there are any VehicleMods that come with the Vehicle, add them.
+                XmlNode xmlMods = objXmlVehicle["mods"];
+                if (xmlMods != null)
                 {
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
-                    if (objXmlMod != null)
+                    XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
+
+                    XmlNodeList objXmlModList = xmlMods.SelectNodes("name");
+                    foreach (XmlNode objXmlVehicleMod in objXmlModList)
                     {
-                        VehicleMod objMod = new VehicleMod(_objCharacter);
+                        XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + objXmlVehicleMod.InnerText + "\"]");
+                        if (objXmlMod != null)
+                        {
+                            VehicleMod objMod = new VehicleMod(_objCharacter);
+                            int intRating = 0;
+
+                            if (objXmlVehicleMod.Attributes["rating"] != null)
+                                int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
+
+                            if (objXmlVehicleMod.Attributes["select"] != null)
+                                objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
+
+                            objMod.Create(objXmlMod, intRating, this);
+                            objMod.IncludedInVehicle = true;
+
+                            _lstVehicleMods.Add(objMod);
+                        }
+                    }
+                    XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
+                    if (objAddSlotsNode != null)
+                        int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
+                }
+
+                // If there are any Weapon Mounts that come with the Vehicle, add them.
+                XmlNode xmlWeaponMounts = objXmlVehicle["weaponmounts"];
+                if (xmlWeaponMounts != null)
+                {
+                    foreach (XmlNode objXmlVehicleMod in xmlWeaponMounts.SelectNodes("weaponmount"))
+                    {
+                        WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
+                        objWeaponMount.CreateByName(objXmlVehicleMod);
+                        objWeaponMount.IncludedInVehicle = true;
+                        WeaponMounts.Add(objWeaponMount);
+                    }
+                }
+
+                List<Weapon> lstWeapons = new List<Weapon>();
+
+                // If there is any Gear that comes with the Vehicle, add them.
+                XmlNode xmlGears = objXmlVehicle["gears"];
+                if (xmlGears != null)
+                {
+                    XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
+
+                    XmlNodeList objXmlGearList = xmlGears.SelectNodes("gear");
+                    foreach (XmlNode objXmlVehicleGear in objXmlGearList)
+                    {
+                        // TODO: This should probably be a generic method attached to Gear.cs so that we don't have to keep reinventing the wheel, but I'm lazy.
                         int intRating = 0;
-
-                        if (objXmlVehicleMod.Attributes["rating"] != null)
-                            int.TryParse(objXmlVehicleMod.Attributes["rating"].InnerText, out intRating);
-
-                        if (objXmlVehicleMod.Attributes["select"] != null)
-                            objMod.Extra = objXmlVehicleMod.Attributes["select"].InnerText;
-
-                        objMod.Create(objXmlMod, intRating, this);
-                        objMod.IncludedInVehicle = true;
-
-                        _lstVehicleMods.Add(objMod);
-                    }
-                }
-                XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
-                if (objAddSlotsNode != null)
-                    int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots);
-            }
-
-            // If there are any Weapon Mounts that come with the Vehicle, add them.
-            if (objXmlVehicle.InnerXml.Contains("<weaponmounts>") && blnCreateChildren)
-            {
-
-                XmlNodeList objXmlModList = objXmlVehicle.SelectNodes("weaponmounts/weaponmount");
-                foreach (XmlNode objXmlVehicleMod in objXmlModList)
-                {
-                    WeaponMount objWeaponMount = new WeaponMount(_objCharacter, this);
-                    objWeaponMount.CreateByName(objXmlVehicleMod);
-                    objWeaponMount.IncludedInVehicle = true;
-                    WeaponMounts.Add(objWeaponMount);
-                }
-            }
-
-            // If there is any Gear that comes with the Vehicle, add them.
-            if (objXmlVehicle.InnerXml.Contains("<gears>") && blnCreateChildren)
-			{
-				XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
-
-                XmlNodeList objXmlGearList = objXmlVehicle.SelectNodes("gears/gear");
-                foreach (XmlNode objXmlVehicleGear in objXmlGearList)
-                {
-                    // TODO: This should probably be a generic method attached to Gear.cs so that we don't have to keep reinventing the wheel, but I'm lazy.
-                    int intRating = 0;
-                    int intMaxRating = intRating;
-                    decimal decQty = 1;
-                    XmlNode objXmlGear;
-                    string strForceValue = string.Empty;
-                    List<Gear> lstChildGears = new List<Gear>();
-                    if (objXmlVehicleGear["name"] != null)
-                    {
-                        objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear["name"].InnerText + "\"]");
-                        XmlAttributeCollection objXmlVehicleGearAttributes = objXmlVehicleGear.Attributes;
-                        intRating = Convert.ToInt32(objXmlVehicleGearAttributes["rating"]?.InnerText);
-                        if (objXmlVehicleGear["gears"] != null)
+                        int intMaxRating = intRating;
+                        decimal decQty = 1;
+                        XmlNode objXmlGear;
+                        string strForceValue = string.Empty;
+                        List<Gear> lstChildGears = new List<Gear>();
+                        if (objXmlVehicleGear["name"] != null)
                         {
-                            foreach (XmlNode n in objXmlVehicleGear.SelectNodes("gears/gear"))
+                            objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear["name"].InnerText + "\"]");
+                            XmlAttributeCollection objXmlVehicleGearAttributes = objXmlVehicleGear.Attributes;
+                            intRating = Convert.ToInt32(objXmlVehicleGearAttributes["rating"]?.InnerText);
+                            XmlNode xmlInnerGears = objXmlVehicleGear["gears"];
+                            if (xmlInnerGears != null)
                             {
-                                var objXmlChildGearAttributes = n.Attributes;
-                                var childRating = Convert.ToInt32(objXmlChildGearAttributes["rating"]?.InnerText);
-                                var childMaxRating = Convert.ToInt32(objXmlChildGearAttributes["maxrating"]?.InnerText);
-                                var childQty = Convert.ToDecimal(objXmlChildGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                                var childForceValue = objXmlChildGearAttributes["select"]?.InnerText;
-
-                                XmlNode xmlChild = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + n.InnerText + "\"]");
-                                if (xmlChild == null)
+                                foreach (XmlNode n in xmlInnerGears.SelectNodes("gear"))
                                 {
-                                    Utils.BreakIfDebug();
-                                    break;
+                                    var objXmlChildGearAttributes = n.Attributes;
+                                    var childRating = Convert.ToInt32(objXmlChildGearAttributes["rating"]?.InnerText);
+                                    var childMaxRating = Convert.ToInt32(objXmlChildGearAttributes["maxrating"]?.InnerText);
+                                    var childQty = Convert.ToDecimal(objXmlChildGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                                    var childForceValue = objXmlChildGearAttributes["select"]?.InnerText;
+
+                                    XmlNode xmlChild = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + n.InnerText + "\"]");
+                                    if (xmlChild == null)
+                                    {
+                                        Utils.BreakIfDebug();
+                                        break;
+                                    }
+                                    Gear objGear = new Gear(_objCharacter);
+
+                                    objGear.Create(xmlChild, childRating, lstWeapons, childForceValue);
+
+                                    objGear.Cost = "0";
+                                    objGear.Quantity = childQty;
+                                    objGear.MaxRating = childMaxRating;
+                                    objGear.ParentID = InternalId;
+
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                    {
+                                        objWeapon.ParentVehicle = this;
+                                        Weapons.Add(objWeapon);
+                                    }
+                                    lstChildGears.Add(objGear);
                                 }
-                                Gear objGear = new Gear(_objCharacter);
-
-                                List<Weapon> objWeapons = new List<Weapon>();
-
-                                objGear.Create(xmlChild, childRating, objWeapons, childForceValue);
-
-                                objGear.Cost = "0";
-                                objGear.Quantity = childQty;
-                                objGear.MaxRating = childMaxRating;
-                                objGear.ParentID = InternalId;
-
-                                foreach (Weapon objWeapon in objWeapons)
-                                    objWeapon.ParentVehicle = this;
-                                lstChildGears.Add(objGear);
-                            } 
+                            }
                         }
-                    }
-                    else
-                    {
-                        XmlAttributeCollection objXmlVehicleGearAttributes = objXmlVehicleGear.Attributes;
-                        intRating = Convert.ToInt32(objXmlVehicleGearAttributes["rating"]?.InnerText);
-                        intMaxRating = Convert.ToInt32(objXmlVehicleGearAttributes["maxrating"]?.InnerText);
-                        decQty = Convert.ToDecimal(objXmlVehicleGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                        strForceValue = objXmlVehicleGearAttributes["select"]?.InnerText;
-
-                        objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
-                    }
-                    
-                    if (objXmlGear != null)
-                    {
-                        Gear objGear = new Gear(_objCharacter);
-
-                        List<Weapon> objWeapons = new List<Weapon>();
-
-                        objGear.Create(objXmlGear, intRating, objWeapons, strForceValue);
-
-                        objGear.Cost = "0";
-                        objGear.Quantity = decQty;
-                        objGear.MaxRating = intMaxRating;
-                        objGear.ParentID = InternalId;
-
-                        foreach (Gear objGearChild in lstChildGears)
+                        else
                         {
-                            objGearChild.ParentID = objGear.InternalId;
-                            objGear.Children.Add(objGearChild);
+                            XmlAttributeCollection objXmlVehicleGearAttributes = objXmlVehicleGear.Attributes;
+                            intRating = Convert.ToInt32(objXmlVehicleGearAttributes["rating"]?.InnerText);
+                            intMaxRating = Convert.ToInt32(objXmlVehicleGearAttributes["maxrating"]?.InnerText);
+                            decQty = Convert.ToDecimal(objXmlVehicleGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                            strForceValue = objXmlVehicleGearAttributes["select"]?.InnerText;
+
+                            objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
                         }
 
-                        foreach (Weapon objWeapon in objWeapons)
-                            objWeapon.ParentVehicle = this;
+                        if (objXmlGear != null)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
 
-                        _lstGear.Add(objGear);
+                            objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue);
+
+                            objGear.Cost = "0";
+                            objGear.Quantity = decQty;
+                            objGear.MaxRating = intMaxRating;
+                            objGear.ParentID = InternalId;
+
+                            foreach (Gear objGearChild in lstChildGears)
+                            {
+                                objGearChild.ParentID = objGear.InternalId;
+                                objGear.Children.Add(objGearChild);
+                            }
+                            
+                            _lstGear.Add(objGear);
+                        }
                     }
                 }
-            }
 
-            // If there are any Weapons that come with the Vehicle, add them.
-            if (objXmlVehicle.InnerXml.Contains("<weapons>") && blnCreateChildren)
-            {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
-
-                foreach (XmlNode objXmlWeapon in objXmlVehicle.SelectNodes("weapons/weapon"))
+                // If there are any Weapons that come with the Vehicle, add them.
+                XmlNode xmlWeapons = objXmlVehicle["weapons"];
+                if (xmlWeapons != null)
                 {
-                    bool blnAttached = false;
-                    Weapon objWeapon = new Weapon(_objCharacter);
+                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
-                    List<Weapon> objSubWeapons = new List<Weapon>();
-                    XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
-                    objWeapon.ParentVehicle = this;
-                    objWeapon.Create(objXmlWeaponNode, objSubWeapons);
-                    objWeapon.ParentID = InternalId;
-                    objWeapon.Cost = 0;
-
-                    // Find the first free Weapon Mount in the Vehicle.
-                    foreach (WeaponMount w in _lstWeaponMounts)
+                    foreach (XmlNode objXmlWeapon in xmlWeapons.SelectNodes("weapon"))
                     {
-                        if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
-                        {
-                            w.Weapons.Add(objWeapon);
-                            ((List<Weapon>)w.Weapons).AddRange(objSubWeapons);
-                            break;
-                        }
-                    }
+                        bool blnAttached = false;
+                        Weapon objWeapon = new Weapon(_objCharacter);
 
-					// If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
-					if (!blnAttached)
-					{
-                        foreach (VehicleMod objMod in _lstVehicleMods)
+                        List<Weapon> objSubWeapons = new List<Weapon>();
+                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + objXmlWeapon["name"].InnerText + "\"]");
+                        objWeapon.ParentVehicle = this;
+                        objWeapon.Create(objXmlWeaponNode, objSubWeapons);
+                        objWeapon.ParentID = InternalId;
+                        objWeapon.Cost = 0;
+
+                        // Find the first free Weapon Mount in the Vehicle.
+                        foreach (WeaponMount w in _lstWeaponMounts)
                         {
-                            if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+                            if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
                             {
-                                objMod.Weapons.Add(objWeapon);
-                                ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
+                                w.Weapons.Add(objWeapon);
+                                ((List<Weapon>)w.Weapons).AddRange(objSubWeapons);
                                 break;
                             }
                         }
+
+                        // If a free Weapon Mount could not be found, just attach it to the first one found and let the player deal with it.
                         if (!blnAttached)
                         {
                             foreach (VehicleMod objMod in _lstVehicleMods)
                             {
-                                if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
                                     ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
                                     break;
                                 }
                             }
+                            if (!blnAttached)
+                            {
+                                foreach (VehicleMod objMod in _lstVehicleMods)
+                                {
+                                    if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                    {
+                                        objMod.Weapons.Add(objWeapon);
+                                        ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
+                                        break;
+                                    }
+                                }
+                            }
                         }
-                    }
 
-                    // Look for Weapon Accessories.
-                    if (objXmlWeapon["accessories"] != null)
-                    {
-                        foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
+                        // Look for Weapon Accessories.
+                        XmlNode xmlAccessories = objXmlWeapon["accessories"];
+                        if (xmlAccessories != null)
                         {
-                            XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
-                            WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
-                            string strMount = "Internal";
-                            objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
-                            string strExtraMount = "None";
-                            objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
-                            objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
+                            foreach (XmlNode objXmlAccessory in xmlAccessories.SelectNodes("accessory"))
+                            {
+                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlAccessory["name"].InnerText + "\"]");
+                                WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
+                                string strMount = "Internal";
+                                objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
+                                string strExtraMount = "None";
+                                objXmlAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
+                                objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
 
-                            objMod.Cost = "0";
+                                objMod.Cost = "0";
 
-                            objWeapon.WeaponAccessories.Add(objMod);
+                                objWeapon.WeaponAccessories.Add(objMod);
+                            }
                         }
                     }
                 }
-            }
 
-            /*
-            if (WeaponMounts.Count > 0)
-            {
-                objNode.Nodes.Add(mountsNode);
-                // Weapon Mounts
-                foreach (WeaponMount objWeaponMount in WeaponMounts)
+                /*
+                if (WeaponMounts.Count > 0)
                 {
-                    mountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod));
-                    mountsNode.Expand();
+                    objNode.Nodes.Add(mountsNode);
+                    // Weapon Mounts
+                    foreach (WeaponMount objWeaponMount in WeaponMounts)
+                    {
+                        mountsNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod));
+                        mountsNode.Expand();
+                    }
+                }
+                */
+
+                foreach (Weapon objWeapon in lstWeapons)
+                {
+                    objWeapon.ParentVehicle = this;
+                    Weapons.Add(objWeapon);
                 }
             }
-            */
         }
 
         /// <summary>

@@ -69,10 +69,10 @@ namespace Chummer.Backend.Equipment
         /// Create a Armor Modification from an XmlNode.
         /// <param name="objXmlArmorNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Rating of the selected ArmorMod.</param>
-        /// <param name="objWeapons">List of Weapons that are created by the Armor.</param>
+        /// <param name="lstWeapons">List of Weapons that are created by the Armor.</param>
         /// <param name="objWeaponNodes">List of Weapon Nodes that are created by the Armor.</param>
         /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
-        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false)
+        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnSkipSelectForms = false)
         {
             if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -163,8 +163,6 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
                     
-                    List<Weapon> lstWeapons = new List<Weapon>();
-
                     objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipCost && !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
@@ -191,9 +189,9 @@ namespace Chummer.Backend.Equipment
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                     
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objWeapons, true, !blnSkipCost && !blnSkipSelectForms);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipCost && !blnSkipSelectForms);
                     objGearWeapon.ParentID = InternalId;
-                    objWeapons.Add(objGearWeapon);
+                    lstWeapons.Add(objGearWeapon);
 
                     _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
                 }

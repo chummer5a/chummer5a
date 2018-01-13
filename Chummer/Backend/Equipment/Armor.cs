@@ -73,9 +73,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnSkipCost">Whether or not creating the Armor should skip the Variable price dialogue (should only be used by frmSelectArmor).</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
         /// <param name="intRating">Rating of the item.</param>
-        /// <param name="objWeapons">List of Weapons that added to the character's weapons.</param>
+        /// <param name="lstWeapons">List of Weapons that added to the character's weapons.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses like Custom Fit (Stack).</param>
-        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> objWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
+        public void Create(XmlNode objXmlArmorNode, int intRating, List<Weapon> lstWeapons, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnSkipSelectForms = false)
         {
             objXmlArmorNode.TryGetField("id", Guid.TryParse, out _sourceID);
             if (objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -178,8 +178,6 @@ namespace Chummer.Backend.Equipment
                     if (objXmlMod != null)
                     {
                         ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        
 
                         objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
                         objMod.Parent = this;
@@ -191,20 +189,20 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-
-                        objMod.Name = _strName;
-                        objMod.Category = "Features";
-                        objMod.Avail = "0";
-                        objMod.Source = _strSource;
-                        objMod.Page = _strPage;
-                        objMod.Parent = this;
-                        objMod.IncludedInArmor = true;
-                        objMod.ArmorCapacity = "[0]";
-                        objMod.Cost = "0";
-                        objMod.Rating = 0;
-                        objMod.MaximumRating = objMod.Rating;
+                        ArmorMod objMod = new ArmorMod(_objCharacter)
+                        {
+                            Name = _strName,
+                            Category = "Features",
+                            Avail = "0",
+                            Source = _strSource,
+                            Page = _strPage,
+                            Parent = this,
+                            IncludedInArmor = true,
+                            ArmorCapacity = "[0]",
+                            Cost = "0",
+                            Rating = 0,
+                            MaximumRating = 0
+                        };
                         _lstArmorMods.Add(objMod);
                     }
                 }
@@ -226,7 +224,6 @@ namespace Chummer.Backend.Equipment
                     if (objXmlMod != null)
                     {
                         ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
 
                         objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
                         objMod.Parent = this;
@@ -238,20 +235,20 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        ArmorMod objMod = new ArmorMod(_objCharacter);
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        
-                        objMod.Name = _strName;
-                        objMod.Category = "Features";
-                        objMod.Avail = "0";
-                        objMod.Source = _strSource;
-                        objMod.Page = _strPage;
-                        objMod.Parent = this;
-                        objMod.IncludedInArmor = true;
-                        objMod.ArmorCapacity = "[0]";
-                        objMod.Cost = "0";
-                        objMod.Rating = 0;
-                        objMod.MaximumRating = objMod.Rating;
+                        ArmorMod objMod = new ArmorMod(_objCharacter)
+                        {
+                            Name = _strName,
+                            Category = "Features",
+                            Avail = "0",
+                            Source = _strSource,
+                            Page = _strPage,
+                            Parent = this,
+                            IncludedInArmor = true,
+                            ArmorCapacity = "[0]",
+                            Cost = "0",
+                            Rating = 0,
+                            MaximumRating = 0
+                        };
                         _lstArmorMods.Add(objMod);
                     }
                 }
@@ -270,8 +267,6 @@ namespace Chummer.Backend.Equipment
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
-                    
-                    List<Weapon> lstWeapons = new List<Weapon>();
 
                     objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipCost && !blnSkipSelectForms);
 
@@ -285,25 +280,22 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
+            XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+
+            // More than one Weapon can be added, so loop through all occurrences.
+            foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
             {
-                XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
+                string strLoopID = objXmlAddWeapon.InnerText;
+                XmlNode objXmlWeapon = strLoopID.IsGuid()
+                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
+                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
-                // More than one Weapon can be added, so loop through all occurrences.
-                foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
-                {
-                    string strLoopID = objXmlAddWeapon.InnerText;
-                    XmlNode objXmlWeapon = strLoopID.IsGuid()
-                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
-                        : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
+                Weapon objGearWeapon = new Weapon(_objCharacter);
+                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipCost && !blnSkipSelectForms);
+                objGearWeapon.ParentID = InternalId;
+                lstWeapons.Add(objGearWeapon);
 
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, objWeapons, true, !blnSkipCost && !blnSkipSelectForms);
-                    objGearWeapon.ParentID = InternalId;
-                    objWeapons.Add(objGearWeapon);
-
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
-                }
+                _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
             }
         }
 

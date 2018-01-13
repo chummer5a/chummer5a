@@ -40,12 +40,12 @@ namespace Chummer
         private bool _blnSkipRefresh = false;
 
         #region Control Events
-        public frmSelectLifestyle(Lifestyle objLifestyle, Character objCharacter)
+        public frmSelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _objLifestyle = objLifestyle;
+            _objLifestyle = new Lifestyle(objCharacter);
             MoveControls();
             // Load the Lifestyles information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
@@ -132,14 +132,9 @@ namespace Chummer
                 nudPercentage.Value = _objSourceLifestyle.Percentage;
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                 {
-                    foreach (TreeNode objNode in treQualities.Nodes)
-                    {
-                        if (objNode.Tag.ToString() == objQuality.SourceID)
-                        {
-                            objNode.Checked = true;
-                            break;
-                        }
-                    }
+                    TreeNode objNode = treQualities.FindNode(objQuality.SourceID);
+                    if (objNode != null)
+                        objNode.Checked = true;
                 }
             }
 
@@ -191,20 +186,26 @@ namespace Chummer
 
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            string qualityID = treQualities.SelectedNode.Tag.ToString();
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + qualityID + "\"]");
-            if (objXmlQuality == null) return;
-            string strBook = objXmlQuality["altsource"] != null
-                ? CommonFunctions.LanguageBookShort(objXmlQuality["altsource"].InnerText, GlobalOptions.Language)
-                : CommonFunctions.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlQuality["altpage"] != null
-                ? CommonFunctions.LanguageBookShort(objXmlQuality["altpage"].InnerText, GlobalOptions.Language)
-                : CommonFunctions.LanguageBookShort(objXmlQuality["page"].InnerText, GlobalOptions.Language);
-            lblSource.Text = $"{strBook} {strPage}";
-
-            tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(strBook, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " +
-                strPage);
+            string strQualityId = treQualities.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strQualityId))
+            {
+                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strQualityId + "\"]");
+                if (objXmlQuality == null)
+                {
+                    lblSource.Text = string.Empty;
+                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                    return;
+                }
+                string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["altsource"]?.InnerText ?? objXmlQuality["source"].InnerText, GlobalOptions.Language);
+                string strPage = CommonFunctions.LanguageBookShort(objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"].InnerText, GlobalOptions.Language);
+                lblSource.Text = $"{strBook} {strPage}";
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBook, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         #endregion

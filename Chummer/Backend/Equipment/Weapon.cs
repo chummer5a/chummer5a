@@ -3787,8 +3787,6 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Add a Weapon to the TreeView.
         /// </summary>
-        /// <param name="objWeapon">Weapon to add.</param>
-        /// <param name="objWeaponsNode">Node to append the Weapon Node to.</param>
         /// <param name="cmsWeapon">ContextMenuStrip for the Weapon Node.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip for Vehicle Accessory Nodes.</param>
         /// <param name="cmsWeaponAccessoryGear">ContextMenuStrip for Vehicle Weapon Accessory Gear Nodes.</param>

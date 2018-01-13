@@ -649,18 +649,15 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveGearParent(Character objCharacter, TreeNode objDestination, TreeView treGear, ContextMenuStrip cmsGear)
         {
-            // The item cannot be dropped onto itself.
-            if (objDestination == treGear.SelectedNode)
-                return;
-            // The item cannot be dropped onto one of its children.
-            foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
-            {
-                if (objNode == objDestination)
+            TreeNode objClone = treGear.SelectedNode;
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == objClone)
                     return;
-            }
 
+            string strSelectedId = objClone.Tag.ToString();
             // Locate the currently selected piece of Gear.
-            Gear objGear = objCharacter.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
+            Gear objGear = objCharacter.Gear.DeepFindById(strSelectedId);
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
@@ -709,11 +706,8 @@ namespace Chummer
                 objParent.RefreshMatrixAttributeArray();
             }
 
-            TreeNode objClone = treGear.SelectedNode;
-            objClone.ContextMenuStrip = cmsGear;
-
             // Remove the current Node.
-            treGear.SelectedNode.Remove();
+            objClone.Remove();
 
             // Add the new Node to the new parent.
             objDestination.Nodes.Add(objClone);
@@ -727,7 +721,9 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveGearNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treGear)
         {
-            Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == treGear.SelectedNode.Tag.ToString());
+            TreeNode objClone = treGear.SelectedNode;
+            string strSelectedId = objClone.Tag.ToString();
+            Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strSelectedId);
             objCharacter.Gear.Remove(objGear);
             if (intNewIndex > objCharacter.Gear.Count)
                 objCharacter.Gear.Add(objGear);
@@ -737,20 +733,14 @@ namespace Chummer
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
-
-            TreeNode objOldParent = treGear.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
+            
             // Change the Location on the Gear item.
             if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language))
                 objGear.Location = string.Empty;
             else
                 objGear.Location = objNewParent.Text;
 
-            TreeNode objClone = treGear.SelectedNode;
-
-            objOldParent.Nodes.Remove(treGear.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
         }
@@ -773,16 +763,8 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.GearLocations)
-            {
-                if (strCharacterLocation == treGear.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
+            TreeNode nodOldNode = treGear.SelectedNode;
+            string strLocation = nodOldNode.Tag.ToString();
             objCharacter.GearLocations.Remove(strLocation);
 
             if (intNewIndex - 1 > objCharacter.GearLocations.Count)
@@ -790,8 +772,7 @@ namespace Chummer
             else
                 objCharacter.GearLocations.Insert(intNewIndex - 1, strLocation);
 
-            TreeNode nodOldNode = treGear.SelectedNode;
-            treGear.Nodes.Remove(nodOldNode);
+            nodOldNode.Remove();
             treGear.Nodes.Insert(intNewIndex, nodOldNode);
         }
 
@@ -802,7 +783,9 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveLifestyleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treLifestyles)
         {
-            Lifestyle objLifestyle = objCharacter.Lifestyles.FirstOrDefault(x => x.Name == treLifestyles.SelectedNode.Tag.ToString());
+            TreeNode objClone = treLifestyles.SelectedNode;
+            string strSelectedId = objClone.Tag.ToString();
+            Lifestyle objLifestyle = objCharacter.Lifestyles.FirstOrDefault(x => x.Name == strSelectedId);
             objCharacter.Lifestyles.Remove(objLifestyle);
             if (intNewIndex > objCharacter.Lifestyles.Count)
                 objCharacter.Lifestyles.Add(objLifestyle);
@@ -813,13 +796,7 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            TreeNode objOldParent = treLifestyles.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            TreeNode objClone = treLifestyles.SelectedNode;
-
-            objOldParent.Nodes.Remove(treLifestyles.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
         }
@@ -831,8 +808,10 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveArmorNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treArmor)
         {
+            TreeNode objClone = treArmor.SelectedNode;
+            string strSelectedId = objClone.Tag.ToString();
             // Locate the currently selected Armor.
-            Armor objArmor = objCharacter.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
+            Armor objArmor = objCharacter.Armor.FindById(strSelectedId);
 
             objCharacter.Armor.Remove(objArmor);
             if (intNewIndex > objCharacter.Armor.Count)
@@ -844,19 +823,13 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            TreeNode objOldParent = treArmor.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
             // Change the Location on the Armor item.
             if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
                 objArmor.Location = string.Empty;
             else
                 objArmor.Location = objNewParent.Text;
 
-            TreeNode objClone = treArmor.SelectedNode;
-
-            objOldParent.Nodes.Remove(treArmor.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
         }
@@ -879,24 +852,15 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.ArmorLocations)
-            {
-                if (strCharacterLocation == treArmor.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
+            TreeNode nodOldNode = treArmor.SelectedNode;
+            string strLocation = nodOldNode.Tag.ToString();
             objCharacter.ArmorLocations.Remove(strLocation);
 
             if (intNewIndex - 1 > objCharacter.ArmorLocations.Count)
                 objCharacter.ArmorLocations.Add(strLocation);
             else
                 objCharacter.ArmorLocations.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treArmor.SelectedNode;
+            
             treArmor.Nodes.Remove(nodOldNode);
             treArmor.Nodes.Insert(intNewIndex, nodOldNode);
         }
@@ -908,7 +872,9 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveWeaponNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treWeapons)
         {
-            Weapon objWeapon = objCharacter.Weapons.FirstOrDefault(x => x.InternalId == treWeapons.SelectedNode.Tag.ToString());
+            TreeNode objClone = treWeapons.SelectedNode;
+            string strSelectedId = objClone.Tag.ToString();
+            Weapon objWeapon = objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelectedId);
             objCharacter.Weapons.Remove(objWeapon);
             if (intNewIndex > objCharacter.Weapons.Count)
                 objCharacter.Weapons.Add(objWeapon);
@@ -919,19 +885,13 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            TreeNode objOldParent = treWeapons.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
             // Change the Location of the Weapon.
             if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language))
                 objWeapon.Location = string.Empty;
             else
                 objWeapon.Location = objNewParent.Text;
 
-            TreeNode objClone = treWeapons.SelectedNode;
-
-            objOldParent.Nodes.Remove(treWeapons.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
         }
@@ -954,24 +914,15 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = string.Empty;
-            // Locate the currently selected Location.
-            foreach (string strCharacterLocation in objCharacter.WeaponLocations)
-            {
-                if (strCharacterLocation == treWeapons.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterLocation;
-                    break;
-                }
-            }
+            TreeNode nodOldNode = treWeapons.SelectedNode;
+            string strLocation = nodOldNode.Tag.ToString();
             objCharacter.GearLocations.Remove(strLocation);
 
             if (intNewIndex - 1 > objCharacter.WeaponLocations.Count)
                 objCharacter.WeaponLocations.Add(strLocation);
             else
                 objCharacter.WeaponLocations.Insert(intNewIndex - 1, strLocation);
-
-            TreeNode nodOldNode = treWeapons.SelectedNode;
+            
             treWeapons.Nodes.Remove(nodOldNode);
             treWeapons.Nodes.Insert(intNewIndex, nodOldNode);
         }
@@ -986,11 +937,12 @@ namespace Chummer
         public static void MoveCyberwareNode(Character objCharacter, int intNewIndex, IList<Cyberware> lstNewList, TreeNode objDestination, TreeView treOldTreeView)
         {
             TreeNode objCyberwareNode = treOldTreeView.SelectedNode;
-            Cyberware objCyberware = objCharacter.Cyberware.DeepFindById(objCyberwareNode.Tag.ToString());
+            string strSelectedId = objCyberwareNode.Tag.ToString();
+            Cyberware objCyberware = objCharacter.Cyberware.DeepFindById(strSelectedId);
             VehicleMod objOldParentVehicleMod = null;
             if (objCyberware == null)
             {
-                objCyberware = objCharacter.Vehicles.FindVehicleCyberware(objCyberwareNode.Tag.ToString(), out objOldParentVehicleMod);
+                objCyberware = objCharacter.Vehicles.FindVehicleCyberware(strSelectedId, out objOldParentVehicleMod);
             }
             Cyberware objOldParentCyberware = objCyberware.Parent;
             if (objOldParentCyberware != null)
@@ -1007,9 +959,7 @@ namespace Chummer
 
             TreeNode objNewParent = objDestination;
 
-            TreeNode objOldParent = treOldTreeView.SelectedNode.Parent;
-
-            objOldParent.Nodes.Remove(treOldTreeView.SelectedNode);
+            objCyberwareNode.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objCyberwareNode);
             objNewParent.Expand();
         }
@@ -1021,7 +971,9 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveVehicleNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treVehicles)
         {
-            Vehicle objVehicle = objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == treVehicles.SelectedNode.Tag.ToString());
+            TreeNode objClone = treVehicles.SelectedNode;
+            string strSelectedId = objClone.Tag.ToString();
+            Vehicle objVehicle = objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == strSelectedId);
             objCharacter.Vehicles.Remove(objVehicle);
             if (intNewIndex > objCharacter.Vehicles.Count)
                 objCharacter.Vehicles.Add(objVehicle);
@@ -1032,13 +984,7 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            TreeNode objOldParent = treVehicles.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
-            TreeNode objClone = treVehicles.SelectedNode;
-
-            objOldParent.Nodes.Remove(treVehicles.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
         }
@@ -1049,15 +995,11 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveVehicleGearParent(Character objCharacter, TreeNode objDestination, TreeView treVehicles, ContextMenuStrip cmsVehicleGear)
         {
-            // The item cannot be dropped onto itself.
-            if (objDestination == treVehicles.SelectedNode)
-                return;
-            // The item cannot be dropped onton one of its children.
-            foreach (TreeNode objNode in treVehicles.SelectedNode.Nodes)
-            {
-                if (objNode == objDestination)
+            TreeNode objClone = treVehicles.SelectedNode;
+            // The item cannot be dropped onto itself or onto one of its children.
+            for (TreeNode objCheckNode = objDestination; objCheckNode != null && objCheckNode.Level >= objDestination.Level; objCheckNode = objCheckNode.Parent)
+                if (objCheckNode == objClone)
                     return;
-            }
 
             // Determine if this is a Location.
             TreeNode objVehicleNode = objDestination;
@@ -1070,29 +1012,16 @@ namespace Chummer
             Vehicle objDestinationVehicle = objCharacter.Vehicles.FindById(objVehicleNode.Tag.ToString());
 
             // Make sure the destination is another piece of Gear or a Location.
-            bool blnDestinationGear = true;
-            bool blnDestinationLocation = false;
             Gear objDestinationGear = objCharacter.Vehicles.FindVehicleGear(objDestination.Tag.ToString());
-            if (objDestinationGear == null)
-                blnDestinationGear = false;
 
             // Determine if this is a Location in the destination Vehicle.
-            string strDestinationLocation = string.Empty;
-            foreach (string strLocation in objDestinationVehicle.Locations)
-            {
-                if (strLocation == objDestination.Tag.ToString())
-                {
-                    strDestinationLocation = strLocation;
-                    blnDestinationLocation = true;
-                    break;
-                }
-            }
+            string strDestinationLocation = objDestinationVehicle.Locations.FirstOrDefault(x => x == objDestination.Tag.ToString());
 
-            if (!blnDestinationLocation && !blnDestinationGear)
+            if (string.IsNullOrEmpty(strDestinationLocation) && objDestinationGear == null)
                 return;
 
             // Locate the currently selected piece of Gear.
-            Gear objGear = objCharacter.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
+            Gear objGear = objCharacter.Vehicles.FindVehicleGear(objClone.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
 
             // Gear cannot be moved to one of its children.
             bool blnAllowMove = true;
@@ -1129,7 +1058,7 @@ namespace Chummer
                 objGear.Parent.RefreshMatrixAttributeArray();
             }
 
-            if (blnDestinationLocation)
+            if (!string.IsNullOrEmpty(strDestinationLocation))
             {
                 // Add the Gear to the Vehicle and set its Location.
                 objDestinationVehicle.Gear.Add(objGear);
@@ -1145,11 +1074,10 @@ namespace Chummer
                 objDestinationGear.RefreshMatrixAttributeArray();
             }
 
-            TreeNode objClone = treVehicles.SelectedNode;
             objClone.ContextMenuStrip = cmsVehicleGear;
 
             // Remove the current Node.
-            treVehicles.SelectedNode.Remove();
+            objClone.Remove();
 
             // Add the new Node to its parent.
             objDestination.Nodes.Add(objClone);
@@ -1163,22 +1091,18 @@ namespace Chummer
         /// <param name="objDestination">Destination Node.</param>
         public static void MoveImprovementNode(Character objCharacter, int intNewIndex, TreeNode objDestination, TreeView treImprovements)
         {
-            Improvement objImprovement = objCharacter.Improvements.FirstOrDefault(x => x.SourceName == treImprovements.SelectedNode.Tag.ToString());
+            TreeNode objClone = treImprovements.SelectedNode;
+            string strSelectedId = objClone?.Tag.ToString();
+            Improvement objImprovement = objCharacter.Improvements.FirstOrDefault(x => x.SourceName == strSelectedId);
 
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            TreeNode objOldParent = treImprovements.SelectedNode;
-            while (objOldParent.Level > 0)
-                objOldParent = objOldParent.Parent;
-
             // Change the Group on the Custom Improvement.
             objImprovement.CustomGroup = objNewParent.Text;
 
-            TreeNode objClone = treImprovements.SelectedNode;
-
-            objOldParent.Nodes.Remove(treImprovements.SelectedNode);
+            objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);
             objNewParent.Expand();
 
@@ -1214,15 +1138,9 @@ namespace Chummer
             if (intNewIndex == 0)
                 return;
 
-            string strLocation = string.Empty;
+            TreeNode nodOldNode = treImprovements.SelectedNode;
+            string strLocation = nodOldNode.Tag.ToString();
             // Locate the currently selected Group.
-            foreach (string strCharacterGroup in objCharacter.ImprovementGroups)
-            {
-                if (strCharacterGroup == treImprovements.SelectedNode.Tag.ToString())
-                {
-                    strLocation = strCharacterGroup;
-                }
-            }
             objCharacter.ImprovementGroups.Remove(strLocation);
 
             if (intNewIndex - 1 > objCharacter.ImprovementGroups.Count)
@@ -1230,8 +1148,7 @@ namespace Chummer
             else
                 objCharacter.ImprovementGroups.Insert(intNewIndex - 1, strLocation);
 
-            TreeNode nodOldNode = treImprovements.SelectedNode;
-            treImprovements.Nodes.Remove(nodOldNode);
+            nodOldNode.Remove();
             treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
         }
         #endregion
@@ -1244,7 +1161,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["name"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1260,7 +1177,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["altcode"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1277,7 +1194,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
                 string strReturn = objXmlBook?["code"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
@@ -1294,7 +1211,7 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage)?.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (objXmlBook != null)
                 {
                     string strReturn = objXmlBook["translate"]?.InnerText;

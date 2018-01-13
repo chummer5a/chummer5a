@@ -289,15 +289,18 @@ namespace Chummer.Backend.Equipment
 
             WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
             xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["flexibility"].InnerText}\" and category = \"Flexibility\"]");
-            objWeaponMountOption.Create(xmlDataNode["id"].InnerText, objMount.WeaponMountOptions);
+            objWeaponMountOption.Create(xmlDataNode);
+            objMount.WeaponMountOptions.Add(objWeaponMountOption);
 
             objWeaponMountOption = new WeaponMountOption(_objCharacter);
             xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["control"].InnerText}\" and category = \"Control\"]");
-            objWeaponMountOption.Create(xmlDataNode["id"].InnerText, objMount.WeaponMountOptions);
+            objWeaponMountOption.Create(xmlDataNode);
+            objMount.WeaponMountOptions.Add(objWeaponMountOption);
 
             objWeaponMountOption = new WeaponMountOption(_objCharacter);
             xmlDataNode = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[name = \"{xmlNode["visibility"].InnerText}\" and category = \"Visibility\"]");
-            objWeaponMountOption.Create(xmlDataNode["id"].InnerText, objMount.WeaponMountOptions);
+            objWeaponMountOption.Create(xmlDataNode);
+            objMount.WeaponMountOptions.Add(objWeaponMountOption);
         }
         #endregion
 
@@ -321,6 +324,17 @@ namespace Chummer.Backend.Equipment
             get
             {
                 return _guiID.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Identifier of the WeaponMount's Size in the data files.
+        /// </summary>
+        public string SourceId
+        {
+            get
+            {
+                return _strSourceId;
             }
         }
 
@@ -807,16 +821,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Create a Weapon Mount Option from an XmlNode.
+        /// Create a Weapon Mount Option from an XmlNode, returns true if creation was successful.
         /// </summary>
         /// <param name="id">String guid of the object.</param>
-        /// <param name="list">List to add the object to. Called inside the Create method in case the mount itself is null.</param>
-        public void Create(string id, ICollection<WeaponMountOption> list)
+        public bool Create(XmlNode objXmlMod)
         {
-            XmlDocument xmlDoc = XmlManager.Load("vehicles.xml");
-            XmlNode objXmlMod = xmlDoc.SelectSingleNode($"/chummer/weaponmounts/weaponmount[id = \"{id}\"]");
-            if (objXmlMod == null) Utils.BreakIfDebug();
-            Guid.TryParse(id, out _sourceID);
+            if (objXmlMod == null)
+            {
+                Utils.BreakIfDebug();
+                return false;
+            }
+            objXmlMod.TryGetField("id", Guid.TryParse, out _sourceID);
             objXmlMod.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMod.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
@@ -859,7 +874,7 @@ namespace Chummer.Backend.Equipment
                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                 }
             }
-            list.Add(this);
+            return true;
         }
 
         public string DisplayNameShort(string strLanguage)
@@ -935,6 +950,11 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set => _strName = value;
         }
+
+        /// <summary>
+        /// Identifier of the WeaponMountOption in the data files.
+        /// </summary>
+        public string SourceId => _sourceID.ToString();
         #endregion
 
         #region Complex Properties

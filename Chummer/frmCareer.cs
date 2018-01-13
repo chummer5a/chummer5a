@@ -809,7 +809,7 @@ namespace Chummer
             PopulateGearList();
 
             // Populate Foci.
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
 
             TreeNode objVehiclesParent = treVehicles.Nodes[0];
             // Populate Vehicles.
@@ -4563,8 +4563,7 @@ namespace Chummer
 
             do
             {
-                Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objLifestyle, CharacterObject);
+                frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject);
                 frmPickLifestyle.ShowDialog(this);
 
                 // Make sure the dialogue window was not canceled.
@@ -4574,17 +4573,13 @@ namespace Chummer
                     break;
                 }
                 blnAddAgain = frmPickLifestyle.AddAgain;
+                Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
                 frmPickLifestyle.Dispose();
 
                 objLifestyle.Months = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
 
-                TreeNode objNode = new TreeNode
-                {
-                    Text = objLifestyle.DisplayName(GlobalOptions.Language),
-                    Tag = objLifestyle.InternalId,
-                    ContextMenuStrip = cmsLifestyleNotes
-                };
+                TreeNode objNode = objLifestyle.CreateTreeNode(cmsLifestyleNotes);
                 treLifestyles.Nodes[0].Nodes.Add(objNode);
                 treLifestyles.Nodes[0].Expand();
                 treLifestyles.SelectedNode = objNode;
@@ -4629,7 +4624,7 @@ namespace Chummer
                 blnAddAgain = PickGear(treGear.SelectedNode);
             }
             while (blnAddAgain);
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
         }
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
@@ -4688,7 +4683,7 @@ namespace Chummer
                         objGear.Parent.RefreshMatrixAttributeArray();
                     }
                 }
-                CharacterObject.PopulateFocusList(treFoci);
+                CharacterObject.PopulateFocusList(treFoci, cmsGear);
                 IsCharacterUpdateRequested = true;
                 RefreshSelectedGear();
 
@@ -4709,7 +4704,6 @@ namespace Chummer
             XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
 
             XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + frmPickVehicle.SelectedVehicle + "\"]");
-            
             Vehicle objVehicle = new Vehicle(CharacterObject);
             objVehicle.Create(objXmlVehicle);
             // Update the Used Vehicle information if applicable.
@@ -4759,9 +4753,10 @@ namespace Chummer
             objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
 
             CharacterObject.Vehicles.Add(objVehicle);
-            
+
             TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             objParentNode.Nodes.Add(objNode);
+
             objParentNode.Expand();
             treVehicles.SelectedNode = objNode;
 
@@ -6504,7 +6499,7 @@ namespace Chummer
                     treGear.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
         }
 
         private void cmdVehicleGearReduceQty_Click(object sender, EventArgs e)
@@ -7162,10 +7157,10 @@ namespace Chummer
                         break;
                     }
                     
-                    List<Weapon> objWeapons = new List<Weapon>();
+                    List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, objWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId == Guid.Empty.ToString())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -7226,7 +7221,7 @@ namespace Chummer
                         CharacterObject.Qualities.Add(objQuality);
 
                         // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in objWeapons)
+                        foreach (Weapon objWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objWeapon);
                             treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
@@ -7628,7 +7623,7 @@ namespace Chummer
             objStack.GearId = objStackItem.InternalId;
 
             IsDirty = true;
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
             IsCharacterUpdateRequested = true;
         }
 
@@ -10189,7 +10184,7 @@ namespace Chummer
                         objParent.RefreshMatrixAttributeArray();
                     }
                 }
-                CharacterObject.PopulateFocusList(treFoci);
+                CharacterObject.PopulateFocusList(treFoci, cmsGear);
                 IsCharacterUpdateRequested = true;
                 RefreshSelectedGear();
 
@@ -10514,25 +10509,19 @@ namespace Chummer
 
         private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
-            Lifestyle objNewLifestyle = new Lifestyle(CharacterObject);
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, CharacterObject);
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
             frmPickLifestyle.ShowDialog(this);
 
             // Make sure the dialogue window was not canceled.
             if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                 return;
 
+            Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
             objNewLifestyle.StyleType = LifestyleType.Advanced;
 
             CharacterObject.Lifestyles.Add(objNewLifestyle);
-
-            TreeNode objNode = new TreeNode
-            {
-                Text = objNewLifestyle.Name,
-                Tag = objNewLifestyle.InternalId,
-                ContextMenuStrip = cmsAdvancedLifestyle
-            };
-            treLifestyles.Nodes[0].Nodes.Add(objNode);
+            
+            treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsAdvancedLifestyle));
             treLifestyles.Nodes[0].Expand();
 
             if (frmPickLifestyle.AddAgain)
@@ -10544,8 +10533,7 @@ namespace Chummer
 
         private void tsBoltHole_Click(object sender, EventArgs e)
         {
-            Lifestyle objNewLifestyle = new Lifestyle(CharacterObject);
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, CharacterObject)
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
             {
                 StyleType = LifestyleType.BoltHole
             };
@@ -10555,16 +10543,11 @@ namespace Chummer
             if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                 return;
 
+            Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
             objNewLifestyle.Months = 0;
             CharacterObject.Lifestyles.Add(objNewLifestyle);
-
-            TreeNode objNode = new TreeNode
-            {
-                Text = objNewLifestyle.Name,
-                Tag = objNewLifestyle.InternalId,
-                ContextMenuStrip = cmsAdvancedLifestyle
-            };
-            treLifestyles.Nodes[0].Nodes.Add(objNode);
+            
+            treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsAdvancedLifestyle));
             treLifestyles.Nodes[0].Expand();
 
             if (frmPickLifestyle.AddAgain)
@@ -10577,8 +10560,7 @@ namespace Chummer
 
         private void tsSafehouse_Click(object sender, EventArgs e)
         {
-            Lifestyle objNewLifestyle = new Lifestyle(CharacterObject);
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, CharacterObject)
+            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
             {
                 StyleType = LifestyleType.Safehouse
             };
@@ -10588,16 +10570,11 @@ namespace Chummer
             if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
                 return;
 
-            objNewLifestyle.Months = 0;
-            CharacterObject.Lifestyles.Add(objNewLifestyle);
-
-            TreeNode objNode = new TreeNode
-            {
-                Text = objNewLifestyle.Name,
-                Tag = objNewLifestyle.InternalId,
-                ContextMenuStrip = cmsAdvancedLifestyle
-            };
-            treLifestyles.Nodes[0].Nodes.Add(objNode);
+            Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
+            objLifestyle.Months = 0;
+            CharacterObject.Lifestyles.Add(objLifestyle);
+            
+            treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsAdvancedLifestyle));
             treLifestyles.Nodes[0].Expand();
 
             if (frmPickLifestyle.AddAgain)
@@ -11518,7 +11495,7 @@ namespace Chummer
                             objNode.Text = objGear.DisplayName(GlobalOptions.Language);
                         }
 
-                        CharacterObject.PopulateFocusList(treFoci);
+                        CharacterObject.PopulateFocusList(treFoci, cmsGear);
                     }
                     break;
                 case NuyenExpenseType.AddVehicle:
@@ -12098,7 +12075,7 @@ namespace Chummer
             }
 
             // Populate Foci.
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
 
             // Populate Vehicles.
             for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
@@ -13472,10 +13449,10 @@ namespace Chummer
                 XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
                 // Create the new piece of Gear.
-                List<Weapon> objWeapons = new List<Weapon>();
+                List<Weapon> lstWeapons = new List<Weapon>();
 
                 Gear objGear = new Gear(CharacterObject);
-                objGear.Create(objXmlGear, frmPickGear.SelectedRating, objWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
                 if (objGear.InternalId == Guid.Empty.ToString())
                 {
@@ -13529,7 +13506,7 @@ namespace Chummer
                 frmPickGear.Dispose();
 
                 // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in objWeapons)
+                foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
                     treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
@@ -14488,12 +14465,11 @@ namespace Chummer
             }
             if (objLifestyle == null)
                 return;
-
-            Lifestyle objNewLifestyle = new Lifestyle(CharacterObject);
-            if (objLifestyle.StyleType.ToString() != "Standard")
+            
+            if (objLifestyle.StyleType != LifestyleType.Standard)
             {
                 // Edit Advanced Lifestyle.
-                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(objNewLifestyle, CharacterObject);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
                 frmPickLifestyle.SetLifestyle(objLifestyle);
                 frmPickLifestyle.ShowDialog(this);
 
@@ -14506,7 +14482,7 @@ namespace Chummer
             else
             {
                 // Edit Basic Lifestyle.
-                frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(objNewLifestyle, CharacterObject);
+                frmSelectLifestyle frmPickLifestyle = new frmSelectLifestyle(CharacterObject);
                 frmPickLifestyle.SetLifestyle(objLifestyle);
                 frmPickLifestyle.ShowDialog(this);
 
@@ -16473,7 +16449,7 @@ namespace Chummer
                 {
                     objSelectedFocus.ChangeEquippedStatus(false);
                 }
-                CharacterObject.PopulateFocusList(treFoci);
+                CharacterObject.PopulateFocusList(treFoci, cmsGear);
             }
             else
             {
@@ -18355,7 +18331,7 @@ namespace Chummer
             }
 
             // Populate Foci.
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
 
             // Populate Vehicles.
             for (int i = treVehicles.Nodes.Count - 1; i >= 0; --i)
@@ -20330,9 +20306,9 @@ namespace Chummer
 
             // Create the Cyberware object.
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            List<Weapon> objWeapons = new List<Weapon>();
-            List<Vehicle> objVehicles = new List<Vehicle>();
-            objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, objWeapons, objVehicles, true, true, string.Empty, objSelectedCyberware);
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
+            objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
             if (objCyberware.InternalId == Guid.Empty.ToString())
                 return false;
 
@@ -20404,14 +20380,14 @@ namespace Chummer
                 CharacterObject.Cyberware.Add(objCyberware);
             }
 
-            foreach (Weapon objWeapon in objWeapons)
+            foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
                 treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                 treWeapons.Nodes[0].Expand();
             }
 
-            foreach (Vehicle objVehicle in objVehicles)
+            foreach (Vehicle objVehicle in lstVehicles)
             {
                 CharacterObject.Vehicles.Add(objVehicle);
                 treVehicles.Nodes[0].Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
@@ -20512,7 +20488,7 @@ namespace Chummer
             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + frmPickGear.SelectedGear + "\" and category = \"" + frmPickGear.SelectedCategory + "\"]");
 
             // Create the new piece of Gear.
-            List<Weapon> objWeapons = new List<Weapon>();
+            List<Weapon> lstWeapons = new List<Weapon>();
 
             string strForceValue = string.Empty;
             if (blnAmmoOnly)
@@ -20526,7 +20502,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strForceItemValue))
                 strForceValue = strForceItemValue;
             Gear objGear = new Gear(CharacterObject);
-            objGear.Create(objXmlGear, frmPickGear.SelectedRating, objWeapons, strForceValue, true, true, frmPickGear.Aerodynamic);
+            objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue, true, true, frmPickGear.Aerodynamic);
 
             if (objGear.InternalId == Guid.Empty.ToString())
                 return false;
@@ -20656,7 +20632,7 @@ namespace Chummer
             else
             {
                 // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in objWeapons)
+                foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
                     treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
@@ -23693,22 +23669,22 @@ namespace Chummer
         private Cyberware CreateSuiteCyberware(XmlNode objXmlItem, XmlNode objXmlNode, Grade objGrade, int intRating, Improvement.ImprovementSource objSource)
         {
             // Create the Cyberware object.
-            List<Weapon> objWeapons = new List<Weapon>();
-            List<Vehicle> objVehicles = new List<Vehicle>();
+            List<Weapon> lstWeapons = new List<Weapon>();
+            List<Vehicle> lstVehicles = new List<Vehicle>();
             Cyberware objCyberware = new Cyberware(CharacterObject);
             string strForced = objXmlItem["name"]?.Attributes?["select"]?.InnerText ?? string.Empty;
 
-            objCyberware.Create(objXmlNode, CharacterObject, objGrade, objSource, intRating, objWeapons, objVehicles, true, true, strForced);
+            objCyberware.Create(objXmlNode, CharacterObject, objGrade, objSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
             objCyberware.Suite = true;
 
-            foreach (Weapon objWeapon in objWeapons)
+            foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
                 treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                 treWeapons.Nodes[0].Expand();
             }
 
-            foreach (Vehicle objVehicle in objVehicles)
+            foreach (Vehicle objVehicle in lstVehicles)
             {
                 CharacterObject.Vehicles.Add(objVehicle);
                 treVehicles.Nodes[0].Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
@@ -25109,7 +25085,7 @@ namespace Chummer
                     treGear.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
-            CharacterObject.PopulateFocusList(treFoci);
+            CharacterObject.PopulateFocusList(treFoci, cmsGear);
         }
 
         private void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)

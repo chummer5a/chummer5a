@@ -140,9 +140,9 @@ namespace Chummer
             XmlNode xmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + cboGamePlay.SelectedValue.ToString() + "\"]");
             if (xmlGameplayOption != null)
             {
-                _objCharacter.bannedwaregrades.Clear();
+                _objCharacter.BannedWareGrades.Clear();
                 foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
-                    _objCharacter.bannedwaregrades.Add(xmlNode.InnerText);
+                    _objCharacter.BannedWareGrades.Add(xmlNode.InnerText);
 
                 if (!_objCharacter.Options.FreeContactsMultiplierEnabled)
                     _objCharacter.ContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);

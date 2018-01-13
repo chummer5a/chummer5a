@@ -896,8 +896,9 @@ namespace Chummer
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
-                foreach (string strItem in cboCategory.Items.Cast<ListItem>().Select(x => x.Value))
+                foreach (ListItem objItem in cboCategory.Items)
                 {
+                    string strItem = objItem.Value;
                     if (!string.IsNullOrEmpty(strItem))
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
                 }
@@ -1222,10 +1223,10 @@ namespace Chummer
                     }
                     else if (objWareGrade.Burnout)
                         continue;
-                    if (blnHideBannedGrades && !_objCharacter.Created && _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
+                    if (blnHideBannedGrades && !_objCharacter.Created && _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         continue;
                     if (!blnHideBannedGrades && !_objCharacter.Created &&
-                        _objCharacter.bannedwaregrades.Any(s => objWareGrade.Name.Contains(s)))
+                        _objCharacter.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
                         lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString(), $"*{objWareGrade.DisplayName(GlobalOptions.Language)}"));
                     }
