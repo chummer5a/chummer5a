@@ -106,6 +106,7 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
+        /// <param name="lstWeapons">List of child Weapons to generate.</param>
         /// <param name="lstNodes">List of TreeNodes to populate a TreeView.</param>
         /// <param name="cmsWeapon">ContextMenuStrip to use for Weapons.</param>
         /// <param name="cmsWeaponAccessory">ContextMenuStrip to use for Accessories.</param>
@@ -324,7 +325,8 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add Subweapons (not underbarrels) if applicable.
-            if (lstWeapons != null && objXmlWeapon.InnerXml.Contains("<addweapon>"))
+            if (lstWeapons == null) return;
+            if (objXmlWeapon.InnerXml.Contains("<addweapon>"))
             {
                 // More than one Weapon can be added, so loop through all occurrences.
                 foreach (XmlNode objXmlAddWeapon in objXmlWeapon.SelectNodes("addweapon"))
@@ -343,7 +345,6 @@ namespace Chummer.Backend.Equipment
                     lstWeapons.Add(objSubWeapon);
                 }
             }
-
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;
         }
