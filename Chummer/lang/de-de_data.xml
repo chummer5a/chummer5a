@@ -2861,10 +2861,10 @@
 				<translate>Strassengrimoire (Deutsch-exklusiver Inhalt)</translate>
 				<altcode>SGG</altcode>
 			</book>
-			<book>
+			<book translated="True">
 				<id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
 				<name>Bullets &amp; Bandages</name>
-				<translate>Kugeln und Bandagen</translate>
+				<translate>Kugeln &amp; Bandagen</translate>
 				<altcode>BB</altcode>
 			</book>
 			<book>
@@ -3026,19 +3026,19 @@
 			<book>
 				<id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
 				<name>Cutting Aces</name>
-				<translate>Cutting Aces</translate>
+				<translate>Mit Tricks und Finesse</translate>
 				<altcode>CA</altcode>
 			</book>
 			<book>
 				<id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
 				<name>Book of the Lost</name>
-				<translate>Book of the Lost</translate>
+				<translate>Buch der Verlorenen</translate>
 				<altcode>BOTL</altcode>
 			</book>
 			<book>
 				<id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
 				<name>Forbidden Arcana</name>
-				<translate>Forbidden Arcana</translate>
+				<translate>Verbotene Künste</translate>
 				<altcode>FA</altcode>
 			</book>
 			<book>
@@ -17311,28 +17311,34 @@
 				<altpage>207</altpage>
 			</gear>
 			<gear>
+				<id>377c7545-50e3-4547-a47b-1a0cd9ee567f</id>
+				<name>Atomizer</name>
+				<translate>Zerstäuber</translate>
+				<altpage>187</altpage>
+			</gear>
+			<gear>
 				<id>f0b6f6db-dcf9-47f4-9108-51ff196184da</id>
 				<name>Alembic</name>
-				<translate>Alembic</translate>
-				<altpage>193</altpage>
+				<translate>Destillierapparat</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>f6fde2af-ec7b-4531-83a4-eafa413f0ab7</id>
 				<name>Athanor</name>
-				<translate>Athanor</translate>
-				<altpage>193</altpage>
+				<translate>Brennofen</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>ca6e1548-2d3f-4e4d-87d1-52414eb62919</id>
 				<name>Crucible</name>
-				<translate>Crucible</translate>
-				<altpage>193</altpage>
+				<translate>Schmelztiegel</translate>
+				<altpage>187</altpage>
 			</gear>
 			<gear>
 				<id>580fc834-9481-40d3-9e07-787273a99535</id>
 				<name>Vault of Ages</name>
-				<translate>Vault of Ages</translate>
-				<altpage>193</altpage>
+				<translate>Ewiger Tresor</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>466b1d86-e088-4973-b914-a405ba0829f7</id>
@@ -18405,8 +18411,8 @@
 			<martialart>
 				<id>116723ab-ef17-4078-9b6b-609c24861c96</id>
 				<name>Way of Unified Mana (Hapsum-Do)</name>
-				<translate>Way of Unified Mana (Hapsum-Do)</translate>
-				<altpage>101</altpage>
+				<translate>Weg des Vereinheitlichten Mana (Hapsum-Do)</translate>
+				<altpage>100</altpage>
 			</martialart>
 			<martialart>
 				<id>d1baf7a8-d65b-46d0-b5dc-2bb4a3f18c80</id>
@@ -18905,14 +18911,14 @@
 			<technique>
 				<id>4376ad31-af14-4204-86d1-e1a31b9cda6d</id>
 				<name>Mana Choke</name>
-				<translate>Mana Choke</translate>
-				<altpage>102</altpage>
+				<translate>Manadämpfer</translate>
+				<altpage>101</altpage>
 			</technique>
 			<technique>
 				<id>18400527-4b06-47fb-88fc-5d31100ae8d4</id>
 				<name>Mana Strike</name>
-				<translate>Mana Strike</translate>
-				<altpage>102</altpage>
+				<translate>Manaschlag</translate>
+				<altpage>101</altpage>
 			</technique>
 		</techniques>
 	</chummer>
@@ -19104,7 +19110,7 @@
 				<altdisadvantage>Wenn jemand eindringlich um Hilfe bittet, kann ein Anhänger des Feuerbringers diese nicht verweigern, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</altdisadvantage>
 				<altpage>321</altpage>
 			</mentor>
-			<mentor>
+			<mentor translated="True">
 				<id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
 				<name>Great Mother</name>
 				<translate>Große Mutter</translate>
@@ -19168,7 +19174,7 @@
 				</choices>
 				<altadvantage>+2 Würfel auf Heilzauber, +2 Würfel für Erd- oder Pflanzengeister(Spieler muss eins auswählen)</altadvantage>
 				<altdisadvantage>-1 Würfel auf Kampfzauber</altdisadvantage>
-				<altpage>232</altpage>
+				<altpage>94</altpage>
 			</mentor>
 			<mentor>
 				<id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
@@ -20388,7 +20394,7 @@
 			<mentor>
 				<id>bd56ecdf-ebba-4b66-8e39-445831744496</id>
 				<name>Dove</name>
-				<translate>Dove</translate>
+				<translate>Taube</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifer for casting Health spells, +1 dice pool modifer to summon air spirits</name>
@@ -20401,12 +20407,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifer for Negotiation tests.</altadvantage>
 				<altdisadvantage>Dove discourages combat whenever possible. As such, those who follow Dove are at –2 dice pool modifer to cast Combat spells or when using lethal force.</altdisadvantage>
-				<altpage>94</altpage>
+				<altpage>97</altpage>
 			</mentor>
 			<mentor>
 				<id>0fc002e4-c130-4ca8-8719-487941e86863</id>
 				<name>Planar Entity</name>
-				<translate>Planar Entity</translate>
+				<translate>Planare Wesenheit</translate>
 				<choices>
 					<choice>
 						<name>Magician: Determined by spirit type and gamemaster approval.</name>
@@ -20419,12 +20425,12 @@
 				</choices>
 				<altadvantage>All: Determined by spirit type and gamemaster approval.</altadvantage>
 				<altdisadvantage>Taking on an extraplanar entity into one’s soul is not without its drawbacks. Much of their mental ability is taken up keeping themselves from losing their identity as a result of their shared existence. Mages suffer a –2 dice pool penalty when making tests involving Willpower</altdisadvantage>
-				<altpage>95</altpage>
+				<altpage>97</altpage>
 			</mentor>
 			<mentor>
 				<id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
 				<name>Arcana</name>
-				<translate>Arcana</translate>
+				<translate>Die Arkana</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifer for casting Detection spells, an additional +2 dice pool modifer to cast Clairvoyance spells.</name>
@@ -20437,12 +20443,12 @@
 				</choices>
 				<altadvantage>All: Once per day, when making a decision or test inﬂuenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
 				<altdisadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</altdisadvantage>
-				<altpage>95</altpage>
+				<altpage>93</altpage>
 			</mentor>
 			<mentor>
 				<id>2dcbe44e-3789-4cf2-b51b-0337c239ce7c</id>
 				<name>Holy Text</name>
-				<translate>Holy Text</translate>
+				<translate>Heilige Schrift</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
@@ -20464,7 +20470,7 @@
 			<mentor>
 				<id>833ce699-081b-454d-ac93-5c2bd2c61862</id>
 				<name>Death</name>
-				<translate>Death</translate>
+				<translate>Tod</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer when casting the spells Death Touch, Manaball, Manabolt, One Less, Slaughter, Slay.</name>
@@ -20477,12 +20483,12 @@
 				</choices>
 				<altadvantage>All: +4 ranks of the Knowledge Skill Anatomy, Disease, Infected, or Undead (choose one).</altadvantage>
 				<altdisadvantage> In order for a follower of Death to attempt to help someone who is dying or injured, they must first pass a Charisma + Willpower (3) Test.</altdisadvantage>
-				<altpage>96</altpage>
+				<altpage>97</altpage>
 			</mentor>
 			<mentor>
 				<id>c3f3cf4d-3e99-4395-9d24-0b4492ecf45c</id>
 				<name>War</name>
-				<translate>War</translate>
+				<translate>Krieg</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
@@ -20495,12 +20501,12 @@
 				</choices>
 				<altadvantage>All: After character creation, may purchase combat skills at rank 3 or higher for 1 less Karma</altadvantage>
 				<altdisadvantage>If it looks as if they are going to lose a battle, those with the War mentor must pass a Charisma + Willpower (4) Test, or else use all means necessary—including the lives, nuyen, and honor of their teammates—to overcome their adversary.</altdisadvantage>
-				<altpage>97</altpage>
+				<altpage>96</altpage>
 			</mentor>
 			<mentor>
 				<id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
 				<name>Tohu Wa-Bohu</name>
-				<translate>Tohu Wa-Bohu</translate>
+				<translate>Tohuwabohu</translate>
 				<choices>
 					<choice>
 						<name>Magician: Gain the Witness My Hate quality for free.</name>
@@ -20513,12 +20519,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifer for Intimidation or Demolitions tests (choose one)</altadvantage>
 				<altdisadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</altdisadvantage>
-				<altpage>97</altpage>
+				<altpage>98</altpage>
 			</mentor>
 			<mentor>
 				<id>0855eb9d-65b2-4168-ae58-6b07c38b86c3</id>
 				<name>Green Man</name>
-				<translate>Green Man</translate>
+				<translate>Der Grüne Mann</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer to summon Plant Spirits.</name>
@@ -20531,12 +20537,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifer for Negotiation Tests.</altadvantage>
 				<altdisadvantage>When signifcant damage is being done to vegetation, they must pass a Charisma + Willpower (3) Test or use all means possible to stop the destruction.</altdisadvantage>
-				<altpage>98</altpage>
+				<altpage>94</altpage>
 			</mentor>
 			<mentor>
 				<id>79346916-7987-4332-b031-4b8bd59700d7</id>
 				<name>Sun</name>
-				<translate>Sun</translate>
+				<translate>Sonne</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer when casting Sun- or Fire-based spells.</name>
@@ -20549,12 +20555,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifer for Perception tests when outside during the day.</altadvantage>
 				<altdisadvantage>Followers of Sun must pass a Charisma + Willpower (4) Test in order to purposefully deceive others.</altdisadvantage>
-				<altpage>98</altpage>
+				<altpage>97</altpage>
 			</mentor>
 			<mentor>
 				<id>31a16d45-74a1-451e-998c-d9ed9c369f1e</id>
 				<name>Dark King</name>
-				<translate>Dark King</translate>
+				<translate>Finsterer König</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice to Contractual Rituals.</name>
@@ -20567,12 +20573,12 @@
 				</choices>
 				<altadvantage>All: +2 dice to Intimidation tests.</altadvantage>
 				<altdisadvantage>Followers receive a –1 dice pool penalty when resisting physical damage.</altdisadvantage>
-				<altpage>98</altpage>
+				<altpage>94</altpage>
 			</mentor>
 			<mentor>
 				<id>a40f9df8-9303-4f3b-9088-b9bd60c43f72</id>
 				<name>Moon</name>
-				<translate>Moon</translate>
+				<translate>Mond</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice for Illusion and transformation-focused Manipulation spells, preparations, and spell rituals.</name>
@@ -20585,12 +20591,12 @@
 				</choices>
 				<altadvantage>All: +2 dice to Negotiation tests.</altadvantage>
 				<altdisadvantage>Followers of Moon must make a Charisma + Willpower (4) Test in order to engage in direct confrontation; failure means they cannot make any action considered as such. Negotiation is not considered confrontation (Moon loves discussion), but arguments fall into that category.</altdisadvantage>
-				<altpage>98</altpage>
+				<altpage>96</altpage>
 			</mentor>
 			<mentor>
 				<id>b1a5d0cd-b4f1-4de2-86ee-3965f1c36034</id>
 				<name>Oak</name>
-				<translate>Oak</translate>
+				<translate>Eiche</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool bonus when summoning plant or air spirits (choose 1 when selecting this mentor spirit).</name>
@@ -20603,12 +20609,12 @@
 				</choices>
 				<altadvantage>All: +1 to Damage Resistance tests.</altadvantage>
 				<altdisadvantage>Must have a natural (meaning unaugmented) Body and Strength of 4 or greater to select this mentor spirit.</altdisadvantage>
-				<altpage>99</altpage>
+				<altpage>94</altpage>
 			</mentor>
 			<mentor>
 				<id>6ff55926-3ea8-4e8c-8cd2-a114595d159b</id>
 				<name>Stag</name>
-				<translate>Stag</translate>
+				<translate>Hirsch</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 to summoning earth spirits.</name>
@@ -20621,12 +20627,12 @@
 				</choices>
 				<altadvantage>All: +2 to Blades tests.</altadvantage>
 				<altdisadvantage>Followers of the Stag demand respect, especially to those they give it to. Once disrespected, they must succeed in a Charisma + Willpower (3) Test, or they will demand satisfaction against the slight.</altdisadvantage>
-				<altpage>99</altpage>
+				<altpage>96</altpage>
 			</mentor>
 			<mentor>
 				<id>26eed20e-86c6-4245-be55-231370fff939</id>
 				<name>Spider (Alt)</name>
-				<translate>Spider (Alt)</translate>
+				<translate>Spinne (alternativ)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +2 dice pool modifer when casting Manipulation spells, preparations, and rituals</name>
@@ -20639,12 +20645,12 @@
 				</choices>
 				<altadvantage>All: +2 dice pool modifer for tests using the Stealth skill group.</altadvantage>
 				<altdisadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
-				<altpage>100</altpage>
+				<altpage>99</altpage>
 			</mentor>
 			<mentor>
 				<id>a7532966-cdeb-4732-b486-59cbf5552f83</id>
 				<name>Wolf (Alt)</name>
-				<translate>Wolf (Alt)</translate>
+				<translate>Wolf (alternativ)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifer when casting Combat spells, preparations, and rituals.</name>
@@ -20657,12 +20663,12 @@
 				</choices>
 				<altadvantage>All: +1 dice pool modifer for tests using the Sneaking, Perception, Survival, and Tracking skills.</altadvantage>
 				<altdisadvantage>Whenever a follower of Wolf sees an opportunity to survive by attacking or sacrifcing the weak, they must pass a Charisma + Willpower (4) Test or attempt to seize the opportunity. This does not apply to those the Wolf considers friends or family.</altdisadvantage>
-				<altpage>100</altpage>
+				<altpage>99</altpage>
 			</mentor>
 			<mentor>
 				<id>e27fd190-c19f-4d86-8e99-7552df1e8be3</id>
 				<name>Rat (Alt)</name>
-				<translate>Rat (Alt)</translate>
+				<translate>Ratte (alternativ)</translate>
 				<choices>
 					<choice>
 						<name>Magician: +1 dice pool modifer when casting Health spells, preparations, and rituals</name>
@@ -20675,7 +20681,7 @@
 				</choices>
 				<altadvantage>All: +1 dice pool modifer for tests using the Perception and Sneaking skills.</altadvantage>
 				<altdisadvantage> Followers of Rat cannot receive aid or aid others with a Teamwork test unless they trust the individuals they are teaming with. Further, if they do trust the individuals, but that trust is broken through incompetence or betrayal, they must pass a Charisma + Willpower (4) Test to be able to use teamwork with that individual each time in the future.</altdisadvantage>
-				<altpage>100</altpage>
+				<altpage>99</altpage>
 			</mentor>
 		</mentors>
 	</chummer>
@@ -20918,34 +20924,34 @@
 			<metamagic>
 				<id>a3015186-c234-448c-811d-43c7d722abd2</id>
 				<name>Paradigm Shift: Insect Shaman</name>
-				<translate>Paradigm Shift: Insect Shaman</translate>
-				<altpage>43</altpage>
+				<translate>Paradigmenwechsel: Insektenschamane</translate>
+				<altpage>45</altpage>
 			</metamagic>
 			<metamagic>
 				<id>a83ef030-4372-421e-874e-839ceb77a64e</id>
 				<name>Paradigm Shift: Toxic</name>
-				<translate>Paradigm Shift: Toxic</translate>
-				<altpage>44</altpage>
+				<translate>Paradigmenwechsel: Toxisch</translate>
+				<altpage>45</altpage>
 			</metamagic>
 			<metamagic>
 				<id>0b136740-8728-4c05-86f1-ddaf9368c0a8</id>
 				<name>Spirit Expansion: UMT</name>
-				<translate>Spirit Expansion: UMT</translate>
-				<altpage>44</altpage>
+				<translate>Zusätzliche Geister: VMT</translate>
+				<altpage>46</altpage>
 			</metamagic>
 			<metamagic>
 				<id>95a75c73-37a6-4e3c-9fef-27322d43394a</id>
 				<name>Spirit Expansion: Shedim</name>
-				<translate>Spirit Expansion: Shedim</translate>
-				<altpage>44</altpage>
+				<translate>Zusätzliche Geister: Shedim</translate>
+				<altpage>46</altpage>
 			</metamagic>
 			<metamagic>
 				<id>b314c391-52fc-447e-bece-483943b00237</id>
 				<name>Improved Astral Form</name>
-				<translate>Improved Astral Form</translate>
-				<altpage>44</altpage>
+				<translate>Verbesserte Astrale Gestalt</translate>
+				<altpage>46</altpage>
 			</metamagic>
-			<metamagic>
+			<metamagic translated="True">
 				<id>c46f1864-8d72-4c4c-9704-cb286eab053d</id>
 				<name>Astralnaut</name>
 				<translate>Astralnaut</translate>
@@ -20954,56 +20960,56 @@
 			<metamagic>
 				<id>5159ae63-7251-4c33-a6f9-77f6a06fa349</id>
 				<name>Structured Spellcasting</name>
-				<translate>Structured Spellcasting</translate>
-				<altpage>44</altpage>
+				<translate>Strukturierte Spruchzauberei</translate>
+				<altpage>45</altpage>
 			</metamagic>
 			<metamagic>
 				<id>59d0beab-4fba-48a9-a135-02e396ded7a4</id>
 				<name>Tarot Summoning</name>
-				<translate>Tarot Summoning</translate>
-				<altpage>45</altpage>
+				<translate>Tarot-Rufen</translate>
+				<altpage>46</altpage>
 			</metamagic>
 			<metamagic>
 				<id>f4576514-4744-42ba-baaa-02dc4aaed297</id>
 				<name>Reckless Necro Conjuring</name>
-				<translate>Reckless Necro Conjuring</translate>
+				<translate>Schnelle Dunkelbeschwörung</translate>
 				<altpage>45</altpage>
 			</metamagic>
 			<metamagic>
 				<id>fa550487-39ef-4ea2-a613-5b9bdee0961c</id>
 				<name>Noble Sacrifice</name>
-				<translate>Noble Sacrifice</translate>
-				<altpage>46</altpage>
+				<translate>Edles Opfer</translate>
+				<altpage>44</altpage>
 			</metamagic>
 			<metamagic>
 				<id>4eab0dc3-a040-42b1-a21e-552047ed27af</id>
 				<name>Harmonious Defense</name>
-				<translate>Harmonious Defense</translate>
-				<altpage>46</altpage>
+				<translate>Harmonische Abwehr</translate>
+				<altpage>44</altpage>
 			</metamagic>
 			<metamagic>
 				<id>680743d7-d474-4042-abbf-ea905eedc0de</id>
 				<name>Harmonious Reflection</name>
-				<translate>Harmonious Reflection</translate>
-				<altpage>46</altpage>
+				<translate>Harmonische Spiegelung</translate>
+				<altpage>44</altpage>
 			</metamagic>
 			<metamagic>
 				<id>5b2175c6-bbc9-4e8f-ac33-7a7ac6ded312</id>
 				<name>Predator Feast</name>
-				<translate>Predator Feast</translate>
-				<altpage>131</altpage>
+				<translate>Raubtierfestmahl</translate>
+				<altpage>128</altpage>
 			</metamagic>
 			<metamagic>
 				<id>ba511830-7fb6-4ec0-8861-5cff07c90f41</id>
 				<name>Soul Tether</name>
-				<translate>Soul Tether</translate>
-				<altpage>131</altpage>
+				<translate>Seelenbatterie</translate>
+				<altpage>128</altpage>
 			</metamagic>
 			<metamagic>
 				<id>30774b9d-bb89-4ece-9bc4-35017cbf30b4</id>
 				<name>Spiritual Sacrifice</name>
-				<translate>Spiritual Sacrifice</translate>
-				<altpage>131</altpage>
+				<translate>Spirituelles Opfer</translate>
+				<altpage>128</altpage>
 			</metamagic>
 			<metamagic>
 				<id>0ab2d588-34f5-4204-aee2-b944e5db411a</id>
@@ -23501,68 +23507,68 @@
 			<enhancement>
 				<id>8dc0a8e3-535a-4935-8c90-2079666e6a01</id>
 				<name>Air Walking</name>
-				<translate>Air Walking</translate>
-				<altpage>156</altpage>
+				<translate>Luftwandeln</translate>
+				<altpage>182</altpage>
 			</enhancement>
 			<enhancement>
 				<id>19bafb80-2f5a-4370-8cbe-875477ce7471</id>
 				<name>Pied Piper</name>
-				<translate>Pied Piper</translate>
-				<altpage>156</altpage>
+				<translate>Rattenfänger</translate>
+				<altpage>183</altpage>
 			</enhancement>
 			<enhancement>
 				<id>855a7a07-5def-4ec5-bb69-29273327b885</id>
 				<name>Skin Artist</name>
-				<translate>Skin Artist</translate>
-				<altpage>157</altpage>
+				<translate>Hautkünstler</translate>
+				<altpage>183</altpage>
 			</enhancement>
 			<enhancement>
 				<id>3f0a99c7-6524-46cb-b43e-070a978c5052</id>
 				<name>Claws</name>
-				<translate>Claws</translate>
-				<altpage>157</altpage>
+				<translate>Klauen</translate>
+				<altpage>184</altpage>
 			</enhancement>
 			<enhancement>
 				<id>2d2939f0-486c-4915-bbeb-084b857c2450</id>
 				<name>Hot Qi</name>
-				<translate>Hot Qi</translate>
-				<altpage>157</altpage>
+				<translate>Heißes Qi</translate>
+				<altpage>182</altpage>
 			</enhancement>
 			<enhancement>
 				<id>25f6368f-21ef-4544-ac55-3c20d8a60374</id>
 				<name>Shadow Touch</name>
-				<translate>Shadow Touch</translate>
-				<altpage>157</altpage>
+				<translate>Schattenberührung</translate>
+				<altpage>185</altpage>
 			</enhancement>
 			<enhancement>
 				<id>e5cf0578-be0f-4453-9223-118234d3e749</id>
 				<name>Digital Celerity</name>
-				<translate>Digital Celerity</translate>
-				<altpage>157</altpage>
+				<translate>Gesteigerte Fingerfertigkeit</translate>
+				<altpage>185</altpage>
 			</enhancement>
 			<enhancement>
 				<id>e66fac54-39e4-4e3e-92c6-670485c28c25</id>
 				<name>Master of the Nine Chakras</name>
-				<translate>Master of the Nine Chakras</translate>
-				<altpage>157</altpage>
+				<translate>Meister der Neun Chakren</translate>
+				<altpage>185</altpage>
 			</enhancement>
 			<enhancement>
 				<id>fafc7fd4-8418-4a86-b396-6e90943d9e68</id>
 				<name>Silver-Tongued Devil</name>
-				<translate>Silver-Tongued Devil</translate>
-				<altpage>157</altpage>
+				<translate>Silberzüngiger Teufel</translate>
+				<altpage>184</altpage>
 			</enhancement>
 			<enhancement>
 				<id>215a5a0e-09fc-47ff-9a84-74c99f4f1a53</id>
 				<name>Barrage</name>
-				<translate>Barrage</translate>
-				<altpage>157</altpage>
+				<translate>Geschosshagel</translate>
+				<altpage>182</altpage>
 			</enhancement>
 			<enhancement>
 				<id>47cb80a1-a11b-4a60-a557-feada7114379</id>
 				<name>Master of Taijiquan</name>
-				<translate>Master of Taijiquan</translate>
-				<altpage>157</altpage>
+				<translate>Meister des Taijiquan</translate>
+				<altpage>183</altpage>
 			</enhancement>
 		</enhancements>
 	</chummer>
@@ -27445,8 +27451,8 @@
 			<quality>
 				<id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
 				<name>Aware</name>
-				<translate>Aware</translate>
-				<altpage>49</altpage>
+				<translate>Bewusster</translate>
+				<altpage>46</altpage>
 			</quality>
 			<quality>
 				<id>11d6fbc9-c2cf-4686-8f95-ef46a83cc0ff</id>
@@ -27787,166 +27793,166 @@
 			<quality>
 				<id>dcba5a01-849b-412c-83ba-f0ac5aa46e71</id>
 				<name>Adept Healer</name>
-				<translate>Adept Healer</translate>
-				<altpage>31</altpage>
+				<translate>Heiladept</translate>
+				<altpage>37</altpage>
 			</quality>
 			<quality>
 				<id>e508350b-f61d-4878-bd6d-98f8c9e3588b</id>
 				<name>Alchemical Armorer</name>
-				<translate>Alchemical Armorer</translate>
-				<altpage>31</altpage>
+				<translate>Alchemistischer Waffenbauer</translate>
+				<altpage>33</altpage>
 			</quality>
 			<quality>
 				<id>73bbf3ca-44c0-4b91-a511-9f1229b4efd3</id>
 				<name>Alchemical Bomb Maker</name>
-				<translate>Alchemical Bomb Maker</translate>
-				<altpage>31</altpage>
+				<translate>Alchemistischer Bombenbauer</translate>
+				<altpage>33</altpage>
 			</quality>
 			<quality>
 				<id>3e9881c4-6556-4df1-8e9c-bc839ba683b2</id>
 				<name>Animal Familiar</name>
-				<translate>Animal Familiar</translate>
-				<altpage>31</altpage>
+				<translate>Tiervertrauter</translate>
+				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>79c1be77-1da7-405e-8b2b-99a06abc4327</id>
 				<name>Apt Pupil</name>
-				<translate>Apt Pupil</translate>
-				<altpage>32</altpage>
+				<translate>Gelehriger Schüler</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>9f02d7f6-6fe3-4a9c-8c0e-83ae788f1985</id>
 				<name>Arcane Bodyguard</name>
-				<translate>Arcane Bodyguard</translate>
-				<altpage>32</altpage>
+				<translate>Arkane Leibwache</translate>
+				<altpage>34</altpage>
 			</quality>
 			<quality>
 				<id>ec302d7a-1955-43bb-9c1f-2c32da7ca8c0</id>
 				<name>Arcane Improviser</name>
-				<translate>Arcane Improviser</translate>
-				<altpage>32</altpage>
+				<translate>Arkane Improvisationskunst</translate>
+				<altpage>34</altpage>
 			</quality>
 			<quality>
 				<id>f65a7108-0b57-4f82-950d-9896be68aae9</id>
 				<name>Archivist</name>
-				<translate>Archivist</translate>
-				<altpage>32</altpage>
+				<translate>Archivar</translate>
+				<altpage>33</altpage>
 			</quality>
 			<quality>
 				<id>f5e31754-4270-43a0-8dbf-528dd7274afb</id>
 				<name>Astral Bouncer</name>
-				<translate>Astral Bouncer</translate>
-				<altpage>32</altpage>
+				<translate>Astraler Rausschmeißer</translate>
+				<altpage>34</altpage>
 			</quality>
 			<quality>
 				<id>0591e06b-4465-47fe-875a-89d4b52d4f61</id>
 				<name>Astral Infiltrator</name>
-				<translate>Astral Infiltrator</translate>
-				<altpage>32</altpage>
+				<translate>Astraler Infiltrator</translate>
+				<altpage>34</altpage>
 			</quality>
 			<quality>
 				<id>742caf46-a10b-4aa1-a6bc-a53feb99748c</id>
 				<name>Barehanded Adept</name>
-				<translate>Barehanded Adept</translate>
-				<altpage>33</altpage>
+				<translate>Zauberfaust</translate>
+				<altpage>43</altpage>
 			</quality>
 			<quality>
 				<id>3fa061b9-c3bd-40bb-a292-eb35a8f8f5f8</id>
 				<name>Blood Necromancer</name>
-				<translate>Blood Necromancer</translate>
-				<altpage>33</altpage>
+				<translate>Blutnekromant</translate>
+				<altpage>35</altpage>
 			</quality>
 			<quality>
 				<id>8c49fcfb-54fa-43ce-b2af-51780dabf40f</id>
 				<name>Chain Breaker</name>
-				<translate>Chain Breaker</translate>
-				<altpage>33</altpage>
+				<translate>Kettensprenger</translate>
+				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>56d00933-379d-4442-8878-6db5b08fd20c</id>
 				<name>Chakra Interrupter</name>
-				<translate>Chakra Interrupter</translate>
-				<altpage>34</altpage>
+				<translate>Chakra-Unterbrecher</translate>
+				<altpage>35</altpage>
 			</quality>
 			<quality>
 				<id>6d6356ab-3a88-441a-8368-05a8fb8307a7</id>
 				<name>Charlatan</name>
-				<translate>Charlatan</translate>
-				<altpage>34</altpage>
+				<translate>Scharlatan</translate>
+				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>578e1220-09f9-41eb-9616-cae4b7c96e56</id>
 				<name>Chosen Follower</name>
-				<translate>Chosen Follower</translate>
-				<altpage>35</altpage>
+				<translate>Auserwählter Jünger</translate>
+				<altpage>34</altpage>
 			</quality>
 			<quality>
 				<id>507657d6-d882-49f3-b007-9224652c2fa7</id>
 				<name>Close Combat Mage</name>
-				<translate>Close Combat Mage</translate>
-				<altpage>35</altpage>
+				<translate>Zauberarchitekt</translate>
+				<altpage>43</altpage>
 			</quality>
 			<quality>
 				<id>39384189-d15a-4f2e-97a9-7f9a0b85ef64</id>
 				<name>Dark Ally</name>
-				<translate>Dark Ally</translate>
-				<altpage>35</altpage>
+				<translate>Unwilliger Verbündeter</translate>
+				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>36e76b70-bf6a-4e66-8dac-13cd529b9274</id>
 				<name>Death Dealer</name>
-				<translate>Death Dealer</translate>
-				<altpage>35</altpage>
+				<translate>Todbringer</translate>
+				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>cfc637e9-0071-4313-a25b-b411793f2321</id>
 				<name>Death Dealer (Adept)</name>
-				<translate>Death Dealer (Adept)</translate>
-				<altpage>35</altpage>
+				<translate>Todbringer (Adept)</translate>
+				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>2a599984-62e4-4110-9784-dc1922df395d</id>
 				<name>Dedicated Conjurer</name>
-				<translate>Dedicated Conjurer</translate>
-				<altpage>36</altpage>
+				<translate>Leidenschaftlicher Beschwörer</translate>
+				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>bbc6879e-b50d-4862-b85c-a86c5b9e5d67</id>
 				<name>Dedicated Spellslinger</name>
-				<translate>Dedicated Spellslinger</translate>
-				<altpage>36</altpage>
+				<translate>Leidenschaftlicher Hexer</translate>
+				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>b618c943-41f7-46ae-80e7-69e543bc0ec6</id>
 				<name>Dual-Natured Defender</name>
-				<translate>Dual-Natured Defender</translate>
-				<altpage>36</altpage>
+				<translate>Dualer Verteidiger</translate>
+				<altpage>35</altpage>
 			</quality>
 			<quality>
 				<id>ef1e36f8-6c4c-4908-9155-ecef6c376c6e</id>
 				<name>Durable Preparations</name>
-				<translate>Durable Preparations</translate>
-				<altpage>36</altpage>
+				<translate>Haltbare Erzeugnisse</translate>
+				<altpage>37</altpage>
 			</quality>
 			<quality>
 				<id>05089559-972e-463c-a276-641e358a9201</id>
 				<name>Elemental Master</name>
-				<translate>Elemental Master</translate>
+				<translate>Elementmeister</translate>
 				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>39c97163-ffab-4705-91e1-82aef058cc86</id>
 				<name>Flesh Sculpter</name>
-				<translate>Flesh Sculpter</translate>
+				<translate>Gestaltformer</translate>
 				<altpage>37</altpage>
 			</quality>
 			<quality>
 				<id>e12f7c66-d0a0-4e93-9454-69024b945220</id>
 				<name>Healer</name>
-				<translate>Healer</translate>
-				<altpage>37</altpage>
+				<translate>Meisterheiler</translate>
+				<altpage>38</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>a8a3d83d-034c-4729-ae3e-435fa52b4c4b</id>
 				<name>Illusionist</name>
 				<translate>Illusionist</translate>
@@ -27955,361 +27961,391 @@
 			<quality>
 				<id>8f18e68a-fbaf-46b6-bf00-c99910292c20</id>
 				<name>Items of Power</name>
-				<translate>Items of Power</translate>
+				<translate>Mächtige Gegenstände</translate>
 				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>c6ceed11-802c-4ff6-a636-4213663fcf21</id>
 				<name>Mage Hunter I</name>
-				<translate>Mage Hunter I</translate>
+				<translate>Magierjäger I</translate>
 				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>79ed28ba-fab7-4fc3-b4c1-5c177a92f9a6</id>
 				<name>Mage Hunter II</name>
-				<translate>Mage Hunter II</translate>
+				<translate>Magierjäger II</translate>
 				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>1126c856-7e2e-43de-91ce-8ff70f2368a4</id>
 				<name>Mage Hunter III</name>
-				<translate>Mage Hunter III</translate>
+				<translate>Magierjäger III</translate>
 				<altpage>38</altpage>
 			</quality>
 			<quality>
 				<id>1510e2fd-4821-4e4c-bcd3-eacb0eed5f20</id>
 				<name>Missile Deflector</name>
-				<translate>Missile Deflector</translate>
-				<altpage>38</altpage>
+				<translate>Geschossumlenkung</translate>
+				<altpage>37</altpage>
 			</quality>
 			<quality>
 				<id>39b19ecb-f3a8-488e-a413-f399a1991b55</id>
 				<name>Mystic Foreman</name>
-				<translate>Mystic Foreman</translate>
-				<altpage>38</altpage>
+				<translate>Mystischer Bauleiter</translate>
+				<altpage>39</altpage>
 			</quality>
 			<quality>
 				<id>f6e65194-8055-484e-8db1-30ef63ec8eef</id>
 				<name>Mystic Pitcher</name>
-				<translate>Mystic Pitcher</translate>
-				<altpage>38</altpage>
+				<translate>Mystischer Werfer</translate>
+				<altpage>39</altpage>
 			</quality>
 			<quality>
 				<id>727e5ca7-0b64-462f-a3dc-254c451db3a1</id>
 				<name>Pacifist Adept</name>
-				<translate>Pacifist Adept</translate>
+				<translate>Pazifistenadept</translate>
 				<altpage>39</altpage>
 			</quality>
 			<quality>
 				<id>9ce70b7b-b0cd-4ec8-87f6-42c3b74faf2a</id>
 				<name>Potion Maker</name>
-				<translate>Potion Maker</translate>
-				<altpage>39</altpage>
+				<translate>Trankmischer</translate>
+				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>bed784d2-33dc-448e-acf6-a682bb286954</id>
 				<name>Practiced Alchemist</name>
-				<translate>Practiced Alchemist</translate>
-				<altpage>39</altpage>
+				<translate>Versierter Alchemist</translate>
+				<altpage>43</altpage>
 			</quality>
 			<quality>
 				<id>b9808fa8-744f-46e2-b769-bed5ce0b3ad1</id>
 				<name>Puppet Master</name>
-				<translate>Puppet Master</translate>
-				<altpage>39</altpage>
+				<translate>Puppenspieler</translate>
+				<altpage>40</altpage>
 			</quality>
 			<quality>
 				<id>b15bbc5a-626c-4f04-b08e-203cb24c6b1a</id>
 				<name>Reckless Spell Master</name>
-				<translate>Reckless Spell Master</translate>
-				<altpage>39</altpage>
+				<translate>Schnellzaubermeister</translate>
+				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>baa0cfd8-3c53-48ba-b3b7-61de0bc48695</id>
 				<name>Renaissance Ritualist</name>
-				<translate>Renaissance Ritualist</translate>
-				<altpage>40</altpage>
+				<translate>Renaissance-Ritualist</translate>
+				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>cd712655-a83b-4905-923d-be07ced1677b</id>
 				<name>Revenant Adept</name>
-				<translate>Revenant Adept</translate>
-				<altpage>40</altpage>
+				<translate>Adeptenregeneration</translate>
+				<altpage>33</altpage>
 			</quality>
 			<quality>
 				<id>820ec42b-5255-4c73-93af-e8caa5b6abbf</id>
 				<name>Shock Mage</name>
-				<translate>Shock Mage</translate>
-				<altpage>40</altpage>
+				<translate>Schockmagier</translate>
+				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>16cb1300-bdf4-42d0-9556-3b681ef517fc</id>
 				<name>Skinwalker</name>
-				<translate>Skinwalker</translate>
-				<altpage>40</altpage>
+				<translate>Hautwechsler</translate>
+				<altpage>37</altpage>
 			</quality>
 			<quality>
 				<id>25f5745d-8e1d-463f-9b96-c047bc99a587</id>
 				<name>Spectral Warden</name>
-				<translate>Spectral Warden</translate>
-				<altpage>40</altpage>
+				<translate>Geisterwärter</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>632aebb2-e6f2-4b38-81c7-be494964c614</id>
 				<name>Spell Jammer</name>
-				<translate>Spell Jammer</translate>
-				<altpage>40</altpage>
+				<translate>Zauberstörer</translate>
+				<altpage>44</altpage>
 			</quality>
 			<quality>
 				<id>7bd24b5c-9ad4-4083-b58b-5dcc420d1950</id>
 				<name>Spirit Hunter I</name>
-				<translate>Spirit Hunter I</translate>
-				<altpage>40</altpage>
+				<translate>Geisterjäger I</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>3ef898e6-b57d-4254-88d8-b8e37491e186</id>
 				<name>Spirit Hunter II</name>
-				<translate>Spirit Hunter II</translate>
-				<altpage>40</altpage>
+				<translate>Geisterjäger II</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>80b557bc-c7fd-413f-8b8a-4571c8f3fa56</id>
 				<name>Spirit Hunter III</name>
-				<translate>Spirit Hunter III</translate>
-				<altpage>40</altpage>
+				<translate>Geisterjäger III</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>268ea4c4-15af-4b16-8960-a3b34963fe01</id>
 				<name>Spiritual Lodge</name>
-				<translate>Spiritual Lodge</translate>
+				<translate>Spirituelles Refugium</translate>
 				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>d815700b-9e8a-410b-8795-83196629a5ad</id>
 				<name>Spiritual Pilgrim</name>
-				<translate>Spiritual Pilgrim</translate>
+				<translate>Spiritueller Pilger</translate>
 				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>c1145d3c-a9e2-4e91-8f1f-49f69a1f219e</id>
 				<name>Sprawl Tamer</name>
-				<translate>Sprawl Tamer</translate>
+				<translate>Sprawl-Zähmer</translate>
 				<altpage>41</altpage>
 			</quality>
 			<quality>
 				<id>c9ea31d0-eef7-4489-bc11-04a2e41a4932</id>
 				<name>Stalwart Ally</name>
-				<translate>Stalwart Ally</translate>
+				<translate>Treuer Verbündeter</translate>
 				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>fcde8bed-ed62-4378-b995-80f96ff423af</id>
 				<name>Taboo Transformer</name>
-				<translate>Taboo Transformer</translate>
+				<translate>Tabu-Verwandler</translate>
 				<altpage>42</altpage>
 			</quality>
 			<quality>
 				<id>4db55b27-c211-48f2-b9a0-446bd9d32db6</id>
 				<name>Vexcraft</name>
-				<translate>Vexcraft</translate>
-				<altpage>42</altpage>
+				<translate>Fokusstörer</translate>
+				<altpage>36</altpage>
 			</quality>
 			<quality>
 				<id>665d2f01-636b-4bde-b91f-47b388a0a57a</id>
 				<name>Worship Leader</name>
-				<translate>Worship Leader</translate>
-				<altpage>42</altpage>
+				<translate>Vorbeter</translate>
+				<altpage>43</altpage>
 			</quality>
 			<quality>
 				<id>c2b4f018-7b14-4e04-aab9-71c891dd0a18</id>
 				<name>Crystal Breath</name>
-				<translate>Crystal Breath</translate>
-				<altpage>132</altpage>
+				<translate>Kristallatem</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>1abbf9a5-af57-4e9f-af7a-05872ae8ddad</id>
 				<name>Crystal Eye (One Eye)</name>
-				<translate>Crystal Eye (One Eye)</translate>
-				<altpage>132</altpage>
+				<translate>Kristallauge (Ein Auge)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>6b669cf8-ef03-49c1-8e42-b16e0daea0bc</id>
 				<name>Crystal Eye (Two Eyes)</name>
-				<translate>Crystal Eye (Two Eyes)</translate>
-				<altpage>132</altpage>
+				<translate>Kristallauge (Zwei Augen)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>82ad9ac5-5ff7-4ea6-9925-a4012af6fe50</id>
 				<name>Crystal Gut (Liver)</name>
-				<translate>Crystal Gut (Liver)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>40f0ec08-0948-41dc-b0a2-2804ae913936</id>
 				<name>Crystal Gut (Kidneys)</name>
-				<translate>Crystal Gut (Kidneys)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Nieren)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>1ca531dc-8d76-42aa-a667-874c94166f0e</id>
 				<name>Crystal Gut (Stomach)</name>
-				<translate>Crystal Gut (Stomach)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Magen)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>c3c759fd-4b38-46d9-bccc-64ceb1e0247b</id>
 				<name>Crystal Gut (Intestines)</name>
-				<translate>Crystal Gut (Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>35e38f80-6054-4f2d-9da7-13dc8e95e923</id>
 				<name>Crystal Gut (Liver, Kidneys)</name>
-				<translate>Crystal Gut (Liver, Kidneys)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Nieren)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>3f17850d-5d1c-4dc3-8bb2-09614dd15862</id>
 				<name>Crystal Gut (Liver, Stomach)</name>
-				<translate>Crystal Gut (Liver, Stomach)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Magen)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>aafc734a-91f9-4b40-af9b-5f771e5dcf37</id>
 				<name>Crystal Gut (Liver, Intestines)</name>
-				<translate>Crystal Gut (Liver, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>5d155e0a-b7fa-4047-8a50-43e9616cb354</id>
 				<name>Crystal Gut (Kidneys, Stomach)</name>
-				<translate>Crystal Gut (Kidneys, Stomach)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Nieren, Magen)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>e3613a3d-31c9-40db-a54c-154130ddafe2</id>
 				<name>Crystal Gut (Kidneys, Intestines)</name>
-				<translate>Crystal Gut (Kidneys, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Nieren, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>84e80b32-52b7-4fc0-a990-5a74fb5d497c</id>
 				<name>Crystal Gut (Stomach, Intestines)</name>
-				<translate>Crystal Gut (Stomach, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Magen, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>d635f134-3b02-45eb-96d2-e42e100b47cc</id>
 				<name>Crystal Gut (Liver, Kidneys, Stomach)</name>
-				<translate>Crystal Gut (Liver, Kidneys, Stomach)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Nieren, Magen)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>5093e803-da71-4d8c-acb0-22e9ecae3112</id>
 				<name>Crystal Gut (Liver, Kidneys, Intestines)</name>
-				<translate>Crystal Gut (Liver, Kidneys, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Nieren, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>9e390ad1-a8cb-4fbd-a0bb-cf2f3b56dfc1</id>
 				<name>Crystal Gut (Liver, Stomach, Intestines)</name>
-				<translate>Crystal Gut (Liver, Stomach, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Magen, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>d62eadf5-071e-4270-86c7-d4fb299ff440</id>
 				<name>Crystal Gut (Kidneys, Stomach, Intestines)</name>
-				<translate>Crystal Gut (Kidneys, Stomach, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Nieren, Magen, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>9c8e4825-507f-4683-a477-bf7d895b75b1</id>
 				<name>Crystal Gut (Liver, Kidneys, Stomach, Intestines)</name>
-				<translate>Crystal Gut (Liver, Kidneys, Stomach, Intestines)</translate>
-				<altpage>133</altpage>
+				<translate>Kristalleingeweide (Leber, Nieren, Magen, Verdauungstrakt)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>11001f88-572a-4818-97fd-e78c8bc8f619</id>
 				<name>Crystal Jaw</name>
-				<translate>Crystal Jaw</translate>
-				<altpage>133</altpage>
+				<translate>Kristallkiefer</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>350844b9-db9f-4cce-83c3-e8965511e928</id>
 				<name>Crystal Limb (Arm)</name>
-				<translate>Crystal Limb (Arm)</translate>
-				<altpage>133</altpage>
+				<translate>Kristallgliedmaße (Arm)</translate>
+				<altpage>129</altpage>
 			</quality>
 			<quality>
 				<id>834b6e22-5fb3-4a44-a54e-b70729cdb87e</id>
 				<name>Crystal Limb (Leg)</name>
-				<translate>Crystal Limb (Leg)</translate>
-				<altpage>133</altpage>
+				<translate>Kristallgliedmaße (Bein)</translate>
+				<altpage>128</altpage>
 			</quality>
 			<quality>
 				<id>a054e8a5-f09b-46a6-8c69-5b6b44ddd312</id>
 				<name>Crystal Spine</name>
-				<translate>Crystal Spine</translate>
-				<altpage>133</altpage>
+				<translate>Kristallrückrad</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>8779458a-5af9-4328-af57-4212eff304bf</id>
 				<name>Crystalline Blade</name>
-				<translate>Crystalline Blade</translate>
-				<altpage>133</altpage>
+				<translate>Kristallene Klinge</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>b4e54478-b550-4ee4-a69f-e22944b82b66</id>
 				<name>Crystalline Claws</name>
-				<translate>Crystalline Claws</translate>
-				<altpage>133</altpage>
+				<translate>Kristallene Krallen</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>256dbeb8-7bb8-4369-8c93-b8b206a859b8</id>
 				<name>Crystalline Diver</name>
-				<translate>Crystalline Diver</translate>
-				<altpage>133</altpage>
+				<translate>Kristallener Taucher</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>beb709ac-4c40-4b05-9c49-1fe26e4fa2ab</id>
 				<name>Crystalline Grace</name>
-				<translate>Crystalline Grace</translate>
+				<translate>Kristallene Wendigkeit</translate>
 				<altpage>134</altpage>
 			</quality>
 			<quality>
 				<id>9ff65ab9-7a3c-490d-ad73-789999ab60e2</id>
 				<name>Crystalline Reflexes</name>
-				<translate>Crystalline Reflexes</translate>
-				<altpage>134</altpage>
+				<translate>Kristallene Reflexe</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>2169823c-22ab-457d-93f7-a96590ed77ff</id>
 				<name>Crystalline Shards</name>
-				<translate>Crystalline Shards</translate>
-				<altpage>134</altpage>
+				<translate>Kristallene Stacheln</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>e24b86ad-004b-4252-8383-3ca4aad53a26</id>
 				<name>Crystalline Vision</name>
-				<translate>Crystalline Vision</translate>
-				<altpage>134</altpage>
+				<translate>Kristallene Sicht</translate>
+				<altpage>130</altpage>
 			</quality>
 			<quality>
 				<id>c1d4d7ec-9ebb-4e85-ae72-8155b0f27478</id>
 				<name>Apprentice</name>
-				<translate>Apprentice</translate>
-				<altpage>47</altpage>
+				<translate>Lehrling</translate>
+				<altpage>48</altpage>
 			</quality>
 			<quality>
 				<id>a2484390-c4ea-4013-b007-4dc5d3a5c85b</id>
 				<name>Enchanter</name>
-				<translate>Enchanter</translate>
-				<altpage>47</altpage>
+				<translate>Verzauberer</translate>
+				<altpage>49</altpage>
 			</quality>
 			<quality>
 				<id>2f20c108-d724-4684-a642-d40ffe7c51e1</id>
 				<name>Explorer</name>
-				<translate>Explorer</translate>
+				<translate>Entdecker</translate>
+				<altpage>47</altpage>
+			</quality>
+			<quality>
+				<id>4d5e0fd2-dab3-4de0-9756-096a748bb3cc</id>
+				<name>Elementalist (Air)</name>
+				<translate>Elementarist (Luft)</translate>
+				<altpage>47</altpage>
+			</quality>
+			<quality>
+				<id>de428f71-12d1-4c21-98c5-1b3f86da5ba2</id>
+				<name>Elementalist (Earth)</name>
+				<translate>Elementarist (Erde)</translate>
+				<altpage>47</altpage>
+			</quality>
+			<quality>
+				<id>d426f03d-6a3e-4696-a977-a49fb93be9aa</id>
+				<name>Elementalist (Fire)</name>
+				<translate>Elementarist (Feuer)</translate>
+				<altpage>47</altpage>
+			</quality>
+			<quality>
+				<id>c9c20750-894a-42b8-8119-0e12484698d4</id>
+				<name>Elementalist (Water)</name>
+				<translate>Elementarist (Wasser)</translate>
+				<altpage>47</altpage>
+			</quality>
+			<quality>
+				<id>d03a9696-2341-4894-8cf2-0537c4e74af2</id>
+				<name>Hedge Witch/Wizard</name>
+				<translate>Straßenhexe(r)</translate>
 				<altpage>47</altpage>
 			</quality>
 			<quality>
@@ -34443,230 +34479,230 @@
 			<spell>
 				<id>b98919cb-4e48-4839-891b-e93e9edd466c</id>
 				<name>Branch</name>
-				<translate>Branch</translate>
-				<altpage>49</altpage>
+				<translate>Zweig</translate>
+				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>4b4d9aa1-e38d-4684-9201-02f99a8480d2</id>
 				<name>Vines</name>
-				<translate>Vines</translate>
-				<altpage>49</altpage>
+				<translate>Ranken</translate>
+				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>2896f942-1af6-424f-b93d-b7c3d7e69cdd</id>
 				<name>Thorn</name>
-				<translate>Thorn</translate>
-				<altpage>49</altpage>
+				<translate>Dornenzweig</translate>
+				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>3b1052db-d347-4d89-a147-c54092a57f78</id>
 				<name>Rosebush</name>
-				<translate>Rosebush</translate>
-				<altpage>49</altpage>
+				<translate>Dornenhecke</translate>
+				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>98381c0f-da21-466e-9f66-46381496be5a</id>
 				<name>Growth</name>
-				<translate>Growth</translate>
-				<altpage>49</altpage>
+				<translate>Wachstum</translate>
+				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>d5312f77-833f-4942-93e5-0a109996bca6</id>
 				<name>Lash</name>
-				<translate>Lash</translate>
-				<altpage>49</altpage>
+				<translate>Auspeitschen</translate>
+				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>271cbaa4-c7fe-450a-b7e2-65ad90621b6f</id>
 				<name>Slash</name>
-				<translate>Slash</translate>
-				<altpage>49</altpage>
+				<translate>Geißelung</translate>
+				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>b28accd7-e2b5-491e-ab0c-00a74be62f1a</id>
 				<name>Claw</name>
-				<translate>Claw</translate>
+				<translate>Kralle</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>a63280c2-3bf8-4007-9578-58580a684b03</id>
 				<name>Barrage</name>
-				<translate>Barrage</translate>
+				<translate>Zerfetzen</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>2933d3c3-50ff-4fe8-8414-37f2520e39e1</id>
 				<name>Multiply Food</name>
-				<translate>Multiply Food</translate>
-				<altpage>50</altpage>
+				<translate>Nahrung vermehren</translate>
+				<altpage>49</altpage>
 			</spell>
 			<spell>
 				<id>e7d5f89f-ae86-4ad3-aeb2-42e82a81e7ae</id>
 				<name>Comet</name>
-				<translate>Comet</translate>
+				<translate>Komet</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>f39ed466-c61a-47fe-8822-4f3113baf176</id>
 				<name>Gravity</name>
-				<translate>Gravity</translate>
-				<altpage>50</altpage>
+				<translate>Schwerkraft</translate>
+				<altpage>51</altpage>
 			</spell>
 			<spell>
 				<id>4115bdb8-c298-44f7-8a1c-8097133378ec</id>
 				<name>Gravity Well</name>
-				<translate>Gravity Well</translate>
-				<altpage>50</altpage>
+				<translate>Schwerkrafttrichter</translate>
+				<altpage>51</altpage>
 			</spell>
 			<spell>
 				<id>ef1febff-d790-4706-80b1-6ddfbf9d61e5</id>
 				<name>Evil Eye</name>
-				<translate>Evil Eye</translate>
+				<translate>Böser Blick</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>243313e6-a9af-456a-9631-6581d869aa02</id>
 				<name>Alter Ballistics</name>
-				<translate>Alter Ballistics</translate>
-				<altpage>51</altpage>
+				<translate>Ballistik verändern</translate>
+				<altpage>50</altpage>
 			</spell>
 			<spell>
 				<id>71c1b568-6199-46bf-97b2-6faff4fb2822</id>
 				<name>Forest Transformation</name>
-				<translate>Forest Transformation</translate>
+				<translate>Waldverwandlung</translate>
 				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>af79d0e0-ab7b-4fd5-899a-eb0ae0c48371</id>
 				<name>Necro Summoning</name>
-				<translate>Necro Summoning</translate>
+				<translate>Dunkelbeschwörung</translate>
 				<altpage>52</altpage>
 			</spell>
 			<spell>
 				<id>80688ffa-82e6-4db2-a12d-9dd0a6603a3f</id>
 				<name>Boil Blood</name>
-				<translate>Boil Blood</translate>
-				<altpage>125</altpage>
+				<translate>Kochendes Blut</translate>
+				<altpage>124</altpage>
 			</spell>
 			<spell>
 				<id>a9b72b69-a7f0-4f58-a13e-a9227e9d51de</id>
 				<name>Corpse Explosion</name>
-				<translate>Corpse Explosion</translate>
-				<altpage>126</altpage>
+				<translate>Leichenexplostion</translate>
+				<altpage>124</altpage>
 			</spell>
 			<spell>
 				<id>6ff4ad6b-9883-46c7-bbcd-51511b34e9c9</id>
 				<name>Embolism</name>
-				<translate>Embolism</translate>
-				<altpage>126</altpage>
+				<translate>Embolie</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>8b50b92c-a8d3-4682-83fc-68ea654d78a5</id>
 				<name>Giger Spit</name>
-				<translate>Giger Spit</translate>
-				<altpage>126</altpage>
+				<translate>Säureblutgeschoss</translate>
+				<altpage>124</altpage>
 			</spell>
 			<spell>
 				<id>2c22bc40-1eee-48e5-83e4-84960e621a3d</id>
 				<name>Ice Veins</name>
-				<translate>Ice Veins</translate>
-				<altpage>127</altpage>
+				<translate>Eisadern</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>ed093fec-e0ac-4627-a81c-264162e13f47</id>
 				<name>Pyrohemetics</name>
-				<translate>Pyrohemetics</translate>
-				<altpage>127</altpage>
+				<translate>Feuerblutgeschoss</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>59aa2e30-c0f5-4340-97b6-adfe4e609756</id>
 				<name>Rupture</name>
-				<translate>Rupture</translate>
-				<altpage>127</altpage>
+				<translate>Blutruption</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>22579211-45f0-493b-9c71-29f159ceb120</id>
 				<name>Clot</name>
-				<translate>Clot</translate>
-				<altpage>127</altpage>
+				<translate>Gerinnung</translate>
+				<altpage>122</altpage>
 			</spell>
 			<spell>
 				<id>ffd492e3-0b04-447f-95f3-4b686a9be37b</id>
 				<name>Share Damage</name>
-				<translate>Share Damage</translate>
-				<altpage>127</altpage>
+				<translate>Geteiltes Leid</translate>
+				<altpage>122</altpage>
 			</spell>
 			<spell>
 				<id>a856169f-fdb0-4117-a82d-ef0eefa04e95</id>
 				<name>Somatic Healing</name>
-				<translate>Somatic Healing</translate>
-				<altpage>127</altpage>
+				<translate>Somatische Heilung</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>8d1c08f2-fe77-4a11-ab5f-dca8a7e0a7d9</id>
 				<name>Sympathetic Reprisal</name>
-				<translate>Sympathetic Reprisal</translate>
-				<altpage>128</altpage>
+				<translate>Mitfühlende Vergeltung</translate>
+				<altpage>123</altpage>
 			</spell>
 			<spell>
 				<id>55f4619b-07a1-4a18-9f8d-3b9a587ffd9a</id>
 				<name>Blood Puppet</name>
-				<translate>Blood Puppet</translate>
-				<altpage>128</altpage>
+				<translate>Blutmarionette</translate>
+				<altpage>125</altpage>
 			</spell>
 			<spell>
 				<id>fb3d0fd7-058f-4ebf-86be-7863d7a5820b</id>
 				<name>Corpse Spikes</name>
-				<translate>Corpse Spikes</translate>
-				<altpage>129</altpage>
+				<translate>Leichenstacheln</translate>
+				<altpage>125</altpage>
 			</spell>
 			<spell>
 				<id>b09723b8-d83e-4377-826d-4b286958d5e3</id>
 				<name>Corpse Lash</name>
-				<translate>Corpse Lash</translate>
-				<altpage>129</altpage>
+				<translate>Leichententakel</translate>
+				<altpage>126</altpage>
 			</spell>
 			<spell>
 				<id>8a096951-d2ee-4c46-9c64-9e9a7f218c03</id>
 				<name>Blood Whip</name>
-				<translate>Blood Whip</translate>
-				<altpage>129</altpage>
+				<translate>Blutpeitsche</translate>
+				<altpage>125</altpage>
 			</spell>
 			<spell>
 				<id>664fd84a-35c3-4309-9fb8-2ac8d8ba4f30</id>
 				<name>Blood Blade</name>
-				<translate>Blood Blade</translate>
-				<altpage>129</altpage>
+				<translate>Blutklinge</translate>
+				<altpage>124</altpage>
 			</spell>
 			<spell>
 				<id>c55c32d8-52e2-4cdd-94b4-83c7566cbfaf</id>
 				<name>Viscera Web</name>
-				<translate>Viscera Web</translate>
-				<altpage>129</altpage>
+				<translate>Eingeweidenetz</translate>
+				<altpage>125</altpage>
 			</spell>
 			<spell>
 				<id>31b2929d-d876-40df-9cd4-8b92f57e839b</id>
 				<name>Blood Bath</name>
-				<translate>Blood Bath</translate>
-				<altpage>130</altpage>
+				<translate>Blutbad</translate>
+				<altpage>126</altpage>
 			</spell>
 			<spell>
 				<id>3282adfa-a92b-4d7e-895c-51dd0fe7f61a</id>
 				<name>Blood Oath</name>
-				<translate>Blood Oath</translate>
-				<altpage>130</altpage>
+				<translate>Bluteid</translate>
+				<altpage>127</altpage>
 			</spell>
 			<spell>
 				<id>b557c296-01c2-4293-9d5a-c8e95be77612</id>
 				<name>Death Curse</name>
-				<translate>Death Curse</translate>
-				<altpage>130</altpage>
+				<translate>Todesfluch</translate>
+				<altpage>127</altpage>
 			</spell>
 			<spell>
 				<id>242a0e9f-4130-4094-8cac-3db739ffafb2</id>
 				<name>Guardian Bond</name>
-				<translate>Guardian Bond</translate>
-				<altpage>131</altpage>
+				<translate>Schutzbande</translate>
+				<altpage>127</altpage>
 			</spell>
 		</spells>
 	</chummer>
@@ -34952,80 +34988,80 @@
 			<tradition>
 				<id>54944188-d58b-4a45-859c-d62be9f966c2</id>
 				<name>Cosmic</name>
-				<translate>Cosmic</translate>
-				<altpage>75</altpage>
+				<translate>Kosmisch</translate>
+				<altpage>79</altpage>
 			</tradition>
 			<tradition>
 				<id>9394d173-eee7-4e5a-b520-edfdfac3cf8b</id>
 				<name>Draconic</name>
-				<translate>Draconic</translate>
-				<altpage>76</altpage>
+				<translate>Drakonisch</translate>
+				<altpage>77</altpage>
 			</tradition>
 			<tradition>
 				<id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
 				<name>Elder God</name>
-				<translate>Elder God</translate>
-				<altpage>78</altpage>
+				<translate>Alte Götter</translate>
+				<altpage>74</altpage>
 			</tradition>
 			<tradition>
 				<id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
 				<name>Norse [Alt]</name>
-				<translate>Norse [Alt]</translate>
-				<altpage>68</altpage>
+				<translate>Nordisch [alternativ]</translate>
+				<altpage>71</altpage>
 			</tradition>
 			<tradition>
 				<id>61819d3f-2ca6-4e1e-9d66-5d94c1560733</id>
 				<name>Green Magic</name>
-				<translate>Green Magic</translate>
-				<altpage>80</altpage>
+				<translate>Grüne Magie</translate>
+				<altpage>78</altpage>
 			</tradition>
 			<tradition>
 				<id>b8b93cfb-5bdf-47c6-b773-45c59ef7bd34</id>
 				<name>Missionist</name>
-				<translate>Missionist</translate>
-				<altpage>81</altpage>
+				<translate>Missionisten</translate>
+				<altpage>80</altpage>
 			</tradition>
 			<tradition>
 				<id>68a35424-6de8-4922-95ec-eb289838acb2</id>
 				<name>Necro Magic</name>
-				<translate>Necro Magic</translate>
+				<translate>Nekromagie</translate>
 				<altpage>82</altpage>
 			</tradition>
 			<tradition>
 				<id>f87723cf-ed66-4372-8064-365151dd1089</id>
 				<name>Olympianism</name>
-				<translate>Olympianism</translate>
-				<altpage>84</altpage>
+				<translate>Olympisch</translate>
+				<altpage>83</altpage>
 			</tradition>
 			<tradition>
 				<id>52348ffc-2d9b-427b-a546-863a9670127e</id>
 				<name>Pariah</name>
-				<translate>Pariah</translate>
+				<translate>Pfad des Parias</translate>
 				<altpage>85</altpage>
 			</tradition>
 			<tradition>
 				<id>eca20088-da31-4b00-bf81-93db882f3575</id>
 				<name>Planar Magic</name>
-				<translate>Planar Magic</translate>
-				<altpage>87</altpage>
+				<translate>Planarmagie</translate>
+				<altpage>86</altpage>
 			</tradition>
 			<tradition>
 				<id>a5c6f673-bd53-4e70-a574-af2f5a1c2e60</id>
 				<name>Red Magic</name>
-				<translate>Red Magic</translate>
-				<altpage>88</altpage>
+				<translate>Rote Magie</translate>
+				<altpage>89</altpage>
 			</tradition>
 			<tradition>
 				<id>bd5bb80f-d1be-4ec8-b972-af45dc05e0fb</id>
 				<name>Romani</name>
-				<translate>Romani</translate>
-				<altpage>90</altpage>
+				<translate>Roma</translate>
+				<altpage>88</altpage>
 			</tradition>
-			<tradition>
+			<tradition translated="True">
 				<id>2cd90e8a-3674-470e-b95d-eb80c008fc4a</id>
 				<name>Tarot</name>
 				<translate>Tarot</translate>
-				<altpage>91</altpage>
+				<altpage>90</altpage>
 			</tradition>
 			<tradition>
 				<id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
@@ -35176,140 +35212,140 @@
 			<spirit>
 				<id>6237233f-1872-45da-b828-16df75a30127</id>
 				<name>Bone Spirit</name>
-				<translate>Bone Spirit</translate>
-				<altpage>135</altpage>
+				<translate>Knochengeist</translate>
+				<altpage>131</altpage>
 			</spirit>
 			<spirit>
 				<id>0ba85f5b-c05c-4858-8314-4dd3a7c5764f</id>
 				<name>Blood Shade</name>
-				<translate>Blood Shade</translate>
-				<altpage>135</altpage>
+				<translate>Blutschatten</translate>
+				<altpage>131</altpage>
 			</spirit>
 			<spirit>
 				<id>865881e1-4674-4808-b540-beb0d07f8dd2</id>
 				<name>Carcass Spirit</name>
-				<translate>Carcass Spirit</translate>
-				<altpage>52</altpage>
+				<translate>Kadavergeist</translate>
+				<altpage>53</altpage>
 			</spirit>
 			<spirit>
 				<id>1b9737c5-f3dc-4ede-acdb-81ad35afcb7e</id>
 				<name>Corpse Spirit</name>
-				<translate>Corpse Spirit</translate>
+				<translate>Leichengeist</translate>
 				<altpage>53</altpage>
 			</spirit>
 			<spirit>
 				<id>eeca5858-c087-4489-9ad9-469f0664726f</id>
 				<name>Rot Spirit</name>
-				<translate>Rot Spirit</translate>
+				<translate>Fäulnisgeist</translate>
 				<altpage>53</altpage>
 			</spirit>
 			<spirit>
 				<id>1788c4f3-67a8-4b21-8f5a-1e0fb9ab20d0</id>
 				<name>Palefire Spirit</name>
-				<translate>Palefire Spirit</translate>
+				<translate>Fahlfeuergeist</translate>
 				<altpage>53</altpage>
 			</spirit>
 			<spirit>
 				<id>8e7d505f-4c97-4dad-ae15-955080c2fbaf</id>
 				<name>Detritus Spirit</name>
-				<translate>Detritus Spirit</translate>
+				<translate>Geröllgeist</translate>
 				<altpage>53</altpage>
 			</spirit>
 			<spirit>
 				<id>4eb2ac59-72bd-4dda-8709-aa822614ff94</id>
 				<name>Ceramic Spirit</name>
-				<translate>Ceramic Spirit</translate>
-				<altpage>180</altpage>
+				<translate>Keramikgeist</translate>
+				<altpage>173</altpage>
 			</spirit>
 			<spirit>
 				<id>75de5aea-77e7-4559-abe1-9f11b1c0004b</id>
 				<name>Metal Spirit</name>
-				<translate>Metal Spirit</translate>
-				<altpage>180</altpage>
+				<translate>Metallgeist</translate>
+				<altpage>173</altpage>
 			</spirit>
 			<spirit>
 				<id>e69f5b99-7c0b-4174-9343-5424c18c17f2</id>
 				<name>Energy Spirit</name>
-				<translate>Energy Spirit</translate>
-				<altpage>180</altpage>
+				<translate>Energiegeist</translate>
+				<altpage>173</altpage>
 			</spirit>
 			<spirit>
 				<id>ffdf57e1-319c-4772-bb43-c80a91baf290</id>
 				<name>Airwave Spirit</name>
-				<translate>Airwave Spirit</translate>
-				<altpage>180</altpage>
+				<translate>Radiowellengeist</translate>
+				<altpage>173</altpage>
 			</spirit>
 			<spirit>
 				<id>dbd6d567-1376-4847-b822-10a1f1d0a029</id>
 				<name>Ship Spirit</name>
-				<translate>Ship Spirit</translate>
-				<altpage>180</altpage>
+				<translate>Schiffsgeist</translate>
+				<altpage>174</altpage>
 			</spirit>
 			<spirit>
 				<id>fc8c2451-6314-4a44-b3da-92966df9c9f4</id>
 				<name>Train Spirit</name>
-				<translate>Train Spirit</translate>
-				<altpage>181</altpage>
+				<translate>Eisenbahngeist</translate>
+				<altpage>174</altpage>
 			</spirit>
 			<spirit>
 				<id>8dabb592-0860-469c-aa86-12eba627ddf4</id>
 				<name>Automotive Spirit</name>
-				<translate>Automotive Spirit</translate>
-				<altpage>181</altpage>
+				<translate>Bodenfahrzeuggeist</translate>
+				<altpage>174</altpage>
 			</spirit>
 			<spirit>
 				<id>51203ea9-db22-4ec0-8b95-8ae68addf2f0</id>
 				<name>Aircraft Spirit</name>
-				<translate>Aircraft Spirit</translate>
-				<altpage>181</altpage>
+				<translate>Flugzeuggeist</translate>
+				<altpage>174</altpage>
 			</spirit>
 			<spirit>
 				<id>df28f999-2da1-49cc-a214-37207e9d58bc</id>
 				<name>Air Elemental</name>
-				<translate>Air Elemental</translate>
-				<altpage>181</altpage>
+				<translate>Luftelementar</translate>
+				<altpage>175</altpage>
 			</spirit>
 			<spirit>
 				<id>1f3d1a7d-f8b4-49f9-ac23-2dac7089d58e</id>
 				<name>Earth Elemental</name>
-				<translate>Earth Elemental</translate>
-				<altpage>181</altpage>
+				<translate>Erdelementar</translate>
+				<altpage>175</altpage>
 			</spirit>
 			<spirit>
 				<id>a33bc432-338f-417d-8959-9bfcbfad61b1</id>
 				<name>Fire Elemental</name>
-				<translate>Fire Elemental</translate>
-				<altpage>181</altpage>
+				<translate>Feuerelementar</translate>
+				<altpage>175</altpage>
 			</spirit>
 			<spirit>
 				<id>c04bcb45-e2ca-4f70-a63a-6f354c6cbecb</id>
 				<name>Water Elemental</name>
-				<translate>Water Elemental</translate>
-				<altpage>181</altpage>
+				<translate>Wasserelementar</translate>
+				<altpage>175</altpage>
 			</spirit>
 		</spirits>
 		<drainattributes>
-			<drainattribute>
+			<drainattribute translated="True">
 				<id>f10d9639-45c8-4c45-87b9-6af0fef73723</id>
 				<name>WIL + CHA</name>
 				<translate>WIL + CHA</translate>
 			</drainattribute>
-			<drainattribute>
+			<drainattribute translated="True">
 				<id>06b8b7da-1301-4963-aba7-4862024559a8</id>
 				<name>WIL + INT</name>
 				<translate>WIL + INT</translate>
 			</drainattribute>
-			<drainattribute>
+			<drainattribute translated="True">
 				<id>aca1fd74-0c25-41d5-b621-434c3892cfb3</id>
 				<name>WIL + LOG</name>
 				<translate>WIL + LOG</translate>
 			</drainattribute>
-			<drainattribute>
+			<drainattribute translated="True">
 				<id>c8adb0ec-7592-4801-b560-94805ef1c13e</id>
 				<name>WIL + MAG</name>
 				<translate>WIL + MAG</translate>
 			</drainattribute>
-			<drainattribute>
+			<drainattribute translated="True">
 				<id>f59248c7-7843-4b68-9a26-b966c32c8cae</id>
 				<name>WIL + WIL</name>
 				<translate>WIL + WIL</translate>
