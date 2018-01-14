@@ -589,7 +589,7 @@ namespace Chummer
                         }
                     }
                 }
-                objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
+                objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                 objParent.Expand();
             }
 
