@@ -1155,6 +1155,10 @@
       <key>Menu_Main_Translator</key>
       <text>Translator</text>
     </string>
+    <string>
+      <key>Menu_Main_HeroLabImporter</key>
+      <text>Hero Lab Importer</text>
+    </string>
     <!-- End Region -->
     <!-- Region Character Roster -->
     <string>

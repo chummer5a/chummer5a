@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -147,10 +147,9 @@ namespace Chummer
                 if (!_objCharacter.Options.FreeContactsMultiplierEnabled)
                     _objCharacter.ContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
                 _objCharacter.GameplayOptionQualityLimit = _objCharacter.MaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
-                _objCharacter.MaxNuyen = Convert.ToInt32(xmlGameplayOption["maxnuyen"].InnerText);
+                _objCharacter.MaxNuyen = Convert.ToDecimal(xmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
             }
-
-            _objCharacter.BuildPoints = 0;
+            
             _objCharacter.BuildKarma = decimal.ToInt32(nudKarma.Value);
             _objCharacter.GameplayOption = cboGamePlay.SelectedValue.ToString();
             _objCharacter.GameplayOptionQualityLimit = intQualityLimits;

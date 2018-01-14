@@ -31,6 +31,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCharacterRoster));
             this.picMugshot = new System.Windows.Forms.PictureBox();
             this.tabCharacterText = new System.Windows.Forms.TabControl();
             this.panCharacterBio = new System.Windows.Forms.TabPage();
@@ -424,8 +425,8 @@ namespace Chummer
             this.tsCloseOpenCharacter.Image = global::Chummer.Properties.Resources.door_out;
             this.tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
             this.tsCloseOpenCharacter.Size = new System.Drawing.Size(177, 22);
-            this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Tag = "Menu_Close";
+            this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
             // lblSettings
@@ -471,6 +472,7 @@ namespace Chummer
             this.Controls.Add(this.tabCharacterText);
             this.Controls.Add(this.picMugshot);
             this.Controls.Add(this.treCharacterList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(586, 585);

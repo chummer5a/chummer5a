@@ -36,6 +36,8 @@ using Chummer.Backend.Attributes;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
+using System.Drawing.Imaging;
 
 namespace Chummer
 {
@@ -117,7 +119,6 @@ namespace Chummer
 
         // Build Points
         private int _intSumtoTen = 10;
-        private int _intBuildPoints = 800;
         private decimal _decNuyenMaximumBP = 50;
         private decimal _decNuyenBP = 0;
         private int _intBuildKarma = 0;
@@ -460,8 +461,6 @@ namespace Chummer
             objWriter.WriteElementString("adeptwaydiscount", _intAdeptWayDiscount.ToString());
             // <sumtoten />
             objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString());
-            // <buildpoints />
-            objWriter.WriteElementString("bp", _intBuildPoints.ToString());
             // <buildkarma />
             objWriter.WriteElementString("buildkarma", _intBuildKarma.ToString());
             // <buildmethod />
@@ -944,9 +943,11 @@ namespace Chummer
         /// </summary>
         public bool Load()
         {
+            if (!File.Exists(_strFileName))
+                return false;
+
             Timekeeper.Start("load_xml");
             XmlDocument objXmlDocument = new XmlDocument();
-            if (!File.Exists(_strFileName)) return false;
             using (StreamReader sr = new StreamReader(_strFileName, true))
             {
                 try
@@ -1126,7 +1127,6 @@ namespace Chummer
                 _decMaxNuyen = 25;
             objXmlCharacter.TryGetInt32FieldQuickly("contactmultiplier", ref _intContactMultiplier);
             objXmlCharacter.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-            objXmlCharacter.TryGetInt32FieldQuickly("bp", ref _intBuildPoints);
             objXmlCharacter.TryGetInt32FieldQuickly("buildkarma", ref _intBuildKarma);
             if (!objXmlCharacter.TryGetInt32FieldQuickly("maxkarma", ref _intMaxKarma) || _intMaxKarma == 0)
                 _intMaxKarma = _intBuildKarma;
@@ -1193,9 +1193,7 @@ namespace Chummer
 
             objXmlCharacter.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
             objXmlCharacter.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
-
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+            
             objXmlCharacter.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
             objXmlCharacter.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
             objXmlCharacter.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
@@ -2901,7 +2899,6 @@ namespace Chummer
         /// </summary>
         private void ResetCharacter()
         {
-            _intBuildPoints = 800;
             _intSumtoTen = 10;
 
             _decNuyenMaximumBP = 50;
@@ -4062,13 +4059,13 @@ namespace Chummer
                     Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
                     Parallel.For(0, lstMugshotsBase64.Count, i =>
                     {
-                        objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                        objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb);
                     });
                     _lstMugshots.AddRange(objMugshotImages);
                 }
                 else if (lstMugshotsBase64.Count == 1)
                 {
-                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
                 }
             }
             // Legacy Shimmer
@@ -4080,7 +4077,7 @@ namespace Chummer
                     string strMugshot = objOldMugshotNode.InnerText;
                     if (!string.IsNullOrWhiteSpace(strMugshot))
                     {
-                        _lstMugshots.Add(strMugshot.ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                        _lstMugshots.Add(strMugshot.ToImage(PixelFormat.Format32bppPArgb));
                         _intMainMugshotIndex = 0;
                     }
                 }
@@ -5475,7 +5472,7 @@ namespace Chummer
                     if (blnOldValue != value)
                     RESEnabledChanged?.Invoke(this);
             }
-                }
+        }
 
         /// <summary>
         /// Is the DEP CharacterAttribute enabled?
@@ -7142,21 +7139,6 @@ namespace Chummer
             set
             {
                 _objBuildMethod = value;
-            }
-        }
-
-        /// <summary>
-        /// Number of Build Points that are used to create the character.
-        /// </summary>
-        public int BuildPoints
-        {
-            get
-            {
-                return _intBuildPoints;
-            }
-            set
-            {
-                _intBuildPoints = value;
             }
         }
 
@@ -9235,5 +9217,832 @@ namespace Chummer
         }
         #endregion
 
+        #region Hero Lab Importing
+        /// <summary>
+        /// Load the Character from an XML file.
+        /// </summary>
+        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName)
+        {
+            if (!File.Exists(strPorFile))
+                return false;
+
+            Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>();
+            XmlDocument xmlStatBlockDocument = null;
+            XmlDocument xmlLeadsDocument = null;
+            Timekeeper.Start("load_xml");
+            try
+            {
+                using (ZipArchive zipArchive = ZipFile.Open(strPorFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                {
+                    string strLeadsName = string.Empty;
+                    foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                    {
+                        string strEntryFullName = entry.FullName;
+                        if ((xmlStatBlockDocument == null && strEntryFullName.StartsWith("statblocks_xml")) ||
+                            (string.IsNullOrEmpty(strLeadsName) && strEntryFullName.EndsWith("portfolio.xml")))
+                        {
+                            string strKey = Path.GetFileName(strEntryFullName);
+                            XmlDocument xmlSourceDoc = new XmlDocument();
+                            try
+                            {
+                                using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                {
+                                    xmlSourceDoc.Load(sr);
+                                    if (strEntryFullName.StartsWith("statblocks_xml"))
+                                    {
+                                        if (xmlSourceDoc.SelectSingleNode("/document/public/character[@name = \"" + strCharacterId + "\"]") != null)
+                                            xmlStatBlockDocument = xmlSourceDoc;
+                                    }
+                                    else
+                                    {
+                                        strLeadsName = xmlSourceDoc.SelectSingleNode("/document/portfolio/hero[@heroname = \"" + strCharacterId + "\"]/@leadfile")?.InnerText;
+                                    }
+                                }
+                            }
+                            // If we run into any problems loading the character xml files, fail out early.
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
+                        }
+                        else if (strEntryFullName.StartsWith("images") && strEntryFullName.Contains('.'))
+                        {
+                            string strKey = Path.GetFileName(strEntryFullName);
+                            Bitmap imgMugshot = (new Bitmap(entry.Open(), true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                            if (dicImages.ContainsKey(strKey))
+                                dicImages[strKey] = imgMugshot;
+                            else
+                                dicImages.Add(strKey, imgMugshot);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(strLeadsName))
+                    {
+                        // Need a second sweep for the Leads file
+                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
+                        {
+                            string strEntryFullName = entry.FullName;
+                            if (strEntryFullName.EndsWith(strLeadsName))
+                            {
+                                string strKey = Path.GetFileName(strEntryFullName);
+                                XmlDocument xmlSourceDoc = new XmlDocument();
+                                try
+                                {
+                                    using (StreamReader sr = new StreamReader(entry.Open(), true))
+                                    {
+                                        xmlSourceDoc.Load(sr);
+                                        xmlLeadsDocument = xmlSourceDoc;
+                                    }
+                                }
+                                // If we run into any problems loading the character xml files, fail out early.
+                                catch (IOException)
+                                {
+                                    continue;
+                                }
+                                catch (XmlException)
+                                {
+                                    continue;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (NotSupportedException ex)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show(LanguageManager.GetString("Message_FailedLoad", GlobalOptions.Language).Replace("{0}", ex.Message), LanguageManager.GetString("MessageTitle_FailedLoad", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (xmlLeadsDocument == null || xmlStatBlockDocument == null)
+            {
+                return false;
+            }
+
+            Timekeeper.Start("load_char_misc");
+
+            XmlNode xmlStatBlockBaseNode = xmlStatBlockDocument.SelectSingleNode("/document/public/character[@name = \"" + strCharacterId + "\"]");
+            XmlNode xmlLeadsBaseNode = xmlLeadsDocument.SelectSingleNode("/document/hero[@heroname = \"" + strCharacterId + "\"]");
+
+            _blnCreated = (xmlStatBlockBaseNode.SelectSingleNode("karma/@total")?.InnerText ?? "0") != "0";
+            if (!_blnCreated)
+            {
+                XmlNodeList xmlJournalEntries = xmlStatBlockBaseNode.SelectNodes("journals/journal");
+                if (xmlJournalEntries.Count > 1)
+                {
+                    _blnCreated = true;
+                }
+                else if (xmlJournalEntries.Count == 1 && xmlJournalEntries[0].Attributes["name"]?.InnerText != "Title")
+                {
+                    _blnCreated = true;
+                }
+            }
+            
+            ResetCharacter();
+
+            // Get the name of the settings file in use if possible.
+            _strSettingsFileName = strSettingsName;
+
+            // Load the character's settings file.
+            if (!_objOptions.Load(_strSettingsFileName))
+                return false;
+
+            // Metatype information.
+            string strRaceString = xmlStatBlockBaseNode.SelectSingleNode("race/@name")?.InnerText;
+            if (!string.IsNullOrEmpty(strRaceString))
+            {
+                if (strRaceString == "Metasapient")
+                    strRaceString = "A.I.";
+                foreach (XmlNode xmlMetatype in XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
+                {
+                    string strMetatypeName = xmlMetatype["name"].InnerText;
+                    if (strMetatypeName == strRaceString)
+                    {
+                        _strMetatype = strMetatypeName;
+                        _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                        _strMetavariant = "None";
+
+                        XmlNode objRunNode = xmlMetatype?["run"];
+                        XmlNode objWalkNode = xmlMetatype?["walk"];
+                        XmlNode objSprintNode = xmlMetatype?["sprint"];
+
+                        _strMovement = xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                        _strRun = objRunNode?.InnerText ?? string.Empty;
+                        _strWalk = objWalkNode?.InnerText ?? string.Empty;
+                        _strSprint = objSprintNode?.InnerText ?? string.Empty;
+
+                        objRunNode = objRunNode?.Attributes?["alt"];
+                        objWalkNode = objWalkNode?.Attributes?["alt"];
+                        objSprintNode = objSprintNode?.Attributes?["alt"];
+                        _strRunAlt = objRunNode?.InnerText ?? string.Empty;
+                        _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
+                        _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                        break;
+                    }
+                    foreach (XmlNode xmlMetavariant in xmlMetatype.SelectNodes("metavariants/metavariant"))
+                    {
+                        string strMetavariantName = xmlMetavariant["name"].InnerText;
+                        if (strMetavariantName == strRaceString)
+                        {
+                            _strMetatype = strMetatypeName;
+                            _strMetatypeCategory = xmlMetatype["category"].InnerText;
+                            _strMetavariant = strMetavariantName;
+
+                            XmlNode objRunNode = xmlMetavariant?["run"] ?? xmlMetatype?["run"];
+                            XmlNode objWalkNode = xmlMetavariant?["walk"] ?? xmlMetatype?["walk"];
+                            XmlNode objSprintNode = xmlMetavariant?["sprint"] ?? xmlMetatype?["sprint"];
+
+                            _strMovement = xmlMetavariant?["movement"]?.InnerText ?? xmlMetatype?["movement"]?.InnerText ?? string.Empty;
+                            _strRun = objRunNode?.InnerText ?? string.Empty;
+                            _strWalk = objWalkNode?.InnerText ?? string.Empty;
+                            _strSprint = objSprintNode?.InnerText ?? string.Empty;
+
+                            objRunNode = objRunNode?.Attributes?["alt"];
+                            objWalkNode = objWalkNode?.Attributes?["alt"];
+                            objSprintNode = objSprintNode?.Attributes?["alt"];
+                            _strRunAlt = objRunNode?.InnerText ?? string.Empty;
+                            _strWalkAlt = objWalkNode?.InnerText ?? string.Empty;
+                            _strSprintAlt = objSprintNode?.InnerText ?? string.Empty;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // General character information.
+            int intAsIndex = strCharacterId.IndexOf(" as ");
+            if (intAsIndex != -1)
+            {
+                _strName = strCharacterId.Substring(0, intAsIndex);
+                _strAlias = strCharacterId.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
+            }
+            else
+            {
+                _strAlias = strCharacterId;
+            }
+
+            XmlNode xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNode("personal");
+            if (xmlPersonalNode != null)
+            {
+                _strBackground = xmlPersonalNode["description"]?.InnerText;
+                _strHeight = xmlPersonalNode["charheight"]?.Attributes?["text"]?.InnerText;
+                _strWeight = xmlPersonalNode["charweight"]?.Attributes?["text"]?.InnerText;
+                XmlAttributeCollection xmlPersonalNodeAttributes = xmlPersonalNode.Attributes;
+                if (xmlPersonalNodeAttributes != null)
+                {
+                    _strSex = xmlPersonalNodeAttributes["gender"]?.InnerText;
+                    _strAge = xmlPersonalNodeAttributes["age"]?.InnerText;
+                    _strHair = xmlPersonalNodeAttributes["hair"]?.InnerText;
+                    _strEyes = xmlPersonalNodeAttributes["eyes"]?.InnerText;
+                    _strSkin = xmlPersonalNodeAttributes["skin"]?.InnerText;
+                }
+            }
+
+            _strPlayerName = xmlStatBlockBaseNode.Attributes["playername"]?.InnerText;
+
+            foreach (XmlNode xmlImageFileNameNode in xmlStatBlockBaseNode.SelectNodes("images/image/@filename"))
+            {
+                if (dicImages.TryGetValue(xmlImageFileNameNode.InnerText, out Bitmap objOutput))
+                    _lstMugshots.Add(objOutput);
+            }
+            if (_lstMugshots.Count > 0)
+                _intMainMugshotIndex = 0;
+
+            string strSettingsSummary = xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.InnerText;
+            if (!string.IsNullOrEmpty(strSettingsSummary))
+            {
+                int intCharCreationSystemsIndex = strSettingsSummary.IndexOf("Character Creation Systems:");
+                int intSemicolonIndex = strSettingsSummary.IndexOf(';');
+                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex && intCharCreationSystemsIndex != -1)
+                {
+                    _strGameplayOption = strSettingsSummary.Substring(intCharCreationSystemsIndex + 28, strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex).Trim();
+                    if (_strGameplayOption == "Established Runners")
+                        _strGameplayOption = "Standard";
+                }
+            }
+
+            _intBuildKarma = Convert.ToInt32(xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.InnerText);
+            _intMaxAvail = _objOptions.Availability;
+
+            if (_intBuildKarma >= 100)
+            {
+                _objBuildMethod = CharacterBuildMethod.Karma;
+            }
+            else
+            {
+                _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode.SelectSingleNode("container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")?.InnerText);
+                _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode.SelectSingleNode("container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")?.InnerText);
+                _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode.SelectSingleNode("container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")?.InnerText);
+                _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode.SelectSingleNode("container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")?.InnerText);
+                _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode.SelectSingleNode("container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")?.InnerText);
+
+                string ConvertPriorityString(string strInput)
+                {
+                    switch (strInput)
+                    {
+                        case "5.":
+                            return "A,4";
+                        case "4.":
+                            return "B,3";
+                        case "3.":
+                            return "C,2";
+                        case "2.":
+                            return "D,1";
+                        case "1.":
+                            return "E,0";
+                    }
+                    return string.Empty;
+                }
+
+                if (_strPriorityAttributes == _strPrioritySpecial ||
+                    _strPriorityAttributes == _strPriorityMetatype ||
+                    _strPriorityAttributes == _strPriorityResources ||
+                    _strPriorityAttributes == _strPrioritySkills ||
+                    _strPrioritySpecial == _strPrioritySkills ||
+                    _strPrioritySpecial == _strPriorityMetatype ||
+                    _strPrioritySpecial == _strPriorityResources ||
+                    _strPriorityMetatype == _strPriorityResources ||
+                    _strPriorityMetatype == _strPrioritySpecial ||
+                    _strPriorityResources == _strPrioritySkills)
+                    _objBuildMethod = CharacterBuildMethod.SumtoTen;
+                else
+                    _objBuildMethod = CharacterBuildMethod.Priority;
+            }
+
+            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+            XmlNode xmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+            if (xmlGameplayOption == null)
+            {
+                string strMessage = LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language).Replace("{0}", GameplayOption);
+                if (MessageBox.Show(strMessage, LanguageManager.GetString("Message_MissingGameplayOption_Title", GlobalOptions.Language), MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                {
+                    frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true);
+                    frmPickBP.ShowDialog();
+
+                    if (frmPickBP.DialogResult != DialogResult.OK)
+                        return false;
+                }
+                else
+                {
+                    BannedWareGrades.Clear();
+                    foreach (XmlNode xmlNode in xmlGameplayOption.SelectNodes("bannedwaregrades/grade"))
+                        BannedWareGrades.Add(xmlNode.InnerText);
+
+                    if (!Options.FreeContactsMultiplierEnabled)
+                        _intContactMultiplier = Convert.ToInt32(xmlGameplayOption["contactmultiplier"].InnerText);
+                    _intGameplayOptionQualityLimit = _intMaxKarma = Convert.ToInt32(xmlGameplayOption["karma"].InnerText);
+                    _decNuyenMaximumBP = _decMaxNuyen = Convert.ToDecimal(xmlGameplayOption["maxnuyen"].InnerText, GlobalOptions.InvariantCultureInfo);
+                }
+            }
+
+            if (_objBuildMethod == CharacterBuildMethod.Priority || _objBuildMethod == CharacterBuildMethod.SumtoTen)
+            {
+                objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
+                objXmlCharacter.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
+                _lstPrioritySkills.Clear();
+                XmlNodeList objXmlPrioritySkillsList = objXmlCharacter.SelectNodes("priorityskills/priorityskill");
+                if (objXmlPrioritySkillsList != null)
+                {
+                    foreach (XmlNode objXmlSkillName in objXmlPrioritySkillsList)
+                    {
+                        _lstPrioritySkills.Add(objXmlSkillName.InnerText);
+                    }
+                }
+            }
+
+            objXmlCharacter.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
+            
+            objXmlCharacter.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
+            objXmlCharacter.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
+            objXmlCharacter.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
+            objXmlCharacter.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
+            objXmlCharacter.TryGetInt32FieldQuickly("karma", ref _intKarma);
+            objXmlCharacter.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
+
+            objXmlCharacter.TryGetInt32FieldQuickly("special", ref _intSpecial);
+            objXmlCharacter.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
+            //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
+            objXmlCharacter.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
+            objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
+            objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
+            objXmlCharacter.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
+            objXmlCharacter.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
+            objXmlCharacter.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
+            objXmlCharacter.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
+            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
+
+            objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
+            objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
+
+            objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
+            objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
+            objXmlCharacter.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
+            objXmlCharacter.TryGetBoolFieldQuickly("excon", ref _blnExCon);
+            objXmlCharacter.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
+            objXmlCharacter.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
+            objXmlCharacter.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
+            objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
+            objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
+            objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
+            objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
+            objXmlCharacter.TryGetBoolFieldQuickly("erased", ref _blnErased);
+            objXmlCharacter.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
+            objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
+            objXmlCharacter.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
+            objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+            objXmlCharacter.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
+            objXmlCharacter.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
+            objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
+            objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
+            Timekeeper.Finish("load_char_misc");
+
+            Timekeeper.Start("load_char_mentorspirit");
+            // Improvements.
+            XmlNodeList objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
+            foreach (XmlNode objXmlMentor in objXmlNodeList)
+            {
+                MentorSpirit objMentor = new MentorSpirit(this);
+                objMentor.Load(objXmlMentor);
+                _lstMentorSpirits.Add(objMentor);
+            }
+            Timekeeper.Finish("load_char_mentorspirit");
+
+            _lstInternalIdsNeedingReapplyImprovements.Clear();
+
+            Timekeeper.Start("load_char_imp");
+            // Improvements.
+            objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
+
+            Timekeeper.Finish("load_char_imp");
+            Timekeeper.Start("load_char_quality");
+
+            // Qualities
+            objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
+            XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
+
+            Timekeeper.Finish("load_char_quality");
+            AttributeSection.Load(objXmlCharacter);
+            Timekeeper.Start("load_char_misc2");
+
+            // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
+            if (_blnAdeptEnabled && _blnMagicianEnabled)
+            {
+                objXmlCharacter.TryGetInt32FieldQuickly("magsplitadept", ref _intMAGAdept);
+                objXmlCharacter.TryGetInt32FieldQuickly("magsplitmagician", ref _intMAGMagician);
+            }
+
+            // Attempt to load the Magic Tradition.
+            objXmlCharacter.TryGetStringFieldQuickly("tradition", ref _strMagicTradition);
+            // Attempt to load the Magic Tradition Drain Attributes.
+            objXmlCharacter.TryGetStringFieldQuickly("traditiondrain", ref _strTraditionDrain);
+            // Attempt to load the Magic Tradition Name.
+            objXmlCharacter.TryGetStringFieldQuickly("traditionname", ref _strTraditionName);
+            // Attempt to load the Spirit Combat Name.
+            objXmlCharacter.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
+            // Attempt to load the Spirit Detection Name.
+            objXmlCharacter.TryGetStringFieldQuickly("spiritdetection", ref _strSpiritDetection);
+            // Attempt to load the Spirit Health Name.
+            objXmlCharacter.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
+            // Attempt to load the Spirit Illusion Name.
+            objXmlCharacter.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
+            // Attempt to load the Spirit Manipulation Name.
+            objXmlCharacter.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
+            // Attempt to load the Technomancer Stream.
+            objXmlCharacter.TryGetStringFieldQuickly("stream", ref _strTechnomancerStream);
+            // Attempt to load the Technomancer Stream's Fading attributes.
+            objXmlCharacter.TryGetStringFieldQuickly("streamfading", ref _strTechnomancerFading);
+
+            // Attempt to load Condition Monitor Progress.
+            objXmlCharacter.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
+            objXmlCharacter.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+            Timekeeper.Finish("load_char_misc2");
+            Timekeeper.Start("load_char_skills");  //slightly messy
+
+            oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
+            oldSKillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
+
+            XmlNode SkillNode = objXmlCharacter.SelectSingleNode("newskills");
+            if (SkillNode != null)
+            {
+                SkillsSection.Load(SkillNode);
+            }
+            else
+            {
+                SkillsSection.Load(objXmlCharacter, true);
+            }
+
+            Timekeeper.Start("load_char_contacts");
+
+            // Contacts.
+            objXmlNodeList = objXmlCharacter.SelectNodes("contacts/contact");
+            foreach (XmlNode objXmlContact in objXmlNodeList)
+            {
+                Contact objContact = new Contact(this);
+                objContact.Load(objXmlContact);
+                _lstContacts.Add(objContact);
+            }
+
+            Timekeeper.Finish("load_char_contacts");
+            Timekeeper.Start("load_char_armor");
+
+            // Armor.
+            objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
+            foreach (XmlNode objXmlArmor in objXmlNodeList)
+            {
+                Armor objArmor = new Armor(this);
+                objArmor.Load(objXmlArmor);
+                _lstArmor.Add(objArmor);
+            }
+            Timekeeper.Finish("load_char_armor");
+            Timekeeper.Start("load_char_weapons");
+
+            // Weapons.
+            objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
+            foreach (XmlNode objXmlWeapon in objXmlNodeList)
+            {
+                Weapon objWeapon = new Weapon(this);
+                objWeapon.Load(objXmlWeapon);
+                _lstWeapons.Add(objWeapon);
+            }
+
+            Timekeeper.Finish("load_char_weapons");
+            Timekeeper.Start("load_char_ware");
+
+            // Cyberware/Bioware.
+            objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
+            foreach (XmlNode objXmlCyberware in objXmlNodeList)
+            {
+                Cyberware objCyberware = new Cyberware(this);
+                objCyberware.Load(objXmlCyberware);
+                _lstCyberware.Add(objCyberware);
+            }
+
+            Timekeeper.Finish("load_char_ware");
+            Timekeeper.Start("load_char_spells");
+
+            // Spells.
+            objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
+            foreach (XmlNode objXmlSpell in objXmlNodeList)
+            {
+                Spell objSpell = new Spell(this);
+                objSpell.Load(objXmlSpell);
+                _lstSpells.Add(objSpell);
+            }
+
+            Timekeeper.Finish("load_char_spells");
+            Timekeeper.Start("load_char_foci");
+
+            // Foci.
+            objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
+            foreach (XmlNode objXmlFocus in objXmlNodeList)
+            {
+                Focus objFocus = new Focus(this);
+                objFocus.Load(objXmlFocus);
+                _lstFoci.Add(objFocus);
+            }
+
+            Timekeeper.Finish("load_char_foci");
+            Timekeeper.Start("load_char_sfoci");
+
+            // Stacked Foci.
+            objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
+            foreach (XmlNode objXmlStack in objXmlNodeList)
+            {
+                StackedFocus objStack = new StackedFocus(this);
+                objStack.Load(objXmlStack);
+                _lstStackedFoci.Add(objStack);
+            }
+
+            Timekeeper.Finish("load_char_sfoci");
+            Timekeeper.Start("load_char_powers");
+
+            // Powers.
+            List<ListItem> lstPowerOrder = new List<ListItem>();
+            objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
+            // Sort the Powers in alphabetical order.
+            foreach (XmlNode objXmlPower in objXmlNodeList)
+            {
+                lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
+            }
+            lstPowerOrder.Sort(CompareListItems.CompareNames);
+
+            foreach (ListItem objItem in lstPowerOrder)
+            {
+                Power objPower = new Power(this);
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value) + "]");
+                if (objNode != null)
+                {
+                    objPower.Load(objNode);
+                    _lstPowers.Add(objPower);
+                }
+            }
+
+            Timekeeper.Finish("load_char_powers");
+            Timekeeper.Start("load_char_spirits");
+
+            // Spirits/Sprites.
+            objXmlNodeList = objXmlCharacter.SelectNodes("spirits/spirit");
+            foreach (XmlNode objXmlSpirit in objXmlNodeList)
+            {
+                Spirit objSpirit = new Spirit(this);
+                objSpirit.Load(objXmlSpirit);
+                _lstSpirits.Add(objSpirit);
+            }
+
+            Timekeeper.Finish("load_char_spirits");
+            Timekeeper.Start("load_char_complex");
+
+            // Compex Forms/Technomancer Programs.
+            objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
+            foreach (XmlNode objXmlComplexForm in objXmlNodeList)
+            {
+                ComplexForm objComplexForm = new ComplexForm(this);
+                objComplexForm.Load(objXmlComplexForm);
+                _lstComplexForms.Add(objComplexForm);
+            }
+
+            Timekeeper.Finish("load_char_complex");
+            Timekeeper.Start("load_char_aiprogram");
+
+            // Compex Forms/Technomancer Programs.
+            objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
+            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            {
+                AIProgram objProgram = new AIProgram(this);
+                objProgram.Load(objXmlProgram);
+                _lstAIPrograms.Add(objProgram);
+            }
+
+            Timekeeper.Finish("load_char_aiprogram");
+            Timekeeper.Start("load_char_marts");
+
+            // Martial Arts.
+            objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
+            foreach (XmlNode objXmlArt in objXmlNodeList)
+            {
+                MartialArt objMartialArt = new MartialArt(this);
+                objMartialArt.Load(objXmlArt);
+                _lstMartialArts.Add(objMartialArt);
+            }
+
+            Timekeeper.Finish("load_char_marts");
+            Timekeeper.Start("load_char_mam");
+
+            // Martial Art Maneuvers.
+            objXmlNodeList = objXmlCharacter.SelectNodes("martialartmaneuvers/martialartmaneuver");
+            foreach (XmlNode objXmlManeuver in objXmlNodeList)
+            {
+                MartialArtManeuver objManeuver = new MartialArtManeuver(this);
+                objManeuver.Load(objXmlManeuver);
+                _lstMartialArtManeuvers.Add(objManeuver);
+            }
+
+            Timekeeper.Finish("load_char_mam");
+            Timekeeper.Start("load_char_mod");
+
+            // Limit Modifiers.
+            objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
+            foreach (XmlNode objXmlLimit in objXmlNodeList)
+            {
+                LimitModifier obLimitModifier = new LimitModifier(this);
+                obLimitModifier.Load(objXmlLimit);
+                _lstLimitModifiers.Add(obLimitModifier);
+            }
+
+            Timekeeper.Finish("load_char_mod");
+            Timekeeper.Start("load_char_lifestyle");
+
+            // Lifestyles.
+            objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
+            foreach (XmlNode objXmlLifestyle in objXmlNodeList)
+            {
+                Lifestyle objLifestyle = new Lifestyle(this);
+                objLifestyle.Load(objXmlLifestyle);
+                _lstLifestyles.Add(objLifestyle);
+            }
+
+            Timekeeper.Finish("load_char_lifestyle");
+            Timekeeper.Start("load_char_gear");
+
+            // <gears>
+            objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
+            foreach (XmlNode objXmlGear in objXmlNodeList)
+            {
+                Gear objGear = new Gear(this);
+                objGear.Load(objXmlGear);
+                _lstGear.Add(objGear);
+            }
+
+            Timekeeper.Finish("load_char_gear");
+            Timekeeper.Start("load_char_car");
+
+            // Vehicles.
+            objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
+            foreach (XmlNode objXmlVehicle in objXmlNodeList)
+            {
+                Vehicle objVehicle = new Vehicle(this);
+                objVehicle.Load(objXmlVehicle);
+                _lstVehicles.Add(objVehicle);
+            }
+
+            Timekeeper.Finish("load_char_car");
+            Timekeeper.Start("load_char_mmagic");
+            // Metamagics/Echoes.
+            objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
+            foreach (XmlNode objXmlMetamagic in objXmlNodeList)
+            {
+                Metamagic objMetamagic = new Metamagic(this);
+                objMetamagic.Load(objXmlMetamagic);
+                _lstMetamagics.Add(objMetamagic);
+            }
+
+            Timekeeper.Finish("load_char_mmagic");
+            Timekeeper.Start("load_char_arts");
+
+            // Arts
+            objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
+            foreach (XmlNode objXmlArt in objXmlNodeList)
+            {
+                Art objArt = new Art(this);
+                objArt.Load(objXmlArt);
+                _lstArts.Add(objArt);
+            }
+
+            Timekeeper.Finish("load_char_arts");
+            Timekeeper.Start("load_char_ench");
+
+            // Enhancements
+            objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
+            foreach (XmlNode objXmlEnhancement in objXmlNodeList)
+            {
+                Enhancement objEnhancement = new Enhancement(this);
+                objEnhancement.Load(objXmlEnhancement);
+                _lstEnhancements.Add(objEnhancement);
+            }
+
+            Timekeeper.Finish("load_char_ench");
+            Timekeeper.Start("load_char_cpow");
+
+            // Critter Powers.
+            objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
+            foreach (XmlNode objXmlPower in objXmlNodeList)
+            {
+                CritterPower objPower = new CritterPower(this);
+                objPower.Load(objXmlPower);
+                _lstCritterPowers.Add(objPower);
+            }
+
+            Timekeeper.Finish("load_char_cpow");
+            Timekeeper.Start("load_char_init");
+
+            // Initiation Grades.
+            objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
+            foreach (XmlNode objXmlGrade in objXmlNodeList)
+            {
+                InitiationGrade objGrade = new InitiationGrade(this);
+                objGrade.Load(objXmlGrade);
+                _lstInitiationGrades.Add(objGrade);
+            }
+
+            Timekeeper.Finish("load_char_init");
+            Timekeeper.Start("load_char_elog");
+
+            // Expense Log Entries.
+            XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
+            foreach (XmlNode objXmlExpense in objXmlExpenseList)
+            {
+                ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
+                objExpenseLogEntry.Load(objXmlExpense);
+                _lstExpenseLog.Add(objExpenseLogEntry);
+            }
+
+            Timekeeper.Finish("load_char_elog");
+            Timekeeper.Start("load_char_unarmed");
+
+            // Look for the unarmed attack
+            bool blnFoundUnarmed = false;
+            foreach (Weapon objWeapon in _lstWeapons)
+            {
+                if (objWeapon.Name == "Unarmed Attack")
+                {
+                    blnFoundUnarmed = true;
+                    break;
+                }
+            }
+
+            if (!blnFoundUnarmed)
+            {
+                // Add the Unarmed Attack Weapon to the character.
+                XmlDocument objXmlWeaponDoc = XmlManager.Load("weapons.xml");
+                XmlNode objXmlWeapon = objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    Weapon objWeapon = new Weapon(this);
+                    objWeapon.Create(objXmlWeapon, _lstWeapons);
+                    objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
+                    _lstWeapons.Add(objWeapon);
+                }
+            }
+
+            Timekeeper.Finish("load_char_unarmed");
+            Timekeeper.Start("load_char_cfix");
+
+            // load issue where the contact multiplier was set to 0
+            if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
+            {
+                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")?.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
+                if (objXmlGameplayOption != null)
+                {
+                    string strKarma = objXmlGameplayOption["karma"]?.InnerText;
+                    string strNuyen = objXmlGameplayOption["maxnuyen"]?.InnerText;
+                    string strContactMultiplier = string.Empty;
+                    if (_objOptions.FreeContactsMultiplierEnabled)
+                        strContactMultiplier = _objOptions.FreeContactsMultiplier.ToString();
+                    else
+                        strContactMultiplier = objXmlGameplayOption["contactmultiplier"]?.InnerText;
+                    _intMaxKarma = Convert.ToInt32(strKarma);
+                    _decMaxNuyen = Convert.ToDecimal(strNuyen);
+                    _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
+                    _intContactPoints = (CHA.Base + CHA.TotalKarma) * _intContactMultiplier;
+                }
+            }
+
+            Timekeeper.Finish("load_char_cfix");
+            Timekeeper.Start("load_char_maxkarmafix");
+            //Fixes an issue where the quality limit was not set. In most cases this should wind up equalling 25.
+            if (_intGameplayOptionQualityLimit == 0 && _intMaxKarma > 0)
+            {
+                _intGameplayOptionQualityLimit = _intMaxKarma;
+            }
+            Timekeeper.Finish("load_char_maxkarmafix");
+
+            RefreshRedliner();
+
+            return true;
+        }
+        #endregion
     }
 }

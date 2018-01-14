@@ -440,8 +440,7 @@ namespace Chummer
                 // Override the defaults for the setting.
                 IgnoreRules = true,
                 IsCritter = true,
-                BuildMethod = CharacterBuildMethod.Karma,
-                BuildPoints = 0
+                BuildMethod = CharacterBuildMethod.Karma
             };
 
             if (!string.IsNullOrEmpty(txtCritterName.Text))

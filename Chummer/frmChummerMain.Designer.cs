@@ -71,11 +71,13 @@ namespace Chummer
             this.mnuToolsOmae = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuHeroLabImporter = new System.Windows.Forms.ToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuChummerWiki = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuChummerDiscord = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuHelpRevisionHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelpDumpshock = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +93,6 @@ namespace Chummer
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolTip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             this.tabForms = new System.Windows.Forms.TabControl();
-            this.mnuChummerDiscord = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -452,7 +453,8 @@ namespace Chummer
             this.mnuRestart,
             this.mnuToolsOmae,
             this.toolStripSeparator6,
-            this.mnuToolsTranslator});
+            this.mnuToolsTranslator,
+            this.mnuHeroLabImporter});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -521,6 +523,15 @@ namespace Chummer
             this.mnuToolsTranslator.Text = "Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
             // 
+            // mnuHeroLabImporter
+            // 
+            this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
+            this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
+            this.mnuHeroLabImporter.Text = "Hero Lab Importer";
+            this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
+            // 
             // windowsMenu
             // 
             this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -572,6 +583,16 @@ namespace Chummer
             this.mnuChummerWiki.Tag = "Menu_Main_ChummerWiki";
             this.mnuChummerWiki.Text = "Chummer Wiki";
             this.mnuChummerWiki.Click += new System.EventHandler(this.mnuChummerWiki_Click);
+            // 
+            // mnuChummerDiscord
+            // 
+            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.icons8_discord_16;
+            this.mnuChummerDiscord.Name = "mnuChummerDiscord";
+            this.mnuChummerDiscord.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
+            this.mnuChummerDiscord.Size = new System.Drawing.Size(217, 22);
+            this.mnuChummerDiscord.Tag = "Menu_Main_ChummerDiscord";
+            this.mnuChummerDiscord.Text = "Chummer Discord";
+            this.mnuChummerDiscord.Click += new System.EventHandler(this.mnuChummerDiscord_Click);
             // 
             // toolStripSeparator8
             // 
@@ -717,16 +738,6 @@ namespace Chummer
             this.tabForms.Visible = false;
             this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
             // 
-            // mnuChummerDiscord
-            // 
-            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.icons8_discord_16;
-            this.mnuChummerDiscord.Name = "mnuChummerDiscord";
-            this.mnuChummerDiscord.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
-            this.mnuChummerDiscord.Size = new System.Drawing.Size(217, 22);
-            this.mnuChummerDiscord.Tag = "Menu_Main_ChummerDiscord";
-            this.mnuChummerDiscord.Text = "Chummer Discord";
-            this.mnuChummerDiscord.Click += new System.EventHandler(this.mnuChummerDiscord_Click);
-            // 
             // frmChummerMain
             // 
             this.AllowDrop = true;
@@ -823,6 +834,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsTranslator;
         private System.Windows.Forms.ToolStripMenuItem mnuChummerDiscord;
+        private System.Windows.Forms.ToolStripMenuItem mnuHeroLabImporter;
     }
 }
 

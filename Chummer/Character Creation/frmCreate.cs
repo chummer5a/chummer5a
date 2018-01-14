@@ -787,8 +787,9 @@ namespace Chummer
             if (GlobalOptions.LiveUpdateCleanCharacterFiles)
                 Application.Idle += LiveUpdateFromCharacterFile;
 
-            // Clear the Dirty flag which gets set when creating a new Character.
-            IsDirty = false;
+            // If we are loading from a file, clear the Dirty flag which gets set when creating a new Character.
+            if (!string.IsNullOrEmpty(CharacterObject.FileName))
+                IsDirty = false;
             RefreshPasteStatus();
             frmCreate_Resize(sender, e);
             picMugshot_SizeChanged(sender, e);
@@ -11937,7 +11938,7 @@ namespace Chummer
         /// </summary>
         private int CalculateBP(bool blnDoUIUpdate = true)
         {
-            int intKarmaPointsRemain =CharacterObject.BuildKarma;
+            int intKarmaPointsRemain = CharacterObject.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
             int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;

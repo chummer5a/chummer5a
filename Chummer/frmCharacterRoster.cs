@@ -212,6 +212,7 @@ namespace Chummer
                 treCharacterList.Nodes.Add(objWatchNode);
             treCharacterList.ExpandAll();
         }
+
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
@@ -348,20 +349,13 @@ namespace Chummer
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + objCache.Metatype + "\"]");
                 }
 
-                string strMetatype = objMetatypeNode["translate"]?.InnerText ?? objCache.Metatype;
-                string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
-                    objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += objMetatypeNode["translate"] != null
-                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
-                        : " (" + objCache.Metavariant + ")";
-
-                    strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                    strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
             }
@@ -380,7 +374,7 @@ namespace Chummer
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
                 tipTooltip.SetToolTip(lblFilePath, string.Empty);
-                lblSettings.Text = String.Empty;;
+                lblSettings.Text = string.Empty;;
                 picMugshot.Image = null;
             }
             picMugshot_SizeChanged(null, EventArgs.Empty);
