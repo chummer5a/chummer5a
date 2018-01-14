@@ -261,7 +261,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("apreplace", _strAPReplace);
             objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+            objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteElementString("addmode", _strAddMode);
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString());
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString());
@@ -872,7 +872,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnDiscountCost;
+                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
             }
             set
             {

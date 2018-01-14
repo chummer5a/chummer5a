@@ -349,7 +349,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+            objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
             objWriter.WriteEndElement();
@@ -971,7 +971,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnDiscountCost;
+                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
             }
             set
             {

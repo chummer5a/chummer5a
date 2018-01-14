@@ -529,7 +529,7 @@ namespace Chummer.Backend.Equipment
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("discountedcost", DealerConnectionDiscount.ToString());
+            objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString());
             if (_lstLocations.Count > 0)
             {
                 // <locations>
@@ -729,7 +729,8 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            
+            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
+
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
@@ -1412,7 +1413,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnBlackMarketDiscount;
+                return _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
             }
             set
             {

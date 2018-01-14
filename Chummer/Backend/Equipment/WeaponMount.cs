@@ -169,7 +169,7 @@ namespace Chummer.Backend.Equipment
 		    }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
-			objWriter.WriteElementString("discountedcost", DiscountCost.ToString());
+			objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
 			objWriter.WriteEndElement();
 			_objCharacter.SourceProcess(_strSource);
 		}
@@ -562,7 +562,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _blnDiscountCost;
+                return _blnDiscountCost && _objCharacter.BlackMarketDiscount;
             }
             set
             {
