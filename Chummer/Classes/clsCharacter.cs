@@ -1268,7 +1268,7 @@ namespace Chummer
                 
                 if ((objXmlImprovement["custom"]?.InnerText == System.Boolean.TrueString) ||
                     // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                    (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)))
+                    (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)) || strLoopSourceName == "edgeuse")
                 {
                     Improvement objImprovement = new Improvement(this);
                     try
