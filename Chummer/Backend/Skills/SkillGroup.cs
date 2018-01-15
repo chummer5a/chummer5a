@@ -116,7 +116,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (IsDisabled)
+                if (IsDisabled || !_affectedSkills.Any())
                     return false;
                 int high = _affectedSkills.Max(x => x.Ibase);
                 bool ret = _affectedSkills.Any(x => x.Ibase + x.Ikarma < high);
