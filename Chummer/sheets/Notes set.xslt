@@ -7,6 +7,7 @@
 
   <xsl:include href="xt.Lifestyles.xslt"/>
   <xsl:include href="xt.Notes.xslt"/>
+  <xsl:include href="xt.Nothing2Show.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xt.Qualities.xslt"/>
   <xsl:include href="xt.RowSummary.xslt"/>
@@ -65,7 +66,7 @@
       </head>
 
       <body>
-        <xsl:if test="qualities/quality/notes!=''">
+        <xsl:if test="qualities/quality/notes != ''">
           <div id="QualitiesBlock">
             <xsl:call-template name="TableTitle">
               <xsl:with-param name="name" select="$lang.Qualities"/>
@@ -120,6 +121,18 @@
         <xsl:if test="concat(concept,description,background,notes,gamenotes) !=''">
           <xsl:call-template name="notes"/>
         </xsl:if>
+
+        <xsl:choose>
+          <xsl:when test="qualities/quality/notes != ''"/>
+          <xsl:when test="spells/spell/notes != ''"/>
+          <xsl:when test="lifestyles/lifestyle/notes != ''"/>
+          <xsl:when test="concat(concept,description,background,notes,gamenotes) !=''"/>
+          <xsl:otherwise>
+            <xsl:call-template name="nothing2show">
+              <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Notes"/>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
       </body>
     </html>
 
