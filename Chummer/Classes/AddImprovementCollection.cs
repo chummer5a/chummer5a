@@ -1841,35 +1841,35 @@ namespace Chummer.Classes
 
         public void knowsoft(XmlNode bonusNode)
         {
-            int val = bonusNode["val"] != null ? ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
+            int intValue = bonusNode["val"] != null ? ValueToInt(_objCharacter, bonusNode["val"].InnerText, _intRating) : 1;
 
-            string name;
+            string strName;
             if (!string.IsNullOrWhiteSpace(ForcedValue))
             {
-                name = ForcedValue;
+                strName = ForcedValue;
             }
             else if (bonusNode["pick"] != null)
             {
-                IList<ListItem> types;
+                string[] lstTypes;
                 if (bonusNode["group"] != null)
                 {
-                    var v = bonusNode.SelectNodes($"./group");
-                    types =
-                        KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).ToList();
-
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).Select(x => x.Value).ToArray();
                 }
                 else if (bonusNode["notgroup"] != null)
                 {
-                    types = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).ToList();
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).Select(x => x.Value).ToArray();
                 }
                 else
                 {
-                    types = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language);
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Select(x => x.Value).ToArray();
                 }
+
+                List<ListItem> lstDropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(GlobalOptions.Language, lstTypes).ToList();
+                lstDropdownItems.Sort(CompareListItems.CompareNames);
 
                 frmSelectItem select = new frmSelectItem
                 {
-                    DropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(GlobalOptions.Language, types.Select(x => x.Value).ToArray())
+                    DropdownItems = lstDropdownItems
                 };
 
                 select.ShowDialog();
@@ -1878,11 +1878,11 @@ namespace Chummer.Classes
                     throw new AbortedException();
                 }
 
-                name = select.SelectedItem;
+                strName = select.SelectedItem;
             }
             else if (bonusNode["name"] != null)
             {
-                name = bonusNode["name"].InnerText;
+                strName = bonusNode["name"].InnerText;
             }
             else
             {
@@ -1890,29 +1890,27 @@ namespace Chummer.Classes
                 Log.Error(new[] { bonusNode.OuterXml, "Missing pick or name" });
                 throw new AbortedException();
             }
-            SelectedValue = name;
+            SelectedValue = strName;
 
 
-            KnowledgeSkill skill = new KnowledgeSkill(_objCharacter, name);
+            KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, strName);
 
             string strTemp = string.Empty;
             if (bonusNode.TryGetStringFieldQuickly("require", ref strTemp) && strTemp == "skilljack")
             {
-                _objCharacter.SkillsSection.KnowsoftSkills.Add(skill);
+                _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
                 if (_objCharacter.SkillsoftAccess)
                 {
-                    _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                    _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
                 }
             }
             else
             {
-                _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
             }
 
-            CreateImprovement(name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillBase, _strUnique, val);
-            CreateImprovement(skill.Id.ToString(), _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SkillKnowledgeForced, _strUnique);
-
+            CreateImprovement(strName, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillBase, _strUnique, intValue);
+            CreateImprovement(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillKnowledgeForced, _strUnique);
         }
 
         public void knowledgeskilllevel(XmlNode bonusNode)

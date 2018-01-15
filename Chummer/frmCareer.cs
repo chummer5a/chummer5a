@@ -10670,7 +10670,7 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkillGroup:
                     {
                         // Locate the Skill Group that was affected.
-                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
+                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == objEntry.Undo.ObjectId);
 
                         if (group != null)
                             group.Karma -= 1;
@@ -10681,8 +10681,8 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill skill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId) ??
-                                      CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+                        Skill skill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objEntry.Undo.ObjectId) ??
+                                      CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objEntry.Undo.ObjectId);
 
                         if (skill != null)
                             skill.Karma -= 1;

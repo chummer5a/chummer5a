@@ -1237,9 +1237,8 @@ namespace Chummer
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
                         break;
                     case Improvement.ImprovementType.SkillKnowledgeForced:
-                        Guid guid = Guid.Parse(objImprovement.ImprovedName);
-                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.Id == guid);
+                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1624,9 +1623,6 @@ namespace Chummer
         }
 
         #endregion
-
-
-
 }
 
     public static class ImprovementExtensions
