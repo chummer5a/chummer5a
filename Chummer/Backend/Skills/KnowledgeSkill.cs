@@ -105,7 +105,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return Name;
+                return DisplayName;
             }
             set
             {
