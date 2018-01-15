@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -35,12 +36,15 @@ namespace Chummer.UI.Skills
             //Display
             lblModifiedRating.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.DisplayPool), false, DataSourceUpdateMode.OnPropertyChanged);
 
+            List<ListItem> lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).ToList();
+            lstTypes.Sort(CompareListItems.CompareNames);
+
             cboType.BeginUpdate();
             cboSkill.BeginUpdate();
             cboSpec.BeginUpdate();
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DataSource = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language);
+            cboType.DataSource = lstTypes;
             cboType.DataBindings.Add("SelectedValue", skill, nameof(KnowledgeSkill.Type), false, DataSourceUpdateMode.OnPropertyChanged);
 
             if (skill.CharacterObject.Created)
@@ -86,7 +90,9 @@ namespace Chummer.UI.Skills
                         DataSourceUpdateMode.OnPropertyChanged);
                 cboSkill.DisplayMember = nameof(ListItem.Name);
                 cboSkill.ValueMember = nameof(ListItem.Value);
-                cboSkill.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language);
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
+                cboSkill.DataSource = lstDefaultKnowledgeSkills;
                 cboSkill.SelectedIndex = -1;
                 cboSkill.DataBindings.Add("Text", skill, nameof(KnowledgeSkill.WriteableName), false, DataSourceUpdateMode.OnPropertyChanged);
 
@@ -123,7 +129,7 @@ namespace Chummer.UI.Skills
                 btnCareerIncrease.Enabled = false;
 
                 lblRating.Visible = true;
-                lblRating.Text = skill.CyberwareRating().ToString();
+                lblRating.Text = skill.CyberwareRating.ToString();
 
                 cmdDelete.Visible = false;
             }

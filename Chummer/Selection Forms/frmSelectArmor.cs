@@ -270,11 +270,6 @@ namespace Chummer
             e.SortResult = intResult;
             e.Handled = true;
         }
-
-        private void dgvArmor_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            AcceptForm();
-        }
         #endregion
 
         #region Properties

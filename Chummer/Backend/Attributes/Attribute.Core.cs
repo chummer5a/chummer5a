@@ -1432,7 +1432,7 @@ namespace Chummer.Backend.Attributes
             if (!CanUpgradeCareer) return;
 
             int price = UpgradeKarmaCost();
-            string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {Value} -> {Value + AttributeValueModifiers + 1}";
+            string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {Value} 🡒 {Value + AttributeValueModifiers + 1}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry(_objCharacter);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);

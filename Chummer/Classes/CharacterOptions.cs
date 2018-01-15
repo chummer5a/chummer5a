@@ -275,7 +275,7 @@ namespace Chummer
             // <name />
             objWriter.WriteElementString("name", _strName);
             // <recentimagefolder />
-            if (!String.IsNullOrEmpty(_strImageFolder))
+            if (!string.IsNullOrEmpty(_strImageFolder))
             {
                 objWriter.WriteElementString("recentimagefolder", _strImageFolder);
             }

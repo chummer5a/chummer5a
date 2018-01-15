@@ -38,7 +38,7 @@ namespace Chummer
     {
         private string DisplayDebug()
         {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
         }
 
         public enum ImprovementType
@@ -299,7 +299,7 @@ namespace Chummer
             ContactForceLoyalty,
             FreeWare,
             WeaponAccuracy,
-            NumImprovementTypes // <- This one should always be the last defined enum
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -339,7 +339,7 @@ namespace Chummer
             AIProgram,
             SpiritFettering,
             MentorSpirit,
-            NumImprovementSources // <- This one should always be the last defined enum
+            NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
         private readonly Character _objCharacter = null;
@@ -1237,9 +1237,8 @@ namespace Chummer
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
                         break;
                     case Improvement.ImprovementType.SkillKnowledgeForced:
-                        Guid guid = Guid.Parse(objImprovement.ImprovedName);
-                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.Id == guid);
+                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1624,9 +1623,6 @@ namespace Chummer
         }
 
         #endregion
-
-
-
 }
 
     public static class ImprovementExtensions

@@ -5145,7 +5145,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " -> " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -5161,7 +5161,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
-                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " -> " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objNuyenExpense);
                     CharacterObject.Nuyen -= 10000;
 
@@ -5228,7 +5228,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " -> " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -10670,7 +10670,7 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkillGroup:
                     {
                         // Locate the Skill Group that was affected.
-                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.Id.ToString() == objEntry.Undo.ObjectId);
+                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == objEntry.Undo.ObjectId);
 
                         if (group != null)
                             group.Karma -= 1;
@@ -10681,8 +10681,8 @@ namespace Chummer
                 case KarmaExpenseType.ImproveSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill skill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId) ??
-                                      CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.Id.ToString() == objEntry.Undo.ObjectId);
+                        Skill skill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objEntry.Undo.ObjectId) ??
+                                      CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objEntry.Undo.ObjectId);
 
                         if (skill != null)
                             skill.Karma -= 1;
@@ -16066,7 +16066,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " -> " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -16134,7 +16134,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " -> " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -24215,7 +24215,7 @@ namespace Chummer
                         {
                             intComplexForms++;
                         }
-                        lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+                        lblPBuildComplexForms.Text = string.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
                         */
 
                         IsCharacterUpdateRequested = true;

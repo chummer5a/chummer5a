@@ -1084,6 +1084,22 @@ namespace Chummer
                         continue;
                     }
                 }
+                if (objXmlGear["forbidden"]?["geardetails"] != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                    {
+                        continue;
+                    }
+                }
+                if (objXmlGear["required"]?["geardetails"] != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                    {
+                        continue;
+                    }
+                }
 
                 decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
                 if (chkDoItYourself.Checked)
