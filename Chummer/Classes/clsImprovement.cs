@@ -38,7 +38,7 @@ namespace Chummer
     {
         private string DisplayDebug()
         {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
         }
 
         public enum ImprovementType
@@ -299,7 +299,7 @@ namespace Chummer
             ContactForceLoyalty,
             FreeWare,
             WeaponAccuracy,
-            NumImprovementTypes // <- This one should always be the last defined enum
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -339,7 +339,7 @@ namespace Chummer
             AIProgram,
             SpiritFettering,
             MentorSpirit,
-            NumImprovementSources // <- This one should always be the last defined enum
+            NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
         private readonly Character _objCharacter = null;
