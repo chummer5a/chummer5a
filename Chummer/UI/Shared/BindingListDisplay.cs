@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +30,7 @@ namespace Chummer.UI.Shared
 {
     public partial class BindingListDisplay<TType> : UserControl
     {
-        public PropertyChangedEventHandler ChildPropertyChanged;
+        public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         public IComparer<TType> DefaultComparer => _indexComparer;
 
@@ -35,7 +53,6 @@ namespace Chummer.UI.Shared
             _contents = contents;
             _createFunc = createFunc;
             _loadVisibleOnly = loadVisibleOnly;
-            DoubleBuffered = true;
             pnlDisplay.SuspendLayout();
             _contentList = new List<ControlWithMetaData>();
             foreach (TType objLoopTType in _contents)
@@ -53,6 +70,7 @@ namespace Chummer.UI.Shared
 
         private void BindingListDisplay_Load(object sender, EventArgs e)
         {
+            DoubleBuffered = true;
             Application.Idle += ApplicationOnIdle;
         }
 
@@ -289,7 +307,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class ControlWithMetaData
+        private sealed class ControlWithMetaData
         {
             public TType Item { get; }
 
@@ -317,8 +335,7 @@ namespace Chummer.UI.Shared
                 _parent = parent;
                 Item = item;
 
-                INotifyPropertyChanged prop = item as INotifyPropertyChanged;
-                if (prop != null)
+                if (item is INotifyPropertyChanged prop)
                 {
                     prop.PropertyChanged += item_ChangedEvent;
                 }
@@ -389,17 +406,15 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private class IndexComparer : IComparer<TType>
+        private sealed class IndexComparer : IComparer<TType>
         {
             private Dictionary<TType, int> _index;
 
             public int Compare(TType x, TType y)
             {
-                int xindex;
-                if (_index.TryGetValue(x, out xindex))
+                if (_index.TryGetValue(x, out int xindex))
                 {
-                    int yindex;
-                    if (_index.TryGetValue(y, out yindex))
+                    if (_index.TryGetValue(y, out int yindex))
                     {
                         return xindex.CompareTo(yindex);
                     }

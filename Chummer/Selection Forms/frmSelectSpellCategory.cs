@@ -34,7 +34,7 @@ namespace Chummer
         public frmSelectSpellCategory()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("spells.xml");
         }
 
@@ -54,10 +54,8 @@ namespace Chummer
 
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";

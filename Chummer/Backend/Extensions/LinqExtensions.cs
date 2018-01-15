@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +69,7 @@ namespace Chummer
         {
             if (objParentList.Count != objTargetList.Count)
                 return false;
-            List<T> lstExclude = new List<T>(objTargetList.Count);
+            HashSet<T> lstExclude = new HashSet<T>();
             foreach (T objLoopChild in objParentList)
             {
                 foreach (T objTargetChild in objTargetList)
@@ -214,14 +232,14 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> DeepWhere<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            List<T> objReturn = new List<T>();
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
-                    objReturn.Add(objLoopChild);
-                objReturn.AddRange(funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate));
+                    yield return objLoopChild;
+
+                foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).DeepWhere(funcGetChildrenMethod, predicate))
+                    yield return objLoopSubchild;
             }
-            return objReturn;
         }
 
         /// <summary>
@@ -229,13 +247,13 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            List<T> objReturn = new List<T>();
             foreach (T objLoopChild in objParentList)
             {
-                objReturn.Add(objLoopChild);
-                objReturn.AddRange(funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod));
+                yield return objLoopChild;
+
+                foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod))
+                    yield return objLoopSubchild;
             }
-            return objReturn;
         }
     }
 }

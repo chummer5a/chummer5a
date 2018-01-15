@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -313,7 +314,7 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality>Nocturnal</quality>
-              <quality select ="Colored Fur">Unusual Hair</quality>
+              <quality select="Colored Fur">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus />
@@ -2508,7 +2509,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -2576,7 +2577,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2643,7 +2644,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -2706,12 +2707,12 @@
             </positive>
             <negative>
               <quality>Uneducated</quality>
-			  <quality>Symbiosis</quality>
+              <quality>Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2776,13 +2777,13 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2850,7 +2851,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -2918,7 +2919,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <karma>115</karma>
           <source>RF</source>
@@ -2987,7 +2988,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -3043,7 +3044,7 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <powers>
@@ -3112,7 +3113,7 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <powers>
@@ -3183,15 +3184,15 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
@@ -3255,7 +3256,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Goring Horns</quality>
-			  <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
@@ -3266,10 +3267,10 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
-			<lifestylecost>20</lifestylecost>
+            <initiativedice>1</initiativedice>
+            <lifestylecost>20</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3325,15 +3326,15 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -3389,17 +3390,17 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
-			  <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3455,15 +3456,15 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3517,20 +3518,20 @@
           <walk alt="2/1/0">1/1/0</walk>
           <run alt="4/1/0">4/1/0</run>
           <sprint alt="2/1/0">1/1/0</sprint>
-		  <qualities>
+          <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
-			<negative>
+            <negative>
               <quality select="Shapeshifter Form Only">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3593,9 +3594,9 @@
           <karma>120</karma>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3651,7 +3652,7 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-			  <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality select="Shapeshifter Form Only">Goring Horns</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
           </qualities>
@@ -3659,10 +3660,10 @@
             <armor group="0">1</armor>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-			<enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -3731,10 +3732,10 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-			<enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3798,9 +3799,9 @@
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3863,10 +3864,10 @@
           <bonus>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
-			<enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <enabletab>critter</enabletab>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -3931,9 +3932,9 @@
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -4064,7 +4065,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -4125,7 +4126,7 @@
               <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
@@ -4143,7 +4144,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -4218,7 +4219,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -4296,7 +4297,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -4304,7 +4305,7 @@
         <metavariant>
           <name>Nocturna</name>
           <karma>115</karma>
-		  <bodmin>1</bodmin>
+          <bodmin>1</bodmin>
           <bodmax>5</bodmax>
           <bodaug>9</bodaug>
           <agimin>3</agimin>
@@ -4377,7 +4378,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <qualities>
           </qualities>
@@ -4386,7 +4387,7 @@
         </metavariant>
         <metavariant>
           <name>Xapiri Thëpë</name>
-		  <karma>113</karma>
+          <karma>113</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -4457,7 +4458,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -4533,7 +4534,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <karma>125</karma>
           <source>RF</source>
@@ -4594,7 +4595,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
-              <quality select ="Shapeshifter Form Only">Vomeronasal Organ</quality>
+              <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -4611,7 +4612,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -4691,7 +4692,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4773,7 +4774,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4839,7 +4840,7 @@
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
-			<negative>
+            <negative>
               <quality select="Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
@@ -4855,7 +4856,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -4935,7 +4936,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
@@ -5011,7 +5012,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <source>SR5</source>
@@ -5074,7 +5075,7 @@
               <quality select="Shapeshifter Form Only">Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Fangs</quality>
-			  <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5163,7 +5164,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5241,7 +5242,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <karma>4</karma>
           <source>RF</source>
@@ -5317,7 +5318,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <karma>130</karma>
           <source>RF</source>
@@ -5397,7 +5398,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>SR5</source>
           <page>50</page>
@@ -5479,7 +5480,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5558,7 +5559,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5637,7 +5638,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5717,7 +5718,7 @@
               <page>104</page>
             </naturalweapon>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
           <source>RF</source>
           <page>104</page>
@@ -5835,9 +5836,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -5903,9 +5904,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -5970,9 +5971,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -6029,7 +6030,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-			  <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Symbiosis</quality>
@@ -6038,9 +6039,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6109,9 +6110,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6119,7 +6120,7 @@
         </metavariant>
         <metavariant>
           <name>Xapiri Thëpë</name>
-		  <karma>123</karma>
+          <karma>123</karma>
           <bodmin>1</bodmin>
           <bodmax>6</bodmax>
           <bodaug>10</bodaug>
@@ -6177,9 +6178,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6245,9 +6246,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <karma>135</karma>
@@ -6314,10 +6315,10 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -6373,10 +6374,10 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -6442,10 +6443,10 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -6513,7 +6514,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
           </bonus>
           <qualities>
@@ -6593,9 +6594,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6660,9 +6661,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -6728,9 +6729,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6796,9 +6797,9 @@
           <karma>8</karma>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6864,9 +6865,9 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6932,9 +6933,9 @@
           <karma>140</karma>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -6991,20 +6992,20 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-			  <quality select="Shapeshifter Form Only">Keen-Eared</quality>
+              <quality select="Shapeshifter Form Only">Keen-Eared</quality>
             </positive>
-			<negative>
+            <negative>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <armor group="0">1</armor>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>SR5</source>
@@ -7072,11 +7073,11 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -7133,20 +7134,20 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>              
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
-            <negative>              
+            <negative>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <karma>12</karma>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -7208,11 +7209,11 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -7278,11 +7279,11 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
           </bonus>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <source>RF</source>
@@ -7753,7 +7754,7 @@
               <quality>Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8316,7 +8317,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-			<lifestylecost>20</lifestylecost>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>90</page>
@@ -8553,7 +8554,7 @@
           <qualities>
             <positive>
               <quality select="Metahuman Form Only">Fangs</quality>
-			  <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality select="Metahuman Form Only">Keen-Eared</quality>
               <quality select="Shapeshifter Form Only">Hawk Eye</quality>
               <quality select="Metahuman Form Only">Low-Light Vision</quality>
             </positive>
@@ -9777,7 +9778,7 @@
             </negative>
           </qualities>
           <bonus>
-		    <enabletab>critter</enabletab>
+            <enabletab>critter</enabletab>
             <initiativedice>2</initiativedice>
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
@@ -10938,7 +10939,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11032,7 +11033,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11125,7 +11126,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11216,7 +11217,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11307,7 +11308,7 @@
           <qualities>
             <positive>
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
-              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>			  
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
             </positive>
@@ -11346,7 +11347,7 @@
         </metavariant>
       </metavariants>
     </metatype>
-	<metatype>
+    <metatype>
       <id>5bc6b1d8-8772-41f9-8c45-6f9abbd42cb1</id>
       <name>Shapeshifter: Lupine</name>
       <karma>120</karma>
@@ -11776,7 +11777,7 @@
               <quality>Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12010,7 +12011,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-			  <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -12091,7 +12092,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-			  <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -12173,7 +12174,7 @@
             <positive>
               <quality select="Shapeshifter Form Only">Vomerosonal Organ</quality>
               <quality select="Metahuman Form Only">Thermographic Vision</quality>
-			  <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
+              <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
@@ -13174,8 +13175,8 @@
           <page>104</page>
         </metavariant>
       </metavariants>
-    </metatype>    
-	<metatype>
+    </metatype>
+    <metatype>
       <id>6b9844d0-3e17-442f-a34d-f12f52b1c291</id>
       <name>Shapeshifter: Pantherine</name>
       <karma>150</karma>
@@ -16026,7 +16027,7 @@
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-			  <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality select="Metahuman Form Only">Neoteny</quality>
@@ -16119,7 +16120,7 @@
               <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
               <quality select="Metahuman Form Only">Monkey Paws</quality>
-			  <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality>Uneducated</quality>
@@ -16210,7 +16211,7 @@
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-			  <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Celerity</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
             </positive>
@@ -16303,7 +16304,7 @@
               <quality select="Shapeshifter Form Only">Balance Receptor</quality>
               <quality select="Shapeshifter Form Only">Broadened Auditory System (Ultrasound)</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
-			  <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality select="Metahuman Form Only">Thermographic Vision</quality>
               <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
               <quality select="Metahuman Form Only">Underwater Vision</quality>
               <quality select="Metahuman Form Only">Webbed Digits</quality>
@@ -19750,7 +19751,7 @@
               <quality>Uneducated</quality>
               <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -20091,7 +20092,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-			    <lifestylecost>20</lifestylecost>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>89</page>
@@ -20176,7 +20177,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-			    <lifestylecost>20</lifestylecost>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>89</page>
@@ -20260,7 +20261,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-			<lifestylecost>20</lifestylecost>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>90</page>
@@ -20344,7 +20345,7 @@
               <source>RF</source>
               <page>105</page>
             </naturalweapon>
-			      <lifestylecost>20</lifestylecost>
+            <lifestylecost>20</lifestylecost>
           </bonus>
           <source>RF</source>
           <page>90</page>
@@ -21269,7 +21270,7 @@
           </powers>
           <qualities>
             <positive>
-			  <!-- It is mentioned explicitply that the webbed digits and the senses of smell/hearing carry over to metahuman form-->
+              <!-- It is mentioned explicitply that the webbed digits and the senses of smell/hearing carry over to metahuman form-->
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
               <quality select="Shapeshifter Form Only">Low-Light Vision</quality>
@@ -21283,7 +21284,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21343,7 +21344,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
           <powers>
@@ -21366,7 +21367,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
@@ -21447,7 +21448,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21507,7 +21508,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
           <powers>
@@ -21528,7 +21529,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21588,7 +21589,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
           <powers>
@@ -21606,13 +21607,13 @@
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
               <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select ="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
               <quality>Uneducated</quality>
             </negative>
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21673,7 +21674,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
           <powers>
@@ -21695,7 +21696,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21755,7 +21756,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
           <powers>
@@ -21778,7 +21779,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -21861,7 +21862,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -21927,7 +21928,7 @@
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22011,7 +22012,7 @@
           <sprint alt="1/1/0">1/4/0</sprint>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22092,7 +22093,7 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
           <powers>
@@ -22100,7 +22101,7 @@
           </powers>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22178,10 +22179,10 @@
           <depmin>0</depmin>
           <depmax>0</depmax>
           <depaug>0</depaug>
-		  <walk alt="2/1/0">1/3/0</walk>
+          <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -22201,7 +22202,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
@@ -22265,7 +22266,7 @@
           <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="1/1/0">1/4/0</sprint>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -22283,7 +22284,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -22346,7 +22347,7 @@
           <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -22365,7 +22366,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -22429,7 +22430,7 @@
           <walk alt="2/1/0">1/3/0</walk>
           <run alt="4/1/0">2/8/0</run>
           <sprint alt="2/1/0">1/4/0</sprint>
-		  <powers>
+          <powers>
             <power>Shift (Metahuman Form)</power>
           </powers>
           <qualities>
@@ -22447,7 +22448,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -22529,7 +22530,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
@@ -22608,7 +22609,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
@@ -22694,7 +22695,7 @@
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -22783,7 +22784,7 @@
             <reach>1</reach>
             <lifestylecost>100</lifestylecost>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -22867,7 +22868,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -22953,7 +22954,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Seal Form)</name>
@@ -23039,7 +23040,7 @@
           </qualities>
           <bonus>
             <enabletab>critter</enabletab>
-			<initiativedice>1</initiativedice>
+            <initiativedice>1</initiativedice>
             <lifestylecost>20</lifestylecost>
             <naturalweapon>
               <name>Bite (Seal Form)</name>

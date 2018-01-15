@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Attributes
+namespace Chummer.UI.Attributes
 {
     partial class AttributeControl
     {
@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cmdImproveATT = new Chummer.helpers.Button();
-            this.lblValue = new Chummer.helpers.Label();
-            this.lblName = new Chummer.helpers.Label();
-            this.lblLimits = new Chummer.helpers.Label();
-            this.cmdBurnEdge = new Chummer.helpers.Button();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
-            this.nudBase = new Chummer.helpers.NumericUpDownEx();
+            this.cmdImproveATT = new Chummer.ButtonWithToolTip();
+            this.lblValue = new Chummer.LabelWithToolTip();
+            this.lblName = new Chummer.LabelWithToolTip();
+            this.lblLimits = new Chummer.LabelWithToolTip();
+            this.cmdBurnEdge = new Chummer.ButtonWithToolTip();
+            this.nudKarma = new Chummer.NumericUpDownEx();
+            this.nudBase = new Chummer.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBase)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +49,7 @@
             this.cmdImproveATT.Size = new System.Drawing.Size(24, 24);
             this.cmdImproveATT.TabIndex = 75;
             this.cmdImproveATT.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cmdImproveATT.TooltipText = "";
             this.cmdImproveATT.UseVisualStyleBackColor = true;
             this.cmdImproveATT.Click += new System.EventHandler(this.cmdImproveATT_Click);
             // 
@@ -91,12 +92,13 @@
             this.cmdBurnEdge.Size = new System.Drawing.Size(24, 24);
             this.cmdBurnEdge.TabIndex = 78;
             this.cmdBurnEdge.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.cmdBurnEdge.TooltipText = "";
             this.cmdBurnEdge.UseVisualStyleBackColor = true;
             this.cmdBurnEdge.Click += new System.EventHandler(this.cmdBurnEdge_Click);
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(165, 1);
             this.nudKarma.Name = "nudKarma";
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
@@ -106,16 +108,11 @@
             // 
             // nudBase
             // 
-            this.nudBase.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudBase.InterceptMouseWheel = Chummer.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudBase.Location = new System.Drawing.Point(119, 1);
             this.nudBase.Name = "nudBase";
             this.nudBase.Size = new System.Drawing.Size(40, 20);
             this.nudBase.TabIndex = 76;
-            this.nudBase.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.nudBase.BeforeValueIncrement += new System.ComponentModel.CancelEventHandler(this.nudBase_BeforeValueIncrement);
             this.nudBase.ValueChanged += new System.EventHandler(this.nudBase_ValueChanged);
             // 
@@ -141,12 +138,12 @@
 
         #endregion
 
-        private Chummer.helpers.Button cmdImproveATT;
-        internal Chummer.helpers.Label lblValue;
-        internal Chummer.helpers.Label lblName;
-        internal Chummer.helpers.Label lblLimits;
-        internal Chummer.helpers.NumericUpDownEx nudKarma;
-        internal Chummer.helpers.NumericUpDownEx nudBase;
-        private Chummer.helpers.Button cmdBurnEdge;
+        private ButtonWithToolTip cmdImproveATT;
+        private LabelWithToolTip lblValue;
+        private LabelWithToolTip lblName;
+        private LabelWithToolTip lblLimits;
+        private NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudBase;
+        private ButtonWithToolTip cmdBurnEdge;
     }
 }

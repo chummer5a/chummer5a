@@ -24,7 +24,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Academic</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -33,7 +33,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Language</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -42,7 +42,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Street</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -51,7 +51,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Professional</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>

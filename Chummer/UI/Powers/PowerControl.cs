@@ -34,7 +34,7 @@ namespace Chummer
         {
             PowerObject = objPower;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             nudRating.DataBindings.Add("Enabled", PowerObject, nameof(PowerObject.LevelsEnabled), false, 
                 DataSourceUpdateMode.OnPropertyChanged);
             nudRating.DataBindings.Add("Minimum", PowerObject, nameof(PowerObject.FreeLevels), false,
@@ -74,7 +74,7 @@ namespace Chummer
             string strPropertyName = propertyChangedEventArgs?.PropertyName;
             if (strPropertyName == nameof(PowerObject.FreeLevels) || strPropertyName == nameof(PowerObject.TotalRating))
             {
-                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString();
+                PowerObject.DisplayPoints = PowerObject.PowerPoints.ToString(GlobalOptions.CultureInfo);
                 tipTooltip.SetToolTip(lblPowerPoints, PowerObject.ToolTip());
                 cmdDelete.Enabled = PowerObject.FreeLevels == 0;
             }
@@ -112,32 +112,26 @@ namespace Chummer
             PowerObject.Deleting = true;
             ImprovementManager.RemoveImprovements(PowerObject.CharacterObject, Improvement.ImprovementSource.Power, PowerObject.InternalId);
             PowerObject.CharacterObject.Powers.Remove(PowerObject);
-            
-            if (_objPower.CharacterObject.Created)
-            {
-                frmCareer parent = frmParent as frmCareer;
-                parent.ScheduleCharacterUpdate();
-            }
-            else
-            {
-                frmCreate parent = frmParent as frmCreate;
-                parent.ScheduleCharacterUpdate();
-            }
+
+            if (frmParent is CharacterShared objParent)
+                objParent.IsCharacterUpdateRequested = true;
         }
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmPowerNotes = new frmNotes();
-            frmPowerNotes.Notes = _objPower.Notes;
+            frmNotes frmPowerNotes = new frmNotes
+            {
+                Notes = _objPower.Notes
+            };
             frmPowerNotes.ShowDialog(this);
 
             if (frmPowerNotes.DialogResult == DialogResult.OK)
                 _objPower.Notes = frmPowerNotes.Notes;
 
-            string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
+            string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes", GlobalOptions.Language);
             if (_objPower.Notes != "")
                 strTooltip += "\n\n" + _objPower.Notes;
-            tipTooltip.SetToolTip(imgNotes, CommonFunctions.WordWrap(strTooltip, 100));
+            tipTooltip.SetToolTip(imgNotes, strTooltip.WordWrap(100));
         }
         #endregion
 
@@ -192,8 +186,7 @@ namespace Chummer
         #region Methods
         private void lblPowerName_Click(object sender, EventArgs e)
         {
-            string strBook = _objPower.Source + " " + _objPower.Page;
-            CommonFunctions.OpenPDF(strBook, _objPower.CharacterObject);
+            CommonFunctions.OpenPDF(_objPower.Source + " " + _objPower.Page(GlobalOptions.Language));
         }
 
         private void MoveControls()

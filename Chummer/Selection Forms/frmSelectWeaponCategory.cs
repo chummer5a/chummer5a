@@ -36,7 +36,7 @@ namespace Chummer
         public frmSelectWeaponCategory()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("weapons.xml");
         }
 
@@ -56,7 +56,7 @@ namespace Chummer
 
             foreach (XmlNode objXmlCategory in objXmlCategoryList)
             {
-                if (WeaponType != null)
+                if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
                 {
                     if (objXmlCategory.Attributes["type"] == null)
                         continue;
@@ -65,19 +65,14 @@ namespace Chummer
                         continue;
                 }
 
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlCategory.InnerText;
-                objItem.Name = objXmlCategory.Attributes["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                lstCategory.Add(objItem);
+                string strInnerText = objXmlCategory.InnerText;
+                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes["translate"]?.InnerText ?? strInnerText));
             }
 
             // Add the Cyberware Category.
             if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = "Cyberware";
-                objItem.Name = "Cyberware";
-                lstCategory.Add(objItem);
+                lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware", GlobalOptions.Language)));
             }
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
@@ -131,6 +126,8 @@ namespace Chummer
             set
             {
                 _strForceCategory = value;
+                if (value == "Cyberware")
+                    _strForceCategory = "Cyberweapon";
             }
         }
         #endregion

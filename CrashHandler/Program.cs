@@ -9,7 +9,7 @@ namespace CrashHandler
 {
 	static class Program
 	{
-		static Dictionary<string, Action<string[]>> _functions = new Dictionary<string, Action<string[]>>()
+		static Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
 		{
 			{"crash", ShowCrashReport }
 		};
@@ -45,17 +45,18 @@ namespace CrashHandler
 		[STAThread]
 		static void Main(string[] args)
 		{ 
-			if (args.Length == 0) return;
+            for (int i = 0; i < args.Length - 1; ++i)
+            {
+                if (s_DictionaryFunctions.TryGetValue(args[i], out Action<string[]> actCachedAction))
+                {
+                    actCachedAction(args.Skip(i + 1).ToArray());
+                    break;
+                }
+            }
 
-		    Action<string[]> actCachedAction;
-			if (_functions.TryGetValue(args[0], out actCachedAction))
-			{
-                actCachedAction(args.Skip(1).ToArray());
-			}
-
-			//Application.EnableVisualStyles();
-			//Application.SetCompatibleTextRenderingDefault(false);
-			//Application.Run(new frmCrashReporter());
-		}
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new frmCrashReporter());
+        }
 	}
 }

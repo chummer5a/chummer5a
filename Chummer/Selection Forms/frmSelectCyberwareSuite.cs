@@ -26,16 +26,16 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectCyberwareSuite : Form
+    public sealed partial class frmSelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
         private decimal _decCharacterESSModifier = 1.0m;
-        private Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
-        private string _strType = "cyberware";
-        private Character _objCharacter;
+        private readonly Improvement.ImprovementSource _objSource = Improvement.ImprovementSource.Cyberware;
+        private readonly string _strType = "cyberware";
+        private readonly Character _objCharacter;
         private decimal _decCost = 0;
 
-        List<Cyberware> _lstCyberware = new List<Cyberware>();
+        private readonly List<Cyberware> _lstCyberware = new List<Cyberware>();
 
         private readonly XmlDocument _objXmlDocument = null;
 
@@ -44,19 +44,19 @@ namespace Chummer
         {
             InitializeComponent();
             _objSource = objSource;
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             if (_objSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
-                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
+                Text = LanguageManager.GetString("Title_SelectBiowareSuite", GlobalOptions.Language);
+                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite", GlobalOptions.Language);
             }
 
             _objCharacter = objCharacter;
-            _objXmlDocument = XmlManager.Load(_strType + ".xml", true);
+            _objXmlDocument = XmlManager.Load(_strType + ".xml", string.Empty, true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -88,7 +88,7 @@ namespace Chummer
                 return;
 
             XmlNodeList objXmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite");
-            List<Grade> lstGrades = CommonFunctions.GetGradeList(_objSource, _objCharacter.Options);
+            IList<Grade> lstGrades = _objCharacter.GetGradeList(_objSource);
 
             foreach (XmlNode objXmlSuite in objXmlSuiteList)
             {
@@ -118,7 +118,7 @@ namespace Chummer
             
             lblCyberware.Text = string.Empty;
 
-            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter.Options);
+            Grade objGrade = Cyberware.ConvertToCyberwareGrade(objXmlGrade["name"].InnerText, _objSource, _objCharacter);
             ParseNode(objXmlSuite, objGrade, null);
             foreach (Cyberware objCyberware in _lstCyberware)
             {
@@ -184,7 +184,7 @@ namespace Chummer
         /// Convert the grade string found in the file to the name of the Grade found in the Cyberware.xml file.
         /// </summary>
         /// <param name="strValue">Grade from the Cyberware Suite.</param>
-        private string CyberwareGradeName(string strValue)
+        private static string CyberwareGradeName(string strValue)
         {
             switch (strValue)
             {
@@ -238,14 +238,11 @@ namespace Chummer
 
                 // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
                 XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = \"" + objXmlItem["name"].InnerText + "\"]");
-
-                TreeNode objTreeNode = new TreeNode();
+                
                 List<Weapon> lstWeapons = new List<Weapon>();
-                List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                 List<Vehicle> objVehicles = new List<Vehicle>();
-                List<TreeNode> objVehicleNodes = new List<TreeNode>();
                 Cyberware objCyberware = new Cyberware(_objCharacter);
-                objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, objTreeNode, lstWeapons, lstWeaponNodes, objVehicles, objVehicleNodes, false, false);
+                objCyberware.Create(objXmlCyberware, _objCharacter, objGrade, _objSource, intRating, lstWeapons, objVehicles, false, false);
                 objCyberware.Suite = true;
 
                 if (objParent == null)
@@ -268,7 +265,7 @@ namespace Chummer
             for (int i = 0; i <= intDepth; i++)
                 strSpace += "   ";
                 
-            lblCyberware.Text += strSpace + objCyberware.DisplayName + "\n";
+            lblCyberware.Text += strSpace + objCyberware.DisplayName(GlobalOptions.Language) + "\n";
 
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objPlugin, intDepth + 1);

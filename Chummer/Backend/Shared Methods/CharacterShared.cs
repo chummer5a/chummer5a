@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -27,7 +28,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
@@ -42,14 +43,16 @@ namespace Chummer
     [System.ComponentModel.DesignerCategory("")]
     public class CharacterShared : Form
     {
-        protected readonly Character _objCharacter;
-        protected readonly CharacterOptions _objOptions;
-        protected bool _blnIsDirty = false;
+        private readonly Character _objCharacter;
+        private readonly CharacterOptions _objOptions;
+        private bool _blnIsDirty = false;
+        private bool _blnRequestCharacterUpdate = false;
 
         public CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
+            _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
             _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
@@ -62,22 +65,32 @@ namespace Chummer
         /// <summary>
         /// Wrapper for relocating contact forms. 
         /// </summary>
-        public class TransportWrapper
+        protected struct TransportWrapper
         {
-            private readonly Control _control;
+            public Control Control { get; }
 
-            public TransportWrapper(Control control)
+            public TransportWrapper(Control objControl)
             {
-                _control = control;
+                Control = objControl;
             }
 
-            public Control Control
+            public override bool Equals(object obj)
             {
-                get { return _control; }
+                return Control.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return Control.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return Control.ToString();
             }
         }
 
-        public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();
+        public Stopwatch Autosave_StopWatch { get; } = Stopwatch.StartNew();
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
@@ -94,7 +107,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     Autosave_StopWatch.Restart();
                     return;
                 }
@@ -104,7 +117,7 @@ namespace Chummer
             string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
             Cursor = Cursors.Default;
@@ -118,7 +131,7 @@ namespace Chummer
         /// <param name="lblStun"></param>
         /// <param name="tipTooltip"></param>
         /// <param name="_objImprovementManager"></param>
-        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, HtmlToolTip tipTooltip)
+        protected void UpdateConditionMonitor(Label lblPhysical, Label lblStun, ToolTip tipTooltip)
         {
             // Condition Monitor.
             int intCMPhysical = _objCharacter.PhysicalCM;
@@ -133,12 +146,12 @@ namespace Chummer
                 int intWIL = _objCharacter.WIL.TotalValue;
                 string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblPhysical, strCM);
                 strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
                 tipTooltip.SetToolTip(lblStun, strCM);
             }
@@ -151,7 +164,7 @@ namespace Chummer
         /// <param name="tipTooltip"></param>
         /// <param name="objImprovementManager"></param>
         /// <param name="lblCMArmor"></param>
-        protected void UpdateArmorRating(Label lblArmor, HtmlToolTip tipTooltip, Label lblCMArmor = null)
+        protected void UpdateArmorRating(Label lblArmor, ToolTip tipTooltip, Label lblCMArmor = null)
         {
             // Armor Ratings.
             int intTotalArmorRating = _objCharacter.TotalArmorRating;
@@ -159,9 +172,9 @@ namespace Chummer
             lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + intArmorRating.ToString() + ")";
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ")";
                 if (intArmorRating != intTotalArmorRating)
-                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
+                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
                                        (intTotalArmorRating - intArmorRating).ToString() + ")";
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
@@ -192,7 +205,7 @@ namespace Chummer
         /// <param name="lblSocial"></param>
         /// <param name="lblAstral"></param>
         /// <param name="tipTooltip"></param>
-        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, HtmlToolTip tipTooltip)
+        protected void RefreshLimits(Label lblPhysical, Label lblMental, Label lblSocial, Label lblAstral, ToolTip tipTooltip)
         {
             lblPhysical.Text = _objCharacter.LimitPhysical.ToString();
             lblMental.Text = _objCharacter.LimitMental.ToString();
@@ -215,13 +228,13 @@ namespace Chummer
                     switch (objLoopImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.PhysicalLimit:
-                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.MentalLimit:
-                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.SocialLimit:
-                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                     }
                 }
@@ -234,23 +247,23 @@ namespace Chummer
             lblAstral.Text = _objCharacter.LimitAstral.ToString();
         }
 
-        private readonly Lazy<Skill> _gunneryCached;
+        private static Lazy<Skill> _gunneryCached;
 
-        protected int MountedGunManualOperationDicePool(/*Weapon weapon*/)
+        public static int MountedGunManualOperationDicePool(Weapon weapon)
         {
             return _gunneryCached.Value.Pool;
         }
 
-        protected int MountedGunCommandDeviceDicePool(/*Weapon weapon*/)
+        public static int MountedGunCommandDeviceDicePool(Character objCharacter)
         {
-            return _gunneryCached.Value.PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+            return _gunneryCached.Value.PoolOtherAttribute(objCharacter.LOG.TotalValue);
         }
 
-        protected int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
+        public static int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
         {
             int pilotRating = vehicle.Pilot;
 
-            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
+            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName(GlobalOptions.Language)));
 
             if (maybeAutoSoft != null)
             {
@@ -268,12 +281,12 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            LimitModifier objLimitModifier = CommonFunctions.FindByIdWithNameCheck(treLimit.SelectedNode.Tag.ToString(),
-                _objCharacter.LimitModifiers);
+            string strGuid = objSelectedNode.Tag.ToString();
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound"));
+                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                 return;
             }
             frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);
@@ -285,23 +298,18 @@ namespace Chummer
             //Remove the old LimitModifier to ensure we don't double up.
             _objCharacter.LimitModifiers.Remove(objLimitModifier);
             // Create the new limit modifier.
-            TreeNode objNode = new TreeNode();
             objLimitModifier = new LimitModifier(_objCharacter);
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
-                strCondition, objNode);
-            objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+            objLimitModifier.Guid = new Guid(strGuid);
             if (objLimitModifier.InternalId == Guid.Empty.ToString())
                 return;
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             //Add the new treeview node for the LimitModifier.
-            objNode.ContextMenuStrip = cmsLimitModifier;
-            objNode.Text = objLimitModifier.DisplayName;
-            objNode.Tag = objLimitModifier.InternalId;
-            objSelectedNode.Parent.Nodes.Add(objNode);
+            objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
             objSelectedNode.Remove();
         }
 
@@ -310,17 +318,39 @@ namespace Chummer
         /// </summary>
         /// <param name="treSpells">Treenode that will be cleared and populated.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
-        protected void RefreshSpells(helpers.TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        protected static void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Clear the default nodes of entries.
-            foreach (TreeNode objNode in treSpells.Nodes)
+            if (notifyCollectionChangedEventArgs == null)
             {
-                objNode.Nodes.Clear();
+                //Clear the default nodes of entries.
+                foreach (TreeNode objNode in treSpells.Nodes)
+                {
+                    objNode.Nodes.Clear();
+                }
+                //Add the Spells that exist.
+                foreach (Spell objSpell in _objCharacter.Spells)
+                {
+                    treSpells.Add(objSpell, cmsSpell);
+                }
             }
-            //Add the Spells that exist.
-            foreach (Spell s in _objCharacter.Spells)
+            else
             {
-                treSpells.Add(s, cmsSpell, _objCharacter);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            treSpells.Add(objSpell, cmsSpell);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode t = treSpells.FindNode(objSpell.InternalId);
+                            treSpells.Nodes.Remove(t);
+                        }
+                        break;
+                }
             }
         }
 
@@ -339,13 +369,7 @@ namespace Chummer
             //Add the Critter Powers that exist.
             foreach (CritterPower objPower in _objCharacter.CritterPowers)
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Text = objPower.DisplayName;
-                objNode.Tag = objPower.InternalId;
-                objNode.ContextMenuStrip = cmsCritterPowers;
-                if (!string.IsNullOrEmpty(objPower.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
 
                 if (objPower.Category != "Weakness")
                 {
@@ -389,27 +413,14 @@ namespace Chummer
                 }
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra);
                 }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra))
                         continue;
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = objQuality.DisplayName;
-                    objNode.Tag = objQuality.InternalId;
-                    objNode.ContextMenuStrip = cmsQuality;
-
-                    if (!string.IsNullOrEmpty(objQuality.Notes))
-                        objNode.ForeColor = Color.SaddleBrown;
-                    else if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                            objQuality.OriginSource == QualitySource.Improvement)
-                    {
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
-                    objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
+                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
 
                     switch (objQuality.Type)
                     {
@@ -436,23 +447,12 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         protected void RefreshQualityNames(TreeView treQualities)
         {
-            TreeNode objSelectedNode = null;
+            TreeNode objSelectedNode = treQualities.SelectedNode;
             foreach (Quality objQuality in _objCharacter.Qualities)
             {
-                for (int i = 0; i <= 1; i++)
-                {
-                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
-                    {
-                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
-                            objSelectedNode = objTreeNode;
-                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
-                        {
-                            objTreeNode.Text = objQuality.DisplayName;
-                            goto NextQuality;
-                        }
-                    }
-                }
-                NextQuality:;
+                TreeNode objQualityNode = treQualities.FindNode(objQuality.InternalId);
+                if (objQualityNode != null)
+                    objQualityNode.Text = objQuality.DisplayName(GlobalOptions.Language);
             }
             if (objSelectedNode != null)
                 treQualities.SelectedNode = objSelectedNode;
@@ -530,6 +530,8 @@ namespace Chummer
                 Bitmap imgMugshot = (new Bitmap(openFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
 
                 _objCharacter.Mugshots.Add(imgMugshot);
+                if (_objCharacter.MainMugshotIndex == -1)
+                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
             return blnSuccess;
         }
@@ -572,7 +574,7 @@ namespace Chummer
             _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
             if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
             {
-                _objCharacter.MainMugshotIndex = 0;
+                _objCharacter.MainMugshotIndex = -1;
             }
             else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
             {
@@ -586,6 +588,42 @@ namespace Chummer
             {
                 return _blnIsDirty;
             }
+            set
+            {
+                if (_blnIsDirty != value)
+                {
+                    _blnIsDirty = value;
+                    UpdateWindowTitle(true);
+                }
+            }
+        }
+
+        public void MakeDirtyWithCharacterUpdate()
+        {
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender)
+        {
+            MakeDirtyWithCharacterUpdate();
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
+        {
+            MakeDirtyWithCharacterUpdate();
+        }
+
+        public bool IsCharacterUpdateRequested
+        {
+            get
+            {
+                return _blnRequestCharacterUpdate;
+            }
+            set
+            {
+                _blnRequestCharacterUpdate = value;
+            }
         }
 
         public Character CharacterObject
@@ -596,29 +634,39 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public virtual void UpdateWindowTitle(bool blnCanSkip = true)
+        public CharacterOptions CharacterObjectOptions
         {
-            UpdateWindowTitle(string.Empty, string.Empty, blnCanSkip);
+            get
+            {
+                return _objOptions;
+            }
+        }
+
+        private void objCharacter_CharacterNameChanged(object sender)
+        {
+            UpdateWindowTitle(false);
+        }
+
+        public virtual string FormMode
+        {
+            get
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        public void UpdateWindowTitle(string strAlias, string strMode, bool blnCanSkip = true)
+        public void UpdateWindowTitle(bool blnCanSkip)
         {
-            if (Text.EndsWith('*') && blnCanSkip)
+            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
-
-            Text = string.Empty;
-            if (!string.IsNullOrEmpty(strAlias))
-                Text += strAlias + " - ";
-            Text += strMode;
-            Text += " (" + _objCharacter.Options.Name + ")";
+            
+            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ")";
             if (_blnIsDirty)
-                Text += "*";
+                strTitle += '*';
+            this.DoThreadSafe(() => Text = strTitle);
         }
 
         /// <summary>
@@ -643,9 +691,8 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                _blnIsDirty = false;
-                GlobalOptions.AddToMRUList(_objCharacter.FileName);
-                UpdateWindowTitle(false);
+                GlobalOptions.AddToMRUList(_objCharacter.FileName, "mru", true, true);
+                IsDirty = false;
                 Cursor = Cursors.Default;
 
                 // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
@@ -674,15 +721,17 @@ namespace Chummer
                 }
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
 
             string strShowFileName = string.Empty;
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
             strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
 
             saveFileDialog.FileName = strShowFileName;
 
@@ -751,7 +800,7 @@ namespace Chummer
                 if (intBonusDrain != 0)
                 {
                     intDrain += intBonusDrain;
-                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers") + " (" + intBonusDrain.ToString() + ")");
+                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ")");
                 }
             }
 

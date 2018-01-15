@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -48,8 +66,8 @@ namespace Codaxy.WkHtmlToPdf
         public String FooterCenter { get; set; }
         public String FooterRight { get; set; }
         public object State { get; set; }
-        public Dictionary<String, String> Cookies { get; set; }
-        public Dictionary<String, String> ExtraParams { get; set; }
+        public IDictionary<String, String> Cookies { get; } = new Dictionary<string, string>();
+        public IDictionary<String, String> ExtraParams { get; } = new Dictionary<string, string>();
         public String HeaderFontSize { get; set; }
         public String FooterFontSize { get; set; }
         public String HeaderFontName { get; set; }
@@ -64,22 +82,22 @@ namespace Codaxy.WkHtmlToPdf
         public bool Debug { get; set; }
     }
 
-    public class PdfConvert
+    public static class PdfConvert
     {
-        static PdfConvertEnvironment _e;
+        static PdfConvertEnvironment s_E;
 
         public static PdfConvertEnvironment Environment
         {
             get
             {
-                if (_e == null)
-                    _e = new PdfConvertEnvironment
+                if (s_E == null)
+                    s_E = new PdfConvertEnvironment
                     {
                         TempFolderPath = Path.GetTempPath(),
                         WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
                         Timeout = 60000
                     };
-                return _e;
+                return s_E;
             }
         }
 
@@ -189,13 +207,11 @@ namespace Codaxy.WkHtmlToPdf
                 paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
 
-            if (document.ExtraParams != null)
-                foreach (var extraParam in document.ExtraParams)
-                    paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
+            foreach (var extraParam in document.ExtraParams)
+                paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
 
-            if (document.Cookies != null)
-                foreach (var cookie in document.Cookies)
-                    paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
+            foreach (var cookie in document.Cookies)
+                paramsBuilder.AppendFormat("--cookie {0} {1} ", cookie.Key, cookie.Value);
 
             paramsBuilder.AppendFormat("\"{0}\" \"{1}\"", document.Url, outputPdfFilePath);
 
@@ -216,7 +232,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
                     using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
                     {
-                        DataReceivedEventHandler outputHandler = (sender, e) =>
+                        void outputHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -226,9 +242,9 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 output.AppendLine(e.Data);
                             }
-                        };
+                        }
 
-                        DataReceivedEventHandler errorHandler = (sender, e) =>
+                        void errorHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -238,7 +254,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 error.AppendLine(e.Data);
                             }
-                        };
+                        }
 
                         process.OutputDataReceived += outputHandler;
                         process.ErrorDataReceived += errorHandler;

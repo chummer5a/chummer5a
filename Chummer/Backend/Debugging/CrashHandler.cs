@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,31 +30,28 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Security;
 
-namespace Chummer.Backend.Debugging
+namespace Chummer.Backend
 {
-
-
-    internal class CrashHandler
+    public static class CrashHandler
     {
-        [SuppressUnmanagedCodeSecurity]
-        internal static class SafeNativeMethods
+        private static class NativeMethods
         {
             [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
             internal static extern uint GetCurrentThreadId();
         }
 
-        private class DumpData
+        private sealed class DumpData
         {
             public DumpData()
             {
                 AddDefaultInfo();
             }
 
-            public List<string> capturefiles = new List<string>();
-            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            public Dictionary<string, string> attributes = new Dictionary<string, string>();
-            public int processid = Process.GetCurrentProcess().Id;
-            public uint threadId = SafeNativeMethods.GetCurrentThreadId();
+            private List<string> capturefiles = new List<string>();
+            private Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            private Dictionary<string, string> attributes = new Dictionary<string, string>();
+            private int processid = Process.GetCurrentProcess().Id;
+            private uint threadId = NativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {
@@ -46,9 +61,9 @@ namespace Chummer.Backend.Debugging
                 attributes.Add("visible-build-type",
                     #if DEBUG
                     "DEBUG"
-#else
+                    #else
                     "RELEASE"
-#endif
+                    #endif
                     );
                 attributes.Add("commandline", Environment.CommandLine);
                 attributes.Add("visible-version", Application.ProductVersion);
@@ -109,7 +124,7 @@ namespace Chummer.Backend.Debugging
             }
         }
 
-        internal static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex)
         {
             try
             {

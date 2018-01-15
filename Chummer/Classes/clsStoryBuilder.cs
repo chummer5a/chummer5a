@@ -26,7 +26,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    class StoryBuilder
+    public sealed class StoryBuilder
     {
         private Dictionary<String, String> persistenceDictionary = new Dictionary<String, String>(); 
         private Character _objCharacter;
@@ -39,10 +39,10 @@ namespace Chummer
             persistenceDictionary.Add("metavariant", _objCharacter.Metavariant.ToLower());
         }
 
-        public String GetStory()
+        public string GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
-            XmlDocument xdoc = XmlManager.Load("lifemodules.xml");
+            XmlDocument xdoc = XmlManager.Load("lifemodules.xml", strLanguage);
 
             if (xdoc != null)
             {
@@ -53,7 +53,7 @@ namespace Chummer
                 {
                     if (quality.Type == QualityType.LifeModule)
                     {
-                        modules.Add(Quality.GetNodeOverrideable(quality.QualityId));
+                        modules.Add(Quality.GetNodeOverrideable(quality.QualityId, xdoc));
                     }
                 }
 
@@ -90,7 +90,7 @@ namespace Chummer
                 {
                     XmlNode objStoryModule = modules[i];
                     StringBuilder objModuleString = new StringBuilder();
-                    Write(objModuleString, objStoryModule.InnerText, 5);
+                    Write(objModuleString, objStoryModule["story"].InnerText, 5, xdoc);
                     lock (storyLock)
                         story[i] = objModuleString.ToString();
                 });
@@ -101,7 +101,8 @@ namespace Chummer
             return string.Empty;
         }
 
-        private void Write(StringBuilder story, string innerText, int levels)
+        private static readonly char[] lstLineEndChars = " \n\r\t".ToCharArray();
+        private void Write(StringBuilder story, string innerText, int levels, XmlDocument xmlDoc)
         {
             if (levels <= 0) return;
 
@@ -110,11 +111,11 @@ namespace Chummer
             String[] words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText).Split(" \n\r\t".ToCharArray());
+                words = Macro(innerText, xmlDoc).Split(lstLineEndChars);
             }
             else
             {
-                words = innerText.Split(" \n\r\t".ToCharArray());
+                words = innerText.Split(lstLineEndChars);
             }
 
             bool mfix = false;
@@ -129,7 +130,7 @@ namespace Chummer
                 else if (trim.StartsWith('$'))
                 {
                     //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-                    Write(story, trim, --levels);
+                    Write(story, trim, --levels, xmlDoc);
                     mfix = true;
                 }
                 else
@@ -152,11 +153,12 @@ namespace Chummer
             }
         }
 
-        public string Macro(string innerText)
+        private static readonly char[] lstPunctuationChars = ",.".ToCharArray();
+        public string Macro(string innerText, XmlDocument xmlDoc)
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLower().Substring(1).TrimEnd(",.".ToCharArray());
+            string endString = innerText.ToLower().Substring(1).TrimEnd(lstPunctuationChars);
             string macroName, macroPool;
             if (endString.Contains('_'))
             {
@@ -188,15 +190,13 @@ namespace Chummer
             }
             if (macroName == "year")
             {
-                int year;
-                if (int.TryParse(_objCharacter.Age, out year))
+                if (int.TryParse(_objCharacter.Age, out int year))
                 {
-                    int age;
-                    if (int.TryParse(macroPool, out age))
+                    if (int.TryParse(macroPool, out int age))
                     {
-                        return (DateTime.UtcNow.Year + 72 + age - year).ToString();
+                        return (DateTime.UtcNow.Year + 62 + age - year).ToString();
                     }
-                    return (DateTime.UtcNow.Year + 72 - year).ToString();
+                    return (DateTime.UtcNow.Year + 62 - year).ToString();
                 }
                 return string.Format("(ERROR PARSING \"{0}\")", _objCharacter.Age);
             }
@@ -204,19 +204,17 @@ namespace Chummer
             //Did not meet predefined macros, check user defined
             
             string searchString = "/chummer/storybuilder/macros/" + macroName;
-            XmlDocument objXmlLifeModulesDocument = XmlManager.Load("lifemodules.xml");
 
-            if (objXmlLifeModulesDocument != null)
+            if (xmlDoc != null)
             {
-                XmlNode userMacro = objXmlLifeModulesDocument.SelectSingleNode(searchString);
+                XmlNode userMacro = xmlDoc.SelectSingleNode(searchString);
 
                 if (userMacro != null)
                 {
                     if (userMacro.FirstChild != null)
                     {
-                        string selected;
                         //Already defined, no need to do anything fancy
-                        if (!persistenceDictionary.TryGetValue(macroPool, out selected))
+                        if (!persistenceDictionary.TryGetValue(macroPool, out string selected))
                         {
                             if (userMacro.FirstChild.Name == "random")
                             {

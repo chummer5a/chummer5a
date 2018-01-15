@@ -29,11 +29,20 @@ namespace Chummer
 {
     public partial class DiceRollerControl : UserControl
     {
-        private static Random _objRandom = MersenneTwister.SfmtRandom.Create();
+        private static readonly Random s_ObjRandom = MersenneTwister.SfmtRandom.Create();
         private int _intModuloTemp = 0;
 
         #region Properties
-        public enum EdgeUses { None, PushTheLimit, SecondChance, SeizeTheInit, Blitz, CloseCall, DeadManTrigger }
+        private enum EdgeUses
+        {
+            None = 0,
+            PushTheLimit,
+            SecondChance,
+            SeizeTheInit,
+            Blitz,
+            CloseCall,
+            DeadManTrigger,
+        }
 
         /// <summary>
         /// The threshold that the character needs in order to pass
@@ -88,12 +97,12 @@ namespace Chummer
         /// <summary>
         /// What the character is using for it's edge case
         /// </summary>
-        public EdgeUses EdgeUse 
+        private EdgeUses EdgeUse 
         {
             get
             {
-                return (EdgeUses)cboEdgeUse.SelectedItem == default(EdgeUses) ? EdgeUses.None :
-                (EdgeUses)cboEdgeUse.SelectedItem;
+                EdgeUses eSelectedItem = (EdgeUses)cboEdgeUse.SelectedItem;
+                return eSelectedItem == default(EdgeUses) ? EdgeUses.None : eSelectedItem;
             }
             set
             {
@@ -156,7 +165,7 @@ namespace Chummer
             {
                 do
                 {
-                    _intModuloTemp = _objRandom.Next();
+                    _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 val = 1 + _intModuloTemp % 6;
@@ -169,7 +178,7 @@ namespace Chummer
                     {
                         do
                         {
-                            _intModuloTemp = _objRandom.Next();
+                            _intModuloTemp = s_ObjRandom.Next();
                         }
                         while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                         val = 1 + _intModuloTemp % 6;
@@ -199,11 +208,11 @@ namespace Chummer
             {
                 do
                 {
-                    _intModuloTemp = _objRandom.Next();
+                    _intModuloTemp = s_ObjRandom.Next();
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                sb.Append(", " + LanguageManager.GetString("String_BubbleDie") + " (" + intBubbleDieResult.ToString() + ")");
+                sb.Append(", " + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + " (" + intBubbleDieResult.ToString() + ")");
                 if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
                 {
                     glitches++;

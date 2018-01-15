@@ -1,13 +1,29 @@
-using Chummer.Backend;
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Attributes;
-using System.Threading.Tasks;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     partial class Skill
     {
@@ -285,49 +301,62 @@ namespace Chummer.Skills
         protected int Bonus(bool AddToRating)
         {
             //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-            return RelevantImprovements(x => x.AddToRating == AddToRating)?.Sum(x => x.Value) ?? 0;
+            return RelevantImprovements(x => x.AddToRating == AddToRating).Sum(x => x.Value);
         }
 
-        private List<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
+        private IList<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null)
         {
-            if (string.IsNullOrWhiteSpace(Name))
-                return null;
             List<Improvement> lstReturn = new List<Improvement>();
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            if (!string.IsNullOrWhiteSpace(Name))
             {
-                if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    switch (objImprovement.ImproveType)
+                    if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
                     {
-                        case Improvement.ImprovementType.Skill:
-                            if (objImprovement.ImprovedName == Name)
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SkillGroup:
-                            if (objImprovement.ImprovedName == _group && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SkillCategory:
-                            if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SkillAttribute:
-                            if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.BlockSkillDefault:
-                            if (objImprovement.ImprovedName == SkillGroup)
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.SwapSkillAttribute:
-                        case Improvement.ImprovementType.SwapSkillSpecAttribute:
-                            if (objImprovement.Target == Name)
-                                lstReturn.Add(objImprovement);
-                            break;
-                        case Improvement.ImprovementType.EnhancedArticulation:
-                            if (Category == "Physical Active" && CharacterAttrib.PhysicalAttributes.Contains(AttributeObject.Abbrev))
-                                lstReturn.Add(objImprovement);
-                            break;
+                        switch (objImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.Skill:
+
+                                if (objImprovement.ImprovedName == Name)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    break;
+                                }
+                                if (IsExoticSkill)
+                                {
+                                    var s = (ExoticSkill)this;
+                                    if (objImprovement.ImprovedName == $"{Name} ({s.Specific})")
+                                    {
+                                        lstReturn.Add(objImprovement);
+                                    }
+                                }
+                                break;
+                            case Improvement.ImprovementType.SkillGroup:
+                                if (objImprovement.ImprovedName == _strGroup && !objImprovement.Exclude.Contains(Name) && !objImprovement.Exclude.Contains(SkillCategory))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SkillCategory:
+                                if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(Name))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SkillAttribute:
+                                if (objImprovement.ImprovedName == AttributeObject.Abbrev && !objImprovement.Exclude.Contains(Name))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.BlockSkillDefault:
+                                if (objImprovement.ImprovedName == SkillGroup)
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.SwapSkillAttribute:
+                            case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                                if (objImprovement.Target == Name)
+                                    lstReturn.Add(objImprovement);
+                                break;
+                            case Improvement.ImprovementType.EnhancedArticulation:
+                                if (_strCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(AttributeObject.Abbrev))
+                                    lstReturn.Add(objImprovement);
+                                break;
+                        }
                     }
                 }
             }
@@ -473,8 +502,7 @@ namespace Chummer.Skills
                 if (objMySkillGroup != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
-                    List<Skill> objMySkillGroupSkills = objMySkillGroup.SkillList;
-                    foreach (Skill objSkillGroupMember in objMySkillGroupSkills)
+                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
                     {
                         if (objSkillGroupMember != this)
                         {
@@ -572,8 +600,7 @@ namespace Chummer.Skills
                 if (objMySkillGroup != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
-                    List<Skill> objMySkillGroupSkills = objMySkillGroup.SkillList;
-                    foreach (Skill objSkillGroupMember in objMySkillGroupSkills)
+                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
                     {
                         if (objSkillGroupMember != this)
                         {
@@ -648,7 +675,7 @@ namespace Chummer.Skills
             }
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.GetString(strSkillType)} {DisplayName} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
+                $"{LanguageManager.GetString(strSkillType, GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} {intTotalBaseRating} -> {(intTotalBaseRating + 1)}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -724,9 +751,9 @@ namespace Chummer.Skills
 
             //If data file contains {4} this crashes but...
             string upgradetext = //TODO WRONG
-                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization")} {DisplayName} ({name})";
+                $"{LanguageManager.GetString("String_ExpenseLearnSpecialization", GlobalOptions.Language)} {DisplayNameMethod(GlobalOptions.Language)} ({name})";
 
-            SkillSpecialization nspec = new SkillSpecialization(name, false);
+            SkillSpecialization nspec = new SkillSpecialization(name, false, this);
 
             ExpenseLogEntry entry = new ExpenseLogEntry(CharacterObject);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -749,7 +776,7 @@ namespace Chummer.Skills
 
             return _cachedFreeKarma = (from improvement in CharacterObject.Improvements
                 where improvement.ImproveType == Improvement.ImprovementType.SkillLevel
-                      && improvement.ImprovedName == _name
+                      && improvement.ImprovedName == _strName
                 select improvement.Value).Sum(); //TODO change to ImpManager.ValueOf?
         }
 
@@ -764,7 +791,7 @@ namespace Chummer.Skills
             if (_cachedFreeBase != int.MinValue) return _cachedFreeBase;
             return _cachedFreeBase = (from improvement in CharacterObject.Improvements
                 where improvement.ImproveType == Improvement.ImprovementType.SkillBase
-                      && improvement.ImprovedName == _name
+                      && improvement.ImprovedName == _strName
                 select improvement.Value).Sum();
         }
 

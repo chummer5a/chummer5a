@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,38 +18,39 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
   <!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
   <version>0</version>
   <categories>
     <category>Alchemical Tools</category>
-    <category>Ammunition</category>
-    <category>Armor Enhancements</category>
-    <category>Audio Devices</category>
-    <category>Audio Enhancements</category>
-    <category>Autosofts</category>
-    <category>Biotech</category>
+    <category blackmarket="Weapons">Ammunition</category>
+    <category blackmarket="Armor">Armor Enhancements</category>
+    <category blackmarket="Electronics">Audio Devices</category>
+    <category blackmarket="Electronics">Audio Enhancements</category>
+    <category blackmarket="Electronics">Autosofts</category>
+    <category blackmarket="Drugs">Biotech</category>
     <category>Breaking and Entering Gear</category>
-    <category>BTLs</category>
-    <category>Chemicals</category>
-    <category>Commlinks</category>
-    <category>Commlink/Cyberdeck Form Factors</category>
-    <category>Commlink Accessories</category>
-    <category>Commlink Apps</category>
-    <category>Common Programs</category>
-    <category>Communications and Countermeasures</category>
+    <category blackmarket="Drugs">BTLs</category>
+    <category blackmarket="Drugs">Chemicals</category>
+    <category blackmarket="Electronics">Commlinks</category>
+    <category blackmarket="Electronics">Commlink/Cyberdeck Form Factors</category>
+    <category blackmarket="Electronics">Commlink Accessories</category>
+    <category blackmarket="Electronics">Commlink Apps</category>
+    <category blackmarket="Electronics">Common Programs</category>
+    <category blackmarket="Electronics">Communications and Countermeasures</category>
     <category>Contracts/Upkeep</category>
     <category>Critter Gear</category>
-	<category>Currency</category>
+    <category>Currency</category>
     <category>Custom</category>
-    <category>Cyberdeck Modules</category>
-    <category>Cyberdecks</category>
-    <category>Cyberterminals</category>
+    <category blackmarket="Electronics">Cyberdeck Modules</category>
+    <category blackmarket="Electronics">Cyberdecks</category>
+    <category blackmarket="Electronics">Cyberterminals</category>
     <category>Disguises</category>
-    <category>Drugs</category>
-    <category>Electronics Accessories</category>
-    <category>Electronic Modification</category>
-    <category>Electronic Parts</category>
+    <category blackmarket="Drugs">Drugs</category>
+    <category blackmarket="Electronics">Electronics Accessories</category>
+    <category blackmarket="Electronics">Electronic Modification</category>
+    <category blackmarket="Electronics">Electronic Parts</category>
     <category>Entertainment</category>
     <category>Explosives</category>
     <category>Extraction Devices</category>
@@ -56,7 +58,7 @@
     <category>Food</category>
     <category>Formulae</category>
     <category>Grapple Gun</category>
-    <category>Hacking Programs</category>
+    <category blackmarket="Electronics">Hacking Programs</category>
     <category>Housewares</category>
     <category>ID/Credsticks</category>
     <category>Magical Compounds</category>
@@ -64,24 +66,24 @@
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
     <category>Nanogear</category>
-    <category>PI-Tac</category>
+    <category blackmarket="Electronics">PI-Tac</category>
     <category>RFID Tags</category>
-    <category>Rigger Command Consoles</category>
+    <category blackmarket="Electronics,Vehicles">Rigger Command Consoles</category>
     <category>Security Devices</category>
-    <category>Sensors</category>
-    <category>Sensor Functions</category>
-    <category>Sensor Housings</category>
+    <category blackmarket="Electronics">Sensors</category>
+    <category blackmarket="Electronics">Sensor Functions</category>
+    <category blackmarket="Electronics">Sensor Housings</category>
     <category>Services</category>
     <category>Skillsofts</category>
-    <category>Software</category>
-    <category>Software Tweaks</category>
+    <category blackmarket="Electronics">Software</category>
+    <category blackmarket="Electronics">Software Tweaks</category>
     <category>Survival Gear</category>
     <category>Tailored Perfume/Cologne</category>
     <category>Tools</category>
     <category>Tools of the Trade</category>
-    <category>Toxins</category>
-    <category>Vision Devices</category>
-    <category>Vision Enhancements</category>
+    <category blackmarket="Drugs">Toxins</category>
+    <category blackmarket="Electronics">Vision Devices</category>
+    <category blackmarket="Electronics">Vision Enhancements</category>
   </categories>
   <gears>
     <!-- Region Ammo -->
@@ -1638,12 +1640,6 @@
       <hide />
       <gears startcollapsed="yes">
         <usegear>
-          <name>Persona Firmware</name>
-          <category>Electronic Modification</category>
-          <source>SR5</source>
-          <page>438</page>
-        </usegear>
-        <usegear>
           <name select="Music Player">Custom Item</name>
           <category>Custom</category>
           <source>SR5</source>
@@ -1703,7 +1699,7 @@
         </usegear>
       </gears>
     </gear>
-	<gear>
+    <gear>
       <id>73b55822-dfb8-48f5-8ff8-37ef498ab9ef</id>
       <name>Living Persona</name>
       <category>Commlinks</category>
@@ -1713,12 +1709,13 @@
       <avail>0</avail>
       <cost>0</cost>
       <devicerating>{RES}</devicerating>
-	  <attack>{CHA}</attack>
+      <attack>{CHA}</attack>
       <sleaze>{INT}</sleaze>
       <dataprocessing>{LOG}</dataprocessing>
       <firewall>{WIL}</firewall>
-	  <addoncategory>Custom</addoncategory>
-	  <hide />
+      <addoncategory>Custom</addoncategory>
+      <canformpersona>Self</canformpersona>
+      <hide />
     </gear>
     <gear>
       <id>d63eb841-7b15-4539-9026-b90a4924aeeb</id>
@@ -1737,6 +1734,7 @@
       <bonus>
         <selecttext />
       </bonus>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1758,6 +1756,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1779,6 +1778,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1800,6 +1800,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1821,6 +1822,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1842,6 +1844,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1863,6 +1866,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1884,6 +1888,7 @@
       <devicerating>7</devicerating>
       <dataprocessing>7</dataprocessing>
       <firewall>7</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1905,6 +1910,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -1965,6 +1971,7 @@
       <devicerating>1</devicerating>
       <attributearray>4,3,2,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -1993,6 +2000,7 @@
       <devicerating>1</devicerating>
       <attributearray>4,3,3,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2021,6 +2029,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,3,2</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2049,6 +2058,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,4,2</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2077,6 +2087,7 @@
       <devicerating>3</devicerating>
       <attributearray>6,5,4,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2105,6 +2116,7 @@
       <devicerating>3</devicerating>
       <attributearray>6,5,5,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2133,6 +2145,7 @@
       <devicerating>4</devicerating>
       <attributearray>7,6,5,4</attributearray>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2161,6 +2174,7 @@
       <devicerating>5</devicerating>
       <attributearray>8,7,6,5</attributearray>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2189,6 +2203,7 @@
       <devicerating>6</devicerating>
       <attributearray>9,8,7,6</attributearray>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2218,6 +2233,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2239,6 +2255,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2260,6 +2277,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2281,6 +2299,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2302,6 +2321,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2323,6 +2343,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2344,6 +2365,7 @@
       <devicerating>2</devicerating>
       <dataprocessing>2</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2365,6 +2387,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2386,6 +2409,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2407,6 +2431,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2428,6 +2453,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2449,6 +2475,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2470,6 +2497,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2491,6 +2519,7 @@
       <devicerating>5</devicerating>
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2512,6 +2541,7 @@
       <devicerating>6</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>6</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2533,6 +2563,7 @@
       <devicerating>7</devicerating>
       <dataprocessing>7</dataprocessing>
       <firewall>7</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -2555,6 +2586,7 @@
       <sleaze>5</sleaze>
       <dataprocessing>1</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Lunchbox">Commlink Form Factor, Non-Standard</name>
@@ -2586,6 +2618,7 @@
       <devicerating>3</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>5</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Bracelet">Commlink Form Factor, Non-Standard</name>
@@ -2611,6 +2644,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Agent</name>
@@ -2637,6 +2671,7 @@
       <devicerating>4</devicerating>
       <dataprocessing>6</dataprocessing>
       <firewall>2</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Agent</name>
@@ -2671,6 +2706,7 @@
       <dataprocessing>1</dataprocessing>
       <firewall>2</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Biofeedback Filter</name>
@@ -2703,6 +2739,7 @@
       <devicerating>1</devicerating>
       <attributearray>2,2,1,1</attributearray>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2734,6 +2771,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>3</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Edit</name>
@@ -2766,6 +2804,7 @@
       <devicerating>2</devicerating>
       <attributearray>5,4,1,1</attributearray>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2797,6 +2836,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>8</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2825,6 +2865,7 @@
       <devicerating>3</devicerating>
       <attributearray>7,5,3,1</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2856,6 +2897,7 @@
       <dataprocessing>2</dataprocessing>
       <firewall>3</firewall>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2887,6 +2929,7 @@
       <dataprocessing>2</dataprocessing>
       <firewall>6</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2915,6 +2958,7 @@
       <devicerating>4</devicerating>
       <attributearray>8,6,4,2</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2943,6 +2987,7 @@
       <devicerating>4</devicerating>
       <attributearray>8,5,4,3</attributearray>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -2974,6 +3019,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>5</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3002,6 +3048,7 @@
       <devicerating>6</devicerating>
       <attributearray>9,9,8,8</attributearray>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3030,6 +3077,7 @@
       <devicerating>5</devicerating>
       <attributearray>8,7,7,5</attributearray>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3251,6 +3299,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
       <hide />
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3272,6 +3321,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>5</firewall>
       <hide />
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3293,6 +3343,7 @@
       <cost>800</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Urban Brawl News">Datasoft</name>
@@ -3318,6 +3369,7 @@
       <cost>2500</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name select="Wristband">Commlink Form Factor, Non-Standard</name>
@@ -3355,6 +3407,7 @@
       <cost>5000</cost>
       <source>SAG</source>
       <page>86</page>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3373,6 +3426,7 @@
       <programs>3</programs>
       <avail>10R</avail>
       <cost>210000</cost>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3407,6 +3461,7 @@
       <programs>4</programs>
       <avail>12R</avail>
       <cost>285000</cost>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Sim Module, Hot</name>
@@ -3446,6 +3501,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>2</firewall>
       <programs>1</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3467,6 +3523,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>3</firewall>
       <programs>2</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3488,6 +3545,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>4</firewall>
       <programs>3</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3509,6 +3567,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>4</firewall>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3530,6 +3589,7 @@
       <dataprocessing>4</dataprocessing>
       <firewall>5</firewall>
       <programs>4</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3551,6 +3611,7 @@
       <dataprocessing>3</dataprocessing>
       <firewall>4</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3572,6 +3633,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>6</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3594,6 +3656,7 @@
       <dataprocessing>5</dataprocessing>
       <firewall>6</firewall>
       <programs>5</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3615,6 +3678,7 @@
       <dataprocessing>6</dataprocessing>
       <firewall>5</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3636,6 +3700,7 @@
       <dataprocessing>7</dataprocessing>
       <firewall>6</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3657,6 +3722,7 @@
       <dataprocessing>8</dataprocessing>
       <firewall>7</firewall>
       <programs>6</programs>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3792,6 +3858,7 @@
       <source>SR5</source>
       <page>245</page>
       <avail>0</avail>
+      <programs>2</programs>
       <cost>80</cost>
     </gear>
     <gear>
@@ -4184,7 +4251,7 @@
       <avail>4</avail>
       <bonus>
         <knowsoft>
-          <pick/>
+          <pick />
           <val>Rating</val>
           <notgroup>Language</notgroup>
           <require>skilljack</require>
@@ -4207,7 +4274,7 @@
       <avail>2</avail>
       <bonus>
         <knowsoft>
-          <pick/>
+          <pick />
           <val>Rating</val>
           <group>Language</group>
           <require>skilljack</require>
@@ -4760,6 +4827,7 @@
       <cost>10</cost>
       <costfor>10</costfor>
       <devicerating>3</devicerating>
+      <sleaze>3</sleaze>
     </gear>
     <!-- End Region -->
     <!-- Region ECCM-->
@@ -4773,6 +4841,7 @@
       <avail>(Rating)R</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 100</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>8f351e25-d734-4bd0-86da-80b68a4cae68</id>
@@ -4793,6 +4862,7 @@
       <page>441</page>
       <avail>(Rating)R</avail>
       <cost>Rating * 150</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>6576cfa9-f2f5-4624-bbde-60a8f3f13785</id>
@@ -4804,6 +4874,7 @@
       <avail>(Rating * 3)F</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 200</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>f47ee634-8f59-43c5-8502-32e447f03980</id>
@@ -4815,6 +4886,7 @@
       <avail>(Rating * 2)F</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 200</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>d1fca845-ae01-4b39-a176-1506da699e0e</id>
@@ -4861,8 +4933,8 @@
       <cost>Rating * 60</cost>
     </gear>
     <!-- End Region -->
-	<!-- Region Currencies -->
-	<gear>
+    <!-- Region Currencies -->
+    <gear>
       <id>45b1f2c4-99a3-421b-8c83-a7f574ecd39f</id>
       <name>Nuyen (¥)</name>
       <category>Currency</category>
@@ -4871,10 +4943,10 @@
       <page>442</page>
       <avail>0</avail>
       <cost>1</cost>
-	  <capacity>[1]</capacity>
-	  <requireparent />
+      <capacity>[1]</capacity>
+      <requireparent />
     </gear>
-	<gear>
+    <gear>
       <id>863a5600-1e4f-4f33-9fca-b2715857dee4</id>
       <name>Euro (€)</name>
       <category>Currency</category>
@@ -4883,9 +4955,9 @@
       <page>442</page>
       <avail>0</avail>
       <cost>1</cost>
-	  <capacity>[1]</capacity>
+      <capacity>[1]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>ee174974-ff69-4dee-9803-034d809a0344</id>
       <name>UCAS Dollar ($)</name>
       <category>Currency</category>
@@ -4894,9 +4966,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.5</cost>
-	  <capacity>[0.5]</capacity>
+      <capacity>[0.5]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>f647b451-5a2b-4e40-9d4d-4804dae6d440</id>
       <name>Tír Ryal</name>
       <category>Currency</category>
@@ -4905,9 +4977,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>1.1111111111111</cost>
-	  <capacity>[1.1111111111111]</capacity>
+      <capacity>[1.1111111111111]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>3a092eee-6542-4c82-a01d-1c0d8a71affe</id>
       <name>Southeast Asian Ringgit (RM)</name>
       <category>Currency</category>
@@ -4916,9 +4988,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.02</cost>
-	  <capacity>[0.02]</capacity>
+      <capacity>[0.02]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>8e48a689-d818-4fe6-9b8f-8344ad96e608</id>
       <name>Aztlan Peso (¢)</name>
       <category>Currency</category>
@@ -4927,9 +4999,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.016666666666667</cost>
-	  <capacity>[0.016666666666667]</capacity>
+      <capacity>[0.016666666666667]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>47642f1f-749c-4334-abe8-19242a9ddfd4</id>
       <name>Saeder-Krupp Scrip</name>
       <category>Currency</category>
@@ -4938,9 +5010,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>1.25</cost>
-	  <capacity>[1.25]</capacity>
+      <capacity>[1.25]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>74ff3f1f-5637-489d-b3d4-dc4518711291</id>
       <name>Shiawase Scrip</name>
       <category>Currency</category>
@@ -4949,9 +5021,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>1</cost>
-	  <capacity>[1]</capacity>
+      <capacity>[1]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>b04ffdbf-906b-471e-9002-c649248da004</id>
       <name>MCT Scrip</name>
       <category>Currency</category>
@@ -4960,9 +5032,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.99009900990099</cost>
-	  <capacity>[0.99009900990099]</capacity>
+      <capacity>[0.99009900990099]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>be270c04-fe87-497f-a6e0-227407562689</id>
       <name>Wuxing Scrip</name>
       <category>Currency</category>
@@ -4971,9 +5043,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.33333333333333</cost>
-	  <capacity>[0.33333333333333]</capacity>
+      <capacity>[0.33333333333333]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>fb9b3266-9881-4cef-8a03-a9e76d923faf</id>
       <name>Ares Scrip</name>
       <category>Currency</category>
@@ -4982,9 +5054,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.28571428571429</cost>
-	  <capacity>[0.28571428571429]</capacity>
+      <capacity>[0.28571428571429]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>60544b61-cca8-4292-859a-20713c803cbd</id>
       <name>Evo Scrip</name>
       <category>Currency</category>
@@ -4993,9 +5065,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.2</cost>
-	  <capacity>[0.2]</capacity>
+      <capacity>[0.2]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>b807478b-583e-4427-9edc-4d4152c58c5b</id>
       <name>Renraku Scrip</name>
       <category>Currency</category>
@@ -5004,9 +5076,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.1</cost>
-	  <capacity>[0.1]</capacity>
+      <capacity>[0.1]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>3c008f5f-2e26-4da0-a559-7b7359a7a270</id>
       <name>Horizon Scrip</name>
       <category>Currency</category>
@@ -5015,9 +5087,9 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.066666666666667</cost>
-	  <capacity>[0.066666666666667]</capacity>
+      <capacity>[0.066666666666667]</capacity>
     </gear>
-	<gear>
+    <gear>
       <id>3881ecd3-3a6c-4efd-8ba8-4d4f0bcbe085</id>
       <name>Aztechnology Scrip</name>
       <category>Currency</category>
@@ -5026,74 +5098,74 @@
       <page>174</page>
       <avail>0</avail>
       <cost>0.05</cost>
-	  <capacity>[0.05]</capacity>
+      <capacity>[0.05]</capacity>
     </gear>
-	<!-- End Region -->
+    <!-- End Region -->
     <!-- Region ID/Credsticks -->
     <gear>
       <id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
       <name>Certified Credstick, Standard</name>
       <category>ID/Credsticks</category>
-	  <rating>0</rating>
+      <rating>0</rating>
       <capacity>5000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>0</avail>
       <cost>5</cost>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>4f5b4fbc-78c4-4aa4-a5c2-7739f12e9b39</id>
       <name>Certified Credstick, Silver</name>
       <category>ID/Credsticks</category>
-	  <rating>0</rating>
+      <rating>0</rating>
       <capacity>20000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>0</avail>
       <cost>20</cost>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>697ef5f4-8cde-434d-aca6-1bddd4d526d3</id>
       <name>Certified Credstick, Gold</name>
       <category>ID/Credsticks</category>
-	  <rating>0</rating>
+      <rating>0</rating>
       <capacity>100000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>5</avail>
       <cost>100</cost>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>a19055f0-02ab-4bc2-ab43-0ef82e1b9100</id>
       <name>Certified Credstick, Platinum</name>
       <category>ID/Credsticks</category>
-	  <rating>0</rating>
+      <rating>0</rating>
       <capacity>500000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>10</avail>
       <cost>500</cost>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>fd2c8afe-7c0f-4b98-ae93-a6108531b236</id>
       <name>Certified Credstick, Ebony</name>
       <category>ID/Credsticks</category>
-	  <rating>0</rating>
+      <rating>0</rating>
       <capacity>1000000</capacity>
       <source>SR5</source>
       <page>442</page>
       <avail>20</avail>
       <cost>1000</cost>
       <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>8a16bbb2-8028-4c74-b22b-7aad9d001073</id>
@@ -5109,12 +5181,12 @@
       <cost>Rating * 200</cost>
       <required>
         <geardetails>
-		  <OR>
-			<category>Custom</category>
-			<name>Fake SIN</name>
-			<name>Credstick, Fake (2050)</name>
-			<name>Credstick, Standard (2050)</name>
-		  </OR>
+          <OR>
+            <category>Custom</category>
+            <name>Fake SIN</name>
+            <name>Credstick, Fake (2050)</name>
+            <name>Credstick, Standard (2050)</name>
+          </OR>
         </geardetails>
       </required>
       <allowrename>True</allowrename>
@@ -5233,6 +5305,7 @@
       <addoncategory>Audio Enhancements</addoncategory>
       <addoncategory>Sensors</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>fa6fa434-107b-4f36-a138-f98b044dae76</id>
@@ -5262,7 +5335,7 @@
       <cost>Rating * 200</cost>
       <addoncategory>Vision Enhancements</addoncategory>
       <addoncategory>Sensors</addoncategory>
-	  <addoncategory>Tools of the Trade</addoncategory>
+      <addoncategory>Tools of the Trade</addoncategory>
       <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
@@ -6258,6 +6331,7 @@
       <page>447</page>
       <avail>Rating</avail>
       <cost>Rating * 100</cost>
+      <devicerating>{Rating}</devicerating>
     </gear>
     <gear>
       <id>a2953d6e-8bb8-40a8-b7f6-997be35947cf</id>
@@ -6574,10 +6648,10 @@
       <page>448</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 150</cost>
-	  <bonus unique="chemicalprotection">
-		<toxincontactresist>Rating</toxincontactresist>
-		<pathogencontactresist>Rating</pathogencontactresist>
-	  </bonus>
+      <bonus unique="chemicalprotection">
+        <toxincontactresist>Rating</toxincontactresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+      </bonus>
     </gear>
     <gear>
       <id>a17cae86-4d6f-4e00-acb6-03f0ccfb2807</id>
@@ -6599,12 +6673,12 @@
       <page>448</page>
       <avail>6</avail>
       <cost>2000</cost>
-	  <gears>
-		<usegear>
-		  <name>Gas Mask</name>
-		  <category>Survival Gear</category>
-		</usegear>
-	  </gears>
+      <gears>
+        <usegear>
+          <name>Gas Mask</name>
+          <category>Survival Gear</category>
+        </usegear>
+      </gears>
     </gear>
     <gear>
       <id>c49a893a-d445-4aac-bec0-c8501cba4c2c</id>
@@ -6649,10 +6723,10 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>200</cost>
-	  <bonus>
-		<toxininhalationimmune />
-		<pathogeninhalationimmune />
-	  </bonus>
+      <bonus>
+        <toxininhalationimmune />
+        <pathogeninhalationimmune />
+      </bonus>
     </gear>
     <gear>
       <id>8bed8fa9-b75e-44ad-8181-a9dcd1f110cd</id>
@@ -6673,12 +6747,12 @@
       <page>449</page>
       <avail>8</avail>
       <cost>3000</cost>
-	  <bonus>
-		<toxincontactimmune />
-		<toxininhalationimmune />
-		<pathogencontactimmune />
-		<pathogeninhalationimmune />
-	  </bonus>
+      <bonus>
+        <toxincontactimmune />
+        <toxininhalationimmune />
+        <pathogencontactimmune />
+        <pathogeninhalationimmune />
+      </bonus>
     </gear>
     <gear>
       <id>c658ec7e-48c1-4ead-8083-f3ee0eab92e4</id>
@@ -6741,10 +6815,10 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>Rating * 50</cost>
-	  <bonus unique="respirator">
-		<toxininhalationresist>Rating</toxininhalationresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-	  </bonus>
+      <bonus unique="respirator">
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+      </bonus>
     </gear>
     <gear>
       <id>27f9775d-cd14-4900-827f-ba00d26e0c67</id>
@@ -6761,37 +6835,37 @@
         <usegear>
           <name select="Lighter">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
         <usegear>
           <name select="Compass">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
         <usegear>
           <name select="Matches">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
         <usegear>
           <name select="Lightweight Thermal Blanket">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
         <usegear>
           <name select="Several Days' Worth of Ration Bars">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
         <usegear>
           <name select="Water Purification Unit">Custom Item</name>
           <category>Custom</category>
-		  <source>SR5</source>
+          <source>SR5</source>
           <page>449</page>
         </usegear>
       </gears>
@@ -6806,10 +6880,10 @@
       <avail>3</avail>
       <capacity>0</capacity>
       <cost>300</cost>
-	  <bonus>
-		<toxininhalationimmune />
-		<pathogeninhalationimmune />
-	  </bonus>
+      <bonus>
+        <toxininhalationimmune />
+        <pathogeninhalationimmune />
+      </bonus>
     </gear>
     <gear>
       <id>314566c7-4ea1-4f8d-94cd-f213af1e0535</id>
@@ -6821,10 +6895,10 @@
       <avail>3</avail>
       <capacity>0</capacity>
       <cost>Rating * 75</cost>
-	  <bonus unique="respirator">
-		<toxininhalationresist>Rating</toxininhalationresist>
-		<pathogeninhalationresist>Rating</pathogeninhalationresist>
-	  </bonus>
+      <bonus unique="respirator">
+        <toxininhalationresist>Rating</toxininhalationresist>
+        <pathogeninhalationresist>Rating</pathogeninhalationresist>
+      </bonus>
     </gear>
     <!-- End Region -->
     <!-- Region Grapple Gun -->
@@ -7774,7 +7848,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>5fae16cf-c68c-46e8-91b2-ca5220824ba5</id>
@@ -7788,7 +7861,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
@@ -7802,7 +7874,6 @@
         <selecttext />
       </bonus>
       <cost>Rating * 4000</cost>
-      <allowrename>True</allowrename>
     </gear>
     <gear>
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
@@ -9852,7 +9923,7 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*3000</cost>
       <devicerating>0</devicerating>
-      <attack>Rating</attack>
+      <modattack>{Rating}</modattack>
       <required>
         <geardetails>
           <OR>
@@ -9874,7 +9945,7 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>(Rating*Rating)*3000</cost>
       <devicerating>0</devicerating>
-      <sleaze>Rating</sleaze>
+      <modsleaze>{Rating}</modsleaze>
       <required>
         <geardetails>
           <OR>
@@ -9965,10 +10036,10 @@
       <cost>Gear Cost * 0.2</cost>
       <required>
         <geardetails>
-		  <OR>
-			<category>Commlinks</category>
-			<category>Custom</category>
-		  </OR>
+          <OR>
+            <category>Commlinks</category>
+            <category>Custom</category>
+          </OR>
         </geardetails>
       </required>
       <allowrename>True</allowrename>
@@ -9985,9 +10056,9 @@
       <required>
         <geardetails>
           <OR>
-			<category>Commlinks</category>
-			<category>Custom</category>
-		  </OR>
+            <category>Commlinks</category>
+            <category>Custom</category>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -10002,10 +10073,10 @@
       <cost>0</cost>
       <required>
         <geardetails>
-		  <OR>
-			<category>Cyberdecks</category>
-			<category>Custom</category>
-		  </OR>
+          <OR>
+            <category>Cyberdecks</category>
+            <category>Custom</category>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -10024,9 +10095,9 @@
       <required>
         <geardetails>
           <OR>
-			<category>Cyberdecks</category>
-			<category>Custom</category>
-		  </OR>
+            <category>Cyberdecks</category>
+            <category>Custom</category>
+          </OR>
         </geardetails>
       </required>
       <allowrename>True</allowrename>
@@ -10043,9 +10114,9 @@
       <required>
         <geardetails>
           <OR>
-			<category>Cyberdecks</category>
-			<category>Custom</category>
-		  </OR>
+            <category>Cyberdecks</category>
+            <category>Custom</category>
+          </OR>
         </geardetails>
       </required>
     </gear>
@@ -10273,8 +10344,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
+      <modattack>1</modattack>
       <required>
         <geardetails>
           <attributearray operation="exists" NOT="" />
@@ -10296,8 +10366,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
+      <modsleaze>1</modsleaze>
       <required>
         <geardetails>
           <attributearray operation="exists" NOT="" />
@@ -10333,14 +10402,14 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
+      <modsleaze>1</modsleaze>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
           <OR>
             <attributearray operation="exists" />
             <sleaze operation="greaterthan">0</sleaze>
+            <name>Add Sleaze Modification</name>
           </OR>
         </geardetails>
       </required>
@@ -10355,14 +10424,14 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
+      <modattack>1</modattack>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
           <OR>
             <attributearray operation="exists" />
             <attack operation="greaterthan">0</attack>
+            <name>Add Attack Modification</name>
           </OR>
         </geardetails>
       </required>
@@ -10377,8 +10446,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <dataprocessing>1</dataprocessing>
+      <moddataprocessing>1</moddataprocessing>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
@@ -10399,8 +10467,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <firewall>1</firewall>
+      <modfirewall>1</modfirewall>
       <matrixcmbonus>-2</matrixcmbonus>
       <required>
         <geardetails>
@@ -10421,8 +10488,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
+      <modsleaze>-1</modsleaze>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10444,8 +10510,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
+      <modattack>-1</modattack>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10467,8 +10532,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <dataprocessing>-1</dataprocessing>
+      <moddataprocessing>-1</moddataprocessing>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10490,8 +10554,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
-      <devicerating>0</devicerating>
-      <firewall>-1</firewall>
+      <modfirewall>-1</modfirewall>
       <matrixcmbonus>2</matrixcmbonus>
       <hide />
       <required>
@@ -10513,9 +10576,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <sleaze>-1</sleaze>
+      <modattack>1</modattack>
+      <modsleaze>-1</modsleaze>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10533,9 +10595,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <dataprocessing>-1</dataprocessing>
+      <modattack>1</modattack>
+      <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10553,9 +10614,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>1</attack>
-      <firewall>-1</firewall>
+      <modattack>1</modattack>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10573,9 +10633,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <sleaze>1</sleaze>
+      <modattack>-1</modattack>
+      <modsleaze>1</modsleaze>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10593,9 +10652,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
-      <dataprocessing>-1</dataprocessing>
+      <modsleaze>1</modsleaze>
+      <moddataprocessing>-1</moddataprocessing>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10613,9 +10671,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>1</sleaze>
-      <firewall>-1</firewall>
+      <modsleaze>1</modsleaze>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10633,9 +10690,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <dataprocessing>1</dataprocessing>
+      <modattack>-1</modattack>
+      <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10653,9 +10709,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
-      <dataprocessing>1</dataprocessing>
+      <modsleaze>-1</modsleaze>
+      <moddataprocessing>1</moddataprocessing>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10673,9 +10728,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <dataprocessing>1</dataprocessing>
-      <firewall>-1</firewall>
+      <moddataprocessing>1</moddataprocessing>
+      <modfirewall>-1</modfirewall>
       <required>
         <geardetails>
           <dataprocessing operation="greaterthan">0</dataprocessing>
@@ -10693,9 +10747,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <attack>-1</attack>
-      <firewall>1</firewall>
+      <modattack>-1</modattack>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <attack operation="greaterthan">0</attack>
@@ -10713,9 +10766,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <sleaze>-1</sleaze>
-      <firewall>1</firewall>
+      <modsleaze>-1</modsleaze>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <sleaze operation="greaterthan">0</sleaze>
@@ -10733,9 +10785,8 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
-      <dataprocessing>-1</dataprocessing>
-      <firewall>1</firewall>
+      <moddataprocessing>-1</moddataprocessing>
+      <modfirewall>1</modfirewall>
       <required>
         <geardetails>
           <dataprocessing operation="greaterthan">0</dataprocessing>
@@ -10753,7 +10804,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,-1,0,0</modattributearray>
       <required>
         <geardetails>
@@ -10771,7 +10821,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,0,-1,0</modattributearray>
       <required>
         <geardetails>
@@ -10789,7 +10838,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>1,0,0,-1</modattributearray>
       <required>
         <geardetails>
@@ -10807,7 +10855,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,1,0,0</modattributearray>
       <required>
         <geardetails>
@@ -10825,7 +10872,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,1,-1,0</modattributearray>
       <required>
         <geardetails>
@@ -10843,7 +10889,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,1,0,-1</modattributearray>
       <required>
         <geardetails>
@@ -10861,7 +10906,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,0,1,0</modattributearray>
       <required>
         <geardetails>
@@ -10879,7 +10923,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,-1,1,0</modattributearray>
       <required>
         <geardetails>
@@ -10897,7 +10940,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,0,1,-1</modattributearray>
       <required>
         <geardetails>
@@ -10915,7 +10957,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>-1,0,0,1</modattributearray>
       <required>
         <geardetails>
@@ -10933,7 +10974,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,-1,0,1</modattributearray>
       <required>
         <geardetails>
@@ -10951,7 +10991,6 @@
       <avail>0</avail>
       <cost>0</cost>
       <armorcapacity>[2]</armorcapacity>
-      <devicerating>0</devicerating>
       <modattributearray>0,0,-1,1</modattributearray>
       <required>
         <geardetails>
@@ -10969,6 +11008,7 @@
       <avail>0</avail>
       <armorcapacity>[2]</armorcapacity>
       <cost>0</cost>
+      <canformpersona>Parent</canformpersona>
       <requireparent />
     </gear>
     <gear>
@@ -11453,6 +11493,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -11474,6 +11515,7 @@
       <devicerating>1</devicerating>
       <dataprocessing>1</dataprocessing>
       <firewall>1</firewall>
+      <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
           <name>Commlink Functionality</name>
@@ -13076,9 +13118,9 @@
       <cost>1250</cost>
       <addoncategory>Nanogear</addoncategory>
       <addoncategory>Custom</addoncategory>
-	  <bonus>
-		<toxincontactimmune />
-		<pathogencontactimmune />
+      <bonus>
+        <toxincontactimmune />
+        <pathogencontactimmune />
       </bonus>
     </gear>
     <gear>
@@ -14179,7 +14221,7 @@
       <rating>18</rating>
       <source>2050</source>
       <page>207</page>
-	  <bonus>
+      <bonus>
         <selectweapon />
       </bonus>
       <avail>(Rating * 3)R</avail>
@@ -14836,10 +14878,10 @@
       <page>193</page>
       <avail>0</avail>
       <cost>25</cost>
-	  <capacity>1000000</capacity>
-	  <addoncategory>ID/Credsticks</addoncategory>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <capacity>1000000</capacity>
+      <addoncategory>ID/Credsticks</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
@@ -14850,13 +14892,13 @@
       <page>193</page>
       <avail>0</avail>
       <cost>5</cost>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
-	  <capacity>1000000</capacity>
-	  <addoncategory>ID/Credsticks</addoncategory>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <capacity>1000000</capacity>
+      <addoncategory>ID/Credsticks</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
@@ -14867,13 +14909,13 @@
       <page>193</page>
       <avail>(Rating * 2)F</avail>
       <cost>Rating * 1000</cost>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
       <capacity>1000000</capacity>
-	  <addoncategory>ID/Credsticks</addoncategory>
-	  <addoncategory>Currency</addoncategory>
-	  <addoncategory>Custom</addoncategory>
+      <addoncategory>ID/Credsticks</addoncategory>
+      <addoncategory>Currency</addoncategory>
+      <addoncategory>Custom</addoncategory>
     </gear>
     <gear>
       <id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>
@@ -15294,10 +15336,10 @@
       <page>197</page>
       <avail>Rating</avail>
       <cost>Rating * 200</cost>
-	  <bonus unique="chemicalprotection">
-		<toxincontactresist>Rating</toxincontactresist>
-		<pathogencontactresist>Rating</pathogencontactresist>
-	  </bonus>
+      <bonus unique="chemicalprotection">
+        <toxincontactresist>Rating</toxincontactresist>
+        <pathogencontactresist>Rating</pathogencontactresist>
+      </bonus>
     </gear>
     <gear>
       <id>e1ca60aa-ddd5-4a91-b137-30d06d97f931</id>

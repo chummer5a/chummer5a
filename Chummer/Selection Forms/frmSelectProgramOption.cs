@@ -28,7 +28,7 @@ namespace Chummer
         private string _strSelectedOption = string.Empty;
         private string _strProgramName = string.Empty;
         private string _strProgramCategory = string.Empty;
-        private List<string> _lstTags = new List<string>();
+        private readonly List<string> _lstTags = new List<string>();
 
         private bool _blnAddAgain = false;
 
@@ -39,7 +39,7 @@ namespace Chummer
         public frmSelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
@@ -55,28 +55,23 @@ namespace Chummer
 
             foreach (XmlNode objXmlOption in objXmlOptionList)
             {
-                bool blnAdd = true;
                 // If the Option has Category requirements, make sure they are met before adding the item to the list.
                 if (objXmlOption["programtypes"] != null)
                 {
-                    blnAdd = false;
+                    bool blnAdd = false;
                     foreach (XmlNode objXmlCategory in objXmlOption.SelectNodes("programtypes/programtype"))
                     {
                         if (objXmlCategory.InnerText == _strProgramCategory)
                             blnAdd = true;
                     }
+                    if (!blnAdd)
+                        continue;
                 }
 
-                if (blnAdd)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlOption["name"].InnerText;
-                    objItem.Name = objXmlOption["translate"]?.InnerText ?? objXmlOption["name"].InnerText;
-                    lstOption.Add(objItem);
-                }
+                string strName = objXmlOption["name"].InnerText;
+                lstOption.Add(new ListItem(strName, objXmlOption["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstOption.Sort(objSort.Compare);
+            lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
             lstOptions.ValueMember = "Value";
             lstOptions.DisplayMember = "Name";
@@ -89,13 +84,13 @@ namespace Chummer
             // Display the Program information.
             XmlNode objXmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + lstOptions.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlOption["source"].InnerText);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlOption["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlOption["page"].InnerText;
             if (objXmlOption["altpage"] != null)
                 strPage = objXmlOption["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlOption["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlOption["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -158,15 +153,11 @@ namespace Chummer
         /// <summary>
         /// Tags associated with the Program.
         /// </summary>
-        public List<string> ProgramTags
+        public IList<string> ProgramTags
         {
             get
             {
                 return _lstTags;
-            }
-            set
-            {
-                _lstTags = value;
             }
         }
 
@@ -198,10 +189,5 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

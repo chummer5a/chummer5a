@@ -87,7 +87,6 @@ namespace Chummer
             this.nudConnection.Name = "nudConnection";
             this.nudConnection.Size = new System.Drawing.Size(40, 20);
             this.nudConnection.TabIndex = 3;
-            this.tipTooltip.SetToolTip(this.nudConnection, "Connection");
             this.nudConnection.Value = new decimal(new int[] {
             1,
             0,
@@ -111,7 +110,6 @@ namespace Chummer
             this.nudLoyalty.Name = "nudLoyalty";
             this.nudLoyalty.Size = new System.Drawing.Size(40, 20);
             this.nudLoyalty.TabIndex = 4;
-            this.tipTooltip.SetToolTip(this.nudLoyalty, "Loyalty");
             this.nudLoyalty.Value = new decimal(new int[] {
             1,
             0,
@@ -139,7 +137,6 @@ namespace Chummer
             this.tsAttachCharacter});
             this.cmsContact.Name = "cmsContact";
             this.cmsContact.Size = new System.Drawing.Size(172, 70);
-            this.cmsContact.Opening += new System.ComponentModel.CancelEventHandler(this.cmsContact_Opening);
             // 
             // tsContactOpen
             // 

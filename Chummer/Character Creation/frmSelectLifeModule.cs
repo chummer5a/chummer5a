@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -27,7 +28,7 @@ namespace Chummer
     public partial class frmSelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
-        private Character _objCharacter;
+        private readonly Character _objCharacter;
         private int _intStage;
         private String _strDefaultStageName;
         private XmlDocument _xmlDocument;
@@ -40,7 +41,7 @@ namespace Chummer
         public frmSelectLifeModule(Character objCharacter, int stage)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _intStage = stage;
             MoveControls();
@@ -81,12 +82,13 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || Backend.Shared_Methods.SelectionShared.RequirementsMet(xmlNode, false, _objCharacter))
+                if (!chkLimitList.Checked || xmlNode.RequirementsMet(_objCharacter))
                 {
 
-                    TreeNode treNode = new TreeNode();
-
-                    treNode.Text = xmlNode["name"].InnerText;
+                    TreeNode treNode = new TreeNode
+                    {
+                        Text = xmlNode["name"].InnerText
+                    };
                     if (xmlNode["versions"] != null)
                     {
                         treNode.Nodes.AddRange(
@@ -162,7 +164,7 @@ namespace Chummer
             }
 
             _selectedId = (string)e.Node.Tag;
-            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable(_selectedId);
+            XmlNode selectedNodeInfo = Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language));
 
             if (selectedNodeInfo != null)
             {
@@ -189,7 +191,7 @@ namespace Chummer
 
         public XmlNode SelectedNode
         {
-            get { return Quality.GetNodeOverrideable(_selectedId); }
+            get { return Quality.GetNodeOverrideable(_selectedId, XmlManager.Load("lifemodules.xml", GlobalOptions.Language)); }
         }
 
         private void treModules_DoubleClick(object sender, EventArgs e)
@@ -213,11 +215,7 @@ namespace Chummer
                 {
                     List<ListItem> Stages = new List<ListItem>()
                     {
-                        new ListItem()
-                        {
-                            Name = LanguageManager.GetString("String_All"),
-                            Value = "0"
-                        }
+                        new ListItem("0", LanguageManager.GetString("String_All", GlobalOptions.Language))
                     };
 
                     XmlNodeList xnodes = _xmlDocument.SelectNodes("/chummer/stages/stage");
@@ -226,19 +224,15 @@ namespace Chummer
                         XmlAttribute attrib = xnode.Attributes["order"];
                         if (attrib != null)
                         {
-                            ListItem item = new ListItem();
-                            item.Name = xnode.InnerText;
-                            item.Value = xnode.Attributes["order"].Value;
-                            Stages.Add(item);
+                            Stages.Add(new ListItem(xnode.Attributes["order"].Value, xnode.InnerText));
                         }
                     }
 
                     //Sort based on integer value of key
                     Stages.Sort((x, y) =>
                     {
-                        int xint = 0;
                         int yint = 0;
-                        if (int.TryParse(x.Value, out xint))
+                        if (int.TryParse(x.Value, out int xint))
                         {
                             if (int.TryParse(y.Value, out yint))
                             {
@@ -268,10 +262,8 @@ namespace Chummer
                 }
 
                 ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
-                if (selectedItem != null)
-                {
+                if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
-                }
 
             }
             else
@@ -353,11 +345,6 @@ namespace Chummer
 
 
             return working;
-        }
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
         }
     }
 }

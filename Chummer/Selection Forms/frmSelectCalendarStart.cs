@@ -25,20 +25,20 @@ namespace Chummer
     {
         private int _intSelectedYear = 2072;
         private int _intSelectedWeek = 1;
-        CalendarWeek objDefaultWeek = new CalendarWeek();
+        private readonly CalendarWeek objDefaultWeek = new CalendarWeek();
 
         #region Control Events
         public frmSelectCalendarStart()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
         public frmSelectCalendarStart(CalendarWeek objWeek)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
 
             nudYear.Value = objWeek.Year;

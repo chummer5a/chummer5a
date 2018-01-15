@@ -281,7 +281,7 @@ namespace Chummer
             this.dataGridViewTextBoxColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dataGridViewTextBoxColumn7.DataPropertyName = "Cost";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle4.Format = "#0.00¥";
+            dataGridViewCellStyle4.Format = "#,0.##¥";
             dataGridViewCellStyle4.NullValue = null;
             this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewTextBoxColumn7.FillWeight = 60F;
@@ -502,7 +502,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 57;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
+            this.lblSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSourceLabel
             // 
@@ -612,7 +612,7 @@ namespace Chummer
             this.Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Cost.DataPropertyName = "Cost";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle5.Format = "#,0.00¥";
+            dataGridViewCellStyle5.Format = "#,0.##¥";
             dataGridViewCellStyle5.NullValue = null;
             this.Cost.DefaultCellStyle = dataGridViewCellStyle5;
             this.Cost.FillWeight = 60F;

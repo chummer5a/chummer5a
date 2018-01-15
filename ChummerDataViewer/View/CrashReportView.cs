@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerDataViewer.Model;
+using System.Globalization;
 
 namespace ChummerDataViewer
 {
-	public partial class CrashReportView : UserControl
+	public sealed partial class CrashReportView : UserControl
 	{
 		private readonly CrashReport _report;
 		private readonly DownloaderWorker _worker;
@@ -25,7 +26,7 @@ namespace ChummerDataViewer
 			lblBuildType.Text = report.BuildType;
 			lblGuid.Text = report.Guid.ToString();
 			lblVersion.Text = report.Version.ToString(3);
-			lblDate.Text = report.Timestamp.ToString("d MMM yy");
+			lblDate.Text = report.Timestamp.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
 
 			if (report.StackTrace != null)
 			{
@@ -37,7 +38,7 @@ namespace ChummerDataViewer
 		}
 
 		//TODO: move this to a better place
-		private string GuessStack(string stacktrace)
+		private static string GuessStack(string stacktrace)
 		{
 			string exception = stacktrace.Split(':')[0];
 

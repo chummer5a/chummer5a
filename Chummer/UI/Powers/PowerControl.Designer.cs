@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class PowerControl
     {
@@ -30,7 +30,7 @@
             this.components = new System.ComponentModel.Container();
             this.lblPowerName = new System.Windows.Forms.Label();
             this.cmdDelete = new System.Windows.Forms.Button();
-            this.nudRating = new Chummer.helpers.NumericUpDownEx();
+            this.nudRating = new NumericUpDownEx();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.chkDiscountedAdeptWay = new System.Windows.Forms.CheckBox();
             this.chkDiscountedGeas = new System.Windows.Forms.CheckBox();
@@ -183,7 +183,7 @@
         private System.Windows.Forms.CheckBox chkDiscountedGeas;
         private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.ToolTip tipTooltip;
-        public Chummer.helpers.NumericUpDownEx nudRating;
+        private NumericUpDownEx nudRating;
         private System.Windows.Forms.Label lblActivation;
     }
 }

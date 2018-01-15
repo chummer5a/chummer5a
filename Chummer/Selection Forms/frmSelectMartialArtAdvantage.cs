@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -38,7 +39,7 @@ namespace Chummer
         public frmSelectMartialArtAdvantage(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml");
@@ -70,17 +71,13 @@ namespace Chummer
                     }
                 }
 
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlAdvantage, false, _objCharacter))
+                if (objXmlAdvantage.RequirementsMet(_objCharacter))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = strAdvantageName;
-                    objItem.Name = objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName;
-                    lstAdvantage.Add(objItem);
+                    lstAdvantage.Add(new ListItem(strAdvantageName, objXmlAdvantage.Attributes?["translate"]?.InnerText ?? strAdvantageName));
                 }
                 NotNewAdvantage:;
             }
-            SortListItem objSort = new SortListItem();
-            lstAdvantage.Sort(objSort.Compare);
+            lstAdvantage.Sort(CompareListItems.CompareNames);
             lstAdvantages.BeginUpdate();
             lstAdvantages.DataSource = null;
             lstAdvantages.ValueMember = "Value";

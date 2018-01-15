@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +25,9 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Chummer.Annotations;
-using Chummer.Backend;
 using System.Globalization;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_groupName}")]
     public class SkillGroup : INotifyPropertyChanged
@@ -204,7 +221,7 @@ namespace Chummer.Skills
 
             //If data file contains {4} this crashes but...
             string upgradetext =
-                $"{LanguageManager.GetString("String_ExpenseSkillGroup")} {DisplayName} {Rating} -> {(Rating + 1)}";
+                $"{LanguageManager.GetString("String_ExpenseSkillGroup", GlobalOptions.Language)} {DisplayName} {Rating} -> {(Rating + 1)}";
 
             ExpenseLogEntry entry = new ExpenseLogEntry(_character);
             entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -237,7 +254,8 @@ namespace Chummer.Skills
 
             SkillGroup newGroup = new SkillGroup(skill.CharacterObject, skill.SkillGroup);
             newGroup.Add(skill);
-            skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => String.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal));
+            skill.CharacterObject.SkillsSection.SkillGroups.MergeInto(newGroup, (l, r) => String.Compare(l.DisplayName, r.DisplayName, StringComparison.Ordinal),
+                (l, r) => { foreach (Skill x in r.SkillList.Where(y => !l.SkillList.Contains(y))) l.SkillList.Add(x); });
 
             return newGroup;
         }
@@ -262,11 +280,11 @@ namespace Chummer.Skills
             writer.WriteEndElement();
         }
 
-        internal void Print(XmlWriter objWriter, CultureInfo objCulture)
+        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             objWriter.WriteStartElement("skillgroup");
 
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("name", DisplayNameMethod(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
@@ -280,8 +298,7 @@ namespace Chummer.Skills
         {
             if (saved == null)
                 return null;
-            Guid g;
-            saved.TryGetField("id", Guid.TryParse, out g);
+            saved.TryGetField("id", Guid.TryParse, out Guid g);
             SkillGroup group = new SkillGroup(character, saved["name"]?.InnerText, g);
 
             saved.TryGetInt32FieldQuickly("karma", ref group._skillFromKarma);
@@ -350,20 +367,22 @@ namespace Chummer.Skills
         {
             get { return _groupName; }
         }
-
-        private string _cachedDisplayName = null;
+        
         public string DisplayName
         {
             get
             {
-                if(_cachedDisplayName != null)
-                    return _cachedDisplayName;
-
-                if (GlobalOptions.Language == GlobalOptions.DefaultLanguage) return _cachedDisplayName = Name;
-                XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
-                XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
-                return _cachedDisplayName = objNode?.Attributes?["translate"]?.InnerText;
+                return DisplayNameMethod(GlobalOptions.Language);
             }
+        }
+
+        public string DisplayNameMethod(string strLanguage)
+        {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return Name;
+            XmlDocument objXmlDocument = XmlManager.Load("skills.xml", strLanguage);
+            XmlNode objNode = objXmlDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + Name + "\"]");
+            return objNode?.Attributes?["translate"]?.InnerText;
         }
 
         public string DisplayRating
@@ -372,7 +391,7 @@ namespace Chummer.Skills
             {
                 if (_character.Created && !CareerIncrease)
                 {
-                    return LanguageManager.GetString("Label_SkillGroup_Broken");
+                    return LanguageManager.GetString("Label_SkillGroup_Broken", GlobalOptions.Language);
                 }
                 return SkillList.Min(x => x.TotalBaseRating).ToString();
             }
@@ -384,14 +403,14 @@ namespace Chummer.Skills
             get
             {
                 if (string.IsNullOrEmpty(_toolTip))
-                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayName));
+                    _toolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _affectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
                 return _toolTip;
             }
         }
 
         public string UpgradeToolTip
         {
-            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem"), SkillList.Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
+            get { return string.Format(LanguageManager.GetString("Tip_ImproveItem", GlobalOptions.Language), SkillList.Min(x => x.TotalBaseRating) + 1, UpgradeKarmaCost()); }
         }
 
         public Guid Id { get; } = Guid.NewGuid();
@@ -442,13 +461,13 @@ namespace Chummer.Skills
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
-        private void OnImprovementEvent(List<Improvement> improvements)
+        private void OnImprovementEvent(ICollection<Improvement> improvements)
         {
             _cachedFreeBase = int.MinValue;
             _cachedFreeLevels = int.MinValue;
@@ -634,7 +653,7 @@ namespace Chummer.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public List<Skill> SkillList
+        public IList<Skill> SkillList
         {
             get
             {

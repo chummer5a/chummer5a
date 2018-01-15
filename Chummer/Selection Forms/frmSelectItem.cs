@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectItem()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -54,26 +54,24 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstGear)
                 {
-                    ListItem objAmmo = new ListItem();
-                    objAmmo.Value = objGear.InternalId;
-                    objAmmo.Name = objGear.DisplayNameShort;
+                    string strAmmoName = objGear.DisplayNameShort(GlobalOptions.Language);
                     // Retrieve the plugin information if it has any.
                     if (objGear.Children.Count > 0)
                     {
                         string strPlugins = string.Empty;
                         foreach (Gear objChild in objGear.Children)
                         {
-                            strPlugins += objChild.DisplayNameShort + ", ";
+                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
                         }
                         // Remove the trailing comma.
                         strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                         // Append the plugin information to the name.
-                        objAmmo.Name += " [" + strPlugins + "]";
+                        strAmmoName += " [" + strPlugins + "]";
                     }
                     if (objGear.Rating > 0)
-                        objAmmo.Name += " (" + LanguageManager.GetString("String_Rating") + " " + objGear.Rating.ToString() + ")";
-                    objAmmo.Name += " x" + objGear.Quantity.ToString();
-                    lstItems.Add(objAmmo);
+                        strAmmoName += " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objGear.Rating.ToString() + ")";
+                    strAmmoName += " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
+                    lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }
             }
             else if (_strMode == "Vehicles")
@@ -81,10 +79,7 @@ namespace Chummer
                 // Add each of the items to a new List.
                 foreach (Vehicle objVehicle in _lstVehicles)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objVehicle.InternalId;
-                    objItem.Name = objVehicle.DisplayName;
-                    lstItems.Add(objItem);
+                    lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.DisplayName(GlobalOptions.Language)));
                 }
             }
             else if (_strMode == "VehicleMods")
@@ -92,10 +87,7 @@ namespace Chummer
                 // Add each of the items to a new List.
                 foreach (VehicleMod objMod in _lstVehicleMods)
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objMod.InternalId;
-                    objItem.Name = objMod.DisplayName;
-                    lstItems.Add(objItem);
+                    lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
                 }
             }
             else if (_strMode == "General")
@@ -118,237 +110,136 @@ namespace Chummer
 
                     foreach (XmlNode objNode in objXmlList)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objNode.InnerText;
-                        objItem.Name = objNode.Attributes?["translate"]?.InnerText ?? objNode.InnerText;
-                        lstItems.Add(objItem);
+                        string strInnerText = objNode.InnerText;
+                        lstItems.Add(new ListItem(strInnerText, objNode.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
                 else
                 {
+                    string strAvailRestrictedString = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage);
                     // Cyberware/Bioware.
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children))
                     {
-                        if (objCyberware.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                        if (objCyberware.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objCyberware.DisplayNameShort;
-                            objItem.Name = objCyberware.DisplayNameShort;
-                            lstItems.Add(objItem);
+                            lstItems.Add(new ListItem(objCyberware.InternalId, objCyberware.DisplayName(GlobalOptions.Language)));
                         }
-                        foreach (Cyberware objChild in objCyberware.Children)
+                        foreach (Gear objGear in objCyberware.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
                         {
-                            if (objChild.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objChild.DisplayNameShort;
-                                objItem.Name = objChild.DisplayNameShort;
-                                lstItems.Add(objItem);
-                            }
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                         }
                     }
 
                     // Armor.
                     foreach (Armor objArmor in _objCharacter.Armor)
                     {
-                        if (objArmor.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                        if (objArmor.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objArmor.DisplayNameShort;
-                            objItem.Name = objArmor.DisplayNameShort;
-                            lstItems.Add(objItem);
+                            lstItems.Add(new ListItem(objArmor.InternalId, objArmor.DisplayName(GlobalOptions.Language)));
                         }
                         foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                            if (objMod.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
-                                lstItems.Add(objItem);
+                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
+                            }
+                            foreach (Gear objGear in objMod.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
+                            {
+                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                             }
                         }
-                        foreach (Gear objGear in objArmor.Gear)
+                        foreach (Gear objGear in objArmor.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
                         {
-                            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objGear.DisplayNameShort;
-                                objItem.Name = objGear.DisplayNameShort;
-                                lstItems.Add(objItem);
-                            }
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                         }
                     }
 
                     // Weapons.
-                    foreach (Weapon objWeapon in _objCharacter.Weapons)
+                    foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
-                        if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                        if (objWeapon.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objWeapon.DisplayNameShort;
-                            objItem.Name = objWeapon.DisplayNameShort;
-                            lstItems.Add(objItem);
+                            lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
                         }
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                            if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objAccessory.DisplayNameShort;
-                                objItem.Name = objAccessory.DisplayNameShort;
-                                lstItems.Add(objItem);
+                                lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
                             }
-                        }
-                        if (objWeapon.UnderbarrelWeapons.Count > 0)
-                        {
-                            foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                            foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
                             {
-                                if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
-                                    objItem.Name = objUnderbarrelWeapon.DisplayNameShort;
-                                    lstItems.Add(objItem);
-                                }
-                                foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
-                                {
-                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
-                                    {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objAccessory.DisplayNameShort;
-                                        objItem.Name = objAccessory.DisplayNameShort;
-                                        lstItems.Add(objItem);
-                                    }
-                                }
+                                lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                             }
                         }
                     }
 
                     // Gear.
-                    foreach (Gear objGear in _objCharacter.Gear)
+                    foreach (Gear objGear in _objCharacter.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
                     {
-                        if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                        {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objGear.DisplayNameShort;
-                            objItem.Name = objGear.DisplayNameShort;
-                            lstItems.Add(objItem);
-                        }
-                        foreach (Gear objChild in objGear.Children)
-                        {
-                            if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                            {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objChild.DisplayNameShort;
-                                objItem.Name = objChild.DisplayNameShort;
-                                lstItems.Add(objItem);
-                            }
-                            foreach (Gear objSubChild in objChild.Children)
-                            {
-                                if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                                {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objSubChild.DisplayNameShort;
-                                    objItem.Name = objSubChild.DisplayNameShort;
-                                    lstItems.Add(objItem);
-                                }
-                            }
-                        }
+                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                     }
 
                     // Vehicles.
                     foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                     {
-                        if (objVehicle.CalculatedAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                        if (objVehicle.CalculatedAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                         {
-                            ListItem objItem = new ListItem();
-                            objItem.Value = objVehicle.DisplayNameShort;
-                            objItem.Name = objVehicle.DisplayNameShort;
-                            lstItems.Add(objItem);
+                            lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.DisplayName(GlobalOptions.Language)));
                         }
                         foreach (VehicleMod objMod in objVehicle.Mods)
                         {
-                            if (objMod.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objMod.IncludedInVehicle)
+                            if (!objMod.IncludedInVehicle && objMod.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objMod.DisplayNameShort;
-                                objItem.Name = objMod.DisplayNameShort;
-                                lstItems.Add(objItem);
+                                lstItems.Add(new ListItem(objMod.InternalId, objMod.DisplayName(GlobalOptions.Language)));
                             }
-                            foreach (Weapon objWeapon in objMod.Weapons)
+                            foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
                             {
-                                if (objWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                                if (objWeapon.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objWeapon.DisplayNameShort;
-                                    objItem.Name = objWeapon.DisplayNameShort;
-                                    lstItems.Add(objItem);
+                                    lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
                                 }
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
+                                    if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                                     {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objAccessory.DisplayNameShort;
-                                        objItem.Name = objAccessory.DisplayNameShort;
-                                        lstItems.Add(objItem);
+                                        lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
                                     }
-                                }
-                                if (objWeapon.UnderbarrelWeapons.Count > 0)
-                                {
-                                    foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
+                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
                                     {
-                                        if (objUnderbarrelWeapon.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")))
-                                        {
-                                            ListItem objItem = new ListItem();
-                                            objItem.Value = objUnderbarrelWeapon.DisplayNameShort;
-                                            objItem.Name = objUnderbarrelWeapon.DisplayNameShort;
-                                            lstItems.Add(objItem);
-                                        }
-                                        foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
-                                        {
-                                            if (objAccessory.TotalAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted")) && !objAccessory.IncludedInWeapon)
-                                            {
-                                                ListItem objItem = new ListItem();
-                                                objItem.Value = objAccessory.DisplayNameShort;
-                                                objItem.Name = objAccessory.DisplayNameShort;
-                                                lstItems.Add(objItem);
-                                            }
-                                        }
+                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                                     }
                                 }
                             }
                         }
-                        foreach (Gear objGear in objVehicle.Gear)
+                        foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                         {
-                            if (objGear.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                            if (!objWeaponMount.IncludedInVehicle && objWeaponMount.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                             {
-                                ListItem objItem = new ListItem();
-                                objItem.Value = objGear.DisplayNameShort;
-                                objItem.Name = objGear.DisplayNameShort;
-                                lstItems.Add(objItem);
+                                lstItems.Add(new ListItem(objWeaponMount.InternalId, objWeaponMount.DisplayName(GlobalOptions.Language)));
                             }
-                            foreach (Gear objChild in objGear.Children)
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(x => x.Children))
                             {
-                                if (objChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                                if (objWeapon.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                                 {
-                                    ListItem objItem = new ListItem();
-                                    objItem.Value = objChild.DisplayNameShort;
-                                    objItem.Name = objChild.DisplayNameShort;
-                                    lstItems.Add(objItem);
+                                    lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.DisplayName(GlobalOptions.Language)));
                                 }
-                                foreach (Gear objSubChild in objChild.Children)
+                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    if (objSubChild.TotalAvail().EndsWith(LanguageManager.GetString("String_AvailRestricted")))
+                                    if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvail(GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString))
                                     {
-                                        ListItem objItem = new ListItem();
-                                        objItem.Value = objSubChild.DisplayNameShort;
-                                        objItem.Name = objSubChild.DisplayNameShort;
-                                        lstItems.Add(objItem);
+                                        lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.DisplayName(GlobalOptions.Language)));
+                                    }
+                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
+                                    {
+                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                                     }
                                 }
                             }
+                        }
+                        foreach (Gear objGear in objVehicle.Gear.DeepWhere(x => x.Children, x => x.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage).EndsWith(strAvailRestrictedString)))
+                        {
+                            lstItems.Add(new ListItem(objGear.InternalId, objGear.DisplayName(GlobalOptions.Language)));
                         }
                     }
                 }
@@ -369,20 +260,6 @@ namespace Chummer
                 cboAmmo.SelectedIndex = cboAmmo.FindStringExact(_strForceItem);
                 if (cboAmmo.SelectedIndex != -1)
                     AcceptForm();
-                else
-                {
-                    cboAmmo.DataSource = null;
-                    List<ListItem> lstSingle = new List<ListItem>();
-                    ListItem objItem = new ListItem();
-                    objItem.Value = _strForceItem;
-                    objItem.Name = _strForceItem;
-                    lstSingle.Add(objItem);
-                    cboAmmo.ValueMember = "Value";
-                    cboAmmo.DisplayMember = "Name";
-                    cboAmmo.DataSource = lstSingle;
-                    cboAmmo.SelectedIndex = 0;
-                    AcceptForm();
-                }
             }
             cboAmmo.EndUpdate();
         }
@@ -422,11 +299,11 @@ namespace Chummer
         /// <summary>
         /// List of Gear that the user can select.
         /// </summary>
-        public List<Gear> Gear
+        public IList<Gear> Gear
         {
             set
             {
-                _lstGear = value;
+                _lstGear = (List<Gear>)value;
                 _strMode = "Gear";
             }
         }
@@ -434,11 +311,11 @@ namespace Chummer
         /// <summary>
         /// List of Vehicles that the user can selet.
         /// </summary>
-        public List<Vehicle> Vehicles
+        public IList<Vehicle> Vehicles
         {
             set
             {
-                _lstVehicles = value;
+                _lstVehicles = (List<Vehicle>)value;
                 _strMode = "Vehicles";
             }
         }
@@ -446,11 +323,11 @@ namespace Chummer
         /// <summary>
         /// List of Vehicle Mods that the user can select.
         /// </summary>
-        public List<VehicleMod> VehicleMods
+        public IList<VehicleMod> VehicleMods
         {
             set
             {
-                _lstVehicleMods = value;
+                _lstVehicleMods = (List<VehicleMod>)value;
                 _strMode = "VehicleMods";
             }
         }
@@ -458,11 +335,11 @@ namespace Chummer
         /// <summary>
         /// List of general items that the user can select.
         /// </summary>
-        public List<ListItem> GeneralItems
+        public IList<ListItem> GeneralItems
         {
             set
             {
-                _lstGeneralItems = value;
+                _lstGeneralItems = (List<ListItem>)value;
                 _strMode = "General";
             }
         }
@@ -470,11 +347,11 @@ namespace Chummer
         /// <summary>
         /// List of general items that the user can select.
         /// </summary>
-        public List<ListItem> DropdownItems
+        public IList<ListItem> DropdownItems
         {
             set
             {
-                _lstGeneralItems = value;
+                _lstGeneralItems = (List<ListItem>)value;
                 _strMode = "Dropdown";
             }
         }

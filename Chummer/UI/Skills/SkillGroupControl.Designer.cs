@@ -1,4 +1,4 @@
-﻿namespace Chummer.UI.Skills
+namespace Chummer.UI.Skills
 {
     partial class SkillGroupControl
     {
@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.nudSkill = new Chummer.helpers.NumericUpDownEx();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
+            this.nudSkill = new NumericUpDownEx();
+            this.nudKarma = new NumericUpDownEx();
             this.lblName = new System.Windows.Forms.Label();
             this.lblGroupRating = new System.Windows.Forms.Label();
             this.btnCareerIncrease = new System.Windows.Forms.Button();
@@ -41,7 +41,7 @@
             // 
             // nudSkill
             // 
-            this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudSkill.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(134, 1);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
@@ -49,13 +49,13 @@
             0,
             0});
             this.nudSkill.Name = "nudSkill";
-            this.nudSkill.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+            this.nudSkill.ShowUpDownButtons = NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudSkill.Size = new System.Drawing.Size(40, 20);
             this.nudSkill.TabIndex = 2;
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(180, 1);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
@@ -63,7 +63,7 @@
             0,
             0});
             this.nudKarma.Name = "nudKarma";
-            this.nudKarma.ShowUpDownButtons = Chummer.helpers.NumericUpDownEx.ShowUpDownButtonsMode.Always;
+            this.nudKarma.ShowUpDownButtons = NumericUpDownEx.ShowUpDownButtonsMode.Always;
             this.nudKarma.Size = new System.Drawing.Size(40, 20);
             this.nudKarma.TabIndex = 5;
             // 
@@ -119,8 +119,8 @@
 
         #endregion
 
-        private Chummer.helpers.NumericUpDownEx nudSkill;
-        private Chummer.helpers.NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudSkill;
+        private NumericUpDownEx nudKarma;
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.Label lblGroupRating;
         private System.Windows.Forms.Button btnCareerIncrease;

@@ -7,12 +7,12 @@ namespace ChummerDataViewer.Model
 {
 	public class CrashReport
 	{
-		public EventHandler ProgressChanged;
+		public EventHandler ProgressChanged { get; set; }
 
 		private readonly Database.DatabasePrivateApi _database;
 		private readonly string _key;
-		private string _downloadedZip;
-		private string _folderlocation;
+		private readonly string _downloadedZip;
+		private readonly string _folderlocation;
 
 		public bool IsDownloadStarted => _downloadedZip != null;
 		public bool IsUnpackStarted => _folderlocation != null;
@@ -78,19 +78,24 @@ namespace ChummerDataViewer.Model
 
 		internal void StartDownload(DownloaderWorker worker)
 		{
-			if (Progress != CrashReportProcessingProgress.NotStarted)
-			{
-				throw new InvalidOperationException();
-			}
+            if (Uri.TryCreate(WebFileLocation, UriKind.RelativeOrAbsolute, out Uri uriLocation))
+            {
+                if (Progress != CrashReportProcessingProgress.NotStarted)
+			    {
+				    throw new InvalidOperationException();
+			    }
 
-			Progress = CrashReportProcessingProgress.Downloading;
+			    Progress = CrashReportProcessingProgress.Downloading;
 
-			string file = PersistentState.Database.GetKey("crashdumps_zip_folder") + Path.DirectorySeparatorChar +  Guid + ".zip";
-			_worker = worker;
-			_worker.Enqueue(Guid, WebFileLocation, _key, file);
+			    string file = PersistentState.Database.GetKey("crashdumps_zip_folder") + Path.DirectorySeparatorChar +  Guid + ".zip";
+			    _worker = worker;
+                _worker.Enqueue(Guid, uriLocation, _key, file);
 
-			_worker.StatusChanged += WorkerOnStatusChanged;
-		}
+                _worker.StatusChanged += WorkerOnStatusChanged;
+            }
+            else
+                throw new InvalidOperationException();
+        }
 
 		private void WorkerOnStatusChanged(INotifyThreadStatus sender, StatusChangedEventArgs args)
 		{

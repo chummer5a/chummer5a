@@ -39,10 +39,10 @@ namespace Chummer
             this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdPrint = new SplitButton();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.cboXSLT = new System.Windows.Forms.ComboBox();
+            this.cboXSLT = new ElasticComboBox();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.cboLanguage = new System.Windows.Forms.ComboBox();
+            this.cboLanguage = new ElasticComboBox();
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.SuspendLayout();
@@ -50,6 +50,7 @@ namespace Chummer
             // cmdSaveHTML
             // 
             this.cmdSaveHTML.AutoSize = true;
+            this.cmdSaveHTML.Enabled = false;
             this.cmdSaveHTML.ContextMenuStrip = this.cmsSaveButton;
             this.cmdSaveHTML.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.cmdSaveHTML.Location = new System.Drawing.Point(98, 12);
@@ -73,6 +74,7 @@ namespace Chummer
             // tsSaveAsXml
             // 
             this.tsSaveAsXml.Name = "tsSaveAsXml";
+            this.tsSaveAsXml.Enabled = false;
             this.tsSaveAsXml.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
             this.tsSaveAsXml.Text = "Save as XML";
@@ -81,6 +83,7 @@ namespace Chummer
             // tsSaveAsPdf
             // 
             this.tsSaveAsPdf.Name = "tsSaveAsPdf";
+            this.tsSaveAsPdf.Enabled = false;
             this.tsSaveAsPdf.Size = new System.Drawing.Size(139, 22);
             this.tsSaveAsPdf.Tag = "Button_Viewer_SaveAsPdf";
             this.tsSaveAsPdf.Text = "Save as PDF";
@@ -92,11 +95,11 @@ namespace Chummer
             this.tsPrintPreview});
             this.cmsPrintButton.Name = "cmsPrintButton";
             this.cmsPrintButton.Size = new System.Drawing.Size(144, 26);
-            this.cmsPrintButton.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenu_Opening);
             // 
             // tsPrintPreview
             // 
             this.tsPrintPreview.Name = "tsPrintPreview";
+            this.tsPrintPreview.Enabled = false;
             this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
             this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
             this.tsPrintPreview.Text = "&Print Preview";
@@ -105,6 +108,7 @@ namespace Chummer
             // cmdPrint
             // 
             this.cmdPrint.AutoSize = true;
+            this.cmdPrint.Enabled = false;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
             this.cmdPrint.Location = new System.Drawing.Point(12, 12);
             this.cmdPrint.Name = "cmdPrint";
@@ -193,14 +197,14 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
         private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-        private System.Windows.Forms.ComboBox cboXSLT;
+        private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Label lblCharacterSheet;
         private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
         internal SplitButton cmdSaveHTML;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
         private System.Windows.Forms.ToolStripMenuItem tsSaveAsPdf;
         private System.Windows.Forms.WebBrowser webBrowser1;
-        private System.Windows.Forms.ComboBox cboLanguage;
+        private ElasticComboBox cboLanguage;
     }
 
 }

@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,41 +24,19 @@ using System.Xml;
 using Chummer;
 using Chummer.Datastructures;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 { 
-    class ExoticSkill : Skill
+    public sealed class ExoticSkill : Skill
     {
-        private static readonly TranslatedField<string> _specificTranslator = new TranslatedField<string>();
-        private string _specific;
-        private string _translated;
-
-        static ExoticSkill()
-        {
-            XmlNodeList exotic = XmlManager.Load("weapons.xml")?.SelectNodes("/chummer/weapons/weapon");
-
-            if (exotic != null)
-            {
-                foreach (XmlNode objLoopNode in exotic)
-                {
-                    string strLoopName = string.Empty;
-                    if (objLoopNode.TryGetStringFieldQuickly("name", ref strLoopName))
-                    {
-                        string strLoopTranslate = objLoopNode.Attributes?["translate"]?.InnerText ?? strLoopName;
-                        _specificTranslator.Add(strLoopName, strLoopTranslate);
-                    }
-                }
-            }
-        }
-
-
+        private string _strSpecific;
+        
         public ExoticSkill(Character character, XmlNode node) : base(character, node)
         {
         }
 
         public void Load(XmlNode node)
         {
-            node.TryGetStringFieldQuickly("specific", ref _specific);
-            node.TryGetStringFieldQuickly("translated", ref _translated);
+            node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
         public override bool AllowDelete
@@ -79,30 +75,33 @@ namespace Chummer.Skills
         /// <param name="writer"></param>
         protected override void SaveExtendedData(XmlTextWriter writer)
         {
-            writer.WriteElementString("specific", _specific);
-
-            if (!string.IsNullOrEmpty(_translated))
-                writer.WriteElementString("translated", _translated);
+            writer.WriteElementString("specific", _strSpecific);
         }
 
-        public string Specific {
+        public string Specific
+        {
             get
             {
-                return _specificTranslator.Read(_specific, ref _translated);
+                return _strSpecific;
             }
             set
             {
-                _specificTranslator.Write(value, ref _specific, ref _translated);
+                _strSpecific = value;
                 OnPropertyChanged();
             }
         }
 
-        public override string DisplaySpecialization
+        public string DisplaySpecific(string strLanguage)
         {
-            get
-            {
+            if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Specific;
-            }
+
+            return LanguageManager.TranslateExtra(Specific, strLanguage);
+        }
+
+        public override string DisplaySpecializationMethod(string strLanguage)
+        {
+            return DisplaySpecific(strLanguage);
         }
     }
 }

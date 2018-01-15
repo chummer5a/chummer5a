@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -55,5 +56,14 @@
         <value>-p {page} "{localpath}"</value>
       </pdfargument>
     </pdfarguments>
+    <blackmarketpipelinecategories>
+      <category>Armor</category>
+      <category>Bioware</category>
+      <category>Cyberware</category>
+      <category>Drugs</category>
+      <category>Electronics</category>
+      <category>Vehicles</category>
+      <category>Weapons</category>
+    </blackmarketpipelinecategories>
   </options>
 </chummer>

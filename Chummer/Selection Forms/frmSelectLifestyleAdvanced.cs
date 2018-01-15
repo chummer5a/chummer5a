@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectLifestyleAdvanced : Form
     {
         private bool _blnAddAgain = false;
-        private Lifestyle _objLifestyle;
+        private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
         private LifestyleType _objType = LifestyleType.Advanced;
@@ -40,12 +40,12 @@ namespace Chummer
         private int _intTravelerRdmLP = 0;
 
         #region Control Events
-        public frmSelectLifestyleAdvanced(Lifestyle objLifestyle, Character objCharacter)
+        public frmSelectLifestyleAdvanced(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            _objLifestyle = objLifestyle;
+            _objLifestyle = new Lifestyle(objCharacter);
             MoveControls();
             // Load the Lifestyles information.
             _objXmlDocument = XmlManager.Load("lifestyles.xml");
@@ -63,13 +63,13 @@ namespace Chummer
             foreach (TreeNode objNode in treLifestyleQualities.Nodes)
             {
                 if (objNode.Tag != null)
-                    objNode.Text = LanguageManager.GetString(objNode.Tag.ToString());
+                    objNode.Text = LanguageManager.GetString(objNode.Tag.ToString(), GlobalOptions.Language);
             }
 
             // Populate the Advanced Lifestyle ComboBoxes.
             // Lifestyles.
             List<ListItem> lstLifestyles = new List<ListItem>();
-            foreach (XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle"))
+            foreach (XmlNode objXmlLifestyle in _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
             {
                 string strLifestyleName = objXmlLifestyle["name"]?.InnerText;
 
@@ -79,12 +79,7 @@ namespace Chummer
                     !strLifestyleName.Contains("Hospitalized") &&
                     _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = strLifestyleName,
-                        Name = objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName
-                    };
-                    lstLifestyles.Add(objItem);
+                    lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
                 }
             }
             //Populate the Qualities list.
@@ -95,7 +90,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.DisplayName,
+                        Text = objQuality.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes
                     };
@@ -127,7 +122,7 @@ namespace Chummer
                     TreeNode objNode = new TreeNode
                     {
                         Name = objQuality.Name,
-                        Text = objQuality.DisplayName,
+                        Text = objQuality.FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                         Tag = objQuality.InternalId,
                         ToolTipText = objQuality.Notes,
                         ForeColor = SystemColors.GrayText
@@ -161,9 +156,9 @@ namespace Chummer
             }
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
             XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", (nudComforts.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
-            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
-            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language).Replace("{0}", (nudComforts.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language).Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
+            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language).Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
 
             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlAspect?["source"] != null && objXmlAspect["page"] != null)
@@ -178,7 +173,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             AcceptForm();
@@ -195,9 +190,19 @@ namespace Chummer
             {
                 nudRoommates.Value = 0;
             }
+
             nudRoommates.Enabled = !chkTrustFund.Checked;
-            CalculateValues();
+
+            if (!_blnSkipRefresh)
+                CalculateValues();
         }
+
+        private void chkPrimaryTenant_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_blnSkipRefresh)
+                CalculateValues();
+        }
+
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -220,18 +225,19 @@ namespace Chummer
                         lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
                 }
 
+
                 objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = \"" + strBaseLifestyle + "\"]");
-                nudComforts.Minimum = objXmlAspect?["minimum"] != null ? Convert.ToInt32(objXmlAspect["minimum"].InnerText) : 0;
-                nudComforts.Value = nudComforts.Minimum;
+                nudComforts.Maximum = objXmlAspect?["limit"] != null ? Convert.ToInt32(objXmlAspect["limit"].InnerText) : 0;
                 // Area.
                 objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = \"" + strBaseLifestyle + "\"]");
-                nudArea.Minimum = objXmlAspect?["minimum"] != null ? Convert.ToInt32(objXmlAspect["minimum"].InnerText) : 0;
-                nudArea.Value = nudArea.Minimum;
+                nudArea.Maximum = objXmlAspect?["limit"] != null ? Convert.ToInt32(objXmlAspect["limit"].InnerText) : 0;
                 // Security.
                 objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/securities/security[name = \"" + strBaseLifestyle + "\"]");
-                nudSecurity.Minimum = objXmlAspect?["minimum"] != null ? Convert.ToInt32(objXmlAspect["minimum"].InnerText) : 0;
-                nudSecurity.Value = nudSecurity.Minimum;
+                nudSecurity.Maximum = objXmlAspect?["limit"] != null ? Convert.ToInt32(objXmlAspect["limit"].InnerText) : 0;
 
+                nudArea.Value = 0;
+                nudComforts.Value = 0;
+                nudSecurity.Value = 0;
 
                 //This needs a handler for translations, will fix later.
                 if (strBaseLifestyle == "Bolt Hole")
@@ -250,9 +256,8 @@ namespace Chummer
                     {
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"Not a Home\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        TreeNode objNode = new TreeNode();
-                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn, objNode);
-                        treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
+                        treLifestyleQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode());
                         treLifestyleQualities.Nodes[1].Expand();
                         _objLifestyle.LifestyleQualities.Add(objQuality);
                     }
@@ -329,15 +334,13 @@ namespace Chummer
                     {
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objXmlNode.InnerText + "\"]");
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                        TreeNode objNode = new TreeNode();
                         string push = objXmlNode.Attributes?["select"]?.InnerText;
                         if (!string.IsNullOrWhiteSpace(push))
                         {
                             _objCharacter.Pushtext.Push(push);
                         }
-                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn, objNode);
-                        objNode.Text = objQuality.DisplayName;
-                        treLifestyleQualities.Nodes[3].Nodes.Add(objNode);
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.BuiltIn);
+                        treLifestyleQualities.Nodes[3].Nodes.Add(objQuality.CreateTreeNode());
                         treLifestyleQualities.Nodes[3].Expand();
                         _objLifestyle.FreeGrids.Add(objQuality);
                     }
@@ -348,11 +351,18 @@ namespace Chummer
 
         private void nudPercentage_ValueChanged(object sender, EventArgs e)
         {
-            CalculateValues();
+            if (!_blnSkipRefresh)
+                CalculateValues();
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
+            if (!_blnSkipRefresh)
+
+                if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
+                {
+                    chkPrimaryTenant.Checked = true;
+                }
             CalculateValues();
         }
 
@@ -366,12 +376,11 @@ namespace Chummer
                 return;
 
             XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
-
-            TreeNode objNode = new TreeNode();
+            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelectLifestyleQuality.SelectedQuality + "\"]");
+            
             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
-            objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected, objNode);
+            objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
             //objNode.ContextMenuStrip = cmsQuality;
             if (objQuality.InternalId == Guid.Empty.ToString())
                 return;
@@ -386,17 +395,17 @@ namespace Chummer
                 // Add the Quality to the appropriate parent node.
                 if (objQuality.Type == QualityType.Positive)
                 {
-                    treLifestyleQualities.Nodes[0].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[0].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[0].Expand();
                 }
                 else if (objQuality.Type == QualityType.Negative)
                 {
-                    treLifestyleQualities.Nodes[1].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[1].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[1].Expand();
                 }
                 else
                 {
-                    treLifestyleQualities.Nodes[2].Nodes.Add(objNode);
+                    treLifestyleQualities.Nodes[2].Nodes.Add(objQuality.CreateTreeNode());
                     treLifestyleQualities.Nodes[2].Expand();
                 }
                 _objLifestyle.LifestyleQualities.Add(objQuality);
@@ -426,36 +435,25 @@ namespace Chummer
             }
         }
 
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
-
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
-            lblQualitySource.Text = string.Empty;
-            lblQualityLp.Text = string.Empty;
-            tipTooltip.SetToolTip(lblQualitySource, null);
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0)
             {
+                lblQualityLp.Text = string.Empty;
+                lblQualityCost.Text = string.Empty;
+                lblQualitySource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblQualitySource, null);
+                cmdDeleteQuality.Enabled = false;
                 return;
             }
-            LifestyleQuality objQuality =
-                    CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
-                        _objLifestyle.LifestyleQualities) ??
-                    CommonFunctions.FindByIdWithNameCheck(treLifestyleQualities.SelectedNode.Tag.ToString(),
-                            _objLifestyle.FreeGrids);
+            string strSelectedQuality = treLifestyleQualities.SelectedNode.Tag.ToString();
+            LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FindById(strSelectedQuality) ?? _objLifestyle.FreeGrids.FindById(strSelectedQuality);
             lblQualityLp.Text = objQuality.LP.ToString();
             lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page}";
+            lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page(GlobalOptions.Language)}";
             tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
             cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
-        }
-
-        private void lblQualitySource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblQualitySource.Text, _objCharacter);
         }
         #endregion
 
@@ -474,13 +472,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyle that was created in the dialogue.
         /// </summary>
-        public Lifestyle SelectedLifestyle
-        {
-            get
-            {
-                return _objLifestyle;
-            }
-        }
+        public Lifestyle SelectedLifestyle => _objLifestyle;
 
         /// <summary>
         /// Type of Lifestyle to create.
@@ -509,8 +501,7 @@ namespace Chummer
             _objLifestyle.Source = objXmlLifestyle["source"].InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"].InnerText;
             _objLifestyle.Name = txtLifestyleName.Text;
-            //_objLifestyle.Cost = Convert.ToInt32(objXmlAspect["cost"].InnerText);
-            _objLifestyle.Cost = CalculateValues();
+            _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
             _objLifestyle.Percentage = nudPercentage.Value;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
             _objLifestyle.Area = decimal.ToInt32(nudArea.Value);
@@ -518,14 +509,14 @@ namespace Chummer
             _objLifestyle.Security = decimal.ToInt32(nudSecurity.Value);
             _objLifestyle.TrustFund = chkTrustFund.Checked;
             _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
+            _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
             _objLifestyle.StyleType = _objType;
 
-            Guid source;
-            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out source))
+            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
                 _objLifestyle.SourceID = source;
             }
@@ -543,10 +534,10 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private decimal CalculateValues()
+        private void CalculateValues()
         {
             if (_blnSkipRefresh)
-                return 0;
+                return;
 
             int intLP = 0;
             decimal decBaseNuyen = 0;
@@ -590,12 +581,12 @@ namespace Chummer
                 intLP -= objQuality.LP;
                 intMultiplier += objQuality.Multiplier;
                 intMultiplierBaseOnly += objQuality.BaseMultiplier;
-                intMaxArea += objQuality.AreaCost;
-                intMaxComfort += objQuality.ComfortCost;
-                intMaxSec += objQuality.SecurityCost;
-                intMinArea += objQuality.AreaMinimum;
-                intMinComfort += objQuality.ComfortMinimum;
-                intMinSec += objQuality.SecurityMinimum;
+                intMaxArea += objQuality.AreaMaximum;
+                intMaxComfort += objQuality.ComfortMaximum;
+                intMaxSec += objQuality.SecurityMaximum;
+                intMinArea += objQuality.Area;
+                intMinComfort += objQuality.Comfort;
+                intMinSec += objQuality.Security;
 
                 decimal decCost = objQuality.Cost;
                 // Calculate the cost of Entertainments.
@@ -621,13 +612,10 @@ namespace Chummer
                     decBaseNuyen += decCost;
             }
             _blnSkipRefresh = true;
-
-            nudComforts.Minimum = intMinComfort;
-            nudComforts.Maximum = intMaxComfort;
-            nudArea.Minimum = intMinArea;
-            nudArea.Maximum = intMaxArea;
-            nudSecurity.Minimum = intMinSec;
-            nudSecurity.Maximum = intMaxSec;
+            
+            nudComforts.Maximum = Math.Max(intMaxComfort - intMinComfort, 0);
+            nudArea.Maximum = Math.Max(intMaxArea - intMinArea, 0);
+            nudSecurity.Maximum = Math.Max(intMaxSec - intMinSec, 0);
             int intComfortsValue = decimal.ToInt32(nudComforts.Value);
             int intAreaValue = decimal.ToInt32(nudArea.Value);
             int intSecurityValue = decimal.ToInt32(nudSecurity.Value);
@@ -635,35 +623,29 @@ namespace Chummer
 
             _blnSkipRefresh = false;
             //set the Labels for current/maximum
-            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts").Replace("{0}", (nudComforts.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", nudComforts.Maximum.ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security").Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", nudSecurity.Maximum.ToString(GlobalOptions.CultureInfo));
-            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area").Replace("{0}", (nudArea.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", nudArea.Maximum.ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Comforts.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Comforts", GlobalOptions.Language).Replace("{0}", (nudComforts.Value + intMinComfort).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudComforts.Maximum + intMinComfort).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language).Replace("{0}", (nudSecurity.Value + intMinSec).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudSecurity.Maximum + intMinSec).ToString(GlobalOptions.CultureInfo));
+            Label_SelectAdvancedLifestyle_Base_Area.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Area", GlobalOptions.Language).Replace("{0}", (nudArea.Value + intMinArea).ToString(GlobalOptions.CultureInfo)).Replace("{1}", (nudArea.Maximum + intMinArea).ToString(GlobalOptions.CultureInfo));
 
             //calculate the total LP
-            objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/lifestylePoints/lifestylePoint[name = \"" + strBaseLifestyle + "\"]");
-            intLP += Convert.ToInt32(objXmlNode?["amount"]?.InnerText);
-            intLP -= intComfortsValue - intMinComfort;
-            intLP -= intAreaValue - intMinArea;
-            intLP -= intSecurityValue - intMinSec;
+            objXmlNode = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
+            intLP += Convert.ToInt32(objXmlNode?["lp"]?.InnerText);
+            intLP -= intComfortsValue;
+            intLP -= intAreaValue;
+            intLP -= intSecurityValue;
             intLP += intRoommatesValue;
 
-            intMultiplier += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.LifestyleCost).Sum(objImprovement => objImprovement.Value);
-
-            if (strBaseLifestyle.ToString() == "Street")
+            if (strBaseLifestyle == "Street")
             {
-                decNuyen += (intComfortsValue - intMinComfort) * 50;
-                decNuyen += (intAreaValue - intMinArea) * 50;
-                decNuyen += (intSecurityValue - intMinSec) * 50;
+                decNuyen += intComfortsValue * 50;
+                decNuyen += intAreaValue * 50;
+                decNuyen += intSecurityValue * 50;
             }
             else if (strBaseLifestyle == "Traveler")
             {
                 intLP += _intTravelerRdmLP;
             }
 
-            intMultiplier += intRoommatesValue * 10;
-            intMultiplier += (intComfortsValue - intMinComfort) * 10;
-            intMultiplier += (intAreaValue - intMinArea) * 10;
-            intMultiplier += (intSecurityValue - intMinSec) * 10;
             if (!chkTrustFund.Checked)
             {
                 // Determine the base Nuyen cost.
@@ -675,13 +657,14 @@ namespace Chummer
             }
             decNuyen += decExtraCostAssets + (decExtraCostAssets * (intMultiplier / 100.0m));
             decNuyen *= nudPercentage.Value / 100.0m;
-            decNuyen /= (intRoommatesValue + 1.0m);
+            if (!chkPrimaryTenant.Checked)
+            {
+                decNuyen /= intRoommatesValue + 1.0m;
+            }
             decNuyen += decExtraCostServicesOutings + (decExtraCostServicesOutings * (intMultiplier / 100.0m)); ;
             decNuyen += decExtraCostContracts;
             lblTotalLP.Text = intLP.ToString();
             lblCost.Text = decNuyen.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-
-            return decNuyen;
         }
 
         /// <summary>
@@ -698,7 +681,7 @@ namespace Chummer
         /// Sort the contents of a TreeView alphabetically.
         /// </summary>
         /// <param name="treTree">TreeView to sort.</param>
-        private void SortTree(TreeView treTree)
+        private static void SortTree(TreeView treTree)
         {
             List<TreeNode> lstNodes = new List<TreeNode>();
             foreach (TreeNode objNode in treTree.Nodes)
@@ -706,8 +689,7 @@ namespace Chummer
             treTree.Nodes.Clear();
             try
             {
-                SortByName objSort = new SortByName();
-                lstNodes.Sort(objSort.Compare);
+                lstNodes.Sort(CompareTreeNodes.CompareText);
             }
             catch (ArgumentException)
             {

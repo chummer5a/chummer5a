@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -240,18 +241,18 @@
             <specificpower>
               <name>Improved Ability (skill)</name>
               <val>1</val>
-			  <bonusoverride>
-				<selectskill minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-					<skillcategories>
-						<category>Physical Active</category>
-						<category>Social Active</category>
-						<category>Technical Active</category>
-						<category>Vehicle Active</category>
-					</skillcategories>
-				</selectskill>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectskill minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <skillcategories>
+                    <category>Physical Active</category>
+                    <category>Social Active</category>
+                    <category>Technical Active</category>
+                    <category>Vehicle Active</category>
+                  </skillcategories>
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -421,12 +422,12 @@
             <specificpower>
               <name>Improved Ability (skill)</name>
               <val>1</val>
-			  <bonusoverride>
-				<selectskill skillcategory="Physical Active" minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-				</selectskill>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectskill skillcategory="Physical Active" minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -461,12 +462,12 @@
             <specificpower>
               <name>Improved Ability (skill)</name>
               <val>1</val>
-			  <bonusoverride>
-				<selectskill skillgroup="Acting,Influence" minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-				</selectskill>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectskill skillgroup="Acting,Influence" minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -609,11 +610,11 @@
               <name>Improved Ability (skill)</name>
               <val>1</val>
               <bonusoverride>
-				<selectskill skillcategory="Combat Active" minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-				</selectskill>
-			  </bonusoverride>
+                <selectskill skillcategory="Combat Active" minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -649,10 +650,10 @@
               <name>Attribute Boost</name>
               <val>2</val>
               <bonusoverride>
-				<selectattribute>
-					<attribute>AGI</attribute>
-				</selectattribute>
-			  </bonusoverride>
+                <selectattribute>
+                  <attribute>AGI</attribute>
+                </selectattribute>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -733,8 +734,10 @@
           <name>Adept: 2 free levels of Improved Potential</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+              <selectpower
+                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+              <selectpower
+                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
             </selectpowers>
           </bonus>
         </choice>
@@ -859,16 +862,16 @@
       <advantage>All: +2 to resist all pathogens and toxins</advantage>
       <disadvantage>Followers of Disease must make a Charisma + Willpower (3) Test to not flee or seek cover whenever in a combat situation, unless they outnumber their opponents. If they begin a fight with greater numbers but then their side is reduced so that they no longer outnumber their opponents, they must make a test to avoid fleeing.</disadvantage>
       <bonus>
-		<toxincontactresist>2</toxincontactresist>
-		<toxiningestionresist>2</toxiningestionresist>
-		<toxininhalationresist>2</toxininhalationresist>
-		<toxininjectionresist>2</toxininjectionresist>
-		<pathogencontactresist>2</pathogencontactresist>
-		<pathogeningestionresist>2</pathogeningestionresist>
-		<pathogeninhalationresist>2</pathogeninhalationresist>
-		<pathogeninjectionresist>2</pathogeninjectionresist>
-	  </bonus>
-	  <choices>
+        <toxincontactresist>2</toxincontactresist>
+        <toxiningestionresist>2</toxiningestionresist>
+        <toxininhalationresist>2</toxininhalationresist>
+        <toxininjectionresist>2</toxininjectionresist>
+        <pathogencontactresist>2</pathogencontactresist>
+        <pathogeningestionresist>2</pathogeningestionresist>
+        <pathogeninhalationresist>2</pathogeninhalationresist>
+        <pathogeninjectionresist>2</pathogeninjectionresist>
+      </bonus>
+      <choices>
         <choice>
           <name>Magician: +2 dice for summoning or binding plague spirits</name>
           <bonus />
@@ -1122,7 +1125,7 @@
       <source>HT</source>
       <page>137</page>
     </mentor>
-	<mentor>
+    <mentor>
       <id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
       <name>Coyote</name>
       <advantage>All: +2 dice pool to all Con tests.</advantage>
@@ -1141,7 +1144,7 @@
               <name>Manipulation</name>
               <val>1</val>
             </spellcategory>
-			<spellcategory>
+            <spellcategory>
               <name>Illusion</name>
               <val>1</val>
             </spellcategory>
@@ -1215,7 +1218,8 @@
           <name>Adept: 1 free level of Improved Potential.</name>
           <bonus>
             <selectpowers>
-              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
+              <selectpower
+                limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)" />
             </selectpowers>
           </bonus>
         </choice>
@@ -1809,11 +1813,11 @@
             <specificpower>
               <name>Attribute Boost</name>
               <val>2</val>
-			  <bonusoverride>
-				<selectattribute>
-					<attribute>STR</attribute>
-				</selectattribute>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectattribute>
+                  <attribute>STR</attribute>
+                </selectattribute>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -1969,6 +1973,12 @@
       <name>Holy Text</name>
       <advantage>Gain +4 ranks of (Choose Holy Text) Knowledge Skill.</advantage>
       <disadvantage>When a follower of a Holy Text wishes to take an action that is contrary to the teaching of the text (whatever that text is), they must pass a Charisma + Willpower (4) Test to take the action.</disadvantage>
+      <bonus>
+        <selectskill knowledgeskills="True">
+          <val>4</val>
+          <applytorating>yes</applytorating>
+        </selectskill>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifer when using the Banishing skill.</name>
@@ -2585,12 +2595,14 @@
             <specificpower>
               <name>Improved Ability (skill)</name>
               <val>1</val>
-			  <bonusoverride>
-				<selectskill limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic" minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-				</selectskill>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectskill
+                  limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic"
+                  minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -2629,11 +2641,11 @@
             <specificpower>
               <name>Attribute Boost</name>
               <val>2</val>
-			  <bonusoverride>
-				<selectattribute>
-					<attribute>REA</attribute>
-				</selectattribute>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectattribute>
+                  <attribute>REA</attribute>
+                </selectattribute>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>
@@ -2709,12 +2721,13 @@
             <specificpower>
               <name>Improved Ability (skill)</name>
               <val>1</val>
-			  <bonusoverride>
-				<selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation" minimumrating="1">
-					<val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
-				</selectskill>
-			  </bonusoverride>
+              <bonusoverride>
+                <selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation"
+                             minimumrating="1">
+                  <val>Rating</val>
+                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                </selectskill>
+              </bonusoverride>
             </specificpower>
           </bonus>
         </choice>

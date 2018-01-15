@@ -26,106 +26,99 @@ namespace Chummer
     /// <summary>
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
-    public class ListItem
+    public struct ListItem
     {
-        public static ListItem AutoXml(string value, XmlNode node)
+        public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
+
+        public ListItem(string strValue, string strName)
         {
-            string display = node.Attributes?["translate"]?.InnerText ?? node.InnerText;
-
-            return new ListItem(value, display);
+            Value = strValue;
+            Name = strName;
         }
-
-        public static ListItem Auto(string value, string languageString)
-        {
-            return new ListItem(value, LanguageManager.GetString(languageString));
-        }
-
-        public ListItem(string value, string name)
-        {
-            _strValue = value;
-            _strName = name;
-        }
-
-        public ListItem()
-        {
-
-        }
-
-        private string _strValue = string.Empty;
-        private string _strName = string.Empty;
 
         /// <summary>
         /// Value.
         /// </summary>
-        public string Value
-        {
-            get
-            {
-                return _strValue;
-            }
-            set
-            {
-                _strValue = value;
-            }
-        }
+        public string Value { get; }
 
         /// <summary>
         /// Name.
         /// </summary>
-        public string Name
+        public string Name { get; }
+
+        public override bool Equals(object obj)
         {
-            get
-            {
-                return _strName;
-            }
-            set
-            {
-                _strName = value;
-            }
+            return Value.Equals(obj.ToString());
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Value;
         }
     }
 
     #region Sorting Classes
-    /// <summary>
-    /// Sort TreeNodes in alphabetical order, ignoring [].
-    /// </summary>
-    public class SortByName : IComparer
+    public static class CompareTreeNodes
     {
-        private static readonly char[] chrBrackets = { '[', ']' };
-        public int Compare(object objX, object objY)
+        /// <summary>
+        /// Sort TreeNodes in alphabetical order, ignoring [].
+        /// </summary>
+        public static int CompareText(TreeNode tx, TreeNode ty)
         {
-            TreeNode tx = objX as TreeNode;
-            TreeNode ty = objY as TreeNode;
+            if (tx == null)
+            {
+                if (ty == null)
+                    return 0;
+                else
+                    return -1;
+            }
+            else if (ty == null)
+                return 1;
+            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'));
+        }
 
-            return string.Compare(tx.Text.FastEscape(chrBrackets), ty.Text.FastEscape(chrBrackets));
+        public class TextComparer : IComparer
+        {
+            public int Compare(object x, object y)
+            {
+                return CompareText(x as TreeNode, y as TreeNode);
+            }
+        }
+    }
+    
+    public static class CompareListViewItems
+    {
+        /// <summary>
+        /// Sort ListViewItems in reverse chronological order.
+        /// </summary>
+        public static int CompareTextAsDates(ListViewItem lx, ListViewItem ly)
+        {
+            if (lx == null)
+            {
+                if (ly == null)
+                    return 0;
+                else
+                    return -1;
+            }
+            else if (ly == null)
+                return 1;
+            return DateTime.Compare(DateTime.Parse(ly.Text, GlobalOptions.CultureInfo), DateTime.Parse(lx.Text, GlobalOptions.CultureInfo));
         }
     }
 
-    /// <summary>
-    /// Sort ListViewItems in reverse chronological order.
-    /// </summary>
-    public class SortByDate : IComparer
+    public static class CompareListItems
     {
-        public int Compare(object objX, object objY)
+        /// <summary>
+        /// Sort ListItems by Name in alphabetical order.
+        /// </summary>
+        public static int CompareNames(ListItem objX, ListItem objY)
         {
-            ListViewItem lx = objX as ListViewItem;
-            ListViewItem ly = objY as ListViewItem;
-
-            return DateTime.Compare(DateTime.Parse(ly.Text), DateTime.Parse(lx.Text));
-        }
-    }
-
-    /// <summary>
-    /// Sort ListItems by Name in alphabetical order.
-    /// </summary>
-    public class SortListItem : IComparer
-    {
-        public int Compare(object objX, object objY)
-        {
-            ListItem lx = objX as ListItem;
-            ListItem ly = objY as ListItem;
-
-            return string.Compare(lx.Name, ly.Name);
+            return string.Compare(objX.Name, objY.Name);
         }
     }
 
@@ -136,16 +129,13 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        private readonly CaseInsensitiveComparer _objObjectCompare;
-
-        public ListViewColumnSorter()
-        {
-            _objObjectCompare = new CaseInsensitiveComparer();
-        }
-
-        private static readonly char[] chrCurrencyTrim = { '¥', ',', ' ' };
+        private readonly CaseInsensitiveComparer _objObjectCompare = new CaseInsensitiveComparer();
+        
         public int Compare(object x, object y)
         {
+            if (_objOrderOfSort == SortOrder.None)
+                return 0;
+
             int compareResult;
 
             // Cast the objects to be compared to ListViewItem objects
@@ -156,19 +146,16 @@ namespace Chummer
             string strX = listviewX.SubItems[_intColumnToSort].Text;
             string strY = listviewY.SubItems[_intColumnToSort].Text;
             if (_intColumnToSort == 0)
-                compareResult = DateTime.Compare(DateTime.Parse(strX), DateTime.Parse(strY));
+                compareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
             else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape(chrCurrencyTrim)), Convert.ToInt32(strY.FastEscape(chrCurrencyTrim)));
+                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape('¥', ',', ' ')), Convert.ToInt32(strY.FastEscape('¥', ',', ' ')));
             else
                 compareResult = _objObjectCompare.Compare(strX, strY);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
                 return compareResult;
-            else if (_objOrderOfSort == SortOrder.Descending)
-                return (-compareResult);
-            else
-                return 0;
+            return (-compareResult);
         }
 
         /// <summary>

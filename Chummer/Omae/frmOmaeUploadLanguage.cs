@@ -27,8 +27,6 @@ namespace Chummer
 {
     public partial class frmOmaeUploadLanguage : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
@@ -40,17 +38,17 @@ namespace Chummer
         private const int RESULT_UNAUTHORIZED = 1;
         private const int RESULT_INVALID_FILE = 2;
 
-        private string _strUserName;
+        private readonly string _strUserName;
 
         #region Control Events
         public frmOmaeUploadLanguage(string strUserName)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, null);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
             _strUserName = strUserName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection");
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
         }
 
         private void frmOmaeUploadLanguage_Load(object sender, EventArgs e)
@@ -60,9 +58,11 @@ namespace Chummer
 
         private void cmdBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "XML Files (*.xml)|*.xml";
-            openFileDialog.Multiselect = false;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "XML Files (*.xml)|*.xml",
+                Multiselect = false
+            };
 
             if (openFileDialog.ShowDialog(this) != DialogResult.OK)
             {
@@ -106,7 +106,7 @@ namespace Chummer
             byte[] bytFile = File.ReadAllBytes(txtFilePath.Text);
             string strFileName = Path.GetFileName(txtFilePath.Text);
 
-            translationSoapClient objService = _objOmaeHelper.GetTranslationService();
+            translationSoapClient objService = OmaeHelper.GetTranslationService();
             try
             {
                 int intResult = objService.UploadLanguage(_strUserName, strFileName, bytFile);

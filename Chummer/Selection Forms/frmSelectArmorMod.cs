@@ -40,19 +40,21 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private bool _blnExcludeGeneralCategory = false;
+        private readonly List<string> _blackMarketMaps = new List<string>();
 
         #region Control Events
-        public frmSelectArmorMod(Character objCharacter, bool blnCareer = false)
+        public frmSelectArmorMod(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = blnCareer;
-            nudMarkup.Visible = blnCareer;
-            lblMarkupPercentLabel.Visible = blnCareer;
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            lblMarkupLabel.Visible = objCharacter.Created;
+            nudMarkup.Visible = objCharacter.Created;
+            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)
@@ -258,9 +260,12 @@ namespace Chummer
             lblA.Text = objXmlMod["armor"].InnerText;
 
             nudRating.Maximum = Convert.ToDecimal(objXmlMod["maxrating"].InnerText, GlobalOptions.InvariantCultureInfo);
-            while (nudRating.Maximum > 1 && !Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked, decimal.ToInt32(nudRating.Maximum)))
+            if (chkHideOverAvailLimit.Checked)
             {
-                nudRating.Maximum -= 1;
+                while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                {
+                    nudRating.Maximum -= 1;
+                }
             }
             if (nudRating.Maximum <= 1)
                 nudRating.Enabled = false;
@@ -278,13 +283,13 @@ namespace Chummer
             string strAvailExpr = string.Empty;
             strAvailExpr = objXmlMod["avail"].InnerText;
             
-            if (strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "F" || strAvailExpr.Substring(strAvailExpr.Length - 1, 1) == "R")
+            if (strAvailExpr.EndsWith('F', 'R'))
             {
                 strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
                 if (strAvail == "R")
-                    strAvail = LanguageManager.GetString("String_AvailRestricted");
+                    strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                 else if (strAvail == "F")
-                    strAvail = LanguageManager.GetString("String_AvailForbidden");
+                    strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
                 // Remove the trailing character if it is "F" or "R".
                 strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
             }
@@ -298,41 +303,48 @@ namespace Chummer
             }
 
             // Cost.
+            if (_blackMarketMaps != null)
+                chkBlackMarketDiscount.Checked =
+                    _blackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
             if (chkFreeItem.Checked)
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            else if (objXmlMod["cost"].InnerText.StartsWith("Variable"))
-            {
-                decimal decMin = 0;
-                decimal decMax = decimal.MaxValue;
-                string strCost = objXmlMod["cost"].InnerText.TrimStart("Variable", true).Trim("()".ToCharArray());
-                if (strCost.Contains('-'))
-                {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                }
-                else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                if (decMax == decimal.MaxValue)
-                {
-                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
-                }
-                else
-                    lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            }
             else
             {
-                string strCost = objXmlMod["cost"].InnerText.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString());
+                string strCostElement = objXmlMod["cost"]?.InnerText ?? string.Empty;
+                if (strCostElement.StartsWith("Variable("))
+                {
+                    decimal decMin = 0;
+                    decimal decMax = decimal.MaxValue;
+                    string strCost = strCostElement.TrimStart("Variable(", true).TrimEnd(')');
+                    if (strCost.Contains('-'))
+                    {
+                        string[] strValues = strCost.Split('-');
+                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                // Apply any markup.
-                decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
-                decCost *= 1 + (nudMarkup.Value / 100.0m);
+                    if (decMax == decimal.MaxValue)
+                    {
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                    }
+                    else
+                        lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                }
+                else
+                {
+                    string strCost = strCostElement.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    strCost = strCost.Replace("Armor Cost", _decArmorCost.ToString(GlobalOptions.InvariantCultureInfo));
 
-                lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    // Apply any markup.
+                    decimal decCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+                    decCost *= 1 + (nudMarkup.Value / 100.0m);
 
-                lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
+                    lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                    lblTest.Text = _objCharacter.AvailTest(decCost, lblAvail.Text);
+                }
             }
 
             // Capacity.
@@ -346,9 +358,9 @@ namespace Chummer
             }
             else
             {
-                if (strCapacity.StartsWith("FixedValues"))
+                if (strCapacity.StartsWith("FixedValues("))
                 {
-                    string[] strValues = strCapacity.TrimStart("FixedValues", true).Trim("()".ToCharArray()).Split(',');
+                    string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                     strCapacity = strValues[decimal.ToInt32(nudRating.Value) - 1];
                 }
 
@@ -362,13 +374,13 @@ namespace Chummer
                     lblCapacity.Text = "[0]";
             }
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMod["source"].InnerText);
+            string strBook = CommonFunctions.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlMod["page"].InnerText;
             if (objXmlMod["altpage"] != null)
                 strPage = objXmlMod["altpage"].InnerText;
             lblSource.Text = strBook + " " + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMod["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
 
         /// <summary>
@@ -398,18 +410,13 @@ namespace Chummer
 
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (Backend.Shared_Methods.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter, chkHideOverAvailLimit.Checked))
+                if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlMod, _objCharacter))
                 {
-                    ListItem objItem = new ListItem
-                    {
-                        Value = objXmlMod["name"].InnerText,
-                        Name = objXmlMod["translate"]?.InnerText ?? objXmlMod["name"].InnerText
-                    };
-                    lstMods.Add(objItem);
+                    string strName = objXmlMod["name"].InnerText;
+                    lstMods.Add(new ListItem(strName, objXmlMod["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMods.Sort(objSort.Compare);
+            lstMods.Sort(CompareListItems.CompareNames);
             lstMod.BeginUpdate();
             lstMod.ValueMember = "Value";
             lstMod.DisplayMember = "Name";
@@ -450,11 +457,6 @@ namespace Chummer
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
 
         private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {

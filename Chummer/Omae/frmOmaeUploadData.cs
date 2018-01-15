@@ -26,29 +26,27 @@ using Chummer.OmaeService;
 
 namespace Chummer
 {
-    public partial class frmOmaeUploadData : Form
+    public sealed partial class frmOmaeUploadData : Form
     {
-        private readonly OmaeHelper _objOmaeHelper = new OmaeHelper();
-
         // Error message constants.
         private readonly string NO_CONNECTION_MESSAGE = string.Empty;
         private readonly string NO_CONNECTION_TITLE = string.Empty;
 
-        private string _strUserName;
-        private int _intDataID = 0;
+        private readonly string _strUserName;
+        private readonly int _intDataID = 0;
 
         #region Control Events
         public frmOmaeUploadData(string strUserName, int intDataID = 0, string strDescription = "", string strName = "")
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _strUserName = strUserName;
             _intDataID = intDataID;
             txtDescription.Text = strDescription;
             txtName.Text = strName;
 
-            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection");
-            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection");
+            NO_CONNECTION_MESSAGE = LanguageManager.GetString("Message_Omae_CannotConnection", GlobalOptions.Language);
+            NO_CONNECTION_TITLE = LanguageManager.GetString("MessageTitle_Omae_CannotConnection", GlobalOptions.Language);
 
             MoveControls();
         }
@@ -59,17 +57,21 @@ namespace Chummer
             string strFilePath = Path.Combine(Application.StartupPath, "data");
             foreach (string strFile in Directory.GetFiles(strFilePath, "custom*_*.xml"))
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Tag = strFile;
-                objNode.Text = Path.GetFileName(strFile);
+                TreeNode objNode = new TreeNode
+                {
+                    Tag = strFile,
+                    Text = Path.GetFileName(strFile)
+                };
                 treFiles.Nodes.Add(objNode);
             }
 
             foreach (string strFile in Directory.GetFiles(strFilePath, "override*_*.xml"))
             {
-                TreeNode objNode = new TreeNode();
-                objNode.Tag = strFile;
-                objNode.Text = Path.GetFileName(strFile);
+                TreeNode objNode = new TreeNode
+                {
+                    Tag = strFile,
+                    Text = Path.GetFileName(strFile)
+                };
                 treFiles.Nodes.Add(objNode);
             }
         }
@@ -79,14 +81,14 @@ namespace Chummer
             // Make sure a name has been entered.
             if (string.IsNullOrWhiteSpace(txtName.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataName"), LanguageManager.GetString("MessageTitle_OmaeUpload_DataName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataName", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure there is at least some sort of description.
             if (string.IsNullOrWhiteSpace(txtDescription.Text))
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_DataDescription"), LanguageManager.GetString("MessageTitle_OmaeUpload_DataDescription"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OameUpload_DataDescription", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_DataDescription", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -100,7 +102,7 @@ namespace Chummer
 
             if (intCount == 0)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataSelectFiles"), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_DataSelectFiles", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_SelectFile", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             
@@ -202,17 +204,17 @@ namespace Chummer
                     strFilesIncluded += objNode.Text + ",";
                 }
             }
-            byte[] bytFile = _objOmaeHelper.CompressMutiple(lstFiles);
+            byte[] bytFile = OmaeHelper.CompressMutiple(lstFiles);
 
             // Make sure the file doesn't exceed 250K in size (256,000 bytes).
             if (bytFile.Length > 256000)
             {
-                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge"), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_FileTooLarge", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_FileTooLarge", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Upload the file.
-            omaeSoapClient objService = _objOmaeHelper.GetOmaeService();
+            omaeSoapClient objService = OmaeHelper.GetOmaeService();
             try
             {
                 cmdUpload.Enabled = false;
@@ -221,11 +223,11 @@ namespace Chummer
                 if (objService.UploadDataFile(_strUserName, _intDataID, txtName.Text, txtDescription.Text, strFilesIncluded, bytFile))
                 {
                     blnSuccess = true;
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadComplete", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadComplete", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed"), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_OmaeUpload_UploadFailed", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_OmaeUpload_UploadFailed", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (EndpointNotFoundException)
@@ -240,7 +242,7 @@ namespace Chummer
             if (blnSuccess)
                 DialogResult = DialogResult.OK;
 
-            //_objOmaeHelper.DecompressMultiple(bytFile);
+            //OmaeHelper.DecompressMultiple(bytFile);
         }
         #endregion
 

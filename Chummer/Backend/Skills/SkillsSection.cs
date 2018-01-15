@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,16 +23,16 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml;
-using Chummer.Backend;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace Chummer.Skills
+namespace Chummer.Backend.Skills
 {
     public class SkillsSection : INotifyPropertyChanged
     {
         private readonly Character _character;
-        private Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
+        private readonly Dictionary<Guid, Skill> _skillValueBackup = new Dictionary<Guid, Skill>();
+        private readonly static List<Skill> s_LstSkillBackups = new List<Skill>();
 
         public SkillsSection(Character character)
         {
@@ -26,7 +44,7 @@ namespace Chummer.Skills
 
         }
 
-        private void CharacterOnImprovementEvent(List<Improvement> improvements)
+        private void CharacterOnImprovementEvent(ICollection<Improvement> improvements)
         {
             if (PropertyChanged != null && improvements.Any(x => x.ImproveType == Improvement.ImprovementType.FreeKnowledgeSkills))
             {
@@ -40,16 +58,23 @@ namespace Chummer.Skills
         {
             var list = GetSkillList(_character, skills, strName);
 
-            Skills.MergeInto(list, CompareSkills);
+            Skills.MergeInto(list, CompareSkills, (objExistSkill, objNewSkill) =>
+            {
+                if (objNewSkill.Base > objExistSkill.Base)
+                    objExistSkill.Base = objNewSkill.Base;
+                if (objNewSkill.Karma > objExistSkill.Karma)
+                    objExistSkill.Karma = objNewSkill.Karma;
+                objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+            });
             foreach (Skill objSkill in list)
             {
-                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name;
+                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
         }
 
-        internal void RemoveSkills(FilterOptions skills)
+        internal void RemoveSkills(FilterOptions skills, bool createKnowledge = true)
         {
             string category;
             switch (skills)
@@ -95,10 +120,11 @@ namespace Chummer.Skills
                 {
                     Skill skill = Skills[i];
                     _skillValueBackup[skill.SkillId] = skill;
+                    s_LstSkillBackups.Add(skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name);
-
-                    if (_character.Created && skill.TotalBaseRating > 0)
+                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : skill.Name);
+                    
+                    if (_character.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
                         KnowledgeSkill kno = new KnowledgeSkill(_character)
                         {
@@ -108,17 +134,27 @@ namespace Chummer.Skills
                             Karma = skill.Karma
                         };
                         kno.Specializations.AddRange(skill.Specializations);
-                        KnowledgeSkills.Add(kno);
+                        KnowledgeSkills.MergeInto(kno, (x, y) => String.Compare(x.Type, y.Type, StringComparison.Ordinal) == 0 ? CompareSkills(x, y) : (String.Compare(x.Type, y.Type, StringComparison.Ordinal) == -1 ? -1 : 1), (objExistSkill, objNewSkill) =>
+                        {
+                            if (objNewSkill.Base > objExistSkill.Base)
+                                objExistSkill.Base = objNewSkill.Base;
+                            if (objNewSkill.Karma > objExistSkill.Karma)
+                                objExistSkill.Karma = objNewSkill.Karma;
+                            objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                        });
                     }
                 }
             }
-            //remove skillgroups whose skills did not make the final cut
-            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            if (!_character.Created)
             {
-                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                // zero out any skillgroups whose skills did not make the final cut
+                foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
-                    SkillGroups.RemoveAt(i);
-                    i--;
+                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    {
+                        objSkillGroup.Base = 0;
+                        objSkillGroup.Karma = 0;
+                    }
                 }
             }
         }
@@ -160,16 +196,28 @@ namespace Chummer.Skills
 
                 foreach (Skill skill in loadingSkills)
                 {
-                    _skills.Add(skill);
-                    _dicSkills.Add(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name, skill);
+                    var name = skill.IsExoticSkill
+                        ? $"{skill.Name} ({skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage)})"
+                        : skill.Name;
+                    bool blnDoAddToDictionary = true;
+                    _skills.MergeInto(skill, CompareSkills, (objExistSkill, objNewSkill) =>
+                    {
+                        blnDoAddToDictionary = false;
+                        if (objNewSkill.Base > objExistSkill.Base)
+                            objExistSkill.Base = objNewSkill.Base;
+                        if (objNewSkill.Karma > objExistSkill.Karma)
+                            objExistSkill.Karma = objNewSkill.Karma;
+                        objExistSkill.Specializations.MergeInto(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? String.Compare(x.DisplayName(GlobalOptions.Language), y.DisplayName(GlobalOptions.Language), StringComparison.Ordinal) : (x.Free ? 1 : -1));
+                    });
+                    if (blnDoAddToDictionary)
+                        _dicSkills.Add(name, skill);
                 }
                 Timekeeper.Finish("load_char_skills_normal");
 
                 Timekeeper.Start("load_char_skills_kno");
                 foreach (XmlNode node in skillNode.SelectNodes("knoskills/skill"))
                 {
-                    KnowledgeSkill skill = Skill.Load(_character, node) as KnowledgeSkill;
-                    if (skill != null)
+                    if (Skill.Load(_character, node) is KnowledgeSkill skill)
                         KnowledgeSkills.Add(skill);
                 }
                 Timekeeper.Finish("load_char_skills_kno");
@@ -199,7 +247,7 @@ namespace Chummer.Skills
                     List<Skill> unsoredSkills = new List<Skill>();
 
                     //Variable/Anon method as to not clutter anywhere else. Not sure if clever or stupid
-                    Predicate<Skill> oldSkillFilter = skill =>
+                    bool oldSkillFilter(Skill skill)
                     {
                         if (skill.Rating > 0) return true;
 
@@ -208,19 +256,18 @@ namespace Chummer.Skills
                             return false;
                         }
 
-                    //This could be more fine grained, but frankly i don't care
-                    if (skill.SkillCategory == "Magical Active" && !_character.MAGEnabled)
+                        //This could be more fine grained, but frankly i don't care
+                        if (skill.SkillCategory == "Magical Active" && !_character.MAGEnabled)
                         {
                             return false;
                         }
 
                         return true;
-                    };
+                    }
 
                     foreach (Skill skill in tempSkillList)
                     {
-                        KnowledgeSkill knoSkill = skill as KnowledgeSkill;
-                        if (knoSkill != null)
+                        if (skill is KnowledgeSkill knoSkill)
                         {
                             KnowledgeSkills.Add(knoSkill);
                         }
@@ -235,7 +282,7 @@ namespace Chummer.Skills
                     foreach (Skill objSkill in unsoredSkills)
                     {
                         _skills.Add(objSkill);
-                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecialization + ")" : objSkill.Name, objSkill);
+                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name, objSkill);
                     }
 
                     UpdateUndoList(skillNode);
@@ -247,14 +294,17 @@ namespace Chummer.Skills
             //As some didn't they crashed on loading skills. 
             //After this have run, it won't (for the crash i'm aware)
             //TODO: Move it to the other side of the if someday?
-
-            //remove skillgroups whose skills did not make the final cut
-            for (var i = SkillGroups.Count - 1; i >= 0; i--)
+            
+            if (!_character.Created)
             {
-                if (!SkillGroups[i].SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                // zero out any skillgroups whose skills did not make the final cut
+                foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
-                    SkillGroups.RemoveAt(i);
-                    i--;
+                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    {
+                        objSkillGroup.Base = 0;
+                        objSkillGroup.Karma = 0;
+                    }
                 }
             }
 
@@ -325,10 +375,9 @@ namespace Chummer.Skills
             XmlNodeList nodesToChange = doc.SelectNodes(xpath);
             if (nodesToChange != null)
             {
-                Guid guidLoop;
                 for (var i = 0; i < nodesToChange.Count; i++)
                 {
-                    if (map.TryGetValue(nodesToChange[i].InnerText, out guidLoop))
+                    if (map.TryGetValue(nodesToChange[i].InnerText, out Guid guidLoop))
                     {
                         nodesToChange[i].InnerText = guidLoop.ToString();
                     }
@@ -404,11 +453,10 @@ namespace Chummer.Skills
             {
                 if (_skills.Count == 0)
                 {
-                    List<Skill> lstSkillList = GetSkillList(_character, FilterOptions.NonSpecial);
-                    foreach (Skill objLoopSkill in lstSkillList)
+                    foreach (Skill objLoopSkill in GetSkillList(_character, FilterOptions.NonSpecial))
                     {
                         _skills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecialization + ")" : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objLoopSkill.Name, objLoopSkill);
                     }
                 }
                 return _skills;
@@ -418,7 +466,7 @@ namespace Chummer.Skills
         /// <summary>
         /// Active Skills Dictionary
         /// </summary>
-        public Dictionary<string, Skill> SkillsDictionary
+        public IDictionary<string, Skill> SkillsDictionary
         {
             get
             {
@@ -433,8 +481,7 @@ namespace Chummer.Skills
         /// <returns></returns>
         public Skill GetActiveSkill(string strSkillName)
         {
-            Skill objReturn = null;
-            _dicSkills.TryGetValue(strSkillName, out objReturn);
+            _dicSkills.TryGetValue(strSkillName, out Skill objReturn);
             return objReturn;
         }
 
@@ -444,7 +491,7 @@ namespace Chummer.Skills
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public List<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
+        public IList<KnowledgeSkill> KnowsoftSkills { get; } = new List<KnowledgeSkill>();
 
         /// <summary>
         /// Skill Groups.
@@ -557,13 +604,12 @@ namespace Chummer.Skills
 
         public static int CompareSkills(Skill rhs, Skill lhs)
         {
-            ExoticSkill rhsExoticSkill = (rhs.IsExoticSkill ? rhs : null) as ExoticSkill;
             ExoticSkill lhsExoticSkill = (lhs.IsExoticSkill ? lhs : null) as ExoticSkill;
-            if (rhsExoticSkill != null)
+            if ((rhs.IsExoticSkill ? rhs : null) is ExoticSkill rhsExoticSkill)
             {
                 if (lhsExoticSkill != null)
                 {
-                    return string.Compare(rhsExoticSkill.Specific ?? string.Empty, lhsExoticSkill.Specific ?? string.Empty, StringComparison.Ordinal);
+                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, StringComparison.Ordinal);
                 }
                 else
                 {
@@ -575,10 +621,10 @@ namespace Chummer.Skills
                 return -1;
             }
 
-            return string.Compare(rhs.DisplayName, lhs.DisplayName, StringComparison.Ordinal);
+            return string.Compare(rhs.DisplayNameMethod(GlobalOptions.Language), lhs.DisplayNameMethod(GlobalOptions.Language), StringComparison.Ordinal);
         }
 
-        public static List<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
+        public static IList<Skill> GetSkillList(Character c, FilterOptions filter, string strName = "")
         {
             //TODO less retarded way please
             List<Skill> b = new List<Skill>();
@@ -593,16 +639,26 @@ namespace Chummer.Skills
             List<ListItem> lstSkillOrder = new List<ListItem>();
             foreach (XmlNode objXmlSkill in objXmlSkillList)
             {
-                ListItem objSkillItem = new ListItem();
-                objSkillItem.Value = objXmlSkill["name"]?.InnerText;
-                objSkillItem.Name = objXmlSkill["translate"]?.InnerText ?? objSkillItem.Value;
-                lstSkillOrder.Add(objSkillItem);
+                string strSkillName = objXmlSkill["name"]?.InnerText ?? string.Empty;
+                lstSkillOrder.Add(new ListItem(strSkillName, objXmlSkill["translate"]?.InnerText ?? strSkillName));
                 //TODO: read from backup
-                Skill objSkill = Skill.FromData(objXmlSkill, c);
-                dicSkills.Add(objSkillItem.Value, objSkill);
+                if (s_LstSkillBackups.Count > 0)
+                {
+                    Skill objSkill =
+                        s_LstSkillBackups.FirstOrDefault(s => s.SkillId == Guid.Parse(objXmlSkill["id"].InnerText));
+                    if (objSkill != null)
+                    {
+                        dicSkills.Add(objSkill.Name,objSkill);
+                        s_LstSkillBackups.Remove(objSkill);
+                    }
+                }
+                else
+                {
+                    Skill objSkill = Skill.FromData(objXmlSkill, c);
+                    dicSkills.Add(strSkillName, objSkill);
+                }
             }
-            SortListItem objSort = new SortListItem();
-            lstSkillOrder.Sort(objSort.Compare);
+            lstSkillOrder.Sort(CompareListItems.CompareNames);
 
             // Second pass, retrieve the Skills in the order they're presented in the list.
             foreach (ListItem objItem in lstSkillOrder)
@@ -645,7 +701,7 @@ namespace Chummer.Skills
 
         public enum FilterOptions
         {
-            All,
+            All = 0,
             NonSpecial,
             Magician,
             Sorcery,
@@ -656,7 +712,7 @@ namespace Chummer.Skills
             Explorer,
             Technomancer,
             Spellcasting,
-            Name
+            Name,
         }
 
         internal void ForceProperyChangedNotificationAll(string name)
@@ -685,13 +741,13 @@ namespace Chummer.Skills
         }
 
 
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             foreach (Skill skill in Skills)
             {
                 if ((_character.Options.PrintSkillsWithZeroRating || skill.Rating > 0) && skill.Enabled)
                 {
-                    skill.Print(objWriter, objCulture);
+                    skill.Print(objWriter, objCulture, strLanguageToPrint);
                 }
             }
 
@@ -699,13 +755,13 @@ namespace Chummer.Skills
             {
                 if (skillgroup.Rating > 0)
                 {
-                    skillgroup.Print(objWriter, objCulture);
+                    skillgroup.Print(objWriter, objCulture, strLanguageToPrint);
                 }
             }
 
             foreach (KnowledgeSkill skill in KnowledgeSkills)
             {
-                skill.Print(objWriter, objCulture);
+                skill.Print(objWriter, objCulture, strLanguageToPrint);
             }
         }
     }

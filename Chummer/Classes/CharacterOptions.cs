@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -76,6 +94,7 @@ namespace Chummer
         private bool _blnNoSingleArmorEncumbrance;
         private bool _blnPrintArcanaAlternates;
         private bool _blnPrintExpenses;
+        private bool _blnPrintFreeExpenses = true;
         private bool _blnPrintLeadershipAlternates;
         private bool _blnPrintNotes;
         private bool _blnPrintSkillsWithZeroRating = true;
@@ -93,6 +112,7 @@ namespace Chummer
         private bool _blnUseTotalValueForFreeContacts;
         private bool _blnUseTotalValueForFreeKnowledge;
         private bool _blnDoNotRoundEssenceInternally;
+        private bool _blnEnemyKarmaQualityLimit = true;
         private int _intEssenceDecimals = 2;
         private int _intForbiddenCostMultiplier = 1;
         private int _intFreeContactsFlatNumber = 0;
@@ -112,10 +132,9 @@ namespace Chummer
         private bool _blnHhideItemsOverAvailLimit = true;
         private bool _blnAllowHoverIncrement;
         private bool _blnSearchInCategoryOnly = true;
-        private string _strNuyenFormat = "#,0.00";
+        private string _strNuyenFormat = "#,0.##";
         private bool _blnCompensateSkillGroupKarmaDifference = false;
-
-        private readonly XmlDocument _objBookDoc = null;
+        
         private string _strBookXPath = string.Empty;
         private string _strExcludeLimbSlot = string.Empty;
 
@@ -167,21 +186,28 @@ namespace Chummer
         private int _intKarmaNewAIAdvancedProgram = 8;
 
         // Karma Foci variables.
+        // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
-        private int _intKarmaBanishingFocus = 2;
-        private int _intKarmaBindingFocus = 2;
-        private int _intKarmaCenteringFocus = 3;
-        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaDisenchantingFocus = 3;
+        // Metamagic
+        private int _intKarmaCenteringFocus = 3;
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
+        private int _intKarmaSpellShapingFocus = 3;
+        // Power
         private int _intKarmaPowerFocus = 6;
+        // Qi
         private int _intKarmaQiFocus = 2;
+        // Spell
+        private int _intKarmaCounterspellingFocus = 2;
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
-        private int _intKarmaSpellShapingFocus = 3;
-        private int _intKarmaSummoningFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+        // Spirit
+        private int _intKarmaBanishingFocus = 2;
+        private int _intKarmaBindingFocus = 2;
+        private int _intKarmaSummoningFocus = 2;
+        // Weapon
         private int _intKarmaWeaponFocus = 3;
 
         // Default build settings.
@@ -210,7 +236,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                 }
             }
 
@@ -225,10 +251,7 @@ namespace Chummer
             else
                 Load("default.xml");
             // Load the language file.
-            LanguageManager.Load(GlobalOptions.Language, this);
-
-            // Load the book information.
-            _objBookDoc = XmlManager.Load("books.xml");
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         /// <summary>
@@ -238,10 +261,12 @@ namespace Chummer
         {
             string strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
             FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode);
-            objWriter.Formatting = Formatting.Indented;
-            objWriter.Indentation = 1;
-            objWriter.IndentChar = '\t';
+            XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.Unicode)
+            {
+                Formatting = Formatting.Indented,
+                Indentation = 1,
+                IndentChar = '\t'
+            };
             objWriter.WriteStartDocument();
 
             // <settings>
@@ -274,6 +299,8 @@ namespace Chummer
             objWriter.WriteElementString("capskillrating", _blnCapSkillRating.ToString());
             // <printexpenses />
             objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString());
+            // <printfreeexpenses />
+            objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString());
             // <nuyenperbp />
             objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
             // <hideitemsoveravaillimit />
@@ -374,8 +401,10 @@ namespace Chummer
             objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString());
             // <donotroundessenceinternally />
             objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString());
+            // <donotroundessenceinternally />
+            objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString());
             // <nuyenformat />
-            objWriter.WriteElementString("nuyenformat", _strNuyenFormat.ToString());
+            objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
             // <essencedecimals />
             objWriter.WriteElementString("essencedecimals", _intEssenceDecimals.ToString());
             // <enforcecapacity />
@@ -628,20 +657,21 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
             }
             else
             {
-                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting").Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadSetting", GlobalOptions.Language).Replace("{0}", _strFileName), LanguageManager.GetString("MessageTitle_CharacterOptions_CannotLoadSetting", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
                 else
                 {
                     _strFileName = "default.xml";
+                    strFilePath = Path.Combine(Application.StartupPath, "settings", _strFileName);
                     objXmlDocument.Load(strFilePath);
                 }
             }
@@ -671,6 +701,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("capskillrating", ref _blnCapSkillRating);
             // Print Expenses.
             objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
+            // Print Free Expenses.
+            objXmlNode.TryGetBoolFieldQuickly("printfreeexpenses", ref _blnPrintFreeExpenses);
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Hide Items Over Avail Limit in Create Mode
@@ -776,6 +808,8 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
             // Only round essence when its value is displayed
             objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+            // Only round essence when its value is displayed
+            objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
             // Number of decimal places to round to when calculating Essence.
@@ -951,8 +985,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
-                bool blnTemp;
-                if (bool.TryParse(objRegistryResult.ToString(), out blnTemp))
+                if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                     blnStorage = blnTemp;
                 _objBaseChummerKey.DeleteValue(strBoolName);
             }
@@ -966,8 +999,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strIntName);
             if (objRegistryResult != null)
             {
-                int intTemp;
-                if (int.TryParse(objRegistryResult.ToString(), out intTemp))
+                if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
                     intStorage = intTemp;
                 _objBaseChummerKey.DeleteValue(strIntName);
             }
@@ -981,8 +1013,7 @@ namespace Chummer
             object objRegistryResult = _objBaseChummerKey.GetValue(strDecName);
             if (objRegistryResult != null)
             {
-                decimal decTemp;
-                if (decimal.TryParse(objRegistryResult.ToString(), out decTemp))
+                if (decimal.TryParse(objRegistryResult.ToString(), System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTemp))
                     decStorage = decTemp;
                 _objBaseChummerKey.DeleteValue(strDecName);
             }
@@ -1021,6 +1052,9 @@ namespace Chummer
 
             // Print Expenses.
             LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses");
+
+            // Print Free Expenses.
+            LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses");
 
             // Nuyen per Build Point
             LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp");
@@ -1109,78 +1143,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Convert a book code into the full name.
-        /// </summary>
-        /// <param name="strCode">Book code to convert.</param>
-        public string BookFromCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["name"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book code (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookShort(string strCode = "")
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["altcode"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Determine the book's original code by using the alternate code.
-        /// </summary>
-        /// <param name="strCode">Alternate code to look for.</param>
-        public string BookFromAltCode(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["code"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Book name (using the translated version if applicable).
-        /// </summary>
-        /// <param name="strCode">Book code to search for.</param>
-        public string LanguageBookLong(string strCode)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = _objBookDoc.SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                if (objXmlBook != null)
-                {
-                    string strReturn = objXmlBook["translate"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                    strReturn = objXmlBook["name"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                }
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
         /// Determine whether or not a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
@@ -1206,11 +1168,6 @@ namespace Chummer
             {
                 strPath += " and " + _strBookXPath;
             }
-            if (GlobalOptions.MissionsOnly)
-            {
-                strPath += " and not(nomission)";
-            }
-
             if (!GlobalOptions.Dronemods)
             {
                 strPath += " and not(optionaldrone)";
@@ -1342,7 +1299,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nueyn Expenses should be printed on the character sheet.
+        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public bool PrintExpenses
         {
@@ -1353,6 +1310,21 @@ namespace Chummer
             set
             {
                 _blnPrintExpenses = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// </summary>
+        public bool PrintFreeExpenses
+        {
+            get
+            {
+                return _blnPrintFreeExpenses;
+            }
+            set
+            {
+                _blnPrintFreeExpenses = value;
             }
         }
 
@@ -1734,7 +1706,7 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> Books
+        public ICollection<string> Books
         {
             get
             {
@@ -1745,7 +1717,7 @@ namespace Chummer
         /// <summary>
         /// Names of custom data directories
         /// </summary>
-        public List<string> CustomDataDirectoryNames
+        public IList<string> CustomDataDirectoryNames
         {
             get
             {
@@ -2126,6 +2098,15 @@ namespace Chummer
             {
                 _blnDoNotRoundEssenceInternally = value;
             }
+        }
+
+        /// <summary>
+        /// Do Enemies count towards Negative Quality Karma limit in create mode?
+        /// </summary>
+        public bool EnemyKarmaQualityLimit
+        {
+            get => _blnEnemyKarmaQualityLimit;
+            set => _blnEnemyKarmaQualityLimit = value;
         }
 
         /// <summary>
@@ -3618,7 +3599,7 @@ namespace Chummer
             internal set { _blnSearchInCategoryOnly = value; }
         }
 
-        public helpers.NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+        public NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

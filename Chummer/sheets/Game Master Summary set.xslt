@@ -24,12 +24,12 @@
         <meta charset="UTF-8" />
         <style type="text/css">
           * {
-            font-family: tahoma, 'trebuchet ms', arial;
-            font-size: 8pt;
-            margin: 0;
+          font-family: tahoma, 'trebuchet ms', arial;
+          font-size: 8pt;
+          margin: 0;
           }
           .indent {
-            padding-left: 20px;
+          padding-left: 0.5em;
           }
         </style>
         <style media="print">
