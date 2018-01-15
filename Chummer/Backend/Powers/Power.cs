@@ -683,7 +683,7 @@ namespace Chummer
                 {
                     blnReturn = CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.MagiciansWayDiscount && x.Enabled);
                 }
-                if (!blnReturn)
+                if (!blnReturn && _nodAdeptWayRequirements != null)
                 {
                     foreach (XmlNode objNode in _nodAdeptWayRequirements.SelectNodes("required/oneof/quality"))
                     {
