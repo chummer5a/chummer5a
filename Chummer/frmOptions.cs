@@ -1492,6 +1492,20 @@ namespace Chummer
             }
         }
 
+        private void chkLifeModules_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkLifeModule.Checked && !blnLoading)
+            {
+                DialogResult result = MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel);
+
+                if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
+                else
+                {
+                    OptionsChanged(sender, e);
+                }
+            }
+        }
+
         private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (chkOmaeEnabled.Checked && !blnLoading)
@@ -1499,6 +1513,10 @@ namespace Chummer
                 DialogResult result = MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel);
 
                 if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
+                else
+                {
+                    OptionsChanged(sender, e);
+                }
             }
         }
 

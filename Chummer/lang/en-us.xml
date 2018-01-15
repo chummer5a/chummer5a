@@ -5058,6 +5058,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.\nDo you want to continue?</text>
     </string>
     <string>
+      <key>Tip_LifeModule_Warning</key>
+      <text>Life Modules are currently an experiemental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+    </string>
+    <string>
       <key>Tip_BuildFoci</key>
       <text>Each bonded Focus costs {0} Karma per point of Force.</text>
     </string>
