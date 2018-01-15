@@ -196,6 +196,7 @@ New Strings:
 - Menu_Main_ChummerDiscord
 - String_LifeModules
 - Tip_LifeModule_Warning
+- String_Month
 
 Build 196
 

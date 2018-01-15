@@ -792,6 +792,10 @@
       <text>hours</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>month</text>
+    </string>
+    <string>
       <key>String_ArmorEncumbrance</key>
       <text>Armor Encumbrance</text>
     </string>

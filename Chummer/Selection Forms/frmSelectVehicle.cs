@@ -324,22 +324,23 @@ namespace Chummer
             string strAvail = objXmlVehicle["avail"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(strAvail))
             {
+                string strSuffix = string.Empty;
+                if (strAvail.EndsWith('R', 'F'))
+                {
+                    strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
+                    // Translate the Avail string.
+                    if (strSuffix == "R")
+                        strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
+                    else if (strSuffix == "F")
+                        strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
                 if (chkUsedVehicle.Checked)
                 {
-                    string strSuffix = string.Empty;
-                    if (strAvail.EndsWith('R', 'F'))
-                    {
-                        strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                        // Translate the Avail string.
-                        if (strSuffix == "R")
-                            strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                        else if (strSuffix == "F")
-                            strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                        strAvail = strAvail.Substring(0, strAvail.Length - 1);
-                    }
                     if (int.TryParse(strAvail, out int intTmp))
-                        strAvail = (intTmp + 4).ToString() + strSuffix;
+                        strAvail = intTmp + 4.ToString();
                 }
+                strAvail += strSuffix;
             }
             lblVehicleAvail.Text = strAvail;
 

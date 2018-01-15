@@ -301,11 +301,7 @@ namespace Chummer
             {
                 return strReturn;
             }
-            if (!blnReturnError)
-            {
-                return string.Empty;
-            }
-            return "Error finding string for key - " + strKey;
+            return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
         }
 
         /// <summary>
@@ -552,7 +548,7 @@ namespace Chummer
             }
 
             // If no translation could be found, just use whatever we were passed.
-            if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("Error finding string for key - "))
+            if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("not found; check language file for string"))
                 strReturn = strExtra;
 
             return strReturn;
