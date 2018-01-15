@@ -1817,12 +1817,12 @@ namespace Chummer.Classes
         public void skilllevel(XmlNode bonusNode)
         {
             Log.Info(new object[] { "skilllevel", bonusNode.OuterXml });
-            String strSkill = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            string strSkill = string.Empty;
+            int intValue = 1;
+            bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, value);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
             }
             else
             {
@@ -1832,11 +1832,10 @@ namespace Chummer.Classes
 
         public void pushtext(XmlNode bonusNode)
         {
-
-            String push = bonusNode.InnerText;
-            if (!String.IsNullOrWhiteSpace(push))
+            string strPush = bonusNode.InnerText;
+            if (!string.IsNullOrWhiteSpace(strPush))
             {
-                _objCharacter.Pushtext.Push(push);
+                _objCharacter.Pushtext.Push(strPush);
             }
         }
 
@@ -1934,7 +1933,7 @@ namespace Chummer.Classes
         public void skillgrouplevel(XmlNode bonusNode)
         {
             Log.Info(new object[] { "skillgrouplevel", bonusNode.OuterXml });
-            String strSkillGroup = String.Empty;
+            string strSkillGroup = string.Empty;
             int value = 1;
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
                 bonusNode.TryGetInt32FieldQuickly("val", ref value))

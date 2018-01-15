@@ -392,12 +392,12 @@ namespace Chummer.Backend.Equipment
                         objWeapon.Cost = 0;
 
                         // Find the first free Weapon Mount in the Vehicle.
-                        foreach (WeaponMount w in _lstWeaponMounts)
+                        foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
-                            if (!String.IsNullOrWhiteSpace(w.WeaponMountCategories) && w.WeaponMountCategories.Contains(objWeapon.Category) && w.Weapons.Count == 0)
+                            if (!string.IsNullOrWhiteSpace(objWeaponMount.WeaponMountCategories) && objWeaponMount.WeaponMountCategories.Contains(objWeapon.Category) && objWeaponMount.Weapons.Count == 0)
                             {
-                                w.Weapons.Add(objWeapon);
-                                ((List<Weapon>)w.Weapons).AddRange(objSubWeapons);
+                                objWeaponMount.Weapons.Add(objWeapon);
+                                ((List<Weapon>)objWeaponMount.Weapons).AddRange(objSubWeapons);
                                 break;
                             }
                         }
@@ -407,7 +407,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (VehicleMod objMod in _lstVehicleMods)
                             {
-                                if ((objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
+                                if ((objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category) && objMod.Weapons.Count == 0)))
                                 {
                                     objMod.Weapons.Add(objWeapon);
                                     ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);
@@ -418,7 +418,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (VehicleMod objMod in _lstVehicleMods)
                                 {
-                                    if (objMod.Name.Contains("Weapon Mount") || (!String.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
+                                    if (objMod.Name.Contains("Weapon Mount") || (!string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category)))
                                     {
                                         objMod.Weapons.Add(objWeapon);
                                         ((List<Weapon>)objMod.Weapons).AddRange(objSubWeapons);

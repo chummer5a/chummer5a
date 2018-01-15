@@ -24215,7 +24215,7 @@ namespace Chummer
                         {
                             intComplexForms++;
                         }
-                        lblPBuildComplexForms.Text = String.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
+                        lblPBuildComplexForms.Text = string.Format("{0} " + LanguageManager.GetString("String_Of") + " {1}", (_objCharacter.CFPLimit - intComplexForms).ToString(), _objCharacter.CFPLimit.ToString());
                         */
 
                         IsCharacterUpdateRequested = true;

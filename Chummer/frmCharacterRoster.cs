@@ -349,19 +349,12 @@ namespace Chummer
                 }
 
                 string strMetatype = objMetatypeNode["translate"]?.InnerText ?? objCache.Metatype;
-                string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += objMetatypeNode["translate"] != null
-                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
-                        : " (" + objCache.Metavariant + ")";
-
-                    strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? objCache.Metavariant) + ")";
                 }
                 lblMetatype.Text = strMetatype;
             }
@@ -380,10 +373,10 @@ namespace Chummer
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
                 tipTooltip.SetToolTip(lblFilePath, string.Empty);
-                lblSettings.Text = String.Empty;;
+                lblSettings.Text = string.Empty;
                 picMugshot.Image = null;
             }
-            picMugshot_SizeChanged(null, EventArgs.Empty);
+            ProcessMugshotSizeMode();
         }
 
         #region Form Methods
@@ -595,6 +588,11 @@ namespace Chummer
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
+        {
+            ProcessMugshotSizeMode();
+        }
+
+        private void ProcessMugshotSizeMode()
         {
             if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;

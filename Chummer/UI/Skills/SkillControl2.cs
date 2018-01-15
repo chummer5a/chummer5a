@@ -54,7 +54,7 @@ namespace Chummer.UI.Skills
             {
                 lblName.Font = new Font(lblName.Font, FontStyle.Italic);
             }
-            if (!String.IsNullOrWhiteSpace(_skill.Notes))
+            if (!string.IsNullOrWhiteSpace(_skill.Notes))
             {
                 lblName.ForeColor = Color.SaddleBrown;
             }

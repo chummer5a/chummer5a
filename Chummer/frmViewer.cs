@@ -402,7 +402,7 @@ namespace Chummer
                 string strOutput = objReader.ReadToEnd();
                 File.WriteAllText(strName, strOutput);
                 string curDir = Directory.GetCurrentDirectory();
-                webBrowser1.Url = new Uri(String.Format("file:///{0}/" + strName, curDir));
+                webBrowser1.Url = new Uri(string.Format("file:///{0}/" + strName, curDir));
             }
         }
 

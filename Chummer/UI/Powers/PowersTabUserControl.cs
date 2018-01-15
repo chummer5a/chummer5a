@@ -266,7 +266,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 

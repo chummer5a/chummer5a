@@ -127,6 +127,7 @@ Application Changes:
 - Fixed a crash when selecting a character with a 'None' metavariant in the roster. Shouldn't happen, but just in case.
 - Fixed an issue where the Life Modules root node would not get translated.
 - Added a warning prompt about Life Modules not being fully supported when enabling the relevant option.
+- Fixed an issue where clicking on a cell under the "Browse" tab in the armor selection screen would result in that armor getting added to the character. Fixes #2303.
 
 Data Changes:
 
