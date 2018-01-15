@@ -160,6 +160,7 @@ Data Changes:
 - Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
 - Added missing id nodes to vessels in vessels.xml.
 - Fixed an issue where characters were limited to only one active hardwire and one knowledge hardwire. Fixes #2289.
+- Fixed the Growth spell having "Special" as its drain code instead of F+3.
 
 New Strings:
 
