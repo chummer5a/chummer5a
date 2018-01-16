@@ -4438,7 +4438,7 @@ namespace Chummer.Backend.Equipment
                                 strExpression = "2";
                         }
                         else
-                            strExpression = "2";
+                            strExpression = "0";
                         break;
                     case "Data Processing":
                     case "Firewall":
