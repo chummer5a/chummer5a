@@ -161,6 +161,7 @@ Data Changes:
 - Added missing id nodes to vessels in vessels.xml.
 - Fixed an issue where characters were limited to only one active hardwire and one knowledge hardwire. Fixes #2289.
 - Fixed the Growth spell having "Special" as its drain code instead of F+3.
+- Added an amend entry to convert the Growth spell to the version used by the German version of Forbidden Arcana.
 
 New Strings:
 
