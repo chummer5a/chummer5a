@@ -160,10 +160,15 @@ namespace Chummer
                                 foreach (XmlNode objType in objNode.ChildNodes)
                                 {
                                     string strFilter = string.Empty;
-                                    if (objType["id"] != null)
-                                        strFilter = "id = \"" + objType["id"].InnerText.Replace("&amp;", "&") + "\"";
-                                    else if (objType["name"] != null)
-                                        strFilter = "name = \"" + objType["name"].InnerText.Replace("&amp;", "&") + "\"";
+                                    XmlNode xmlIdNode = objType["id"];
+                                    if (xmlIdNode != null)
+                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                    else
+                                    {
+                                        xmlIdNode = objType["name"];
+                                        if (xmlIdNode != null)
+                                            strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                    }
                                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                                     XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"yes\"]");
                                     foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
@@ -196,13 +201,15 @@ namespace Chummer
                                     if (objParentNode != null)
                                     {
                                         string strFilter = string.Empty;
-                                        if (objChild["id"] != null)
-                                            strFilter = "id = \"" + objChild["id"].InnerText.Replace("&amp;", "&") + "\"";
-                                        if (objChild["name"] != null)
+                                        XmlNode xmlIdNode = objChild["id"];
+                                        if (xmlIdNode != null)
+                                            strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                        XmlNode xmlNameNode = objChild["name"];
+                                        if (xmlNameNode != null)
                                         {
                                             if (!string.IsNullOrEmpty(strFilter))
                                                 strFilter += " and ";
-                                            strFilter += "name = \"" + objChild["name"].InnerText.Replace("&amp;", "&") + "\"";
+                                            strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + "\"";
                                         }
                                         // Only do this if the child has the name or id field since this is what we must match on.
                                         if (!string.IsNullOrEmpty(strFilter))
@@ -322,7 +329,7 @@ namespace Chummer
                                                         {
                                                             xmlMetavariantItem = xmlItem.SelectSingleNode("metavariants/metavariant[name = \"" + strChildName + "\"]");
                                                         }
-                                                        if (xmlItem == null)
+                                                        if (xmlMetavariantItem == null)
                                                         {
                                                             strChildName = objChild["id"]?.InnerText;
                                                             if (!string.IsNullOrEmpty(strChildName))
@@ -524,7 +531,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Deep search a document to amend with a new node, returns whether any edits were made.
+        /// Deep search a document to amend with a new node.
         /// If Attributes exist for the amending node, the Attributes for the original node will all be overwritten.
         /// </summary>
         /// <param name="objDoc">Document element in which to operate.</param>
