@@ -138,8 +138,9 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
-        static readonly CultureInfo _objCultureInfo = CultureInfo.CurrentCulture;
+        static readonly CultureInfo _objSystemCultureInfo = CultureInfo.CurrentCulture;
         static readonly CultureInfo _objInvariantCultureInfo = CultureInfo.InvariantCulture;
+        static CultureInfo _objLanguageCultureInfo = CultureInfo.CurrentCulture;
 
         public static Action MRUChanged { get; set; }
 
@@ -185,26 +186,32 @@ namespace Chummer
         /// <summary>
         /// Load a Bool Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
+        private static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "")
         {
             object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
+                {
                     blnStorage = blnTemp;
+                    return true;
+                }
             }
+            return false;
         }
 
         /// <summary>
         /// Load an Int Option from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        private static void LoadStringFromRegistry(ref string strStorage, string strBoolName, string strSubKey = "")
+        private static bool LoadStringFromRegistry(ref string strStorage, string strBoolName, string strSubKey = "")
         {
             object objRegistryResult = !string.IsNullOrWhiteSpace(strSubKey) ? _objBaseChummerKey.OpenSubKey(strSubKey).GetValue(strBoolName) : _objBaseChummerKey.GetValue(strBoolName);
             if (objRegistryResult != null)
             {
                 strStorage = objRegistryResult.ToString();
+                return true;
             }
+            return false;
         }
 
         static GlobalOptions()
@@ -268,24 +275,28 @@ namespace Chummer
             // AutoLogin.
             LoadBoolFromRegistry(ref _blnOmaeAutoLogin, "omaeautologin");
             // Language.
-            LoadStringFromRegistry(ref _strLanguage, "language");
-            switch (_strLanguage)
+            string strLanguage = _strLanguage;
+            if (LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                case "en-us2":
-                    _strLanguage = DefaultLanguage;
-                    break;
-                case "de":
-                    _strLanguage = "de-de";
-                    break;
-                case "fr":
-                    _strLanguage = "fr-fr";
-                    break;
-                case "jp":
-                    _strLanguage = "ja-jp";
-                    break;
-                case "zh":
-                    _strLanguage = "zh-cn";
-                    break;
+                switch (_strLanguage)
+                {
+                    case "en-us2":
+                        _strLanguage = DefaultLanguage;
+                        break;
+                    case "de":
+                        _strLanguage = "de-de";
+                        break;
+                    case "fr":
+                        _strLanguage = "fr-fr";
+                        break;
+                    case "jp":
+                        _strLanguage = "ja-jp";
+                        break;
+                    case "zh":
+                        _strLanguage = "zh-cn";
+                        break;
+                }
+                Language = strLanguage;
             }
             // Startup in Fullscreen mode.
             LoadBoolFromRegistry(ref _blnStartupFullscreen, "startupfullscreen");
@@ -567,7 +578,18 @@ namespace Chummer
             }
             set
             {
-                _strLanguage = value;
+                if (value != _strLanguage)
+                {
+                    _strLanguage = value;
+                    try
+                    {
+                        _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
+                    }
+                    catch (CultureNotFoundException)
+                    {
+                        _objLanguageCultureInfo = SystemCultureInfo;
+                    }
+                }
             }
         }
 
@@ -608,7 +630,7 @@ namespace Chummer
         {
             get
             {
-                return _objCultureInfo;
+                return _objLanguageCultureInfo;
             }
         }
 
@@ -620,6 +642,17 @@ namespace Chummer
             get
             {
                 return _objInvariantCultureInfo;
+            }
+        }
+
+        /// <summary>
+        /// CultureInfo of the user's current system.
+        /// </summary>
+        public static CultureInfo SystemCultureInfo
+        {
+            get
+            {
+                return _objSystemCultureInfo;
             }
         }
 

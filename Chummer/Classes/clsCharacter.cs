@@ -1298,7 +1298,7 @@ namespace Chummer
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
                         _lstQualities.Add(objQuality);
-                        if (objQuality.GetNode()?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
+                        if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
                         if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||

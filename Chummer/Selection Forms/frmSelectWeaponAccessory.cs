@@ -119,26 +119,29 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
+                XmlNode xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
+                    if (objXmlWeaponNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlAccessory["required"]?["weapondetails"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
+                    if (!objXmlWeaponNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
 
-                if (objXmlAccessory["forbidden"]?["oneof"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
+                    XmlNodeList objXmlForbiddenList = xmlTestNode.SelectNodes("accessory");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objForbiddenAccessory = new HashSet<string>();
@@ -153,9 +156,10 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlAccessory["required"]?["oneof"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("required/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
+                    XmlNodeList objXmlRequiredList = xmlTestNode.SelectNodes("accessory");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objRequiredAccessory = new HashSet<string>();

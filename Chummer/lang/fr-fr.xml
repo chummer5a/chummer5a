@@ -1842,7 +1842,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>Êtes-vous sûr de vouloir réduire cette quantité de 1 ?</text>
+      <text>Êtes-vous sûr de vouloir réduire cette quantité de {0}?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>

@@ -438,27 +438,31 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (objXmlMod["hide"] != null) continue;
-                if (objXmlMod["forbidden"]?["vehicledetails"] != null)
+                if (objXmlMod["hide"] != null)
+                    continue;
+                XmlNode xmlTestNode = objXmlMod.SelectSingleNode("forbidden/vehicledetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["forbidden"]["vehicledetails"], false))
+                    if (objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlMod["required"]?["vehicledetails"] != null)
+                xmlTestNode = objXmlMod.SelectSingleNode("required/vehicledetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlVehicleNode.ProcessFilterOperationNode(objXmlMod["required"]["vehicledetails"], false))
+                    if (!objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
 
-                if (objXmlMod["forbidden"]?["oneof"] != null)
+                xmlTestNode = objXmlMod.SelectSingleNode("forbidden/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlForbiddenList = objXmlMod.SelectNodes("forbidden/oneof/mods");
+                    XmlNodeList objXmlForbiddenList = xmlTestNode.SelectNodes("mods");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objForbiddenAccessory = new HashSet<string>();
@@ -473,9 +477,10 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlMod["required"]?["oneof"] != null)
+                xmlTestNode = objXmlMod.SelectSingleNode("required/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlRequiredList = objXmlMod.SelectNodes("required/oneof/mods");
+                    XmlNodeList objXmlRequiredList = xmlTestNode.SelectNodes("mods");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objRequiredAccessory = new HashSet<string>();

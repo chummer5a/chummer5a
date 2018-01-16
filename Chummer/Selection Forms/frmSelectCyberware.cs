@@ -961,18 +961,20 @@ namespace Chummer
                 {
                     continue;
                 }
-                if (objXmlCyberware["forbidden"]?["parentdetails"] != null)
+                XmlNode xmlTestNode = objXmlCyberware.SelectSingleNode("forbidden/parentdetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(objXmlCyberware["forbidden"]["parentdetails"], false))
+                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlCyberware["required"]?["parentdetails"] != null)
+                xmlTestNode = objXmlCyberware.SelectSingleNode("required/parentdetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(objXmlCyberware["required"]["parentdetails"], false))
+                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }

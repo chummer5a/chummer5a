@@ -371,18 +371,20 @@ namespace Chummer.Backend.Equipment
                             XmlNode objXmlLoopGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objChoiceNode["name"].InnerText + "\" and category = \"" + objChoiceNode["category"].InnerText + "\"]");
                             if (objXmlLoopGear == null)
                                 continue;
-                            if (objXmlLoopGear["forbidden"]?["geardetails"] != null)
+                            XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
+                            if (xmlTestNode != null)
                             {
                                 // Assumes topmost parent is an AND node
-                                if (objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["forbidden"]["geardetails"], false))
+                                if (objXmlGear.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     continue;
                                 }
                             }
-                            if (objXmlLoopGear["required"]?["geardetails"] != null)
+                            xmlTestNode = objXmlLoopGear.SelectSingleNode("required/geardetails");
+                            if (xmlTestNode != null)
                             {
                                 // Assumes topmost parent is an AND node
-                                if (!objXmlGear.ProcessFilterOperationNode(objXmlLoopGear["required"]["geardetails"], false))
+                                if (!objXmlGear.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     continue;
                                 }

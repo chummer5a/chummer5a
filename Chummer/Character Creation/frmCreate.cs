@@ -3725,23 +3725,24 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickProgram.AddAgain;
 
-                XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
                 frmPickProgram.Dispose();
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"]?["selecttext"] != null)
+                XmlNode xmlSelectText = objXmlComplexForm.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
-                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText)
+                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"].InnerText)
                     };
                     frmPickText.ShowDialog(this);
                     strExtra = frmPickText.SelectedValue;
                 }
                 
                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                objComplexForm.Create(objXmlProgram, strExtra);
+                objComplexForm.Create(objXmlComplexForm, strExtra);
                 if (objComplexForm.InternalId == Guid.Empty.ToString())
                     continue;
 
@@ -3779,7 +3780,8 @@ namespace Chummer
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"]?["selecttext"] != null)
+                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {

@@ -1176,9 +1176,9 @@ namespace Chummer.Classes
             Spell spell = new Spell(_objCharacter);
             // Check for SelectText.
             string strExtra = string.Empty;
-            if (node["bonus"]?["selecttext"] != null)
+            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
+            if (xmlSelectText != null)
             {
-
                 frmSelectText frmPickText = new frmSelectText
                 {
                     Description =
@@ -1227,9 +1227,9 @@ namespace Chummer.Classes
             if (node == null) return;
             // Check for SelectText.
             string strExtra = string.Empty;
-            if (node["bonus"]?["selecttext"] != null)
+            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
+            if (xmlSelectText != null)
             {
-
                 frmSelectText frmPickText = new frmSelectText
                 {
                     Description =
@@ -1292,9 +1292,9 @@ namespace Chummer.Classes
             ComplexForm complexform = new ComplexForm(_objCharacter);
             // Check for SelectText.
             string strExtra = string.Empty;
-            if (node["bonus"]?["selecttext"] != null)
+            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
+            if (xmlSelectText != null)
             {
-
                 frmSelectText frmPickText = new frmSelectText
                 {
                     Description =
@@ -1343,7 +1343,8 @@ namespace Chummer.Classes
             if (node == null) return;
             // Check for SelectText.
             string strExtra = string.Empty;
-            if (node["bonus"]?["selecttext"] != null)
+            XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
+            if (xmlSelectText != null)
             {
                 frmSelectText frmPickText = new frmSelectText
                 {
@@ -1475,24 +1476,22 @@ namespace Chummer.Classes
             {
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"] != null)
+                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
-                    if (objXmlProgram["bonus"]["selecttext"] != null)
+                    frmSelectText frmPickText = new frmSelectText
                     {
-                        frmSelectText frmPickText = new frmSelectText
-                        {
-                            Description =
+                        Description =
                             LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
                                 .Replace("{0}", frmPickProgram.SelectedProgram)
-                        };
-                        frmPickText.ShowDialog();
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
-                        }
-                        strExtra = frmPickText.SelectedValue;
+                    };
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
                     }
+                    strExtra = frmPickText.SelectedValue;
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
@@ -1550,24 +1549,22 @@ namespace Chummer.Classes
             {
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"] != null)
+                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
-                    if (objXmlProgram["bonus"]["selecttext"] != null)
+                    frmSelectText frmPickText = new frmSelectText
                     {
-                        frmSelectText frmPickText = new frmSelectText
-                        {
-                            Description =
+                        Description =
                             LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
                                 .Replace("{0}", frmPickProgram.SelectedProgram)
-                        };
-                        frmPickText.ShowDialog();
-                        // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
-                        {
-                            throw new AbortedException();
-                        }
-                        strExtra = frmPickText.SelectedValue;
+                    };
+                    frmPickText.ShowDialog();
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
                     }
+                    strExtra = frmPickText.SelectedValue;
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);

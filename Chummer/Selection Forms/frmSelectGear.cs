@@ -1068,34 +1068,38 @@ namespace Chummer
             List<ListItem> lstGears = new List<ListItem>();
             foreach (XmlNode objXmlGear in objXmlGearList)
             {
-                if (objXmlGear["forbidden"]?["parentdetails"] != null)
+                XmlNode xmlTestNode = objXmlGear.SelectSingleNode("forbidden/parentdetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["parentdetails"], false))
+                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlGear["required"]?["parentdetails"] != null)
+                xmlTestNode = objXmlGear.SelectSingleNode("required/parentdetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["parentdetails"], false))
+                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlGear["forbidden"]?["geardetails"] != null)
+                xmlTestNode = objXmlGear.SelectSingleNode("forbidden/geardetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(objXmlGear["forbidden"]["geardetails"], false))
+                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlGear["required"]?["geardetails"] != null)
+                xmlTestNode = objXmlGear.SelectSingleNode("required/geardetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(objXmlGear["required"]["geardetails"], false))
+                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }

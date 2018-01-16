@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1631,7 +1631,7 @@
 		</string>
 		<string>
 			<key>Message_ReduceQty</key>
-			<text>Möchten Sie die Menge wirklich um 1 reduzieren?</text>
+			<text>Möchten Sie die Menge wirklich um {0} reduzieren?</text>
 		</string>
 		<string>
 			<key>Message_VehicleCyberwarePlugin</key>

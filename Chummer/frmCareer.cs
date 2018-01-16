@@ -4027,25 +4027,23 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickProgram.AddAgain;
 
-                XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"] != null)
+                XmlNode xmlSelectText = objXmlComplexForm.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
-                    if (objXmlProgram["bonus"]["selecttext"] != null)
+                    frmSelectText frmPickText = new frmSelectText
                     {
-                        frmSelectText frmPickText = new frmSelectText
-                        {
-                            Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText)
-                        };
-                        frmPickText.ShowDialog(this);
-                        strExtra = frmPickText.SelectedValue;
-                    }
+                        Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language).Replace("{0}", objXmlComplexForm["translate"]?.InnerText ?? objXmlComplexForm["name"].InnerText)
+                    };
+                    frmPickText.ShowDialog(this);
+                    strExtra = frmPickText.SelectedValue;
                 }
                 
                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
-                objComplexForm.Create(objXmlProgram, strExtra);
+                objComplexForm.Create(objXmlComplexForm, strExtra);
                 if (objComplexForm.InternalId == Guid.Empty.ToString())
                 {
                     frmPickProgram.Dispose();
@@ -5726,11 +5724,35 @@ namespace Chummer
         {
             Gear objGear = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Tag.ToString());
             Gear objParent = CharacterObject.Gear.DeepFindById(treGear.SelectedNode.Parent.Tag.ToString());
+            
+            int intDecimalPlaces = 0;
+            if (objGear.Name.StartsWith("Nuyen"))
+            {
+                string strFormat = CharacterObject.Options.NuyenFormat;
+                intDecimalPlaces = Math.Max(0, strFormat.Length - 1 - strFormat.LastIndexOf('.'));
+            }
+            else if (objGear.Category == "Currency")
+            {
+                intDecimalPlaces = 2;
+            }
 
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty", GlobalOptions.Language)))
+            frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
+            {
+                Minimum = 0,
+                Maximum = objGear.Quantity,
+                Description = LanguageManager.GetString("String_ReduceGear", GlobalOptions.Language)
+            };
+            frmPickNumber.ShowDialog(this);
+
+            if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                return;
+
+            decimal decSelectedValue = frmPickNumber.SelectedValue;
+
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty", GlobalOptions.Language).Replace("{0}", decSelectedValue.ToString(GlobalOptions.CultureInfo))))
                 return;
                 
-            objGear.Quantity -= 1;
+            objGear.Quantity -= decSelectedValue;
 
             if (objGear.Quantity > 0)
             {
@@ -6297,10 +6319,34 @@ namespace Chummer
             Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
             Gear objParent = objGear?.Parent;
 
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty", GlobalOptions.Language)))
+            int intDecimalPlaces = 0;
+            if (objGear.Name.StartsWith("Nuyen"))
+            {
+                string strFormat = CharacterObject.Options.NuyenFormat;
+                intDecimalPlaces = Math.Max(0, strFormat.Length - 1 - strFormat.LastIndexOf('.'));
+            }
+            else if (objGear.Category == "Currency")
+            {
+                intDecimalPlaces = 2;
+            }
+
+            frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
+            {
+                Minimum = 0,
+                Maximum = objGear.Quantity,
+                Description = LanguageManager.GetString("String_ReduceGear", GlobalOptions.Language)
+            };
+            frmPickNumber.ShowDialog(this);
+
+            if (frmPickNumber.DialogResult == DialogResult.Cancel)
                 return;
 
-            objGear.Quantity -= 1;
+            decimal decSelectedValue = frmPickNumber.SelectedValue;
+
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_ReduceQty", GlobalOptions.Language).Replace("{0}", decSelectedValue.ToString(GlobalOptions.CultureInfo))))
+                return;
+
+            objGear.Quantity -= decSelectedValue;
 
             if (objGear.Quantity > 0)
             {
@@ -24184,7 +24230,8 @@ namespace Chummer
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                if (objXmlProgram["bonus"]?["selecttext"] != null)
+                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                if (xmlSelectText != null)
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {

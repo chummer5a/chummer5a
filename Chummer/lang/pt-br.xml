@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <chummer>
 	<version>-500</version>
 	<name>Português (pt-BR)</name>
@@ -2546,7 +2546,7 @@
 		</string>
 		<string>
 			<key>Message_ReduceQty</key>
-			<text>Você tem certeza que quer reduzir esta quantidade em 1?</text>
+			<text>Você tem certeza que quer reduzir esta quantidade em {0}?</text>
 		</string>
 		<string>
 			<key>Message_VehicleCyberwarePlugin</key>

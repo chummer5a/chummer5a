@@ -129,6 +129,8 @@ Application Changes:
 - Added a warning prompt about Life Modules not being fully supported when enabling the relevant option.
 - Fixed an issue where clicking on a cell under the "Browse" tab in the armor selection screen would result in that armor getting added to the character. Fixes #2303.
 - Fixed a bug where restoring essence to a character would also restore lost special attribute values.
+- Chummer5a will now use the number localization of the currently loaded language (if possible) instead of that of the user's system.
+- Added the option to remove a quantity of gear other than 1 in Career mode.
 
 Data Changes:
 
@@ -202,6 +204,11 @@ New Strings:
 - String_LifeModules
 - Tip_LifeModule_Warning
 - String_Month
+- String_ReduceGear
+
+Changed Strings:
+
+- Message_ReduceQty
 
 Build 196
 

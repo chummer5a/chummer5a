@@ -1848,7 +1848,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>このアイテムの数を1減らしてもよろしいですか?</text>
+      <text>このアイテムの数を{0}減らしてもよろしいですか?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>
