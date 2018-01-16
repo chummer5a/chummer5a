@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -305,11 +305,8 @@ namespace Chummer
                                                     foreach (XmlNode xmlSpec in xmlSpecsNode.SelectNodes("spec"))
                                                     {
                                                         strTranslate = xmlSpec.Attributes?["translate"].InnerXml;
-                                                        if (xmlItem != null)
-                                                        {
-                                                            XmlElement objSpecItem = xmlItem.SelectSingleNode("specs/spec[. = \"" + xmlSpec.InnerXml + "\"]") as XmlElement;
-                                                            objSpecItem?.SetAttribute("translate", strTranslate);
-                                                        }
+                                                        XmlElement objSpecItem = xmlItem.SelectSingleNode("specs/spec[. = \"" + xmlSpec.InnerXml + "\"]") as XmlElement;
+                                                        objSpecItem?.SetAttribute("translate", strTranslate);
                                                     }
                                                 }
                                                 break;
@@ -596,7 +593,7 @@ namespace Chummer
             string strNewXPath = strXPath + '/' + objAmendingNode.Name + strFilter;
 
             XmlNodeList objNodesToEdit = objDoc.SelectNodes(strNewXPath);
-            
+
             List<XmlNode> lstElementChildren = null;
             // Pre-cache list of elements if we don't have an operation specified or have recurse specified
             if ((string.IsNullOrEmpty(strOperation) || strOperation == "recurse"))
@@ -755,7 +752,7 @@ namespace Chummer
             foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
             {
                 string strFileName = Path.GetFileName(strFile);
-                
+
                 if (!string.IsNullOrEmpty(strFileName) &&
                     // Do not bother to check custom files.
                     !strFileName.StartsWith("amend") &&
