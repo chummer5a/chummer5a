@@ -50,7 +50,7 @@ namespace Chummer
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
         int MatrixCM { get; }
-        int MatrixCMFilled { get; }
+        int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }

@@ -17628,6 +17628,52 @@ namespace Chummer
             }
         }
 
+        private void chkWeaponCM_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+
+            // Locate the selected Gear.
+            TreeNode objWeaponNode = treWeapons.SelectedNode;
+            string strSelectedId = objWeaponNode.Tag.ToString();
+
+            IHasMatrixAttributes objItem = CharacterObject.Weapons.FindWeaponGear(strSelectedId);
+            if (objItem == null)
+            {
+                objItem = CharacterObject.Weapons.DeepFindById(strSelectedId);
+                if (objItem == null)
+                {
+                    objItem = CharacterObject.Weapons.FindWeaponAccessory(strSelectedId)?.Parent;
+                    if (objItem == null)
+                        return;
+                }
+            }
+
+            int intFillCount = 0;
+            CheckBox objCheck = (CheckBox)sender;
+            {
+                _blnSkipRefresh = true;
+                bool blnChecked = objCheck.Checked;
+                int intBoxCheckTag = Convert.ToInt32(objCheck.Tag.ToString());
+                foreach (CheckBox objCMBox in tabWeaponMatrixCMPage.Controls.OfType<CheckBox>())
+                {
+                    int intLoopTag = Convert.ToInt32(objCMBox.Tag.ToString());
+                    // If this is being checked, make sure everything before it is checked off, and if unchecked, everything after it is checked off.
+                    if ((intLoopTag < intBoxCheckTag) == blnChecked && intLoopTag != intBoxCheckTag)
+                        objCMBox.Checked = blnChecked;
+
+                    if (objCMBox.Checked)
+                        intFillCount += 1;
+                }
+                _blnSkipRefresh = false;
+                objItem.MatrixCMFilled = intFillCount;
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+        }
+
         private void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -18735,16 +18781,17 @@ namespace Chummer
 
                     objGear.RefreshMatrixAttributeCBOs(cboCyberwareGearAttack, cboCyberwareGearSleaze, cboCyberwareGearDataProcessing, cboCyberwareGearFirewall);
 
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                     chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
                     chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                     if (CharacterObject.Metatype == "A.I.")
                     {
                         chkCyberwareHomeNode.Visible = true;
                         chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
 
-                    lblCyberDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                    lblCyberDeviceRating.Text = intDeviceRating.ToString();
                     lblCyberDeviceRating.Visible = true;
                     lblCyberDeviceRatingLabel.Visible = true;
                     lblCyberAttackLabel.Visible = true;
@@ -18867,6 +18914,7 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
+                tabWeaponMatrixCM.Visible = false;
 
                 // Disable the fire button.
                 cmdFireWeapon.Enabled = false;
@@ -18899,6 +18947,40 @@ namespace Chummer
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
+
+                objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                if (intDeviceRating > 0)
+                {
+                    tabWeaponMatrixCM.Visible = true;
+                    foreach (CheckBox objMatrixCM in tabWeaponMatrixCMPage.Controls.OfType<CheckBox>())
+                    {
+                        if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCM)
+                        {
+                            if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCMFilled)
+                                objMatrixCM.Checked = true;
+                            else
+                                objMatrixCM.Checked = false;
+
+                            objMatrixCM.Visible = true;
+                        }
+                        else
+                        {
+                            objMatrixCM.Checked = false;
+                            objMatrixCM.Visible = false;
+                            objMatrixCM.Text = string.Empty;
+                        }
+                    }
+                }
+                else
+                {
+                    tabWeaponMatrixCM.Visible = false;
+                }
+                lblWeaponDeviceRating.Text = intDeviceRating.ToString();
+                lblWeaponAttackLabel.Visible = true;
+                lblWeaponSleazeLabel.Visible = true;
+                lblWeaponDataProcessingLabel.Visible = true;
+                lblWeaponFirewallLabel.Visible = true;
 
                 // Do not allow Cyberware of Gear Weapons to be moved.
                 if (!objWeapon.Cyberware && objWeapon.Category != "Gear")
@@ -19070,6 +19152,40 @@ namespace Chummer
                     lblWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     tipTooltip.SetToolTip(lblWeaponDicePool, objWeapon.DicePoolTooltip);
 
+                    objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                    int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                    if (intDeviceRating > 0)
+                    {
+                        tabWeaponMatrixCM.Visible = true;
+                        foreach (CheckBox objMatrixCM in tabWeaponMatrixCMPage.Controls.OfType<CheckBox>())
+                        {
+                            if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCM)
+                            {
+                                if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCMFilled)
+                                    objMatrixCM.Checked = true;
+                                else
+                                    objMatrixCM.Checked = false;
+
+                                objMatrixCM.Visible = true;
+                            }
+                            else
+                            {
+                                objMatrixCM.Checked = false;
+                                objMatrixCM.Visible = false;
+                                objMatrixCM.Text = string.Empty;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        tabWeaponMatrixCM.Visible = false;
+                    }
+                    lblWeaponDeviceRating.Text = intDeviceRating.ToString();
+                    lblWeaponAttackLabel.Visible = true;
+                    lblWeaponSleazeLabel.Visible = true;
+                    lblWeaponDataProcessingLabel.Visible = true;
+                    lblWeaponFirewallLabel.Visible = true;
+
                     cmsAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
                     cmsAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
                     cmsAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
@@ -19148,18 +19264,17 @@ namespace Chummer
                     cmdReloadWeapon.Enabled = false;
                     cmdWeaponBuyAmmo.Enabled = false;
                     cboWeaponAmmo.Enabled = false;
-
-                    Weapon objSelectedWeapon = null;
+                    
                     WeaponAccessory objSelectedAccessory = CharacterObject.Weapons.FindWeaponAccessory(treWeapons.SelectedNode.Tag.ToString());
                     if (objSelectedAccessory != null)
                     {
                         if (objSelectedAccessory.IncludedInWeapon)
                             cmdDeleteWeapon.Enabled = false;
-                        objSelectedWeapon = objSelectedAccessory.Parent;
+                        objWeapon = objSelectedAccessory.Parent;
                         lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                         lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
                         lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.Language);
-                        lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy.ToString();
+                        lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                         lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
                         lblWeaponDamage.Text = string.Empty;
@@ -19210,6 +19325,40 @@ namespace Chummer
                         chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                         chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
                         chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
+
+                        objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                        int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                        if (intDeviceRating > 0)
+                        {
+                            tabWeaponMatrixCM.Visible = true;
+                            foreach (CheckBox objMatrixCM in tabWeaponMatrixCMPage.Controls.OfType<CheckBox>())
+                            {
+                                if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCM)
+                                {
+                                    if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objWeapon.MatrixCMFilled)
+                                        objMatrixCM.Checked = true;
+                                    else
+                                        objMatrixCM.Checked = false;
+
+                                    objMatrixCM.Visible = true;
+                                }
+                                else
+                                {
+                                    objMatrixCM.Checked = false;
+                                    objMatrixCM.Visible = false;
+                                    objMatrixCM.Text = string.Empty;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            tabWeaponMatrixCM.Visible = false;
+                        }
+                        lblWeaponDeviceRating.Text = intDeviceRating.ToString();
+                        lblWeaponAttackLabel.Visible = true;
+                        lblWeaponSleazeLabel.Visible = true;
+                        lblWeaponDataProcessingLabel.Visible = true;
+                        lblWeaponFirewallLabel.Visible = true;
                     }
                     else
                     {
@@ -19217,14 +19366,14 @@ namespace Chummer
                         Gear objGear = CharacterObject.Weapons.FindWeaponGear(treWeapons.SelectedNode.Tag.ToString(), out objSelectedAccessory);
                         if (objGear != null)
                         {
-                            objSelectedWeapon = objSelectedAccessory.Parent;
+                            objWeapon = objSelectedAccessory.Parent;
                             if (objGear.IncludedInParent)
                                 cmdDeleteWeapon.Enabled = false;
                             lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                             lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                             lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                             lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                            lblWeaponAccuracy.Text = objSelectedWeapon.TotalAccuracy.ToString();
+                            lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                             lblWeaponConceal.Text = string.Empty;
                             lblWeaponDamage.Text = string.Empty;
                             lblWeaponRC.Text = string.Empty;
@@ -19243,8 +19392,35 @@ namespace Chummer
                             chkIncludedInWeapon.Enabled = false;
                             chkIncludedInWeapon.Checked = false;
 
-                            objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                            lblWeaponDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                            objGear.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                            int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                            if (intDeviceRating > 0)
+                            {
+                                tabWeaponMatrixCM.Visible = true;
+                                foreach (CheckBox objMatrixCM in tabWeaponMatrixCMPage.Controls.OfType<CheckBox>())
+                                {
+                                    if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objGear.MatrixCM)
+                                    {
+                                        if (Convert.ToInt32(objMatrixCM.Tag.ToString()) <= objGear.MatrixCMFilled)
+                                            objMatrixCM.Checked = true;
+                                        else
+                                            objMatrixCM.Checked = false;
+
+                                        objMatrixCM.Visible = true;
+                                    }
+                                    else
+                                    {
+                                        objMatrixCM.Checked = false;
+                                        objMatrixCM.Visible = false;
+                                        objMatrixCM.Text = string.Empty;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                tabWeaponMatrixCM.Visible = false;
+                            }
+                            lblWeaponDeviceRating.Text = intDeviceRating.ToString();
                             lblWeaponAttackLabel.Visible = true;
                             lblWeaponSleazeLabel.Visible = true;
                             lblWeaponDataProcessingLabel.Visible = true;
@@ -19253,11 +19429,11 @@ namespace Chummer
                     }
 
                     // Show the Weapon Ranges.
-                    if (objSelectedWeapon != null)
+                    if (objWeapon != null)
                     {
-                        lblWeaponRangeMain.Text = objSelectedWeapon.DisplayRange(GlobalOptions.Language);
-                        lblWeaponRangeAlternate.Text = objSelectedWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                        IDictionary<string, string> dictionaryRanges = objSelectedWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                        lblWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                        lblWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
                         lblWeaponRangeShort.Text = dictionaryRanges["short"];
                         lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
                         lblWeaponRangeLong.Text = dictionaryRanges["long"];
@@ -19490,8 +19666,9 @@ namespace Chummer
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
                     lblGearSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblGearSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
-                    
-                    if (objGear.GetTotalMatrixAttribute("Device Rating") > 0)
+
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                    if (intDeviceRating > 0)
                     {
                         tabGearMatrixCM.Visible = true;
                         foreach (CheckBox objMatrixCM in tabMatrixCM.Controls.OfType<CheckBox>())
@@ -19519,8 +19696,7 @@ namespace Chummer
                     }
 
                     cboGearOverclocker.BeginUpdate();
-
-                    lblGearDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                    
                     chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                     chkGearActiveCommlink.Enabled = objGear.IsCommlink;
 
@@ -19554,7 +19730,7 @@ namespace Chummer
 
                     objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
 
-                    lblGearDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                    lblGearDeviceRating.Text = intDeviceRating.ToString();
                     
                     lblGearDeviceRating.Visible = true;
                     lblGearDeviceRatingLabel.Visible = true;
@@ -19567,7 +19743,7 @@ namespace Chummer
                     {
                         chkGearHomeNode.Visible = true;
                         chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
 
                     if (objGear.MaxRating > 0)
@@ -21031,7 +21207,8 @@ namespace Chummer
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
-                        lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                        lblVehicleDevice.Text = intDeviceRating.ToString();
                         objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                         chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
@@ -21041,7 +21218,7 @@ namespace Chummer
                         {
                             chkVehicleHomeNode.Visible = true;
                             chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                         }
                     }
                     else
@@ -21236,7 +21413,8 @@ namespace Chummer
                     lblVehicleSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + objGear.DisplayPage(strPage));
 
-                    lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                    lblVehicleDevice.Text = intDeviceRating.ToString();
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                     chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
@@ -21246,7 +21424,7 @@ namespace Chummer
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
                 }
                 else
@@ -21465,7 +21643,8 @@ namespace Chummer
                     lblVehicleSource.Text = strBook + " " + strPage;
                     tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
 
-                    lblVehicleDevice.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString();
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                    lblVehicleDevice.Text = intDeviceRating.ToString();
                     objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
 
                     chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
@@ -21475,7 +21654,7 @@ namespace Chummer
                     {
                         chkVehicleHomeNode.Visible = true;
                         chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                     }
                 }
                 else

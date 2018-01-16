@@ -131,6 +131,7 @@ Application Changes:
 - Fixed a bug where restoring essence to a character would also restore lost special attribute values.
 - Chummer5a will now use the number localization of the currently loaded language (if possible) instead of that of the user's system.
 - Added the option to remove a quantity of gear other than 1 in Career mode.
+- Added a Matrix Condition Monitor to the Weapons tab.
 
 Data Changes:
 
