@@ -17291,7 +17291,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = objXmlItem["name"]?.Attributes?["select"]?.InnerText ?? string.Empty;
+            string strForced = objXmlItem.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
             objCyberware.Create(objXmlNode, CharacterObject, objGrade, objSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
             objCyberware.Suite = true;
@@ -19462,7 +19462,7 @@ namespace Chummer
                 decQty = Convert.ToDecimal(strQty, GlobalOptions.InvariantCultureInfo);
 
             List<Weapon> lstWeapons = new List<Weapon>();
-            string strForceValue = objXmlGear["name"].Attributes?["select"]?.InnerText ?? string.Empty;
+            string strForceValue = objXmlGear.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
             Gear objNewGear = new Gear(CharacterObject);
             objNewGear.Create(objXmlGearNode, intRating, lstWeapons, strForceValue, true, blnCreateChildren);

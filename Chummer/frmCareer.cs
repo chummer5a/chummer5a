@@ -466,12 +466,12 @@ namespace Chummer
 				XmlNode node = objDoc.SelectSingleNode($"/chummer/metatypes/metatype[name = \"{CharacterObject.Metatype}\"]");
                 List<ListItem> lstAttributeCategories = new List<ListItem>
                 {
-                    new ListItem("Shapeshifter", node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText)
+                    new ListItem("Shapeshifter", node?.SelectSingleNode("name/@translate")?.InnerText ?? CharacterObject.Metatype)
                 };
 
-                node = node?.SelectSingleNode($"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]");
+                node = node?.SelectSingleNode($"metavariants/metavariant[name = \"{CharacterObject.Metavariant}\"]/name/@translate");
 
-                lstAttributeCategories.Add(new ListItem("Standard", node["name"].Attributes["translate"]?.InnerText ?? node["name"].InnerText));
+                lstAttributeCategories.Add(new ListItem("Standard", node?.InnerText ?? CharacterObject.Metavariant));
 
 				lstAttributeCategories.Sort(CompareListItems.CompareNames);
 				cboAttributeCategory.BeginUpdate();
@@ -23364,7 +23364,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = objXmlItem["name"]?.Attributes?["select"]?.InnerText ?? string.Empty;
+            string strForced = objXmlItem.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
 
             objCyberware.Create(objXmlNode, CharacterObject, objGrade, objSource, intRating, lstWeapons, lstVehicles, true, true, strForced);
             objCyberware.Suite = true;

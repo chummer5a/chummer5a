@@ -1079,9 +1079,9 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("run", ref _strRun);
             objXmlCharacter.TryGetStringFieldQuickly("sprint", ref _strSprint);
 
-            _strRunAlt = objXmlCharacter["run"]?.Attributes["alt"]?.InnerText ?? string.Empty;
-            _strWalkAlt = objXmlCharacter["walk"]?.Attributes["alt"]?.InnerText ?? string.Empty;
-            _strSprintAlt = objXmlCharacter["sprint"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strRunAlt = objXmlCharacter.SelectSingleNode("run/@alt")?.InnerText ?? string.Empty;
+            _strWalkAlt = objXmlCharacter.SelectSingleNode("walk/@alt")?.InnerText ?? string.Empty;
+            _strSprintAlt = objXmlCharacter.SelectSingleNode("sprint/@alt")?.InnerText ?? string.Empty;
 
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);

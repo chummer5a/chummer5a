@@ -175,7 +175,7 @@ namespace Chummer.Backend.Equipment
                     string strChildForceSource = string.Empty;
                     string strChildForcePage = string.Empty;
                     string strChildForceValue = string.Empty;
-                    bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == "yes";
+                    bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == bool.TrueString;
                     bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != "no";
                     bool blnAddChildImprovements = blnCreateImprovements;
                     if (objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == "no")

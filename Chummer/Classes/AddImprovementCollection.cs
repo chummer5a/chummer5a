@@ -1721,8 +1721,9 @@ namespace Chummer.Classes
                     intAugMax = ValueToInt(_objCharacter, bonusNode["aug"].InnerXml, _intRating);
 
                 string strUseUnique = _strUnique;
-                if (bonusNode["name"].Attributes["precedence"] != null)
-                    strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
+                XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+                if (xmlPrecedenceNode != null)
+                    strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
                 string strAttribute = bonusNode["name"].InnerText;
 
@@ -2339,8 +2340,9 @@ namespace Chummer.Classes
             Log.Info("skillattribute = " + bonusNode.OuterXml);
 
             string strUseUnique = _strUnique;
-            if (bonusNode["name"].Attributes["precedence"] != null)
-                strUseUnique = "precedence" + bonusNode["name"].Attributes["precedence"].InnerText;
+            XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
+            if (xmlPrecedenceNode != null)
+                strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
 
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
             if (bonusNode.InnerXml.Contains("exclude"))

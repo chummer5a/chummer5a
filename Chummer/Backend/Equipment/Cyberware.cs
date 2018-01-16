@@ -494,23 +494,19 @@ namespace Chummer.Backend.Equipment
                 // Create Gear using whatever information we're given.
                 foreach (XmlNode objXmlChild in xmlGearsNode.SelectNodes("usegear"))
                 {
-                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlChild["name"].InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
+                    XmlNode xmlNameNode = objXmlChild["name"];
+                    XmlAttributeCollection xmlNameAttributes = xmlNameNode.Attributes;
+                    XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlNameNode.InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
                     int intChildRating = 0;
                     decimal decChildQty = 1;
-                    string strChildForceSource = string.Empty;
-                    string strChildForcePage = string.Empty;
-                    string strChildForceValue = string.Empty;
-                    bool blnStartCollapsed = objXmlChild["name"].Attributes?["startcollapsed"]?.InnerText == "yes";
+                    string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
+                    string strChildForcePage = objXmlChild["page"]?.InnerText ?? string.Empty;
+                    string strChildForceValue = xmlNameAttributes["select"]?.InnerText ?? string.Empty;
+                    bool blnStartCollapsed = xmlNameAttributes["startcollapsed"]?.InnerText == bool.TrueString;
                     if (objXmlChild["rating"] != null)
                         intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
-                    if (objXmlChild["name"].Attributes["qty"] != null)
-                        decChildQty = Convert.ToDecimal(objXmlChild["name"].Attributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                    if (objXmlChild["name"].Attributes["select"] != null)
-                        strChildForceValue = objXmlChild["name"].Attributes["select"].InnerText;
-                    if (objXmlChild["source"] != null)
-                        strChildForceSource = objXmlChild["source"].InnerText;
-                    if (objXmlChild["page"] != null)
-                        strChildForcePage = objXmlChild["page"].InnerText;
+                    if (xmlNameAttributes["qty"] != null)
+                        decChildQty = Convert.ToDecimal(xmlNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
                     // Create the new piece of Gear.
                     List<Weapon> objChildWeapons = new List<Weapon>();
 

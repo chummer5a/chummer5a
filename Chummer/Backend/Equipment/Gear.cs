@@ -346,7 +346,7 @@ namespace Chummer.Backend.Equipment
             XmlNode objGearsNode = objXmlGear["gears"];
             if (objGearsNode != null)
             {
-                bool blnStartCollapsed = objGearsNode.Attributes?["startcollapsed"]?.InnerText == "yes";
+                bool blnStartCollapsed = objGearsNode.Attributes?["startcollapsed"]?.InnerText == bool.TrueString;
                 // Create Gear by looking up the name of the item we're provided with.
                 if (objGearsNode.SelectNodes("usegear").Count > 0)
                 {
@@ -2896,7 +2896,7 @@ namespace Chummer.Backend.Equipment
             {
                 TreeNode objChildNode = objChild.CreateTreeNode(cmsGear);
                 objParentNode.Nodes.Add(objChildNode);
-                if (objChild.ParentID != InternalId || (GetNode()?["gears"]?.Attributes?["startcollapsed"]?.InnerText != "yes"))
+                if (objChild.ParentID != InternalId || (GetNode()?.SelectSingleNode("gears/@startcollapsed")?.InnerText != bool.TrueString))
                     blnExpandNode = true;
             }
             if (blnExpandNode)
