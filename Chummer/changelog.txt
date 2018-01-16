@@ -128,6 +128,7 @@ Application Changes:
 - Fixed an issue where the Life Modules root node would not get translated.
 - Added a warning prompt about Life Modules not being fully supported when enabling the relevant option.
 - Fixed an issue where clicking on a cell under the "Browse" tab in the armor selection screen would result in that armor getting added to the character. Fixes #2303.
+- Fixed a bug where restoring essence to a character would also restore lost special attribute values.
 
 Data Changes:
 

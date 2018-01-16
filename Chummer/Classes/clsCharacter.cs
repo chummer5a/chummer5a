@@ -1972,7 +1972,7 @@ namespace Chummer
                     _intMaxKarma = Convert.ToInt32(strKarma);
                     _decMaxNuyen = Convert.ToDecimal(strNuyen);
                     _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                    _intContactPoints = (CHA.Base + CHA.TotalKarma) * _intContactMultiplier;
+                    _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
                 }
             }
 
@@ -5661,7 +5661,7 @@ namespace Chummer
                 return Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
             }
         }
-
+        
         /// <summary>
         /// Character's total Essence Loss penalty for RES or DEP.
         /// </summary>
@@ -5673,7 +5673,7 @@ namespace Chummer
                 return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
-
+        
         /// <summary>
         /// Character's total Essence Loss penalty for MAG.
         /// </summary>
@@ -5686,8 +5686,8 @@ namespace Chummer
             }
         }
 
-#region Initiative
-#region Physical
+        #region Initiative
+        #region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>

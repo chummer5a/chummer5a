@@ -46,7 +46,6 @@ namespace Chummer.Backend.Attributes
         private int _intAugModifier;
         private int _intBase;
         private int _intKarma;
-        private int _intCreateKarma;
         private string _strAbbrev = string.Empty;
         private readonly Character _objCharacter;
 		private AttributeCategory _enumCategory;
@@ -84,7 +83,6 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("metatypeaugmax", _intMetatypeAugMax.ToString());
             objWriter.WriteElementString("base", _intBase.ToString());
             objWriter.WriteElementString("karma", _intKarma.ToString());
-            objWriter.WriteElementString("createkarma", _intCreateKarma.ToString());
             objWriter.WriteElementString("augmodifier", _intAugModifier.ToString());
 			objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
             // External reader friendly stuff.
@@ -123,17 +121,15 @@ namespace Chummer.Backend.Attributes
 					_intKarma = i;
 				}
 			}
-            if (!objNode.TryGetField("createkarma", out _intCreateKarma) && !CharacterObject.Created)
+            // Shim for that one time karma was split into career and create values
+            if (objNode.TryGetField("createkarma", out int intCreateKarma))
             {
-                _intCreateKarma = _intKarma;
-                _intKarma = 0;
+                _intKarma += intCreateKarma;
             }
             if (_intBase < 0)
                 _intBase = 0;
             if (_intKarma < 0)
                 _intKarma = 0;
-            if (_intCreateKarma < 0)
-                _intCreateKarma = 0;
             _enumMetatypeCategory = ConvertToAttributeCategory(objNode["category"]?.InnerText);
 			_enumCategory = ConvertToAttributeCategory(Abbrev);
 	        _enumMetatypeCategory = ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
@@ -298,9 +294,9 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Current karma value of the CharacterAttribute (bought in Career mode).
+        /// Current karma value of the CharacterAttribute.
         /// </summary>
-        public int CareerKarma
+        public int Karma
         {
             get
             {
@@ -311,35 +307,8 @@ namespace Chummer.Backend.Attributes
                 if (value != _intKarma)
                 {
                     _intKarma = value;
-                    OnPropertyChanged(nameof(TotalKarma));
+                    OnPropertyChanged(nameof(Karma));
                 }
-            }
-        }
-
-        /// <summary>
-        /// Current karma value of the CharacterAttribute (bought in Create mode).
-        /// </summary>
-        public int CreateKarma
-        {
-            get
-            {
-                return _intCreateKarma;
-            }
-            set
-            {
-                if (value != _intCreateKarma)
-                {
-                    _intCreateKarma = value;
-                    OnPropertyChanged(nameof(TotalKarma));
-                }
-            }
-        }
-
-        public int TotalKarma
-        {
-            get
-            {
-                return CreateKarma + CareerKarma;
             }
         }
 
@@ -350,7 +319,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                return Math.Min(Math.Max(Base + FreeBase + RawMinimum + CareerKarma + AttributeValueModifiers, TotalMinimum) + CreateKarma, TotalMaximum);
+                return Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
             }
         }
 
@@ -633,8 +602,16 @@ namespace Chummer.Backend.Attributes
             {
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled && objImprovement.Augmented != 0)
-                        return true;
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
+                    {
+                        if (objImprovement.Augmented != 0)
+                            return true;
+                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss) &&
+                            (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                            _objCharacter.RESEnabled && Abbrev == "RES" ||
+                            _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                            return true;
+                    }
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
@@ -647,10 +624,6 @@ namespace Chummer.Backend.Attributes
                     }
                 }
 
-                if ((_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG > 0) || ((_objCharacter.RESEnabled && Abbrev == "RES" || _objCharacter.DEPEnabled && Abbrev == "DEP") && _objCharacter.EssencePenalty > 0))
-                {
-                    return true;
-                }
                 return false;
             }
         }
@@ -665,7 +638,8 @@ namespace Chummer.Backend.Attributes
                 int intModifier = 0;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                        (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
                     {
                         intModifier += objImprovement.Minimum * objImprovement.Rating;
                     }
@@ -750,7 +724,7 @@ namespace Chummer.Backend.Attributes
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, or the Metatype Maximum is 0.
             if (intReturn < 1)
             {
-                if ((_objCharacter.CritterEnabled || Abbrev == "EDG" || _intMetatypeMax == 0 || (Abbrev == "RES" && _objCharacter.EssencePenalty > 0) || ((Abbrev == "MAG" || Abbrev == "MAGAdept") && _objCharacter.EssencePenaltyMAG > 0) || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP")))
+                if (_objCharacter.CritterEnabled || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
                     return 0;
                 else
                     return 1;
@@ -773,22 +747,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                int intReturn = MetatypeMinimum + MinimumModifiers;
-
-                if ((Abbrev != "MAG" && Abbrev != "MAGAdept" && Abbrev != "RES" && Abbrev != "DEP") || _objCharacter.Options.SpecialKarmaCostBasedOnShownValue)
-                    return intReturn;
-
-                int intEssencePenalty = _objCharacter.EssencePenalty;
-                if (Abbrev == "MAG" || Abbrev == "MAGAdept")
-                    intEssencePenalty = _objCharacter.EssencePenaltyMAG;
-                if (intEssencePenalty == 0)
-                    return intReturn;
-
-                if (!_objCharacter.Options.ESSLossReducesMaximumOnly || intEssencePenalty >= TotalMaximum)
-                {
-                    return intReturn - intEssencePenalty;
-                }
-                return intReturn;
+                return MetatypeMinimum + MinimumModifiers;
             }
         }
 
@@ -1192,7 +1151,7 @@ namespace Chummer.Backend.Attributes
                 {
                     // Karma calculation starts from the minimum score + 1 and steps through each up to the current score. At each step, the current number is multplied by the Karma Cost to
                     // give us the cost of at each step.
-                    for (int i = _objCharacter.GetAttribute(Abbrev).TotalMinimum + 1 + intMinModifier; i <= _objCharacter.GetAttribute(Abbrev).Value + intUseEssenceLoss; i++)
+                    for (int i = _objCharacter.GetAttribute(Abbrev).TotalMinimum + 1 + intMinModifier; i <= _objCharacter.GetAttribute(Abbrev).Value + intUseEssenceLoss; ++i)
                         intBP += i * _objCharacter.Options.KarmaAttribute;
                 }
             }
@@ -1232,7 +1191,7 @@ namespace Chummer.Backend.Attributes
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMinimum > 0;
 
         public int KarmaMaximum => TotalMaximum - TotalBase;
-        public int PriorityMaximum => TotalMaximum - TotalKarma - FreeBase - RawMinimum;
+        public int PriorityMaximum => TotalMaximum - Karma - FreeBase - RawMinimum;
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
@@ -1281,7 +1240,7 @@ namespace Chummer.Backend.Attributes
 
         public int TotalKarmaCost()
         {
-            if (TotalKarma == 0)
+            if (Karma == 0)
                 return 0;
 
             int intValue = Value;
@@ -1292,7 +1251,7 @@ namespace Chummer.Backend.Attributes
 
             // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
             // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
-            int intCost = (2 * intTotalBase + TotalKarma + 1) * TotalKarma / 2 * _objCharacter.Options.KarmaAttribute;
+            int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Options.KarmaAttribute;
 
             int intExtra = 0;
             decimal decMultiplier = 1.0m;
@@ -1393,7 +1352,7 @@ namespace Chummer.Backend.Attributes
                     new ReverseTree<string>(nameof(Augmented),
                         new ReverseTree<string>(nameof(TotalValue),
                             new ReverseTree<string>(nameof(AttributeModifiers)),
-                            new ReverseTree<string>(nameof(TotalKarma)),
+                            new ReverseTree<string>(nameof(Karma)),
                             new ReverseTree<string>(nameof(Base)),
                             new ReverseTree<string>(nameof(AugmentedMetatypeLimits),
                                 new ReverseTree<string>(nameof(TotalMinimum)),
@@ -1429,28 +1388,29 @@ namespace Chummer.Backend.Attributes
 
         public void Upgrade()
         {
-            if (!CanUpgradeCareer) return;
+            if (!CanUpgradeCareer)
+                return;
 
-            int price = UpgradeKarmaCost();
-            string upgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {Value} 🡒 {Value + AttributeValueModifiers + 1}";
+            int intPrice = UpgradeKarmaCost();
+            string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {Value} 🡒 {Value + AttributeValueModifiers + 1}";
 
-            ExpenseLogEntry entry = new ExpenseLogEntry(_objCharacter);
-            entry.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
-            entry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
+            ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
+            objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
+            objEntry.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveAttribute, Abbrev);
 
-            _objCharacter.ExpenseEntries.Add(entry);
+            _objCharacter.ExpenseEntries.Add(objEntry);
 
-            CareerKarma += 1;
-            _objCharacter.Karma -= price;
+            Karma += 1;
+            _objCharacter.Karma -= intPrice;
         }
 
         public void Degrade(int intValue)
         {
-            for (int i = intValue; i > 0; i--)
+            for (int i = intValue; i > 0; --i)
             {
-                if (CareerKarma > 0)
+                if (Karma > 0)
                 {
-                    CareerKarma -= 1;
+                    Karma -= 1;
                 }
                 else if (Base > 0)
                 {
@@ -1465,6 +1425,7 @@ namespace Chummer.Backend.Attributes
                     return;
             }
         }
+
         [Obsolete("Refactor this method away once improvementmanager gets outbound events")]
         private void OnImprovementEvent(ICollection<Improvement> improvements)
         {
