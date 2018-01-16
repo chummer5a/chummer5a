@@ -26,6 +26,7 @@ using System.Windows.Forms;
  using Chummer.Annotations;
  using Chummer.Backend.Equipment;
  using Microsoft.Win32;
+using iTextSharp.text.pdf;
 
 namespace Chummer
 {
@@ -47,6 +48,7 @@ namespace Chummer
         string _strCode = string.Empty;
         string _strPath = string.Empty;
         int _intOffset = 0;
+        PdfReader _objPdfReader = null;
 
         #region Properties
         public string Code
@@ -69,7 +71,12 @@ namespace Chummer
             }
             set
             {
-                _strPath = value;
+                if (_strPath != value)
+                {
+                    _strPath = value;
+                    _objPdfReader?.Close();
+                    _objPdfReader = null;
+                }
             }
         }
 
@@ -82,6 +89,22 @@ namespace Chummer
             set
             {
                 _intOffset = value;
+            }
+        }
+
+        public PdfReader CachedPdfReader
+        {
+            get
+            {
+                if (_objPdfReader == null)
+                {
+                    Uri uriPath = new Uri(Path);
+                    if (File.Exists(uriPath.LocalPath))
+                    {
+                        _objPdfReader = new PdfReader(uriPath.LocalPath);
+                    }
+                }
+                return _objPdfReader;
             }
         }
         #endregion

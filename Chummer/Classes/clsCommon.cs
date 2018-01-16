@@ -1362,7 +1362,7 @@ namespace Chummer
             }
 
             StringBuilder strbldReturn = new StringBuilder();
-            PdfReader reader = new PdfReader(uriPath.LocalPath);
+            PdfReader reader = objBookInfo.CachedPdfReader;
             ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
             // Loop through each page, starting at the listed page + offset.
             for (; intPage <= reader.NumberOfPages; ++intPage)
@@ -1425,7 +1425,6 @@ namespace Chummer
                 }
             }
             EndPdfReading:
-            reader.Close();
             return strbldReturn.ToString().NormalizeWhiteSpace();
         }
         #endregion
