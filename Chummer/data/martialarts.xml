@@ -1607,7 +1607,7 @@
     <martialart>
       <id>0325b2c8-0a48-497f-92b1-2830a5ac467f</id>
       <name>One Trick Pony</name>
-      <quality>yes</quality>
+      <isquality>True</isquality>
       <alltechniques />
       <source>RG</source>
       <page>127</page>

@@ -159,8 +159,7 @@ namespace Chummer
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectAble = (node != null &&
-                                 (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
+                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>")));
             }
 
             _selectedId = (string)e.Node.Tag;

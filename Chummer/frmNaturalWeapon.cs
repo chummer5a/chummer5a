@@ -157,7 +157,7 @@ namespace Chummer
                 RC = "0",
                 Concealability = 0,
                 Avail = "0",
-                Cost = 0,
+                Cost = "0",
                 UseSkill = cboSkill.SelectedValue.ToString(),
                 Source = objPower["source"].InnerText,
                 Page = objPower["page"].InnerText

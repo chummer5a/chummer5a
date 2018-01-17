@@ -7979,7 +7979,7 @@ namespace Chummer
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 
                 frmPickWeaponAccessory.CurrentWeaponName = objWeapon.Name;
-                frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+                frmPickWeaponAccessory.WeaponCost = objWeapon.OwnCost;
                 frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
                 frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
                 frmPickWeaponAccessory.ShowDialog();
@@ -8751,7 +8751,7 @@ namespace Chummer
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 
                 frmPickWeaponAccessory.CurrentWeaponName = objWeapon.Name;
-                frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+                frmPickWeaponAccessory.WeaponCost = objWeapon.OwnCost;
                 frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
                 frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
                 frmPickWeaponAccessory.ShowDialog();

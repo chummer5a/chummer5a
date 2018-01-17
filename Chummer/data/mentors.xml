@@ -244,7 +244,7 @@
               <bonusoverride>
                 <selectskill minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                   <skillcategories>
                     <category>Physical Active</category>
                     <category>Social Active</category>
@@ -425,7 +425,7 @@
               <bonusoverride>
                 <selectskill skillcategory="Physical Active" minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                 </selectskill>
               </bonusoverride>
             </specificpower>
@@ -465,7 +465,7 @@
               <bonusoverride>
                 <selectskill skillgroup="Acting,Influence" minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                 </selectskill>
               </bonusoverride>
             </specificpower>
@@ -612,7 +612,7 @@
               <bonusoverride>
                 <selectskill skillcategory="Combat Active" minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                 </selectskill>
               </bonusoverride>
             </specificpower>
@@ -1976,7 +1976,7 @@
       <bonus>
         <selectskill knowledgeskills="True">
           <val>4</val>
-          <applytorating>yes</applytorating>
+          <applytorating>True</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -2018,7 +2018,7 @@
       <bonus>
         <selectskill knowledgeskills="True" limittoskill="Anatomy,Disease,Infected,Undead">
           <val>4</val>
-          <applytorating>yes</applytorating>
+          <applytorating>True</applytorating>
         </selectskill>
       </bonus>
       <choices>
@@ -2600,7 +2600,7 @@
                   limittoskill="Artisan,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic"
                   minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                 </selectskill>
               </bonusoverride>
             </specificpower>
@@ -2725,7 +2725,7 @@
                 <selectskill limittoskill="Con,Impersonation,Performance,Etiquette,Leadership,Negotiation"
                              minimumrating="1">
                   <val>Rating</val>
-                  <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+                  <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
                 </selectskill>
               </bonusoverride>
             </specificpower>

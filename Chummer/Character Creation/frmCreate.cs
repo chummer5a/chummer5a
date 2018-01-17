@@ -3933,7 +3933,7 @@ namespace Chummer
 
             if (frmPickWeapon.FreeCost)
             {
-                objWeapon.Cost = 0;
+                objWeapon.Cost = "0";
             }
             CharacterObject.Weapons.Add(objWeapon);
 
@@ -6159,7 +6159,7 @@ namespace Chummer
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 
                 frmPickWeaponAccessory.CurrentWeaponName = objWeapon.Name;
-                frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+                frmPickWeaponAccessory.WeaponCost = objWeapon.OwnCost;
                 frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
                 frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
                 frmPickWeaponAccessory.ShowDialog();
@@ -6552,7 +6552,7 @@ namespace Chummer
 
                 if (frmPickWeapon.FreeCost)
                 {
-                    objWeapon.Cost = 0;
+                    objWeapon.Cost = "0";
                 }
 
                 if (objMod != null)
@@ -6627,7 +6627,7 @@ namespace Chummer
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
 
                 frmPickWeaponAccessory.CurrentWeaponName = objWeapon.Name;
-                frmPickWeaponAccessory.WeaponCost = objWeapon.Cost;
+                frmPickWeaponAccessory.WeaponCost = objWeapon.OwnCost;
                 frmPickWeaponAccessory.AccessoryMultiplier = objWeapon.AccessoryMultiplier;
                 frmPickWeaponAccessory.InstalledAccessories = objWeapon.WeaponAccessories;
                 frmPickWeaponAccessory.ShowDialog();
@@ -6707,7 +6707,7 @@ namespace Chummer
 
             if (frmPickWeapon.FreeCost)
             {
-                objWeapon.Cost = 0;
+                objWeapon.Cost = "0";
             }
             
             objWeapon.Parent = objSelectedWeapon;
@@ -7201,7 +7201,7 @@ namespace Chummer
 
             if (frmPickWeapon.FreeCost)
             {
-                objWeapon.Cost = 0;
+                objWeapon.Cost = "0";
             }
 
             objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
@@ -16467,7 +16467,7 @@ namespace Chummer
             {
                 int metageneticPositiveQualities = 0;
                 int metageneticNegativeQualities = 0;
-                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic == "yes" && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
+                foreach (Quality objQuality in CharacterObject.Qualities.Where(objQuality => objQuality.Metagenetic && objQuality.OriginSource.ToString() != QualitySource.Metatype.ToString()))
                 {
                     if (objQuality.Type == QualityType.Positive)
                     {

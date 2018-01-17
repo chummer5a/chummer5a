@@ -49,7 +49,7 @@
 <!--    <weapon>
       <id>747c2843-717f-4192-bad9-df21ffd4083b</id>
       <name>Shock Frills</name>
-      <hide>yes</hide>
+      <hide />
       <category>Unarmed</category>
       <type>Melee</type>
       <conceal>0</conceal>

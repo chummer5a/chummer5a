@@ -389,7 +389,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
                 if (strCategory == "Toxic Critter Powers")
-                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"yes\")";
+                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"True\")";
                 else
                     strFilter += " and category = \"" + strCategory + "\"";
             }
@@ -404,7 +404,7 @@ namespace Chummer
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
                         if (strItem == "Toxic Critter Powers")
                         {
-                            objCategoryFilter.Append("toxic = \"yes\" or ");
+                            objCategoryFilter.Append("toxic = \"True\" or ");
                             blnHasToxic = true;
                         }
                     }
@@ -414,7 +414,7 @@ namespace Chummer
                     strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
                 }
                 if (!blnHasToxic)
-                    strFilter += " and (not(toxic) or toxic != \"yes\")";
+                    strFilter += " and (not(toxic) or toxic != \"True\")";
             }
             foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]"))
             {

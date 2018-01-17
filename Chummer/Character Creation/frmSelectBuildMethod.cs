@@ -75,7 +75,7 @@ namespace Chummer
             foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
             {
                 string strName = objXmlGameplayOption["name"].InnerText;
-                if (objXmlGameplayOption["default"]?.InnerText == "yes")
+                if (objXmlGameplayOption["default"]?.InnerText == bool.TrueString)
                     _strDefaultOption = strName;
                 lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
             }

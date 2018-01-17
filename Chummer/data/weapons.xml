@@ -1097,7 +1097,7 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>458</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -1139,7 +1139,7 @@
       <cost>0</cost>
       <source>CF</source>
       <page>86</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -1275,7 +1275,7 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>458</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -2968,7 +2968,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
     </weapon>
     <weapon>
@@ -3267,7 +3267,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -3435,7 +3435,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -4196,7 +4196,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -4412,7 +4412,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Semi-Automatics</spec>
     </weapon>
@@ -4889,7 +4889,7 @@
       </accessories>
       <allowaccessory>False</allowaccessory>
       <alternaterange>Shotguns (flechette)</alternaterange>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
     </weapon>
     <weapon>
@@ -6425,7 +6425,7 @@
         </accessory>
       </accessories>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
     </weapon>
     <weapon>
@@ -6840,7 +6840,7 @@
       <cost>0</cost>
       <source>SR5</source>
       <page>458</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -7359,7 +7359,7 @@
       <source>CF</source>
       <page>92</page>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <useskill>Exotic Melee Weapon</useskill>
     </weapon>
@@ -7381,7 +7381,7 @@
       <source>CF</source>
       <page>91</page>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
@@ -7404,7 +7404,7 @@
       <source>CF</source>
       <page>91</page>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <useskill>Unarmed Combat</useskill>
     </weapon>
@@ -7426,7 +7426,7 @@
       <source>CF</source>
       <page>91</page>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <useskill>Unarmed Combat</useskill>
     </weapon>
@@ -7448,7 +7448,7 @@
       <source>CF</source>
       <page>91</page>
       <allowaccessory>False</allowaccessory>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <useskill>Unarmed Combat</useskill>
     </weapon>
@@ -7791,7 +7791,7 @@
       <cost>0</cost>
       <source>HT</source>
       <page>185</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -7813,7 +7813,7 @@
       <cost>0</cost>
       <source>HT</source>
       <page>185</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -7835,7 +7835,7 @@
       <cost>0</cost>
       <source>HT</source>
       <page>185</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -7857,7 +7857,7 @@
       <cost>0</cost>
       <source>HT</source>
       <page>185</page>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
@@ -8925,7 +8925,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -8947,7 +8947,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -8969,7 +8969,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -8991,7 +8991,7 @@
       <ammo>0</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <useskill>Unarmed Combat</useskill>
       <source>2050</source>
       <page>203</page>
@@ -9013,7 +9013,7 @@
       <ammo>2(m)/6(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
@@ -9035,7 +9035,7 @@
       <ammo>10(m)/15(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
@@ -9057,7 +9057,7 @@
       <ammo>18(m)/32(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
@@ -9079,7 +9079,7 @@
       <ammo>8(m)/12(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
@@ -9101,7 +9101,7 @@
       <ammo>18(m)/32(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>
@@ -9123,7 +9123,7 @@
       <ammo>4(m)/10(c)</ammo>
       <avail>0</avail>
       <cost>0</cost>
-      <cyberware>yes</cyberware>
+      <cyberware>True</cyberware>
       <allowaccessory>False</allowaccessory>
       <source>2050</source>
       <page>204</page>

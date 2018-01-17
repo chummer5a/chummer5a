@@ -170,7 +170,7 @@ namespace Chummer
                                             strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
                                     }
                                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-                                    XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"yes\"]");
+                                    XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
                                     foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
@@ -547,7 +547,7 @@ namespace Chummer
                 }
             }
             // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
-            foreach (XmlNode objExtraId in objAmendingNode.SelectNodes("child::*[@isidnode = \"yes\"]"))
+            foreach (XmlNode objExtraId in objAmendingNode.SelectNodes("child::*[@isidnode = \"True\"]"))
             {
                 if (!string.IsNullOrEmpty(strFilter))
                     strFilter += " and ";

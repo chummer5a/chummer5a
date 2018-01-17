@@ -375,7 +375,7 @@ namespace Chummer.Backend.Skills
             _strName = n["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
             AttributeObject = CharacterObject.GetAttribute(n["attribute"]?.InnerText);
             _strCategory = n["category"]?.InnerText ?? string.Empty;
-            Default = n["default"]?.InnerText.ToLower() == "yes";
+            Default = n["default"]?.InnerText == bool.TrueString;
             Source = n["source"]?.InnerText;
             Page = n["page"]?.InnerText;
             if (n["id"] != null)

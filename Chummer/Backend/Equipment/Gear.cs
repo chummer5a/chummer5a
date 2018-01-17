@@ -276,7 +276,7 @@ namespace Chummer.Backend.Equipment
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                     
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
                     objGearWeapon.ParentID = InternalId;
                     lstWeapons.Add(objGearWeapon);
 
@@ -399,7 +399,7 @@ namespace Chummer.Backend.Equipment
 
                         if (lstGears.Count <= 0)
                         {
-                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                             {
                                 blnCancelledDialog = true;
                                 break;
@@ -423,7 +423,7 @@ namespace Chummer.Backend.Equipment
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.DialogResult == DialogResult.Cancel)
                         {
-                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                             {
                                 blnCancelledDialog = true;
                                 break;
@@ -436,7 +436,7 @@ namespace Chummer.Backend.Equipment
 
                         if (objXmlChosenGear == null)
                         {
-                            if (objXmlChooseGearNode["required"]?.InnerText == "yes")
+                            if (objXmlChooseGearNode["required"]?.InnerText == bool.TrueString)
                             {
                                 blnCancelledDialog = true;
                                 break;
@@ -470,10 +470,8 @@ namespace Chummer.Backend.Equipment
             string strChildForceSource = string.Empty;
             string strChildForcePage = string.Empty;
             string strChildForceValue = string.Empty;
-            bool blnCreateChildren = objXmlChildNameAttributes["createchildren"]?.InnerText != "no";
-            bool blnAddChildImprovements = blnAddImprovements;
-            if (objXmlChildNameAttributes["addimprovements"]?.InnerText == "no")
-                blnAddChildImprovements = false;
+            bool blnCreateChildren = objXmlChildNameAttributes["createchildren"]?.InnerText != bool.FalseString;
+            bool blnAddChildImprovements = objXmlChildNameAttributes["addimprovements"]?.InnerText == bool.FalseString ? false : blnAddImprovements;
             if (objXmlChild["rating"] != null)
                 intChildRating = Convert.ToInt32(objXmlChild["rating"].InnerText);
             if (objXmlChildNameAttributes["qty"] != null)

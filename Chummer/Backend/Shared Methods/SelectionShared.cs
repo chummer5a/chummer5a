@@ -98,10 +98,10 @@ namespace Chummer.Backend
                             xmlNode.Name == "bioware")
                             strLimitString = "1";
                         else
-                            strLimitString = "no";
+                            strLimitString = bool.FalseString;
                     }
                 }
-                if (strLimitString != "no")
+                if (strLimitString != bool.FalseString)
                 {
                     StringBuilder objLimitString = new StringBuilder(strLimitString);
                     foreach (string strAttribute in AttributeSection.AttributeStrings)

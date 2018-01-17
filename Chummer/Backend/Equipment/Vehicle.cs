@@ -389,7 +389,6 @@ namespace Chummer.Backend.Equipment
                         objWeapon.ParentVehicle = this;
                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
                         objWeapon.ParentID = InternalId;
-                        objWeapon.Cost = 0;
 
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)

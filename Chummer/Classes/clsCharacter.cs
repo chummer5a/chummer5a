@@ -4119,7 +4119,7 @@ namespace Chummer
                     objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {

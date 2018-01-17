@@ -195,7 +195,7 @@ namespace Chummer.Backend.Equipment
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                     
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost);
                     objGearWeapon.ParentID = InternalId;
                     lstWeapons.Add(objGearWeapon);
 

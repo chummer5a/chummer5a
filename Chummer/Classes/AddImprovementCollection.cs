@@ -426,7 +426,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
 
             SelectedValue = frmPickSkill.SelectedSkill;
             if (_blnConcatSelectedValue)
@@ -613,7 +613,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
 
             SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
 
@@ -2195,7 +2195,7 @@ namespace Chummer.Classes
         {
             Log.Info("specificskill");
             Log.Info("specificskill = " + bonusNode.OuterXml);
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
 
             string strUseUnique = _strUnique;
@@ -2291,7 +2291,7 @@ namespace Chummer.Classes
             Log.Info("skillcategory");
             Log.Info("skillcategory = " + bonusNode.OuterXml);
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
             if (bonusNode.InnerXml.Contains("exclude"))
             {
                 Log.Info("Calling CreateImprovement - exclude");
@@ -2316,7 +2316,7 @@ namespace Chummer.Classes
             Log.Info("skillgroup");
             Log.Info("skillgroup = " + bonusNode.OuterXml);
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
             if (bonusNode.InnerXml.Contains("exclude"))
             {
                 Log.Info("Calling CreateImprovement - exclude");
@@ -2343,8 +2343,8 @@ namespace Chummer.Classes
             XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.InnerText;
-
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == "yes";
+            
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
             if (bonusNode.InnerXml.Contains("exclude"))
             {
                 Log.Info("Calling CreateImprovement - exclude");
@@ -4603,7 +4603,7 @@ namespace Chummer.Classes
             else
             {
                 List <ListItem> lstWeapons = new List<ListItem>();
-                bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"] != null && bonusNode.Attributes["includeunarmed"].InnerText != "no";
+                bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
                 string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
                 foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                 {

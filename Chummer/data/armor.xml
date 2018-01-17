@@ -3338,7 +3338,7 @@
       <name>Custom Fit</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3351,7 +3351,7 @@
       <name>Custom Fit (Stack)</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3367,7 +3367,7 @@
       <name>Gear Access</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3380,7 +3380,7 @@
       <name>Newest Model</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3405,7 +3405,7 @@
       <name>Restrictive</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3418,7 +3418,7 @@
       <name>Padded</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>
@@ -3431,7 +3431,7 @@
       <name>Concealability</name>
       <category>General</category>
       <armor>0</armor>
-      <hide>yes</hide>
+      <hide />
       <maxrating>0</maxrating>
       <armorcapacity>[0]</armorcapacity>
       <avail>0</avail>

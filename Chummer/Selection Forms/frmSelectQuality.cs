@@ -378,11 +378,11 @@ namespace Chummer
             }
             if (chkMetagenetic.Checked)
             {
-                strFilter.Append(" and (metagenetic = 'yes' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
             else if (chkNotMetagenetic.Checked)
             {
-                strFilter.Append(" and not(metagenetic = 'yes') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {

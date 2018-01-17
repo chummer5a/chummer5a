@@ -92,11 +92,11 @@ namespace Chummer
     {
         private Guid _guiID;
         private string _strName = string.Empty;
-        private string _strMetagenetic = string.Empty;
+        private bool _blnMetagenetic = false;
         private string _strExtra = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
-        private string _strMutant = string.Empty;
+        private bool _blnMutant = false;
         private string _strNotes = string.Empty;
         private bool _blnImplemented = true;
         private bool _blnContributeToLimit = true;
@@ -191,7 +191,7 @@ namespace Chummer
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlQuality.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
+            objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
             objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
             XmlNode objKarmaNode = objXmlQuality["karma"];
@@ -239,8 +239,7 @@ namespace Chummer
             objXmlQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objXmlQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlQuality.TryGetStringFieldQuickly("page", ref _strPage);
-            if (objXmlQuality["mutant"] != null)
-                _strMutant = "yes";
+            _blnMutant = objXmlQuality["mutant"] != null;
 
             if (_eQualityType == QualityType.LifeModule)
             {
@@ -299,7 +298,7 @@ namespace Chummer
                     objWeapon.RC = "0";
                     objWeapon.Concealability = 0;
                     objWeapon.Avail = "0";
-                    objWeapon.Cost = 0;
+                    objWeapon.Cost = "0";
                     if (objXmlNaturalWeapon["useskill"] != null)
                         objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
                     if (objXmlNaturalWeapon["source"] != null)
@@ -366,15 +365,11 @@ namespace Chummer
             objWriter.WriteElementString("contributetolimit", _blnContributeToLimit.ToString());
             objWriter.WriteElementString("doublecareer", _blnDoubleCostCareer.ToString());
             objWriter.WriteElementString("canbuywithspellpoints", _blnCanBuyWithSpellPoints.ToString());
-            if (_strMetagenetic != null)
-            {
-                objWriter.WriteElementString("metagenetic", _strMetagenetic);
-            }
+            objWriter.WriteElementString("metagenetic", _blnMetagenetic.ToString());
             objWriter.WriteElementString("print", _blnPrint.ToString());
             objWriter.WriteElementString("qualitytype", _eQualityType.ToString());
             objWriter.WriteElementString("qualitysource", _eQualitySource.ToString());
-            if (!string.IsNullOrEmpty(_strMutant))
-                objWriter.WriteElementString("mutant", _strMutant);
+            objWriter.WriteElementString("mutant", _blnMutant.ToString());
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("sourcename", _strSourceName);
@@ -422,8 +417,15 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("canbuywithspellpoints", ref _blnCanBuyWithSpellPoints);
             _eQualityType = ConvertToQualityType(objNode["qualitytype"]?.InnerText);
             _eQualitySource = ConvertToQualitySource(objNode["qualitysource"]?.InnerText);
-            objNode.TryGetStringFieldQuickly("metagenetic", ref _strMetagenetic);
-            objNode.TryGetStringFieldQuickly("mutant", ref _strMutant);
+            string strTemp = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("metagenetic", ref strTemp))
+            {
+                _blnMetagenetic = strTemp == bool.TrueString || strTemp == "yes";
+            }
+            if (objNode.TryGetStringFieldQuickly("mutant", ref strTemp))
+            {
+                _blnMutant = strTemp == bool.TrueString || strTemp == "yes";
+            }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
@@ -516,7 +518,8 @@ namespace Chummer
         /// <summary>
         /// Does the quality come from being a Changeling?
         /// </summary>
-        public string Metagenetic => _strMetagenetic;
+        public bool Metagenetic => _blnMetagenetic;
+
         /// <summary>
         /// Extra information that should be applied to the name, like a linked CharacterAttribute.
         /// </summary>
@@ -716,7 +719,7 @@ namespace Chummer
                     return false;
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
+                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
@@ -739,7 +742,7 @@ namespace Chummer
                     return false;
 
                 // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (_strMetagenetic == "yes" && _objCharacter.MetageneticLimit > 0)
+                if (Metagenetic && _objCharacter.MetageneticLimit > 0)
                     return false;
 
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
@@ -838,7 +841,7 @@ namespace Chummer
             reason = QualityFailureReason.Allowed;
             //If limit are not present or no, check if same quality exists
             string strTemp = string.Empty;
-            if (!(objXmlQuality.TryGetStringFieldQuickly("limit", ref strTemp) && strTemp == "no"))
+            if (!(objXmlQuality.TryGetStringFieldQuickly("limit", ref strTemp) && strTemp == bool.FalseString))
             {
                 foreach (Quality objQuality in objCharacter.Qualities)
                 {
@@ -1668,7 +1671,7 @@ namespace Chummer
                     objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -4044,7 +4047,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram ? bool.TrueString : bool.FalseString);
+            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram.ToString());
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -6139,7 +6142,7 @@ namespace Chummer
                     objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {

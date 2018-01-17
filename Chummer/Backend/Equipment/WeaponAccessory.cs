@@ -172,24 +172,16 @@ namespace Chummer.Backend.Equipment
                     XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
                     int intGearRating = 0;
                     decimal decGearQty = 1;
-                    string strChildForceSource = string.Empty;
-                    string strChildForcePage = string.Empty;
-                    string strChildForceValue = string.Empty;
+                    string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                    string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                    string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
                     bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == bool.TrueString;
-                    bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != "no";
-                    bool blnAddChildImprovements = blnCreateImprovements;
-                    if (objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == "no")
-                        blnAddChildImprovements = false;
+                    bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                    bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == bool.FalseString ? false : blnCreateImprovements;
                     if (objXmlAccessoryGear["rating"] != null)
                         intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
                     if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                         decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                    if (objXmlAccessoryGearNameAttributes?["select"] != null)
-                        strChildForceValue = objXmlAccessoryGearNameAttributes["select"].InnerText;
-                    if (objXmlAccessoryGear["source"] != null)
-                        strChildForceSource = objXmlAccessoryGear["source"].InnerText;
-                    if (objXmlAccessoryGear["page"] != null)
-                        strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);

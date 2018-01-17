@@ -174,9 +174,9 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 if (_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[magician = 'yes' and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[magician = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
                 else if (!_objCharacter.MagicianEnabled && _objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[adept = 'yes' and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[adept = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
                 else
                     objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
             }

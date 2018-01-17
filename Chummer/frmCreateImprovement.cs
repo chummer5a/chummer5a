@@ -359,7 +359,7 @@ namespace Chummer
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
-                strRating = "<applytorating>yes</applytorating>";
+                strRating = "<applytorating>True</applytorating>";
 
             // Retrieve the XML data from the document and replace the values as necessary.
             // ReSharper disable once PossibleNullReferenceException

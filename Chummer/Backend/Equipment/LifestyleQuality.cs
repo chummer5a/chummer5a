@@ -120,10 +120,8 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyleQuality["category"] != null)
                 _objLifestyleQualityType = ConvertToLifestyleQualityType(objXmlLifestyleQuality["category"].InnerText);
             _objLifestyleQualitySource = objLifestyleQualitySource;
-            if (objXmlLifestyleQuality["print"]?.InnerText == "no")
-                _blnPrint = false;
-            if (objXmlLifestyleQuality["contributetolimit"]?.InnerText == "no")
-                _blnContributeToLimit = false;
+            objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
+            objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);

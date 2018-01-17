@@ -1150,7 +1150,7 @@ namespace Chummer
                         RC = "0",
                         Concealability = 0,
                         Avail = "0",
-                        Cost = 0,
+                        Cost = "0",
                         UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
                         Source = objXmlNaturalWeapon["source"].InnerText,
                         Page = objXmlNaturalWeapon["page"].InnerText

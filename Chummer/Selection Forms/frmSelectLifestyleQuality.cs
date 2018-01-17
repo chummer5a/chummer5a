@@ -441,13 +441,7 @@ namespace Chummer
                 return true;
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
-            bool blnAllowMultiple = false;
-            if (objXmlQuality["limit"] != null)
-            {
-                if (objXmlQuality["limit"].InnerText == "no")
-                    blnAllowMultiple = true;
-            }
-            if (!blnAllowMultiple)
+            if (objXmlQuality["limit"]?.InnerText != bool.FalseString)
             {
                 // Multiples aren't allowed, so make sure the character does not already have it.
                 foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
@@ -541,14 +535,11 @@ namespace Chummer
                                 foreach (Quality objQuality in _objCharacter.Qualities)
                                 {
                                     XmlNode objXmlCheck = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-                                    if (objXmlCheck["metagenetic"] != null)
+                                    if (objXmlCheck["metagenetic"]?.InnerText.ToLower() == bool.TrueString)
                                     {
-                                        if (objXmlCheck["metagenetic"].InnerText.ToLower() == "yes")
-                                        {
-                                            blnRequirementForbidden = true;
-                                            strForbidden += "\n\t" + objQuality.DisplayName(GlobalOptions.Language);
-                                            break;
-                                        }
+                                        blnRequirementForbidden = true;
+                                        strForbidden += "\n\t" + objQuality.DisplayName(GlobalOptions.Language);
+                                        break;
                                     }
                                 }
                                 break;
