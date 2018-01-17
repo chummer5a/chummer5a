@@ -16,6 +16,7 @@ Application Changes:
 - Fixed a crash that occurred when trying to add qualities to an advanced lifestyle.
 - Fixed various bugs related the adding gear that comes with vehicles. Fixes #2328.
 - Fixed a bug where characters who had Burnout's Way were locked out of taking 'ware at any grade other than Standard (Burnout's Way).
+- Fixed an issue where the Updater would delete "old" files in the current Chummer5a directory that are not normally a part of Chummer5a. Fixes #2331.
 
 Data Changes:
 
