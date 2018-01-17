@@ -18021,28 +18021,35 @@ namespace Chummer
             int intOldMAGAdeptValue = CharacterObject.MAGAdept.Value;
             // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
-            // Attribute values without any essence loss modifiers gained in career mode. These are used to determine if any karma needs to get burned.
+
+            // Attribute values without any essence loss modifiers. These are used to determine if any karma needs to get burned.
             int intRESValueNoCareerReduction = CharacterObject.RES.Value;
             int intDEPValueNoCareerReduction = CharacterObject.DEP.Value;
             int intMAGValueNoCareerReduction = CharacterObject.MAG.Value;
             int intMAGAdeptValueNoCareerReduction = CharacterObject.MAGAdept.Value;
+            // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
+            int intRESMaximumReduction = intReduction + intRESValueNoCareerReduction - CharacterObject.RES.ValueNoEssenceLoss;
+            int intDEPMaximumReduction = intReduction + intDEPValueNoCareerReduction - CharacterObject.DEP.ValueNoEssenceLoss;
+            int intMAGMaximumReduction = intMagReduction + intMAGValueNoCareerReduction - CharacterObject.MAG.ValueNoEssenceLoss;
+            int intMAGAdeptMaximumReduction = intMagReduction + intMAGAdeptValueNoCareerReduction - CharacterObject.MAGAdept.ValueNoEssenceLoss;
 
-            // Create the Essence Loss Improvements.
-            if (intReduction > 0)
+            // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
+            if (intReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)
             {
                 if (CharacterObject.Options.SpecialKarmaCostBasedOnShownValue)
                 {
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
                     ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
                     ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
                 }
                 else
                 {
-                    int intRESMinimumReduction = intReduction;
-                    int intDEPMinimumReduction = intReduction;
+                    int intRESMinimumReduction = intRESMaximumReduction;
+                    int intDEPMinimumReduction = intDEPMaximumReduction;
                     if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
                     {
-                        intRESMinimumReduction = Math.Max(0, intReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
-                        intDEPMinimumReduction = Math.Max(0, intReduction + CharacterObject.DEP.TotalValue - CharacterObject.DEP.TotalMaximum);
+                        intRESMinimumReduction = Math.Max(0, intRESMinimumReduction + CharacterObject.RES.TotalValue - CharacterObject.RES.TotalMaximum);
+                        intDEPMinimumReduction = Math.Max(0, intDEPMinimumReduction + CharacterObject.DEP.TotalValue - CharacterObject.DEP.TotalMaximum);
                     }
                     // If our new reduction is less than our old one, we don't actually get any new values back
                     intRESMinimumReduction = Math.Max(intRESMinimumReduction, intRESValueNoCareerReduction - intOldRESValue);
@@ -18055,40 +18062,40 @@ namespace Chummer
                     CharacterObject.DEP.Karma -= intExtraDEPBurn;
                     intDEPMinimumReduction -= intExtraDEPBurn;
                     // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intRESMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intDEPMaximumReduction);
                 }
             }
-            if (intMagReduction > 0)
+            if (intMagReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
             {
                 if (CharacterObject.Options.SpecialKarmaCostBasedOnShownValue)
                 {
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
                 }
                 else
                 {
-                    int intMAGMinimumReduction = intMagReduction;
-                    int intMAGAdeptMinimumReduction = intMagReduction;
+                    int intMAGMinimumReduction = intMAGMaximumReduction;
+                    int intMAGAdeptMinimumReduction = intMAGAdeptMaximumReduction;
                     if (CharacterObjectOptions.ESSLossReducesMaximumOnly)
                     {
-                        intMAGMinimumReduction = Math.Max(0, intMagReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
-                        intMAGAdeptMinimumReduction = Math.Max(0, intMagReduction + CharacterObject.MAGAdept.TotalValue - CharacterObject.MAGAdept.TotalMaximum);
+                        intMAGMinimumReduction = Math.Max(0, intMAGMinimumReduction + CharacterObject.MAG.TotalValue - CharacterObject.MAG.TotalMaximum);
+                        intMAGAdeptMinimumReduction = Math.Max(0, intMAGAdeptMinimumReduction + CharacterObject.MAGAdept.TotalValue - CharacterObject.MAGAdept.TotalMaximum);
                     }
                     // If our new reduction is less than our old one, we don't actually get any new values back
                     intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intMAGValueNoCareerReduction - intOldMAGValue);
                     intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intMAGAdeptValueNoCareerReduction - intOldMAGAdeptValue);
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    int intMAGMinimumChange = Math.Max(0, intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction);
-                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGMinimumReduction);
+                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
-                    int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, Math.Max(0, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction));
+                    int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
                     CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
                     intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
                     // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMagReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMagReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
                 }
             }
 

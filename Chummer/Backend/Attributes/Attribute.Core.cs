@@ -324,6 +324,51 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Current value of the CharacterAttribute before modifiers are applied.
+        /// </summary>
+        public int ValueNoEssenceLoss
+        {
+            get
+            {
+                int intRawMinimum = MetatypeMinimum;
+                int intRawMaximum = MetatypeMaximum;
+                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute &&
+                        (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") &&
+                        objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen &&
+                        objImprovement.Enabled)
+                    {
+                        intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
+                        intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
+                    }
+                }
+                int intTotalMinimum = intRawMinimum;
+                int intTotalMaximum = intRawMaximum;
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                {
+                    intTotalMinimum = 1;
+                    intTotalMaximum = 1;
+                }
+                else
+                {
+                    if (intTotalMinimum < 1)
+                    {
+                        if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                            intTotalMinimum = 0;
+                        else
+                            intTotalMinimum = 1;
+                    }
+                    if (intTotalMaximum < intTotalMinimum)
+                        intTotalMaximum = intTotalMinimum;
+                }
+                
+                return Math.Min(Math.Max(Base + FreeBase + intRawMinimum + AttributeValueModifiers, intTotalMinimum) + Karma, intTotalMaximum);
+            }
+        }
+
+        /// <summary>
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
         public string DisplayValue
