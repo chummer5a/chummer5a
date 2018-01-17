@@ -227,7 +227,7 @@ namespace Chummer
             if (xmlOperationNode == null)
                 return false;
             
-            foreach (XmlNode xmlOperationChildNode in xmlOperationNode.ChildNodes)
+            foreach (XmlNode xmlOperationChildNode in xmlOperationNode.SelectNodes("*"))
             {
                 XmlAttributeCollection xmlOperationChildNodeAttributes = xmlOperationChildNode.Attributes;
                 bool blnInvert = xmlOperationChildNodeAttributes?["NOT"] != null;
@@ -266,9 +266,9 @@ namespace Chummer
                         foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
                         {
                             bool boolSubNodeResult = blnInvert;
-                            if (objXmlTargetNode.HasChildNodes)
+                            if (objXmlTargetNode.SelectSingleNode("*") != null)
                             {
-                                if (xmlOperationChildNode.HasChildNodes)
+                                if (xmlOperationChildNode.SelectSingleNode("*") != null)
                                     boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode, xmlOperationChildNode, xmlOperationChildNodeAttributes?["OR"] != null) != blnInvert;
                             }
                             else
