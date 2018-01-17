@@ -170,11 +170,10 @@ namespace Chummer
                 cmdOK.Enabled = blnSelectAble;
                 cmdOKAdd.Enabled = blnSelectAble;
 
-                lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : string.Empty;
-                lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : string.Empty) +
-                                    " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : string.Empty);
+                lblBP.Text = selectedNodeInfo["karma"]?.InnerText ?? string.Empty;
+                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + ' ' + selectedNodeInfo["page"]?.InnerText ?? string.Empty;
 
-                lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : string.Empty;
+                lblStage.Text = selectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
@@ -312,8 +311,7 @@ namespace Chummer
 
         private string GetSelectString()
         {
-            string working = "[";
-            bool before = false;
+            string working = "[(" + _objCharacter.Options.BookXPath();
 
             ///chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             /// /chummer/modules/module//name[contains(., "can")]/..[id]
@@ -325,22 +323,9 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                working += string.Format("{0}stage = \"{1}\"", before ? " and " : string.Empty, _strWorkStage);
-                before = true;
+                working += ") and stage = \"" + _strWorkStage + '\"';
             }
-            if (before)
-            {
-                working += " and (";
-            }
-            working += _objCharacter.Options.BookXPath();
-            if (before)
-            {
-                working += ")]";
-            }
-            else
-            {
-                working += "]";
-            }
+            working += ")]";
 
 
             return working;

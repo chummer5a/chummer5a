@@ -203,7 +203,7 @@ namespace Chummer.Backend.Equipment
 
                     // Change the Capacity of the child if necessary.
                     if (objXmlAccessoryGear["capacity"] != null)
-                        objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
+                        objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                 }
             }
         }
@@ -215,7 +215,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("accessory");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
@@ -373,7 +373,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 

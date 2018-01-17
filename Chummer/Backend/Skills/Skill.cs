@@ -57,8 +57,8 @@ namespace Chummer.Backend.Skills
         public void WriteTo(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString());
-            objWriter.WriteElementString("suid", SkillId.ToString());
+            objWriter.WriteElementString("guid", Id.ToString("D"));
+            objWriter.WriteElementString("suid", SkillId.ToString("D"));
             objWriter.WriteElementString("isknowledge", IsKnowledgeSkill.ToString());
             objWriter.WriteElementString("skillcategory", SkillCategory);
             objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
@@ -555,7 +555,7 @@ namespace Chummer.Backend.Skills
             get => _guidInternalId;
             private set => _guidInternalId = value;
         }
-        public string InternalId => _guidInternalId.ToString();
+        public string InternalId => _guidInternalId.ToString("D");
 
         private Guid _guidSkillId = Guid.Empty;
         /// <summary>
@@ -870,7 +870,7 @@ namespace Chummer.Backend.Skills
                 }
                 if (!string.IsNullOrEmpty(_strNotes))
                 {
-                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + " " + _strNotes.WordWrap(100) + "\n\n";
+                    strReturn = LanguageManager.GetString("Label_Notes", GlobalOptions.Language) + ' ' + _strNotes.WordWrap(100) + "\n\n";
                 }
 
                 strReturn += $"{DisplayCategory(GlobalOptions.Language)}\n{middle}{CommonFunctions.LanguageBookLong(Source, GlobalOptions.Language)} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {DisplayPage(GlobalOptions.Language)}";
@@ -936,7 +936,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return SkillCategory;
 
-            string strReturn = XmlManager.Load("skills.xml")?.SelectSingleNode("/chummer/categories/category[. = \"" + SkillCategory + "\"]")?.Attributes?["translate"]?.InnerText;
+            string strReturn = XmlManager.Load("skills.xml").SelectSingleNode("/chummer/categories/category[. = \"" + SkillCategory + "\"]/@translate")?.InnerText;
 
             return strReturn ?? SkillCategory;
         }

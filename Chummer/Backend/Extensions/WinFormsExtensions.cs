@@ -66,7 +66,7 @@ namespace Chummer
         /// <param name="objNode">TreeNode to search.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid)
         {
-            if (objNode != null && strGuid != Guid.Empty.ToString())
+            if (objNode != null && strGuid != Guid.Empty.ToString("D"))
             {
                 TreeNode objFound;
                 foreach (TreeNode objChild in objNode.Nodes)
@@ -103,7 +103,7 @@ namespace Chummer
             TreeNode nodeToAddTo = treView.Nodes[(int)Enum.Parse(typeof(LimitType), input.ImprovedName)];
             string strName = input.UniqueName + ": ";
             if (input.Value > 0)
-                strName += "+";
+                strName += '+';
             strName += input.Value.ToString();
             if (!string.IsNullOrEmpty(input.Condition))
                 strName += ", " + input.Condition;
@@ -218,7 +218,7 @@ namespace Chummer
         /// <param name="treTree">TreeView to search.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid)
         {
-            if (treTree != null && strGuid != Guid.Empty.ToString())
+            if (treTree != null && strGuid != Guid.Empty.ToString("D"))
             {
                 TreeNode objFound;
                 foreach (TreeNode objNode in treTree.Nodes)

@@ -162,12 +162,12 @@ namespace Chummer
                                     string strFilter = string.Empty;
                                     XmlNode xmlIdNode = objType["id"];
                                     if (xmlIdNode != null)
-                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                        strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
                                     else
                                     {
                                         xmlIdNode = objType["name"];
                                         if (xmlIdNode != null)
-                                            strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                            strFilter = "name = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
                                     }
                                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                                     XmlNodeList objAmendingNodeExtraIds = objType.SelectNodes("child::*[@isidnode = \"True\"]");
@@ -175,11 +175,11 @@ namespace Chummer
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
                                             strFilter += " and ";
-                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + "\"";
+                                        strFilter += objExtraId.Name + " = \"" + objExtraId.InnerText.Replace("&amp;", "&") + '\"';
                                     }
                                     if (!string.IsNullOrEmpty(strFilter))
                                     {
-                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + "/" + objType.Name + "[" + strFilter + "]");
+                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objNode.Name + '/' + objType.Name + '[' + strFilter + ']');
                                         if (objItem != null)
                                             objItem.InnerXml = objType.InnerXml;
                                     }
@@ -203,18 +203,18 @@ namespace Chummer
                                         string strFilter = string.Empty;
                                         XmlNode xmlIdNode = objChild["id"];
                                         if (xmlIdNode != null)
-                                            strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + "\"";
+                                            strFilter = "id = \"" + xmlIdNode.InnerText.Replace("&amp;", "&") + '\"';
                                         XmlNode xmlNameNode = objChild["name"];
                                         if (xmlNameNode != null)
                                         {
                                             if (!string.IsNullOrEmpty(strFilter))
                                                 strFilter += " and ";
-                                            strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + "\"";
+                                            strFilter += "name = \"" + xmlNameNode.InnerText.Replace("&amp;", "&") + '\"';
                                         }
                                         // Only do this if the child has the name or id field since this is what we must match on.
                                         if (!string.IsNullOrEmpty(strFilter))
                                         {
-                                            XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]");
+                                            XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
                                             if (objItem != null)
                                                 lstDelete.Add(objChild);
                                         }
@@ -262,14 +262,14 @@ namespace Chummer
                                     string strChildName = objChild["id"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strChildName))
                                     {
-                                        xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[id = \"" + strChildName + "\"]");
+                                        xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + '/' + objChild.Name + "[id = \"" + strChildName + "\"]");
                                     }
                                     if (xmlItem == null)
                                     {
                                         strChildName = objChild["name"]?.InnerText.Replace("&amp;", "&");
                                         if (!string.IsNullOrEmpty(strChildName))
                                         {
-                                            xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" + strChildName + "\"]");
+                                            xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + '/' + objChild.Name + "[name = \"" + strChildName + "\"]");
                                         }
                                     }
                                     // If this is a translatable item, find the proper node and add/update this information.
@@ -371,7 +371,7 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strTranslate))
                                         {
                                             // Handle Category name translations.
-                                            XmlElement objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]") as XmlElement;
+                                            XmlElement objItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + '/' + objChild.Name + "[. = \"" + objChild.InnerXml.Replace("&amp;", "&") + "\"]") as XmlElement;
                                             // Expected result is null if not found.
                                             objItem?.SetAttribute("translate", strTranslate);
                                         }
@@ -425,17 +425,17 @@ namespace Chummer
                                 {
                                     string strFilter = string.Empty;
                                     if (objChild["id"] != null)
-                                        strFilter = "id = \"" + objChild["id"].InnerText.Replace("&amp;", "&") + "\"";
+                                        strFilter = "id = \"" + objChild["id"].InnerText.Replace("&amp;", "&") + '\"';
                                     if (objChild["name"] != null)
                                     {
                                         if (!string.IsNullOrEmpty(strFilter))
                                             strFilter += " and ";
-                                        strFilter += "name = \"" + objChild["name"].InnerText.Replace("&amp;", "&") + "\"";
+                                        strFilter += "name = \"" + objChild["name"].InnerText.Replace("&amp;", "&") + '\"';
                                     }
                                     // Only do this if the child has the name or id field since this is what we must match on.
                                     if (!string.IsNullOrEmpty(strFilter))
                                     {
-                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + "/" + objChild.Name + "[" + strFilter + "]");
+                                        XmlNode objItem = objDoc.SelectSingleNode("/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']');
                                         if (objItem != null)
                                             lstDelete.Add(objChild);
                                     }
@@ -1058,7 +1058,7 @@ namespace Chummer
                                 {
                                     string strChildName = objChild.Name;
                                     string strChildNameElement = objChild["name"].InnerText;
-                                    XmlNode objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + "/" + strChildName + "[name = \"" + strChildNameElement + "\"]");
+                                    XmlNode objNode = objEnglishRoot.SelectSingleNode("/chummer/" + objType.Name + '/' + strChildName + "[name = \"" + strChildNameElement + "\"]");
                                     if (objNode == null)
                                     {
                                         // <noentry>

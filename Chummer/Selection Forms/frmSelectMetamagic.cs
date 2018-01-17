@@ -88,7 +88,7 @@ namespace Chummer
                 return;
 
             // Retireve the information for the selected piece of Cyberware.
-            XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + "/" + _strNode + "[name = \"" + lstMetamagic.SelectedValue + "\"]");
+            XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + '/' + _strNode + "[name = \"" + lstMetamagic.SelectedValue + "\"]");
 
             if (objXmlMetamagic != null)
             {
@@ -96,7 +96,7 @@ namespace Chummer
                 string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
                 lblSource.Text = $"{strBook} {strPage}";
 
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
         }
 
@@ -174,14 +174,14 @@ namespace Chummer
             if (_objCharacter.MAGEnabled)
             {
                 if (_objCharacter.MagicianEnabled && !_objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[magician = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + "[magician = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
                 else if (!_objCharacter.MagicianEnabled && _objCharacter.AdeptEnabled)
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[adept = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + "[adept = 'True' and (" + _objCharacter.Options.BookXPath() + ")]");
                 else
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + '[' + _objCharacter.Options.BookXPath() + ']');
             }
             else
-                objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
+                objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + '[' + _objCharacter.Options.BookXPath() + ']');
 
             if (objXmlMetamagicList != null)
             {

@@ -135,8 +135,8 @@ namespace Chummer.Backend.Equipment
 		public void Save(XmlTextWriter objWriter)
 		{
 			objWriter.WriteStartElement("weaponmount");
-			objWriter.WriteElementString("guid", _guiID.ToString());
-            objWriter.WriteElementString("sourceid", _strSourceId.ToString());
+			objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", _strSourceId);
             objWriter.WriteElementString("name", _strName);
 			objWriter.WriteElementString("category", _strCategory);
 			objWriter.WriteElementString("limit", _strLimit);
@@ -193,7 +193,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetStringFieldQuickly("sourceid", ref _strSourceId))
             {
-                _strSourceId = XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + _strName + "\"]")?["id"]?.InnerText ?? Guid.NewGuid().ToString();
+                _strSourceId = XmlManager.Load("vehicles.xml").SelectSingleNode("/chummer/weaponmounts/weaponmount[name = \"" + _strName + "\"]/id")?.InnerText ?? Guid.NewGuid().ToString("D");
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
 			objNode.TryGetStringFieldQuickly("limit", ref _strLimit);
@@ -323,7 +323,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 
@@ -361,7 +361,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -853,7 +853,7 @@ namespace Chummer.Backend.Equipment
                     intMax = Convert.ToInt32(strValues[1]);
                 }
                 else
-                    intMin = Convert.ToInt32(strCost.Replace("+", string.Empty));
+                    intMin = Convert.ToInt32(strCost.FastEscape('+'));
 
                 if (intMin != 0 || intMax != 0)
                 {
@@ -897,7 +897,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("weaponmountoption");
-            objWriter.WriteElementString("id", _sourceID.ToString());
+            objWriter.WriteElementString("id", _sourceID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("slots", _intSlots.ToString());
@@ -954,7 +954,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the WeaponMountOption in the data files.
         /// </summary>
-        public string SourceId => _sourceID.ToString();
+        public string SourceId => _sourceID.ToString("D");
         #endregion
 
         #region Complex Properties
@@ -966,7 +966,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -1019,7 +1019,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

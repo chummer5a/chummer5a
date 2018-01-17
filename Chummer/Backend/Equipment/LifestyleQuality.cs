@@ -136,7 +136,7 @@ namespace Chummer.Backend.Equipment
             // If the item grants a bonus, pass the information to the Improvement Manager.
             if (objXmlLifestyleQuality.InnerXml.Contains("<bonus>"))
             {
-                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString(), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality, _guiID.ToString("D"), objXmlLifestyleQuality["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -162,8 +162,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("lifestylequality");
-            objWriter.WriteElementString("id", _SourceGuid.ToString());
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("id", _SourceGuid.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("cost", _strCost);
@@ -320,12 +320,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this LifestyleQuality in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString();
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Source identifier that will be used to identify this Lifestyle Quality in data.
         /// </summary>
-        public string SourceID => _SourceGuid.ToString();
+        public string SourceID => _SourceGuid.ToString("D");
 
         /// <summary>
         /// LifestyleQuality's name.

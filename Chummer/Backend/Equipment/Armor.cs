@@ -148,7 +148,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D"), objXmlArmorNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -310,7 +310,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("armor");
-            objWriter.WriteElementString("sourceid", _sourceID.ToString());
+            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
             objWriter.WriteElementString("guid",InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
@@ -355,7 +355,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             if (_guiWeaponID != Guid.Empty)
-                objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
+                objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -483,7 +483,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 
@@ -557,7 +557,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("armor.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -679,7 +679,7 @@ namespace Chummer.Backend.Equipment
 
                     string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
-                        strReturn = "[" + strReturn + "]";
+                        strReturn = '[' + strReturn + ']';
 
                     return strReturn;
                 }
@@ -804,7 +804,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiWeaponID.ToString();
+                return _guiWeaponID.ToString("D");
             }
             set
             {
@@ -889,7 +889,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _strA.Substring(0, 1) == "+" || _strA.Substring(0, 1) == "-" || (!string.IsNullOrWhiteSpace(_strO))
+                return _strA.FirstOrDefault() == '+' || _strA.FirstOrDefault() == '-' || (!string.IsNullOrWhiteSpace(_strO))
                     ? (string.IsNullOrWhiteSpace(_strO)
                         ? $"{TotalArmor:+0;-0;0}"
                         : $"{TotalArmor}/{ArmorOverrideValue}")
@@ -1296,9 +1296,9 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strArmorName))
                 strReturn += " (\"" + _strArmorName + "\")";
             if (_intRating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + " " + _intRating.ToString() + ")";
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + _intRating.ToString() + ')';
             if (!string.IsNullOrEmpty(_strExtra))
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -1356,7 +1356,7 @@ namespace Chummer.Backend.Equipment
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
 
             // Remove the Cyberweapon created by the Mod if applicable.
-            if (WeaponID != Guid.Empty.ToString())
+            if (WeaponID != Guid.Empty.ToString("D"))
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();

@@ -144,7 +144,7 @@ namespace Chummer.Backend.Equipment
 
             if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString("D"), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -211,7 +211,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("armormod");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("armor", _intA.ToString(CultureInfo.InvariantCulture));
@@ -245,7 +245,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("equipped", _blnEquipped.ToString());
             objWriter.WriteElementString("extra", _strExtra);
             if (_guiWeaponID != Guid.Empty)
-                objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString());
+                objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D"));
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString());
             objWriter.WriteEndElement();
@@ -349,7 +349,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 
@@ -360,7 +360,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiWeaponID.ToString();
+                return _guiWeaponID.ToString("D");
             }
             set
             {
@@ -434,9 +434,9 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
 
             if (_intRating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + " " + _intRating.ToString() + ")";
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + _intRating.ToString() + ')';
             if (!string.IsNullOrEmpty(_strExtra))
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -448,7 +448,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("armor.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("armor.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -916,7 +916,7 @@ namespace Chummer.Backend.Equipment
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
                 string strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity)).ToString("#,0.##", GlobalOptions.CultureInfo);
                 if (blnSquareBrackets)
-                    strReturn = "[" + strReturn + "]";
+                    strReturn = '[' + strReturn + ']';
 
                 return strReturn;
             }
@@ -1001,7 +1001,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decReturn = 0.0m;
             // Remove the Cyberweapon created by the Mod if applicable.
-            if (WeaponID != Guid.Empty.ToString())
+            if (WeaponID != Guid.Empty.ToString("D"))
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();

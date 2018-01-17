@@ -112,10 +112,10 @@ namespace Chummer
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;
-            cboMembership.SelectedIndex = cboMembership.FindString("+" + _intMembership.ToString());
-            cboAreaOfInfluence.SelectedIndex = cboAreaOfInfluence.FindString("+" + _intAreaOfInfluence.ToString());
-            cboMagicalResources.SelectedIndex = cboMagicalResources.FindString("+" + _intMagicalResources.ToString());
-            cboMatrixResources.SelectedIndex = cboMatrixResources.FindString("+" + _intMatrixResources.ToString());
+            cboMembership.SelectedIndex = cboMembership.FindString('+' + _intMembership.ToString());
+            cboAreaOfInfluence.SelectedIndex = cboAreaOfInfluence.FindString('+' + _intAreaOfInfluence.ToString());
+            cboMagicalResources.SelectedIndex = cboMagicalResources.FindString('+' + _intMagicalResources.ToString());
+            cboMatrixResources.SelectedIndex = cboMatrixResources.FindString('+' + _intMatrixResources.ToString());
             txtGroupName.Text = _strGroupName;
             cmdChangeColour.BackColor = _objColour;
             chkFreeContact.Checked = _blnFree;

@@ -376,11 +376,11 @@ namespace Chummer.Backend.Skills
                 {
                     if (map.TryGetValue(nodesToChange[i].InnerText, out Guid guidLoop))
                     {
-                        nodesToChange[i].InnerText = guidLoop.ToString();
+                        nodesToChange[i].InnerText = guidLoop.ToString("D");
                     }
                     else
                     {
-                        nodesToChange[i].InnerText = Guid.Empty.ToString(); //This creates 00.. guid in default formatting
+                        nodesToChange[i].InnerText = Guid.Empty.ToString("D"); //This creates 00.. guid in default formatting
                     }
                 }
             }

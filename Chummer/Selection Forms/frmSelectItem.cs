@@ -66,10 +66,10 @@ namespace Chummer
                         // Remove the trailing comma.
                         strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                         // Append the plugin information to the name.
-                        strAmmoName += " [" + strPlugins + "]";
+                        strAmmoName += " [" + strPlugins + ']';
                     }
                     if (objGear.Rating > 0)
-                        strAmmoName += " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + " " + objGear.Rating.ToString() + ")";
+                        strAmmoName += " (" + LanguageManager.GetString("String_Rating", GlobalOptions.Language) + ' ' + objGear.Rating.ToString() + ')';
                     strAmmoName += " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                     lstItems.Add(new ListItem(objGear.InternalId, strAmmoName));
                 }

@@ -49,7 +49,7 @@ namespace Chummer.Backend.Skills
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("spec");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("free", _strFree.ToString());
             objWriter.WriteEndElement();
@@ -87,7 +87,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string InternalId
         {
-            get { return _guiID.ToString(); }
+            get { return _guiID.ToString("D"); }
         }
 
         /// <summary>

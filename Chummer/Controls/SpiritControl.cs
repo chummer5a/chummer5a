@@ -454,7 +454,7 @@ namespace Chummer
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
-                FileName = strCritterName + " (" + strForce + " " + _objSpirit.Force.ToString() + ").chum5"
+                FileName = strCritterName + " (" + strForce + ' ' + _objSpirit.Force.ToString() + ").chum5"
             };
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -620,7 +620,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
+                objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
                     objCharacter.Weapons.Add(objLoopWeapon);

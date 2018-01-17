@@ -357,7 +357,7 @@ namespace Chummer.Backend.Equipment
 
                             // Change the Capacity of the child if necessary.
                             if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
+                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                         }
                     }
 
@@ -397,8 +397,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("weapon");
-            objWriter.WriteElementString("sourceid", _sourceID.ToString());
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("sourceid", _sourceID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("type", _strType);
@@ -855,7 +855,7 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             else
             {
-                string strAmmoGuid = guiAmmo.ToString();
+                string strAmmoGuid = guiAmmo.ToString("D");
                 Gear objAmmo = _objCharacter.Gear.DeepFindById(strAmmoGuid) ?? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid);
 
                 if (objAmmo != null)
@@ -895,7 +895,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
         /// </summary>
-        public string InternalId => _guiID.ToString();
+        public string InternalId => _guiID.ToString("D");
 
         public string DisplayNameShort(string strLanguage)
         {
@@ -972,7 +972,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -984,7 +984,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return AmmoCategory;
 
-            return XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]")?.Attributes?["translate"]?.InnerText ?? AmmoCategory;
+            return XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + AmmoCategory + "\"]/@translate")?.InnerText ?? AmmoCategory;
         }
 
         /// <summary>
@@ -1158,7 +1158,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string AmmoLoaded
         {
-            get { return GetClip(_intActiveAmmoSlot).Guid.ToString(); }
+            get { return GetClip(_intActiveAmmoSlot).Guid.ToString("D"); }
             set { GetClip(_intActiveAmmoSlot).Guid = Guid.Parse(value); }
         }
 
@@ -1509,7 +1509,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1547,7 +1547,7 @@ namespace Chummer.Backend.Equipment
 
             string strReturn = string.Empty;
             if (intReturn >= 0)
-                strReturn = "+" + intReturn.ToString(objCulture);
+                strReturn = '+' + intReturn.ToString(objCulture);
             else
                 strReturn = intReturn.ToString(objCulture);
 
@@ -1713,7 +1713,7 @@ namespace Chummer.Backend.Equipment
             if (strDamage.Contains("/m)") || strDamage.Contains(" Radius)"))
             {
                 string strSplash = strDamage.Substring(strDamage.IndexOf('('), strDamage.IndexOf(')') - strDamage.IndexOf('(') + 1);
-                strDamageExtra += " " + strSplash;
+                strDamageExtra += ' ' + strSplash;
                 strDamage = strDamage.Replace(strSplash, string.Empty).Trim();
             }
 
@@ -1944,8 +1944,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            string[] strSplit = new string[] { " " };
-            string[] strAmmos = _strAmmo.Split(strSplit, StringSplitOptions.None);
+            string[] strAmmos = _strAmmo.Split(' ');
             string strReturn = string.Empty;
             int intAmmoBonus = 0;
 
@@ -2011,27 +2010,27 @@ namespace Chummer.Backend.Equipment
                         strAmmoString = strPrepend + strAmmoString;
                     strThisAmmo = strAmmoString + strAmmo.Substring(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('('));
                 }
-                strReturn += strThisAmmo + " ";
+                strReturn += strThisAmmo + ' ';
             }
             strReturn = strReturn.Trim();
 
             if (strLanguage != GlobalOptions.DefaultLanguage)
             {
                 // Translate the Ammo string.
-                strReturn = strReturn.CheapReplace(" or ", () => " " + LanguageManager.GetString("String_Or", strLanguage) + " ");
+                strReturn = strReturn.CheapReplace(" or ", () => ' ' + LanguageManager.GetString("String_Or", strLanguage) + ' ');
                 strReturn = strReturn.CheapReplace(" belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage));
                 strReturn = strReturn.CheapReplace(" Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage));
                 strReturn = strReturn.CheapReplace(" external source", () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage));
                 strReturn = strReturn.CheapReplace(" Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage));
 
-                strReturn = strReturn.CheapReplace("(b)", () => "(" + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(belt)", () => "(" + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(box)", () => "(" + LanguageManager.GetString("String_AmmoBox", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(c)", () => "(" + LanguageManager.GetString("String_AmmoClip", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(cy)", () => "(" + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(d)", () => "(" + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(m)", () => "(" + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ")");
-                strReturn = strReturn.CheapReplace("(ml)", () => "(" + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage) + ")");
+                strReturn = strReturn.CheapReplace("(b)", () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(belt)", () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(c)", () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(cy)", () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(d)", () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(m)", () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')');
+                strReturn = strReturn.CheapReplace("(ml)", () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage) + ')');
             }
 
             return strReturn;
@@ -2528,7 +2527,7 @@ namespace Chummer.Backend.Equipment
             if (intAP == 0)
                 return "-";
             else if (intAP > 0)
-                return "+" + intAP.ToString();
+                return '+' + intAP.ToString();
             else
                 return intAP.ToString();
         }
@@ -2552,17 +2551,17 @@ namespace Chummer.Backend.Equipment
                 List<Tuple<string, int>> lstRCGroups = new List<Tuple<string, int>>(5);
                 List<Tuple<string, int>> lstRCDeployGroups = new List<Tuple<string, int>>(5);
 
-                if (_strRC.Contains('('))
+                int intPos = _strRC.IndexOf('(');
+                if (intPos != -1)
                 {
-                    if (_strRC.Substring(0, 1) == "(")
+                    if (intPos == 0)
                     {
                         // The string contains only RC from pieces that can be removed - "(x)" only.
                         strRCFull = _strRC;
                     }
+                    // The string contains a mix of both fixed and removable RC. "x(y)".
                     else
                     {
-                        // The string contains a mix of both fixed and removable RC. "x(y)".
-                        int intPos = _strRC.IndexOf('(');
                         strRCBase = _strRC.Substring(0, intPos);
                         strRCFull = _strRC.Substring(intPos, _strRC.Length - intPos);
                     }
@@ -3321,14 +3320,14 @@ namespace Chummer.Backend.Equipment
 
             Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
                 {
-                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin).ToString(objCulture) + "-" + intShort.ToString(objCulture) },
-                    { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString(objCulture) + "-" + intMedium.ToString(objCulture) },
-                    { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString(objCulture) + "-" + intLong.ToString(objCulture) },
-                    { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString(objCulture) + "-" + intExtreme.ToString(objCulture) },
-                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin).ToString(objCulture) + "-" + intAlternateShort.ToString(objCulture) },
-                    { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString(objCulture) + "-" + intAlternateMedium.ToString(objCulture) },
-                    { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString(objCulture) + "-" + intAlternateLong.ToString(objCulture) },
-                    { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString(objCulture) + "-" + intAlternateExtreme.ToString(objCulture) }
+                    { "short", (intMin < 0 || intShort < 0) ? string.Empty : (intMin).ToString(objCulture) + '-' + intShort.ToString(objCulture) },
+                    { "medium", (intShort < 0 || intMedium < 0) ? string.Empty : (intShort + 1).ToString(objCulture) + '-' + intMedium.ToString(objCulture) },
+                    { "long", (intMedium < 0 || intLong < 0) ? string.Empty : (intMedium + 1).ToString(objCulture) + '-' + intLong.ToString(objCulture) },
+                    { "extreme", (intLong < 0 || intExtreme < 0) ? string.Empty : (intLong + 1).ToString(objCulture) + '-' + intExtreme.ToString(objCulture) },
+                    { "alternateshort", (intAlternateMin < 0 || intAlternateShort < 0) ? string.Empty : (intAlternateMin).ToString(objCulture) + '-' + intAlternateShort.ToString(objCulture) },
+                    { "alternatemedium", (intAlternateShort < 0 || intAlternateMedium < 0) ? string.Empty : (intAlternateShort + 1).ToString(objCulture) + '-' + intAlternateMedium.ToString(objCulture) },
+                    { "alternatelong", (intAlternateMedium < 0 || intAlternateLong < 0) ? string.Empty : (intAlternateMedium + 1).ToString(objCulture) + '-' + intAlternateLong.ToString(objCulture) },
+                    { "alternateextreme", (intAlternateLong < 0 || intAlternateExtreme < 0) ? string.Empty : (intAlternateLong + 1).ToString(objCulture) + '-' + intAlternateExtreme.ToString(objCulture) }
                 };
 
             return retDictionary;
@@ -4576,7 +4575,7 @@ namespace Chummer.Backend.Equipment
                 {
                     writer.WriteStartElement("clip");
                     writer.WriteElementString("name", AmmoName);
-                    writer.WriteElementString("id", Guid.ToString());
+                    writer.WriteElementString("id", Guid.ToString("D"));
                     writer.WriteElementString("count", Ammo.ToString());
                     writer.WriteEndElement();
                 }

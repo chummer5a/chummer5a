@@ -475,7 +475,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1,
                         LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
-                        " " + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 

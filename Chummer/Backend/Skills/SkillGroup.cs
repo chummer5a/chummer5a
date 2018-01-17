@@ -281,7 +281,7 @@ namespace Chummer.Backend.Skills
 
             writer.WriteElementString("karma", _intSkillFromKarma.ToString());
             writer.WriteElementString("base", _intSkillFromSp.ToString());
-            writer.WriteElementString("id", _guidId.ToString());
+            writer.WriteElementString("id", _guidId.ToString("D"));
             writer.WriteElementString("name", _strGroupName);
 
             writer.WriteEndElement();
@@ -406,7 +406,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 if (string.IsNullOrEmpty(_strToolTip))
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + " " + string.Join(", ", _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
+                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills", GlobalOptions.Language) + ' ' + string.Join(", ", _lstAffectedSkills.Select(x => x.DisplayNameMethod(GlobalOptions.Language)));
                 return _strToolTip;
             }
         }
@@ -418,7 +418,7 @@ namespace Chummer.Backend.Skills
 
         private Guid _guidId = Guid.NewGuid();
         public Guid Id { get => _guidId; }
-        public string InternalId { get => _guidId.ToString(); }
+        public string InternalId { get => _guidId.ToString("D"); }
 
         #region HasWhateverSkills
         public bool HasCombatSkills

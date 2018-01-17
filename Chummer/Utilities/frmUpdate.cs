@@ -410,7 +410,7 @@ namespace Chummer
                 cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += " " + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
+                lblUpdaterStatus.Text += ' ' + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)

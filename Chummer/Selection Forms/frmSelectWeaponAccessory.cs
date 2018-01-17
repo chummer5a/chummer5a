@@ -20,6 +20,7 @@
 using System.Collections.Generic;
  using System.Globalization;
  using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -94,22 +95,21 @@ namespace Chummer
 
             // Populate the Accessory list.
             string[] strAllowed = _strAllowedMounts.Split('/');
-            string strMount = string.Empty;
+            StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in strAllowed)
             {
                 if (!string.IsNullOrEmpty(strAllowedMount))
-                    strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
+                    strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
-            strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
-            strMount += "mount = \"\"";
-            XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
+            XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount.ToString() + ") and (" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
             {
-                if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                XmlNode xmlExtraMountNode = objXmlAccessory["extramount"];
+                if (xmlExtraMountNode != null)
                 {
                     if (strAllowed.Length > 1)
                     {
-                        foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
+                        foreach (string strItem in (xmlExtraMountNode.InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
                         {
                             if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
                             {
@@ -614,11 +614,10 @@ namespace Chummer
             */
             string strBookCode = objXmlAccessory["source"]?.InnerText;
             string strBook = CommonFunctions.LanguageBookShort(strBookCode, GlobalOptions.Language);
-            string strPage = objXmlAccessory["page"]?.InnerText;
-            objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlAccessory["altpage"]?.InnerText ?? objXmlAccessory["page"]?.InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

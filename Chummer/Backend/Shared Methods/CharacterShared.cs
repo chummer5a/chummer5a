@@ -303,7 +303,7 @@ namespace Chummer
             string strCondition = frmPickLimitModifier.SelectedCondition;
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
             objLimitModifier.Guid = new Guid(strGuid);
-            if (objLimitModifier.InternalId == Guid.Empty.ToString())
+            if (objLimitModifier.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
@@ -413,12 +413,12 @@ namespace Chummer
                 }
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.QualityId + ' ' + objQuality.GetSourceName(GlobalOptions.Language) + ' ' + objQuality.Extra);
                 }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.GetSourceName(GlobalOptions.Language) + " " + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + ' ' + objQuality.GetSourceName(GlobalOptions.Language) + ' ' + objQuality.Extra))
                         continue;
                     TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
 

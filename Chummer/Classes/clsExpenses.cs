@@ -349,7 +349,7 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
@@ -409,7 +409,7 @@ namespace Chummer
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
             set
             {

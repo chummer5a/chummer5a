@@ -189,16 +189,21 @@ namespace Chummer
 
             string strBook = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language);
             string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
-            lblSource.Text = strBook + " " + strPage;
+            lblSource.Text = strBook + ' ' + strPage;
 
             // Build a list of included Accessories and Modifications that come with the weapon.
-            string strAccessories = string.Empty;
+            StringBuilder strAccessories = new StringBuilder();
             foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
-                strAccessories += objAccessory.DisplayName(GlobalOptions.Language) + '\n';
+            {
+                strAccessories.Append(objAccessory.DisplayName(GlobalOptions.Language));
+                strAccessories.Append('\n');
+            }
+            if (strAccessories.Length > 0)
+                strAccessories.Length -= 1;
 
-            lblIncludedAccessories.Text = string.IsNullOrEmpty(strAccessories) ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.TrimEnd('\n');
+            lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None", GlobalOptions.Language) : strAccessories.ToString();
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void BuildWeaponList(XmlNodeList objNodeList)
@@ -239,7 +244,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(_objCharacter);
                     objWeapon.Create(objXmlWeapon, null, true, false, true);
 
-                    string strID = objWeapon.SourceID.ToString();
+                    string strID = objWeapon.SourceID.ToString("D");
                     string strWeaponName = objWeapon.DisplayName(GlobalOptions.Language);
                     string strDice = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     int intAccuracy = objWeapon.TotalAccuracy;
@@ -251,17 +256,19 @@ namespace Chummer
                     string strAmmo = objWeapon.Ammo;
                     string strMode = objWeapon.Mode;
                     string strReach = objWeapon.TotalReach.ToString();
-                    string strAccessories = string.Empty;
+                    StringBuilder strAccessories = new StringBuilder();
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        strAccessories += objAccessory.DisplayName(GlobalOptions.Language) + '\n';
+                        strAccessories.Append(objAccessory.DisplayName(GlobalOptions.Language));
+                        strAccessories.Append('\n');
                     }
-                    strAccessories.TrimEnd('\n');
+                    if (strAccessories.Length > 0)
+                        strAccessories.Length -= 1;
                     string strAvail = objWeapon.TotalAvail(GlobalOptions.Language);
-                    string strSource = objWeapon.Source + " " + objWeapon.DisplayPage(GlobalOptions.Language);
+                    string strSource = objWeapon.Source + ' ' + objWeapon.DisplayPage(GlobalOptions.Language);
                     string strCost = objWeapon.DisplayCost(out decimal decDummy);
 
-                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories, strAvail, strSource, strCost);
+                    tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), strAvail, strSource, strCost);
                 }
 
                 DataSet set = new DataSet("weapons");
@@ -492,16 +499,16 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
                 if (_strLimitToCategories.Length > 0)
                 {
-                    objCategoryFilter.Append("category = \"" + _strLimitToCategories[0] + "\"");
+                    objCategoryFilter.Append("category = \"" + _strLimitToCategories[0] + '\"');
                     for (int i = 1; i < _strLimitToCategories.Length; ++i)
                     {
-                        objCategoryFilter.Append(" or category = \"" + _strLimitToCategories[i] + "\"");
+                        objCategoryFilter.Append(" or category = \"" + _strLimitToCategories[i] + '\"');
                     }
                 }
                 else

@@ -308,14 +308,14 @@ namespace Chummer
             s_TimeStamper.Append(pre);
             string[] classPath = file.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
             s_TimeStamper.Append(classPath[classPath.Length - 1]);
-            s_TimeStamper.Append(".");
+            s_TimeStamper.Append('.');
             s_TimeStamper.Append(method);
-            s_TimeStamper.Append(":");
+            s_TimeStamper.Append(':');
             s_TimeStamper.Append(line);
 
             if (info != null)
             {
-                s_TimeStamper.Append(" ");
+                s_TimeStamper.Append(' ');
                 foreach (object o in info)
                 {
                     s_TimeStamper.Append(o);

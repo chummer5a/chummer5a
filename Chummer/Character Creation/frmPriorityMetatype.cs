@@ -363,8 +363,8 @@ namespace Chummer
             XmlNode objXmlPowersNode = objXmlDocument.SelectSingleNode("/chummer/powers");
             List<ListItem> lstMethods = new List<ListItem>
             {
-                new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]")?["translate"]?.InnerText ?? "Possession"),
-                new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]")?["translate"]?.InnerText ?? "Inhabitation")
+                new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
+                new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
             };
             
             lstMethods.Sort(CompareListItems.CompareNames);

@@ -87,7 +87,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage)?.SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage)?.SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -102,7 +102,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guidId == Guid.Empty ? string.Empty : _guidId.ToString();
+                return _guidId == Guid.Empty ? string.Empty : _guidId.ToString("D");
             }
         }
 

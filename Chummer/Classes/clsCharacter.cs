@@ -4108,7 +4108,7 @@ namespace Chummer
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
-                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString() + ".img");
+                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + ".img");
                 Image imgMainMugshot = MainMugshot;
                 if (imgMainMugshot != null)
                 {
@@ -4130,7 +4130,7 @@ namespace Chummer
 
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
 
-                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
@@ -9058,13 +9058,13 @@ namespace Chummer
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.PhysicalCM,
-                        Guid.NewGuid().ToString(), count * -3);
+                        Guid.NewGuid().ToString("D"), count * -3);
                 }
                 else
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.Attribute,
-                        Guid.NewGuid().ToString(), count, 1, 0, 0, count);
+                        Guid.NewGuid().ToString("D"), count, 1, 0, 0, count);
                 }
             }
             ImprovementManager.Commit(this);

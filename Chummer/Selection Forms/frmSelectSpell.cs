@@ -385,7 +385,7 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -683,7 +683,7 @@ namespace Chummer
                     if (intValue == 0)
                         strAfter = string.Empty;
                     else if (intValue > 0)
-                        strAfter = "+" + intValue.ToString();
+                        strAfter = '+' + intValue.ToString();
                     else
                         strAfter = intValue.ToString();
                 }
@@ -710,7 +710,7 @@ namespace Chummer
                     int intAfter = Convert.ToInt32(strAfter);
                     intAfter -= 2;
                     if (intAfter > 0)
-                        strDV += "+" + intAfter.ToString();
+                        strDV += '+' + intAfter.ToString();
                     else if (intAfter < 0)
                         strDV += intAfter.ToString();
                 }
@@ -736,14 +736,12 @@ namespace Chummer
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlSpell["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlSpell["page"].InnerText;
-            if (objXmlSpell["altpage"] != null)
-                strPage = objXmlSpell["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlSpell["altpage"]?.InnerText ?? objXmlSpell["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
             tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(objXmlSpell["source"].InnerText, GlobalOptions.Language) + " " +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                CommonFunctions.LanguageBookLong(objXmlSpell["source"].InnerText, GlobalOptions.Language) + ' ' +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
         #endregion
     }

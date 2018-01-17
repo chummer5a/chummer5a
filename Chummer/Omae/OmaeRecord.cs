@@ -44,12 +44,9 @@ namespace Chummer
             _strCharacterName = objNode["name"].InnerText;
             lblCharacterName.Text = objNode["name"].InnerText;
             lblUser.Text = objNode["user"].InnerText;
-            if (string.IsNullOrEmpty(objNode["description"].InnerText))
-                lblDescription.Text = LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Language);
-            else
-                lblDescription.Text = objNode["description"].InnerText;
+            lblDescription.Text = objNode["description"]?.InnerText ?? LanguageManager.GetString("Omae_NoDescription", GlobalOptions.Language);
             DateTime datDate = DateTime.Parse(objNode["date"].InnerText, GlobalOptions.InvariantCultureInfo);
-            lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + " " + datDate.ToShortDateString();
+            lblDate.Text = LanguageManager.GetString("Omae_UpdatedDate", GlobalOptions.Language) + ' ' + datDate.ToShortDateString();
             lblCount.Text = LanguageManager.GetString("Omae_DownloadCount", GlobalOptions.Language).Replace("{0}", objNode["count"].InnerText);
 
             if (objMode == OmaeMode.Character)
@@ -57,8 +54,8 @@ namespace Chummer
                 // Character-specific information.
                 string strMetatype = objNode["metatype"].InnerText;
                 if (!string.IsNullOrEmpty(objNode["metavariant"].InnerText))
-                    strMetatype += "(" + objNode["metavariant"].InnerText;
-                lblMetatype.Text = LanguageManager.GetString("Label_Metatype", GlobalOptions.Language) + " " + strMetatype;
+                    strMetatype += '(' + objNode["metavariant"].InnerText;
+                lblMetatype.Text = LanguageManager.GetString("Label_Metatype", GlobalOptions.Language) + ' ' + strMetatype;
             }
             else if (objMode == OmaeMode.Data)
             {

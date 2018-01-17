@@ -310,12 +310,12 @@ namespace Chummer
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = strBook + " " + strPage;
+            lblMetatypeSource.Text = strBook + ' ' + strPage;
             if (CharacterObject.Possessed)
                 lblPossessed.Text = LanguageManager.GetString("String_Possessed", GlobalOptions.Language);
             else
                 lblPossessed.Visible = false;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(objMetatypeNode["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(objMetatypeNode["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
@@ -1480,7 +1480,7 @@ namespace Chummer
                     }
                 }
                 if (!string.IsNullOrEmpty(strExConString))
-                    strExConString = " (" + strExConString + ")";
+                    strExConString = " (" + strExConString + ')';
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, funcExConIneligibleWare))
                 {
                     string strAvail = objCyberware.Avail;
@@ -1495,7 +1495,7 @@ namespace Chummer
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
-                        objExpense.Create(0, strEntry + strExConString + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(0, strEntry + strExConString + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
 
                         if (objCyberware.Parent != null)
@@ -1788,7 +1788,7 @@ namespace Chummer
             object lstClonesLock = new object();
             Parallel.For(0, intClones, (Action<int>)(i =>
             {
-                Character objLoopCharacter = Program.MainForm.LoadCharacter((string)base.CharacterObject.FileName, (string)(base.CharacterObject.Alias + " " + i.ToString()), true);
+                Character objLoopCharacter = Program.MainForm.LoadCharacter((string)base.CharacterObject.FileName, (string)(base.CharacterObject.Alias + ' ' + i.ToString()), true);
                 lock (lstClonesLock)
                 {
                     lstClones[i] = objLoopCharacter;
@@ -2399,7 +2399,7 @@ namespace Chummer
                 };
                 objMerge.Load();
                 objMerge.Possessed = true;
-                objMerge.Alias = objVessel.CharacterName + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ")";
+                objMerge.Alias = objVessel.CharacterName + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
                 // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                 bool blnHasImmunity = false;
@@ -2487,7 +2487,7 @@ namespace Chummer
                     strShowFileName = CharacterObject.CharacterName;
                 strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
-                strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ")";
+                strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
                 // Now that everything is done, save the merged character and open them.
                 SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -2574,7 +2574,7 @@ namespace Chummer
             };
             objMerge.Load();
             objMerge.Possessed = true;
-            objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ")";
+            objMerge.Alias = frmSelectVessel.SelectedItem + " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
             // Get the Node for the selected Vessel.
             XmlNode objSelected = objVesselDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + frmSelectVessel.SelectedItem + "\"]");
@@ -2694,7 +2694,7 @@ namespace Chummer
                 strShowFileName = CharacterObject.CharacterName;
             strShowFileName = strShowFileName.Replace(".chum5", string.Empty);
 
-            strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ")";
+            strShowFileName += " (" + LanguageManager.GetString("String_Possessed", GlobalOptions.Language) + ')';
 
             saveFileDialog.FileName = strShowFileName;
 
@@ -2851,7 +2851,7 @@ namespace Chummer
                         objCopyGear.Save(objWriter);
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
 
-                        if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                        if (objCopyGear.WeaponID != Guid.Empty.ToString("D"))
                         {
                             // <weapons>
                             objWriter.WriteStartElement("weapons");
@@ -2960,7 +2960,7 @@ namespace Chummer
                         objCopyGear.Save(objWriter);
                         GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
 
-                        if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                        if (objCopyGear.WeaponID != Guid.Empty.ToString("D"))
                         {
                             // <weapons>
                             objWriter.WriteStartElement("weapons");
@@ -3021,7 +3021,7 @@ namespace Chummer
                     objCopyGear.Save(objWriter);
                     GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
 
-                    if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                    if (objCopyGear.WeaponID != Guid.Empty.ToString("D"))
                     {
                         // <weapons>
                         objWriter.WriteStartElement("weapons");
@@ -3125,7 +3125,7 @@ namespace Chummer
                             objCopyGear.Save(objWriter);
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Gear;
 
-                            if (objCopyGear.WeaponID != Guid.Empty.ToString())
+                            if (objCopyGear.WeaponID != Guid.Empty.ToString("D"))
                             {
                                 // <weapons>
                                 objWriter.WriteStartElement("weapons");
@@ -3231,7 +3231,7 @@ namespace Chummer
             CritterPower objPower = new CritterPower(CharacterObject);
             objPower.Create(objXmlPower);
             objPower.CountTowardsLimit = false;
-            if (objPower.InternalId == Guid.Empty.ToString())
+            if (objPower.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             CharacterObject.CritterPowers.Add(objPower);
@@ -3442,7 +3442,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy", GlobalOptions.Language) + " " + objSenderContact.Name, ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveEnemy", GlobalOptions.Language) + ' ' + objSenderContact.Name, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
             }
@@ -3539,8 +3539,8 @@ namespace Chummer
 
                     string strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                     string strPage = objMartialArt.Page(GlobalOptions.Language);
-                    lblMartialArtSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblMartialArtSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 }
 
                 // Display the Martial Art Advantage information.
@@ -3550,7 +3550,7 @@ namespace Chummer
 
                     string strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                     string strPage = objMartialArt.Page(GlobalOptions.Language);
-                    lblMartialArtSource.Text = strBook + " " + strPage;
+                    lblMartialArtSource.Text = strBook + ' ' + strPage;
                     tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objMartialArt.Source, GlobalOptions.Language) + " page " + strPage);
                 }
 
@@ -3561,7 +3561,7 @@ namespace Chummer
 
                     string strBook = CommonFunctions.LanguageBookShort(objManeuver.Source, GlobalOptions.Language);
                     string strPage = objManeuver.Page(GlobalOptions.Language);
-                    lblMartialArtSource.Text = strBook + " " + strPage;
+                    lblMartialArtSource.Text = strBook + ' ' + strPage;
                     tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objManeuver.Source, GlobalOptions.Language) + " page " + strPage);
                 }
             }
@@ -3701,7 +3701,7 @@ namespace Chummer
 
                 Spell objSpell = new Spell(CharacterObject);
                 objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
-                if (objSpell.InternalId == Guid.Empty.ToString())
+                if (objSpell.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickSpell.Dispose();
                     continue;
@@ -3727,7 +3727,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                    objEntry.Create(-intSpellKarmaCost, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+                    objEntry.Create(-intSpellKarmaCost, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + ' ' + objSpell.Name, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objEntry);
                     CharacterObject.Karma -= intSpellKarmaCost;
 
@@ -4044,7 +4044,7 @@ namespace Chummer
                 
                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                 objComplexForm.Create(objXmlComplexForm, strExtra);
-                if (objComplexForm.InternalId == Guid.Empty.ToString())
+                if (objComplexForm.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickProgram.Dispose();
                     continue;
@@ -4065,7 +4065,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm", GlobalOptions.Language) + " " + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm", GlobalOptions.Language) + ' ' + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intComplexFormKarmaCost;
 
@@ -4231,7 +4231,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon", GlobalOptions.Language) + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -4560,7 +4560,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicle", GlobalOptions.Language) + " " + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicle", GlobalOptions.Language) + ' ' + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -4874,7 +4874,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + " " + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
@@ -4999,7 +4999,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnManeuver", GlobalOptions.Language) + " " + objManeuver.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnManeuver", GlobalOptions.Language) + ' ' + objManeuver.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
@@ -5143,7 +5143,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -5159,7 +5159,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                 {
                     ExpenseLogEntry objNuyenExpense = new ExpenseLogEntry(CharacterObject);
-                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
+                    objNuyenExpense.Create(-10000, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objNuyenExpense);
                     CharacterObject.Nuyen -= 10000;
 
@@ -5226,7 +5226,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + ' ' + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -5540,7 +5540,7 @@ namespace Chummer
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + " " + objLifestyle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle", GlobalOptions.Language) + ' ' + objLifestyle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objExpense);
             CharacterObject.Nuyen -= decAmount;
 
@@ -5583,7 +5583,7 @@ namespace Chummer
                 CritterPower objPower = new CritterPower(CharacterObject);
                 objPower.Create(objXmlPower, frmPickCritterPower.SelectedRating);
                 objPower.PowerPoints = frmPickCritterPower.PowerPoints;
-                if (objPower.InternalId == Guid.Empty.ToString())
+                if (objPower.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickCritterPower.Dispose();
                     continue;
@@ -5604,7 +5604,7 @@ namespace Chummer
                 if (objPower.Karma > 0)
                 {
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower", GlobalOptions.Language) + " " + objPower.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(objPower.Karma * -1, LanguageManager.GetString("String_ExpensePurchaseCritterPower", GlobalOptions.Language) + ' ' + objPower.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -5704,7 +5704,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseComplexForm", GlobalOptions.Language) + " " + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseComplexForm", GlobalOptions.Language) + ' ' + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
 
@@ -5774,7 +5774,7 @@ namespace Chummer
                 }
 
                 // Remove any Weapons that came with it.
-                if (objGear.WeaponID != Guid.Empty.ToString())
+                if (objGear.WeaponID != Guid.Empty.ToString("D"))
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
                     List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId).ToList();
@@ -5967,7 +5967,7 @@ namespace Chummer
             if (objGear.Quantity <= 0)
             {
                 // Remove the Gear Weapon created by the Gear if applicable.
-                if (objGear.WeaponID != Guid.Empty.ToString())
+                if (objGear.WeaponID != Guid.Empty.ToString("D"))
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
                     List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId).ToList();
@@ -6403,7 +6403,7 @@ namespace Chummer
                 Quality objQuality = new Quality(CharacterObject);
 
                 objQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
-                if (objQuality.InternalId == Guid.Empty.ToString())
+                if (objQuality.InternalId == Guid.Empty.ToString("D"))
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
@@ -6439,7 +6439,7 @@ namespace Chummer
                     {
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + " " + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Karma -= intKarmaCost;
 
@@ -6457,7 +6457,7 @@ namespace Chummer
                     {
                         // Create a Karma Expense for the Negative Quality.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + " " + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -6581,7 +6581,7 @@ namespace Chummer
                 return;
 
             Quality objQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
-            if (objQuality.InternalId == Guid.Empty.ToString())
+            if (objQuality.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             // Qualities that come from a Metatype cannot be removed.
@@ -6711,7 +6711,7 @@ namespace Chummer
                     treQualities.SelectedNode.Remove();
 
                 // Remove any Weapons created by the old Quality if applicable.
-                if (objQuality.WeaponID != Guid.Empty.ToString())
+                if (objQuality.WeaponID != Guid.Empty.ToString("D"))
                 {
                     List<string> lstNodesToRemoveIds = new List<string>();
                     List<Weapon> lstOldWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId).ToList();
@@ -6773,7 +6773,7 @@ namespace Chummer
                 {
                     intBP *= -2;
                 }
-                string strBP = intBP.ToString() + " " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+                string strBP = intBP.ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
                 if (blnConfirmDelete && !CharacterObject.ConfirmDelete(blnCompleteDelete ?
                                                                         LanguageManager.GetString("Message_DeleteMetatypeQuality", GlobalOptions.Language).Replace("{0}", strBP) :
@@ -6851,7 +6851,7 @@ namespace Chummer
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language) + " " + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseRemoveNegativeQuality", GlobalOptions.Language) + ' ' + objSelectedQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaCost;
 
@@ -6919,7 +6919,7 @@ namespace Chummer
             }
 
             // Remove any Weapons created by the Quality if applicable.
-            if (objSelectedQuality.WeaponID != Guid.Empty.ToString())
+            if (objSelectedQuality.WeaponID != Guid.Empty.ToString("D"))
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objSelectedQuality.InternalId).ToList();
@@ -6996,7 +6996,7 @@ namespace Chummer
                     Quality objQuality = new Quality(CharacterObject);
 
                     objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
-                    if (objQuality.InternalId == Guid.Empty.ToString())
+                    if (objQuality.InternalId == Guid.Empty.ToString("D"))
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
@@ -7023,7 +7023,7 @@ namespace Chummer
                         {
                             // Create the Karma expense.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + " " + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
                             CharacterObject.Karma -= intKarmaCost;
 
@@ -7039,7 +7039,7 @@ namespace Chummer
                         {
                             // Create a Karma Expense for the Negative Quality.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + " " + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                            objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality", GlobalOptions.Language) + ' ' + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
@@ -7830,7 +7830,7 @@ namespace Chummer
 
             // Create the Karma expense.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseQuickenMetamagic", GlobalOptions.Language) + " " + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseQuickenMetamagic", GlobalOptions.Language) + ' ' + treSpells.SelectedNode.Text, ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
@@ -7968,7 +7968,7 @@ namespace Chummer
                 {
                     if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
-                        strMounts += objXmlMount.InnerText + "/";
+                        strMounts += objXmlMount.InnerText + '/';
                     }
                 }
 
@@ -8064,7 +8064,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory", GlobalOptions.Language) + " " + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -8106,7 +8106,7 @@ namespace Chummer
             objArmor.Create(objXmlArmor, frmPickArmor.Rating, lstWeapons);
             objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
 
-            if (objArmor.InternalId == Guid.Empty.ToString())
+            if (objArmor.InternalId == Guid.Empty.ToString("D"))
                 return frmPickArmor.AddAgain;
 
             decimal decCost = objArmor.TotalCost;
@@ -8138,7 +8138,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor", GlobalOptions.Language) + " " + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmor", GlobalOptions.Language) + ' ' + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -8234,7 +8234,7 @@ namespace Chummer
 
                 objMod.Create(objXmlArmor, intRating, lstWeapons);
                 objMod.Parent = objArmor;
-                if (objMod.InternalId == Guid.Empty.ToString())
+                if (objMod.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickArmorMod.Dispose();
                     continue;
@@ -8282,7 +8282,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorMod", GlobalOptions.Language) + " " + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -8484,7 +8484,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) + " " + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -8609,7 +8609,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon", GlobalOptions.Language) + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -8677,7 +8677,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + " " + frmPickVehicleMod.WeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + frmPickVehicleMod.WeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -8745,7 +8745,7 @@ namespace Chummer
                     // Run through the Weapon's currenct Accessories and filter out any used up Mount points.
                     if (!objWeapon.WeaponAccessories.Any(objMod => objMod.Mount == objXmlMount.InnerText || objMod.ExtraMount == objXmlMount.InnerText))
                     {
-                        strMounts += objXmlMount.InnerText + "/";
+                        strMounts += objXmlMount.InnerText + '/';
                     }
                 }
                 frmPickWeaponAccessory.AllowedMounts = strMounts;
@@ -8802,7 +8802,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + " " + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -8888,7 +8888,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, strExpenseString + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, strExpenseString + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -8976,7 +8976,7 @@ namespace Chummer
                 // Create the Improvements for the Advantage if there are any.
                 MartialArtAdvantage objAdvantage = new MartialArtAdvantage(CharacterObject);
                 objAdvantage.Create(objXmlAdvantage);
-                if (objAdvantage.InternalId == Guid.Empty.ToString())
+                if (objAdvantage.InternalId == Guid.Empty.ToString("D"))
                     return;
 
                 objMartialArt.Advantages.Add(objAdvantage);
@@ -8988,7 +8988,7 @@ namespace Chummer
                 if (treMartialArts.SelectedNode.Nodes.Count > 1)
                 {
                     ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                    objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + " " + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
+                    objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objEntry);
                     CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
 
@@ -9048,7 +9048,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -9096,7 +9096,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -9217,7 +9217,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -9256,7 +9256,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -9666,7 +9666,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware ? "String_ExpenseSoldCyberware" : "String_ExpenseSoldBioware", GlobalOptions.Language);
                         decAmount += objCyberware.DeleteCyberware(treWeapons, treVehicles) * frmSell.SellPercent;
-                        objExpense.Create(decAmount, strEntry + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
                         
@@ -9696,7 +9696,7 @@ namespace Chummer
                         decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberwareGear", GlobalOptions.Language);
-                        objExpense.Create(decAmount, strEntry + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, strEntry + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
 
@@ -9742,7 +9742,7 @@ namespace Chummer
                     decimal decAmount = objArmor.TotalCost * frmSell.SellPercent;
                     decAmount += objArmor.DeleteArmor(treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + " " + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmor", GlobalOptions.Language) + ' ' + objArmor.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen += decAmount;
                 }
@@ -9767,7 +9767,7 @@ namespace Chummer
                         decimal decAmount = (decOriginal - objArmorMod.Parent.TotalCost) * frmSell.SellPercent;
                         decAmount += objArmorMod.DeleteArmorMod(treWeapons, treVehicles) * frmSell.SellPercent;
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + " " + objArmorMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorMod", GlobalOptions.Language) + ' ' + objArmorMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
                     }
@@ -9803,7 +9803,7 @@ namespace Chummer
                             decimal decAmount = (decOriginal - decNewCost) * frmSell.SellPercent;
                             decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
                             CharacterObject.Nuyen += decAmount;
                         }
@@ -9852,7 +9852,7 @@ namespace Chummer
                     // Create the Expense Log Entry for the sale.
                     decimal decAmount = (objWeapon.TotalCost + objWeapon.DeleteWeapon(treWeapons, treVehicles)) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon", GlobalOptions.Language) + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen += decAmount;
 
@@ -9883,7 +9883,7 @@ namespace Chummer
                             decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                         }
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + " " + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory", GlobalOptions.Language) + ' ' + objAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
                     }
@@ -9912,7 +9912,7 @@ namespace Chummer
                             decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                             decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
                             CharacterObject.Nuyen += decAmount;
                         }
@@ -9949,7 +9949,7 @@ namespace Chummer
                     decimal decAmount = objGear.TotalCost * frmSell.SellPercent;
                     decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen += decAmount;
 
@@ -10033,7 +10033,7 @@ namespace Chummer
                         }
                     }
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + " " + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicle", GlobalOptions.Language) + ' ' + objVehicle.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen += decAmount;
                     CharacterObject.Vehicles.Remove(objVehicle);
@@ -10087,7 +10087,7 @@ namespace Chummer
                         }
 
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + " " + objWeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + ' ' + objWeaponMount.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen += decAmount;
                         treVehicles.SelectedNode.Remove();
@@ -10136,7 +10136,7 @@ namespace Chummer
                                 decAmount += objLoopCyberware.DeleteCyberware(treWeapons, treVehicles) * frmSell.SellPercent;
                             }
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + " " + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleMod", GlobalOptions.Language) + ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                             CharacterObject.ExpenseEntries.Add(objExpense);
                             CharacterObject.Nuyen += decAmount;
                             treVehicles.SelectedNode.Remove();
@@ -10168,7 +10168,7 @@ namespace Chummer
                                 // Create the Expense Log Entry for the sale.
                                 decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon", GlobalOptions.Language) + " " + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeapon", GlobalOptions.Language) + ' ' + objWeapon.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                 CharacterObject.ExpenseEntries.Add(objExpense);
                                 CharacterObject.Nuyen += decAmount;
                                 treVehicles.SelectedNode.Remove();
@@ -10198,7 +10198,7 @@ namespace Chummer
                                         decAmount += objLoopGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                                     }
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + " " + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                    objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleWeaponAccessory", GlobalOptions.Language) + ' ' + objWeaponAccessory.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                     CharacterObject.ExpenseEntries.Add(objExpense);
                                     CharacterObject.Nuyen += decAmount;
                                 }
@@ -10230,7 +10230,7 @@ namespace Chummer
                                         decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                         decAmount += objCyberware.DeleteCyberware(treWeapons, treVehicles) * frmSell.SellPercent;
                                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware", GlobalOptions.Language) + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                        objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleCyberware", GlobalOptions.Language) + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                         CharacterObject.ExpenseEntries.Add(objExpense);
                                         CharacterObject.Nuyen += decAmount;
                                     }
@@ -10270,7 +10270,7 @@ namespace Chummer
                                             decimal decAmount = (decOriginal - objVehicle.TotalCost) * frmSell.SellPercent;
                                             decAmount += objGear.DeleteGear(treWeapons, treVehicles) * frmSell.SellPercent;
                                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                                            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                                             CharacterObject.ExpenseEntries.Add(objExpense);
                                             CharacterObject.Nuyen += decAmount;
                                         }
@@ -10491,7 +10491,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -10560,7 +10560,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseVehicleGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -10652,7 +10652,7 @@ namespace Chummer
                             CharacterObject.Qualities.Remove(objQuality);
 
                             // Remove any Weapons created by the Quality if applicable.
-                            if (objQuality.WeaponID != Guid.Empty.ToString())
+                            if (objQuality.WeaponID != Guid.Empty.ToString("D"))
                             {
                                 List<string> lstNodesToRemoveIds = new List<string>();
                                 List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objQuality.InternalId).ToList();
@@ -12608,7 +12608,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 List<Vehicle> lstVehicles = new List<Vehicle>();
                 objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, false, true, string.Empty, null, objVehicle);
-                if (objCyberware.InternalId == Guid.Empty.ToString())
+                if (objCyberware.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickCyberware.Dispose();
                     continue;
@@ -12647,7 +12647,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         string strEntry = string.Empty;
                         strEntry = LanguageManager.GetString("String_ExpensePurchaseVehicleCyberware", GlobalOptions.Language);
-                        objExpense.Create(decCost * -1, strEntry + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -12856,7 +12856,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-            objEntry.Create(intSpellKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + " " + objSpell.Name, ExpenseType.Karma, DateTime.Now);
+            objEntry.Create(intSpellKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnSpell", GlobalOptions.Language) + ' ' + objSpell.Name, ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objEntry);
             CharacterObject.Karma -= intSpellKarmaCost;
 
@@ -13026,7 +13026,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13066,7 +13066,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13157,7 +13157,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13197,7 +13197,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwearGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13272,7 +13272,7 @@ namespace Chummer
                 Gear objNewGear = new Gear(CharacterObject);
                 objNewGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-                if (objNewGear.InternalId == Guid.Empty.ToString())
+                if (objNewGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13312,7 +13312,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + " " + objNewGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objNewGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13396,7 +13396,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13436,7 +13436,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13609,7 +13609,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13649,7 +13649,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13724,7 +13724,7 @@ namespace Chummer
                 Gear objGear = new Gear(CharacterObject);
                 objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false, true, frmPickGear.Aerodynamic);
 
-                if (objGear.InternalId == Guid.Empty.ToString())
+                if (objGear.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickGear.Dispose();
                     continue;
@@ -13764,7 +13764,7 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
@@ -13813,9 +13813,9 @@ namespace Chummer
 
             string strBook = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
             string strPage = objQuality.Page(GlobalOptions.Language);
-            lblQualitySource.Text = strBook + " " + strPage;
-            tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
-            lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + " " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            lblQualitySource.Text = strBook + ' ' + strPage;
+            tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             nudQualityLevel_UpdateValue(objQuality);
         }
@@ -15670,8 +15670,8 @@ namespace Chummer
                 lblSpellDV.Text = objSpell.DisplayDV(GlobalOptions.Language);
                 string strBook = CommonFunctions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
                 string strPage = objSpell.DisplayPage(GlobalOptions.Language);
-                lblSpellSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblSpellSource, CommonFunctions.LanguageBookLong(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblSpellSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblSpellSource, CommonFunctions.LanguageBookLong(objSpell.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                 // Determine the size of the Spellcasting Dice Pool.
                 lblSpellDicePool.Text = objSpell.DicePool.ToString();
@@ -15707,11 +15707,11 @@ namespace Chummer
                     foreach (string strAttribute in AttributeSection.AttributeStrings)
                     {
                         CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                        strTip = strTip.CheapReplace(objAttrib.DisplayAbbrev, () => objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ')');
                     }
 
                     if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance) != 0)
-                        strTip += " + " + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + " (" + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance).ToString() + ")";
+                        strTip += " + " + LanguageManager.GetString("Tip_Skill_DicePoolModifiers", GlobalOptions.Language) + " (" + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance).ToString() + ')';
                     //if (objSpell.Limited)
                     //{
                     //    intDrain += 2;
@@ -15978,7 +15978,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + " " + objSelectedFocus.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + ' ' + objSelectedFocus.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -16057,7 +16057,7 @@ namespace Chummer
                     return;
                 }
 
-                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + " " + objStack.Name(GlobalOptions.Language))))
+                if (!CharacterObject.ConfirmKarmaExpense(LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus", GlobalOptions.Language).Replace("{0}", intKarmaExpense.ToString()).Replace("{1}", LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ' ' + objStack.Name(GlobalOptions.Language))))
                 {
                     // Clear created improvements
                     objStackGear.ChangeEquippedStatus(false);
@@ -16069,7 +16069,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + " " + LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + " " + objStack.Name(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound", GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ' ' + objStack.Name(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -16112,7 +16112,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + " " + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseInitiateGrade", GlobalOptions.Language) + ' ' + CharacterObject.InitiateGrade.ToString() + " 🡒 " + (CharacterObject.InitiateGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -16180,7 +16180,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + " " + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseSubmersionGrade", GlobalOptions.Language) + ' ' + CharacterObject.SubmersionGrade.ToString() + " 🡒 " + (CharacterObject.SubmersionGrade + 1).ToString(), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -16300,7 +16300,7 @@ namespace Chummer
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
 
-                lblTraditionSource.Text = objXmlTradition["source"].InnerText + " " + objXmlTradition["page"].InnerText;
+                lblTraditionSource.Text = objXmlTradition["source"].InnerText + ' ' + objXmlTradition["page"].InnerText;
                 CharacterObject.MagicTradition = cboTradition.SelectedValue.ToString();
                 CharacterObject.TraditionDrain = objXmlTradition["drain"].InnerText;
                 foreach (SpiritControl objSpiritControl in panSpirits.Controls)
@@ -16334,7 +16334,7 @@ namespace Chummer
             {
                 CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
                 if (strDrain.Contains(objAttrib.DisplayAbbrev))
-                    strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ")");
+                    strDrain = strDrain.Replace(objAttrib.DisplayAbbrev, objAttrib.DisplayAbbrev + " (" + objAttrib.TotalValue.ToString() + ')');
             }
             lblFadingAttributes.Text = strDrain;
             CharacterObject.TechnomancerStream = cboStream.SelectedValue.ToString();
@@ -16381,8 +16381,8 @@ namespace Chummer
             {
                 string strBook = CommonFunctions.LanguageBookShort(objMetamagic.Source, GlobalOptions.Language);
                 string strPage = objMetamagic.Page(GlobalOptions.Language);
-                lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objMetamagic.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblMetamagicSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objMetamagic.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -16393,8 +16393,8 @@ namespace Chummer
             {
                 string strBook = CommonFunctions.LanguageBookShort(objArt.Source, GlobalOptions.Language);
                 string strPage = objArt.Page(GlobalOptions.Language);
-                lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objArt.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblMetamagicSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -16405,8 +16405,8 @@ namespace Chummer
             {
                 string strBook = CommonFunctions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
                 string strPage = objSpell.DisplayPage(GlobalOptions.Language);
-                lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objSpell.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblMetamagicSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objSpell.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -16417,8 +16417,8 @@ namespace Chummer
             {
                 string strBook = CommonFunctions.LanguageBookShort(objEnhancement.Source, GlobalOptions.Language);
                 string strPage = objEnhancement.Page(GlobalOptions.Language);
-                lblMetamagicSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objEnhancement.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblMetamagicSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objEnhancement.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -16582,8 +16582,8 @@ namespace Chummer
                     chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
                     string strBook = CommonFunctions.LanguageBookShort(objPower.Source, GlobalOptions.Language);
                     string strPage = objPower.Page(GlobalOptions.Language);
-                    lblCritterPowerSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(objPower.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblCritterPowerSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(objPower.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                     if (objPower.PowerPoints > 0)
                     {
                             lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalOptions.CultureInfo);
@@ -16888,13 +16888,13 @@ namespace Chummer
                     // Build a string that contains the value(s) of the Improvement.
                     string strValue = string.Empty;
                     if (objImprovement.Value != 0)
-                        strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + " " + objImprovement.Value.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementValue", GlobalOptions.Language) + ' ' + objImprovement.Value.ToString() + ", ";
                     if (objImprovement.Minimum != 0)
-                        strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + " " + objImprovement.Minimum.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementMinimum", GlobalOptions.Language) + ' ' + objImprovement.Minimum.ToString() + ", ";
                     if (objImprovement.Maximum != 0)
-                        strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + " " + objImprovement.Maximum.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementMaximum", GlobalOptions.Language) + ' ' + objImprovement.Maximum.ToString() + ", ";
                     if (objImprovement.Augmented != 0)
-                        strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + " " + objImprovement.Augmented.ToString() + ", ";
+                        strValue += LanguageManager.GetString("Label_CreateImprovementAugmented", GlobalOptions.Language) + ' ' + objImprovement.Augmented.ToString() + ", ";
 
                     // Remove the trailing comma.
                     if (!string.IsNullOrEmpty(strValue))
@@ -17807,14 +17807,14 @@ namespace Chummer
                 objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
 
                 strMetatype += objMetatypeNode["translate"] != null
-                    ? " (" + objMetatypeNode["translate"].InnerText + ")"
-                    : " (" + CharacterObject.Metavariant + ")";
+                    ? " (" + objMetatypeNode["translate"].InnerText + ')'
+                    : " (" + CharacterObject.Metavariant + ')';
 
                 strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = strBook + " " + strPage;
+            lblMetatypeSource.Text = strBook + ' ' + strPage;
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
             txtAge.Text = CharacterObject.Age;
@@ -18434,7 +18434,7 @@ namespace Chummer
                 intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
                 strInit += " + " + strModifiers + " (" +
                            (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Initiative) +
-                            intINTAttributeModifiers + intREAAttributeModifiers).ToString() + ")";
+                            intINTAttributeModifiers + intREAAttributeModifiers).ToString() + ')';
             tipTooltip.SetToolTip(lblINI,
                 strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
 
@@ -18521,14 +18521,14 @@ namespace Chummer
                 $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
             if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions) != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions).ToString() + ")";
+                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions).ToString() + ')';
             tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
             lblLiftCarry.Text = CharacterObject.LiftAndCarry.ToString();
             strTip =
                 $"{CharacterObject.STR.DisplayAbbrev} ({dicAttributeTotalValues["STR"]}) + {CharacterObject.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]})";
             if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry) != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry).ToString() + ")";
+                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry).ToString() + ')';
             strTip += "\n" +
                       LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language)
                           .Replace("{0}", (dicAttributeTotalValues["STR"] * 15).ToString())
@@ -18539,7 +18539,7 @@ namespace Chummer
                 $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]})";
             if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory) != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory).ToString() + ")";
+                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory).ToString() + ')';
             tipTooltip.SetToolTip(lblMemory, strTip);
 
             // Career Karma.
@@ -18555,12 +18555,12 @@ namespace Chummer
             strTip = $"{CharacterObject.BOD.DisplayAbbrev} + {LanguageManager.GetString("Tip_Armor", GlobalOptions.Language)}";
             if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DamageResistance) != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DamageResistance).ToString() + ")";
+                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DamageResistance).ToString() + ')';
             tipTooltip.SetToolTip(lblCMDamageResistancePool, strTip);
 
             // Update EDG Remaining Info on the Condition Monitor tab.
-            string strEDG = dicAttributeTotalValues["EDG"].ToString() + " " + LanguageManager.GetString("String_Of", GlobalOptions.Language) +
-                            " " + dicAttributeValues["EDG"].ToString() + " " +
+            string strEDG = dicAttributeTotalValues["EDG"].ToString() + ' ' + LanguageManager.GetString("String_Of", GlobalOptions.Language) +
+                            ' ' + dicAttributeValues["EDG"].ToString() + ' ' +
                             LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
             lblEDGInfo.Text = strEDG;
 
@@ -18654,8 +18654,8 @@ namespace Chummer
                 lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalOptions.Language);
                 string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
                 string strPage = objCyberware.Page(GlobalOptions.Language);
-                lblCyberwareSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblCyberwareSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 lblCyberwareRating.Text = objCyberware.Rating.ToString();
 
                 lblCyberwareGrade.Text = objCyberware.Grade.DisplayName(GlobalOptions.Language);
@@ -18742,11 +18742,11 @@ namespace Chummer
                 lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
                 lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
-                                            objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " +
-                                            LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                                            objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' +
+                                            LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblCyberwareEssence.Text = objCyberware.CalculatedESS().ToString(GlobalOptions.CultureInfo);
                 if (objCyberware.AddToParentESS)
-                    lblCyberwareEssence.Text = "+" + lblCyberwareEssence.Text;
+                    lblCyberwareEssence.Text = '+' + lblCyberwareEssence.Text;
             }
             else
             {
@@ -18811,14 +18811,14 @@ namespace Chummer
                     lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
                     lblCyberwareCost.Text = objGear.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
-                                                " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                                                ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     lblCyberwareEssence.Text = "0";
                     lblCyberwareGrade.Text = string.Empty;
                     lblCyberwareRating.Text = objGear.Rating.ToString();
                     string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblCyberwareSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblCyberwareSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblCyberwareSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 }
             }
             _blnSkipRefresh = false;
@@ -18949,8 +18949,8 @@ namespace Chummer
                 lblWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
                 string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                 string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                lblWeaponSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblWeaponSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkWeaponAccessoryInstalled.Enabled = false;
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = false;
@@ -19045,12 +19045,12 @@ namespace Chummer
                         if (objGear == null)
                         {
                             if (objWeapon.AmmoRemaining == 0)
-                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                             else
-                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
+                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
                         }
                         else
-                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort(GlobalOptions.Language);
+                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language);
                         if (!string.IsNullOrEmpty(strPlugins))
                             strAmmoName += " [" + strPlugins + "]";
                         lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
@@ -19229,9 +19229,9 @@ namespace Chummer
                         
                         string strAmmoName = string.Empty;
                         if (objGear == null)
-                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                         else
-                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + objGear.DisplayNameShort(GlobalOptions.Language);
+                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language);
                         if (!string.IsNullOrEmpty(strPlugins))
                             strAmmoName += " [" + strPlugins + "]";
                         lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
@@ -19297,7 +19297,7 @@ namespace Chummer
                         foreach (string strCurrentMount in strMounts)
                         {
                             if (!string.IsNullOrEmpty(strCurrentMount))
-                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + "/";
+                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
                         }
                         // Remove the trailing /
                         if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
@@ -19315,7 +19315,7 @@ namespace Chummer
                                         strMount += " + ";
                                         boolHaveAddedItem = true;
                                     }
-                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + "/";
+                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
                                 }
                             }
                             // Remove the trailing /
@@ -19326,8 +19326,8 @@ namespace Chummer
                         lblWeaponSlots.Text = strMount;
                         string strBook = CommonFunctions.LanguageBookShort(objSelectedAccessory.Source, GlobalOptions.Language);
                         string strPage = objSelectedAccessory.Page(GlobalOptions.Language);
-                        lblWeaponSource.Text = strBook + " " + CommonFunctions.LanguageBookLong(objSelectedAccessory.Source, GlobalOptions.Language);
-                        tipTooltip.SetToolTip(lblWeaponSource, strBook + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblWeaponSource.Text = strBook + ' ' + CommonFunctions.LanguageBookLong(objSelectedAccessory.Source, GlobalOptions.Language);
+                        tipTooltip.SetToolTip(lblWeaponSource, strBook + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         chkWeaponAccessoryInstalled.Enabled = true;
                         chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Installed;
                         chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
@@ -19392,8 +19392,8 @@ namespace Chummer
                             lblWeaponSlots.Text = string.Empty;
                             string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                             string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                            lblWeaponSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.BookFromCode(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            lblWeaponSource.Text = strBook + ' ' + strPage;
+                            tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.BookFromCode(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                             chkWeaponAccessoryInstalled.Enabled = true;
                             chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                             chkIncludedInWeapon.Enabled = false;
@@ -19497,13 +19497,13 @@ namespace Chummer
 
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
                 lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
-                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblArmorRating.Text = string.Empty;
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strBook = CommonFunctions.LanguageBookShort(objArmor.Source, GlobalOptions.Language);
                 string strPage = objArmor.Page(GlobalOptions.Language);
-                lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objArmor.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblArmorSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objArmor.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Enabled = false;
@@ -19527,18 +19527,18 @@ namespace Chummer
                     else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
                     {
                         if (objSelectedMod.Rating > 0)
-                            lblArmorCapacity.Text = "[" + objSelectedMod.Rating.ToString() + "]";
+                            lblArmorCapacity.Text = '[' + objSelectedMod.Rating.ToString() + ']';
                         else
                             lblArmorCapacity.Text = "[1]";
                     }
                     if (!string.IsNullOrEmpty(objSelectedMod.GearCapacity))
-                        lblArmorCapacity.Text = objSelectedMod.GearCapacity + "/" + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                        lblArmorCapacity.Text = objSelectedMod.GearCapacity + '/' + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     lblArmorCost.Text = objSelectedMod.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                     string strBook = CommonFunctions.LanguageBookShort(objSelectedMod.Source, GlobalOptions.Language);
                     string strPage = objSelectedMod.DisplayPage(GlobalOptions.Language);
-                    lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblArmorSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                     chkArmorEquipped.Checked = objSelectedMod.Equipped;
                     chkArmorEquipped.Enabled = true;
                     lblArmorRating.Text = objSelectedMod.Rating.ToString();
@@ -19566,7 +19566,7 @@ namespace Chummer
                         else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
                         {
                             if (objSelectedGear.Rating > 0)
-                                lblArmorCapacity.Text = "[" + objSelectedGear.Rating.ToString() + "]";
+                                lblArmorCapacity.Text = '[' + objSelectedGear.Rating.ToString() + ']';
                             else
                                 lblArmorCapacity.Text = "[1]";
                         }
@@ -19574,8 +19574,8 @@ namespace Chummer
                     lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     string strBook = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
                     string strPage = objSelectedGear.DisplayPage(GlobalOptions.Language);
-                    lblArmorSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblArmorSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                     chkArmorEquipped.Checked = objSelectedGear.Equipped;
                     chkArmorEquipped.Enabled = true;
                     lblArmorRating.Text = objSelectedGear.Rating.ToString();
@@ -19599,8 +19599,8 @@ namespace Chummer
                 lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 string strBook = CommonFunctions.LanguageBookShort(objSelectedGear.Source, GlobalOptions.Language);
                 string strPage = objSelectedGear.DisplayPage(GlobalOptions.Language);
-                lblArmorSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblArmorSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblArmorSource, CommonFunctions.LanguageBookLong(objSelectedGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkArmorEquipped.Checked = objSelectedGear.Equipped;
                 chkArmorEquipped.Enabled = true;
                 lblArmorRating.Text = objSelectedGear.Rating.ToString();
@@ -19668,11 +19668,11 @@ namespace Chummer
                     {
                         lblGearCost.Text = objGear.Cost + "¥";
                     }
-                    lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                    lblGearCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblGearSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblGearSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblGearSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblGearSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                     if (intDeviceRating > 0)
@@ -20066,7 +20066,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             List<Vehicle> lstVehicles = new List<Vehicle>();
             objCyberware.Create(objXmlCyberware, CharacterObject, frmPickCyberware.SelectedGrade, objSource, frmPickCyberware.SelectedRating, lstWeapons, lstVehicles, true, true, string.Empty, objSelectedCyberware);
-            if (objCyberware.InternalId == Guid.Empty.ToString())
+            if (objCyberware.InternalId == Guid.Empty.ToString("D"))
                 return false;
 
 
@@ -20109,7 +20109,7 @@ namespace Chummer
                         strEntry = LanguageManager.GetString("String_ExpensePurchaseCyberware", GlobalOptions.Language);
                     else
                         strEntry = LanguageManager.GetString("String_ExpensePurchaseBioware", GlobalOptions.Language);
-                    objExpense.Create(decCost * -1, strEntry + " " + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, strEntry + ' ' + objCyberware.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -20261,7 +20261,7 @@ namespace Chummer
             Gear objGear = new Gear(CharacterObject);
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue, true, true, frmPickGear.Aerodynamic);
 
-            if (objGear.InternalId == Guid.Empty.ToString())
+            if (objGear.InternalId == Guid.Empty.ToString("D"))
                 return false;
 
             objGear.Quantity = frmPickGear.SelectedQty;
@@ -20358,7 +20358,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -20367,7 +20367,7 @@ namespace Chummer
                 }
             }
 
-            if (objGear.InternalId == Guid.Empty.ToString())
+            if (objGear.InternalId == Guid.Empty.ToString("D"))
                 return false;
 
             if (objStackWith != null)
@@ -20517,7 +20517,7 @@ namespace Chummer
             Gear objGear = new Gear(CharacterObject);
             objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-            if (objGear.InternalId == Guid.Empty.ToString())
+            if (objGear.InternalId == Guid.Empty.ToString("D"))
                 return false;
 
             objGear.Quantity = frmPickGear.SelectedQty;
@@ -20585,7 +20585,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear", GlobalOptions.Language) + " " + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseArmorGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.Add(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -20594,7 +20594,7 @@ namespace Chummer
                 }
             }
 
-            if (objGear.InternalId == Guid.Empty.ToString())
+            if (objGear.InternalId == Guid.Empty.ToString("D"))
                 return false;
 
             // Create any Weapons that came with this Gear.
@@ -20689,8 +20689,8 @@ namespace Chummer
                 lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
                 string strBook = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language);
                 string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
-                lblLifestyleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblLifestyleSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                 // Change the Cost/Month label.
@@ -21000,7 +21000,7 @@ namespace Chummer
 
                     if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                     {
-                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed + "/" + objVehicle.DroneModSlots;
+                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots.ToString();
                         lblVehicleDroneModSlots.Visible = true;
                         lblVehicleDroneModSlotsLabel.Visible = true;
                         lblVehiclePowertrain.Visible = false;
@@ -21066,15 +21066,15 @@ namespace Chummer
                     lblVehicleWeaponsmodLabel.Visible = false;
                     lblVehicleProtectionLabel.Visible = false;
                     lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 }
 
                 lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
                 UpdateSensor(objVehicle);
                 string strBook = CommonFunctions.LanguageBookShort(objVehicle.Source, GlobalOptions.Language);
                 string strPage = objVehicle.Page(GlobalOptions.Language);
-                lblVehicleSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblVehicleSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 chkVehicleWeaponAccessoryInstalled.Enabled = false;
                 chkVehicleIncludedInWeapon.Checked = false;
                 
@@ -21173,8 +21173,8 @@ namespace Chummer
                     lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
                     string strBook = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language);
                     string strPage = objMod.Page(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblVehicleSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 }
                 else
                 {
@@ -21206,11 +21206,11 @@ namespace Chummer
                         lblVehicleBody.Text = string.Empty;
                         lblVehicleArmor.Text = string.Empty;
                         lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                         string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                         string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -21304,12 +21304,12 @@ namespace Chummer
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                                     else
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
+                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
                                 }
                                 else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
+                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
 
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     strAmmoName += " [" + strPlugins + "]";
@@ -21353,8 +21353,8 @@ namespace Chummer
                         lblVehicleSlots.Text = string.Empty;
                         string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -21414,11 +21414,11 @@ namespace Chummer
                     lblVehicleBody.Text = string.Empty;
                     lblVehicleArmor.Text = string.Empty;
                     lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + objGear.DisplayPage(strPage));
+                    lblVehicleSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + objGear.DisplayPage(strPage));
 
                     int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                     lblVehicleDevice.Text = intDeviceRating.ToString();
@@ -21494,12 +21494,12 @@ namespace Chummer
                                 if (objVehicleGear == null)
                                 {
                                     if (objWeapon.AmmoRemaining == 0)
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                                     else
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
+                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
                                 }
                                 else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
+                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
                                 if (!string.IsNullOrEmpty(strPlugins))
                                     strAmmoName += " [" + strPlugins + "]";
                                 lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
@@ -21542,8 +21542,8 @@ namespace Chummer
                         lblVehicleSlots.Text = string.Empty;
                         string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                         cmdVehicleMoveToInventory.Enabled = true;
 
@@ -21606,8 +21606,8 @@ namespace Chummer
 
                             string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
                             string strPage = objCyberware.Page(GlobalOptions.Language);
-                            lblVehicleSource.Text = strBook + " " + strPage;
-                            tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                            lblVehicleSource.Text = strBook + ' ' + strPage;
+                            tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         }
                     }
                 }
@@ -21644,11 +21644,11 @@ namespace Chummer
                     lblVehicleBody.Text = string.Empty;
                     lblVehicleArmor.Text = string.Empty;
                     lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + " " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")";
+                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                     string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + " " + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    lblVehicleSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                     lblVehicleDevice.Text = intDeviceRating.ToString();
@@ -21692,7 +21692,7 @@ namespace Chummer
                         foreach (string strCurrentMount in strMounts)
                         {
                             if (!string.IsNullOrEmpty(strCurrentMount))
-                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + "/";
+                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
                         }
                         // Remove the trailing /
                         if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
@@ -21710,7 +21710,7 @@ namespace Chummer
                                         strMount += " + ";
                                         boolHaveAddedItem = true;
                                     }
-                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + "/";
+                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
                                 }
                             }
                             // Remove the trailing /
@@ -21721,8 +21721,8 @@ namespace Chummer
                         lblVehicleSlots.Text = strMount;
                         string strBook = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
                         string strPage = objAccessory.Page(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         chkVehicleWeaponAccessoryInstalled.Enabled = true;
                         chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
                         chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
@@ -21804,12 +21804,12 @@ namespace Chummer
                             if (objVehicleGear == null)
                             {
                                 if (objWeapon.AmmoRemaining == 0)
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
                                 else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
+                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
                             }
                             else
-                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + " " + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
+                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
 
                             if (!string.IsNullOrEmpty(strPlugins))
                                 strAmmoName += " [" + strPlugins + "]";
@@ -21853,10 +21853,10 @@ namespace Chummer
                         lblVehicleSlots.Text = string.Empty;
                         string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
                         string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + " " + strPage;
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
                         chkVehicleWeaponAccessoryInstalled.Enabled = true;
                         chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         lblVehicleWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
                     }
                 }
@@ -21906,7 +21906,7 @@ namespace Chummer
 
                     ListViewItem objItem = new ListViewItem
                     {
-                        Text = objExpense.Date.ToShortDateString() + " " + objExpense.Date.ToShortTimeString()
+                        Text = objExpense.Date.ToShortDateString() + ' ' + objExpense.Date.ToShortTimeString()
                     };
                     objItem.SubItems.Add(objAmountItem);
                     objItem.SubItems.Add(objReasonItem);
@@ -22180,9 +22180,9 @@ namespace Chummer
                 lblMentorSpirit.Visible = true;
                 lblMentorSpiritInformation.Visible = true;
                 lblMentorSpirit.Text = objMentor.DisplayNameShort(GlobalOptions.Language);
-                lblMentorSpiritInformation.Text = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage", GlobalOptions.Language) + " " +
+                lblMentorSpiritInformation.Text = LanguageManager.GetString("Label_SelectMentorSpirit_Advantage", GlobalOptions.Language) + ' ' +
                                    objMentor.DisplayAdvantage(GlobalOptions.Language) + "\n\n" +
-                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Language) + " " +
+                                   LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Language) + ' ' +
                                    objMentor.Disadvantage;
             }
         }
@@ -23018,7 +23018,7 @@ namespace Chummer
                     }
                 }
                 if (!string.IsNullOrEmpty(strErasedString))
-                    strErasedString = " (" + strErasedString + ")";
+                    strErasedString = " (" + strErasedString + ')';
                 lblPublicAwareTotal.Text += " - " + (intTotalPublicAwareness - 1).ToString() + strErasedString;
                 intTotalPublicAwareness = 1;
             }
@@ -23153,8 +23153,8 @@ namespace Chummer
 
                 string strBook = CommonFunctions.LanguageBookShort(objComplexForm.Source, GlobalOptions.Language);
                 string strPage = objComplexForm.Page(GlobalOptions.Language);
-                lblComplexFormSource.Text = strBook + " " + strPage;
-                tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objComplexForm.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                lblComplexFormSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblComplexFormSource, CommonFunctions.LanguageBookLong(objComplexForm.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
         }
 
@@ -23421,7 +23421,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + " " + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
+                objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseCyberwareSuite", GlobalOptions.Language) + ' ' + frmPickCyberwareSuite.SelectedSuite, ExpenseType.Nuyen, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objExpense);
                 CharacterObject.Nuyen -= decCost;
             }
@@ -23480,7 +23480,7 @@ namespace Chummer
                 string strLimit = treLimit.SelectedNode.Text;
                 string strCondition = frmPickLimitModifier.SelectedCondition;
                 objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
-                if (objLimitModifier.InternalId == Guid.Empty.ToString())
+                if (objLimitModifier.InternalId == Guid.Empty.ToString("D"))
                     return;
                 
                 CharacterObject.LimitModifiers.Add(objLimitModifier);
@@ -23716,7 +23716,7 @@ namespace Chummer
 
             objNewMetamagic.Create(objXmlMetamagic, objSource);
             objNewMetamagic.Grade = intGrade;
-            if (objNewMetamagic.InternalId == Guid.Empty.ToString())
+            if (objNewMetamagic.InternalId == Guid.Empty.ToString("D"))
             {
                 frmPickMetamagic.Dispose();
                 return;
@@ -23728,7 +23728,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + " " + frmPickMetamagic.SelectedMetamagic, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + frmPickMetamagic.SelectedMetamagic, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -23792,7 +23792,7 @@ namespace Chummer
 
             objArt.Create(objXmlArt, objSource);
             objArt.Grade = intGrade;
-            if (objArt.InternalId == Guid.Empty.ToString())
+            if (objArt.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             CharacterObject.Arts.Add(objArt);
@@ -23801,7 +23801,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -23881,7 +23881,7 @@ namespace Chummer
 
             objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
+            if (objNewSpell.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             CharacterObject.Spells.Add(objNewSpell);
@@ -23890,7 +23890,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -23973,7 +23973,7 @@ namespace Chummer
 
             objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
             objNewSpell.Grade = intGrade;
-            if (objNewSpell.InternalId == Guid.Empty.ToString())
+            if (objNewSpell.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             CharacterObject.Spells.Add(objNewSpell);
@@ -23982,7 +23982,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(-intSpellKarmaCost, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -24160,7 +24160,7 @@ namespace Chummer
 
             objEnhancement.Create(objXmlArt, objSource);
             objEnhancement.Grade = intGrade;
-            if (objEnhancement.InternalId == Guid.Empty.ToString())
+            if (objEnhancement.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             Power objPower = new Power(CharacterObject);
@@ -24186,7 +24186,7 @@ namespace Chummer
             {
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + " " + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -24429,7 +24429,7 @@ namespace Chummer
                 
                 AIProgram objProgram = new AIProgram(CharacterObject);
                 objProgram.Create(objXmlProgram, boolIsAdvancedProgram, strExtra);
-                if (objProgram.InternalId == Guid.Empty.ToString())
+                if (objProgram.InternalId == Guid.Empty.ToString("D"))
                 {
                     frmPickProgram.Dispose();
                     continue;
@@ -24447,7 +24447,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram", GlobalOptions.Language) + " " + objProgram.Name, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create((boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost) * -1, LanguageManager.GetString("String_ExpenseLearnProgram", GlobalOptions.Language) + ' ' + objProgram.Name, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
                 CharacterObject.Karma -= (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost);
 
@@ -24516,8 +24516,8 @@ namespace Chummer
 
                         string strBook = CommonFunctions.LanguageBookShort(objProgram.Source, GlobalOptions.Language);
                         string strPage = objProgram.Page(GlobalOptions.Language);
-                        lblAIProgramsSource.Text = strBook + " " + strPage;
-                        tipTooltip.SetToolTip(lblAIProgramsSource, CommonFunctions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        lblAIProgramsSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblAIProgramsSource, CommonFunctions.LanguageBookLong(objProgram.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                     }
                 }
             }

@@ -128,7 +128,7 @@ namespace Chummer
                 if (nudDVMod.Value < 0)
                     strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
                 else
-                    strDamage += "+" + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
@@ -137,7 +137,7 @@ namespace Chummer
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = "+" + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
             else
                 strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
 

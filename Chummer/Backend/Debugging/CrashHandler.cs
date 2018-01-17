@@ -56,7 +56,7 @@ namespace Chummer.Backend
             void AddDefaultInfo()
             {
                 //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
-                attributes.Add("visible-crash-id", Guid.NewGuid().ToString());
+                attributes.Add("visible-crash-id", Guid.NewGuid().ToString("D"));
 
                 attributes.Add("visible-build-type",
                     #if DEBUG

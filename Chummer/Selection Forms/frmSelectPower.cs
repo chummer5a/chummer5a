@@ -87,12 +87,10 @@ namespace Chummer
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlPower["page"].InnerText;
-            if (objXmlPower["altpage"] != null)
-                strPage = objXmlPower["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

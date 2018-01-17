@@ -70,8 +70,8 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("power");
-            objWriter.WriteElementString("id", _sourceID.ToString());
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("id", _sourceID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", Name);
             objWriter.WriteElementString("extra", Extra);
             objWriter.WriteElementString("pointsperlevel", _strPointsPerLevel);
@@ -293,7 +293,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString();
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Power's name.
@@ -748,7 +748,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage)?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("powers.xml", strLanguage)?.SelectSingleNode("/chummer/powers/power[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -367,20 +367,18 @@ namespace Chummer
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                 if (_objCapacityStyle == CapacityStyle.Standard)
-                    lblCapacity.Text = "[" + CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))) + "]";
+                    lblCapacity.Text = '[' + CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
                 else if (_objCapacityStyle == CapacityStyle.PerRating)
-                    lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + "]";
+                    lblCapacity.Text = '[' + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + ']';
                 else if (_objCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlMod["page"].InnerText;
-            if (objXmlMod["altpage"] != null)
-                strPage = objXmlMod["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         /// <summary>
@@ -396,7 +394,7 @@ namespace Chummer
             for (int i = 0; i < strAllowed.Length; i++)
             {
                 if (!string.IsNullOrEmpty(strAllowed[i]))
-                    strMount += "category = \"" + strAllowed[i] + "\"";
+                    strMount += "category = \"" + strAllowed[i] + '\"';
                 if (i < strAllowed.Length - 1 || !_blnExcludeGeneralCategory)
                 {
                     strMount += " or ";

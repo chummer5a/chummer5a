@@ -153,7 +153,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_insertCrash.Reset(true, false);
-				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_insertCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@timestamp", timestamp));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@buildtype", buildType));
 				_insertCrash.Parameters.Add(new SQLiteParameter("@errorfriendly", errorFriendly));
@@ -236,7 +236,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_getSingleCrash.Reset(true, false);
-				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_getSingleCrash.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 
 				using (SQLiteDataReader reader = _getSingleCrash.ExecuteReader())
 				{
@@ -255,7 +255,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setZipFile.Reset(true, false);
-				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setZipFile.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setZipFile.Parameters.Add(new SQLiteParameter("@ziplocation", filePath));
 
 				_setZipFile.ExecuteNonQuery();
@@ -267,7 +267,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setUserStory.Reset(true, false);
-				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setUserStory.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setUserStory.Parameters.Add(new SQLiteParameter("@userstory", userstory));
 
 				_setUserStory.ExecuteNonQuery();
@@ -279,7 +279,7 @@ namespace ChummerDataViewer.Model
 			lock (_syncRoot)
 			{
 				_setStackTrace.Reset(true, false);
-				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString()));
+				_setStackTrace.Parameters.Add(new SQLiteParameter("@guid", guid.ToString("D")));
 				_setStackTrace.Parameters.Add(new SQLiteParameter("@stacktrace", exception));
 
 				_setStackTrace.ExecuteNonQuery();

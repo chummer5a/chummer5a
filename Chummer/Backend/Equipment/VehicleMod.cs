@@ -179,7 +179,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("mod");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("limit", _strLimit);
@@ -372,7 +372,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
-        public string InternalId => _guiID.ToString();
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Name.
@@ -398,7 +398,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -762,7 +762,7 @@ namespace Chummer.Backend.Equipment
                             string strChildAvailExpr = strChildAvail;
 
                             // Remove the "+" since the expression can't be evaluated if it starts with this.
-                            strChildAvail = "+" + CommonFunctions.EvaluateInvariantXPath(strChildAvailExpr.TrimStart('+'));
+                            strChildAvail = '+' + CommonFunctions.EvaluateInvariantXPath(strChildAvailExpr.TrimStart('+')).ToString();
                             if (!string.IsNullOrEmpty(strChildAvailText))
                                 strChildAvail += strChildAvailText;
                         }
@@ -840,26 +840,26 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     if (blnSquareBrackets)
-                        strReturn = "[" + strCapacity + "]";
+                        strReturn = '[' + strCapacity + ']';
 
                     if (strSecondHalf.Contains("Rating"))
                     {
                         strSecondHalf = strSecondHalf.Trim(lstBracketChars);
                         try
                         {
-                            strSecondHalf = "[" + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + "]";
+                            strSecondHalf = '[' + ((double)CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo) + ']';
                         }
                         catch (XPathException)
                         {
-                            strSecondHalf = "[" + strSecondHalf + "]";
+                            strSecondHalf = '[' + strSecondHalf + ']';
                         }
                         catch (OverflowException) // Result is text and not a double
                         {
-                            strSecondHalf = "[" + strSecondHalf + "]";
+                            strSecondHalf = '[' + strSecondHalf + ']';
                         }
                         catch (InvalidCastException) // Result is text and not a double
                         {
-                            strSecondHalf = "[" + strSecondHalf + "]";
+                            strSecondHalf = '[' + strSecondHalf + ']';
                         }
                     }
 
@@ -875,7 +875,7 @@ namespace Chummer.Backend.Equipment
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
                     strReturn = ((double)CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", _intRating.ToString()))).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
-                        strReturn = "[" + strReturn + "]";
+                        strReturn = '[' + strReturn + ']';
                 }
                 else
                 {
@@ -1053,9 +1053,9 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
 
             if (!string.IsNullOrEmpty(_strExtra))
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             if (_intRating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + " " + _intRating.ToString() + ")";
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + _intRating.ToString() + ')';
             return strReturn;
         }
 

@@ -24,7 +24,7 @@ namespace ChummerDataViewer
 			InitializeComponent();
 
 			lblBuildType.Text = report.BuildType;
-			lblGuid.Text = report.Guid.ToString();
+			lblGuid.Text = report.Guid.ToString("D");
 			lblVersion.Text = report.Version.ToString(3);
 			lblDate.Text = report.Timestamp.ToString("dd MMM yyyy", CultureInfo.InvariantCulture);
 

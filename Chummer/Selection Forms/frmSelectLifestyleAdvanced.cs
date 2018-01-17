@@ -162,7 +162,7 @@ namespace Chummer
 
             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
             if (objXmlAspect?["source"] != null && objXmlAspect["page"] != null)
-                lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
+                lblSource.Text = objXmlAspect["source"].InnerText + ' ' + objXmlAspect["page"].InnerText;
 
             cboBaseLifestyle.EndUpdate();
             _blnSkipRefresh = false;
@@ -222,7 +222,7 @@ namespace Chummer
                 {
                     objGridNodes = objXmlAspect.SelectNodes("freegrids/freegrid");
                     if (objXmlAspect["source"] != null && objXmlAspect["page"] != null)
-                        lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
+                        lblSource.Text = objXmlAspect["source"].InnerText + ' ' + objXmlAspect["page"].InnerText;
                 }
 
 
@@ -382,7 +382,7 @@ namespace Chummer
 
             objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
             //objNode.ContextMenuStrip = cmsQuality;
-            if (objQuality.InternalId == Guid.Empty.ToString())
+            if (objQuality.InternalId == Guid.Empty.ToString("D"))
                 return;
 
             objQuality.Free = frmSelectLifestyleQuality.FreeCost;

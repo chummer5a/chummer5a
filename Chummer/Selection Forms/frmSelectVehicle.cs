@@ -377,20 +377,18 @@ namespace Chummer
 
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language);
-            string strPage = objXmlVehicle["page"]?.InnerText;
-            if (objXmlVehicle["altpage"] != null)
-                strPage = objXmlVehicle["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlVehicle["altpage"]?.InnerText ?? objXmlVehicle["page"]?.InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -401,7 +399,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
             if (txtSearch.TextLength != 0)
@@ -411,7 +409,7 @@ namespace Chummer
                 strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
             }
 
-            BuildVehicleList(_objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strFilter + "]"));
+            BuildVehicleList(_objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strFilter + ']'));
         }
 
         private void BuildVehicleList(XmlNodeList objXmlVehicleList)
@@ -432,7 +430,7 @@ namespace Chummer
                             ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
                             if (!string.IsNullOrEmpty(objFoundItem.Name))
                             {
-                                strDisplayname += " [" + objFoundItem.Name + "]";
+                                strDisplayname += " [" + objFoundItem.Name + ']';
                             }
                         }
                     }

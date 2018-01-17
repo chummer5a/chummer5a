@@ -477,8 +477,8 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("vehicle");
-            objWriter.WriteElementString("id", _sourceID.ToString());
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("id", _sourceID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("handling", _intHandling.ToString(CultureInfo.InvariantCulture));
@@ -832,7 +832,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 
@@ -867,7 +867,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]")?.Attributes?["translate"]?.InnerText ?? Category;
+            return XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -2528,7 +2528,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && x.InternalId != Guid.Empty.ToString());
+                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && x.InternalId != Guid.Empty.ToString("D"));
                 if (objGear != null)
                 {
                     return objGear.Rating;
@@ -2549,7 +2549,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID.ToString() + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

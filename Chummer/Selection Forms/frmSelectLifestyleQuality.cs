@@ -138,7 +138,7 @@ namespace Chummer
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            lblSource.Text = strBook + ' ' + strPage;
             if (objXmlQuality["allowed"] != null)
             {
                 lblMinimum.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);
@@ -184,7 +184,7 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
             }
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)
@@ -353,7 +353,7 @@ namespace Chummer
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             }
             else
             {

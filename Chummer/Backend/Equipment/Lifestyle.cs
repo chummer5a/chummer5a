@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("lifestyle");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("cost", _decCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("dice", _intDice.ToString(CultureInfo.InvariantCulture));
@@ -148,7 +148,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("trustfund", _blnTrustFund.ToString());
             objWriter.WriteElementString("primarytenant", _primaryTenant.ToString());
             objWriter.WriteElementString("type", _objType.ToString());
-            objWriter.WriteElementString("sourceid", SourceID.ToString());
+            objWriter.WriteElementString("sourceid", SourceID.ToString("D"));
             objWriter.WriteStartElement("lifestylequalities");
             foreach (var objQuality in _lstLifestyleQualities)
             {
@@ -345,7 +345,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("months", _intMonths.ToString(objCulture));
             objWriter.WriteElementString("purchased", _blnPurchased.ToString());
             objWriter.WriteElementString("type", _objType.ToString());
-            objWriter.WriteElementString("sourceid", SourceID.ToString());
+            objWriter.WriteElementString("sourceid", SourceID.ToString("D"));
             var strBaseLifestyle = string.Empty;
 
             // Retrieve the Advanced Lifestyle information if applicable.
@@ -395,7 +395,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Internal identifier which will be used to identify this Lifestyle in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString();
+        public string InternalId => _guiID.ToString("D");
 
         public IList<LifestyleQuality> FreeGrids { get; } = new List<LifestyleQuality>();
 
@@ -704,7 +704,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString().TrimStart('{').TrimEnd('}') + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

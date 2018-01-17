@@ -291,9 +291,9 @@ namespace Chummer
 
                     string strSource = objXmlPower["altsource"]?.InnerText ?? objXmlPower["source"]?.InnerText ?? string.Empty;
                     string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"]?.InnerText ?? string.Empty;
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + " " + strPage;
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
                     if (!string.IsNullOrEmpty(strSource))
-                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 
@@ -391,7 +391,7 @@ namespace Chummer
                 if (strCategory == "Toxic Critter Powers")
                     strFilter += " and (category = \"" + strCategory + "\" or toxic = \"True\")";
                 else
-                    strFilter += " and category = \"" + strCategory + "\"";
+                    strFilter += " and category = \"" + strCategory + '\"';
             }
             else
             {

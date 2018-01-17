@@ -91,14 +91,12 @@ namespace Chummer
                 lblFV.Text = strFV;
 
                 string strBook = CommonFunctions.LanguageBookShort(objXmlProgram["source"].InnerText, GlobalOptions.Language);
-                string strPage = objXmlProgram["page"].InnerText;
-                if (objXmlProgram["altpage"] != null)
-                    strPage = objXmlProgram["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
+                string strPage = objXmlProgram["altpage"]?.InnerText ?? objXmlProgram["page"].InnerText;
+                lblSource.Text = strBook + ' ' + strPage;
 
                 tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + " " +
-                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                    CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + ' ' +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
         }
 

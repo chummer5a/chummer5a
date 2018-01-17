@@ -408,7 +408,7 @@ namespace Chummer
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -782,12 +782,10 @@ namespace Chummer
                     lblLimit.Text = string.Empty;
 
                 string strBook = CommonFunctions.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);
-                string strPage = objXmlMod["page"].InnerText;
-                if (objXmlMod["altpage"] != null)
-                    strPage = objXmlMod["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
+                string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"].InnerText;
+                lblSource.Text = strBook + ' ' + strPage;
 
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
             _blnSkipUpdate = false;
         }

@@ -474,7 +474,7 @@ namespace Chummer
             set
             {
                 _decMaximumCapacity = value;
-                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + " " + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
+                lblMaximumCapacity.Text = LanguageManager.GetString("Label_MaximumCapacityAllowed", GlobalOptions.Language) + ' ' + _decMaximumCapacity.ToString("#,0.##", GlobalOptions.CultureInfo);
             }
         }
 
@@ -639,7 +639,7 @@ namespace Chummer
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlGear["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlGear["altpage"]?.InnerText ?? objXmlGear["page"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            lblSource.Text = strBook + ' ' + strPage;
 
             // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
@@ -677,20 +677,26 @@ namespace Chummer
             }
             strAvailExpr = objAvailNode.InnerText;
 
-            if (strAvailExpr.EndsWith('F', 'R'))
+            if (!string.IsNullOrEmpty(strAvailExpr))
             {
-                strAvail = strAvailExpr.Substring(strAvailExpr.Length - 1, 1);
-                if (strAvail == "R")
+                char chrLastChar = strAvailExpr[strAvailExpr.Length - 1];
+                if (chrLastChar == 'R')
+                {
                     strAvail = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                else if (strAvail == "F")
+                    // Remove the trailing character if it is "F" or "R".
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                else if (chrLastChar == 'F')
+                {
                     strAvail = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
-                // Remove the trailing character if it is "F" or "R".
-                strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-            }
-            if (strAvailExpr.Substring(0, 1) == "+")
-            {
-                strPrefix = "+";
-                strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                    // Remove the trailing character if it is "F" or "R".
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                }
+                if (strAvailExpr[0] == '+')
+                {
+                    strPrefix = "+";
+                    strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
+                }
             }
 
             try
@@ -879,10 +885,10 @@ namespace Chummer
                             }
 
                             if (blnSquareBrackets)
-                                lblCapacity.Text = "[" + lblCapacity.Text + "]";
+                                lblCapacity.Text = '[' + lblCapacity.Text + ']';
                         }
 
-                        lblCapacity.Text += "/" + strSecondHalf;
+                        lblCapacity.Text += '/' + strSecondHalf;
                     }
                     else if (strCapacityText == "[*]")
                         lblCapacity.Text = "*";
@@ -923,7 +929,7 @@ namespace Chummer
                                 lblCapacity.Text = strCalculatedCapacity;
                         }
                         if (blnSquareBrackets)
-                            lblCapacity.Text = "[" + lblCapacity.Text + "]";
+                            lblCapacity.Text = '[' + lblCapacity.Text + ']';
                     }
                 }
                 else
@@ -938,7 +944,7 @@ namespace Chummer
                 if (nudRating.Value == 0)
                     lblCapacity.Text = "[1]";
                 else
-                    lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.CultureInfo) + "]";
+                    lblCapacity.Text = '[' + nudRating.Value.ToString(GlobalOptions.CultureInfo) + ']';
             }
 
             // Rating.
@@ -978,14 +984,14 @@ namespace Chummer
                 nudRating.Enabled = false;
             }
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlGear["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlGear["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else if (!string.IsNullOrEmpty(_strAllowedCategories))
             {
                 StringBuilder objCategoryFilter = new StringBuilder();

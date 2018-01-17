@@ -303,7 +303,7 @@ namespace Chummer
                 foreach (XmlNode objNode in value?.SelectNodes("category"))
                 {
                     objLimitToCategories.Append("category = ");
-                    objLimitToCategories.Append("\"" + objNode.InnerText + "\"");
+                    objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
                     objLimitToCategories.Append(" or ");
                 }
                 // Remove the last " or "

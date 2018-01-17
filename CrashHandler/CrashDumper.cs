@@ -259,7 +259,7 @@ namespace CrashHandler
 			StringBuilder sb = new StringBuilder();
 			foreach (KeyValuePair<string, string> keyValuePair in Attributes)
 			{
-				sb.Append("\"");
+				sb.Append('\"');
 				sb.Append(keyValuePair.Key);
 				sb.Append("\"-\"");
 				sb.Append(keyValuePair.Value);
@@ -375,7 +375,7 @@ namespace CrashHandler
 
 		private void UploadToAws()
 		{
-			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace("-","_"), x => x.Value);
+			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
 			HttpClient client = new HttpClient();

@@ -66,7 +66,7 @@ namespace Chummer
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith("_" + _strType + ".xml"))
+            if (!txtFileName.Text.StartsWith("custom") || !txtFileName.Text.EndsWith('_' + _strType + ".xml"))
             {
                 MessageBox.Show(LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName", GlobalOptions.Language).Replace("{0}", _strType), LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

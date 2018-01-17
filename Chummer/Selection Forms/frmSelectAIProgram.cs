@@ -211,19 +211,15 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstAIPrograms.Text))
             {
-                string strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
-                if (objXmlProgram["require"] != null)
-                    strRequiresProgram = objXmlProgram["require"].InnerText;
+                string strRequiresProgram = strRequiresProgram = objXmlProgram["require"]?.InnerText ?? LanguageManager.GetString("String_None", GlobalOptions.Language);
 
                 lblRequiresProgram.Text = strRequiresProgram;
 
                 string strBook = CommonFunctions.LanguageBookShort(objXmlProgram["source"].InnerText, GlobalOptions.Language);
-                string strPage = objXmlProgram["page"].InnerText;
-                if (objXmlProgram["altpage"] != null)
-                    strPage = objXmlProgram["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
+                string strPage = objXmlProgram["altpage"]?.InnerText ?? objXmlProgram["page"].InnerText;
+                lblSource.Text = strBook + ' ' + strPage;
 
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
         }
 
@@ -232,11 +228,11 @@ namespace Chummer
         /// </summary>
         private void RefreshList()
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
 
             string strCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             else
             {
                 StringBuilder objCategoryFilter = new StringBuilder();
@@ -247,7 +243,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
             if (txtSearch.TextLength != 0)
@@ -258,7 +254,7 @@ namespace Chummer
             }
 
             // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[" + strFilter + "]");
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[" + strFilter + ']');
 
             UpdateProgramList(objXmlNodeList);
         }
