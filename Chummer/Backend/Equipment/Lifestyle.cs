@@ -109,8 +109,7 @@ namespace Chummer.Backend.Equipment
             {
                 Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle});
 
-                if (System.Diagnostics.Debugger.IsAttached)
-                    System.Diagnostics.Debugger.Break();
+                Utils.BreakIfDebug();
             }
             else
                 _objCachedMyXmlNode = null;

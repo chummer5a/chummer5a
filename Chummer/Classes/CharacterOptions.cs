@@ -1517,8 +1517,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
+                    Utils.BreakIfDebug();
                 }
             }
         }

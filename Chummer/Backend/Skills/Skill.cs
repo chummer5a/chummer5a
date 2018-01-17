@@ -339,7 +339,7 @@ namespace Chummer.Backend.Skills
                 if (knoSkill)
                 {
                     //TODO INIT SKILL
-                    if (Debugger.IsAttached) Debugger.Break();
+                    Utils.BreakIfDebug();
 
                     s = new KnowledgeSkill(character);
                 }

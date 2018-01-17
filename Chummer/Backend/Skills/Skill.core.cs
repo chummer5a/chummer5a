@@ -438,8 +438,8 @@ namespace Chummer.Backend.Skills
             }
 
             //Don't think this is going to happen, but if it happens i want to know
-            if (intCost < 0 && Debugger.IsAttached)
-                Debugger.Break();
+            if (intCost < 0)
+                Utils.BreakIfDebug();
 
             int intSpecCount = 0;
             foreach (SkillSpecialization objSpec in Specializations)
