@@ -5,6 +5,7 @@ Application Changes:
 - Fixed an issue with skill groups not loading properly.
 - Fixed an issue that prevented the note grabber for qualities from working properly. Fixes #2322.
 - Fixed an issue where special attribute loss from Essence loss was calculated (and saved) incorrectly in career mode.
+- Fixed an issue where condition monitor boxes would display their numerical tags (which should only be used for internal code) as text. Fixes #2323.
 
 Build 197
 

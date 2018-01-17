@@ -190,7 +190,7 @@ namespace Chummer
                 // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
                 // Update the Form itself.
                 string strControlTag = frmForm.Tag?.ToString();
-                if (!string.IsNullOrEmpty(strControlTag))
+                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy))
                     frmForm.Text = GetString(strControlTag, strIntoLanguage);
 
                 // update any menu strip items that have tags
@@ -205,7 +205,7 @@ namespace Chummer
                 if (objChild as Label != null || objChild as Button != null || objChild as CheckBox != null)
                 {
                     string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag))
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy))
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
                 }
                 else if (objChild is ToolStrip tssStrip)
@@ -220,7 +220,7 @@ namespace Chummer
                     foreach (ColumnHeader objHeader in lstList.Columns)
                     {
                         string strControlTag = objHeader.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag))
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy))
                             objHeader.Text = GetString(strControlTag, strIntoLanguage);
                     }
                 }
@@ -229,7 +229,7 @@ namespace Chummer
                     foreach (TabPage tabPage in objTabControl.TabPages)
                     {
                         string strControlTag = tabPage.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag))
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy))
                             tabPage.Text = GetString(strControlTag, strIntoLanguage);
 
                         UpdateControls(tabPage, strIntoLanguage);
@@ -271,7 +271,7 @@ namespace Chummer
         public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
         {
             string strControlTag = tssItem.Tag?.ToString();
-            if (!string.IsNullOrEmpty(strControlTag))
+            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy))
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
