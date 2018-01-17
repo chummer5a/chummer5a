@@ -259,17 +259,17 @@ namespace Chummer
                                 foreach (XmlNode objChild in objType.ChildNodes)
                                 {
                                     XmlNode xmlItem = null;
-                                    string strChildName = objChild["name"]?.InnerText.Replace("&amp;", "&");
+                                    string strChildName = objChild["id"]?.InnerText;
                                     if (!string.IsNullOrEmpty(strChildName))
                                     {
-                                        xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" + strChildName + "\"]");
+                                        xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[id = \"" + strChildName + "\"]");
                                     }
                                     if (xmlItem == null)
                                     {
-                                        strChildName = objChild["id"]?.InnerText;
+                                        strChildName = objChild["name"]?.InnerText.Replace("&amp;", "&");
                                         if (!string.IsNullOrEmpty(strChildName))
                                         {
-                                            xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[id = \"" + strChildName + "\"]");
+                                            xmlItem = objDoc.SelectSingleNode("/chummer/" + objType.Name + "/" + objChild.Name + "[name = \"" + strChildName + "\"]");
                                         }
                                     }
                                     // If this is a translatable item, find the proper node and add/update this information.
@@ -328,14 +328,6 @@ namespace Chummer
                                                         if (!string.IsNullOrEmpty(strChildName))
                                                         {
                                                             xmlMetavariantItem = xmlItem.SelectSingleNode("metavariants/metavariant[name = \"" + strChildName + "\"]");
-                                                        }
-                                                        if (xmlMetavariantItem == null)
-                                                        {
-                                                            strChildName = objChild["id"]?.InnerText;
-                                                            if (!string.IsNullOrEmpty(strChildName))
-                                                            {
-                                                                xmlMetavariantItem = xmlItem.SelectSingleNode("metavariants/metavariant[id = \"" + strChildName + "\"]");
-                                                            }
                                                         }
                                                         if (xmlMetavariantItem != null)
                                                         {
