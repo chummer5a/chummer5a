@@ -1364,12 +1364,15 @@ namespace Chummer
             StringBuilder strbldReturn = new StringBuilder();
             PdfReader reader = objBookInfo.CachedPdfReader;
             ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
+            string strOldPageText = string.Empty;
             // Loop through each page, starting at the listed page + offset.
             for (; intPage <= reader.NumberOfPages; ++intPage)
             {
                 string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, its);
 
-                strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText)));
+                strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText))).TrimStart(strOldPageText);
+
+                strOldPageText = strPageText;
 
                 // Sometimes names are split across multiple lines. This shimmer removes the newline characters between words that are written in all caps.
                 for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = intNewlineIndex + 1 < strPageText.Length ? strPageText.IndexOf('\n', intNewlineIndex + 1) : -1)
@@ -1428,7 +1431,9 @@ namespace Chummer
 
                     // Add to the existing string. TODO: Something to preserve newlines that we actually want?
                     strbldReturn.Append(strLoop);
-                    if (blnIsBonusLine)
+                    if (strLoop.EndsWith('-'))
+                        strbldReturn.Length -= 1;
+                    else if (blnIsBonusLine)
                         strbldReturn.Append('\n');
                     else
                         strbldReturn.Append(' ');

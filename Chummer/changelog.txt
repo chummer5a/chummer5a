@@ -3,6 +3,7 @@ Future Build 198
 Application Changes:
 
 - Fixed an issue with skill groups not loading properly.
+- Fixed an issue that prevented the note grabber for qualities from working properly. Fixes #2322.
 
 Build 197
 
