@@ -485,7 +485,7 @@ namespace Chummer.UI.Skills
             };
             skill.Upgrade();
             ObjCharacter.SkillsSection.Skills.Add(skill);
-            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")", skill);
+            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')', skill);
         }
 
         private void UpdateKnoSkillRemaining()

@@ -696,18 +696,18 @@ namespace Chummer.Backend.Skills
 
                             s.Append(" (Base (");
                             s.Append(LearnedRating.ToString());
-                            s.Append(")");
+                            s.Append(')');
                         }
 
                         s.Append(" + ");
                         s.Append(CharacterObject.GetObjectName(objImprovement, GlobalOptions.Language));
                         s.Append(" (");
                         s.Append(objImprovement.Value.ToString());
-                        s.Append(")");
+                        s.Append(')');
                     }
-                    if (!first) s.Append(")");
+                    if (!first) s.Append(')');
 
-                    s.Append(")");
+                    s.Append(')');
                 }
 
                 s.Append($" + {DisplayAttribute} ({AttributeModifiers})");
@@ -730,14 +730,14 @@ namespace Chummer.Backend.Skills
                     s.Append(CharacterObject.GetObjectName(source, GlobalOptions.Language));
                     s.Append(" (");
                     s.Append(source.Value.ToString());
-                    s.Append(")");
+                    s.Append(')');
                 }
 
 
                 int wound = WoundModifier;
                 if (wound != 0)
                 {
-                    s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds", GlobalOptions.Language) + " (" + wound.ToString() + ")");
+                    s.Append(" - " + LanguageManager.GetString("Tip_Skill_Wounds", GlobalOptions.Language) + " (" + wound.ToString() + ')');
                 }
 
                 if (AttributeObject.Abbrev == "STR" || AttributeObject.Abbrev == "AGI")

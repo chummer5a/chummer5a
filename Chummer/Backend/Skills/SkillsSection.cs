@@ -68,7 +68,7 @@ namespace Chummer.Backend.Skills
             });
             foreach (Skill objSkill in lstExistingSkills)
             {
-                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name;
+                string strKey = objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name;
                 if (!_dicSkills.ContainsKey(strKey))
                     _dicSkills.Add(strKey, objSkill);
             }
@@ -122,7 +122,7 @@ namespace Chummer.Backend.Skills
                     _skillValueBackup[skill.SkillId] = skill;
                     s_LstSkillBackups.Add(skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : skill.Name);
+                    SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : skill.Name);
                     
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -279,7 +279,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objSkill in lstUnsortedSkills)
                     {
                         _lstSkills.Add(objSkill);
-                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objSkill.Name, objSkill);
+                        _dicSkills.Add(objSkill.IsExoticSkill ? objSkill.Name + " (" + objSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objSkill.Name, objSkill);
                     }
 
                     UpdateUndoList(xmlSkillNode);
@@ -453,7 +453,7 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objLoopSkill in GetSkillList(_objCharacter, FilterOptions.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")" : objLoopSkill.Name, objLoopSkill);
+                        _dicSkills.Add(objLoopSkill.IsExoticSkill ? objLoopSkill.Name + " (" + objLoopSkill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')' : objLoopSkill.Name, objLoopSkill);
                     }
                 }
                 return _lstSkills;
@@ -628,7 +628,7 @@ namespace Chummer.Backend.Skills
             XmlDocument objXmlDocument = XmlManager.Load("skills.xml");
 
             // Populate the Skills list.
-            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ")" + SkillFilter(filter,strName) + "]");
+            XmlNodeList objXmlSkillList = objXmlDocument.SelectNodes("/chummer/skills/skill[not(exotic) and (" + c.Options.BookXPath() + ')' + SkillFilter(filter,strName) + "]");
 
             // First pass, build up a list of all of the Skills so we can sort them in alphabetical order for the current language.
             Dictionary<string, Skill> dicSkills = new Dictionary<string, Skill>(objXmlSkillList.Count);

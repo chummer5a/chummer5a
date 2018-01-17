@@ -769,14 +769,14 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ")";
+                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.InnerText;
                         string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ")";
+                            strQuality += " (" + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {
@@ -832,14 +832,14 @@ namespace Chummer
 
                         string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ")";
+                            strQuality += " (" + LanguageManager.TranslateExtra(strSelect, GlobalOptions.Language) + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.InnerText;
                         string strSelect = objXmlQuality.Attributes["select"]?.InnerText;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += " (" + strSelect + ")";
+                            strQuality += " (" + strSelect + ')';
                     }
                     if (dicQualities.ContainsKey(strQuality))
                     {

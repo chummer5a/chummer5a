@@ -231,7 +231,7 @@ namespace Translator
                 s_LstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _strLanguageToLoad = s_ObjEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ")";
+            _strLanguageToLoad = s_ObjEnUSTextInfo.ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ')';
             string[] strArgs = { strLowerCode, _strLanguageToLoad };
 
             if (_workerDataProcessor.IsBusy)

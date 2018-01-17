@@ -340,7 +340,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;

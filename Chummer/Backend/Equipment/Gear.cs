@@ -872,7 +872,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gear");
 
             if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ")");
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 

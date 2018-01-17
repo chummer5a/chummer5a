@@ -212,7 +212,7 @@ namespace Chummer
                     blnCheckForOptional = true;
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (txtSearch.TextLength != 0)
             {
                 // Treat everything as being uppercase so the search is case-insensitive.
@@ -221,7 +221,7 @@ namespace Chummer
             }
 
             // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + "]");
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + ']');
 
             List<ListItem> lstComplexFormItems = new List<ListItem>();
             foreach (XmlNode objXmlProgram in objXmlNodeList)

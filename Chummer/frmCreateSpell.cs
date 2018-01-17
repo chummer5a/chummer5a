@@ -530,7 +530,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(chkCheckbox.Text))
                 {
                     chkCheckbox.Visible = true;
-                    chkCheckbox.Text += " (" + chkCheckbox.Tag + ")";
+                    chkCheckbox.Text += " (" + chkCheckbox.Tag + ')';
                 }
             }
 

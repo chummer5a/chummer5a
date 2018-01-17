@@ -500,7 +500,7 @@ namespace Chummer
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ")";
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ')';
                         break;
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
@@ -609,7 +609,7 @@ namespace Chummer
                 {
                     return "MAG";
                 }
-                else if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ")")
+                else if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
                 {
                     return "MAGAdept";
                 }

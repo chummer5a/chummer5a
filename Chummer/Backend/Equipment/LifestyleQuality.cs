@@ -144,7 +144,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
-                    //objNode.Text += " (" + objImprovementManager.SelectedValue + ")";
+                    //objNode.Text += " (" + objImprovementManager.SelectedValue + ')';
                 }
             }
 
@@ -444,7 +444,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strExtra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             }
             return strReturn;
         }

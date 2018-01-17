@@ -1188,7 +1188,7 @@ namespace Chummer
                     _strBookXPath += "source = \"" + strBook + "\" or ";
             }
             if (_strBookXPath.Length >= 4)
-                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ')';
             else
                 _strBookXPath = string.Empty;
         }

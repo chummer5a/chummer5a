@@ -54,8 +54,8 @@ namespace Chummer
 
             List<ListItem> lstDVBase = new List<ListItem>
             {
-                new ListItem("(STR/2)", "(" + _objCharacter.STR.DisplayAbbrev + "/2)"),
-                new ListItem("(STR)", "(" + _objCharacter.STR.DisplayAbbrev + ")")
+                new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"),
+                new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')')
             };
             for (int i = 1; i <= 20; ++i)
             {

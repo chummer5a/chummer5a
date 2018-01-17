@@ -281,7 +281,7 @@ namespace Chummer
             {
                 ContextMenuStrip = cmsRoster,
                 Text = CalculatedName(objCache),
-                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">")
+                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>')
             };
 
             lock (_lstCharacterCacheLock)
@@ -336,7 +336,7 @@ namespace Chummer
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
                 lblSettings.Text = objCache.SettingsFile;
-                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">"));
+                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -354,7 +354,7 @@ namespace Chummer
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? objCache.Metavariant) + ")";
+                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
             }

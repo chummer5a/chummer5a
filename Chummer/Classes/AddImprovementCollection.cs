@@ -302,7 +302,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickItem.SelectedName;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -430,7 +430,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickSkill.SelectedSkill;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -698,7 +698,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickAttribute.SelectedAttribute;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                 Log.Info("SourceName = " + SourceName);
@@ -793,7 +793,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickAttribute.SelectedAttribute;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -879,7 +879,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickLimit.SelectedLimit;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             // Record the improvement.
             int intMin = 0;
@@ -986,7 +986,7 @@ namespace Chummer.Classes
                 SelectedValue = frmPickAttribute.SelectedAttribute;
 
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
             }
 
             strLimitValue.Clear();
@@ -1024,7 +1024,7 @@ namespace Chummer.Classes
                 SelectedTarget = frmPickSkill.SelectedSkill;
 
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedTarget + ")";
+                    SourceName += " (" + SelectedTarget + ')';
             }
 
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -1085,7 +1085,7 @@ namespace Chummer.Classes
                 SelectedValue = frmPickAttribute.SelectedAttribute;
 
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
             }
 
             strLimitValue.Clear();
@@ -1123,7 +1123,7 @@ namespace Chummer.Classes
                 SelectedTarget = frmPickSkill.SelectedSkill;
 
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedTarget + ")";
+                    SourceName += " (" + SelectedTarget + ')';
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
@@ -1214,7 +1214,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1330,7 +1330,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1383,7 +1383,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1462,7 +1462,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickProgram.SelectedProgram;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1535,7 +1535,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickProgram.SelectedProgram;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -1798,7 +1798,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickAttribute.SelectedAttribute;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
 
                 Log.Info("_strSelectedValue = " + frmPickAttribute.SelectedAttribute);
                 Log.Info("SourceName = " + SourceName);
@@ -3093,7 +3093,7 @@ namespace Chummer.Classes
 
             string strHoldValue = SelectedValue;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -3133,7 +3133,7 @@ namespace Chummer.Classes
 
             string strHoldValue = SelectedValue;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -3412,7 +3412,7 @@ namespace Chummer.Classes
                     {
                         SelectedValue = frmPickPower.SelectedPower;
                         if (_blnConcatSelectedValue)
-                            SourceName += " (" + SelectedValue + ")";
+                            SourceName += " (" + SelectedValue + ')';
 
                         XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
                         XmlNode objXmlPower =
@@ -3424,7 +3424,7 @@ namespace Chummer.Classes
                             throw new AbortedException();
 
                         if (!string.IsNullOrEmpty(objNewPower.Extra))
-                            SelectedValue += " (" + objNewPower.Extra + ")";
+                            SelectedValue += " (" + objNewPower.Extra + ')';
                         bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
 
                         Log.Info("blnHasPower = " + blnHasPower);
@@ -3716,7 +3716,7 @@ namespace Chummer.Classes
                 SelectedValue = objCyberware.Extra;
             }
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
@@ -4417,7 +4417,7 @@ namespace Chummer.Classes
                 }
                 SelectedValue = frmPickItem.SelectedName;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + frmPickItem.SelectedName + ")";
+                    SourceName += " (" + frmPickItem.SelectedName + ')';
 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + SelectedValue);
@@ -4453,7 +4453,7 @@ namespace Chummer.Classes
                                                ") and category = 'High-Fashion Armor Clothing' and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ")" + SkillFilter(filter) + "]");
+            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter) + "]");
 
             List<ListItem> lstArmors = new List<ListItem>();
             foreach (XmlNode objNode in objXmlNodeList)
@@ -4491,7 +4491,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickItem.SelectedItem;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
 
                 strSelectedValue = frmPickItem.SelectedItem;
                 Log.Info("_strSelectedValue = " + SelectedValue);
@@ -4548,7 +4548,7 @@ namespace Chummer.Classes
 
             SelectedValue = frmPickItem.SelectedItem;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             string strSelectedValue = frmPickItem.SelectedItem;
             Log.Info("_strSelectedValue = " + SelectedValue);
@@ -4593,7 +4593,7 @@ namespace Chummer.Classes
 
                 SelectedValue = frmPickText.SelectedValue;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + SelectedValue + ")";
+                    SourceName += " (" + SelectedValue + ')';
 
                 strSelectedValue = frmPickText.SelectedValue;
                 Log.Info("_strSelectedValue = " + SelectedValue);
@@ -4637,7 +4637,7 @@ namespace Chummer.Classes
                 }
                 SelectedValue = frmPickItem.SelectedName;
                 if (_blnConcatSelectedValue)
-                    SourceName += " (" + frmPickItem.SelectedName + ")";
+                    SourceName += " (" + frmPickItem.SelectedName + ')';
                 
                 Log.Info("_strSelectedValue = " + SelectedValue);
                 Log.Info("SelectedValue = " + SelectedValue);
@@ -4778,7 +4778,7 @@ namespace Chummer.Classes
 
             SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem, GlobalOptions.Language);
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + frmPickItem.SelectedItem);
             Log.Info("SourceName = " + SourceName);
@@ -5046,7 +5046,7 @@ namespace Chummer.Classes
             else
                 SelectedValue += ", " + frmPickSpellCategory.SelectedCategory;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + frmPickSpellCategory.SelectedCategory + ")";
+                SourceName += " (" + frmPickSpellCategory.SelectedCategory + ')';
 
             Log.Info("_strSelectedValue = " + frmPickSpellCategory.SelectedCategory);
             Log.Info("SourceName = " + SourceName);
@@ -5085,7 +5085,7 @@ namespace Chummer.Classes
             else
                 SelectedValue += ", " + s;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + s + ")";
+                SourceName += " (" + s + ')';
 
             Log.Info("_strSelectedValue = " + s);
             Log.Info("SourceName = " + SourceName);
@@ -5128,7 +5128,7 @@ namespace Chummer.Classes
             else
                 SelectedValue += ", " + frmSelect.SelectedItem;
             if (_blnConcatSelectedValue)
-                SourceName += " (" + frmSelect.SelectedItem + ")";
+                SourceName += " (" + frmSelect.SelectedItem + ')';
             
             Log.Info("_strSelectedValue = " + frmSelect.SelectedItem);
             Log.Info("SourceName = " + SourceName);
@@ -5616,7 +5616,7 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
             if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ")";
+                SourceName += " (" + SelectedValue + ')';
 
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);

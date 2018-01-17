@@ -1057,7 +1057,7 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
-                        strSourceName += " (" + SelectedValue + ")";
+                        strSourceName += " (" + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 

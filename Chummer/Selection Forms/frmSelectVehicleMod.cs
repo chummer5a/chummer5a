@@ -406,7 +406,7 @@ namespace Chummer
         private void BuildModList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(txtSearch.Text) || _objCharacter.Options.SearchInCategoryOnly))
                 strFilter += " and category = \"" + strCategory + '\"';
             else if (!string.IsNullOrEmpty(_strAllowedCategories))
@@ -419,7 +419,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
             if (txtSearch.TextLength != 0)
@@ -765,18 +765,17 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlMod["limit"] != null)
+                string strLimit = objXmlMod["limit"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLimit))
                 {
                     // Translate the Limit if possible.
                     if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                     {
-                        XmlNode objXmlLimit = _objXmlDocument.SelectSingleNode("/chummer/limits/limit[. = \"" + objXmlMod["limit"].InnerText + "\"]");
-                        lblLimit.Text = objXmlLimit.Attributes["translate"] != null
-                            ? " (" + objXmlLimit.Attributes["translate"].InnerText + ")"
-                            : " (" + objXmlMod["limit"].InnerText + ")";
+                        XmlNode objXmlLimit = _objXmlDocument.SelectSingleNode("/chummer/limits/limit[. = \"" + strLimit + "\"/@translate]");
+                        lblLimit.Text = " (" + objXmlLimit?.InnerText ?? strLimit + ')';
                     }
                     else
-                        lblLimit.Text = " (" + objXmlMod["limit"].InnerText + ")";
+                        lblLimit.Text = " (" + strLimit + ')';
                 }
                 else
                     lblLimit.Text = string.Empty;

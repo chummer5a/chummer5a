@@ -898,7 +898,7 @@ namespace Chummer
                 return null;
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() +')';
             string strCategoryFilter = "(";
             if (strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 strCategoryFilter += "category = \"" + strCategory + '\"';

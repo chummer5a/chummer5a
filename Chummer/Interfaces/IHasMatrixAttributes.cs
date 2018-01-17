@@ -326,7 +326,7 @@ namespace Chummer
                     string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";
+                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ')';
                     }
                 }
             }

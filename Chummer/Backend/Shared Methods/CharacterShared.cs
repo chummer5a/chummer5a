@@ -147,12 +147,12 @@ namespace Chummer
                 string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
                     strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ')';
                 tipTooltip.SetToolTip(lblPhysical, strCM);
                 strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
                     strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ')';
                 tipTooltip.SetToolTip(lblStun, strCM);
             }
         }
@@ -172,10 +172,10 @@ namespace Chummer
             lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ")";
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ')';
                 if (intArmorRating != intTotalArmorRating)
                     strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                                       (intTotalArmorRating - intArmorRating).ToString() + ")";
+                                       (intTotalArmorRating - intArmorRating).ToString() + ')';
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
                 {
@@ -663,7 +663,7 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
             
-            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ")";
+            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.DoThreadSafe(() => Text = strTitle);
@@ -780,7 +780,7 @@ namespace Chummer
                     string strAttribTotalValue = objAttrib.TotalValue.ToString();
                     objDrain?.Replace(objAttrib.Abbrev, strAttribTotalValue);
                     objDisplayDrain?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-                    objTip?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + strAttribTotalValue + ")");
+                    objTip?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + strAttribTotalValue + ')');
                 }
             }
             if (objDrain != null)
@@ -800,7 +800,7 @@ namespace Chummer
                 if (intBonusDrain != 0)
                 {
                     intDrain += intBonusDrain;
-                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ")");
+                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ')');
                 }
             }
 

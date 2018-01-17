@@ -2576,7 +2576,7 @@ namespace Chummer.Backend.Equipment
                 strRCTip = "1 ";
                 if (strRCBase != "0")
                 {
-                    strRCTip += "+ "+ LanguageManager.GetString("Label_Base", GlobalOptions.Language) + "(" + strRCBase + ")";
+                    strRCTip += "+ "+ LanguageManager.GetString("Label_Base", GlobalOptions.Language) + "(" + strRCBase + ')';
                 }
 
                 intRCBase = Convert.ToInt32(strRCBase);
@@ -2604,7 +2604,7 @@ namespace Chummer.Backend.Equipment
                         intRCBase += Convert.ToInt32(strRCBonus);
                         intRCFull += Convert.ToInt32(strRCBonus);
 
-                        strRCTip += " + " + objGear.DisplayName(GlobalOptions.Language) + " (" + strRCBonus + ")";
+                        strRCTip += " + " + objGear.DisplayName(GlobalOptions.Language) + " (" + strRCBonus + ')';
                     }
                 }
 
@@ -2636,7 +2636,7 @@ namespace Chummer.Backend.Equipment
                         {
                             intRCBase += Convert.ToInt32(objAccessory.RC);
                         }
-                        strRCTip += " + " + objAccessory.DisplayName(GlobalOptions.Language) + " (" + objAccessory.RC + ")";
+                        strRCTip += " + " + objAccessory.DisplayName(GlobalOptions.Language) + " (" + objAccessory.RC + ')';
                     }
                 }
                 
@@ -3452,7 +3452,7 @@ namespace Chummer.Backend.Equipment
                     if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
                     {
                         if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
-                            extra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ")";
+                            extra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
                     }
                     break;
                 default:
@@ -3659,7 +3659,7 @@ namespace Chummer.Backend.Equipment
                 // Locate the Active Skill to be used.
                 string strKey = strSkill;
                 if (!string.IsNullOrEmpty(strSpec))
-                    strKey += " (" + strSpec + ")";
+                    strKey += " (" + strSpec + ')';
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
                 int intDicePool = 0;
                 if (objSkill != null)
@@ -3667,7 +3667,7 @@ namespace Chummer.Backend.Equipment
                     intDicePool = objSkill.Pool;
                 }
 
-                strReturn = strSkill + " (" + intDicePool.ToString() + ")";
+                strReturn = strSkill + " (" + intDicePool.ToString() + ')';
 
                 if (objSkill != null && (!string.IsNullOrEmpty(objSkill.Specialization) && !objSkill.IsExoticSkill))
                 {

@@ -558,7 +558,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;

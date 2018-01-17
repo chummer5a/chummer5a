@@ -188,7 +188,7 @@ namespace Chummer
         #region Methods
         private void BuildPowerList()
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 StringBuilder objFilter = new StringBuilder();
@@ -197,7 +197,7 @@ namespace Chummer
                         objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
                 if (objFilter.Length > 0)
                 {
-                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
             if (txtSearch.TextLength != 0)
