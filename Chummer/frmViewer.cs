@@ -479,28 +479,36 @@ namespace Chummer
             objPdfDocument.ExtraParams.Add("image-quality", "100");
             objPdfDocument.ExtraParams.Add("print-media-type", "");
 
-            PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
+            try
             {
-                WkHtmlToPdfPath = Path.Combine(Application.StartupPath,"wkhtmltopdf.exe"),
-                Timeout = 60000,
-                TempFolderPath = Path.GetTempPath()
-            }, new PdfOutput
-            {
-                OutputFilePath = strSaveFile
-            });
-            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
-            {
-                Uri uriPath = new Uri(strSaveFile);
-                string strParams = GlobalOptions.PDFParameters;
-                strParams = strParams.Replace("{page}", "1");
-                strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-                strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-                ProcessStartInfo objProgress = new ProcessStartInfo
+                PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
                 {
-                    FileName = GlobalOptions.PDFAppPath,
-                    Arguments = strParams
-                };
-                Process.Start(objProgress);
+                    WkHtmlToPdfPath = Path.Combine(Application.StartupPath, "wkhtmltopdf.exe"),
+                    Timeout = 60000,
+                    TempFolderPath = Path.GetTempPath()
+                }, new PdfOutput
+                {
+                    OutputFilePath = strSaveFile
+                });
+
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+                {
+                    Uri uriPath = new Uri(strSaveFile);
+                    string strParams = GlobalOptions.PDFParameters;
+                    strParams = strParams.Replace("{page}", "1");
+                    strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+                    strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+                    ProcessStartInfo objPDFProgramProcess = new ProcessStartInfo
+                    {
+                        FileName = GlobalOptions.PDFAppPath,
+                        Arguments = strParams
+                    };
+                    Process.Start(objPDFProgramProcess);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 

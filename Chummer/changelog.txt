@@ -12,6 +12,7 @@ Application Changes:
 - Fixed a bug where the armor selection screen would not properly account for Rating-based capacities, Rating-based armor values, and Rating-based names.
 - Migrated all instances of use of "yes" and "no" strings in data to use "True" and "False" instead respectively. Any custom content that relies on strings like these will need to be altered, and any items reliant on improvements that use these strings will need to be fixed with Reapply Improvements.
 - Toggling the "Show" attribute of a block in the Shadowrun 5 character sheet set to "No" will now immediately hide the block instead of it only getting applied when the sheet is printed. Fixes #2327.
+- If Chummer5a fails to export a character sheet to a PDF format, it will now display a message detailing the issue instead of crashing. Fixes #2325.
 
 Data Changes:
 
