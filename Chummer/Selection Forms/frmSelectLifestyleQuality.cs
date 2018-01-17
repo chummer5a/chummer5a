@@ -128,6 +128,8 @@ namespace Chummer
                 lblBP.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblSource, string.Empty);
+
+                return;
             }
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedLifestyleId + "\"]");
