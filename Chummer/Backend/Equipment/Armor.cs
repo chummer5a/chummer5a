@@ -93,56 +93,60 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objXmlArmorNode["bonus"];
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
-            
-            if (blnSkipCost)
-                _strCost = "0";
-            else
-                _strCost = objXmlArmorNode["cost"]?.InnerText ?? "0";
+
+            objXmlArmorNode.TryGetStringFieldQuickly("cost", ref _strCost);
 
             // Check for a Variable Cost.
-            if (_strCost.StartsWith("Variable(") && !blnSkipSelectForms)
+            if (!blnSkipCost && _strCost.StartsWith("Variable("))
             {
-                decimal decMin = 0.0m;
-                decimal decMax = decimal.MaxValue;
-                string strCost = _strCost.TrimStart("Variable(", true).TrimEnd(')');
-                if (strCost.Contains('-'))
+                string strFirstHalf = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                string strSecondHalf = string.Empty;
+                int intHyphenIndex = strFirstHalf.IndexOf('-');
+                if (intHyphenIndex != -1)
                 {
-                    string[] strValues = strCost.Split('-');
-                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                    if (intHyphenIndex + 1 < strFirstHalf.Length)
+                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                }
+
+                if (!blnSkipSelectForms)
+                {
+                    decimal decMin = decimal.MinValue;
+                    decimal decMax = decimal.MaxValue;
+                    if (intHyphenIndex != -1)
+                    {
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalOptions.InvariantCultureInfo);
+                    }
+                    else
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                    if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
+                    {
+                        string strNuyenFormat = _objCharacter.Options.NuyenFormat;
+                        int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                        if (intDecimalPlaces == -1)
+                            intDecimalPlaces = 0;
+                        else
+                            intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
+                        if (decMax > 1000000)
+                            decMax = 1000000;
+                        frmPickNumber.Minimum = decMin;
+                        frmPickNumber.Maximum = decMax;
+                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                        frmPickNumber.AllowCancel = false;
+                        frmPickNumber.ShowDialog();
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                    }
+                    else
+                        _strCost = strFirstHalf;
                 }
                 else
-                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
-
-                if (decMin != 0 || decMax != decimal.MaxValue)
-                {
-                    string strNuyenFormat = _objCharacter.Options.NuyenFormat;
-                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                    if (intDecimalPlaces == -1)
-                        intDecimalPlaces = 0;
-                    else
-                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces);
-                    if (decMax > 1000000)
-                        decMax = 1000000;
-                    frmPickNumber.Minimum = decMin;
-                    frmPickNumber.Maximum = decMax;
-                    frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
-                    frmPickNumber.AllowCancel = false;
-                    frmPickNumber.ShowDialog();
-                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
-                }
-            }
-            else if (_strCost.StartsWith("Rating"))
-            {
-                // If the cost is determined by the Rating, evaluate the expression.
-                string strCostExpression = _strCost;
-
-                string strCost = strCostExpression.Replace("Rating", _intRating.ToString(CultureInfo.InvariantCulture));
-                _strCost = CommonFunctions.EvaluateInvariantXPath(strCost).ToString();
+                    _strCost = strFirstHalf;
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipCost && !blnSkipSelectForms)
+            if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString(), objXmlArmorNode["bonus"], false, 1, DisplayNameShort(GlobalOptions.Language)))
                 {
@@ -179,7 +183,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ArmorMod objMod = new ArmorMod(_objCharacter);
 
-                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost);
+                        objMod.Create(objXmlMod, intRating, lstWeapons, blnSkipCost, blnSkipSelectForms);
                         objMod.Parent = this;
                         objMod.IncludedInArmor = true;
                         objMod.ArmorCapacity = "[0]";
@@ -268,7 +272,7 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
 
-                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipCost && !blnSkipSelectForms);
+                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
@@ -291,7 +295,7 @@ namespace Chummer.Backend.Equipment
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
 
                 Weapon objGearWeapon = new Weapon(_objCharacter);
-                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipCost && !blnSkipSelectForms);
+                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms);
                 objGearWeapon.ParentID = InternalId;
                 lstWeapons.Add(objGearWeapon);
 
@@ -710,28 +714,71 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Armor's Cost.
         /// </summary>
-        public decimal Cost
+        public string Cost
         {
             get
             {
-                if (_strCost.Contains("Rating"))
-                {
-                    // If the Capacity is determined by the Rating, evaluate the expression.
-                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                    string strCost = _strCost;
-                    if (strCost.Contains('['))
-                        strCost = strCost.Substring(1, strCost.Length - 2);
-
-                    return Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost.Replace("Rating", _intRating.ToString())), GlobalOptions.InvariantCultureInfo);
-                }
-                else
-                {
-                    return Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
-                }
+                return _strCost;
             }
             set
             {
-                _strCost = value.ToString(GlobalOptions.InvariantCultureInfo);
+                _strCost = value;
+            }
+        }
+
+        public string DisplayCost(out decimal decItemCost, bool blnUseRating = true, decimal decMarkup = 0.0m)
+        {
+            decItemCost = 0;
+            string strReturn = Cost;
+            if (strReturn.StartsWith("Variable("))
+            {
+                strReturn = strReturn.TrimStart("Variable(", true).TrimEnd(')');
+                decimal decMin = 0;
+                decimal decMax = decimal.MaxValue;
+                if (strReturn.Contains('-'))
+                {
+                    string[] strValues = strReturn.Split('-');
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                }
+                else
+                    decMin = Convert.ToDecimal(strReturn.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+
+                if (decMax == decimal.MaxValue)
+                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
+                else
+                    strReturn = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                decItemCost = decMin;
+                return strReturn;
+            }
+
+            if (blnUseRating)
+            {
+                decimal decTotalCost = 0.0m;
+                // If the cost is determined by the Rating, evaluate the expression.
+                if (strReturn.Contains("Rating"))
+                {
+                    string strCost = strReturn.Replace("Rating", _intRating.ToString());
+                    decTotalCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo);
+                }
+                else
+                {
+                    decTotalCost = Convert.ToDecimal(strReturn, GlobalOptions.InvariantCultureInfo);
+                }
+
+                decTotalCost *= 1.0m + decMarkup;
+
+                if (DiscountCost)
+                    decTotalCost *= 0.9m;
+
+                decItemCost = decTotalCost;
+
+                return decTotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+            }
+            else
+            {
+                return strReturn.CheapReplace("Rating", () => LanguageManager.GetString("String_Rating", GlobalOptions.Language)) + '¥';
             }
         }
 
@@ -856,21 +903,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decTotalCost = 0.0m;
-                if (_strCost.Contains("Rating"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    string strCostExpression = _strCost;
-
-                    string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
-                    decTotalCost = Convert.ToDecimal((double)CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
-                }
-                else
-                {
-                    decTotalCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
-                }
-                if (DiscountCost)
-                    decTotalCost *= 0.9m;
+                decimal decTotalCost = OwnCost;
 
                 // Go through all of the Mods for this piece of Armor and add the Cost value.
                 foreach (ArmorMod objMod in _lstArmorMods)
@@ -892,17 +925,16 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal decTotalCost = 0.0m;
-                if (_strCost.Contains("Rating"))
+                // If the cost is determined by the Rating, evaluate the expression.
+                string strCostExpression = Cost;
+                if (strCostExpression.Contains("Rating"))
                 {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    string strCostExpression = _strCost;
-
                     string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
                     decTotalCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost).ToString(), GlobalOptions.InvariantCultureInfo);
                 }
                 else
                 {
-                    decTotalCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+                    decTotalCost = Convert.ToDecimal(strCostExpression, GlobalOptions.InvariantCultureInfo);
                 }
 
                 if (DiscountCost)

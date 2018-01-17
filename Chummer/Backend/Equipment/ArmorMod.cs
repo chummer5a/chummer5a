@@ -90,28 +90,34 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objXmlArmorNode["wirelessbonus"];
             _blnWirelessOn = _nodWirelessBonus != null;
 
-            // Check for a Variable Cost.
-            if (blnSkipCost)
-                _strCost = "0";
-            else if (objXmlArmorNode["cost"] != null)
-            {
-                XmlNode objXmlArmorCostNode = objXmlArmorNode["cost"];
+            objXmlArmorNode.TryGetStringFieldQuickly("cost", ref _strCost);
 
-                if (objXmlArmorCostNode.InnerText.StartsWith("Variable("))
+            // Check for a Variable Cost.
+            if (!blnSkipCost && _strCost.StartsWith("Variable("))
+            {
+                string strFirstHalf = _strCost.TrimStart("Variable(", true).TrimEnd(')');
+                string strSecondHalf = string.Empty;
+                int intHyphenIndex = strFirstHalf.IndexOf('-');
+                if (intHyphenIndex != -1)
                 {
-                    decimal decMin = 0.0m;
+                    if (intHyphenIndex + 1 < strFirstHalf.Length)
+                        strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                    strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                }
+
+                if (!blnSkipSelectForms)
+                {
+                    decimal decMin = decimal.MinValue;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = objXmlArmorNode["cost"].InnerText.TrimStart("Variable(", true).TrimEnd(')');
-                    if (strCost.Contains('-'))
+                    if (intHyphenIndex != -1)
                     {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strFirstHalf, GlobalOptions.InvariantCultureInfo);
+                        decMax = Convert.ToDecimal(strSecondHalf, GlobalOptions.InvariantCultureInfo);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                        decMin = Convert.ToDecimal(strFirstHalf.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    if (decMin != 0 || decMax != decimal.MaxValue)
+                    if (decMin != decimal.MinValue || decMax != decimal.MaxValue)
                     {
                         string strNuyenFormat = _objCharacter.Options.NuyenFormat;
                         int intDecimalPlaces = strNuyenFormat.IndexOf('.');
@@ -129,14 +135,14 @@ namespace Chummer.Backend.Equipment
                         frmPickNumber.ShowDialog();
                         _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
+                    else
+                        _strCost = strFirstHalf;
                 }
                 else
-                {
-                    _strCost = objXmlArmorCostNode.InnerText;
-                }
+                    _strCost = strFirstHalf;
             }
 
-            if (objXmlArmorNode["bonus"] != null && !blnSkipCost && !blnSkipSelectForms)
+            if (objXmlArmorNode["bonus"] != null && !blnSkipSelectForms)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, _guiID.ToString(), objXmlArmorNode["bonus"], false, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
@@ -163,7 +169,7 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlArmorGear.InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
                     
-                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipCost && !blnSkipSelectForms);
+                    objGear.Create(objXmlGear, intRating, lstWeapons, strForceValue, !blnSkipSelectForms);
 
                     objGear.Capacity = "[0]";
                     objGear.ArmorCapacity = "[0]";
@@ -189,7 +195,7 @@ namespace Chummer.Backend.Equipment
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                     
                     Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipCost && !blnSkipSelectForms);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms);
                     objGearWeapon.ParentID = InternalId;
                     lstWeapons.Add(objGearWeapon);
 
@@ -931,9 +937,7 @@ namespace Chummer.Backend.Equipment
                     if (_intRating > 0)
                         strCostExpr = strValues[Math.Min(_intRating, strValues.Length) - 1];
                 }
-                decimal decArmorCost = 0.0m;
-                if (_objParent != null)
-                    decArmorCost = _objParent.Cost;
+                decimal decArmorCost = _objParent?.OwnCost ?? 0.0m;
 
                 if (strCostExpr.Contains("Armor Cost") || strCostExpr.Contains("Rating"))
                 {

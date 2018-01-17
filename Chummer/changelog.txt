@@ -6,6 +6,10 @@ Application Changes:
 - Fixed an issue that prevented the note grabber for qualities from working properly. Fixes #2322.
 - Fixed an issue where special attribute loss from Essence loss was calculated (and saved) incorrectly in career mode.
 - Fixed an issue where condition monitor boxes would display their numerical tags (which should only be used for internal code) as text. Fixes #2323.
+- Fixed a bug where Armor Mods whose costs relied on their parent armor's costs would not consider any discounts applied to their parent armor.
+- Fixed a bug where the Browse tab in the armor selection screen would display all costs as "0¥". Fixes #2324.
+- Fixed a bug where changing an armor's rating after purchase would not reflect the change on its cost if its cost relied on its rating.
+- Fixed a bug where the armor selection screen would not properly account for Rating-based capacities, Rating-based armor values, and Rating-based names.
 
 Data Changes:
 

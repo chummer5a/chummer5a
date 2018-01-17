@@ -5874,7 +5874,7 @@ namespace Chummer
 
             if (frmPickArmor.FreeCost)
             {
-                objArmor.Cost = 0;
+                objArmor.Cost = "0";
             }
 
             CharacterObject.Armor.Add(objArmor);
@@ -6254,7 +6254,7 @@ namespace Chummer
 
                 frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
                 {
-                    ArmorCost = objArmor.Cost,
+                    ArmorCost = objArmor.OwnCost,
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };

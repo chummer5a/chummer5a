@@ -8206,7 +8206,7 @@ namespace Chummer
 
                 frmSelectArmorMod frmPickArmorMod = new frmSelectArmorMod(CharacterObject)
                 {
-                    ArmorCost = objArmor.Cost,
+                    ArmorCost = objArmor.OwnCost,
                     AllowedCategories = objArmor.Category + "," + objArmor.Name,
                     CapacityDisplayStyle = objArmor.CapacityDisplayStyle
                 };
