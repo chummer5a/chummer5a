@@ -1372,17 +1372,17 @@ namespace Chummer
                 strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText)));
 
                 // Sometimes names are split across multiple lines. This shimmer removes the newline characters between words that are written in all caps.
-                for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = strPageText.IndexOf('\n', intNewlineIndex + 1))
+                for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = intNewlineIndex + 1 < strPageText.Length ? strPageText.IndexOf('\n', intNewlineIndex + 1) : -1)
                 {
-                    string strFirstHalf = strPageText.Substring(0, intNewlineIndex);
+                    string strFirstHalf = strPageText.Substring(0, intNewlineIndex).TrimEnd();
                     int intLastWhitespace = Math.Max(strFirstHalf.LastIndexOf(' '), strFirstHalf.LastIndexOf('\n'));
                     string strFirstHalfLastWord = strFirstHalf.Substring(intLastWhitespace + 1);
                     if (strFirstHalfLastWord == strFirstHalfLastWord.ToUpperInvariant())
                     {
-                        string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1) : string.Empty;
-                        intLastWhitespace = Math.Max(strSecondHalf.IndexOf(' '), strSecondHalf.IndexOf('\n'));
+                        string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1).TrimStart() : string.Empty;
+                        intLastWhitespace = Math.Min(strSecondHalf.IndexOf(' '), strSecondHalf.IndexOf('\n'));
                         string strSecondHalfFirstWord = intLastWhitespace == -1 ? strSecondHalf : strSecondHalf.Substring(0, intLastWhitespace);
-                        if (strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
+                        if (!strSecondHalfFirstWord.StartsWith("BONUS") && strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
                         {
                             strPageText = strFirstHalf + ' ' + strSecondHalf;
                         }
@@ -1413,10 +1413,16 @@ namespace Chummer
                 for (int i = 0; i <= astrOut.Length; i++)
                 {
                     string strLoop = astrOut[i];
+                    if (string.IsNullOrWhiteSpace(strLoop))
+                        continue;
                     // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
-                    if (strLoop == strLoop.ToUpperInvariant())
+                    if (!strLoop.StartsWith("BONUS") && strLoop == strLoop.ToUpperInvariant())
                     {
-                        goto EndPdfReading;
+                        // The ALLCAPS element is actually a table or the bottom of the page, so continue fetching text from the next page instead of terminating
+                        if (strLoop.Contains("TABLE") || strLoop.Contains(">>"))
+                            break;
+                        else
+                            goto EndPdfReading;
                     }
 
                     // Add to the existing string. TODO: Something to preserve newlines that we actually want?

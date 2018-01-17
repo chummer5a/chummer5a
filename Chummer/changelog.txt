@@ -1,3 +1,9 @@
+Future Build 198
+
+Application Changes:
+
+- Fixed an issue with skill groups not loading properly.
+
 Build 197
 
 Application Changes:
