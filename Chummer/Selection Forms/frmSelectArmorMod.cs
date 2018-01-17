@@ -34,7 +34,7 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private decimal _decArmorCost = 0;
         private decimal _decMarkup = 0;
-        private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
+        private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
@@ -236,7 +236,7 @@ namespace Chummer
         {
             set
             {
-                _objCapacityStyle = value;
+                _eCapacityStyle = value;
             }
         }
         #endregion
@@ -366,12 +366,10 @@ namespace Chummer
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                if (_objCapacityStyle == CapacityStyle.Standard)
-                    lblCapacity.Text = '[' + CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
-                else if (_objCapacityStyle == CapacityStyle.PerRating)
-                    lblCapacity.Text = '[' + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + ']';
-                else if (_objCapacityStyle == CapacityStyle.Zero)
+                if (_eCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
+                else
+                    lblCapacity.Text = '[' + CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);

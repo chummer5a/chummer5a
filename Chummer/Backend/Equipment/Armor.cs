@@ -1265,13 +1265,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                CapacityStyle objReturn = CapacityStyle.Zero;
-                if (string.IsNullOrEmpty(_strArmorCapacity) || _strArmorCapacity == "0") // && _objCharacter.Options.MaximumArmorModifications)
-                    objReturn = CapacityStyle.PerRating;
-                if (!string.IsNullOrEmpty(_strArmorCapacity) && _strArmorCapacity != "0") // && _objCharacter.Options.ArmorSuitCapacity)
-                    objReturn = CapacityStyle.Standard;
+                CapacityStyle eReturn = CapacityStyle.Zero;
+                if (!string.IsNullOrEmpty(_strArmorCapacity) && _strArmorCapacity != "0")
+                {
+                    eReturn = CapacityStyle.Standard;
+                }
 
-                return objReturn;
+                return eReturn;
             }
         }
 

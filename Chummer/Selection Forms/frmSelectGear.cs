@@ -48,7 +48,7 @@ namespace Chummer
         private bool _blnShowNegativeCapacityOnly = false;
         private bool _blnShowArmorCapacityOnly = false;
         private bool _blnBlackMarketDiscount;
-        private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
+        private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
@@ -557,7 +557,7 @@ namespace Chummer
         {
             set
             {
-                _objCapacityStyle = value;
+                _eCapacityStyle = value;
             }
         }
 
@@ -819,7 +819,9 @@ namespace Chummer
                 strCapacityField = "armorcapacity";
             bool blnSquareBrackets = false;
 
-            if (_objCapacityStyle == CapacityStyle.Standard)
+            if (_eCapacityStyle == CapacityStyle.Zero)
+                lblCapacity.Text = "[0]";
+            else
             {
                 string strCapacityText = objXmlGear[strCapacityField]?.InnerText;
                 if (!string.IsNullOrEmpty(strCapacityText))
@@ -936,15 +938,6 @@ namespace Chummer
                 {
                     lblCapacity.Text = "0";
                 }
-            }
-            else if (_objCapacityStyle == CapacityStyle.Zero)
-                lblCapacity.Text = "[0]";
-            else if (_objCapacityStyle == CapacityStyle.PerRating)
-            {
-                if (nudRating.Value == 0)
-                    lblCapacity.Text = "[1]";
-                else
-                    lblCapacity.Text = '[' + nudRating.Value.ToString(GlobalOptions.CultureInfo) + ']';
             }
 
             // Rating.

@@ -13930,17 +13930,10 @@ namespace Chummer
                         cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = objSelectedMod.Armor.ToString("+0;-0;0");
                     lblArmorAvail.Text = objSelectedMod.TotalAvail(GlobalOptions.Language);
-                    if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
-                        lblArmorCapacity.Text = objSelectedMod.CalculatedCapacity;
-                    else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                    if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                         lblArmorCapacity.Text = "[0]";
-                    else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
-                    {
-                        if (objSelectedMod.Rating > 0)
-                            lblArmorCapacity.Text = '[' + objSelectedMod.Rating.ToString() + ']';
-                        else
-                            lblArmorCapacity.Text = "[1]";
-                    }
+                    else
+                        lblArmorCapacity.Text = objSelectedMod.CalculatedCapacity;
                     if (!string.IsNullOrEmpty(objSelectedMod.GearCapacity))
                         lblArmorCapacity.Text = objSelectedMod.GearCapacity + '/' + lblArmorCapacity.Text + " (" + objSelectedMod.GearCapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                     lblArmorCost.Text = objSelectedMod.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -13975,24 +13968,10 @@ namespace Chummer
                         cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = string.Empty;
                     lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                    if (objSelectedMod != null)
-                    {
-                        lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
-                    }
+                    if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                        lblArmorCapacity.Text = "[0]";
                     else
-                    {
-                        if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Standard)
-                            lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                        else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                            lblArmorCapacity.Text = "[0]";
-                        else if (objSelectedArmor.CapacityDisplayStyle == CapacityStyle.PerRating)
-                        {
-                            if (objSelectedGear.Rating > 0)
-                                lblArmorCapacity.Text = '[' + objSelectedGear.Rating.ToString() + ']';
-                            else
-                                lblArmorCapacity.Text = "[1]";
-                        }
-                    }
+                        lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
                     try
                     {
                         lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObject.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
