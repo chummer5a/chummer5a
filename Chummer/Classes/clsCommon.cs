@@ -1415,8 +1415,9 @@ namespace Chummer
                     string strLoop = astrOut[i];
                     if (string.IsNullOrWhiteSpace(strLoop))
                         continue;
+                    bool blnIsBonusLine = strLoop.StartsWith("BONUS");
                     // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
-                    if (!strLoop.StartsWith("BONUS") && strLoop == strLoop.ToUpperInvariant())
+                    if (!blnIsBonusLine && strLoop == strLoop.ToUpperInvariant())
                     {
                         // The ALLCAPS element is actually a table or the bottom of the page, so continue fetching text from the next page instead of terminating
                         if (strLoop.Contains("TABLE") || strLoop.Contains(">>"))
@@ -1427,7 +1428,10 @@ namespace Chummer
 
                     // Add to the existing string. TODO: Something to preserve newlines that we actually want?
                     strbldReturn.Append(strLoop);
-                    strbldReturn.Append(' ');
+                    if (blnIsBonusLine)
+                        strbldReturn.Append('\n');
+                    else
+                        strbldReturn.Append(' ');
                 }
             }
             EndPdfReading:
