@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <chummer>
   <version>-500</version>
   <chummer file="armor.xml">
@@ -3041,8 +3041,8 @@
       </book>
       <book>
         <id>42d5ed10-66e8-47de-8685-851fdfdcae35</id>
-        <name>The Seattle Gauntlet</name>
-        <translate>The Seattle Gauntlet</translate>
+        <name>The Seattle Gambit</name>
+        <translate>The Seattle Gambit</translate>
         <altcode>TSG</altcode>
       </book>
     </books>

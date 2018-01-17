@@ -7,6 +7,12 @@ Application Changes:
 - Fixed an issue where special attribute loss from Essence loss was calculated (and saved) incorrectly in career mode.
 - Fixed an issue where condition monitor boxes would display their numerical tags (which should only be used for internal code) as text. Fixes #2323.
 
+Data Changes:
+
+- Added new items to allow for translation of certain extras, special equipment, and non-standard form factors that come with certain vehicles, weapons, and gear. Fixes #2309.
+- Dodge General Trailer now properly contains an Aeronautics Mechanic Workshop (it's "Aircraft Repair" in the sourcebook, but this would not line up with the skill associated with repairing aircraft for which said workshop would be used).
+- Basic Razorboi and Advanced Razorboi Packs now properly come with Cybertechnology Toolkits (it's "Cybernetics" in the sourceboo, but this would not line up with the skill associated with cybernetics for which said toolkit would be used).
+
 Build 197
 
 Application Changes:

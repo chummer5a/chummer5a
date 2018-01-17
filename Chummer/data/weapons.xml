@@ -13715,34 +13715,24 @@
       <cost>0</cost>
       <gears>
         <usegear>
-          <name select="GPS Monitor">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>GPS Monitor</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Mini-Multitool">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>Mini-Multitool</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Micro-Lighter">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>Micro-Lighter</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Hidden Compartment">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>Hidden Compartment</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Phosphorescent Blade Coating">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>Phosphorescent Blade Coating</name>
+          <category>Survival Gear</category>
         </usegear>
       </gears>
       <source>SR5</source>
@@ -13758,16 +13748,12 @@
       <cost>0</cost>
       <gears>
         <usegear>
-          <name select="ARO of Local Maps">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>ARO of Local Maps</name>
+          <category>Software</category>
         </usegear>
         <usegear>
-          <name select="Can Make Commcalls">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>422</page>
+          <name>Can Make Commcalls</name>
+          <category>Electronic Accessories</category>
         </usegear>
       </gears>
       <source>SR5</source>
