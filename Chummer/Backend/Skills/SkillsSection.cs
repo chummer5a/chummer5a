@@ -173,6 +173,7 @@ namespace Chummer.Backend.Skills
                 {
                     SkillGroup objGroup = new SkillGroup(_objCharacter);
                     objGroup.Load(xmlNode);
+                        lstLoadingSkillGroups.Add(objGroup);
                 }
                 lstLoadingSkillGroups.Sort((i1, i2) => String.Compare(i2.DisplayName, i1.DisplayName, StringComparison.Ordinal));
                 foreach (SkillGroup skillgroup in lstLoadingSkillGroups)
