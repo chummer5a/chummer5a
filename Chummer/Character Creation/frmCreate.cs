@@ -16265,7 +16265,7 @@ namespace Chummer
                     continue;
                 if (CharacterObject.BurnoutEnabled)
                 {
-                    if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                    if (!objWareGrade.Burnout && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
                     {
                         continue;
                     }
