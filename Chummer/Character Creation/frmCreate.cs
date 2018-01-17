@@ -14229,7 +14229,7 @@ namespace Chummer
                 lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
                 lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                nudGearQty.Enabled = !objGear.DisableQuantity;
+                nudGearQty.Enabled = !objGear.IncludedInParent;
                 nudGearQty.Increment = objGear.CostFor;
                 try
                 {
@@ -15443,7 +15443,7 @@ namespace Chummer
                         if (objGear.IncludedInParent)
                             cmdDeleteVehicle.Enabled = false;
                         nudVehicleRating.Enabled = false;
-                        nudVehicleGearQty.Enabled = !objGear.DisableQuantity;
+                        nudVehicleGearQty.Enabled = !objGear.IncludedInParent;
                         if (objGear.Name.StartsWith("Nuyen"))
                         {
                             int intDecimalPlaces = CharacterObject.Options.NuyenFormat.Length - 1 - CharacterObject.Options.NuyenFormat.LastIndexOf('.');

@@ -1425,7 +1425,6 @@ namespace Chummer.Classes
                 _objCharacter.Weapons.Add(objWeapon);
 
             objNewGear.ParentID = SourceName;
-            objNewGear.DisableQuantity = true;
 
             _objCharacter.Gear.Add(objNewGear);
 

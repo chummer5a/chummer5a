@@ -308,35 +308,35 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlInnerGears = objXmlVehicleGear["gears"];
                             if (xmlInnerGears != null)
                             {
-                                foreach (XmlNode n in xmlInnerGears.SelectNodes("gear"))
+                                foreach (XmlNode xmlGearNode in xmlInnerGears.SelectNodes("gear"))
                                 {
-                                    var objXmlChildGearAttributes = n.Attributes;
-                                    var childRating = Convert.ToInt32(objXmlChildGearAttributes["rating"]?.InnerText);
-                                    var childMaxRating = Convert.ToInt32(objXmlChildGearAttributes["maxrating"]?.InnerText);
-                                    var childQty = Convert.ToDecimal(objXmlChildGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                                    var childForceValue = objXmlChildGearAttributes["select"]?.InnerText;
+                                    XmlAttributeCollection objXmlChildGearAttributes = xmlGearNode.Attributes;
+                                    int intChildRating = Convert.ToInt32(objXmlChildGearAttributes["rating"]?.InnerText);
+                                    int intChildMaxRating = Convert.ToInt32(objXmlChildGearAttributes["maxrating"]?.InnerText);
+                                    decimal decChildQty = Convert.ToDecimal(objXmlChildGearAttributes["qty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                    string strChildForceValue = objXmlChildGearAttributes["select"]?.InnerText ?? string.Empty;
 
-                                    XmlNode xmlChild = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + n.InnerText + "\"]");
-                                    if (xmlChild == null)
+                                    XmlNode xmlChild = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + xmlGearNode.InnerText + "\"]");
+                                    if (xmlChild != null)
                                     {
+                                        Gear objGear = new Gear(_objCharacter);
+
+                                        objGear.Create(xmlChild, intChildRating, lstWeapons, strChildForceValue);
+
+                                        objGear.Cost = "0";
+                                        objGear.Quantity = decChildQty;
+                                        objGear.MaxRating = intChildMaxRating;
+                                        objGear.ParentID = InternalId;
+
+                                        foreach (Weapon objWeapon in lstWeapons)
+                                        {
+                                            objWeapon.ParentVehicle = this;
+                                            Weapons.Add(objWeapon);
+                                        }
+                                        lstChildGears.Add(objGear);
+                                    }
+                                    else
                                         Utils.BreakIfDebug();
-                                        break;
-                                    }
-                                    Gear objGear = new Gear(_objCharacter);
-
-                                    objGear.Create(xmlChild, childRating, lstWeapons, childForceValue);
-
-                                    objGear.Cost = "0";
-                                    objGear.Quantity = childQty;
-                                    objGear.MaxRating = childMaxRating;
-                                    objGear.ParentID = InternalId;
-
-                                    foreach (Weapon objWeapon in lstWeapons)
-                                    {
-                                        objWeapon.ParentVehicle = this;
-                                        Weapons.Add(objWeapon);
-                                    }
-                                    lstChildGears.Add(objGear);
                                 }
                             }
                         }
@@ -345,8 +345,8 @@ namespace Chummer.Backend.Equipment
                             XmlAttributeCollection objXmlVehicleGearAttributes = objXmlVehicleGear.Attributes;
                             intRating = Convert.ToInt32(objXmlVehicleGearAttributes["rating"]?.InnerText);
                             intMaxRating = Convert.ToInt32(objXmlVehicleGearAttributes["maxrating"]?.InnerText);
-                            decQty = Convert.ToDecimal(objXmlVehicleGearAttributes["qty"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                            strForceValue = objXmlVehicleGearAttributes["select"]?.InnerText;
+                            decQty = Convert.ToDecimal(objXmlVehicleGearAttributes["qty"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                            strForceValue = objXmlVehicleGearAttributes["select"]?.InnerText ?? string.Empty;
 
                             objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlVehicleGear.InnerText + "\"]");
                         }

@@ -19806,8 +19806,8 @@ namespace Chummer
                         lblGearAP.Visible = false;
                     }
 
-                    cmdGearIncreaseQty.Enabled = !objGear.DisableQuantity;
-                    cmdGearReduceQty.Enabled = !objGear.DisableQuantity;
+                    cmdGearIncreaseQty.Enabled = !objGear.IncludedInParent;
+                    cmdGearReduceQty.Enabled = !objGear.IncludedInParent;
 
                     treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
                 }
@@ -19815,10 +19815,10 @@ namespace Chummer
                 // Enable or disable the Split/Merge buttons as needed.
                 if (treGear.SelectedNode.Level == 1)
                 {
-                    cmdGearSplitQty.Enabled = !objGear.DisableQuantity;
-                    cmdGearMergeQty.Enabled = !objGear.DisableQuantity;
+                    cmdGearSplitQty.Enabled = !objGear.IncludedInParent;
+                    cmdGearMergeQty.Enabled = !objGear.IncludedInParent;
                     if (CharacterObject.Vehicles.Count > 0)
-                        cmdGearMoveToVehicle.Enabled = !objGear.DisableQuantity;
+                        cmdGearMoveToVehicle.Enabled = !objGear.IncludedInParent;
                     else
                         cmdGearMoveToVehicle.Enabled = false;
                 }
@@ -21188,7 +21188,7 @@ namespace Chummer
                         if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
                         {
                             lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                            cmdVehicleGearReduceQty.Enabled = !objGear.DisableQuantity;
+                            cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
 
                             if (objGear.Rating > 0)
                                 lblVehicleRating.Text = objGear.Rating.ToString();
@@ -21397,7 +21397,7 @@ namespace Chummer
                     if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
                     {
                         lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                        cmdVehicleGearReduceQty.Enabled = !objGear.DisableQuantity;
+                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
 
                         if (objGear.Rating > 0)
                             lblVehicleRating.Text = objGear.Rating.ToString();
@@ -21626,7 +21626,7 @@ namespace Chummer
                     if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
                     {
                         lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                        cmdVehicleGearReduceQty.Enabled = !objGear.DisableQuantity;
+                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
 
                         if (objGear.Rating > 0)
                             lblVehicleRating.Text = objGear.Rating.ToString();

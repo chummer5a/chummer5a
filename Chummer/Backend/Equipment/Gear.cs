@@ -73,7 +73,6 @@ namespace Chummer.Backend.Equipment
         private int _intMatrixCMBonus = 0;
         private int _intMatrixCMFilled = 0;
         private string _strForcedValue = string.Empty;
-        private bool _blnDisableQuantity = false;
         private bool _blnAllowRename = false;
 
         private string _strAttack = string.Empty;
@@ -138,7 +137,6 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlGear.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlGear.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
-            objXmlGear.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             objXmlGear.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objXmlGear.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
             objXmlGear.TryGetBoolFieldQuickly("allowrename", ref _blnAllowRename);
@@ -531,7 +529,6 @@ namespace Chummer.Backend.Equipment
             _strSource = objGear.Source;
             _strPage = objGear.Page;
             _strCanFormPersona = objGear.CanFormPersona;
-            _blnDisableQuantity = objGear.DisableQuantity;
             _strExtra = objGear.Extra;
             _blnBonded = objGear.Bonded;
             _blnEquipped = objGear.Equipped;
@@ -608,7 +605,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("canformpersona", _strCanFormPersona);
-            objWriter.WriteElementString("disablequantity", _blnDisableQuantity.ToString());
             objWriter.WriteElementString("devicerating", _strDeviceRating);
             objWriter.WriteElementString("gearname", _strGearName);
             objWriter.WriteElementString("forcedvalue", _strForcedValue);
@@ -697,7 +693,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             bool blnNeedCommlinkLegacyShim = !objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
-            objNode.TryGetBoolFieldQuickly("disablequantity", ref _blnDisableQuantity);
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             string strWeaponID = string.Empty;
@@ -1376,21 +1371,6 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether to disable the ability to get more of a particular gear.
-        /// </summary>
-        public bool DisableQuantity
-        {
-            get
-            {
-                return _blnDisableQuantity;
-            }
-            set
-            {
-                _blnDisableQuantity = value;
-            }
-        }
-
-        /// <summary>
         /// A List of child pieces of Gear.
         /// </summary>
         public IList<Gear> Children
@@ -1889,7 +1869,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return !string.IsNullOrEmpty(_strParentID);
+                return !string.IsNullOrEmpty(ParentID);
             }
         }
 

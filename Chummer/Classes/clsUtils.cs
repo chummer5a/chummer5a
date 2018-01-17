@@ -34,8 +34,10 @@ namespace Chummer
     {
         public static void BreakIfDebug()
         {
+#if DEBUG
             if (Debugger.IsAttached)
                 Debugger.Break();
+#endif
         }
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
