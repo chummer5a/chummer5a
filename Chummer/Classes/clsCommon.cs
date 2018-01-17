@@ -1418,7 +1418,7 @@ namespace Chummer
                     string strLoop = astrOut[i];
                     if (string.IsNullOrWhiteSpace(strLoop))
                         continue;
-                    bool blnIsBonusLine = strLoop.StartsWith("BONUS");
+                    bool blnIsBonusLine = strLoop.StartsWith("BONUS") || strLoop.StartsWith("COST");
                     // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
                     if (!blnIsBonusLine && strLoop == strLoop.ToUpperInvariant())
                     {
