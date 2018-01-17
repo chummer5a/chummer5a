@@ -99,8 +99,6 @@ namespace Chummer
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
 
-            txtSearch.Text = string.Empty;
-
             XmlNodeList objXmlCategoryList;
 
             // Populate the Gear Category list.
@@ -154,17 +152,23 @@ namespace Chummer
 
             cboCategory.EndUpdate();
 
+            if (!string.IsNullOrEmpty(DefaultSearchText))
+            {
+                txtSearch.Text = DefaultSearchText;
+                txtSearch.Enabled = false;
+            }
+
             _blnLoading = false;
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedValue = s_StrSelectCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
+            else
+                RefreshList(cboCategory.SelectedValue?.ToString());
 
             if (!string.IsNullOrEmpty(_strSelectedGear))
                 lstGear.SelectedValue = _strSelectedGear;
-            else
-                txtSearch.Text = DefaultSearchText;
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
