@@ -1640,10 +1640,8 @@ namespace Chummer
             bool blnOldInitializing = _blnInitializing;
             _blnInitializing = true;
             if (intOldDataSourceSize == lstMetatypes.Items.Count)
-            {
                 lstMetatypes.SelectedIndex = intOldSelectedIndex;
-            }
-            else
+            else if (lstMetatype.Count > 0)
                 lstMetatypes.SelectedIndex = 0;
             lstMetatypes.EndUpdate();
             _blnInitializing = blnOldInitializing;
