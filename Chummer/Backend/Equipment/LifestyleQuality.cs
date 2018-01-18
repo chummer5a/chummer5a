@@ -122,7 +122,8 @@ namespace Chummer.Backend.Equipment
             _objLifestyleQualitySource = objLifestyleQualitySource;
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("print", ref _blnPrint);
             objXmlLifestyleQuality.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLimit);
-            objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlLifestyleQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlLifestyleQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
@@ -242,13 +243,13 @@ namespace Chummer.Backend.Equipment
                                                   objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
                 if (objLifestyleQualityNode == null)
                 {
-                    var lstQualities = new List<ListItem>();
+                    List<ListItem> lstQualities = new List<ListItem>();
                     foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/qualities/quality"))
                     {
                         string strName = objNode["name"].InnerText;
                         lstQualities.Add(new ListItem(strName, objNode["translate"]?.InnerText ?? strName));
                     }
-                    var frmSelect = new frmSelectItem
+                    frmSelectItem frmSelect = new frmSelectItem
                     {
                         GeneralItems = lstQualities,
                         Description = LanguageManager.GetString("String_CannotFindLifestyleQuality", GlobalOptions.Language).Replace("{0}", _strName)
@@ -295,9 +296,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("lp", _intLP.ToString(objCulture));
+            objWriter.WriteElementString("lp", LP.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            string strLifestyleQualityType = _objLifestyleQualityType.ToString();
+            string strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml", strLanguageToPrint);
@@ -306,12 +307,12 @@ namespace Chummer.Backend.Equipment
                 strLifestyleQualityType = objNode?.Attributes?["translate"]?.InnerText ?? strLifestyleQualityType;
             }
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
-            objWriter.WriteElementString("lifestylequalitytype_english", _objLifestyleQualityType.ToString());
-            objWriter.WriteElementString("lifestylequalitysource", _objLifestyleQualitySource.ToString());
+            objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
+            objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
 #endregion

@@ -145,7 +145,8 @@ namespace Chummer.Backend.Equipment
             objXmlCyberware.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlCyberware.TryGetStringFieldQuickly("limbslot", ref _strLimbSlot);
             objXmlCyberware.TryGetStringFieldQuickly("limbslotcount", ref _strLimbSlotCount);
-            objXmlCyberware.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlCyberware.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlCyberware.TryGetStringFieldQuickly("notes", ref _strNotes);
             _blnInheritAttributes = objXmlCyberware["inheritattributes"] != null;
             _objGrade = objGrade;
             objXmlCyberware.TryGetStringFieldQuickly("ess", ref _strESS);
@@ -283,15 +284,15 @@ namespace Chummer.Backend.Equipment
             XmlDocument objXmlVehicleDocument = XmlManager.Load("vehicles.xml");
 
             // More than one Weapon can be added, so loop through all occurrences.
-            foreach (XmlNode objXmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
+            foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
             {
-                string strLoopID = objXmlAddVehicle.InnerText;
-                var objXmlVehicle = strLoopID.IsGuid()
+                string strLoopID = xmlAddVehicle.InnerText;
+                XmlNode xmlVehicle = strLoopID.IsGuid()
                     ? objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strLoopID + "\"]")
                     : objXmlVehicleDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + strLoopID + "\"]");
 
                 Vehicle objVehicle = new Vehicle(_objCharacter);
-                objVehicle.Create(objXmlVehicle);
+                objVehicle.Create(xmlVehicle);
                 objVehicle.ParentID = InternalId;
                 lstVehicles.Add(objVehicle);
 
@@ -834,7 +835,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("ess", CalculatedESS().ToString(objCulture));
-            objWriter.WriteElementString("capacity", _strCapacity);
+            objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
@@ -848,24 +849,24 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
             objWriter.WriteElementString("extra", Extra);
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("improvementsource", SourceType.ToString());
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                 {
                     objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
                 objWriter.WriteEndElement();
             }
             objWriter.WriteStartElement("children");
-            foreach (Cyberware objChild in _objChildren)
+            foreach (Cyberware objChild in Children)
             {
                 objChild.Print(objWriter, objCulture, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
@@ -1066,7 +1067,6 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(_strExtra))
             {
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
                 // Attempt to retrieve the CharacterAttribute name.
                 strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
             }
@@ -1074,7 +1074,6 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(_strLocation))
             {
                 string strSide = string.Empty;
-                LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
                 if (_strLocation == "Left")
                     strSide = LanguageManager.GetString("String_Improvement_SideLeft", strLanguage);
                 else if (_strLocation == "Right")

@@ -54,7 +54,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly List<string> _blackMarketMaps = new List<string>();
+        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
 
         #region Control Events
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, XmlNode objParentNode = null)
@@ -78,7 +78,7 @@ namespace Chummer
             MoveControls();
             // Load the Gear information.
             _objXmlDocument = XmlManager.Load("gear.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
         }
 
         private void frmSelectGear_Load(object sender, EventArgs e)
@@ -632,9 +632,7 @@ namespace Chummer
                 return;
             }
 
-            // Retireve the information for the selected piece of Cyberware.
-            decimal decItemCost = 0.0m;
-
+            // Retrieve the information for the selected piece of Cyberware.
             lblGearDeviceRating.Text = objXmlGear["devicerating"]?.InnerText ?? string.Empty;
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlGear["source"].InnerText, GlobalOptions.Language);
@@ -713,14 +711,12 @@ namespace Chummer
                 decMultiplier *= 0.5m;
 
             // Cost.
-            if (_blackMarketMaps != null)
-                chkBlackMarketDiscount.Checked =
-                    _blackMarketMaps.Contains(objXmlGear["category"]?.InnerText);
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlGear["category"]?.InnerText);
 
+            decimal decItemCost = 0.0m;
             if (chkFreeItem.Checked)
             {
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                decItemCost = 0;
             }
             else
             {

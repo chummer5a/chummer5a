@@ -83,7 +83,8 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
-            objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
             _strCost = objXmlMod["cost"]?.InnerText ?? string.Empty;
             if (!string.IsNullOrEmpty(_strCost))
@@ -151,21 +152,21 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("installed", _blnInstalled.ToString());
 			objWriter.WriteElementString("weaponmountcategories", _strWeaponMountCategories);
 			objWriter.WriteStartElement("weapons");
-            foreach (var w in _lstWeapons)
+            foreach (Weapon objWeapon in _lstWeapons)
             {
-                w.Save(objWriter);
+                objWeapon.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weaponmountoptions");
-            foreach (var w in WeaponMountOptions)
+            foreach (WeaponMountOption objOption in WeaponMountOptions)
             {
-                w.Save(objWriter);
+                objOption.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("mods");
-		    foreach (var m in Mods)
+		    foreach (VehicleMod objMod in _lstMods)
 		    {
-		        m.Save(objWriter);
+		        objMod.Save(objWriter);
 		    }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
@@ -206,9 +207,11 @@ namespace Chummer.Backend.Equipment
 			objNode.TryGetStringFieldQuickly("source", ref _strSource);
 			objNode.TryGetBoolFieldQuickly("included", ref _blnIncludeInVehicle);
 			objNode.TryGetBoolFieldQuickly("installed", ref _blnInstalled);
-			if (objNode["weapons"] != null)
+
+            XmlNode xmlChildrenNode = objNode["weapons"];
+            if (xmlChildrenNode != null)
 			{
-                foreach (XmlNode xmlWeaponNode in objNode.SelectNodes("weapons/weapon"))
+                foreach (XmlNode xmlWeaponNode in xmlChildrenNode.SelectNodes("weapon"))
                 {
                     Weapon objWeapon = new Weapon(_objCharacter)
                     {
@@ -219,25 +222,27 @@ namespace Chummer.Backend.Equipment
                     _lstWeapons.Add(objWeapon);
                 }
             }
-            if (objNode["weaponmountoptions"] != null)
+            xmlChildrenNode = objNode["weaponmountoptions"];
+            if (xmlChildrenNode != null)
             {
-                foreach (XmlNode xmlWeaponMountOptionNode in objNode.SelectNodes("weaponmountoptions/weaponmountoption"))
+                foreach (XmlNode xmlWeaponMountOptionNode in xmlChildrenNode.SelectNodes("weaponmountoption"))
                 {
                     WeaponMountOption objWeaponMountOption = new WeaponMountOption(_objCharacter);
                     objWeaponMountOption.Load(xmlWeaponMountOptionNode, Parent);
                     WeaponMountOptions.Add(objWeaponMountOption);
                 }
             }
-		    if (objNode["mods"] != null)
-		    {
-		        foreach (XmlNode xmlModNode in objNode.SelectNodes("mods/mod"))
+            xmlChildrenNode = objNode["mods"];
+            if (xmlChildrenNode != null)
+            {
+		        foreach (XmlNode xmlModNode in xmlChildrenNode.SelectNodes("mod"))
 		        {
-                    var objMod = new VehicleMod(_objCharacter)
+                    VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
                         Parent = Parent
                     };
                     objMod.Load(xmlModNode);
-		            Mods.Add(objMod);
+		            _lstMods.Add(objMod);
 		        }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -254,26 +259,26 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteStartElement("mod");
 			objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 			objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-			objWriter.WriteElementString("limit", _strLimit);
-			objWriter.WriteElementString("slots", _intSlots.ToString());
+			objWriter.WriteElementString("limit", Limit);
+			objWriter.WriteElementString("slots", Slots.ToString());
 			objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
 			objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
 			objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
 			objWriter.WriteElementString("page", Page(strLanguageToPrint));
-			objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
+			objWriter.WriteElementString("included", IncludedInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
-		    foreach (Weapon objWeapon in _lstWeapons)
+		    foreach (Weapon objWeapon in Weapons)
 		    {
 		        objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
-		    foreach (VehicleMod objVehicleMod in _lstMods)
+		    foreach (VehicleMod objVehicleMod in Mods)
 		    {
 		        objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
 		    }
             objWriter.WriteEndElement();
 			if (_objCharacter.Options.PrintNotes)
-				objWriter.WriteElementString("notes", _strNotes);
+				objWriter.WriteElementString("notes", Notes);
 			objWriter.WriteEndElement();
 		}
         /// <summary>
@@ -844,7 +849,7 @@ namespace Chummer.Backend.Equipment
             if (_strCost.StartsWith("Variable("))
             {
                 int intMin;
-                var intMax = 0;
+                int intMax = 0;
                 string strCost = _strCost.Replace("Variable(", string.Empty).TrimEnd(')');
                 if (strCost.Contains("-"))
                 {

@@ -509,9 +509,9 @@ namespace Chummer.Classes
                         frmPickSkill.SelectedSkill.Contains("Exotic Ranged Weapon") ||
                         frmPickSkill.SelectedSkill.Contains("Pilot Exotic Vehicle"))
             {
-                foreach (var skill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
                 {
-                    var objSkill = (ExoticSkill) skill;
+                    ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
                     if ($"{objSkill.Name} ({objSkill.Specific})" != frmPickSkill.SelectedSkill) continue;
                     // We've found the selected Skill.
                     if (strNodeInnerXml.Contains("val"))

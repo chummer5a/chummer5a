@@ -435,7 +435,7 @@ namespace Translator
                 xmlRootChummerNode.AppendChild(xmlTranslatedStringsNode);
             }
 
-            var xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(Path.Combine(PATH, "lang", "en-us.xml"));
             XmlNode xmlStringsNode = xmlDocument.SelectSingleNode("/chummer/strings");
             if (xmlStringsNode != null)

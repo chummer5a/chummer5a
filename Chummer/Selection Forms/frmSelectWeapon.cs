@@ -44,7 +44,7 @@ namespace Chummer
         private Weapon _objSelectedWeapon = null;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly List<string> _lstBlackMarketMaps = new List<string>();
+        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
 
         #region Control Events
         public frmSelectWeapon(Character objCharacter)
@@ -58,7 +58,7 @@ namespace Chummer
             MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _lstBlackMarketMaps);
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)
@@ -159,9 +159,7 @@ namespace Chummer
 
         private void UpdateWeaponInfo()
         {
-            if (_lstBlackMarketMaps != null)
-                chkBlackMarketDiscount.Checked =
-                    _lstBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
 
             _objSelectedWeapon.DiscountCost = chkBlackMarketDiscount.Checked;
 

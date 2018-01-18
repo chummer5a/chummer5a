@@ -41,7 +41,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly List<string> _lstBlackMarketMaps = new List<string>();
+        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
         private int _intRating;
         private bool _blnBlackMarketDiscount;
 
@@ -57,7 +57,7 @@ namespace Chummer
             MoveControls();
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _lstBlackMarketMaps);
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
         }
 
         private void frmSelectArmor_Load(object sender, EventArgs e)
@@ -493,10 +493,7 @@ namespace Chummer
 
         private void UpdateArmorInfo()
         {
-            if (_lstBlackMarketMaps != null)
-            {
-                chkBlackMarketDiscount.Checked = _lstBlackMarketMaps.Contains(_objSelectedArmor.Category);
-            }
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
             _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
             _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
 

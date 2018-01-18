@@ -164,7 +164,7 @@ namespace Chummer
             {
                 case "SelectAttribute":
                     {
-                        var frmPickAttribute = new frmSelectAttribute
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };

@@ -53,13 +53,11 @@ namespace Chummer
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
             _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
-            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public CharacterShared()
         {
-            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
         /// <summary>
@@ -245,32 +243,6 @@ namespace Chummer
             }
 
             lblAstral.Text = _objCharacter.LimitAstral.ToString();
-        }
-
-        private static Lazy<Skill> _gunneryCached;
-
-        public static int MountedGunManualOperationDicePool(Weapon weapon)
-        {
-            return _gunneryCached.Value.Pool;
-        }
-
-        public static int MountedGunCommandDeviceDicePool(Character objCharacter)
-        {
-            return _gunneryCached.Value.PoolOtherAttribute(objCharacter.LOG.TotalValue);
-        }
-
-        public static int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
-        {
-            int pilotRating = vehicle.Pilot;
-
-            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName(GlobalOptions.Language)));
-
-            if (maybeAutoSoft != null)
-            {
-                return maybeAutoSoft.Rating + pilotRating;
-            }
-
-            return 0;
         }
 
         /// <summary>
@@ -1482,6 +1454,26 @@ namespace Chummer
             get
             {
                 return string.Empty;
+            }
+        }
+
+        protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
+        {
+            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
+            //allow wrapping back to first/last tab item based on scroll direction
+            TabControl tabControl = (sender as TabControl);
+            if (e.Location.Y <= tabControl.ItemSize.Height)
+            {
+                int intScrollAmount = e.Delta;
+                int intSelectedTabIndex = tabControl.SelectedIndex;
+
+                if (intScrollAmount < 0)
+                {
+                    if (intSelectedTabIndex < tabControl.TabCount - 1)
+                        tabControl.SelectedIndex = intSelectedTabIndex + 1;
+                }
+                else if (intSelectedTabIndex > 0)
+                    tabControl.SelectedIndex = intSelectedTabIndex - 1;
             }
         }
 

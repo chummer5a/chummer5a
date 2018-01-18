@@ -323,7 +323,7 @@ namespace Chummer.Backend.Skills
                                 }
                                 if (IsExoticSkill)
                                 {
-                                    var s = (ExoticSkill)this;
+                                    ExoticSkill s = (ExoticSkill)this;
                                     if (objImprovement.ImprovedName == $"{Name} ({s.Specific})")
                                     {
                                         yield return objImprovement;

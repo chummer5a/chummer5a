@@ -101,7 +101,8 @@ namespace Chummer.Backend.Equipment
             {
                 _blnDowngrade = true;
             }
-            objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMod.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             objXmlMod.TryGetInt32FieldQuickly("response", ref _intResponse);
@@ -290,23 +291,23 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (objNode.InnerXml.Contains("<weapons>"))
+            XmlNode xmlChildrenNode = objNode["weapons"];
+            if (xmlChildrenNode != null)
             {
-                XmlNodeList xmlNodeList = objNode.SelectNodes("weapons/weapon");
-                if (xmlNodeList != null)
-                    foreach (XmlNode nodChild in xmlNodeList)
+                foreach (XmlNode nodChild in xmlChildrenNode.SelectNodes("weapon"))
+                {
+                    Weapon objWeapon = new Weapon(_objCharacter)
                     {
-                        var objWeapon = new Weapon(_objCharacter)
-                        {
-                            ParentVehicle = Parent
-                        };
-                        objWeapon.Load(nodChild, blnCopy);
-                        _lstVehicleWeapons.Add(objWeapon);
-                    }
+                        ParentVehicle = Parent
+                    };
+                    objWeapon.Load(nodChild, blnCopy);
+                    _lstVehicleWeapons.Add(objWeapon);
+                }
             }
-            if (objNode.InnerXml.Contains("<cyberwares>"))
+            xmlChildrenNode = objNode["cyberwares"];
+            if (xmlChildrenNode != null)
             {
-                XmlNodeList xmlNodeList = objNode.SelectNodes("cyberwares/cyberware");
+                XmlNodeList xmlNodeList = xmlChildrenNode.SelectNodes("cyberware");
                 if (xmlNodeList != null)
                     foreach (XmlNode nodChild in xmlNodeList)
                     {
@@ -337,16 +338,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("mod");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("limit", _strLimit);
-            objWriter.WriteElementString("slots", _strSlots);
-            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
+            objWriter.WriteElementString("limit", Limit);
+            objWriter.WriteElementString("slots", Slots);
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
+            objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString());
+            objWriter.WriteElementString("included", IncludedInVehicle.ToString());
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
                 objWeapon.Print(objWriter, objCulture, strLanguageToPrint);

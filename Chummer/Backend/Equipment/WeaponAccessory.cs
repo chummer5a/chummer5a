@@ -138,7 +138,8 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAccessory.TryGetStringFieldQuickly("page", ref _strPage);
             _nodAllowGear = objXmlAccessory["allowgear"];
-            objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlAccessory.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlAccessory.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
@@ -339,28 +340,28 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("accessory");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("mount", _strMount);
-            objWriter.WriteElementString("extramount", _strExtraMount);
-            objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("conceal", _strConceal);
+            objWriter.WriteElementString("mount", Mount);
+            objWriter.WriteElementString("extramount", ExtraMount);
+            objWriter.WriteElementString("rc", RC);
+            objWriter.WriteElementString("conceal", Concealability.ToString());
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
+            objWriter.WriteElementString("included", IncludedInWeapon.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(objCulture));
-            if (_lstGear.Count > 0)
+            objWriter.WriteElementString("accuracy", Accuracy.ToString(objCulture));
+            if (Gear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                 {
                     objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
                 objWriter.WriteEndElement();
             }
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion

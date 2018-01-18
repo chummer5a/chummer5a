@@ -332,9 +332,9 @@ namespace Translator
         #region BackgroundWorker Events
         private void DoLoadStrings(object sender, DoWorkEventArgs e)
         {
-            var xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(Path.Combine(ApplicationPath, "lang", "en-us.xml"));
-            var dataTable = new DataTable("strings");
+            DataTable dataTable = new DataTable("strings");
             dataTable.Columns.Add("Key");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
@@ -354,7 +354,7 @@ namespace Translator
                 string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
                 string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                 string strTranslated = strEnglish;
-                var blnTranslated = false;
+                bool blnTranslated = false;
                 XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
                 if (xmlNodeLocal != null)
                 {
@@ -380,7 +380,7 @@ namespace Translator
                 if (objArray != null)
                     objDataTableRows.Add(objArray);
             }
-            var dataSet = new DataSet("strings");
+            DataSet dataSet = new DataSet("strings");
             dataSet.Tables.Add(dataTable);
             e.Result = dataSet;
         }
@@ -409,7 +409,7 @@ namespace Translator
             string[] strArgs = e.Argument as string[];
             string strFileName = strArgs[0];
             string strSection = strArgs[1];
-            var dataTable = new DataTable("strings");
+            DataTable dataTable = new DataTable("strings");
             dataTable.Columns.Add("Id");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
@@ -439,7 +439,7 @@ namespace Translator
             foreach (XmlNode xmlNodeToShow in xmlBaseList)
             {
                 XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
-                var xmlDocument = new XmlDocument();
+                XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(Path.Combine(ApplicationPath, "data", strFileName));
                 object[][] arrayRowsToDisplay = new object[xmlChildNodes.Count][];
                 object arrayRowsToDisplayLock = new object();
@@ -585,7 +585,7 @@ namespace Translator
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
             string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
-            var xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true };
+            XmlWriterSettings xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);

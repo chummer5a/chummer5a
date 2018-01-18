@@ -256,8 +256,8 @@ namespace Chummer
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
-                var s = objXmlSourceNode["settings"]?.InnerText;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", s)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : s;
+                string strSettings = objXmlSourceNode["settings"]?.InnerText;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
                 string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
@@ -647,7 +647,7 @@ namespace Chummer
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t == null) return;
-            if (int.TryParse(t.Tag.ToString(), out var intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
+            if (int.TryParse(t.Tag.ToString(), out int intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
             {
                 CharacterCache objCache = _lstCharacterCache[intCharacterIndex];
 
@@ -700,13 +700,16 @@ namespace Chummer
 
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
-            var objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode == null || objSelectedNode.Level <= 0) return;
-            var intIndex = Convert.ToInt32(objSelectedNode.Tag);
-            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count) return;
-            var strFile = _lstCharacterCache[intIndex]?.FilePath;
-            if (string.IsNullOrEmpty(strFile)) return;
-            var objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
+                return;
+            string strFile = _lstCharacterCache[intIndex]?.FilePath;
+            if (string.IsNullOrEmpty(strFile))
+                return;
+            Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
             Cursor = Cursors.WaitCursor;
             if (objOpenCharacter != null)
             {

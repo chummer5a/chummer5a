@@ -59,7 +59,7 @@ namespace Chummer
         private bool _blnIgnoreSecondHand = false;
         private string _strForceGrade = string.Empty;
         private readonly XmlNode _objParentNode = null;
-        private readonly List<string> _blackMarketMaps = new List<string>();
+        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
         private readonly XmlDocument _objXmlDocument = null;
 
         private enum Mode
@@ -98,7 +98,7 @@ namespace Chummer
 
             _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString("D");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter,_objXmlDocument,_blackMarketMaps);
+            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
@@ -304,18 +304,17 @@ namespace Chummer
                     objForcedGrade = _forcedGrade ?? _objGradeList.FirstOrDefault(x => x.SourceId.ToString("D") == strForceGrade);
                 }
             }
-            if (_blackMarketMaps != null)
-                chkBlackMarketDiscount.Checked =
-                    _blackMarketMaps.Contains(objXmlCyberware["category"]?.InnerText);
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlCyberware["category"]?.InnerText);
 
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             PopulateGrades(objXmlCyberware?["nosecondhand"] != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
 
-            if (objXmlCyberware["notes"] != null)
+            string strNotes = objXmlCyberware["altnotes"]?.InnerText ?? objXmlCyberware["notes"]?.InnerText;
+            if (!string.IsNullOrEmpty(strNotes))
             {
                 lblCyberwareNotes.Visible = true;
                 lblCyberwareNotesLabel.Visible = true;
-                lblCyberwareNotes.Text = objXmlCyberware["notes"].InnerText;
+                lblCyberwareNotes.Text = strNotes;
             }
             else
             {

@@ -218,7 +218,8 @@ namespace Chummer.Backend.Skills
             xmlSkillNode.TryGetInt32FieldQuickly("karma", ref skill._intKarma);
             xmlSkillNode.TryGetInt32FieldQuickly("base", ref skill._intBase);
             xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref skill._blnBuyWithKarma);
-            xmlSkillNode.TryGetStringFieldQuickly("notes", ref skill._strNotes);
+            if (!xmlSkillNode.TryGetStringFieldQuickly("altnotes", ref skill._strNotes))
+                xmlSkillNode.TryGetStringFieldQuickly("notes", ref skill._strNotes);
 
             foreach (XmlNode spec in xmlSkillNode.SelectNodes("specs/spec"))
             {
@@ -231,73 +232,73 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Loads skill saved in legacy format
         /// </summary>
-        /// <param name="character"></param>
-        /// <param name="n"></param>
+        /// <param name="objCharacter"></param>
+        /// <param name="xmlSkillNode"></param>
         /// <returns></returns>
-        public static Skill LegacyLoad(Character character, XmlNode n)
+        public static Skill LegacyLoad(Character objCharacter, XmlNode xmlSkillNode)
         {
-            if (n == null)
+            if (xmlSkillNode == null)
                 return null;
-            n.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
+            xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid suid, Guid.NewGuid());
 
-            int.TryParse(n["base"]?.InnerText, out int baseRating);
-            int.TryParse(n["rating"]?.InnerText, out int fullRating);
-            int karmaRating = fullRating - baseRating;  //Not reading karma directly as career only increases rating
+            int.TryParse(xmlSkillNode["base"]?.InnerText, out int intBaseRating);
+            int.TryParse(xmlSkillNode["rating"]?.InnerText, out int intFullRating);
+            int intKarmaRating = intFullRating - intBaseRating;  //Not reading karma directly as career only increases rating
 
             bool blnTemp = false;
 
-            Skill skill;
-            if (n.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
+            Skill objSkill;
+            if (xmlSkillNode.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
-                KnowledgeSkill kno = new KnowledgeSkill(character)
+                KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = n["name"]?.InnerText,
-                    Base = baseRating,
-                    Karma = karmaRating,
+                    WriteableName = xmlSkillNode["name"]?.InnerText,
+                    Base = intBaseRating,
+                    Karma = intKarmaRating,
 
-                    Type = n["skillcategory"]?.InnerText
+                    Type = xmlSkillNode["skillcategory"]?.InnerText
                 };
 
-                skill = kno;
+                objSkill = objKnowledgeSkill;
             }
             else
             {
-                XmlNode data =
-                    XmlManager.Load("skills.xml").SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
+                XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
+                XmlNode xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
 
                 //Some stuff apparently have a guid of 0000-000... (only exotic?)
-                if (data == null)
+                if (xmlSkillDataNode == null)
                 {
-                    data = XmlManager.Load("skills.xml")
-                        .SelectSingleNode($"/chummer/skills/skill[name = '{n["name"]?.InnerText}']");
+                    xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[name = '{xmlSkillNode["name"]?.InnerText}']");
                 }
 
 
-                skill = FromData(data, character);
-                skill._intBase = baseRating;
-                skill._intKarma = karmaRating;
+                objSkill = FromData(xmlSkillDataNode, objCharacter);
+                objSkill._intBase = intBaseRating;
+                objSkill._intKarma = intKarmaRating;
 
-                if (skill is ExoticSkill exoticSkill)
+                if (objSkill is ExoticSkill exoticSkill)
                 {
-                    string name = n.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
+                    string name = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
                     //don't need to do more load then.
                     exoticSkill.Specific = name;
-                    return skill;
+                    return objSkill;
                 }
 
-                n.TryGetBoolFieldQuickly("buywithkarma", ref skill._blnBuyWithKarma);
+                xmlSkillNode.TryGetBoolFieldQuickly("buywithkarma", ref objSkill._blnBuyWithKarma);
             }
 
-            var v = from XmlNode node
-                in n.SelectNodes("skillspecializations/skillspecialization")
-                    select SkillSpecialization.Load(node, skill);
-            var q = v.ToList();
-            if (q.Count != 0)
+            List<SkillSpecialization> lstSpecializations = new List<SkillSpecialization>();
+            foreach (XmlNode xmlSpecializationNode in xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
             {
-                skill.Specializations.AddRange(q);
+                lstSpecializations.Add(SkillSpecialization.Load(xmlSpecializationNode, objSkill));
+            }
+            if (lstSpecializations.Count != 0)
+            {
+                objSkill.Specializations.AddRange(lstSpecializations);
             }
 
-            return skill;
+            return objSkill;
         }
 
         protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();

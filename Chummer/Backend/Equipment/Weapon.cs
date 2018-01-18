@@ -90,7 +90,7 @@ namespace Chummer.Backend.Equipment
 
         private XmlNode _objCachedMyXmlNode = null;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private FiringMode _firingMode;
+        private FiringMode _eFiringMode;
 
         private string _strDeviceRating = string.Empty;
         private string _strAttack = string.Empty;
@@ -156,7 +156,8 @@ namespace Chummer.Backend.Equipment
                 }
                 _strWeaponSlots = strMounts;
             }
-            objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
@@ -412,7 +413,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammo", _strAmmo);
             objWriter.WriteElementString("cyberware", _blnCyberware.ToString());
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
-            objWriter.WriteElementString("firingmode",_firingMode.ToString());
+            objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _ammo)
             {
@@ -554,7 +555,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
             if (objNode["firingmode"] != null)
-                _firingMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
+                _eFiringMode = ConvertToFiringMode(objNode["firingmode"].InnerText);
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
@@ -748,12 +749,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", _strType);
+            objWriter.WriteElementString("type", WeaponType);
             objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
             objWriter.WriteElementString("accuracy", TotalAccuracy.ToString(objCulture));
             objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("damage_english", CalculatedDamage(objCulture, GlobalOptions.DefaultLanguage));
-            objWriter.WriteElementString("rawdamage", _strDamage);
+            objWriter.WriteElementString("rawdamage", Damage);
             objWriter.WriteElementString("ap", TotalAP(strLanguageToPrint));
             objWriter.WriteElementString("mode", CalculatedMode(strLanguageToPrint));
             objWriter.WriteElementString("rc", TotalRC);
@@ -774,12 +775,12 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("weaponname", _strWeaponName);
-            objWriter.WriteElementString("location", _strLocation);
+            objWriter.WriteElementString("weaponname", WeaponName);
+            objWriter.WriteElementString("location", Location);
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     objAccessory.Print(objWriter, objCulture, strLanguageToPrint);
                 objWriter.WriteEndElement();
             }
@@ -805,14 +806,11 @@ namespace Chummer.Backend.Equipment
             // </alternateranges>
             objWriter.WriteEndElement();
 
-            if (_lstUnderbarrel.Count > 0)
+            foreach (Weapon objUnderbarrel in Children)
             {
-                foreach (Weapon objUnderbarrel in _lstUnderbarrel)
-                {
-                    objWriter.WriteStartElement("underbarrel");
-                    objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
-                    objWriter.WriteEndElement();
-                }
+                objWriter.WriteStartElement("underbarrel");
+                objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
+                objWriter.WriteEndElement();
             }
 
             // Currently loaded Ammo.
@@ -840,7 +838,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("skill", Skill?.Name);
 
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
 
             objWriter.WriteEndElement();
         }
@@ -1724,18 +1722,18 @@ namespace Chummer.Backend.Equipment
             int intImprove = 0;
             if (_objCharacter != null)
             {
-                var s = _strCategory;
-                if (s == "Unarmed")
+                string strCategory = Category;
+                if (strCategory == "Unarmed")
                 {
-                    s = "Unarmed Combat";
+                    strCategory = "Unarmed Combat";
                 }
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == s || "Cyberware " + objImprovement.ImprovedName == s))
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == strCategory || "Cyberware " + objImprovement.ImprovedName == strCategory))
                         intImprove += objImprovement.Value;
                     if (!string.IsNullOrEmpty(_strUseSkill))
                     {
-                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == s))
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDV && objImprovement.Enabled && (objImprovement.ImprovedName == _strUseSkill || "Cyberware " + objImprovement.ImprovedName == strCategory))
                             intImprove += objImprovement.Value;
                     }
                 }
@@ -3399,69 +3397,107 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string GetDicePool(CultureInfo objCulture)
         {
-            var extra = string.Empty;
+            string strExtra = string.Empty;
             int intDicePool = 0;
             int intDicePoolModifier = _lstAccessories.Where(a => a.Installed).Sum(a => a.DicePool);
-            switch (_firingMode)
+            switch (FireMode)
             {
                 //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
                 case FiringMode.DogBrain:
-                    intDicePool = CharacterShared.MountedGunDogBrainDicePool(this, ParentVehicle);
-                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
-                        where objGear.InternalId == AmmoLoaded
-                        where objGear.WeaponBonus?["pool"] != null
-                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
-                    break;
-                case FiringMode.GunneryCommandDevice:
-                    intDicePool = CharacterShared.MountedGunCommandDeviceDicePool(_objCharacter);
-                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
-                        where objGear.InternalId == AmmoLoaded
-                        where objGear.WeaponBonus?["pool"] != null
-                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
-                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
-                    break;
-                case FiringMode.RemoteOperated:
-                    intDicePool = CharacterShared.MountedGunCommandDeviceDicePool(_objCharacter);
-                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
-                        where objGear.InternalId == AmmoLoaded
-                        where objGear.WeaponBonus?["pool"] != null
-                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
-                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
-                    break;
-                case FiringMode.ManualOperation:
-                    intDicePool = CharacterShared.MountedGunManualOperationDicePool(this);
-                    intDicePoolModifier += (from objGear in ParentVehicle.Gear
-                        where objGear.InternalId == AmmoLoaded
-                        where objGear.WeaponBonus?["pool"] != null
-                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
-                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
-                    break;
-                case FiringMode.Skill:
-                    Skill objSkill = Skill;
-                    if (objSkill != null)
                     {
-                        intDicePool = objSkill.Pool;
-                    }
-                    intDicePoolModifier = (from objGear in _objCharacter.Gear
-                        where objGear.InternalId == AmmoLoaded
-                        where objGear.WeaponBonus?["pool"] != null
-                        select Convert.ToInt32(objGear.WeaponBonus["pool"]?.InnerText)).Sum();
-                    intDicePoolModifier += _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.WeaponCategoryDice && x.ImprovedName == Category).Sum(objImprovement => objImprovement.Value);
+                        Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == DisplayName(GlobalOptions.Language)));
 
-                    // If the character has a Specialization, include it in the Dice Pool string.
-                    if (objSkill != null && (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill))
-                    {
-                        if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
-                            extra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
+                        if (objAutosoft != null)
+                        {
+                            intDicePool = objAutosoft.Rating + ParentVehicle.Pilot;
+                        }
+
+                        foreach (Gear objGear in ParentVehicle.Gear)
+                        {
+                            if (objGear.InternalId == AmmoLoaded)
+                            {
+                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+                            }
+                        }
+                        break;
                     }
-                    break;
+                case FiringMode.GunneryCommandDevice:
+                    {
+                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+                        foreach (Gear objGear in ParentVehicle.Gear)
+                        {
+                            if (objGear.InternalId == AmmoLoaded)
+                            {
+                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+                            }
+                        }
+                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                        break;
+                    }
+                case FiringMode.RemoteOperated:
+                    {
+                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute(_objCharacter.LOG.TotalValue);
+                        foreach (Gear objGear in ParentVehicle.Gear)
+                        {
+                            if (objGear.InternalId == AmmoLoaded)
+                            {
+                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+                            }
+                        }
+                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                        break;
+                    }
+                case FiringMode.ManualOperation:
+                    {
+                        intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
+                        foreach (Gear objGear in ParentVehicle.Gear)
+                        {
+                            if (objGear.InternalId == AmmoLoaded)
+                            {
+                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+                            }
+                        }
+                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                        break;
+                    }
+                case FiringMode.Skill:
+                    {
+                        Skill objSkill = Skill;
+                        if (objSkill != null)
+                        {
+                            intDicePool = objSkill.Pool;
+                            // If the character has a Specialization, include it in the Dice Pool string.
+                            if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                            {
+                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
+                                    strExtra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
+                            }
+                        }
+                        foreach (Gear objGear in _objCharacter.Gear)
+                        {
+                            if (objGear.InternalId == AmmoLoaded)
+                            {
+                                string strWeaponBonusPool = objGear.WeaponBonus?["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    intDicePoolModifier += Convert.ToInt32(strWeaponBonusPool);
+                            }
+                        }
+                        intDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
+                        break;
+                    }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            var intRating = (intDicePool + intDicePoolModifier).ToString(objCulture);
-            var strReturn = $"{intRating}{extra}";
 
-            return strReturn;
+            return (intDicePool + intDicePoolModifier).ToString(objCulture) + strExtra;
         }
 
         private Skill Skill
@@ -3807,8 +3843,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public FiringMode FireMode
         {
-            get => ParentVehicle == null ? FiringMode.Skill : _firingMode;
-            set => _firingMode = value;
+            get => ParentVehicle == null ? FiringMode.Skill : _eFiringMode;
+            set => _eFiringMode = value;
         }
 
         public bool IsProgram
@@ -4260,7 +4296,8 @@ namespace Chummer.Backend.Equipment
             GunneryCommandDevice,
             RemoteOperated,
             DogBrain,
-            ManualOperation
+            ManualOperation,
+            NumFiringModes // 🡐 This one should always be the last defined enum
         }
 
         #endregion

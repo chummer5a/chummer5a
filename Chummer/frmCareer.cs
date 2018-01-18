@@ -9996,80 +9996,104 @@ namespace Chummer
 
         private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
-            frmPickLifestyle.ShowDialog(this);
+            bool blnAddAgain = false;
+            do
+            {
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
+                frmPickLifestyle.ShowDialog(this);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                return;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickLifestyle.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickLifestyle.AddAgain;
 
-            Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
-            objNewLifestyle.StyleType = LifestyleType.Advanced;
+                Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
+                frmPickLifestyle.Dispose();
+                objNewLifestyle.StyleType = LifestyleType.Advanced;
 
-            CharacterObject.Lifestyles.Add(objNewLifestyle);
-            
-            treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-            treLifestyles.Nodes[0].Expand();
+                CharacterObject.Lifestyles.Add(objNewLifestyle);
 
-            if (frmPickLifestyle.AddAgain)
-                tsAdvancedLifestyle_Click(sender, e);
+                treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
+                treLifestyles.Nodes[0].Expand();
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+            while (blnAddAgain);
         }
 
         private void tsBoltHole_Click(object sender, EventArgs e)
         {
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+            bool blnAddAgain = false;
+            do
             {
-                StyleType = LifestyleType.BoltHole
-            };
-            frmPickLifestyle.ShowDialog(this);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+                {
+                    StyleType = LifestyleType.BoltHole
+                };
+                frmPickLifestyle.ShowDialog(this);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                return;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickLifestyle.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickLifestyle.AddAgain;
 
-            Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
-            objNewLifestyle.Months = 0;
-            CharacterObject.Lifestyles.Add(objNewLifestyle);
-            
-            treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-            treLifestyles.Nodes[0].Expand();
+                Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
+                frmPickLifestyle.Dispose();
+                objNewLifestyle.Months = 0;
+                CharacterObject.Lifestyles.Add(objNewLifestyle);
 
-            if (frmPickLifestyle.AddAgain)
-                tsAdvancedLifestyle_Click(sender, e);
+                treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
+                treLifestyles.Nodes[0].Expand();
 
-            IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
 
-            IsDirty = true;
+                IsDirty = true;
+            }
+            while (blnAddAgain);
         }
 
         private void tsSafehouse_Click(object sender, EventArgs e)
         {
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+            bool blnAddAgain = false;
+            do
             {
-                StyleType = LifestyleType.Safehouse
-            };
-            frmPickLifestyle.ShowDialog(this);
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject)
+                {
+                    StyleType = LifestyleType.Safehouse
+                };
+                frmPickLifestyle.ShowDialog(this);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                return;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickLifestyle.Dispose();
+                    break;
+                }
 
-            Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
-            objLifestyle.Months = 0;
-            CharacterObject.Lifestyles.Add(objLifestyle);
-            
-            treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-            treLifestyles.Nodes[0].Expand();
+                Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                frmPickLifestyle.Dispose();
+                objLifestyle.Months = 0;
+                CharacterObject.Lifestyles.Add(objLifestyle);
 
-            if (frmPickLifestyle.AddAgain)
-                tsAdvancedLifestyle_Click(sender, e);
+                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
+                treLifestyles.Nodes[0].Expand();
 
-            IsCharacterUpdateRequested = true;
+                if (frmPickLifestyle.AddAgain)
+                    tsAdvancedLifestyle_Click(sender, e);
 
-            IsDirty = true;
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+            while (blnAddAgain);
         }
 
         private void tsWeaponName_Click(object sender, EventArgs e)
@@ -13421,24 +13445,6 @@ namespace Chummer
             lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
             UpdateQualityLevelValue(objQuality);
-        }
-
-        private void tabControl_MouseWheel(object sender, MouseEventArgs e)
-        {
-            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
-            //allow wrapping back to first/last tab item based on scroll direction
-            var tabControl = (sender as TabControl);
-            if (e.Location.Y <= tabControl.ItemSize.Height)
-            {
-                var scrollAmount = e.Delta;
-                var selectedTabIndex = tabControl.SelectedIndex;
-
-                if ((selectedTabIndex == tabControl.TabCount - 1 && scrollAmount < 0) ||
-                    (selectedTabIndex == 0 && scrollAmount > 0))
-                    return;
-
-                tabControl.SelectedIndex = scrollAmount < 0 ? selectedTabIndex + 1 : selectedTabIndex - 1;
-            }
         }
         #endregion
 

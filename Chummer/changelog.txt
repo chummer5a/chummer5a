@@ -30,6 +30,7 @@ Application Changes:
 - Fixed an issue where translations for priority talents did not load properly.
 - Shifted the translation method for options so that they all use the method associated with translating data entries (i.e. via `translate` element for items with element children and via `translate` attribute for items without them).
 - Added support for processing of options.xml to the Translator tool.
+- Added support for translation of notes that come with an item, via the `altnotes` element.
 
 Data Changes:
 

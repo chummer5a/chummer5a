@@ -432,6 +432,10 @@ namespace Chummer
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
 
+                    xmlLoopNode = objChild["altnotes"];
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));
+
                     xmlLoopNode = objChild["altadvantage"];
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlDataDocument.ImportNode(xmlLoopNode, true));

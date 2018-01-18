@@ -365,61 +365,60 @@ namespace Chummer.Backend.Skills
         {
             //Build a crazy xpath to get everything we want to convert
 
-            string xpath =
-                $"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
+            string strXPath = $"/character/expenses/expense[type = \'Karma\']/undo[{string.Join(" or ", typesRequreingConverting.Select(x => $"karmatype = '{x}'"))}]/objectid";
 
             //Find everything
-            XmlNodeList nodesToChange = doc.SelectNodes(xpath);
-            if (nodesToChange != null)
+            XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
+            if (lstNodesToChange != null)
             {
-                for (var i = 0; i < nodesToChange.Count; i++)
+                for (int i = 0; i < lstNodesToChange.Count; i++)
                 {
-                    if (map.TryGetValue(nodesToChange[i].InnerText, out Guid guidLoop))
+                    if (map.TryGetValue(lstNodesToChange[i].InnerText, out Guid guidLoop))
                     {
-                        nodesToChange[i].InnerText = guidLoop.ToString("D");
+                        lstNodesToChange[i].InnerText = guidLoop.ToString("D");
                     }
                     else
                     {
-                        nodesToChange[i].InnerText = Guid.Empty.ToString("D"); //This creates 00.. guid in default formatting
+                        lstNodesToChange[i].InnerText = Guid.Empty.ToString("D"); //This creates 00.. guid in default formatting
                     }
                 }
             }
         }
 
-        internal void Save(XmlTextWriter writer)
+        internal void Save(XmlTextWriter objWriter)
         {
-            writer.WriteStartElement("newskills");
+            objWriter.WriteStartElement("newskills");
 
-            writer.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
-            writer.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
 
-            writer.WriteStartElement("skills");
-            foreach (Skill skill in Skills)
+            objWriter.WriteStartElement("skills");
+            foreach (Skill objSkill in Skills)
             {
-                skill.WriteTo(writer);
+                objSkill.WriteTo(objWriter);
             }
-            writer.WriteEndElement();
-            writer.WriteStartElement("knoskills");
-            foreach (KnowledgeSkill knowledgeSkill in KnowledgeSkills)
+            objWriter.WriteEndElement();
+            objWriter.WriteStartElement("knoskills");
+            foreach (KnowledgeSkill objKnowledgeSkill in KnowledgeSkills)
             {
-                knowledgeSkill.WriteTo(writer);
+                objKnowledgeSkill.WriteTo(objWriter);
             }
-            writer.WriteEndElement();
+            objWriter.WriteEndElement();
 
-            writer.WriteStartElement("skilljackknowledgeskills");
+            objWriter.WriteStartElement("skilljackknowledgeskills");
             foreach (KnowledgeSkill objSkill in KnowsoftSkills)
             {
-                objSkill.WriteTo(writer);
+                objSkill.WriteTo(objWriter);
             }
-            writer.WriteEndElement();
+            objWriter.WriteEndElement();
 
-            writer.WriteStartElement("groups");
-            foreach (SkillGroup skillGroup in SkillGroups)
+            objWriter.WriteStartElement("groups");
+            foreach (SkillGroup objSkillGroup in SkillGroups)
             {
-                skillGroup.WriteTo(writer);
+                objSkillGroup.WriteTo(objWriter);
             }
-            writer.WriteEndElement();
-            writer.WriteEndElement();
+            objWriter.WriteEndElement();
+            objWriter.WriteEndElement();
         }
 
         internal void Reset()

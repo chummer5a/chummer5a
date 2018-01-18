@@ -5000,72 +5000,86 @@ namespace Chummer
 
         private void cmdLifeModule_Click(object sender, EventArgs e)
         {
-            XmlDocument xdoc = XmlManager.Load("lifemodules.xml");
+            XmlDocument xmlDoc = XmlManager.Load("lifemodules.xml");
 
-            XmlNodeList xnodes = xdoc.SelectNodes("chummer/stages/stage");
-            //from 1 to second highest life module order possible (ye hardcoding is bad, but extra stage is a niche case)
-            int i;
-            for (i = 1; i < 5; i++)
+            XmlNode xmlStagesParentNode = xmlDoc.SelectSingleNode("chummer/stages");
+
+            bool blnAddAgain = false;
+            do
             {
-                XmlNode node = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + i + "\"]");
-                if (node == null)
+                //from 1 to second highest life module order possible (ye hardcoding is bad, but extra stage is a niche case)
+                int intStage;
+                for (intStage = 1; intStage < 5; ++intStage)
                 {
-                    i--;
+                    XmlNode xmlStageNode = xmlStagesParentNode.SelectSingleNode("stage[@order = \"" + intStage.ToString() + "\"]");
+                    if (xmlStageNode == null)
+                    {
+                        intStage -= 1;
+                        break;
+                    }
+                    if (CharacterObject.Qualities.Any(x => (
+                        x.Type == QualityType.LifeModule &&
+                        x.Stage == xmlStageNode.InnerText
+                    )))
+                    {
+                        break;
+                    }
+                }
+                //i--; //Counter last increment
+                frmSelectLifeModule frmSelectLifeModule = new frmSelectLifeModule(CharacterObject, intStage);
+                frmSelectLifeModule.ShowDialog(this);
+
+                if (frmSelectLifeModule.DialogResult == DialogResult.Cancel)
+                {
+                    frmSelectLifeModule.Dispose();
                     break;
                 }
-                if (CharacterObject.Qualities.Any(x => (
-                    x.Type == QualityType.LifeModule &&
-                    x.Stage == node.InnerText
-                )))
+                blnAddAgain = frmSelectLifeModule.AddAgain;
+
+                XmlNode objXmlLifeModule = frmSelectLifeModule.SelectedNode;
+
+                frmSelectLifeModule.Dispose();
+
+                List<Weapon> lstWeapons = new List<Weapon>();
+                Quality objLifeModule = new Quality(CharacterObject);
+
+                objLifeModule.Create(objXmlLifeModule, CharacterObject, QualitySource.LifeModule, lstWeapons);
+                if (objLifeModule.InternalId == Guid.Empty.ToString("D"))
+                    continue;
+
+                //Is there any reason not to add it?
+                if (true)
                 {
-                    break;
+                    CharacterObject.Qualities.Add(objLifeModule);
+
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        CharacterObject.Weapons.Add(objWeapon);
+                        treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                        treWeapons.Nodes[0].Expand();
+                    }
                 }
-            }
-            //i--; //Counter last increment
-            frmSelectLifeModule selectLifeModule = new frmSelectLifeModule(CharacterObject, i);
-            selectLifeModule.ShowDialog(this);
-
-            if (selectLifeModule.DialogResult == DialogResult.Cancel)
-                return;
-
-            XmlNode objXmlLifeModule = selectLifeModule.SelectedNode;
-            
-            List<Weapon> lstWeapons = new List<Weapon>();
-            Quality objLifeModule = new Quality(CharacterObject);
-
-            objLifeModule.Create(objXmlLifeModule, CharacterObject, QualitySource.LifeModule, lstWeapons);
-            if (objLifeModule.InternalId == Guid.Empty.ToString("D"))
-                return;
-
-            //Is there any reason not to add it?
-            if (true)
-            {
-                CharacterObject.Qualities.Add(objLifeModule);
-
-                foreach (Weapon objWeapon in lstWeapons)
+                else
                 {
-                    CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
+                    //If not add, fallback (Dead code as we don't check for exceeding karma
+                    //Until validation
+                    //ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
                 }
+
+                //Stupid hardcoding but no sane way
+                //To do group skills (not that anything else is sane)
+
+                IsCharacterUpdateRequested = true;
+                
+                IsDirty = true;
             }
-            else
+            while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
             {
-                //If not add, fallback (Dead code as we don't check for exceeding karma
-                //Until validation
-                //ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objLifeModule.InternalId);
+                RefreshQualities(treQualities, cmsQuality);
+                RefreshContacts();
             }
-
-            //Stupid hardcoding but no sane way
-            //To do group skills (not that anything else is sane)
-
-            RefreshQualities(treQualities, cmsQuality);
-            IsCharacterUpdateRequested = true;
-            RefreshContacts();
-            IsDirty = true;
-
-            if (selectLifeModule.AddAgain)
-                cmdLifeModule_Click(sender, e);
         }
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
@@ -6830,25 +6844,34 @@ namespace Chummer
 
         private void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
-            frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
-            frmPickLifestyle.ShowDialog(this);
+            bool blnAddAgain = false;
+            do
+            {
+                frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject);
+                frmPickLifestyle.ShowDialog(this);
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                return;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                {
+                    frmPickLifestyle.Dispose();
+                    break;
+                }
+                blnAddAgain = frmPickLifestyle.AddAgain;
 
-            Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
-            objLifestyle.StyleType = LifestyleType.Advanced;
+                Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                frmPickLifestyle.Dispose();
+                objLifestyle.StyleType = LifestyleType.Advanced;
 
-            CharacterObject.Lifestyles.Add(objLifestyle);
-            
-            treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-            treLifestyles.Nodes[0].Expand();
+                CharacterObject.Lifestyles.Add(objLifestyle);
 
-            if (frmPickLifestyle.AddAgain)
-                tsAdvancedLifestyle_Click(sender, e);
+                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
+                treLifestyles.Nodes[0].Expand();
 
-            IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
+            }
+            while (blnAddAgain);
         }
 
         private void tsWeaponName_Click(object sender, EventArgs e)
@@ -9056,24 +9079,7 @@ namespace Chummer
 
             UpdateQualityLevelValue(objQuality);
         }
-
-        private void tabControl_MouseWheel(object sender, MouseEventArgs e)
-        {
-            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
-            //allow wrapping back to first/last tab item based on scroll direction
-            var tabControl = (sender as TabControl);
-            if (e.Location.Y <= tabControl.ItemSize.Height)
-            {
-                var scrollAmount = e.Delta;
-                var selectedTabIndex = tabControl.SelectedIndex;
-
-                if ((selectedTabIndex == tabControl.TabCount - 1 && scrollAmount < 0) ||
-                    (selectedTabIndex == 0 && scrollAmount > 0))
-                    return;
-
-                tabControl.SelectedIndex = scrollAmount < 0 ? selectedTabIndex + 1 : selectedTabIndex - 1;
-            }
-        }
+        
         private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
             nudQualityLevel.Enabled = false;

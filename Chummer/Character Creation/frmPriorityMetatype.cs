@@ -1731,44 +1731,32 @@ namespace Chummer
 
         private static XmlNode GetSpecificSkill(string strSkill)
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
-            return objXmlSkill;
+            return XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skills/skill[name = \"" + strSkill + "\"]");
         }
 
         private static XmlNodeList GetMatrixSkillList()
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
-            return objXmlSkillList;
+            return XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
         }
 
         private static XmlNode GetSpecificSkillGroup(string strSkill)
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkill = objXmlSkillsDocument.SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
-            return objXmlSkill;
+            return XmlManager.Load("skills.xml").SelectSingleNode("/chummer/skillgroups/name[. = \"" + strSkill + "\"]");
         }
 
         private static XmlNodeList GetMagicalSkillList(XmlNodeList objNodeList = null)
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");
-            return objXmlSkillList;
+            return XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[category = \"Magical Active\" or category = \"Pseudo-Magical Active\"]");
         }
 
         private static XmlNodeList GetResonanceSkillList()
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
-            return objXmlSkillList;
+            return XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill[category = \"Resonance Active\" or skillgroup = \"Cracking\" or skillgroup = \"Electronics\"]");
         }
 
         private static XmlNodeList GetActiveSkillList()
         {
-            XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes("/chummer/skills/skill");
-            return objXmlSkillList;
+            return XmlManager.Load("skills.xml").SelectNodes("/chummer/skills/skill");
         }
 
         private static XmlNodeList BuildSkillCategoryList(XmlNodeList objSkillList)
@@ -1784,8 +1772,7 @@ namespace Chummer
                 strGroups.Append('\"');
             }
             strGroups.Append(']');
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes(strGroups.ToString());
-            return objXmlSkillList;
+            return objXmlSkillsDocument.SelectNodes(strGroups.ToString());
         }
 
         private static XmlNodeList BuildSkillList(XmlNodeList objSkillList)
@@ -1801,8 +1788,7 @@ namespace Chummer
                 strGroups.Append('\"');
             }
             strGroups.Append(']');
-            var objXmlSkillList = objXmlSkillsDocument.SelectNodes(strGroups.ToString());
-            return objXmlSkillList;
+            return objXmlSkillsDocument.SelectNodes(strGroups.ToString());
         }
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)

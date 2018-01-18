@@ -192,7 +192,8 @@ namespace Chummer
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
             objXmlQuality.TryGetBoolFieldQuickly("metagenetic", ref _blnMetagenetic);
-            objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlQuality.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlQuality.TryGetStringFieldQuickly("notes", ref _strNotes);
             // Check for a Variable Cost.
             XmlNode objKarmaNode = objXmlQuality["karma"];
             if (objKarmaNode != null)
@@ -1754,7 +1755,8 @@ namespace Chummer
                     _strExtra = ImprovementManager.SelectedValue;
                 }
             }
-            objXmlSpellNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlSpellNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlSpellNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -2926,7 +2928,8 @@ namespace Chummer
             objXmlMetamagicNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-            objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMetamagicNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMetamagicNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
@@ -3013,10 +3016,10 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("grade", _intGrade.ToString(objCulture));
+            objWriter.WriteElementString("grade", Grade.ToString(objCulture));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -3222,7 +3225,8 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -3486,7 +3490,8 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
-            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
                 _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -3567,7 +3572,7 @@ namespace Chummer
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -3761,10 +3766,9 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlComplexFormNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
-            objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlComplexFormNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
-
-            objXmlComplexFormNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -3824,13 +3828,13 @@ namespace Chummer
             objWriter.WriteStartElement("complexform");
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("duration", _strDuration);
-            objWriter.WriteElementString("fv", _strFV);
-            objWriter.WriteElementString("target", _strTarget);
+            objWriter.WriteElementString("duration", Duration);
+            objWriter.WriteElementString("fv", FV);
+            objWriter.WriteElementString("target", Target);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -4026,11 +4030,10 @@ namespace Chummer
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlProgramNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _strExtra = strExtra;
             _boolIsAdvancedProgram = boolIsAdvancedProgram;
-
-            objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -4066,10 +4069,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            if (objNode["isadvancedprogram"] != null)
-            {
-                _boolIsAdvancedProgram = objNode["isadvancedprogram"].InnerText == bool.TrueString;
-            }
+            _boolIsAdvancedProgram = objNode["isadvancedprogram"]?.InnerText == bool.TrueString;
         }
 
         /// <summary>
@@ -4088,7 +4088,7 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -4289,7 +4289,8 @@ namespace Chummer
             objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
-            objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == System.Boolean.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
@@ -4375,16 +4376,16 @@ namespace Chummer
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
-            objWriter.WriteElementString("cost", _intKarmaCost.ToString(objCulture));
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("cost", Cost.ToString(objCulture));
             objWriter.WriteStartElement("martialartadvantages");
-            foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
+            foreach (MartialArtAdvantage objAdvantage in Advantages)
             {
                 objAdvantage.Print(objWriter, strLanguageToPrint);
             }
             objWriter.WriteEndElement();
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -4567,7 +4568,8 @@ namespace Chummer
         {
             if (objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            objXmlAdvantageNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlAdvantageNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlAdvantageNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAdvantageNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -4622,9 +4624,9 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strPage);
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteElementString("source", Source);
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -4758,7 +4760,8 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             objXmlManeuverNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlManeuverNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlManeuverNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlManeuverNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -4804,7 +4807,7 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -4968,7 +4971,8 @@ namespace Chummer
                     return;
                 }
             }
-            objXmlLimitModifierNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlLimitModifierNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlLimitModifierNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// Create a Skill Limit Modifier from properties.
@@ -5023,9 +5027,9 @@ namespace Chummer
             objWriter.WriteStartElement("limitmodifier");
             objWriter.WriteElementString("name", DisplayName);
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("condition", _strCondition);
+            objWriter.WriteElementString("condition", Condition);
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -6209,7 +6213,8 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
             _nodBonus = objXmlPowerNode["bonus"];
-            objXmlPowerNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlPowerNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlPowerNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
@@ -6322,7 +6327,7 @@ namespace Chummer
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -6945,11 +6950,11 @@ namespace Chummer
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("year", _intYear.ToString(objCulture));
+            objWriter.WriteElementString("year", Year.ToString(objCulture));
             objWriter.WriteElementString("month", Month.ToString(objCulture));
             objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
             if (blnPrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -7183,7 +7188,8 @@ namespace Chummer
             objXmlMentor.TryGetStringFieldQuickly("name", ref _strName);
             objXmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
             if (objXmlMentor["id"] != null)
                 _sourceID = Guid.Parse(objXmlMentor["id"].InnerText);
 

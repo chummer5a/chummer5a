@@ -8986,9 +8986,9 @@ namespace Chummer
         public bool RefreshRedliner()
         {
             int intOldRedlinerBonus = RedlinerBonus;
-            string strSeekerImprovPrefix = "SEEKER";
-            var lstSeekerAttributes = new List<string>();
-            var lstSeekerImprovements = new List<Improvement>();
+            const string strSeekerImprovPrefix = "SEEKER";
+            List<string> lstSeekerAttributes = new List<string>();
+            List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
             foreach (Improvement objLoopImprovement in Improvements)
             {
@@ -9012,15 +9012,15 @@ namespace Chummer
             }
             
             //Calculate bonus from cyberlimbs
-            int count = 0;
+            int intCount = 0;
             foreach (Cyberware objCyberware in Cyberware)
             {
-                count += objCyberware.GetCyberlimbCount("skull", "torso");
+                intCount += objCyberware.GetCyberlimbCount("skull", "torso");
             }
-            count = Math.Min(count / 2, 2);
+            intCount = Math.Min(intCount / 2, 2);
             if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
             {
-                RedlinerBonus = count;
+                RedlinerBonus = intCount;
             }
             else
             {
@@ -9033,7 +9033,7 @@ namespace Chummer
                     lstSeekerImprovements.FirstOrDefault(
                         x =>
                             x.SourceName == strSeekerImprovPrefix + '_' + lstSeekerAttributes[i] &&
-                            x.Value == (lstSeekerAttributes[i] == "BOX" ? count * -3 : count));
+                            x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
                 if (objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
@@ -9046,9 +9046,9 @@ namespace Chummer
             //the local
 
             // Remove which qualites have been removed or which values have changed
-            foreach (Improvement improvement in lstSeekerImprovements)
+            foreach (Improvement objImprovement in lstSeekerImprovements)
             {
-                ImprovementManager.RemoveImprovements(this, improvement.ImproveSource, improvement.SourceName);
+                ImprovementManager.RemoveImprovements(this, objImprovement.ImproveSource, objImprovement.SourceName);
             }
 
             // Add new improvements or old improvements with new values
@@ -9058,13 +9058,13 @@ namespace Chummer
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.PhysicalCM,
-                        Guid.NewGuid().ToString("D"), count * -3);
+                        Guid.NewGuid().ToString("D"), intCount * -3);
                 }
                 else
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.Attribute,
-                        Guid.NewGuid().ToString("D"), count, 1, 0, 0, count);
+                        Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
                 }
             }
             ImprovementManager.Commit(this);
