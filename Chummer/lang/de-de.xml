@@ -4216,18 +4216,6 @@
 			<text>Gliedmaßen für Standard-Charaktere:</text>
 		</string>
 		<string>
-			<key>String_LimbCount6</key>
-			<text>6 (2 Arme, 2 Beine, Torso, Schädel)</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Torso</key>
-			<text>5 (2 Arme, 2 Beine, Torso)</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Skull</key>
-			<text>5 (2 Arme, 2 Beine, Schädel)</text>
-		</string>
-		<string>
 			<key>Label_Options_NuyenPerBP</key>
 			<text>Nuyen pro Generierungspunkt:</text>
 		</string>
@@ -7641,10 +7629,6 @@
 		<string>
 			<key>String_MetamagicSkills</key>
 			<text>{0} {1} Fertigkeit(en) die auf Stufe {2} beginnt</text>
-		</string>
-		<string>
-			<key>String_LimbCount4</key>
-			<text>4 (2 Arme, 2 Beine)</text>
 		</string>
 		<string>
 			<key>Label_About</key>

@@ -22616,7 +22616,33 @@
 			</metatype>
 		</metatypes>
 	</chummer>
-	<chummer file="paragons.xml">
+	<chummer file="options.xml">
+		<limbcounts>
+			<limb>
+				<name>4 (2 arms, 2 legs)</name>
+				<translate>4 (2 Arme, 2 Beine)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, skull)</name>
+				<translate>5 (2 Arme, 2 Beine, Schädel)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, torso)</name>
+				<translate>5 (2 Arme, 2 Beine, Torso)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>6 (2 arms, 2 legs, torso, skull)</name>
+				<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
+			</limb>
+    </limbcounts>
+	</chummer>
+  <chummer file="paragons.xml">
 		<categories>
 			<category translate="Resonanz">Resonance</category>
 			<category translate="Dissonanz">Disonance</category>

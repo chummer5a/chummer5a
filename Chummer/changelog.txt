@@ -28,6 +28,8 @@ Application Changes:
 - Fixed an issue where items other than qualities that could add a mentor spirit would not end up resulting in mentor spirit information getting updated in the UI.
 - Fixed an issue where changing the name of a knowledge skill would not cause Chummer5a to recalculate what free levels, if any, the knowledge skill should receive.
 - Fixed an issue where translations for priority talents did not load properly.
+- Shifted the translation method for options so that they all use the method associated with translating data entries (i.e. via `translate` element for items with element children and via `translate` attribute for items without them).
+- Added support for processing of options.xml to the Translator tool.
 
 Data Changes:
 
@@ -57,6 +59,13 @@ Changed Strings:
 - Node_CritterWeaknesses
 - Node_SelectedCyberware
 - Node_SelectedBioware
+
+Removed Strings:
+
+- String_LimbCount4
+- String_LimbCount6
+- String_LimbCount5Torso
+- String_LimbCount5Skull
 
 Build 197
 

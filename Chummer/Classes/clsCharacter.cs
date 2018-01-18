@@ -1960,7 +1960,7 @@ namespace Chummer
             // load issue where the contact multiplier was set to 0
             if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
             {
-                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")?.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
+                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
                     string strKarma = objXmlGameplayOption["karma"]?.InnerText;

@@ -1126,7 +1126,7 @@ namespace Chummer
                 string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strExclude))
                     strExclude = '<' + strExclude;
-                lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, LanguageManager.GetString(objXmlNode["name"].InnerText, _strSelectedLanguage)));
+                lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText));
             }
 
             string strOldSelected = cboLimbCount.SelectedValue?.ToString();
@@ -1158,7 +1158,7 @@ namespace Chummer
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
                 string strValue = objXmlNode["value"].InnerText;
-                lstPdfParameters.Add(new ListItem(objXmlNode["value"].InnerText, objXmlNode["name"].InnerText));
+                lstPdfParameters.Add(new ListItem(strValue, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText));
                 if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == strValue)
                 {
                     intIndex = lstPdfParameters.Count - 1;

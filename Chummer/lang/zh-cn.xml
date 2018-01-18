@@ -4373,18 +4373,6 @@
 			<text>通常的角色肢体</text>
 		</string>
 		<string>
-			<key>String_LimbCount6</key>
-			<text>6（2臂、2腿、躯干、头盖骨）</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Torso</key>
-			<text>5（2臂、2腿、躯干）</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Skull</key>
-			<text>5（2臂、2腿、头盖骨）</text>
-		</string>
-		<string>
 			<key>Label_Options_NuyenPerBP</key>
 			<text>每点业力能兑换的新円：</text>
 		</string>
@@ -7221,10 +7209,6 @@
 		<string>
 			<key>String_KnowledgeSkillFilterTotalRatingAboveZero</key>
 			<text>显示总技能骰池＞0的知识技能</text>
-		</string>
-		<string>
-			<key>String_LimbCount4</key>
-			<text>4（2臂、2腿）</text>
 		</string>
 		<string>
 			<key>String_MartialArt</key>
