@@ -20165,8 +20165,8 @@
 			</mentor>
 			<mentor>
 				<id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-				<name>Great Mother (SASS)</name>
-				<translate>Great Mother (SASS)</translate>
+				<name>Great Mother</name>
+				<translate>Great Mother</translate>
 				<choices>
 					<choice>
 						<name>+2 to First Aid</name>
@@ -24965,9 +24965,9 @@
 			</quality>
 			<quality>
 				<id>604aea10-3f13-4f28-a87b-25b8bf677276</id>
-				<name>College Education.RF</name>
+				<name>College Education</name>
 				<source>RF</source>
-				<translate>College-Abschluss.SL</translate>
+				<translate>College-Abschluss</translate>
 				<altpage>124</altpage>
 			</quality>
 			<quality>
@@ -25049,9 +25049,9 @@
 			</quality>
 			<quality>
 				<id>f8f216b5-1c29-467d-9fb5-c9812408203d</id>
-				<name>Inspired.RF</name>
+				<name>Inspired</name>
 				<source>RF</source>
-				<translate>Inspiriert.SL</translate>
+				<translate>Inspiriert</translate>
 				<altpage>126</altpage>
 			</quality>
 			<quality>

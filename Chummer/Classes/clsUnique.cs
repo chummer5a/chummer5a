@@ -4926,8 +4926,10 @@ namespace Chummer
     public enum LimitType
     {
         Physical = 0,
-        Mental = 1,
-        Social = 2
+        Mental,
+        Social,
+        Astral,
+        NumLimitTypes // 🡐 This one should always be the last defined enum
     }
 
     /// <summary>

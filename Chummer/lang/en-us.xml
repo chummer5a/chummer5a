@@ -1704,6 +1704,10 @@
       <text>Are you sure you want to delete this Gear location? All of the Gear in this location will be moved to the Selected Gear container.</text>
     </string>
     <string>
+      <key>Message_DeleteVehicleLocationBase</key>
+      <text>Are you sure you want to delete this Vehicle location? All of the Vehicles in this location will be moved to the Selected Vehicle container.</text>
+    </string>
+    <string>
       <key>Message_DeleteVehicle</key>
       <text>Are you sure you want to delete this Vehicle/Plugin?</text>
     </string>
@@ -3732,11 +3736,11 @@
     </string>
     <string>
       <key>Node_SelectedPositiveQualities</key>
-      <text>Selected Positive Qualities</text>
+      <text>Positive Qualities</text>
     </string>
     <string>
       <key>Node_SelectedNegativeQualities</key>
-      <text>Selected Negative Qualities</text>
+      <text>Negative Qualities</text>
     </string>
     <string>
       <key>Tip_CommonAttributes</key>
@@ -4019,31 +4023,31 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_SelectedCombatSpells</key>
-      <text>Selected Combat Spells</text>
+      <text>Combat Spells</text>
     </string>
     <string>
       <key>Node_SelectedDetectionSpells</key>
-      <text>Selected Detection Spells</text>
+      <text>Detection Spells</text>
     </string>
     <string>
       <key>Node_SelectedHealthSpells</key>
-      <text>Selected Health Spells</text>
+      <text>Health Spells</text>
     </string>
     <string>
       <key>Node_SelectedIllusionSpells</key>
-      <text>Selected Illusion Spells</text>
+      <text>Illusion Spells</text>
     </string>
     <string>
       <key>Node_SelectedManipulationSpells</key>
-      <text>Selected Manipulation Spells</text>
+      <text>Manipulation Spells</text>
     </string>
     <string>
       <key>Node_SelectedGeomancyRituals</key>
-      <text>Selected Rituals</text>
+      <text>Rituals</text>
     </string>
     <string>
       <key>Node_SelectedEnchantments</key>
-      <text>Selected Enchantments</text>
+      <text>Enchantments</text>
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
@@ -4215,11 +4219,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_CritterPowers</key>
-      <text>Selected Critter Powers</text>
+      <text>Critter Powers</text>
     </string>
     <string>
       <key>Node_CritterWeaknesses</key>
-      <text>Selected Weaknesses</text>
+      <text>Weaknesses</text>
     </string>
     <string>
       <key>Checkbox_CritterPowerCount</key>
@@ -4303,11 +4307,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_SelectedCyberware</key>
-      <text>Selected Cyberware</text>
+      <text>Cyberware</text>
     </string>
     <string>
       <key>Node_SelectedBioware</key>
-      <text>Selected Bioware</text>
+      <text>Bioware</text>
     </string>
     <string>
       <key>Node_UnequippedModularCyberware</key>

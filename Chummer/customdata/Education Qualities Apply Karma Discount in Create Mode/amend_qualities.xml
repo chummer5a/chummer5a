@@ -20,7 +20,8 @@
 <chummer>
   <qualities>
     <quality>
-      <name>College Education.RF</name>
+      <id>604aea10-3f13-4f28-a87b-25b8bf677276</id>
+      <name>College Education</name>
       <bonus>
         <skillcategorykarmacost>
           <name>Academic</name>

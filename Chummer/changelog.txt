@@ -17,12 +17,39 @@ Application Changes:
 - Fixed various bugs related the adding gear that comes with vehicles. Fixes #2328.
 - Fixed a bug where characters who had Burnout's Way were locked out of taking 'ware at any grade other than Standard (Burnout's Way).
 - Fixed an issue where the Updater would delete "old" files in the current Chummer5a directory that are not normally a part of Chummer5a. Fixes #2331.
+- Fixed an issue where vehicles could not be moved into or out of vehicle locations.
+- Fixed an issue where selecting cyberware that comes pre-installed with a vehicle mod will grey out the "Delete Cyberware" button in the cyberware tab.
+- Fixed an issue with some Martial Arts information not getting translated in the UI.
+- Root nodes for Qualities, Martial Arts, Spells, Cyberware, Critter Powers, and Limit Modifiers will now be hidden if they have no children attached. For example, if a character does not have any Negative Qualities, the "Negative Qualities" root node will no longer be displayed, or if the character does not know any Combat spells, the "Combat Spells" root node will no longer be displayed.
+- Fixed an issue where Credsticks from Shadowrun 2050 were not properly printed as SINs.
+- Fixed an issue where limit modifiers to Astral limit would not be displayed in the list of active limit modifiers.
 
 Data Changes:
 
 - Added new items to allow for translation of certain extras, special equipment, and non-standard form factors that come with certain vehicles, weapons, and gear. Fixes #2309.
 - Dodge General Trailer now properly contains an Aeronautics Mechanic Workshop (it's "Aircraft Repair" in the sourcebook, but this would not line up with the skill associated with repairing aircraft for which said workshop would be used).
 - Basic Razorboi and Advanced Razorboi Packs now properly come with Cybertechnology Toolkits (it's "Cybernetics" in the sourceboo, but this would not line up with the skill associated with cybernetics for which said toolkit would be used).
+- Removed the ".RF" identifier from the name of Run Faster's College Education and Inspired qualities. Removed the "(SASS)" identifier from the name of Sail Away Sweet Sister's Great Mother mentor spirit. Data that targets these items will need to rely on their id nodes.
+
+New Strings:
+
+- Message_DeleteVehicleLocationBase
+
+Changed Strings:
+
+- Node_SelectedPositiveQualities
+- Node_SelectedNegativeQualities
+- Node_SelectedCombatSpells
+- Node_SelectedDetectionSpells
+- Node_SelectedHealthSpells
+- Node_SelectedIllusionSpells
+- Node_SelectedManipulationSpells
+- Node_SelectedGeomancyRituals
+- Node_SelectedEnchantments
+- Node_CritterPowers
+- Node_CritterWeaknesses
+- Node_SelectedCyberware
+- Node_SelectedBioware
 
 Build 197
 

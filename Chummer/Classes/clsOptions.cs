@@ -92,7 +92,7 @@ namespace Chummer
             }
         }
 
-        public PdfReader CachedPdfReader
+        internal PdfReader CachedPdfReader
         {
             get
             {

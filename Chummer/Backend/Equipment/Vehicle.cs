@@ -65,6 +65,7 @@ namespace Chummer.Backend.Equipment
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private List<WeaponMount> _lstWeaponMounts = new List<WeaponMount>();
         private string _strNotes = string.Empty;
+        private string _strLocation = string.Empty;
         private List<string> _lstLocations = new List<string>();
         private bool _blnBlackMarketDiscount = false;
         private string _strParentID = string.Empty;
@@ -527,6 +528,7 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objWeapon in _lstWeapons)
                 objWeapon.Save(objWriter);
             objWriter.WriteEndElement();
+            objWriter.WriteElementString("location", _strLocation);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString());
             if (_lstLocations.Count > 0)
@@ -727,6 +729,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
@@ -792,9 +795,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
-            objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(objCulture));
-            objWriter.WriteElementString("vehiclename", _strVehicleName);
+            objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
+            objWriter.WriteElementString("vehiclename", VehicleName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
+            objWriter.WriteElementString("location", Location);
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString());
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString());
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
@@ -1228,6 +1232,21 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _strParentID = value;
+            }
+        }
+
+        /// <summary>
+        /// Location.
+        /// </summary>
+        public string Location
+        {
+            get
+            {
+                return _strLocation;
+            }
+            set
+            {
+                _strLocation = value;
             }
         }
 

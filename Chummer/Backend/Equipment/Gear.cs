@@ -871,45 +871,42 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("gear");
 
-            if ((_strCategory == "Foci" || _strCategory == "Metamagic Foci") && _blnBonded)
+            if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint) + " (" + LanguageManager.GetString("Label_BondedFoci", strLanguageToPrint) + ')');
             else
                 objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
 
-            objWriter.WriteElementString("name_english", _strName);
+            objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", _strCategory);
+            objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString());
             objWriter.WriteElementString("ispersona", (Name == "Living Persona").ToString());
-            //objWriter.WriteElementString("isnexus", (_strCategory == "Nexus").ToString());
-            objWriter.WriteElementString("isammo", (_strCategory == "Ammunition").ToString());
+            //objWriter.WriteElementString("isnexus", (Category == "Nexus").ToString());
+            objWriter.WriteElementString("isammo", (Category == "Ammunition").ToString());
             objWriter.WriteElementString("isprogram", IsProgram.ToString());
-            objWriter.WriteElementString("isos", System.Boolean.FalseString);
-            if (_strName == "Fake SIN")
-                objWriter.WriteElementString("issin", System.Boolean.TrueString);
-            else
-                objWriter.WriteElementString("issin", System.Boolean.FalseString);
-            objWriter.WriteElementString("capacity", _strCapacity);
-            objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(objCulture));
-            objWriter.WriteElementString("rating", _intRating.ToString(objCulture));
-            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(objCulture));
+            objWriter.WriteElementString("isos", bool.FalseString);
+            objWriter.WriteElementString("issin", (Name == "Fake SIN" || Name == "Credstick, Fake (2050)" || Name == "Fake SIN").ToString());
+            objWriter.WriteElementString("capacity", Capacity);
+            objWriter.WriteElementString("armorcapacity", ArmorCapacity);
+            objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
+            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
             objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
-            objWriter.WriteElementString("qty", _decQty.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
+            objWriter.WriteElementString("qty", Quantity.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
             objWriter.WriteElementString("avail", TotalAvail(GlobalOptions.CultureInfo, strLanguageToPrint, true));
             objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage, true));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(_strExtra, strLanguageToPrint));
-            objWriter.WriteElementString("bonded", _blnBonded.ToString());
-            objWriter.WriteElementString("equipped", _blnEquipped.ToString());
-            objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString());
-            objWriter.WriteElementString("location", _strLocation);
-            objWriter.WriteElementString("gearname", _strGearName);
+            objWriter.WriteElementString("extra", LanguageManager.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("bonded", Bonded.ToString());
+            objWriter.WriteElementString("equipped", Equipped.ToString());
+            objWriter.WriteElementString("wirelesson", WirelessOn.ToString());
+            objWriter.WriteElementString("location", Location);
+            objWriter.WriteElementString("gearname", GearName);
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("children");
-            foreach (Gear objGear in _objChildren)
+            foreach (Gear objGear in Children)
             {
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
@@ -921,7 +918,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
             }
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
 
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
             objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));

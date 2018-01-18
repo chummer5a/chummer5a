@@ -666,6 +666,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public bool HasSpecialization(string strSpecialization)
+        {
+            return Specializations.Any(x => (x.Name == strSpecialization || x.DisplayName(GlobalOptions.Language) == strSpecialization)) && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && objImprovement.UniqueName == Name && string.IsNullOrEmpty(objImprovement.Condition));
+        }
+
         public string PoolToolTip
         {
             get

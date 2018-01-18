@@ -735,7 +735,7 @@ namespace Chummer
                 objNewParent = objNewParent.Parent;
             
             // Change the Location on the Gear item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language))
+            if (objNewParent.Tag.ToString() == "Node_SelectedGear")
                 objGear.Location = string.Empty;
             else
                 objGear.Location = objNewParent.Text;
@@ -824,7 +824,7 @@ namespace Chummer
                 objNewParent = objNewParent.Parent;
 
             // Change the Location on the Armor item.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language))
+            if (objNewParent.Tag.ToString() == "Node_SelectedArmor")
                 objArmor.Location = string.Empty;
             else
                 objArmor.Location = objNewParent.Text;
@@ -886,7 +886,7 @@ namespace Chummer
                 objNewParent = objNewParent.Parent;
 
             // Change the Location of the Weapon.
-            if (objNewParent.Text == LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language))
+            if (objNewParent.Tag.ToString() == "Node_SelectedWeapons")
                 objWeapon.Location = string.Empty;
             else
                 objWeapon.Location = objNewParent.Text;
@@ -983,6 +983,12 @@ namespace Chummer
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
+
+            // Change the Location on the Gear item.
+            if (objNewParent.Tag.ToString() == "Node_SelectedVehicles")
+                objVehicle.Location = string.Empty;
+            else
+                objVehicle.Location = objNewParent.Text;
 
             objClone.Remove();
             objNewParent.Nodes.Insert(intNewIndex, objClone);

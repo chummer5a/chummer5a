@@ -82,7 +82,7 @@ namespace Chummer
                     lstLifestyles.Add(new ListItem(strLifestyleName, objXmlLifestyle["translate"]?.InnerText ?? strLifestyleName));
                 }
             }
-            //Populate the Qualities list.
+            // Populate the Qualities list.
             if (_objSourceLifestyle != null)
             {
                 foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
