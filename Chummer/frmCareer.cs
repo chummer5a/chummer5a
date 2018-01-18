@@ -540,21 +540,9 @@ namespace Chummer
                 else
                     panSprites.Controls.Add(objSpiritControl);
             }
-
-            // Populate Technomancer Complex Forms/Programs.
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
-            {
-                treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
-                treComplexForms.Nodes[0].Expand();
-            }
-
-            // Populate AI Programs and Advanced Programs.
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms)
-            {
-                treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-                treAIPrograms.Nodes[0].Expand();
-            }
-
+            
+            RefreshComplexForms(treComplexForms, cmsComplexForm);
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
             // Populate Lifestyles.
@@ -733,7 +721,6 @@ namespace Chummer
             treAIPrograms.SortCustom();
             treCritterPowers.SortCustom();
             treMartialArts.SortCustom();
-            UpdateMentorSpirits();
             PopulateCalendar();
 
             IsCharacterUpdateRequested = true;
@@ -1873,17 +1860,11 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objComplexForm.Extra;
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], false, 1, objComplexForm.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                            objComplexForm.Extra = ImprovementManager.SelectedValue;
-                        foreach (TreeNode objParentNode in treComplexForms.Nodes)
                         {
-                            foreach (TreeNode objChildNode in objParentNode.Nodes)
-                            {
-                                if (objChildNode.Tag.ToString() == objComplexForm.InternalId)
-                                {
-                                    objChildNode.Text = objComplexForm.DisplayName;
-                                    break;
-                                }
-                            }
+                            objComplexForm.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                            if (objCFNode != null)
+                                objCFNode.Text = objComplexForm.DisplayName;
                         }
                     }
                 }
@@ -1905,16 +1886,12 @@ namespace Chummer
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], false, 1, objProgram.DisplayNameShort(GlobalOptions.Language));
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             objProgram.Extra = ImprovementManager.SelectedValue;
-                        foreach (TreeNode objParentNode in treAIPrograms.Nodes)
+                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
-                            foreach (TreeNode objChildNode in objParentNode.Nodes)
-                            {
-                                if (objChildNode.Tag.ToString() == objProgram.InternalId)
-                                {
-                                    objChildNode.Text = objProgram.DisplayName;
-                                    break;
-                                }
-                            }
+                            objProgram.Extra = ImprovementManager.SelectedValue;
+                            TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
+                            if (objProgramNode != null)
+                                objProgramNode.Text = objProgram.DisplayName;
                         }
                     }
                 }
@@ -2170,10 +2147,9 @@ namespace Chummer
                 objCharacter_DEPEnabledChanged(this);
 
             RefreshQualities(treQualities, cmsQuality, true);
-            nudQualityLevel_UpdateValue(null);
-            UpdateMentorSpirits();
+            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms();
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
 
@@ -3879,9 +3855,6 @@ namespace Chummer
                     continue;
                 }
 
-                treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
-                treComplexForms.Nodes[0].Expand();
-
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(intComplexFormKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnComplexForm", GlobalOptions.Language) + ' ' + objComplexForm.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
@@ -3891,14 +3864,16 @@ namespace Chummer
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objComplexForm.InternalId);
                 objExpense.Undo = objUndo;
-
-                treComplexForms.SortCustom();
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
                 frmPickProgram.Dispose();
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+                RefreshComplexForms(treComplexForms, cmsComplexForm);
         }
 
         private void cmdAddArmor_Click(object sender, EventArgs e)
@@ -6326,10 +6301,9 @@ namespace Chummer
             if (IsCharacterUpdateRequested)
             {
                 RefreshQualities(treQualities, cmsQuality, true);
-                nudQualityLevel_UpdateValue(null);
-                UpdateMentorSpirits();
+                UpdateQualityLevelValue();
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms();
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                 RefreshContacts();
                 PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                 PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -6368,11 +6342,10 @@ namespace Chummer
             if (!blnFirstRemoval)
             {
                 RefreshQualities(treQualities, cmsQuality, true);
-                nudQualityLevel_UpdateValue(null);
-                UpdateMentorSpirits();
+                UpdateQualityLevelValue();
                 IsCharacterUpdateRequested = true;
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms();
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
                 RefreshContacts();
                 IsDirty = true;
@@ -6523,10 +6496,9 @@ namespace Chummer
                 CharacterObject.Qualities.Add(objNewQuality);
 
                 RefreshQualities(treQualities, cmsQuality, true);
-
-                UpdateMentorSpirits();
-                IsCharacterUpdateRequested = true;
                 RefreshContacts();
+
+                IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
             }
@@ -6706,7 +6678,7 @@ namespace Chummer
             return true;
         }
 
-        private void nudQualityLevel_UpdateValue(Quality objSelectedQuality)
+        private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
             nudQualityLevel.Enabled = false;
             if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype)
@@ -6744,7 +6716,7 @@ namespace Chummer
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                     {
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                     
@@ -6756,7 +6728,7 @@ namespace Chummer
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
 
@@ -6823,7 +6795,7 @@ namespace Chummer
                     {
                         // Remove the Improvements created by the Create method.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                 }
@@ -6843,7 +6815,7 @@ namespace Chummer
                     }
                     else
                     {
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                 }
@@ -6854,10 +6826,9 @@ namespace Chummer
                         RefreshQualities(treQualities, cmsQuality, true);
                     else
                         RefreshQualityNames(treQualities);
-                    UpdateMentorSpirits();
                     IsCharacterUpdateRequested = true;
                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                    RefreshAIPrograms();
+                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                     RefreshContacts();
@@ -11362,10 +11333,9 @@ namespace Chummer
 
             // Update various lists
             RefreshQualities(treQualities, cmsQuality, true);
-            nudQualityLevel_UpdateValue(null);
-            UpdateMentorSpirits();
+            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms();
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshSpells(treSpells, cmsSpell);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
@@ -13438,7 +13408,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblQualitySource, null);
             if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level == 0)
             {
-                nudQualityLevel_UpdateValue(null);
+                UpdateQualityLevelValue();
                 return;
             }
 
@@ -13450,7 +13420,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
-            nudQualityLevel_UpdateValue(objQuality);
+            UpdateQualityLevelValue(objQuality);
         }
 
         private void tabControl_MouseWheel(object sender, MouseEventArgs e)
@@ -17397,15 +17367,13 @@ namespace Chummer
 
             // Update various lists
             RefreshQualities(treQualities, cmsQuality, true);
-            nudQualityLevel_UpdateValue(null);
-            UpdateMentorSpirits();
+            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms();
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshSpells(treSpells, cmsSpell);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
             PopulateCalendar();
-            PopulateExpenseList();
 
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -17976,33 +17944,29 @@ namespace Chummer
 
             // Special CharacterAttribute-Only Test.
             lblComposure.Text = CharacterObject.Composure.ToString();
-            strTip =
-                $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
+            strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
+            int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Composure);
+            if (intLoopModifier != 0)
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
             tipTooltip.SetToolTip(lblComposure, strTip);
             lblJudgeIntentions.Text = CharacterObject.JudgeIntentions.ToString();
-            strTip =
-                $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions) != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions).ToString() + ')';
+            strTip = $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
+            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions);
+            if (intLoopModifier != 0)
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
             tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
             lblLiftCarry.Text = CharacterObject.LiftAndCarry.ToString();
-            strTip =
-                $"{CharacterObject.STR.DisplayAbbrev} ({dicAttributeTotalValues["STR"]}) + {CharacterObject.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry) != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry).ToString() + ')';
-            strTip += "\n" +
-                      LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language)
-                          .Replace("{0}", (dicAttributeTotalValues["STR"] * 15).ToString())
-                          .Replace("{1}", (dicAttributeTotalValues["STR"] * 10).ToString());
+            strTip = $"{CharacterObject.STR.DisplayAbbrev} ({dicAttributeTotalValues["STR"]}) + {CharacterObject.BOD.DisplayAbbrev} ({dicAttributeTotalValues["BOD"]})";
+            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.LiftAndCarry);
+            if (intLoopModifier != 0)
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
+            strTip += "\n" + LanguageManager.GetString("Tip_LiftAndCarry", GlobalOptions.Language).Replace("{0}", (dicAttributeTotalValues["STR"] * 15).ToString()).Replace("{1}", (dicAttributeTotalValues["STR"] * 10).ToString());
             tipTooltip.SetToolTip(lblLiftCarry, strTip);
             lblMemory.Text = CharacterObject.Memory.ToString();
-            strTip =
-                $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]})";
-            if (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory) != 0)
-                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
-                          ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory).ToString() + ')';
+            strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.LOG.DisplayAbbrev} ({dicAttributeTotalValues["LOG"]})";
+            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Memory);
+            if (intLoopModifier != 0)
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
             tipTooltip.SetToolTip(lblMemory, strTip);
 
             // Career Karma.
@@ -18027,8 +17991,6 @@ namespace Chummer
                             LanguageManager.GetString("String_Remaining", GlobalOptions.Language);
             lblEDGInfo.Text = strEDG;
 
-            ImprovementManager.Commit(CharacterObject);
-
             // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
             if (CharacterObject.PrintWindow != null)
                 CharacterObject.PrintWindow.RefreshCharacters();
@@ -18039,10 +18001,11 @@ namespace Chummer
             cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             RefreshLimitModifiers(treLimit, cmsLimitModifier);
-            RefreshImprovements();
+            RefreshImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
             UpdateReputation();
             RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             UpdateInitiationCost();
+            UpdateMentorSpirits();
 
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
@@ -18295,18 +18258,6 @@ namespace Chummer
                 }
             }
             _blnSkipRefresh = false;
-        }
-
-        public void RefreshAIPrograms()
-        {
-            treAIPrograms.Nodes[0].Nodes.Clear();
-
-            // Populate AI Programs.
-            foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
-            {
-                treAIPrograms.Nodes[0].Nodes.Add(objAIProgram.CreateTreeNode(cmsAdvancedProgram));
-            }
-            treAIPrograms.Nodes[0].Expand();
         }
 
         /// <summary>
@@ -21675,98 +21626,6 @@ namespace Chummer
             cmdImprovementsDisableAll.Left = cmdImprovementsEnableAll.Left + cmdImprovementsEnableAll.Width + 6;
         }
 
-        /// <summary>
-        /// Refresh the list of Improvements.
-        /// </summary>
-        private void RefreshImprovements()
-        {
-            treImprovements.Nodes.Clear();
-
-            TreeNode objRoot = new TreeNode
-            {
-                Tag = null,
-                Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
-            };
-            treImprovements.Nodes.Add(objRoot);
-
-            // Populate the Locations.
-            foreach (string strGroup in CharacterObject.ImprovementGroups)
-            {
-                TreeNode objGroup = new TreeNode
-                {
-                    Tag = strGroup,
-                    Text = strGroup,
-                    ContextMenuStrip = cmsImprovementLocation
-                };
-                treImprovements.Nodes.Add(objGroup);
-            }
-
-            List<ListItem> lstImprovements = new List<ListItem>();
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
-            {
-                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
-                {
-                    string strName = "000000";
-                    strName = strName.Substring(0, 6 - objImprovement.SortOrder.ToString().Length) + objImprovement.SortOrder.ToString();
-                    lstImprovements.Add(new ListItem(objImprovement.SourceName, strName));
-                }
-            }
-
-            // Populate the Improvements TreeView.
-            int i = -1;
-            foreach (ListItem objItem in lstImprovements)
-            {
-                i++;
-                Improvement objImprovement = null;
-                foreach (Improvement objCharacterImprovement in CharacterObject.Improvements)
-                {
-                    if (objCharacterImprovement.SourceName == objItem.Value)
-                    {
-                        objImprovement = objCharacterImprovement;
-                        break;
-                    }
-                }
-
-                TreeNode nodImprovement = new TreeNode
-                {
-                    Tag = objImprovement.SourceName,
-                    Text = objImprovement.CustomName,
-                    ToolTipText = objImprovement.Notes.WordWrap(100),
-                    ContextMenuStrip = cmsImprovement
-                };
-                if (!string.IsNullOrEmpty(objImprovement.Notes))
-                {
-                    if (objImprovement.Enabled)
-                        nodImprovement.ForeColor = Color.SaddleBrown;
-                    else
-                        nodImprovement.ForeColor = Color.SandyBrown;
-                }
-                else if (objImprovement.Enabled)
-                    nodImprovement.ForeColor = SystemColors.WindowText;
-                else
-                    nodImprovement.ForeColor = SystemColors.GrayText;
-
-                TreeNode objParent = treImprovements.Nodes[0];
-                if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
-                {
-                    foreach (TreeNode objFind in treImprovements.Nodes)
-                    {
-                        if (objFind.Text == objImprovement.CustomGroup)
-                        {
-                            objParent = objFind;
-                            break;
-                        }
-                    }
-                }
-
-                objParent.Nodes.Add(nodImprovement);
-                objParent.Expand();
-            }
-
-            // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-            treImprovements.SortCustom();
-        }
-
         private void MoveControls()
         {
             int intWidth = 0;
@@ -23596,8 +23455,6 @@ namespace Chummer
                 }
 
                 CharacterObject.AIPrograms.Add(objProgram);
-                treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-                treAIPrograms.Nodes[0].Expand();
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
@@ -23608,8 +23465,7 @@ namespace Chummer
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma((boolIsAdvancedProgram ? KarmaExpenseType.AddAIAdvancedProgram : KarmaExpenseType.AddAIProgram), objProgram.InternalId);
                 objEntry.Undo = objUndo;
-
-                treAIPrograms.SortCustom();
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -23617,6 +23473,9 @@ namespace Chummer
                 frmPickProgram.Dispose();
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
         }
 
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)

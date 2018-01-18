@@ -161,7 +161,7 @@ namespace Chummer
 
             SetTooltips();
             MoveControls();
-            nudQualityLevel_UpdateValue(null);
+            UpdateQualityLevelValue();
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -542,21 +542,8 @@ namespace Chummer
                     panSprites.Controls.Add(objSpiritControl);
             }
 
-            // Populate Technomancer Complex Forms/Programs.
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
-            {
-                treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
-                treComplexForms.Nodes[0].Expand();
-            }
-
-            // Populate AI Programs and Advanced Programs.
-            foreach (AIProgram objProgram in CharacterObject.AIPrograms)
-            {
-                treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-                treAIPrograms.Nodes[0].Expand();
-            }
-
-            // Populate Martial Arts.
+            RefreshComplexForms(treComplexForms, cmsComplexForm);
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
             // Populate Lifestyles.
@@ -649,7 +636,6 @@ namespace Chummer
             treAIPrograms.SortCustom();
             treCritterPowers.SortCustom();
             treMartialArts.SortCustom();
-            UpdateMentorSpirits();
 
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
@@ -2096,10 +2082,9 @@ namespace Chummer
                 objCharacter_DEPEnabledChanged(this);
 
             RefreshQualities(treQualities, cmsQuality, true);
-            nudQualityLevel_UpdateValue(null);
-            UpdateMentorSpirits();
+            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms();
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
 
@@ -3598,14 +3583,14 @@ namespace Chummer
 
                 CharacterObject.ComplexForms.Add(objComplexForm);
 
-                treComplexForms.Nodes[0].Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
-                treComplexForms.Nodes[0].Expand();
-                treComplexForms.SortCustom();
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+                RefreshComplexForms(treComplexForms, cmsComplexForm);
         }
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
@@ -3650,16 +3635,16 @@ namespace Chummer
                 }
 
                 CharacterObject.AIPrograms.Add(objProgram);
-                treAIPrograms.Nodes[0].Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-                treAIPrograms.Nodes[0].Expand();
-
-                treAIPrograms.SortCustom();
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
                 frmPickProgram.Dispose();
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
         }
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
@@ -5235,10 +5220,9 @@ namespace Chummer
             if (IsCharacterUpdateRequested)
             {
                 RefreshQualities(treQualities, cmsQuality, true);
-                nudQualityLevel_UpdateValue(null);
-                UpdateMentorSpirits();
+                UpdateQualityLevelValue();
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms();
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                 RefreshContacts();
                 PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
@@ -5432,11 +5416,10 @@ namespace Chummer
             if (!blnFirstRemoval)
             {
                 RefreshQualities(treQualities, cmsQuality, true);
-                nudQualityLevel_UpdateValue(null);
-                UpdateMentorSpirits();
+                UpdateQualityLevelValue();
                 IsCharacterUpdateRequested = true;
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms();
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
                 RefreshContacts();
                 IsDirty = true;
@@ -9059,7 +9042,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblQualitySource, null);
             if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
             {
-                nudQualityLevel_UpdateValue(null);
+                UpdateQualityLevelValue();
                 return;
             }
 
@@ -9071,7 +9054,7 @@ namespace Chummer
             tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
 
-            nudQualityLevel_UpdateValue(objQuality);
+            UpdateQualityLevelValue(objQuality);
         }
 
         private void tabControl_MouseWheel(object sender, MouseEventArgs e)
@@ -9091,7 +9074,7 @@ namespace Chummer
                 tabControl.SelectedIndex = scrollAmount < 0 ? selectedTabIndex + 1 : selectedTabIndex - 1;
             }
         }
-        private void nudQualityLevel_UpdateValue(Quality objSelectedQuality)
+        private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
             nudQualityLevel.Enabled = false;
             if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype)
@@ -9129,7 +9112,7 @@ namespace Chummer
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality", GlobalOptions.Language)))
                     {
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                     List<Weapon> lstWeapons = new List<Weapon>();
@@ -9140,7 +9123,7 @@ namespace Chummer
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
 
@@ -9245,7 +9228,7 @@ namespace Chummer
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                 }
@@ -9265,7 +9248,7 @@ namespace Chummer
                     }
                     else
                     {
-                        nudQualityLevel_UpdateValue(objSelectedQuality);
+                        UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
                 }
@@ -9276,10 +9259,9 @@ namespace Chummer
                         RefreshQualities(treQualities, cmsQuality, true);
                     else
                         RefreshQualityNames(treQualities);
-                    UpdateMentorSpirits();
                     IsCharacterUpdateRequested = true;
                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                    RefreshAIPrograms();
+                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                     RefreshContacts();
@@ -12429,10 +12411,9 @@ namespace Chummer
 
             // Update various lists
             RefreshQualities(treQualities, cmsQuality, true);
-            nudQualityLevel_UpdateValue(null);
-            UpdateMentorSpirits();
+            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms();
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
@@ -12764,10 +12745,13 @@ namespace Chummer
             // Special CharacterAttribute-Only Test.
             lblComposure.Text = CharacterObject.Composure.ToString();
             strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
+            int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Composure);
+            if (intLoopModifier != 0)
+                strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
             tipTooltip.SetToolTip(lblComposure, strTip);
             lblJudgeIntentions.Text = CharacterObject.JudgeIntentions.ToString();
             strTip = $"{CharacterObject.INT.DisplayAbbrev} ({dicAttributeTotalValues["INT"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
-            int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions);
+            intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.JudgeIntentions);
             if (intLoopModifier != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';
             tipTooltip.SetToolTip(lblJudgeIntentions, strTip);
@@ -12793,11 +12777,11 @@ namespace Chummer
 
             cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
             cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
-            RefreshImprovements();
             RefreshLimitModifiers(treLimit, cmsLimitModifier);
             UpdateReputation();
             RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             UpdateInitiationCost();
+            UpdateMentorSpirits();
 
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
@@ -13139,18 +13123,6 @@ namespace Chummer
 
                 panContacts.Controls.Add(ctrl);
             }
-        }
-
-        public void RefreshAIPrograms()
-        {
-            treAIPrograms.Nodes[0].Nodes.Clear();
-
-            // Populate AI Programs.
-            foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
-            {
-                treAIPrograms.Nodes[0].Nodes.Add(objAIProgram.CreateTreeNode(cmsAdvancedProgram));
-            }
-            treAIPrograms.Nodes[0].Expand();
         }
         
         /// <summary>
@@ -17070,8 +17042,7 @@ namespace Chummer
             {
                 // Open the Programs XML file and locate the selected program.
                 XmlDocument objXmlComplexFormDocument = XmlManager.Load("complexforms.xml");
-
-                TreeNode objComplexFormsNode = treComplexForms.Nodes[0];
+                
                 foreach (XmlNode objXmlComplexForm in xmlComplexForms.SelectNodes("complexform"))
                 {
                     XmlNode objXmlComplexFormNode = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlComplexForm["name"].InnerText + "\"]");
@@ -17083,13 +17054,10 @@ namespace Chummer
                         objComplexForm.Create(objXmlComplexFormNode, strForceValue);
 
                         CharacterObject.ComplexForms.Add(objComplexForm);
-
-                        objComplexFormsNode.Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
                     }
                 }
 
-                objComplexFormsNode.Expand();
-                treComplexForms.SortCustom();
+                RefreshComplexForms(treComplexForms, cmsComplexForm);
             }
 
             // Update AI Programs.
@@ -17098,8 +17066,7 @@ namespace Chummer
             {
                 // Open the Programs XML file and locate the selected program.
                 XmlDocument objXmlProgramDocument = XmlManager.Load("programs.xml");
-
-                TreeNode objProgramsNode = treAIPrograms.Nodes[0];
+                
                 foreach (XmlNode objXmlProgram in xmlPrograms.SelectNodes("program"))
                 {
                     XmlNode objXmlProgramNode = objXmlProgramDocument.SelectSingleNode("/chummer/programs/program[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlProgram["name"].InnerText + "\"]");
@@ -17108,14 +17075,11 @@ namespace Chummer
                         AIProgram objProgram = new AIProgram(CharacterObject);
                         objProgram.Create(objXmlProgramNode, objXmlProgram["category"]?.InnerText == "Advanced Programs");
 
-                        objProgramsNode.Nodes.Add(objProgram.CreateTreeNode(cmsAdvancedProgram));
-
                         CharacterObject.AIPrograms.Add(objProgram);
                     }
                 }
 
-                objProgramsNode.Expand();
-                treAIPrograms.SortCustom();
+                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             }
 
             // Update Spells.
@@ -18056,13 +18020,6 @@ namespace Chummer
             // Vehicle Tab.
             cmdDeleteVehicle.Left = cmdAddVehicle.Left + cmdAddVehicle.Width + 6;
             cmdAddVehicleLocation.Left = cmdDeleteVehicle.Left + cmdDeleteVehicle.Width + 6;
-        }
-
-        /// <summary>
-        /// Refresh the list of Improvements.
-        /// </summary>
-        private void RefreshImprovements()
-        {
         }
 
         private void MoveControls()
