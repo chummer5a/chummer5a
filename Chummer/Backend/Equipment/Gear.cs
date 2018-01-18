@@ -463,13 +463,13 @@ namespace Chummer.Backend.Equipment
             XmlNode objXmlGearNode = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlChildName.InnerText + "\" and category = \"" + objXmlChild["category"].InnerText + "\"]");
             if (objXmlGearNode == null)
                 return;
-            int intChildRating = Convert.ToInt32(objXmlChild["rating"]?.InnerText);
+            int intChildRating = Convert.ToInt32(objXmlGearNode["rating"]?.InnerText);
             decimal decChildQty = 1;
-            string strChildForceSource = objXmlChild["source"]?.InnerText ?? string.Empty;
-            string strChildForcePage = objXmlChild["page"].InnerText ?? string.Empty;
+            string strChildForceSource = objXmlGearNode["source"]?.InnerText ?? string.Empty;
+            string strChildForcePage = objXmlGearNode["page"]?.InnerText ?? string.Empty;
             string strChildForceValue = objXmlChildNameAttributes?["select"]?.InnerText ?? string.Empty;
             bool blnCreateChildren = objXmlChildNameAttributes["createchildren"]?.InnerText != bool.FalseString;
-            bool blnAddChildImprovements = objXmlChildNameAttributes["addimprovements"]?.InnerText == bool.FalseString ? false : blnAddImprovements;
+            bool blnAddChildImprovements = objXmlChildNameAttributes["addimprovements"]?.InnerText != bool.FalseString && blnAddImprovements;
             if (objXmlChildNameAttributes["qty"] != null)
                 decChildQty = Convert.ToDecimal(objXmlChildNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
 

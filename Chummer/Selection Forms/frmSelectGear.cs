@@ -430,7 +430,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Name of Gear that was selected in the dialogue.
+        /// Guid of Gear that was selected in the dialogue.
         /// </summary>
         public string SelectedGear
         {
@@ -1139,7 +1139,7 @@ namespace Chummer
 
                 if (objNode != null)
                 {
-                    _strSelectedGear = objNode["name"].InnerText;
+                    _strSelectedGear = strSelectedId;
                     s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                     _intSelectedRating = decimal.ToInt32(nudRating.Value);
