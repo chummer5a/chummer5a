@@ -700,7 +700,7 @@ namespace Chummer
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
-                    lblAvail.Text = chrPrefix + intAvail.ToString() + strSuffix;
+                    lblAvail.Text = strPrefix + intAvail.ToString() + strSuffix;
                 }
                 catch (XPathException)
                 {
