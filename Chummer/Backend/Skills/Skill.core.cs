@@ -775,7 +775,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedFreeKarma != int.MinValue)
                     return _intCachedFreeKarma;
 
-                return _intCachedFreeKarma = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false, Name);
+                return _intCachedFreeKarma = string.IsNullOrEmpty(Name) ? 0 : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false, Name);
             }
         }
 
@@ -792,7 +792,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedFreeBase != int.MinValue)
                     return _intCachedFreeBase;
 
-                return _intCachedFreeBase = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false, Name);
+                return _intCachedFreeBase = string.IsNullOrEmpty(Name) ? 0 : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false, Name);
             }
         }
 

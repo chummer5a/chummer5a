@@ -194,7 +194,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedFreeBase != int.MinValue)
                     return _intCachedFreeBase;
 
-                return _intCachedFreeBase = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name);
+                return _intCachedFreeBase = string.IsNullOrEmpty(Name) ? 0 : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupBase, false, Name);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Chummer.Backend.Skills
                 if (_intCachedFreeLevels != int.MinValue)
                     return _intCachedFreeLevels;
 
-                return _intCachedFreeLevels = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name);
+                return _intCachedFreeLevels = string.IsNullOrEmpty(Name) ? 0 : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.SkillGroupLevel, false, Name);
             }
         }
 
@@ -368,7 +368,15 @@ namespace Chummer.Backend.Skills
         public string Name
         {
             get { return _strGroupName; }
-            set { _strGroupName = value; }
+            set
+            {
+                if (value != _strGroupName)
+                {
+                    _strGroupName = value;
+                    _intCachedFreeBase = int.MinValue;
+                    _intCachedFreeLevels = int.MinValue;
+                }
+            }
         }
         
         public string DisplayName

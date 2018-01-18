@@ -26,6 +26,7 @@ Application Changes:
 - Fixed an issue where Sprites could be fettered. Fixes #2333.
 - Fixed an issue where Composure modifiers were not properly displayed in the tooltip when hovering over a character's Composure value.
 - Fixed an issue where items other than qualities that could add a mentor spirit would not end up resulting in mentor spirit information getting updated in the UI.
+- Fixed an issue where changing the name of a knowledge skill would not cause Chummer5a to recalculate what free levels, if any, the knowledge skill should receive.
 
 Data Changes:
 

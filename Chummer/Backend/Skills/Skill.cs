@@ -542,7 +542,15 @@ namespace Chummer.Backend.Skills
         public string Name
         {
             get { return _strName; }
-            set { _strName = value; }
+            set
+            {
+                if (value != _strName)
+                {
+                    _strName = value;
+                    _intCachedFreeBase = int.MinValue;
+                    _intCachedFreeKarma = int.MinValue;
+                }
+            }
         } //I
 
         //TODO RENAME DESCRIPTIVE
