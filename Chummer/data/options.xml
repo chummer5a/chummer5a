@@ -54,6 +54,14 @@
       <pdfargument>
         <name>Unix-style</name>
         <value>-p {page} "{localpath}"</value>
+      </pdfargument>      
+      <pdfargument>
+        <name>Sumatra - Re-use instance</name>
+        <value>-reuse-instance -page {page} "{localpath}"</value>
+      </pdfargument>  
+      <pdfargument>
+        <name>Sumatra</name>
+        <value>-page {page} "{localpath}"</value>
       </pdfargument>
     </pdfarguments>
     <blackmarketpipelinecategories>
