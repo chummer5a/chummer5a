@@ -23,6 +23,7 @@ Application Changes:
 - Root nodes for Qualities, Martial Arts, Spells, Cyberware, Critter Powers, and Limit Modifiers will now be hidden if they have no children attached. For example, if a character does not have any Negative Qualities, the "Negative Qualities" root node will no longer be displayed, or if the character does not know any Combat spells, the "Combat Spells" root node will no longer be displayed.
 - Fixed an issue where Credsticks from Shadowrun 2050 were not properly printed as SINs.
 - Fixed an issue where limit modifiers to Astral limit would not be displayed in the list of active limit modifiers.
+- Fixed an issue where Sprites could be fettered. Fixes #2333.
 
 Data Changes:
 

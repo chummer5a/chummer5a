@@ -63,8 +63,6 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
-                DataSourceUpdateMode.OnPropertyChanged);
             if (_objSpirit.EntityType == SpiritType.Spirit)
                 nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpiritForce), false,
                     DataSourceUpdateMode.OnPropertyChanged);
@@ -79,6 +77,8 @@ namespace Chummer
 
             if (_objSpirit.EntityType == SpiritType.Spirit)
             {
+                chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.FileName))
@@ -93,6 +93,7 @@ namespace Chummer
             }
             else
             {
+                chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.FileName))
