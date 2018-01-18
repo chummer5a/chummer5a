@@ -462,8 +462,14 @@ namespace Translator
                     else
                     {
                         strName = xmlChildNameNode.InnerText;
-                        strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText ) ?? string.Empty;
-                        XmlNode xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
+                        strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText) ?? string.Empty;
+                        XmlNode xmlNodeLocal;
+                        // if we have an Id get the Node using it
+                        if (!string.IsNullOrEmpty(strId))
+                            xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id=\"" + strId + "\"]");
+                        else
+                            xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
+                        if (xmlNodeLocal == null) MessageBox.Show(strName);
                         strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                         strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                         blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == System.Boolean.TrueString;
@@ -502,11 +508,11 @@ namespace Translator
             dgvSection.DataSource = e.Result as DataSet;
             dgvSection.DataMember = "strings";
             dgvSection.Columns[0].FillWeight = 0.5f;
-            dgvSection.Columns[0].FillWeight = 4.0f;
             dgvSection.Columns[1].FillWeight = 4.0f;
-            dgvSection.Columns[2].FillWeight = 0.5f;
+            dgvSection.Columns[2].FillWeight = 4.0f;
             dgvSection.Columns[3].FillWeight = 0.5f;
             dgvSection.Columns[4].FillWeight = 0.5f;
+            dgvSection.Columns[5].FillWeight = 0.5f;
             foreach (DataGridViewRow row in dgvSection.Rows)
             {
                 TranslatedIndicator(row);
@@ -578,8 +584,8 @@ namespace Translator
 
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
-            string strPath = Path.Combine(ApplicationPath, "lang", Code + ( blnData ? "_data.xml" : ".xml"));
-            var xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true};
+            string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
+            var xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);
