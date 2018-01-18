@@ -3465,7 +3465,7 @@ namespace Translator
                     string strDataMentorId = xmlDataMentorNode["id"].InnerText;
                     string strDataMentorAdvantage = xmlDataMentorNode["advantage"].InnerText;
                     string strDataMentorDisadvantage = xmlDataMentorNode["disadvantage"].InnerText;
-                    XmlNode xmlMentorNode = xmlRootMentorFileNode.SelectSingleNode("mentors/mentor[name=\"" + strDataMentorId + "\"]");
+                    XmlNode xmlMentorNode = xmlRootMentorFileNode.SelectSingleNode("mentors/mentor[id=\"" + strDataMentorId + "\"]");
                     if (xmlMentorNode != null)
                     {
                         if (xmlMentorNode["id"] == null)
