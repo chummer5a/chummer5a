@@ -1477,15 +1477,32 @@ namespace Chummer
             // Load the Priority information.
             List<ListItem> lstTalent = new List<ListItem>();
 
+            XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
             // Populate the Priority Category list.
             XmlNodeList xmlBaseTalentPriorityList = XmlManager.Load("priorities.xml").SelectNodes("/chummer/priorities/priority[category = \"Talent\" and value = \"" + cboTalent.SelectedValue.ToString() + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
             foreach (XmlNode xmlBaseTalentPriority in xmlBaseTalentPriorityList)
             {
                 if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority["gameplayoption"] != null)
                 {
-                    XmlNodeList objXmlPriorityTalentList = xmlBaseTalentPriority.SelectNodes("talents/talent");
-                    foreach (XmlNode objXmlPriorityTalent in objXmlPriorityTalentList)
+                    foreach (XmlNode objXmlPriorityTalent in xmlBaseTalentPriority.SelectNodes("talents/talent"))
                     {
+                        XmlNode xmlQualitiesNode = objXmlPriorityTalent["qualities"];
+                        if (xmlQualitiesNode != null)
+                        {
+                            bool blnFoundUnavailableQuality = false;
+
+                            foreach (XmlNode xmlQuality in xmlQualitiesNode.SelectNodes("quality"))
+                            {
+                                if (xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[" + _objCharacter.Options.BookXPath() + " and name = \"" + xmlQuality.InnerText + "\"") == null)
+                                {
+                                    blnFoundUnavailableQuality = true;
+                                    break;
+                                }
+                            }
+
+                            if (blnFoundUnavailableQuality)
+                                continue;
+                        }
                         XmlNode xmlForbiddenNode = objXmlPriorityTalent["forbidden"];
                         if (xmlForbiddenNode != null)
                         {

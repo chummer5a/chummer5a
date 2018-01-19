@@ -38,6 +38,7 @@ Application Changes:
 - Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
 - Corrected issues related to the deleting of bonus-granted Martial Arts from sources other than the version of One Trick Pony that is RAW.
 - Fixed issues related to sorting by nuyen, sourcebook, and/or availability in the Browse tabs of the armor and weapon selection screens. Fixes #2350.
+- Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
 
 Data Changes:
 
