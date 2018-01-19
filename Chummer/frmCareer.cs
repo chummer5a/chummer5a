@@ -20069,6 +20069,9 @@ namespace Chummer
                 lblLifestyleQualities.Text = string.Empty;
                 cmdIncreaseLifestyleMonths.Enabled = false;
                 cmdDecreaseLifestyleMonths.Enabled = false;
+
+                _blnSkipRefresh = false;
+                return;
             }
 
             if (treLifestyles.SelectedNode.Level > 0)
