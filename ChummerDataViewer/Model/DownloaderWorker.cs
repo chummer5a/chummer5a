@@ -149,7 +149,7 @@ namespace ChummerDataViewer.Model
 			}
 		}
 
-		private string Queue() => _queue.Count > 0 ? " " + _queue.Count + " in queue" : string.Empty;
+		private string Queue() => _queue.Count > 0 ? _queue.Count.ToString() + " in queue" : string.Empty;
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

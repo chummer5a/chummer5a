@@ -114,17 +114,29 @@ namespace Chummer
 
         private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstArt.Text))
+            string strSelected = lstArt.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelected))
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
                 return;
+            }
 
             // Retireve the information for the selected piece of Cyberware.
-            XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + "/" + _strNode + "[name = \"" + lstArt.SelectedValue + "\"]");
+            XmlNode objXmlMetamagic = _objXmlDocument.SelectSingleNode("/chummer/" + _strRoot + '/' + _strNode + "[name = \"" + strSelected + "\"]");
+
+            if (objXmlMetamagic == null)
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+                return;
+            }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language);
             string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
             lblSource.Text = $"{strBook} {strBook}";
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -211,10 +223,10 @@ namespace Chummer
             {
                 case Mode.Art:
                 case Mode.Enhancement:
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[" + _objCharacter.Options.BookXPath() + "]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + '[' + _objCharacter.Options.BookXPath() + ']');
                     break;
                 default:
-                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + "/" + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
+                    objXmlMetamagicList = _objXmlDocument.SelectNodes("/chummer/" + _strRoot + '/' + _strNode + "[category = '" + _strCategory + "' and (" + _objCharacter.Options.BookXPath() + ")]");
                     break;
             }
 

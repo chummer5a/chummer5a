@@ -87,12 +87,10 @@ namespace Chummer
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlPower["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlPower["page"].InnerText;
-            if (objXmlPower["altpage"] != null)
-                strPage = objXmlPower["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlPower["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -190,7 +188,7 @@ namespace Chummer
         #region Methods
         private void BuildPowerList()
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 StringBuilder objFilter = new StringBuilder();
@@ -199,7 +197,7 @@ namespace Chummer
                         objFilter.Append("name = \"" + strPower.Trim() + "\" or ");
                 if (objFilter.Length > 0)
                 {
-                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
             if (txtSearch.TextLength != 0)

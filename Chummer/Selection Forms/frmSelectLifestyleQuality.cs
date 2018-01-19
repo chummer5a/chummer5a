@@ -128,6 +128,8 @@ namespace Chummer
                 lblBP.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblSource, string.Empty);
+
+                return;
             }
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedLifestyleId + "\"]");
@@ -136,7 +138,7 @@ namespace Chummer
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["source"].InnerText, GlobalOptions.Language);
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            lblSource.Text = strBook + ' ' + strPage;
             if (objXmlQuality["allowed"] != null)
             {
                 lblMinimum.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);
@@ -182,7 +184,7 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
             }
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlQuality["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)
@@ -348,10 +350,10 @@ namespace Chummer
         /// </summary>
         private IList<ListItem> BuildQualityList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || string.IsNullOrWhiteSpace(txtSearch.Text)))
             {
-                strFilter += " and category = \"" + strCategory + "\"";
+                strFilter += " and category = \"" + strCategory + '\"';
             }
             else
             {
@@ -363,7 +365,7 @@ namespace Chummer
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
 
@@ -441,13 +443,7 @@ namespace Chummer
                 return true;
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
-            bool blnAllowMultiple = false;
-            if (objXmlQuality["limit"] != null)
-            {
-                if (objXmlQuality["limit"].InnerText == "no")
-                    blnAllowMultiple = true;
-            }
-            if (!blnAllowMultiple)
+            if (objXmlQuality["limit"]?.InnerText != bool.FalseString)
             {
                 // Multiples aren't allowed, so make sure the character does not already have it.
                 foreach (LifestyleQuality objQuality in _objCharacter.LifestyleQualities)
@@ -541,14 +537,11 @@ namespace Chummer
                                 foreach (Quality objQuality in _objCharacter.Qualities)
                                 {
                                     XmlNode objXmlCheck = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objQuality.Name + "\"]");
-                                    if (objXmlCheck["metagenetic"] != null)
+                                    if (objXmlCheck["metagenetic"]?.InnerText.ToLower() == bool.TrueString)
                                     {
-                                        if (objXmlCheck["metagenetic"].InnerText.ToLower() == "yes")
-                                        {
-                                            blnRequirementForbidden = true;
-                                            strForbidden += "\n\t" + objQuality.DisplayName(GlobalOptions.Language);
-                                            break;
-                                        }
+                                        blnRequirementForbidden = true;
+                                        strForbidden += "\n\t" + objQuality.DisplayName(GlobalOptions.Language);
+                                        break;
                                     }
                                 }
                                 break;

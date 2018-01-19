@@ -26,7 +26,7 @@
       <maxavailability>12</maxavailability>
       <maxnuyen>10</maxnuyen>
       <contactmultiplier>3</contactmultiplier>
-      <default>yes</default>
+      <default>True</default>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>

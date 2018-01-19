@@ -1432,7 +1432,7 @@
           <xsl:call-template name="notes"/>
         </xsl:if>
 
-        <xsl:if test="hasothermugshots = 'yes'">
+        <xsl:if test="hasothermugshots = 'True'">
           <div class="block" id="OtherMugshotsBlock">
             <xsl:call-template name="othermugshots"/>
           </div>

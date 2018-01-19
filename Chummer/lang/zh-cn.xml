@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1821,7 +1821,7 @@
 		</string>
 		<string>
 			<key>Message_ReduceQty</key>
-			<text>你确定要减少1个该物品吗？</text>
+			<text>你确定要减少{0}个该物品吗？</text>
 		</string>
 		<string>
 			<key>Message_VehicleCyberwarePlugin</key>
@@ -4373,18 +4373,6 @@
 			<text>通常的角色肢体</text>
 		</string>
 		<string>
-			<key>String_LimbCount6</key>
-			<text>6（2臂、2腿、躯干、头盖骨）</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Torso</key>
-			<text>5（2臂、2腿、躯干）</text>
-		</string>
-		<string>
-			<key>String_LimbCount5Skull</key>
-			<text>5（2臂、2腿、头盖骨）</text>
-		</string>
-		<string>
 			<key>Label_Options_NuyenPerBP</key>
 			<text>每点业力能兑换的新円：</text>
 		</string>
@@ -6285,14 +6273,6 @@
 			<text>You cannot have more spells than allowed by your selected Talent priority.</text>
 		</string>
 		<string>
-			<key>Message_CannotRemoveSpell</key>
-			<text>This item cannot be removed because it was acquired as an initiation bonus.</text>
-		</string>
-		<string>
-			<key>MessageTitle_CannotRemoveSpell</key>
-			<text>无法移除法术</text>
-		</string>
-		<string>
 			<key>Message_PriorityComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
 		</string>
@@ -7221,10 +7201,6 @@
 		<string>
 			<key>String_KnowledgeSkillFilterTotalRatingAboveZero</key>
 			<text>显示总技能骰池＞0的知识技能</text>
-		</string>
-		<string>
-			<key>String_LimbCount4</key>
-			<text>4（2臂、2腿）</text>
 		</string>
 		<string>
 			<key>String_MartialArt</key>

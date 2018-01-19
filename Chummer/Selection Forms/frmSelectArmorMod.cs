@@ -34,13 +34,13 @@ namespace Chummer
         private bool _blnAddAgain = false;
         private decimal _decArmorCost = 0;
         private decimal _decMarkup = 0;
-        private CapacityStyle _objCapacityStyle = CapacityStyle.Standard;
+        private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
         private readonly XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private bool _blnExcludeGeneralCategory = false;
-        private readonly List<string> _blackMarketMaps = new List<string>();
+        private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
         public frmSelectArmorMod(Character objCharacter)
@@ -54,7 +54,7 @@ namespace Chummer
             MoveControls();
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _blackMarketMaps);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)
@@ -236,7 +236,7 @@ namespace Chummer
         {
             set
             {
-                _objCapacityStyle = value;
+                _eCapacityStyle = value;
             }
         }
         #endregion
@@ -303,9 +303,7 @@ namespace Chummer
             }
 
             // Cost.
-            if (_blackMarketMaps != null)
-                chkBlackMarketDiscount.Checked =
-                    _blackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
+            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
             if (chkFreeItem.Checked)
                 lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             else
@@ -366,21 +364,17 @@ namespace Chummer
 
                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
-                if (_objCapacityStyle == CapacityStyle.Standard)
-                    lblCapacity.Text = "[" + CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))) + "]";
-                else if (_objCapacityStyle == CapacityStyle.PerRating)
-                    lblCapacity.Text = "[" + nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo) + "]";
-                else if (_objCapacityStyle == CapacityStyle.Zero)
+                if (_eCapacityStyle == CapacityStyle.Zero)
                     lblCapacity.Text = "[0]";
+                else
+                    lblCapacity.Text = '[' + CommonFunctions.EvaluateInvariantXPath(strCapacity.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
             }
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlMod["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlMod["page"].InnerText;
-            if (objXmlMod["altpage"] != null)
-                strPage = objXmlMod["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlMod["altpage"]?.InnerText ?? objXmlMod["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMod["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         /// <summary>
@@ -396,7 +390,7 @@ namespace Chummer
             for (int i = 0; i < strAllowed.Length; i++)
             {
                 if (!string.IsNullOrEmpty(strAllowed[i]))
-                    strMount += "category = \"" + strAllowed[i] + "\"";
+                    strMount += "category = \"" + strAllowed[i] + '\"';
                 if (i < strAllowed.Length - 1 || !_blnExcludeGeneralCategory)
                 {
                     strMount += " or ";

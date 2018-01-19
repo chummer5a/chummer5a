@@ -26,6 +26,13 @@ namespace Chummer
 {
     static class StringExtensions
     {
+        public static string EmptyGuid { get; } = Guid.Empty.ToString("D");
+
+        public static bool IsEmptyGuid(this string strInput)
+        {
+            return strInput == EmptyGuid;
+        }
+
         /// <summary>
         /// Method to quickly remove all instances of a char from a string (much faster than using Replace() with an empty string)
         /// </summary>

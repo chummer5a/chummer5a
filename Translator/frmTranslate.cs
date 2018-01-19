@@ -157,14 +157,17 @@ namespace Translator
             TranslatedIndicator(item);
             string strTranslated = item.Cells["Text"].Value.ToString();
             string strEnglish = item.Cells["English"].Value.ToString();
+            string strId = item.Cells["Id"].Value.ToString();
             string strPage = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
             string strSection = cboSection.Text;
             if (strSection == "[Show All Sections]")
                 strSection = "*";
-            XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode("/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection + "//name[text()=\"" + strEnglish + "\"]/..");
+            string strBaseXPath = "/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection + '/';
+            XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/id[text()=\"" + strId + "\"]/..") ??
+                _objDataDoc.SelectSingleNode(strBaseXPath + "/name[text()=\"" + strEnglish + "\"]/..");
             if (xmlNodeLocal == null)
             {
-                xmlNodeLocal = _objDataDoc.SelectSingleNode("/chummer/chummer[@file=\"" + cboFile.Text + "\"]/" + strSection + "/*[text()=\"" + strEnglish + "\"]");
+                xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "*[text()=\"" + strEnglish + "\"]");
                 if (xmlNodeLocal?.Attributes != null)
                 {
                     xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
@@ -329,9 +332,9 @@ namespace Translator
         #region BackgroundWorker Events
         private void DoLoadStrings(object sender, DoWorkEventArgs e)
         {
-            var xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(Path.Combine(ApplicationPath, "lang", "en-us.xml"));
-            var dataTable = new DataTable("strings");
+            DataTable dataTable = new DataTable("strings");
             dataTable.Columns.Add("Key");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
@@ -351,7 +354,7 @@ namespace Translator
                 string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
                 string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                 string strTranslated = strEnglish;
-                var blnTranslated = false;
+                bool blnTranslated = false;
                 XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = \"" + strKey + "\"]");
                 if (xmlNodeLocal != null)
                 {
@@ -377,7 +380,7 @@ namespace Translator
                 if (objArray != null)
                     objDataTableRows.Add(objArray);
             }
-            var dataSet = new DataSet("strings");
+            DataSet dataSet = new DataSet("strings");
             dataSet.Tables.Add(dataTable);
             e.Result = dataSet;
         }
@@ -406,7 +409,8 @@ namespace Translator
             string[] strArgs = e.Argument as string[];
             string strFileName = strArgs[0];
             string strSection = strArgs[1];
-            var dataTable = new DataTable("strings");
+            DataTable dataTable = new DataTable("strings");
+            dataTable.Columns.Add("Id");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
             if (strFileName == "books.xml")
@@ -435,13 +439,14 @@ namespace Translator
             foreach (XmlNode xmlNodeToShow in xmlBaseList)
             {
                 XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
-                var xmlDocument = new XmlDocument();
+                XmlDocument xmlDocument = new XmlDocument();
                 xmlDocument.Load(Path.Combine(ApplicationPath, "data", strFileName));
                 object[][] arrayRowsToDisplay = new object[xmlChildNodes.Count][];
                 object arrayRowsToDisplayLock = new object();
                 Parallel.For(0, xmlChildNodes.Count, i =>
                 {
                     XmlNode xmlChildNode = xmlChildNodes[i];
+                    string strId = xmlChildNode["id"]?.InnerText ?? string.Empty;
                     string strName = string.Empty;
                     string strPage = string.Empty;
                     string strTranslated = string.Empty;
@@ -457,15 +462,21 @@ namespace Translator
                     else
                     {
                         strName = xmlChildNameNode.InnerText;
-                        strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText ) ?? string.Empty;
-                        XmlNode xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
+                        strPage = (strFileName == "books.xml" ? xmlChildNode["altcode"]?.InnerText : xmlChildNode["altpage"]?.InnerText) ?? string.Empty;
+                        XmlNode xmlNodeLocal;
+                        // if we have an Id get the Node using it
+                        if (!string.IsNullOrEmpty(strId))
+                            xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[id=\"" + strId + "\"]");
+                        else
+                            xmlNodeLocal = xmlDocument.SelectSingleNode("/chummer/" + strSection + "/*[name=\"" + strName + "\"]");
+                        if (xmlNodeLocal == null) MessageBox.Show(strName);
                         strSource = xmlNodeLocal?["source"]?.InnerText ?? string.Empty;
                         strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
                         blnTranslated = strName != strTranslated || xmlChildNode.Attributes?["translated"]?.InnerText == System.Boolean.TrueString;
                     }
                     if (!blnTranslated || !chkOnlyTranslation.Checked)
                     {
-                        object[] objArray = { strName, strTranslated, strSource, strPage, blnTranslated };
+                        object[] objArray = { strId, strName, strTranslated, strSource, strPage, blnTranslated };
                         lock (arrayRowsToDisplayLock)
                             arrayRowsToDisplay[i] = objArray;
                     }
@@ -496,11 +507,12 @@ namespace Translator
             dgvSection.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dgvSection.DataSource = e.Result as DataSet;
             dgvSection.DataMember = "strings";
-            dgvSection.Columns[0].FillWeight = 4.25f;
-            dgvSection.Columns[1].FillWeight = 4.25f;
-            dgvSection.Columns[2].FillWeight = 0.5f;
+            dgvSection.Columns[0].FillWeight = 0.5f;
+            dgvSection.Columns[1].FillWeight = 4.0f;
+            dgvSection.Columns[2].FillWeight = 4.0f;
             dgvSection.Columns[3].FillWeight = 0.5f;
             dgvSection.Columns[4].FillWeight = 0.5f;
+            dgvSection.Columns[5].FillWeight = 0.5f;
             foreach (DataGridViewRow row in dgvSection.Rows)
             {
                 TranslatedIndicator(row);
@@ -572,8 +584,8 @@ namespace Translator
 
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
-            string strPath = Path.Combine(ApplicationPath, "lang", Code + ( blnData ? "_data.xml" : ".xml"));
-            var xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true};
+            string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
+            XmlWriterSettings xwsSettings = new XmlWriterSettings { IndentChars = ("\t"), Indent = true };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);

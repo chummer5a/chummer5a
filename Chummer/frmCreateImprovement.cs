@@ -164,7 +164,7 @@ namespace Chummer
             {
                 case "SelectAttribute":
                     {
-                        var frmPickAttribute = new frmSelectAttribute
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };
@@ -359,7 +359,7 @@ namespace Chummer
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
-                strRating = "<applytorating>yes</applytorating>";
+                strRating = "<applytorating>True</applytorating>";
 
             // Retrieve the XML data from the document and replace the values as necessary.
             // ReSharper disable once PossibleNullReferenceException
@@ -395,7 +395,7 @@ namespace Chummer
             XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
 
             // Pass it to the Improvement Manager so that it can be added to the character.
-            string strGuid = Guid.NewGuid().ToString();
+            string strGuid = Guid.NewGuid().ToString("D");
             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
 
             // If an Improvement was passed in, remove it from the character.

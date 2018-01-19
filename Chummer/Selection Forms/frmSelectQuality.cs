@@ -164,9 +164,9 @@ namespace Chummer
             string strSource = objXmlQuality["source"]?.InnerText;
             string strBook = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language);
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? string.Empty;
-            lblSource.Text = strBook + " " + strPage;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -378,29 +378,29 @@ namespace Chummer
             }
             if (chkMetagenetic.Checked)
             {
-                strFilter.Append(" and (metagenetic = 'yes' or required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
             }
             else if (chkNotMetagenetic.Checked)
             {
-                strFilter.Append(" and not(metagenetic = 'yes') and not(required/oneof[contains(., 'Changeling')])");
+                strFilter.Append(" and not(metagenetic = 'True') and not(required/oneof[contains(., 'Changeling')])");
             }
             if (nudValueBP.Value != 0)
             {
                 strFilter.Append(" and karma = ");
-                strFilter.Append(nudValueBP.Value.ToString());
+                strFilter.Append(nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
             }
             else
             {
                 if (nudMinimumBP.Value != 0)
                 {
                     strFilter.Append(" and karma >= ");
-                    strFilter.Append(nudMinimumBP.Value.ToString());
+                    strFilter.Append(nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
 
                 if (nudMaximumBP.Value != 0)
                 {
                     strFilter.Append(" and karma <= ");
-                    strFilter.Append(nudMaximumBP.Value.ToString());
+                    strFilter.Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
             

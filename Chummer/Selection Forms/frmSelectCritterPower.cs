@@ -264,7 +264,7 @@ namespace Chummer
                         strRange = strRange.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", GlobalOptions.Language));
                         strRange = strRange.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", GlobalOptions.Language));
                         strRange = strRange.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", GlobalOptions.Language));
-                        strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ")");
+                        strRange = strRange.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", GlobalOptions.Language) + ')');
                         strRange = strRange.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language));
                     }
                     lblCritterPowerRange.Text = strRange;
@@ -291,9 +291,9 @@ namespace Chummer
 
                     string strSource = objXmlPower["altsource"]?.InnerText ?? objXmlPower["source"]?.InnerText ?? string.Empty;
                     string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"]?.InnerText ?? string.Empty;
-                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + " " + strPage;
+                    lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
                     if (!string.IsNullOrEmpty(strSource))
-                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 
@@ -385,13 +385,13 @@ namespace Chummer
                 }
             }
 
-            string strFilter = "(" + _objCharacter.Options.BookXPath() + ")";
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
             {
                 if (strCategory == "Toxic Critter Powers")
-                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"yes\")";
+                    strFilter += " and (category = \"" + strCategory + "\" or toxic = \"True\")";
                 else
-                    strFilter += " and category = \"" + strCategory + "\"";
+                    strFilter += " and category = \"" + strCategory + '\"';
             }
             else
             {
@@ -404,17 +404,17 @@ namespace Chummer
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
                         if (strItem == "Toxic Critter Powers")
                         {
-                            objCategoryFilter.Append("toxic = \"yes\" or ");
+                            objCategoryFilter.Append("toxic = \"True\" or ");
                             blnHasToxic = true;
                         }
                     }
                 }
                 if (objCategoryFilter.Length > 0)
                 {
-                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ")";
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
                 if (!blnHasToxic)
-                    strFilter += " and (not(toxic) or toxic != \"yes\")";
+                    strFilter += " and (not(toxic) or toxic != \"True\")";
             }
             foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]"))
             {

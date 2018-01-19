@@ -402,7 +402,7 @@ namespace Chummer
                 string strOutput = objReader.ReadToEnd();
                 File.WriteAllText(strName, strOutput);
                 string curDir = Directory.GetCurrentDirectory();
-                webBrowser1.Url = new Uri(String.Format("file:///{0}/" + strName, curDir));
+                webBrowser1.Url = new Uri(string.Format("file:///{0}/" + strName, curDir));
             }
         }
 
@@ -479,28 +479,36 @@ namespace Chummer
             objPdfDocument.ExtraParams.Add("image-quality", "100");
             objPdfDocument.ExtraParams.Add("print-media-type", "");
 
-            PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
+            try
             {
-                WkHtmlToPdfPath = Path.Combine(Application.StartupPath,"wkhtmltopdf.exe"),
-                Timeout = 60000,
-                TempFolderPath = Path.GetTempPath()
-            }, new PdfOutput
-            {
-                OutputFilePath = strSaveFile
-            });
-            if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
-            {
-                Uri uriPath = new Uri(strSaveFile);
-                string strParams = GlobalOptions.PDFParameters;
-                strParams = strParams.Replace("{page}", "1");
-                strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
-                strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
-                ProcessStartInfo objProgress = new ProcessStartInfo
+                PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
                 {
-                    FileName = GlobalOptions.PDFAppPath,
-                    Arguments = strParams
-                };
-                Process.Start(objProgress);
+                    WkHtmlToPdfPath = Path.Combine(Application.StartupPath, "wkhtmltopdf.exe"),
+                    Timeout = 60000,
+                    TempFolderPath = Path.GetTempPath()
+                }, new PdfOutput
+                {
+                    OutputFilePath = strSaveFile
+                });
+
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+                {
+                    Uri uriPath = new Uri(strSaveFile);
+                    string strParams = GlobalOptions.PDFParameters;
+                    strParams = strParams.Replace("{page}", "1");
+                    strParams = strParams.Replace("{localpath}", uriPath.LocalPath);
+                    strParams = strParams.Replace("{absolutepath}", uriPath.AbsolutePath);
+                    ProcessStartInfo objPDFProgramProcess = new ProcessStartInfo
+                    {
+                        FileName = GlobalOptions.PDFAppPath,
+                        Arguments = strParams
+                    };
+                    Process.Start(objPDFProgramProcess);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -521,7 +529,7 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromOmaeDirectory()
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
@@ -531,21 +539,19 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                items.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
             }
 
-            return items;
+            return lstItems;
         }
         private static IList<string> ReadXslFileNamesWithoutExtensionFromDirectory(string path)
         {
-            var names = new List<string>();
-
             if (Directory.Exists(path))
             {
-                names = Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).ToList();
+                return Directory.GetFiles(path, "*.xsl", SearchOption.AllDirectories).Select(Path.GetFileNameWithoutExtension).ToList();
             }
 
-            return names;
+            return new List<string>();
         }
 
         private void PopulateXsltList()

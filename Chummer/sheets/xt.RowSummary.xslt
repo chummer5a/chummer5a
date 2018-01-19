@@ -66,10 +66,12 @@
       page-break-after: auto;
       }
       .sectionhide {
-      visibility: visible;
+      visibility: hidden;
+      height: 1em;
+      max-height: 1em;
       bottom-padding: 0;
       page-break-inside: avoid;
-      margin: 1em 0 0 0;  /* to keep the page break from cutting too close to the text in the div */
+      margin: 0 0 0 0;
       }
     </style>
 

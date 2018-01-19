@@ -50,7 +50,7 @@ namespace Chummer
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
         int MatrixCM { get; }
-        int MatrixCMFilled { get; }
+        int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }
@@ -326,7 +326,7 @@ namespace Chummer
                     string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ")";
+                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ')';
                     }
                 }
             }

@@ -123,7 +123,7 @@ namespace Chummer
                 string strName = lstObject.Key;
                 if (!string.IsNullOrEmpty(lstObject.Value))
                 {
-                    strName += " (" + lstObject.Value + ")";
+                    strName += " (" + lstObject.Value + ')';
                 }
                 _lstPowers.Add(new Tuple<string, KeyValuePair<string, string>>(strName, lstObject));
             }

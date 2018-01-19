@@ -257,7 +257,7 @@ namespace Chummer
                             }
                             else
                             {
-                                return String.Format("(Formating error in  $DOLLAR{0} )", macroName);
+                                return string.Format("(Formating error in  $DOLLAR{0} )", macroName);
                             }
                         }
 
@@ -271,7 +271,7 @@ namespace Chummer
                         }
                         else
                         {
-                            return String.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
+                            return string.Format("(Unknown key {0} in  $DOLLAR{1} )", macroPool, macroName);
                         }
                     }
                     else
@@ -280,7 +280,7 @@ namespace Chummer
                     }
                 }
             }
-            return String.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
+            return string.Format("(Unknown Macro  $DOLLAR{0} )", innerText.Substring(1));
         }
     }
 }

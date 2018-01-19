@@ -250,8 +250,6 @@ namespace Chummer
             }
             else
                 Load("default.xml");
-            // Load the language file.
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         /// <summary>
@@ -275,7 +273,7 @@ namespace Chummer
             // <name />
             objWriter.WriteElementString("name", _strName);
             // <recentimagefolder />
-            if (!String.IsNullOrEmpty(_strImageFolder))
+            if (!string.IsNullOrEmpty(_strImageFolder))
             {
                 objWriter.WriteElementString("recentimagefolder", _strImageFolder);
             }
@@ -1188,7 +1186,7 @@ namespace Chummer
                     _strBookXPath += "source = \"" + strBook + "\" or ";
             }
             if (_strBookXPath.Length >= 4)
-                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ')';
             else
                 _strBookXPath = string.Empty;
         }
@@ -1517,8 +1515,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
+                    Utils.BreakIfDebug();
                 }
             }
         }

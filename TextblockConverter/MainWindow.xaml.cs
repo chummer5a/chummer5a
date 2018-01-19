@@ -26,7 +26,7 @@ namespace WpfApplication1
         {
             if (!Guid.TryParse(txtGUID.Text, out Guid g))
             {
-                txtGUID.Text = Guid.NewGuid().ToString();
+                txtGUID.Text = Guid.NewGuid().ToString("D");
             }
             var lines = txtRaw.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 	        if (lines.Length <= 1) return;
@@ -37,7 +37,7 @@ namespace WpfApplication1
 	        doc.AppendChild(objHeader);
 
 			XmlNode xmlNode = doc.CreateElement("id");
-			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString();
+			xmlNode.InnerText = txtGUID.Text.Length > 0 ? txtGUID.Text : g.ToString("D");
 			objHeader.AppendChild(xmlNode);
 
 			xmlNode = doc.CreateElement("name");

@@ -507,7 +507,7 @@
               <val>2</val>
             </skilllevel>
             <knowledgeskilllevel>
-              <name>Buisness Practices</name>
+              <name>Business Practices</name>
               <group>Professional</group>
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
@@ -809,7 +809,7 @@
         <knowledgeskilllevel>
           <group>Academic</group>
           <val>3</val>
-          <name>[Corperation]</name>
+          <name>[Corporation]</name>
         </knowledgeskilllevel>
         <freenegativequalities>-15</freenegativequalities>
         <addqualities>
@@ -849,7 +849,7 @@
         <knowledgeskilllevel>
           <group>Academic</group>
           <val>3</val>
-          <name>[Corperation]</name>
+          <name>[Corporation]</name>
         </knowledgeskilllevel>
       </bonus>
       <story>$real was  $LUCK  enough to be the child of wageslaves, who via endless hours of toil managed to keep a roof over $real ’s head.</story>
@@ -1486,7 +1486,7 @@
       <id>ccf41ccc-f752-469b-ad92-5bdc38e6714f</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
-      <name>Magical Education (Magican)</name>
+      <name>Magical Education (Magician)</name>
       <karma>50</karma>
       <bonus>
         <attributelevel>
@@ -1752,7 +1752,7 @@
           <name>Running</name>
         </skilllevel>
         <skilllevel>
-          <name>Swiming</name>
+          <name>Swimming</name>
         </skilllevel>
         <knowledgeskilllevel>
           <name>Military</name>
@@ -2144,9 +2144,9 @@
             </skilllevel>
             <knowledgeskilllevel>
               <options>
-                <chemestry>Chemestry</chemestry>
+                <chemistry>Chemistry</chemistry>
                 <physics>Physics</physics>
-                <bilogoly>Biology</bilogoly>
+                <biology>Biology</biology>
               </options>
               <group>Academic</group>
               <val>5</val>
@@ -6535,7 +6535,7 @@
       <id>b8aea58a-e447-46f6-b96d-cf3bf3ff19e4</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
-      <name>Hacker Hobbyst</name>
+      <name>Hacker Hobbyist</name>
       <karma>100</karma>
       <bonus>
         <attributelevel>
@@ -6690,7 +6690,7 @@
           <addquality>Quick Config</addquality>
         </addqualities>
       </bonus>
-      <story>$real had the misfortune to work as a sysadmin, an unappreciated job where one has to somehow fulfil requests made by people without even the most basic computer knowledge.</story>
+      <story>$real had the misfortune to work as a sysadmin, an unappreciated job where one has to somehow fulfill requests made by people without even the most basic computer knowledge.</story>
       <source>DT</source>
       <page>53</page>
     </module>
@@ -7433,7 +7433,7 @@
           <val>1</val>
         </skillgrouplevel>
         <skilllevel>
-          <name>Lockpicking</name>
+          <name>Locksmith</name>
         </skilllevel>
         <skilllevel>
           <name>Gunnery</name>
@@ -8028,7 +8028,7 @@
           <addquality>Speed Demon</addquality>
         </addqualities>
       </bonus>
-      <story>Need a driver for that TRI-D you're finanicing? Contact $real at actor-driver.me for all your driving needs.</story>
+      <story>Need a driver for that TRI-D you're financing? Contact $real at actor-driver.me for all your driving needs.</story>
       <source>R5</source>
       <page>35</page>
     </module>
@@ -8460,7 +8460,7 @@
               <name>LOG</name>
             </attributelevel>
             <knowledgeskilllevel>
-              <name>[Languge]</name>
+              <name>[Language]</name>
               <group>Language</group>
             </knowledgeskilllevel>
             <skilllevel>
@@ -8474,7 +8474,7 @@
         </version>
         <version>
           <id>60de16a9-72e8-48d6-aefa-e4e89b1620cb</id>
-          <name>Metropole - Sinless</name>
+          <name>Metropole - SINless</name>
           <story>$real was born in the Metropole without the luxury of a SIN.</story>
           <bonus>
             <attributelevel>
@@ -8564,7 +8564,7 @@
         <version>
           <id>4be3aea3-b0f9-4a6c-b963-50bca3b2000e</id>
           <name>General AGS</name>
-          <story>$real was born somwhere in the AGS.</story>
+          <story>$real was born somewhere in the AGS.</story>
           <bonus>
             <attributelevel>
               <!--Defaults to <val>1</val>-->
@@ -8644,8 +8644,8 @@
         </version>
         <version>
           <id>2619742f-08c9-467e-bf27-edb7ed561f72</id>
-          <name>Rhine-Ruhr megaplex</name>
-          <story>$real was born in the Rhine-Ruhr megaplex.</story>
+          <name>Rhine-Ruhr Megaplex</name>
+          <story>$real was born in the Rhine-Ruhr Megaplex.</story>
           <bonus>
             <attributelevel>
               <!--Defaults to <val>1</val>-->
@@ -8655,7 +8655,7 @@
               <name>Intimidation</name>
             </skilllevel>
             <knowledgeskilllevel>
-              <name>Area Knowledge: Rhine-Ruhr megaplex</name>
+              <name>Area Knowledge: Rhine-Ruhr Megaplex</name>
               <group>Street</group>
               <val>2</val>
             </knowledgeskilllevel>
@@ -8719,7 +8719,7 @@
           <group>Street</group>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
-          <name>Hostory</name>
+          <name>History</name>
           <group>Academic</group>
         </knowledgeskilllevel>
         <knowledgeskilllevel>
@@ -8737,7 +8737,7 @@
             <croatian>Croatian</croatian>
             <dutch>Dutch</dutch>
             <polish>Polish</polish>
-            <rumanian>Rumanian</rumanian>
+            <romanian>Romanian</romanian>
             <russian>Russian</russian>
             <serbian>Serbian</serbian>
             <turkish>Turkish</turkish>
@@ -8901,7 +8901,7 @@
             <sorbic>Sorbic</sorbic>
             <turkish>Turkish</turkish>
             <ukrainian>Ukrainian</ukrainian>
-            <vietnamnese>Vietnamnese</vietnamnese>
+            <vietnamese>Vietnamese</vietnamese>
           </options>
           <id>2e564c16-0da6-42eb-9d18-9b4ec432d576</id>
           <group>Language</group>
@@ -9053,7 +9053,7 @@
             <estonian>Estonian</estonian>
             <finnish>Finnish</finnish>
             <irish>Irish</irish>
-            <lativan>Lativan</lativan>
+            <latvian>Latvian</latvian>
             <lithuainian>Lithuanian</lithuainian>
             <polish>Polish</polish>
             <russian>Russian</russian>
@@ -9324,7 +9324,7 @@
           </bonus>
         </version>
       </versions>
-      <story>$real was a soldier in service of the AGS-based MET2000. During their service they probably saw some of europe and worked with the most modern equipment.</story>
+      <story>$real was a soldier in service of the AGS-based MET2000. During their service they probably saw some of Europe and worked with the most modern equipment.</story>
       <source>RFG</source>
       <page>164</page>
     </module>
@@ -9336,7 +9336,7 @@
       <id>7b009ba2-dbd6-47a2-a13f-28709a625374</id>
       <stage>Formative Years</stage>
       <category>LifeModule</category>
-      <name>Arnachist Brat</name>
+      <name>Anarchist Brat</name>
       <karma>40</karma>
       <bonus>
         <attributelevel>
@@ -9548,7 +9548,7 @@
       <id>746cde0e-1ca3-46ae-96b6-cb3971656673</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
-      <name>Arnacho-Teen</name>
+      <name>Anarcho-Teen</name>
       <karma>50</karma>
       <bonus>
         <attributelevel>
@@ -9607,7 +9607,7 @@
           <addquality>Prejudiced (Common, Outspoken)</addquality>
         </addqualities>
       </bonus>
-      <story>$real spent thier teen years living the anarchist life.</story>
+      <story>$real spent their teen years living the anarchist life.</story>
       <source>SAG</source>
       <page>150</page>
     </module>
@@ -9970,7 +9970,7 @@
           </bonus>
         </version>
       </versions>
-      <story>$real achieved their higher education via their religiou community.</story>
+      <story>$real achieved their higher education via their religious community.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -10062,7 +10062,7 @@
           </bonus>
         </version>
       </versions>
-      <story>$real achieved their higher education via their religiou community.</story>
+      <story>$real achieved their higher education via their religious community.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -10225,7 +10225,7 @@
       </streetdesc>
       <famousdesc>
         <movie> stared in a famous movie</movie>
-        <tv> appeared in a reality tridio</tv>
+        <tv> appeared in a reality trideo</tv>
         <sports> moved a ball slightly better than all the other players</sports>
         <chu> won on jeopardy</chu>
         <kim>… to be honest, we aren’t really sure why</kim>

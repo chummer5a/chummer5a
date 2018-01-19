@@ -215,15 +215,15 @@ namespace Chummer
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
         private BindingList<Power> _lstPowers = new BindingList<Power>();
-        private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
-        private List<AIProgram> _lstAIPrograms = new List<AIProgram>();
+        private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
+        private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private List<Armor> _lstArmor = new List<Armor>();
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
-        private List<Quality> _lstQualities = new List<Quality>();
+        private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
         private List<Gear> _lstGear = new List<Gear>();
@@ -232,7 +232,7 @@ namespace Chummer
         private List<Art> _lstArts = new List<Art>();
         private List<Enhancement> _lstEnhancements = new List<Enhancement>();
         private List<ExpenseLogEntry> _lstExpenseLog = new List<ExpenseLogEntry>();
-        private List<CritterPower> _lstCritterPowers = new List<CritterPower>();
+        private ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
         private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
         private List<string> _lstOldQualities = new List<string>();
         private List<string> _lstGearLocations = new List<string>();
@@ -1080,9 +1080,9 @@ namespace Chummer
             objXmlCharacter.TryGetStringFieldQuickly("run", ref _strRun);
             objXmlCharacter.TryGetStringFieldQuickly("sprint", ref _strSprint);
 
-            _strRunAlt = objXmlCharacter["run"]?.Attributes["alt"]?.InnerText ?? string.Empty;
-            _strWalkAlt = objXmlCharacter["walk"]?.Attributes["alt"]?.InnerText ?? string.Empty;
-            _strSprintAlt = objXmlCharacter["sprint"]?.Attributes["alt"]?.InnerText ?? string.Empty;
+            _strRunAlt = objXmlCharacter.SelectSingleNode("run/@alt")?.InnerText ?? string.Empty;
+            _strWalkAlt = objXmlCharacter.SelectSingleNode("walk/@alt")?.InnerText ?? string.Empty;
+            _strSprintAlt = objXmlCharacter.SelectSingleNode("sprint/@alt")?.InnerText ?? string.Empty;
 
             objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
             objXmlCharacter.TryGetStringFieldQuickly("metavariant", ref _strMetavariant);
@@ -1266,7 +1266,8 @@ namespace Chummer
                 
                 if ((objXmlImprovement["custom"]?.InnerText == System.Boolean.TrueString) ||
                     // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                    (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)))
+                    (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)) || 
+                    strLoopSourceName == "edgeuse" || strLoopSourceName == "Essence Loss")
                 {
                     Improvement objImprovement = new Improvement(this);
                     try
@@ -1295,8 +1296,11 @@ namespace Chummer
                     {
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
+                        // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                        if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                            objQuality.SetGUID(Guid.NewGuid());
                         _lstQualities.Add(objQuality);
-                        if (objQuality.GetNode()?["bonus"]?["addgear"]?["name"]?.InnerText == "Living Persona")
+                        if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
                         if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
@@ -1957,7 +1961,7 @@ namespace Chummer
             // load issue where the contact multiplier was set to 0
             if (_intContactMultiplier == 0 && !string.IsNullOrEmpty(_strGameplayOption))
             {
-                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml")?.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
+                XmlNode objXmlGameplayOption = XmlManager.Load("gameplayoptions.xml").SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + _strGameplayOption + "\"]");
                 if (objXmlGameplayOption != null)
                 {
                     string strKarma = objXmlGameplayOption["karma"]?.InnerText;
@@ -1970,7 +1974,7 @@ namespace Chummer
                     _intMaxKarma = Convert.ToInt32(strKarma);
                     _decMaxNuyen = Convert.ToDecimal(strNuyen);
                     _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                    _intContactPoints = (CHA.Base + CHA.TotalKarma) * _intContactMultiplier;
+                    _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
                 }
             }
 
@@ -2957,8 +2961,8 @@ namespace Chummer
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
             _lstPowers = new BindingList<Power>();
-            _lstComplexForms = new List<ComplexForm>();
-            _lstAIPrograms = new List<AIProgram>();
+            _lstComplexForms = new ObservableCollection<ComplexForm>();
+            _lstAIPrograms = new ObservableCollection<AIProgram>();
             _lstMartialArts = new List<MartialArt>();
             _lstMartialArtManeuvers = new List<MartialArtManeuver>();
             _lstLimitModifiers = new List<LimitModifier>();
@@ -2972,9 +2976,9 @@ namespace Chummer
             _lstGear = new List<Gear>();
             _lstVehicles = new List<Vehicle>();
             _lstExpenseLog = new List<ExpenseLogEntry>();
-            _lstCritterPowers = new List<CritterPower>();
+            _lstCritterPowers = new ObservableCollection<CritterPower>();
             _lstInitiationGrades = new List<InitiationGrade>();
-            _lstQualities = new List<Quality>();
+            _lstQualities = new ObservableCollection<Quality>();
             _lstOldQualities = new List<string>();
             _lstCalendar = new List<CalendarWeek>();
 
@@ -3646,89 +3650,38 @@ namespace Chummer
 
             return strMessage;
         }
+
+        /// <summary>
+        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
+        /// </summary>
+        public HashSet<string> GenerateBlackMarketMappings(XmlDocument xmlCategoryDocument)
+        {
+            HashSet<string> setBlackMarketMaps = new HashSet<string>();
+            // Character has no Black Market discount qualities. Fail out early. 
+            if (BlackMarketDiscount)
+            {
+                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
+                HashSet<string> setNames = new HashSet<string>();
+                foreach (Improvement objImprovement in Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && objImprovement.Enabled)
+                        setNames.Add(objImprovement.ImprovedName);
+                }
+                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+                foreach (XmlNode xmlCategoryNode in xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
+                {
+                    string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBlackMarketAttribute) && strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                    {
+                        setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
+                    }
+                }
+            }
+            return setBlackMarketMaps;
+        }
         #endregion
 
         #region UI Methods
-        /// <summary>
-        /// Populate the list of Bonded Foci.
-        /// </summary>
-        public void PopulateFocusList(TreeView treFoci, ContextMenuStrip cmsGear)
-        {
-            treFoci.Nodes.Clear();
-            int intFociTotal = 0;
-            bool blnWarned = false;
-
-            int intMaxFocusTotal = MAG.TotalValue * 5;
-            if (Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
-                intMaxFocusTotal = Math.Min(intMaxFocusTotal, MAGAdept.TotalValue * 5);
-            foreach (Gear objGear in Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
-            {
-                List<Focus> lstRemoveFoci = new List<Focus>();
-                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
-                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
-                foreach (Focus objFocus in Foci)
-                {
-                    if (objFocus.GearId == objGear.InternalId)
-                    {
-                        objNode.Checked = true;
-                        objFocus.Rating = objGear.Rating;
-                        intFociTotal += objFocus.Rating;
-                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > intMaxFocusTotal && !IgnoreRules)
-                        {
-                            // Mark the Gear a Bonded.
-                            foreach (Gear objCharacterGear in Gear)
-                            {
-                                if (objCharacterGear.InternalId == objFocus.GearId)
-                                    objCharacterGear.Bonded = false;
-                            }
-                            lstRemoveFoci.Add(objFocus);
-                            if (!blnWarned)
-                            {
-                                objNode.Checked = false;
-                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                blnWarned = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    Foci.Remove(objFocus);
-                }
-                treFoci.Nodes.Add(objNode);
-            }
-
-            // Add Stacked Foci.
-            foreach (Gear objGear in Gear)
-            {
-                if (objGear.Category == "Stacked Focus")
-                {
-                    foreach (StackedFocus objStack in StackedFoci)
-                    {
-                        if (objStack.GearId == objGear.InternalId)
-                        {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-
-                            if (objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
-                                    if (objFociGear.WirelessOn)
-                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
-                                }
-                            }
-
-                            treFoci.Nodes.Add(objStack.CreateTreeNode(objGear, null));
-                        }
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Verify that the user wants to delete an item.
@@ -3757,59 +3710,77 @@ namespace Chummer
         /// Clear all Spell tab elements from the character.
         /// </summary>
         /// <param name="treSpells"></param>
-        public void ClearSpellTab(TreeView treSpells)
+        public void ClearMagic()
         {
             // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, string.Empty);
+            for (int i = Spells.Count - 1; i >= 0; --i)
+            {
+                Spell objToRemove = Spells[i];
+                if (objToRemove.Grade == 0)
+                {
+                    // Remove the Improvements created by the Spell.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, objToRemove.InternalId);
+                    Spells.RemoveAt(i);
+                }
+            }
 
-            // Clear the list of Spells.
-            foreach (TreeNode objNode in treSpells.Nodes)
-                objNode.Nodes.Clear();
-
-            Spells.Clear();
             ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
         }
 
         /// <summary>
         /// Clear all Adept tab elements from the character.
         /// </summary>
-        public void ClearAdeptTab()
+        public void ClearAdeptPowers()
         {
-            // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, string.Empty);
-
-            Powers.Clear();
+            // Run through all powers and remove the ones not added by improvements or foci
+            for (int i = Powers.Count - 1; i >= 0; --i)
+            {
+                Power objToRemove = Powers[i];
+                if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                {
+                    // Remove the Improvements created by the Power.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, objToRemove.InternalId);
+                    Powers.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
         /// Clear all Technomancer tab elements from the character.
         /// </summary>
-        public void ClearTechnomancerTab(TreeView treComplexForms)
+        public void ClearResonance()
         {
             // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, string.Empty);
-
-            // Clear the list of Complex Forms.
-            foreach (TreeNode objNode in treComplexForms.Nodes)
-                objNode.Nodes.Clear();
+            for (int i = ComplexForms.Count - 1; i >= 0; --i)
+            {
+                ComplexForm objToRemove = ComplexForms[i];
+                if (objToRemove.Grade == 0)
+                {
+                    // Remove the Improvements created by the Spell.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, objToRemove.InternalId);
+                    ComplexForms.RemoveAt(i);
+                }
+            }
 
             ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
-            ComplexForms.Clear();
         }
 
         /// <summary>
         /// Clear all Advanced Programs tab elements from the character.
         /// </summary>
-        public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
+        public void ClearAdvancedPrograms()
         {
-            // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, string.Empty);
-
-            // Clear the list of Advanced Programs.
-            foreach (TreeNode objNode in treAIPrograms.Nodes)
-                objNode.Nodes.Clear();
-
-            AIPrograms.Clear();
+            // Run through all advanced programs and remove the ones not added by improvements
+            for (int i = AIPrograms.Count - 1; i >= 0; --i)
+            {
+                AIProgram objToRemove = AIPrograms[i];
+                if (objToRemove.CanDelete)
+                {
+                    // Remove the Improvements created by the Program.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, objToRemove.InternalId);
+                    AIPrograms.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
@@ -3822,25 +3793,17 @@ namespace Chummer
                 objCyberware.DeleteCyberware(treWeapons, treVehicles);
             }
             Cyberware.Clear();
-
-            // Clear the list of Advanced Programs.
-            // Remove the item from the TreeView.
-            foreach (TreeNode objNode in treCyberware.Nodes)
-                objNode.Nodes.Clear();
+            
             treCyberware.Nodes.Clear();
         }
 
         /// <summary>
         /// Clear all Critter tab elements from the character.
         /// </summary>
-        public void ClearCritterTab(TreeView treCritterPowers)
+        public void ClearCritterPowers()
         {
             // Run through all of the Critter Powers and remove their Improvements.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, string.Empty);
-
-            // Clear the list of Critter Powers.
-            foreach (TreeNode objNode in treCritterPowers.Nodes)
-                objNode.Nodes.Clear();
 
             CritterPowers.Clear();
         }
@@ -4104,7 +4067,7 @@ namespace Chummer
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
-                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString() + ".img");
+                string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + ".img");
                 Image imgMainMugshot = MainMugshot;
                 if (imgMainMugshot != null)
                 {
@@ -4115,7 +4078,7 @@ namespace Chummer
                     objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64String());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots", imgMainMugshot == null || Mugshots.Count > 1 ? "yes" : "no");
+                objWriter.WriteElementString("hasothermugshots", (imgMainMugshot == null || Mugshots.Count > 1).ToString());
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -4126,7 +4089,7 @@ namespace Chummer
 
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64String());
 
-                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString() + i.ToString() + ".img");
+                    imgMugshotPath = Path.Combine(strMugshotsDirectoryPath, guiImage.ToString("N") + i.ToString() + ".img");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath", "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
@@ -5658,7 +5621,7 @@ namespace Chummer
                 return Convert.ToDecimal(ESS.MetatypeMaximum + ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo);
             }
         }
-
+        
         /// <summary>
         /// Character's total Essence Loss penalty for RES or DEP.
         /// </summary>
@@ -5670,7 +5633,7 @@ namespace Chummer
                 return decimal.ToInt32(decimal.Ceiling(EssenceAtSpecialStart + Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssenceMax), GlobalOptions.InvariantCultureInfo) - Essence));
             }
         }
-
+        
         /// <summary>
         /// Character's total Essence Loss penalty for MAG.
         /// </summary>
@@ -5683,8 +5646,8 @@ namespace Chummer
             }
         }
 
-#region Initiative
-#region Physical
+        #region Initiative
+        #region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -6466,7 +6429,7 @@ namespace Chummer
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
-        public IList<ComplexForm> ComplexForms
+        public ObservableCollection<ComplexForm> ComplexForms
         {
             get
             {
@@ -6477,7 +6440,7 @@ namespace Chummer
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
-        public IList<AIProgram> AIPrograms
+        public ObservableCollection<AIProgram> AIPrograms
         {
             get
             {
@@ -6620,7 +6583,7 @@ namespace Chummer
         /// <summary>
         /// Critter Powers.
         /// </summary>
-        public IList<CritterPower> CritterPowers
+        public ObservableCollection<CritterPower> CritterPowers
         {
             get
             {
@@ -6653,7 +6616,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public IList<Quality> Qualities
+        public ObservableCollection<Quality> Qualities
         {
             get
             {
@@ -8811,7 +8774,7 @@ namespace Chummer
                 for (int i = 0; i < intRanks; ++i)
                 {
                     Quality objQuality = new Quality(this);
-                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
+                    if (i == 0 && Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
                     objQuality.Create(objXmlNewQuality, this, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
@@ -8967,9 +8930,9 @@ namespace Chummer
         public bool RefreshRedliner()
         {
             int intOldRedlinerBonus = RedlinerBonus;
-            string strSeekerImprovPrefix = "SEEKER";
-            var lstSeekerAttributes = new List<string>();
-            var lstSeekerImprovements = new List<Improvement>();
+            const string strSeekerImprovPrefix = "SEEKER";
+            List<string> lstSeekerAttributes = new List<string>();
+            List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
             foreach (Improvement objLoopImprovement in Improvements)
             {
@@ -8993,15 +8956,15 @@ namespace Chummer
             }
             
             //Calculate bonus from cyberlimbs
-            int count = 0;
+            int intCount = 0;
             foreach (Cyberware objCyberware in Cyberware)
             {
-                count += objCyberware.GetCyberlimbCount("skull", "torso");
+                intCount += objCyberware.GetCyberlimbCount("skull", "torso");
             }
-            count = Math.Min(count / 2, 2);
+            intCount = Math.Min(intCount / 2, 2);
             if (lstSeekerImprovements.Any(x => x.ImprovedName == "STR" || x.ImprovedName == "AGI"))
             {
-                RedlinerBonus = count;
+                RedlinerBonus = intCount;
             }
             else
             {
@@ -9014,7 +8977,7 @@ namespace Chummer
                     lstSeekerImprovements.FirstOrDefault(
                         x =>
                             x.SourceName == strSeekerImprovPrefix + '_' + lstSeekerAttributes[i] &&
-                            x.Value == (lstSeekerAttributes[i] == "BOX" ? count * -3 : count));
+                            x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
                 if (objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
@@ -9027,9 +8990,9 @@ namespace Chummer
             //the local
 
             // Remove which qualites have been removed or which values have changed
-            foreach (Improvement improvement in lstSeekerImprovements)
+            foreach (Improvement objImprovement in lstSeekerImprovements)
             {
-                ImprovementManager.RemoveImprovements(this, improvement.ImproveSource, improvement.SourceName);
+                ImprovementManager.RemoveImprovements(this, objImprovement.ImproveSource, objImprovement.SourceName);
             }
 
             // Add new improvements or old improvements with new values
@@ -9039,13 +9002,13 @@ namespace Chummer
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.PhysicalCM,
-                        Guid.NewGuid().ToString(), count * -3);
+                        Guid.NewGuid().ToString("D"), intCount * -3);
                 }
                 else
                 {
                     ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
                         strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.Attribute,
-                        Guid.NewGuid().ToString(), count, 1, 0, 0, count);
+                        Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
                 }
             }
             ImprovementManager.Commit(this);

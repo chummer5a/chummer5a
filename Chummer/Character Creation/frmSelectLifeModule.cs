@@ -159,8 +159,7 @@ namespace Chummer
                 XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectAble = (node != null &&
-                                 (node.InnerText == "true" || node.InnerText == "yes" || node.OuterXml.EndsWith("/>")));
+                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>")));
             }
 
             _selectedId = (string)e.Node.Tag;
@@ -171,11 +170,10 @@ namespace Chummer
                 cmdOK.Enabled = blnSelectAble;
                 cmdOKAdd.Enabled = blnSelectAble;
 
-                lblBP.Text = selectedNodeInfo["karma"] != null ? selectedNodeInfo["karma"].InnerText : string.Empty;
-                lblSource.Text = (selectedNodeInfo["source"] != null ? selectedNodeInfo["source"].InnerText : string.Empty) +
-                                    " " + (selectedNodeInfo["page"] != null ? selectedNodeInfo["page"].InnerText : string.Empty);
+                lblBP.Text = selectedNodeInfo["karma"]?.InnerText ?? string.Empty;
+                lblSource.Text = selectedNodeInfo["source"]?.InnerText ?? string.Empty + ' ' + selectedNodeInfo["page"]?.InnerText ?? string.Empty;
 
-                lblStage.Text = selectedNodeInfo["stage"] != null ? selectedNodeInfo["stage"].InnerText : string.Empty;
+                lblStage.Text = selectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
@@ -276,7 +274,7 @@ namespace Chummer
 
         private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            String strSelected = (String) cboStage.SelectedValue;
+            string strSelected = (string) cboStage.SelectedValue;
             if (strSelected == "0")
             {
                 _strWorkStage = null;
@@ -284,7 +282,7 @@ namespace Chummer
             }
             else
             {
-                String strNodeSelect = "chummer/stages/stage[@order = \"" + strSelected + "\"]";
+                string strNodeSelect = "chummer/stages/stage[@order = \"" + strSelected + "\"]";
                 _strWorkStage = _xmlDocument.SelectSingleNode(strNodeSelect).InnerText;
                 BuildTree(GetSelectString());
             }
@@ -292,7 +290,7 @@ namespace Chummer
         }
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(txtSearch.Text))
+            if (string.IsNullOrWhiteSpace(txtSearch.Text))
             {
                 searchRegex = null;
             }
@@ -311,37 +309,23 @@ namespace Chummer
             BuildTree(GetSelectString());
         }
 
-        private String GetSelectString()
+        private string GetSelectString()
         {
-            String working = "[";
-            bool before = false;
+            string working = "[(" + _objCharacter.Options.BookXPath();
 
             ///chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             /// /chummer/modules/module//name[contains(., "can")]/..[id]
 
-            //if (!String.IsNullOrWhiteSpace(_strSearch))
+            //if (!string.IsNullOrWhiteSpace(_strSearch))
             //{
-            //    working = String.Format("//name[contains(., \"{0}\")]..[", _strSearch);
+            //    working = string.Format("//name[contains(., \"{0}\")]..[", _strSearch);
             //    before = true;
             //}
-            if (!String.IsNullOrWhiteSpace(_strWorkStage))
+            if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                working += String.Format("{0}stage = \"{1}\"", before ? " and " : string.Empty, _strWorkStage);
-                before = true;
+                working += ") and stage = \"" + _strWorkStage + '\"';
             }
-            if (before)
-            {
-                working += " and (";
-            }
-            working += _objCharacter.Options.BookXPath();
-            if (before)
-            {
-                working += ")]";
-            }
-            else
-            {
-                working += "]";
-            }
+            working += ")]";
 
 
             return working;

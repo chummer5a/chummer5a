@@ -522,7 +522,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
+                objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
                     objCharacter.Weapons.Add(objLoopWeapon);
@@ -892,7 +892,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
+                objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
                     objCharacter.Weapons.Add(objLoopWeapon);
@@ -1152,7 +1152,7 @@ namespace Chummer
                     if (i == 9)
                         objItem.Text = "1&0 " + strMRUList[i];
                     else
-                        objItem.Text = "&" + (i + 1).ToString() + " " + strMRUList[i];
+                        objItem.Text = '&' + (i + 1).ToString() + ' ' + strMRUList[i];
                     mnuFileMRUSeparator.Visible = true;
                 }
                 else

@@ -2157,7 +2157,7 @@
         <name select="Generator">Special Equipment</name>
         <name>Rigger Adaptation</name>
         <name>Rigger Cocoon</name>
-        <name select="Aircraft Repair">Workshop</name>
+        <name select="Aeronautics Mechanic">Workshop</name>
         <name>Standard Drone Rack (Medium)</name>
         <name>Standard Drone Rack (Medium)</name>
         <name>Standard Drone Rack (Medium)</name>
@@ -7935,7 +7935,7 @@
       <avail>0</avail>
       <body>16</body>
       <category>Cars</category>
-      <cost>24000</cost>
+      <cost>260000</cost>
       <handling>5/3</handling>
       <pilot>3</pilot>
       <sensor>4</sensor>
@@ -9198,7 +9198,7 @@
       </weapons>
     </vehicle>
     <!-- End Region -->
-    <!--Region The Seattle Gauntlet -->
+    <!--Region The Seattle Gambit -->
     <vehicle>
       <id>bf1c4807-6f21-425c-aa1e-521ebf34ffe8</id>
       <name>Lone Star SecureSector Mk2</name>
@@ -9221,8 +9221,10 @@
           <maxrating>6</maxrating>
         </gear>
         <gear rating="2">Clearsight Autosoft</gear>
-        <gear select="Floodlight">Custom Item</gear>
       </gears>
+      <mods>
+        <name>Searchlight</name>
+      </mods>
     </vehicle>
     <!-- End Region -->
   </vehicles>
@@ -11472,6 +11474,78 @@
       <cost>7000</cost>
       <rating>0</rating>
       <slots>0</slots>
+    </mod>
+    <mod>
+      <id>f1c813e5-98d7-4d9f-b8ad-7a38cb262e52</id>
+      <name>Extended Roof</name>
+      <page>70</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>8eb24baa-aca2-48da-8787-1e7bf60f9135</id>
+      <name>Bathroom</name>
+      <page>74</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>fadeb383-eb11-4aa4-aac9-729e83b8a50a</id>
+      <name>Holding Cell</name>
+      <page>74</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>221b7867-e12c-48b1-a7d3-1862a5d3ef29</id>
+      <name>Sleeping Quarters</name>
+      <page>74</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>8733f3a5-7551-4a9e-b97e-2c70cfbbd66c</id>
+      <name>Advanced Lightbar</name>
+      <page>74</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>0a9f13ff-61da-455d-95f3-6bcca4c722ec</id>
+      <name>Open Box Storage</name>
+      <page>74</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
     </mod>
     <!-- End Region -->
     <!-- Region Drone Attribute Modifications -->

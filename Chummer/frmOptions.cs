@@ -396,7 +396,7 @@ namespace Chummer
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (var openFileDialog = new OpenFileDialog())
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Executable Files (*.exe)|*.exe|All Files (*.*)|*.*";
                 if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
@@ -412,7 +412,7 @@ namespace Chummer
         private void cmdPDFLocation_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (var openFileDialog = new OpenFileDialog())
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*";
                 if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
@@ -465,7 +465,7 @@ namespace Chummer
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                var newSource = new SourcebookInfo
+                SourcebookInfo newSource = new SourcebookInfo
                 {
                     Code = tag,
                     Offset = offset
@@ -736,7 +736,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")",
+                        Text = objCustomDataDirectory.Name + " (" + objCustomDataDirectory.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')',
                         Tag = objCustomDataDirectory.Name,
                         Checked = objCustomDataDirectory.Enabled
                     };
@@ -749,7 +749,7 @@ namespace Chummer
                 {
                     TreeNode objLoopNode = treCustomDataDirectories.Nodes[i];
                     CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfo[i];
-                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, "<" + Application.ProductName + ">") + ")";
+                    objLoopNode.Text = objLoopInfo.Name + " (" + objLoopInfo.Path.Replace(Application.StartupPath, '<' + Application.ProductName + '>') + ')';
                     objLoopNode.Tag = objLoopInfo.Name;
                     objLoopNode.Checked = objLoopInfo.Enabled;
                 }
@@ -1126,7 +1126,7 @@ namespace Chummer
                 string strExclude = objXmlNode["exclude"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strExclude))
                     strExclude = '<' + strExclude;
-                lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, LanguageManager.GetString(objXmlNode["name"].InnerText, _strSelectedLanguage)));
+                lstLimbCount.Add(new ListItem(objXmlNode["limbcount"].InnerText + strExclude, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText));
             }
 
             string strOldSelected = cboLimbCount.SelectedValue?.ToString();
@@ -1158,7 +1158,7 @@ namespace Chummer
             foreach (XmlNode objXmlNode in objXmlNodeList)
             {
                 string strValue = objXmlNode["value"].InnerText;
-                lstPdfParameters.Add(new ListItem(objXmlNode["value"].InnerText, objXmlNode["name"].InnerText));
+                lstPdfParameters.Add(new ListItem(strValue, objXmlNode["translate"]?.InnerText ?? objXmlNode["name"].InnerText));
                 if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == strValue)
                 {
                     intIndex = lstPdfParameters.Count - 1;
@@ -1324,7 +1324,7 @@ namespace Chummer
 
         private static IList<ListItem> GetXslFilesFromOmaeDirectory(string strLanguage)
         {
-            var items = new List<ListItem>();
+            List<ListItem> lstItems = new List<ListItem>();
 
             // Populate the XSLT list with all of the XSL files found in the sheets\omae directory.
             string omaeDirectoryPath = Path.Combine(Application.StartupPath, "sheets", "omae");
@@ -1334,10 +1334,10 @@ namespace Chummer
             // (hidden because they are partial templates that cannot be used on their own).
             foreach (string fileName in ReadXslFileNamesWithoutExtensionFromDirectory(omaeDirectoryPath))
             {
-                items.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
+                lstItems.Add(new ListItem(Path.Combine("omae", fileName), menuMainOmae + ": " + fileName));
             }
 
-            return items;
+            return lstItems;
         }
 
         private void PopulateXsltList()
@@ -1428,12 +1428,12 @@ namespace Chummer
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                var newSource = new SourcebookInfo
+                SourcebookInfo objNewSource = new SourcebookInfo
                 {
                     Code = tag,
                     Path = path
                 };
-                GlobalOptions.SourcebookInfo.Add(newSource);
+                GlobalOptions.SourcebookInfo.Add(objNewSource);
             }
         }
 
@@ -1492,6 +1492,20 @@ namespace Chummer
             }
         }
 
+        private void chkLifeModules_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkLifeModule.Checked && !blnLoading)
+            {
+                DialogResult result = MessageBox.Show(LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel);
+
+                if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
+                else
+                {
+                    OptionsChanged(sender, e);
+                }
+            }
+        }
+
         private void chkOmaeEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (chkOmaeEnabled.Checked && !blnLoading)
@@ -1499,6 +1513,10 @@ namespace Chummer
                 DialogResult result = MessageBox.Show(LanguageManager.GetString("Tip_Omae_Warning", _strSelectedLanguage), "Warning!", MessageBoxButtons.OKCancel);
 
                 if (result != DialogResult.OK) chkOmaeEnabled.Checked = false;
+                else
+                {
+                    OptionsChanged(sender, e);
+                }
             }
         }
 
@@ -1517,21 +1535,21 @@ namespace Chummer
         private void cmdCharacterRoster_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (var selectFolderDialog = new FolderBrowserDialog())
+            using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog())
             {
-                if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
-                    txtCharacterRosterPath.Text = selectFolderDialog.SelectedPath;
+                if (dlgSelectFolder.ShowDialog(this) == DialogResult.OK)
+                    txtCharacterRosterPath.Text = dlgSelectFolder.SelectedPath;
             }
         }
 
         private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (var selectFolderDialog = new FolderBrowserDialog())
+            using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog())
             {
-                selectFolderDialog.SelectedPath = Application.StartupPath;
+                dlgSelectFolder.SelectedPath = Application.StartupPath;
 
-                if (selectFolderDialog.ShowDialog(this) == DialogResult.OK)
+                if (dlgSelectFolder.ShowDialog(this) == DialogResult.OK)
                 {
                     frmSelectText frmSelectCustomDirectoryName = new frmSelectText
                     {
@@ -1542,7 +1560,7 @@ namespace Chummer
                         CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo
                         {
                             Name = frmSelectCustomDirectoryName.SelectedValue,
-                            Path = selectFolderDialog.SelectedPath
+                            Path = dlgSelectFolder.SelectedPath
                         };
 
                         if (GlobalOptions.CustomDataDirectoryInfo.Any(x => x.Name == objNewCustomDataDirectory.Name))

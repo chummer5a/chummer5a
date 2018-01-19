@@ -31,7 +31,7 @@ namespace Chummer
         /// <param name="lstHaystack">Haystack to search.</param>
         public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasChildren<T>, IHasInternalId
         {
-            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid == Guid.Empty.ToString())
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
                 return default(T);
             }
@@ -46,7 +46,7 @@ namespace Chummer
         /// <param name="lstHaystack">Haystack to search.</param>
         public static T FindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasInternalId
         {
-            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid == Guid.Empty.ToString())
+            if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
             {
                 return default(T);
             }

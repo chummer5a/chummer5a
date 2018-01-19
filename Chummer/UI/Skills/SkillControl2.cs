@@ -54,7 +54,7 @@ namespace Chummer.UI.Skills
             {
                 lblName.Font = new Font(lblName.Font, FontStyle.Italic);
             }
-            if (!String.IsNullOrWhiteSpace(_skill.Notes))
+            if (!string.IsNullOrWhiteSpace(_skill.Notes))
             {
                 lblName.ForeColor = Color.SaddleBrown;
             }
@@ -145,7 +145,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ")" : skill.Name); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -357,7 +357,7 @@ namespace Chummer.UI.Skills
         
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.DisplayPage(GlobalOptions.Language));
+            CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
         }
 
         private void cboSpec_TextChanged(object sender, EventArgs e)

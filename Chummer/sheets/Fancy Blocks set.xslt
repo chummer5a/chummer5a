@@ -2052,7 +2052,7 @@
       <br />
     </xsl:if>
 
-    <xsl:if test="hasothermugshots = 'yes'">
+    <xsl:if test="hasothermugshots = 'True'">
       <table class="stats description">
         <tr><td>
           <div class="bigheader">[<xsl:value-of select="$lang.OtherMugshots"/>]</div>

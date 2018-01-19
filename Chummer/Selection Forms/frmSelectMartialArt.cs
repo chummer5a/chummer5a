@@ -110,12 +110,10 @@ namespace Chummer
             XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + lstMartialArts.SelectedValue + "\"]");
 
             string strBook = CommonFunctions.LanguageBookShort(objXmlArt["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlArt["page"].InnerText;
-            if (objXmlArt["altpage"] != null)
-                strPage = objXmlArt["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlArt["altpage"]?.InnerText ?? objXmlArt["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

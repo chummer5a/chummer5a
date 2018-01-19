@@ -389,7 +389,7 @@
     <bioware>
       <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
       <name>Reflex Recorder (Skill)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.1</ess>
@@ -399,7 +399,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
         </selectskill>
       </bonus>
       <source>SR5</source>
@@ -408,7 +408,7 @@
     <bioware>
       <id>3fd172b8-0ff5-46ee-a468-91edd4cdc448</id>
       <name>Skin Pocket</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -567,7 +567,7 @@
     <bioware>
       <id>abdbc210-c1fa-45f1-9840-4f78d9eb8867</id>
       <name>Chemical Gland (Internal Release or Gradual Release)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -591,7 +591,7 @@
     <bioware>
       <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
       <name>Chemical Gland (Exhalation Sprayer)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -611,7 +611,7 @@
     <bioware>
       <id>47608117-a4af-4dfe-81bb-0dc8c6c5122d</id>
       <name>Chemical Gland (Spitter)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -636,7 +636,7 @@
     <bioware>
       <id>915b1458-e33c-4010-a093-47d40cfa11de</id>
       <name>Chemical Gland (Weapon Reservoir)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -656,7 +656,7 @@
     <bioware>
       <id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
       <name>Chemical Gland Expanded Reservoir</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Chemical Gland Modifications</category>
       <ess>0.1</ess>
       <addtoparentess />
@@ -928,7 +928,7 @@
     <bioware>
       <id>8b57132f-507f-4624-a892-2ec4b14b7be8</id>
       <name>Joint Replacement</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -940,7 +940,7 @@
     <bioware>
       <id>02e4af5e-22a6-4ebc-a3dd-05d71448be64</id>
       <name>Spidersilk Gland</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
@@ -952,7 +952,7 @@
     <bioware>
       <id>c5069f19-dae1-45f3-a1d4-b57d02534efa</id>
       <name>Spinal Realignment</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -975,7 +975,7 @@
     <bioware>
       <id>bac3eaa6-c1d3-457e-a319-1ce141baef37</id>
       <name>Tail</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.25</ess>
       <capacity>0</capacity>
@@ -987,7 +987,7 @@
     <bioware>
       <id>ada5468c-e350-4323-be31-29d0fe545c9e</id>
       <name>Tail, Prehensile</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Basic</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
@@ -1143,7 +1143,7 @@
     <bioware>
       <id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
       <name>Minor Biosculpting Modification</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1158,7 +1158,7 @@
     <bioware>
       <id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
       <name>Moderate Biosculpting Modification</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1173,7 +1173,7 @@
     <bioware>
       <id>a4ca355b-6188-42c1-88c7-93947f233314</id>
       <name>Severe Biosculpting Modification</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0.25</ess>
       <capacity>0</capacity>
@@ -1234,7 +1234,7 @@
     <bioware>
       <id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
       <name>Ethnicity/Sex Change</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1249,7 +1249,7 @@
     <bioware>
       <id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
       <name>Metatype Modification</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Biosculpting</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1267,7 +1267,7 @@
     <bioware>
       <id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
       <name>Claws</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
@@ -1283,7 +1283,7 @@
     <bioware>
       <id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
       <name>Claws (Retractable)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.15*Rating</ess>
       <capacity>0</capacity>
@@ -1317,7 +1317,7 @@
     <bioware>
       <id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
       <name>Tusk(s), Small</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1332,7 +1332,7 @@
     <bioware>
       <id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
       <name>Tusk(s), Medium</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1*Rating</ess>
       <capacity>0</capacity>
@@ -1348,7 +1348,7 @@
     <bioware>
       <id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
       <name>Tusk(s), Large</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2*Rating</ess>
       <capacity>0</capacity>
@@ -1483,7 +1483,7 @@
     <bioware>
       <id>ee1d31e8-f5c9-4326-8139-3e591003f736</id>
       <name>Tusk(s), Small</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1495,7 +1495,7 @@
     <bioware>
       <id>34310f59-55d5-4e95-8966-a97b20a388ce</id>
       <name>Tusk(s), Medium</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1508,7 +1508,7 @@
     <bioware>
       <id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
       <name>Tusk(s), Large</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -1521,7 +1521,7 @@
     <bioware>
       <id>1c919d10-72ae-4cd9-bad2-6b4a23ae48b0</id>
       <name>Replacement Tusk(s), Small</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1538,7 +1538,7 @@
     <bioware>
       <id>f97ba92a-bba5-4b52-ab4c-28102c67acd7</id>
       <name>Replacement Tusk(s), Medium</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1556,7 +1556,7 @@
     <bioware>
       <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
       <name>Electrical Discharge</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
@@ -1569,7 +1569,7 @@
     <bioware>
       <id>82780b5b-41dd-49ae-964f-c14ca91a0f14</id>
       <name>Fangs</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1582,7 +1582,7 @@
     <bioware>
       <id>3f0fda69-a098-4c9a-855e-5dd2d46ae3da</id>
       <name>Fangs (Retractable)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.15</ess>
       <capacity>0</capacity>
@@ -1595,7 +1595,7 @@
     <bioware>
       <id>cbe09df9-556d-44d4-9d68-073415850deb</id>
       <name>Horns</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1637,7 +1637,7 @@
     <bioware>
       <id>b9085cbe-8e67-4205-8e49-603e31f9d6f7</id>
       <name>Stinger, Tiny</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.05</ess>
       <capacity>0</capacity>
@@ -1649,7 +1649,7 @@
     <bioware>
       <id>77bcbea4-fc69-42e6-b4e3-0debe6c08596</id>
       <name>Stinger, Medium</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1662,7 +1662,7 @@
     <bioware>
       <id>c466a6cf-bf31-4300-b53e-0f83af141342</id>
       <name>Stinger, Large</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -1677,7 +1677,7 @@
     <bioware>
       <id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
       <name>Bio-Tattoos</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>FixedValues(0,0.01,0.02)</ess>
       <capacity>0</capacity>
@@ -1762,7 +1762,7 @@
     <bioware>
       <id>89137e94-5bf3-4c6d-93d9-571c96fc5b2f</id>
       <name>Hair Growth</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1777,7 +1777,7 @@
     <bioware>
       <id>a3e4a944-6463-4cd9-b3bc-6b940c6427f3</id>
       <name>Hair Growth (Full-Body)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1789,7 +1789,7 @@
     <bioware>
       <id>9f86544d-da24-4312-b4d5-6ab47956b7fa</id>
       <name>Perfect Eyes</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1801,7 +1801,7 @@
     <bioware>
       <id>e53383b8-ed64-4840-a2bf-baaa8885c61b</id>
       <name>Sensitive Skin</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1817,7 +1817,7 @@
     <bioware>
       <id>98e8f46f-e742-4456-95b7-f6f3eaa7d795</id>
       <name>Silky Skin</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1829,7 +1829,7 @@
     <bioware>
       <id>487ba675-b689-48e0-bd45-e6729d671a51</id>
       <name>Skin Pigmentation</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -1844,7 +1844,7 @@
     <bioware>
       <id>9cd588c4-c93f-4fef-b216-9da2707066f7</id>
       <name>Skin Pigmentation (Permanent)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cosmetic Bioware</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -1895,7 +1895,7 @@
     <bioware>
       <id>aece83ad-cec8-4117-adbd-3ec5e2049372</id>
       <name>Knowledge Infusion</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.1</ess>
@@ -1905,7 +1905,7 @@
       <bonus>
         <selectskill maximumrating="0" knowledgeskills="True">
           <val>1</val>
-          <applytorating>yes</applytorating>
+          <applytorating>True</applytorating>
         </selectskill>
       </bonus>
       <source>CF</source>
@@ -1914,7 +1914,7 @@
     <bioware>
       <id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
       <name>Limb replacement (Finger/Toe)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.02</ess>
@@ -1928,7 +1928,7 @@
     <bioware>
       <id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
       <name>Limb replacement (Hand/foot)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.02</ess>
@@ -1942,7 +1942,7 @@
     <bioware>
       <id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
       <name>Limb replacement (Half arm/leg)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.02</ess>
@@ -1956,7 +1956,7 @@
     <bioware>
       <id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
       <name>Limb replacement (Full arm/leg)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.02</ess>
@@ -1987,7 +1987,7 @@
     <bioware>
       <id>0dc21074-6b2c-446a-aadc-e8304c9c124f</id>
       <name>Reproductive Replacement, Male</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.1</ess>
@@ -2000,7 +2000,7 @@
     <bioware>
       <id>31b609ee-6856-44bb-b1f5-19066c0a74c0</id>
       <name>Reproductive Replacement, Female</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.3</ess>
@@ -2077,7 +2077,7 @@
     <bioware>
       <id>5f3da0ce-261f-4d1a-87a7-1e0614d65ef0</id>
       <name>Reprint</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2896,7 +2896,7 @@
     <bioware>
       <id>da62e249-cb11-4907-98d3-edc50e7efc2a</id>
       <name>Cosmetic Alteration</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2924,7 +2924,7 @@
     <bioware>
       <id>d23aac11-8e3c-4739-9da5-b8322f81d64c</id>
       <name>Metaposeur</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2958,7 +2958,7 @@
     <bioware>
       <id>9a3cf302-b2bb-402f-93e2-7872eca63d31</id>
       <name>Therapeutic Genetics</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -2974,7 +2974,7 @@
     <bioware>
       <id>669926ea-55ec-4365-adcf-f8028a464124</id>
       <name>Leónization</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>1</ess>
       <capacity>0</capacity>
@@ -2987,7 +2987,7 @@
     <bioware>
       <id>78797e7f-020d-4e4a-a08b-207890f73fc5</id>
       <name>Lifespan Extension</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
@@ -3000,7 +3000,7 @@
     <bioware>
       <id>11e5627e-aeff-4910-bf06-b8817b46f786</id>
       <name>Physical Vigor</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
@@ -3013,7 +3013,7 @@
     <bioware>
       <id>aa42b990-04db-4cae-81e3-a93bce93616f</id>
       <name>Augmented Healing</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3026,7 +3026,7 @@
     <bioware>
       <id>3af9942f-6e6c-4c0d-a962-a6cf30504a00</id>
       <name>Cellular Repair</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3039,7 +3039,7 @@
     <bioware>
       <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
       <name>Revitilization</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Genetic Restoration</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3054,7 +3054,7 @@
     <bioware>
       <id>738c15f8-49ea-417e-9728-b4c78bc72c18</id>
       <name>Cleaner Leech</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0</ess>
       <capacity>0</capacity>
@@ -3106,7 +3106,7 @@
     <bioware>
       <id>c2700f31-a361-4ea2-974e-dd5bde62913a</id>
       <name>Mild Allergy Resistance</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3118,7 +3118,7 @@
     <bioware>
       <id>982290e5-2c21-41c0-9847-e47eb455c2f7</id>
       <name>Moderate Allergy Resistance</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3130,7 +3130,7 @@
     <bioware>
       <id>3d2ee994-be0c-4e07-a2ce-b616a37d8ee8</id>
       <name>Severe Allergy Resistance</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Symbionts</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3210,7 +3210,7 @@
     <bioware>
       <id>5b2c4c5d-a037-4970-8fcb-b6d47b9e819a</id>
       <name>Bone Spike (No Bone Density)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3228,7 +3228,7 @@
     <bioware>
       <id>53d0d6b1-f5cd-4816-b772-7f50af81356a</id>
       <name>Bone Spike (Bone Density 2-3)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3246,7 +3246,7 @@
     <bioware>
       <id>f994b8ac-0314-43ad-969a-f07d2d3fc0d8</id>
       <name>Bone Spike (Bone Density 4)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Bio-Weapons</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
@@ -3264,7 +3264,7 @@
     <bioware>
       <id>0f5b811f-a761-410a-b675-fca5c5821b31</id>
       <name>Spur Pocket</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.1</ess>
@@ -3509,7 +3509,7 @@
     <bioware>
       <id>20658b19-28c0-4e38-8523-768636510c7b</id>
       <name>Reflex Recorder (2050)</name>
-      <limit>no</limit>
+      <limit>False</limit>
       <category>Cultured</category>
       <nosecondhand />
       <ess>0.1</ess>
@@ -3519,7 +3519,7 @@
       <bonus>
         <selectskill limittoattribute="BOD,AGI,REA,STR">
           <val>1</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
         </selectskill>
       </bonus>
       <source>2050</source>

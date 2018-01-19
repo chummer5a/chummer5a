@@ -34,8 +34,10 @@ namespace Chummer
     {
         public static void BreakIfDebug()
         {
+#if DEBUG
             if (Debugger.IsAttached)
                 Debugger.Break();
+#endif
         }
 
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
@@ -106,7 +108,7 @@ namespace Chummer
             string arguments = string.Empty;
             foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
-                arguments += "\"" + objOpenCharacterForm.CharacterObject.FileName + "\" ";
+                arguments += '\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ";
             }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters

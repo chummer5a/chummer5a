@@ -530,7 +530,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(chkCheckbox.Text))
                 {
                     chkCheckbox.Visible = true;
-                    chkCheckbox.Text += " (" + chkCheckbox.Tag + ")";
+                    chkCheckbox.Text += " (" + chkCheckbox.Tag + ')';
                 }
             }
 
@@ -609,7 +609,7 @@ namespace Chummer
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = "(" + LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language) + ")";
+                strBase = '(' + LanguageManager.GetString("String_SpellDamageValue", GlobalOptions.Language) + ')';
             }
             else
             {
@@ -619,7 +619,7 @@ namespace Chummer
 
             string strDV = intDV.ToString();
             if (intDV > 0)
-                strDV = "+" + strDV;
+                strDV = '+' + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
             lblDV.Text = (strBase + strDV).Replace('/', '÷');

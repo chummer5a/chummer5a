@@ -128,8 +128,8 @@ namespace Chummer
             XmlNode objXmlPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
             List<ListItem> lstMethods = new List<ListItem>
             {
-                new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]")?["translate"]?.InnerText ?? "Possession"),
-                new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]")?["translate"]?.InnerText ?? "Inhabitation")
+                new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
+                new ListItem("Inhabitation", objXmlPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
             };
             
             lstMethods.Sort(CompareListItems.CompareNames);
@@ -589,7 +589,7 @@ namespace Chummer
                         RC = "0",
                         Concealability = 0,
                         Avail = "0",
-                        Cost = 0,
+                        Cost = "0",
                         UseSkill = objXmlNaturalWeapon["useskill"].InnerText,
                         Source = objXmlNaturalWeapon["source"].InnerText,
                         Page = objXmlNaturalWeapon["page"].InnerText

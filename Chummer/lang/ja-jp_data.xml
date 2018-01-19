@@ -13124,6 +13124,32 @@
       </metatype>
     </metatypes>
   </chummer>
+  <chummer file="options.xml">
+		<limbcounts>
+			<limb>
+				<name>4 (2 arms, 2 legs)</name>
+				<translate>4 (腕2本, 脚2本)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, skull)</name>
+				<translate>5 (腕2本, 脚2本, 頭蓋)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>5 (2 arms, 2 legs, torso)</name>
+				<translate>5 (腕2本, 脚2本, 胴体)</translate>
+			</limb>
+    </limbcounts>
+    <limbcounts>
+			<limb>
+				<name>6 (2 arms, 2 legs, torso, skull)</name>
+				<translate>6 (腕2本, 脚2本, 胴体, 頭蓋)</translate>
+			</limb>
+    </limbcounts>
+	</chummer>
   <chummer file="powers.xml">
     <powers>
       <power>
