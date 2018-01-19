@@ -48,6 +48,7 @@ Data Changes:
 - Removed the ".RF" identifier from the name of Run Faster's College Education and Inspired qualities. Removed the "(SASS)" identifier from the name of Sail Away Sweet Sister's Great Mother mentor spirit. Data that targets these items will need to rely on their id nodes.
 - Fixed an issue where custom improvements for bonus street cred and street cred multiplier had incorrect names. Fixes #2338.
 - Fixed various typos in life module descriptions and skills.
+- Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
 
 New Strings:
 
