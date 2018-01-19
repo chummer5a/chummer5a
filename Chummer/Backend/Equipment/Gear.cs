@@ -1120,11 +1120,11 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _intMinRating;
+                return Math.Min(MaxRating, _intMinRating);
             }
             set
             {
-                _intMinRating = value;
+                _intMinRating = Math.Min(MaxRating, value);
             }
         }
 
