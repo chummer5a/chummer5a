@@ -1201,7 +1201,7 @@ namespace Chummer
             if (_blnPopulatingGrades)
                 return;
             _blnPopulatingGrades = true;
-            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade)
+            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || cboGrade.Items.Count == 0)
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
@@ -1215,7 +1215,7 @@ namespace Chummer
                         continue;
                     if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                         continue;
-                    if (_objCharacter.AdapsinEnabled)
+                    if (_objCharacter.AdapsinEnabled && _objMode == Mode.Cyberware)
                     {
                         if (!objWareGrade.Adapsin && _objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
                         {
