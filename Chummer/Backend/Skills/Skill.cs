@@ -174,7 +174,7 @@ namespace Chummer.Backend.Skills
 
                 if (node == null) return null;
 
-                if (node["exotic"]?.InnerText == "Yes")
+                if (node["exotic"]?.InnerText == bool.TrueString)
                 {
                     ExoticSkill exotic = new ExoticSkill(objCharacter, node);
                     exotic.Load(xmlSkillNode);
@@ -307,25 +307,25 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Load a skill from a data file describing said skill
         /// </summary>
-        /// <param name="n">The XML node describing the skill</param>
+        /// <param name="xmlNode">The XML node describing the skill</param>
         /// <param name="character">The character the skill belongs to</param>
         /// <returns></returns>
-        public static Skill FromData(XmlNode n, Character character)
+        public static Skill FromData(XmlNode xmlNode, Character character)
         {
-            if (n == null)
+            if (xmlNode == null)
                 return null;
-            Skill s;
-            if (n["exotic"]?.InnerText == "Yes")
+            Skill objSkill;
+            if (xmlNode["exotic"]?.InnerText == bool.TrueString)
             {
                 //load exotic skill
-                ExoticSkill s2 = new ExoticSkill(character, n);
-                s = s2;
+                ExoticSkill objExoticSkill = new ExoticSkill(character, xmlNode);
+                objSkill = objExoticSkill;
             }
             else
             {
                 XmlDocument document = XmlManager.Load("skills.xml");
                 XmlNode knoNode = null;
-                string category = n["category"]?.InnerText;
+                string category = xmlNode["category"]?.InnerText;
                 if (string.IsNullOrEmpty(category))
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool knoSkill))
@@ -342,18 +342,18 @@ namespace Chummer.Backend.Skills
                     //TODO INIT SKILL
                     Utils.BreakIfDebug();
 
-                    s = new KnowledgeSkill(character);
+                    objSkill = new KnowledgeSkill(character);
                 }
                 else
                 {
                     //TODO INIT SKILL
 
-                    s = new Skill(character, n);
+                    objSkill = new Skill(character, xmlNode);
                 }
             }
 
 
-            return s;
+            return objSkill;
         }
 
         protected Skill(Character character)
