@@ -32,6 +32,7 @@ Application Changes:
 - Added support for processing of options.xml to the Translator tool.
 - Added support for translation of notes that come with an item, via the `altnotes` element.
 - Fixed an issue with bioware grades not populating if the character has Adapsin.
+- Fixed incorect behaviour in the Crash Handler preventing it from running properly.
 
 Data Changes:
 

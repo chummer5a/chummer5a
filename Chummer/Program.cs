@@ -79,7 +79,7 @@ namespace Chummer
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.TranslateWinForm(GlobalOptions.Language, null);
                 sw.TaskEnd("languagefreestartup");
-#if !DEBUG
+//#if !DEBUG
                 AppDomain.CurrentDomain.UnhandledException += (o, e) =>
                 {
                     if (e.ExceptionObject is Exception ex)
@@ -88,7 +88,7 @@ namespace Chummer
                     //main.Hide();
                     //main.ShowInTaskbar = false;
                 };
-#endif
+//#endif
 
                 sw.TaskEnd("Startup");
 
