@@ -36,6 +36,7 @@ Application Changes:
 - Fixed a bug where removing a metatype-removable quality in create mode would cause the affected quality to no longer apply any bonuses when added to other characters until Chummer5 was restarted.
 - Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
 - Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
+- Corrected issues related to the deleting of bonus-granted Martial Arts from sources other than the version of One Trick Pony that is RAW.
 
 Data Changes:
 

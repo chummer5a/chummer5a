@@ -3346,6 +3346,7 @@ namespace Chummer
         private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
             _blnSkipRefresh = true;
+            cmdDeleteMartialArt.Enabled = false;
             string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -3353,6 +3354,7 @@ namespace Chummer
                 // The Rating NUD is only enabled if a Martial Art is currently selected.
                 if (objMartialArt != null)
                 {
+                    cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
                     string strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                     string strPage = objMartialArt.Page(GlobalOptions.Language);
                     lblMartialArtSource.Text = strBook + ' ' + strPage;
@@ -3364,6 +3366,7 @@ namespace Chummer
                     MartialArtAdvantage objAdvantage = CharacterObject.MartialArts.FindMartialArtAdvantage(strSelectedId, out objMartialArt);
                     if (objAdvantage != null)
                     {
+                        cmdDeleteMartialArt.Enabled = true;
                         string strBook = CommonFunctions.LanguageBookShort(objMartialArt.Source, GlobalOptions.Language);
                         string strPage = objMartialArt.Page(GlobalOptions.Language);
                         lblMartialArtSource.Text = strBook + ' ' + strPage;
@@ -3375,6 +3378,7 @@ namespace Chummer
                         MartialArtManeuver objManeuver = CharacterObject.MartialArtManeuvers.FindById(strSelectedId);
                         if (objManeuver != null)
                         {
+                            cmdDeleteMartialArt.Enabled = true;
                             string strBook = CommonFunctions.LanguageBookShort(objManeuver.Source, GlobalOptions.Language);
                             string strPage = objManeuver.Page(GlobalOptions.Language);
                             lblMartialArtSource.Text = strBook + ' ' + strPage;
@@ -4714,24 +4718,16 @@ namespace Chummer
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (treMartialArts.SelectedNode != null && treMartialArts.SelectedNode.Level > 0)
+            string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
-                    return;
-
                 // Delete the selected Martial Art.
-                MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
+                MartialArt objMartialArt = CharacterObject.MartialArts.FindById(strSelectedId);
 
-                if (objMartialArt != null)
+                if (objMartialArt != null && !objMartialArt.IsQuality)
                 {
-                    if (objMartialArt.Name == "One Trick Pony")
-                    {
-                        Quality objQuality = CharacterObject.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.Name == "One Trick Pony");
-                        if (objQuality != null)
-                        {
-                            CharacterObject.Qualities.Remove(objQuality);
-                        }
-                    }
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
+                        return;
 
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                     // Remove the Improvements for any Advantages for the Martial Art that is being removed.
@@ -4751,13 +4747,16 @@ namespace Chummer
                 else
                 {
                     // Find the selected Advantage object.
-                    MartialArtAdvantage objSelectedAdvantage = CharacterObject.MartialArts.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString(), out MartialArt objSelectedMartialArt);
+                    MartialArtAdvantage objSelectedAdvantage = CharacterObject.MartialArts.FindMartialArtAdvantage(strSelectedId, out objMartialArt);
 
                     if (objSelectedAdvantage != null)
                     {
+                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
+                            return;
+
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtAdvantage, objSelectedAdvantage.InternalId);
 
-                        objSelectedMartialArt.Advantages.Remove(objSelectedAdvantage);
+                        objMartialArt.Advantages.Remove(objSelectedAdvantage);
 
                         RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
