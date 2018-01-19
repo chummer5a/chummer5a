@@ -778,6 +778,7 @@ namespace Chummer.Backend.Equipment
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsVehicleWeaponMount

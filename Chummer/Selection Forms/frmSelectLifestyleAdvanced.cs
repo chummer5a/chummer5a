@@ -32,7 +32,7 @@ namespace Chummer
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
         private readonly Character _objCharacter;
-        private LifestyleType _objType = LifestyleType.Advanced;
+        private LifestyleType _eType = LifestyleType.Advanced;
 
         private readonly XmlDocument _objXmlDocument = null;
 
@@ -75,7 +75,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strLifestyleName) &&
                     strLifestyleName != "ID ERROR. Re-add life style to fix" &&
-                    (_objType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
+                    (_eType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove") &&
                     !strLifestyleName.Contains("Hospitalized") &&
                     _objCharacter.Options.Books.Contains(objXmlLifestyle["source"]?.InnerText))
                 {
@@ -211,7 +211,7 @@ namespace Chummer
         {
             if (!_blnSkipRefresh)
             {
-                string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
+                string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString();
                 _objLifestyle.BaseLifestyle = strBaseLifestyle;
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
@@ -396,7 +396,7 @@ namespace Chummer
                 objQuality.Free = frmSelectLifestyleQuality.FreeCost;
                 frmSelectLifestyleQuality.Close();
                 //objNode.ContextMenuStrip = cmsQuality;
-                if (objQuality.InternalId == Guid.Empty.ToString("D"))
+                if (objQuality.InternalId.IsEmptyGuid())
                     continue;
 
                 // Add the Quality to the appropriate parent node.
@@ -486,11 +486,11 @@ namespace Chummer
         {
             get
             {
-                return _objType;
+                return _eType;
             }
             set
             {
-                _objType = value;
+                _eType = value;
             }
         }
         #endregion
@@ -519,7 +519,7 @@ namespace Chummer
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"].InnerText, GlobalOptions.InvariantCultureInfo);
-            _objLifestyle.StyleType = _objType;
+            _objLifestyle.StyleType = _eType;
 
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
@@ -676,7 +676,7 @@ namespace Chummer
         public void SetLifestyle(Lifestyle objLifestyle)
         {
             _objSourceLifestyle = objLifestyle;
-            _objType = objLifestyle.StyleType;
+            _eType = objLifestyle.StyleType;
         }
 
         /// <summary>

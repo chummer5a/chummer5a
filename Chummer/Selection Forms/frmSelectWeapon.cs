@@ -44,7 +44,7 @@ namespace Chummer
         private Weapon _objSelectedWeapon = null;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
+        private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
         public frmSelectWeapon(Character objCharacter)
@@ -58,7 +58,7 @@ namespace Chummer
             MoveControls();
             // Load the Weapon information.
             _objXmlDocument = XmlManager.Load("weapons.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectWeapon_Load(object sender, EventArgs e)

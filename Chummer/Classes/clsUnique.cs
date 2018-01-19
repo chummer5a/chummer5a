@@ -787,6 +787,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsQuality
@@ -2565,6 +2566,7 @@ namespace Chummer
             }
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsSpell
@@ -2573,7 +2575,7 @@ namespace Chummer
             {
                 objNode.ForeColor = Color.SaddleBrown;
             }
-            else if (Grade == -1)
+            else if (Grade != 0)
             {
                 objNode.ForeColor = SystemColors.GrayText;
             }
@@ -2882,6 +2884,7 @@ namespace Chummer
         {
             TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus);
 
+            objNode.Name = InternalId;
             objNode.Text = LanguageManager.GetString("String_StackedFocus", GlobalOptions.Language) + ": " + Name(GlobalOptions.Language);
             objNode.Tag = InternalId;
             objNode.Checked = Bonded;
@@ -3171,6 +3174,7 @@ namespace Chummer
                 strText = LanguageManager.GetString(SourceType == Improvement.ImprovementSource.Metamagic ? "Label_Metamagic" : "Label_Echo", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsMetamagic
@@ -3435,6 +3439,7 @@ namespace Chummer
                 strText = LanguageManager.GetString("Label_Art", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsArt
@@ -3712,6 +3717,7 @@ namespace Chummer
                 strText = LanguageManager.GetString("Label_Enhancement", GlobalOptions.Language) + ' ' + strText;
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = strText,
                 Tag = InternalId,
                 ContextMenuStrip = cmsEnhancement
@@ -3744,6 +3750,7 @@ namespace Chummer
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
         private string _strExtra = string.Empty;
+        private int _intGrade = 0;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -3797,6 +3804,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
         }
@@ -3817,6 +3825,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("fv", ref _strFV);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
         }
 
         /// <summary>
@@ -3866,6 +3875,15 @@ namespace Chummer
         {
             get => _strExtra;
             set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+        }
+
+        /// <summary>
+        /// Complex Form's grade.
+        /// </summary>
+        public int Grade
+        {
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -3980,6 +3998,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName,
                 Tag = InternalId,
                 ContextMenuStrip = cmsComplexForm
@@ -3987,6 +4006,10 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Notes))
             {
                 objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade != 0)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
             }
             objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
@@ -4239,6 +4262,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName,
                 Tag = InternalId,
                 ContextMenuStrip = cmsAIProgram
@@ -4516,6 +4540,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsMartialArt
@@ -4717,6 +4742,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsMartialArtAdvantage
@@ -4908,6 +4934,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsMartialArtTechnique
@@ -5132,6 +5159,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
                 Text = DisplayName,
                 Tag = InternalId
@@ -6194,6 +6222,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnCountTowardsLimit = true;
         private int _intRating;
+        private int _intGrade;
 
         #region Constructor, Create, Save, Load, and Print Methods
         public CritterPower(Character objCharacter)
@@ -6271,6 +6300,7 @@ namespace Chummer
             objWriter.WriteElementString("action", _strAction);
             objWriter.WriteElementString("range", _strRange);
             objWriter.WriteElementString("duration", _strDuration);
+            objWriter.WriteElementString("grade", _intGrade.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("karma", _intKarma.ToString(CultureInfo.InvariantCulture));
@@ -6304,6 +6334,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetDecFieldQuickly("points", ref _decPowerPoints);
             objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
+            objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objNode["bonus"];
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
         }
@@ -6413,6 +6444,15 @@ namespace Chummer
         {
             get => _strExtra;
             set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+        }
+
+        /// <summary>
+        /// Grade of the Critter power
+        /// </summary>
+        public int Grade
+        {
+            get => _intGrade;
+            set => _intGrade = value;
         }
 
         /// <summary>
@@ -6661,6 +6701,7 @@ namespace Chummer
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 ContextMenuStrip = cmsCritterPower,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId
@@ -6668,6 +6709,10 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Notes))
             {
                 objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (Grade != 0)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
             }
             objNode.ToolTipText = Notes.WordWrap(100);
             return objNode;
@@ -6881,7 +6926,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 ContextMenuStrip = cmsInitiationGrade,
-                Name = Grade.ToString(),
+                Name = InternalId,
                 Text = Text(GlobalOptions.Language),
                 Tag = InternalId
             };

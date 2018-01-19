@@ -1194,7 +1194,7 @@ namespace Chummer.Classes
                 strExtra = frmPickText.SelectedValue;
             }
             spell.Create(node, strExtra);
-            if (spell.InternalId == Guid.Empty.ToString("D"))
+            if (spell.InternalId.IsEmptyGuid())
                 return;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
@@ -1247,7 +1247,7 @@ namespace Chummer.Classes
 
             Spell spell = new Spell(_objCharacter);
             spell.Create(node, strExtra);
-            if (spell.InternalId == Guid.Empty.ToString("D"))
+            if (spell.InternalId.IsEmptyGuid())
                 return;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
@@ -1289,7 +1289,7 @@ namespace Chummer.Classes
                            objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickComplexForm.SelectedProgram + "\"]");
             SelectedValue = node["name"].InnerText;
 
-            ComplexForm complexform = new ComplexForm(_objCharacter);
+            ComplexForm objComplexform = new ComplexForm(_objCharacter);
             // Check for SelectText.
             string strExtra = string.Empty;
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
@@ -1309,14 +1309,15 @@ namespace Chummer.Classes
                 }
                 strExtra = frmPickText.SelectedValue;
             }
-            complexform.Create(node, strExtra);
-            if (complexform.InternalId == Guid.Empty.ToString("D"))
+            objComplexform.Create(node, strExtra);
+            if (objComplexform.InternalId.IsEmptyGuid())
                 return;
+            objComplexform.Grade = -1;
 
-            _objCharacter.ComplexForms.Add(complexform);
+            _objCharacter.ComplexForms.Add(objComplexform);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(complexform.InternalId, _objImprovementSource, SourceName,
+            CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique);
         }
@@ -1361,15 +1362,16 @@ namespace Chummer.Classes
                 strExtra = frmPickText.SelectedValue;
             }
 
-            ComplexForm complexform = new ComplexForm(_objCharacter);
-            complexform.Create(node, strExtra);
-            if (complexform.InternalId == Guid.Empty.ToString("D"))
+            ComplexForm objComplexform = new ComplexForm(_objCharacter);
+            objComplexform.Create(node, strExtra);
+            if (objComplexform.InternalId.IsEmptyGuid())
                 return;
+            objComplexform.Grade = -1;
 
-            _objCharacter.ComplexForms.Add(complexform);
+            _objCharacter.ComplexForms.Add(objComplexform);
 
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(complexform.InternalId, _objImprovementSource, SourceName,
+            CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique);
         }
@@ -1408,7 +1410,7 @@ namespace Chummer.Classes
             Gear objNewGear = new Gear(_objCharacter);
             objNewGear.Create(node, intRating, lstWeapons, ForcedValue);
 
-            if (objNewGear.InternalId == Guid.Empty.ToString("D"))
+            if (objNewGear.InternalId.IsEmptyGuid())
                 return;
 
             objNewGear.Quantity = decQty;
@@ -1495,7 +1497,7 @@ namespace Chummer.Classes
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
                 objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
-                if (objProgram.InternalId == Guid.Empty.ToString("D"))
+                if (objProgram.InternalId.IsEmptyGuid())
                     return;
 
                 _objCharacter.AIPrograms.Add(objProgram);
@@ -1568,7 +1570,7 @@ namespace Chummer.Classes
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
                 objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
-                if (objProgram.InternalId == Guid.Empty.ToString("D"))
+                if (objProgram.InternalId.IsEmptyGuid())
                     return;
 
                 _objCharacter.AIPrograms.Add(objProgram);
@@ -3498,7 +3500,7 @@ namespace Chummer.Classes
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
                 objAddMetamagic.Grade = -1;
-                if (objAddMetamagic.InternalId == Guid.Empty.ToString("D"))
+                if (objAddMetamagic.InternalId.IsEmptyGuid())
                     return;
 
                 _objCharacter.Metamagics.Add(objAddMetamagic);
@@ -3561,7 +3563,7 @@ namespace Chummer.Classes
             Metamagic objAddMetamagic = new Metamagic(_objCharacter);
             objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
             objAddMetamagic.Grade = -1;
-            if (objAddMetamagic.InternalId == Guid.Empty.ToString("D"))
+            if (objAddMetamagic.InternalId.IsEmptyGuid())
                 return;
 
             _objCharacter.Metamagics.Add(objAddMetamagic);
@@ -3580,7 +3582,7 @@ namespace Chummer.Classes
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
                 objAddEcho.Grade = -1;
-                if (objAddEcho.InternalId == Guid.Empty.ToString("D"))
+                if (objAddEcho.InternalId.IsEmptyGuid())
                     return;
 
                 _objCharacter.Metamagics.Add(objAddEcho);
@@ -3643,7 +3645,7 @@ namespace Chummer.Classes
             Metamagic objAddEcho = new Metamagic(_objCharacter);
             objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
             objAddEcho.Grade = -1;
-            if (objAddEcho.InternalId == Guid.Empty.ToString("D"))
+            if (objAddEcho.InternalId.IsEmptyGuid())
                 return;
 
             _objCharacter.Metamagics.Add(objAddEcho);
@@ -4702,6 +4704,7 @@ namespace Chummer.Classes
             CritterPower objPower = new CritterPower(_objCharacter);
 
             objPower.Create(objXmlPowerNode, 0, strForcedValue);
+            objPower.Grade = -1;
             _objCharacter.CritterPowers.Add(objPower);
             CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
         }
@@ -4722,6 +4725,7 @@ namespace Chummer.Classes
                 }
 
                 objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                objPower.Grade = -1;
                 _objCharacter.CritterPowers.Add(objPower);
                 CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
             }
@@ -5640,7 +5644,7 @@ namespace Chummer.Classes
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter);
             objCyberware.Create(node, _objCharacter, objGrade, bonusNode["type"].InnerText == "bioware" ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, true, true, string.Empty);
 
-            if (objCyberware.InternalId == Guid.Empty.ToString("D"))
+            if (objCyberware.InternalId.IsEmptyGuid())
                 return;
 
             objCyberware.Cost = "0";

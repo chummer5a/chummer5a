@@ -6273,14 +6273,6 @@
 			<text>You cannot have more spells than allowed by your selected Talent priority.</text>
 		</string>
 		<string>
-			<key>Message_CannotRemoveSpell</key>
-			<text>This item cannot be removed because it was acquired as an initiation bonus.</text>
-		</string>
-		<string>
-			<key>MessageTitle_CannotRemoveSpell</key>
-			<text>无法移除法术</text>
-		</string>
-		<string>
 			<key>Message_PriorityComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
 		</string>

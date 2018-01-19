@@ -32,6 +32,9 @@ Application Changes:
 - Added support for processing of options.xml to the Translator tool.
 - Added support for translation of notes that come with an item, via the `altnotes` element.
 - Fixed an issue with bioware grades not populating if the character has Adapsin.
+- Fixed bugs where complex Forms and critter Powers added by bonuses could be removed, and one where spells added by bonuses could be removed in create mode.
+- Fixed a bug where removing a metatype-removable quality in create mode would cause the affected quality to no longer apply any bonuses when added to other characters until Chummer5 was restarted.
+- Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
 
 Data Changes:
 
@@ -68,6 +71,8 @@ Removed Strings:
 - String_LimbCount6
 - String_LimbCount5Torso
 - String_LimbCount5Skull
+- Message_CannotRemoveSpell
+- MessageTitle_CannotRemoveSpell
 
 Build 197
 

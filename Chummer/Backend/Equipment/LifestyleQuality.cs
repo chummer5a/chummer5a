@@ -658,7 +658,7 @@ namespace Chummer.Backend.Equipment
         {
             TreeNode objNode = new TreeNode
             {
-                Name = Name,
+                Name = InternalId,
                 Text = FormattedDisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language),
                 Tag = InternalId,
             };

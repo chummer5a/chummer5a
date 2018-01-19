@@ -59,7 +59,7 @@ namespace Chummer
         private bool _blnIgnoreSecondHand = false;
         private string _strForceGrade = string.Empty;
         private readonly XmlNode _objParentNode = null;
-        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
+        private readonly HashSet<string> _setBlackMarketMaps;
         private readonly XmlDocument _objXmlDocument = null;
 
         private enum Mode
@@ -98,7 +98,7 @@ namespace Chummer
 
             _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString("D");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)

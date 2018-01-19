@@ -40,7 +40,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private bool _blnExcludeGeneralCategory = false;
-        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
+        private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
         public frmSelectArmorMod(Character objCharacter)
@@ -54,7 +54,7 @@ namespace Chummer
             MoveControls();
             // Load the Armor information.
             _objXmlDocument = XmlManager.Load("armor.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectArmorMod_Load(object sender, EventArgs e)

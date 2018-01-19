@@ -3125,7 +3125,7 @@ namespace Chummer.Backend.Equipment
                 decReturn += objChild.DeleteCyberware(treWeapons, treVehicles);
 
             // Remove the Gear Weapon created by the Gear if applicable.
-            if (WeaponID != Guid.Empty.ToString("D"))
+            if (!WeaponID.IsEmptyGuid())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>> lstWeaponsToDelete = new List<Tuple<Weapon, Vehicle, VehicleMod, WeaponMount>>();
@@ -3185,7 +3185,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Remove any Vehicle that the Cyberware created.
-            if (VehicleID != Guid.Empty.ToString("D"))
+            if (!VehicleID.IsEmptyGuid())
             {
                 List<string> lstNodesToRemoveIds = new List<string>();
                 List<Vehicle> lstVehiclesToRemove = new List<Vehicle>();
@@ -3277,6 +3277,7 @@ namespace Chummer.Backend.Equipment
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId
             };

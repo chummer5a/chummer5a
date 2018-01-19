@@ -40,7 +40,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private readonly HashSet<string> _setBlackMarketMaps = new HashSet<string>();
+        private readonly HashSet<string> _setBlackMarketMaps;
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
@@ -55,7 +55,7 @@ namespace Chummer
             MoveControls();
             // Load the Vehicle information.
             _objXmlDocument = XmlManager.Load("vehicles.xml");
-            CommonFunctions.GenerateBlackMarketMappings(_objCharacter, _objXmlDocument, _setBlackMarketMaps);
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectVehicle_Load(object sender, EventArgs e)
@@ -120,8 +120,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstVehicle.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -299,18 +298,34 @@ namespace Chummer
         /// </summary>
         private void UpdateSelectedVehicle()
         {
-            if (string.IsNullOrEmpty(lstVehicle.Text))
+            string strSelectedId = lstVehicle.SelectedValue?.ToString();
+            XmlNode objXmlVehicle = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                // Retireve the information for the selected Vehicle.
+                objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+            }
+            if (objXmlVehicle == null)
+            {
+                lblVehicleHandling.Text = string.Empty;
+                lblVehicleAccel.Text = string.Empty;
+                lblVehicleSpeed.Text = string.Empty;
+                lblVehiclePilot.Text = string.Empty;
+                lblVehicleBody.Text = string.Empty;
+                lblVehicleArmor.Text = string.Empty;
+                lblVehicleSeats.Text = string.Empty;
+                lblVehicleSensor.Text = string.Empty;
+                lblVehicleAvail.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                lblVehicleCost.Text = string.Empty;
+                lblTest.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
                 return;
+            }
 
             decimal decCostModifier = 1.0m;
-
-            // Retireve the information for the selected Vehicle.
-            XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
-            if (objXmlVehicle == null)
-                return;
-
             if (chkUsedVehicle.Checked)
-                decCostModifier = 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
+                decCostModifier -= (nudUsedVehicleDiscount.Value / 100.0m);
 
             lblVehicleHandling.Text = objXmlVehicle["handling"]?.InnerText;
             lblVehicleAccel.Text = objXmlVehicle["accel"]?.InnerText;
@@ -325,14 +340,15 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strAvail))
             {
                 string strSuffix = string.Empty;
-                if (strAvail.EndsWith('R', 'F'))
+                char chrLastChar = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
+                if (chrLastChar == 'F')
                 {
-                    strSuffix = strAvail.Substring(strAvail.Length - 1, 1);
-                    // Translate the Avail string.
-                    if (strSuffix == "R")
-                        strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
-                    else if (strSuffix == "F")
-                        strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                    strSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+                else if (chrLastChar == 'R')
+                {
+                    strSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
                 if (chkUsedVehicle.Checked)
@@ -417,8 +433,7 @@ namespace Chummer
             {
                 if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlVehicle, _objCharacter))
                 {
-                    string strName = objXmlVehicle["name"]?.InnerText;
-                    string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? strName;
+                    string strDisplayname = objXmlVehicle["translate"]?.InnerText ?? objXmlVehicle["name"]?.InnerText;
 
                     if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
@@ -432,7 +447,7 @@ namespace Chummer
                             }
                         }
                     }
-                    lstVehicles.Add(new ListItem(strName, strDisplayname));
+                    lstVehicles.Add(new ListItem(objXmlVehicle["id"].InnerText, strDisplayname));
                 }
             }
             lstVehicles.Sort(CompareListItems.CompareNames);
@@ -449,15 +464,19 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            XmlNode objXmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + lstVehicle.SelectedValue + "\"]");
-            if (objXmlVehicle == null)
+            string strSelectedId = lstVehicle.SelectedValue?.ToString();
+            XmlNode xmlVehicle = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                xmlVehicle = _objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + strSelectedId + "\"]");
+            }
+            if (xmlVehicle == null)
                 return;
 
             if (chkUsedVehicle.Checked)
             {
-                decimal decCostModifier = 1 - (nudUsedVehicleDiscount.Value / 100.0m);
-                decimal decCost = Convert.ToDecimal(objXmlVehicle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                decCost *= decCostModifier;
+                decimal decCost = Convert.ToDecimal(xmlVehicle["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
 
                 _blnUsedVehicle = true;
                 _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), "R").Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), "F");
@@ -465,8 +484,8 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlVehicle["category"]?.InnerText;
-            _strSelectedVehicle = objXmlVehicle["name"]?.InnerText;
+            s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle["category"]?.InnerText;
+            _strSelectedVehicle = strSelectedId;
             _decMarkup = nudMarkup.Value;
 
             DialogResult = DialogResult.OK;
