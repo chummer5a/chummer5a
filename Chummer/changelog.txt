@@ -37,6 +37,7 @@ Application Changes:
 - Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
 - Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
 - Corrected issues related to the deleting of bonus-granted Martial Arts from sources other than the version of One Trick Pony that is RAW.
+- Fixed issues related to sorting by nuyen, sourcebook, and/or availability in the Browse tabs of the armor and weapon selection screens. Fixes #2350.
 
 Data Changes:
 

@@ -24,6 +24,8 @@ using System.Windows.Forms;
 using System.Xml;
  using Chummer.Backend.Equipment;
 using System.Text;
+using System.Collections;
+using System.Globalization;
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -260,19 +262,6 @@ namespace Chummer
         {
             AcceptForm();
         }
-
-        private void dgvArmor_SortCompare(object sender, DataGridViewSortCompareEventArgs e)
-        {
-            if (e.Column.Index != 1) return;
-            int intResult = 1;
-            if (int.TryParse(e.CellValue1.ToString(), out int intTmp1) &&
-                int.TryParse(e.CellValue2.ToString(), out int intTmp2) &&
-                intTmp1 < intTmp2)
-                intResult = -1;
-
-            e.SortResult = intResult;
-            e.Handled = true;
-        }
         #endregion
 
         #region Properties
@@ -362,9 +351,12 @@ namespace Chummer
                     tabArmor.Columns.Add("Capacity");
                     tabArmor.Columns["Capacity"].DataType = typeof(Decimal);
                     tabArmor.Columns.Add("Avail");
+                    tabArmor.Columns["Avail"].DataType = typeof(AvailabilityString);
                     tabArmor.Columns.Add("Special");
                     tabArmor.Columns.Add("Source");
+                    tabArmor.Columns["Source"].DataType = typeof(SourceString);
                     tabArmor.Columns.Add("Cost");
+                    tabArmor.Columns["Cost"].DataType = typeof(NuyenString);
 
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
@@ -379,7 +371,7 @@ namespace Chummer
                             string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
-                            string strAvail = objArmor.Avail;
+                            AvailabilityString strAvail = new AvailabilityString(objArmor.TotalAvail(GlobalOptions.Language));
                             StringBuilder strAccessories = new StringBuilder();
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
@@ -393,8 +385,8 @@ namespace Chummer
                             }
                             if (strAccessories.Length > 0)
                                 strAccessories.Length -= 1;
-                            string strSource = objArmor.Source + ' ' + objArmor.Page(GlobalOptions.Language);
-                            string strCost = objArmor.DisplayCost(out decimal decDummy, false);
+                            SourceString strSource = new SourceString(objArmor.Source, objArmor.Page(GlobalOptions.Language));
+                            NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal decDummy, false));
 
                             tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, strAvail, strAccessories.ToString(), strSource, strCost);
                         }

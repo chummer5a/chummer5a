@@ -6312,8 +6312,7 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            Quality objSelectedQuality = treQualities.SelectedNode?.Tag as Quality;
-            if (objSelectedQuality != null)
+            if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
             {
                 string strInternalIDToRemove = objSelectedQuality.QualityId;
                 // Can't do a foreach because we're removing items, this is the next best thing
@@ -6690,8 +6689,7 @@ namespace Chummer
         private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            Quality objSelectedQuality = treQualities.SelectedNode?.Tag as Quality;
-            if (objSelectedQuality != null)
+            if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
             {
                 int intCurrentLevels = objSelectedQuality.Levels;
 
@@ -6705,7 +6703,7 @@ namespace Chummer
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
-                    
+
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
@@ -11579,8 +11577,7 @@ namespace Chummer
             TreeNode objNode = treQualities.SelectedNode;
             if (objNode != null)
             {
-                Quality objQuality = objNode.Tag as Quality;
-                if (objQuality != null)
+                if (objNode.Tag is Quality objQuality)
                 {
                     string strOldValue = objQuality.Notes;
                     frmNotes frmItemNotes = new frmNotes
@@ -15889,7 +15886,7 @@ namespace Chummer
                 string strBook = CommonFunctions.LanguageBookShort(objMetamagic.Source, GlobalOptions.Language);
                 string strPage = objMetamagic.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objMetamagic.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.LanguageBookLong(objMetamagic.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -15901,7 +15898,7 @@ namespace Chummer
                 string strBook = CommonFunctions.LanguageBookShort(objArt.Source, GlobalOptions.Language);
                 string strPage = objArt.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.LanguageBookLong(objArt.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -15913,7 +15910,7 @@ namespace Chummer
                 string strBook = CommonFunctions.LanguageBookShort(objSpell.Source, GlobalOptions.Language);
                 string strPage = objSpell.DisplayPage(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objSpell.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.LanguageBookLong(objSpell.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -15925,7 +15922,7 @@ namespace Chummer
                 string strBook = CommonFunctions.LanguageBookShort(objEnhancement.Source, GlobalOptions.Language);
                 string strPage = objEnhancement.Page(GlobalOptions.Language);
                 lblMetamagicSource.Text = strBook + ' ' + strPage;
-                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.BookFromCode(objEnhancement.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblMetamagicSource, CommonFunctions.LanguageBookLong(objEnhancement.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 return;
             }
 
@@ -18738,7 +18735,7 @@ namespace Chummer
                             string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
                             string strPage = objGear.DisplayPage(GlobalOptions.Language);
                             lblWeaponSource.Text = strBook + ' ' + strPage;
-                            tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.BookFromCode(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                            tipTooltip.SetToolTip(lblWeaponSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                             chkWeaponAccessoryInstalled.Enabled = true;
                             chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                             chkIncludedInWeapon.Enabled = false;

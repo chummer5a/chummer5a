@@ -25,6 +25,7 @@ using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
 using System.Globalization;
+using System.Collections;
 // ReSharper disable LocalizableElement
 
 namespace Chummer
@@ -223,8 +224,11 @@ namespace Chummer
                 tabWeapons.Columns.Add("Reach");
                 tabWeapons.Columns.Add("Accessories");
                 tabWeapons.Columns.Add("Avail");
+                tabWeapons.Columns["Avail"].DataType = typeof(AvailabilityString);
                 tabWeapons.Columns.Add("Source");
+                tabWeapons.Columns["Source"].DataType = typeof(SourceString);
                 tabWeapons.Columns.Add("Cost");
+                tabWeapons.Columns["Cost"].DataType = typeof(NuyenString);
 
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
@@ -262,9 +266,9 @@ namespace Chummer
                     }
                     if (strAccessories.Length > 0)
                         strAccessories.Length -= 1;
-                    string strAvail = objWeapon.TotalAvail(GlobalOptions.Language);
-                    string strSource = objWeapon.Source + ' ' + objWeapon.DisplayPage(GlobalOptions.Language);
-                    string strCost = objWeapon.DisplayCost(out decimal decDummy);
+                    AvailabilityString strAvail = new AvailabilityString(objWeapon.TotalAvail(GlobalOptions.Language));
+                    SourceString strSource = new SourceString(objWeapon.Source, objWeapon.DisplayPage(GlobalOptions.Language));
+                    NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal decDummy));
 
                     tabWeapons.Rows.Add(strID, strWeaponName, strDice, intAccuracy, strDamage, strAP, intRC, strAmmo, strMode, strReach, strAccessories.ToString(), strAvail, strSource, strCost);
                 }
@@ -623,7 +627,7 @@ namespace Chummer
 
         private void dgvWeapons_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
         #endregion
     }

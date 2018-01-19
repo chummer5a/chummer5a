@@ -130,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
+    <Compile Include="Backend\Datastructures\AvailabilityString.cs" />
+    <Compile Include="Backend\Datastructures\NuyenString.cs" />
+    <Compile Include="Backend\Datastructures\SourceString.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />

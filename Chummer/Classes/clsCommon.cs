@@ -1159,23 +1159,7 @@ namespace Chummer
             treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
         }
         #endregion
-
-        /// <summary>
-        /// Convert a book code into the full name.
-        /// </summary>
-        /// <param name="strCode">Book code to convert.</param>
-        public static string BookFromCode(string strCode, string strLanguage)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["name"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-            }
-            return string.Empty;
-        }
-
+        
         /// <summary>
         /// Book code (using the translated version if applicable).
         /// </summary>
@@ -1184,28 +1168,8 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["altcode"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Determine the book's original code by using the alternate code.
-        /// </summary>
-        /// <param name="strCode">Alternate code to look for.</param>
-        public static string BookFromAltCode(string strCode, string strLanguage)
-        {
-            if (!string.IsNullOrWhiteSpace(strCode))
-            {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strCode + "\"]");
-                string strReturn = objXmlBook?["code"]?.InnerText;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
-                return strCode;
+                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                return objXmlBook?.InnerText ?? strCode;
             }
             return string.Empty;
         }
@@ -1221,10 +1185,7 @@ namespace Chummer
                 XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
                 if (objXmlBook != null)
                 {
-                    string strReturn = objXmlBook["translate"]?.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strReturn))
-                        return strReturn;
-                    strReturn = objXmlBook["name"]?.InnerText;
+                    string strReturn = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText;
                     if (!string.IsNullOrWhiteSpace(strReturn))
                         return strReturn;
                 }
