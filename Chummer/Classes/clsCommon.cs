@@ -1424,7 +1424,7 @@ namespace Chummer
 
                 string[] astrOut = strPageText.Split('\n');
                 string strStack = string.Empty;
-                for (int i = 0; i <= astrOut.Length; i++)
+                for (int i = 0; i < astrOut.Length; i++)
                 {
                     string strLoop = astrOut[i];
                     if (string.IsNullOrWhiteSpace(strLoop))
