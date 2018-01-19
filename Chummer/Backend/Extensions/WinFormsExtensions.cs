@@ -64,9 +64,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Node to find.</param>
         /// <param name="objNode">TreeNode to search.</param>
-        public static TreeNode FindNode(this TreeNode objNode, string strGuid)
+        public static TreeNode FindNode(this TreeNode objNode, string strGuid, bool blnDeep = true)
         {
-            if (objNode != null && !strGuid.IsEmptyGuid())
+            if (objNode != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
                 TreeNode objFound;
                 foreach (TreeNode objChild in objNode.Nodes)
@@ -74,9 +74,38 @@ namespace Chummer
                     if (objChild.Tag.ToString() == strGuid)
                         return objChild;
 
-                    objFound = objChild.FindNode(strGuid);
-                    if (objFound != null)
-                        return objFound;
+                    if (blnDeep)
+                    {
+                        objFound = objChild.FindNode(strGuid);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeNode based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="objNode">TreeNode to search.</param>
+        public static TreeNode FindNodeByTag(this TreeNode objNode, object objTag, bool blnDeep = true)
+        {
+            if (objNode != null && objTag != null)
+            {
+                TreeNode objFound;
+                foreach (TreeNode objChild in objNode.Nodes)
+                {
+                    if (objChild.Tag == objTag)
+                        return objChild;
+
+                    if (blnDeep)
+                    {
+                        objFound = objChild.FindNodeByTag(objTag);
+                        if (objFound != null)
+                            return objFound;
+                    }
                 }
             }
             return null;
@@ -118,6 +147,39 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Sort the contents of a TreeView alphabetically within each group Node.
+        /// </summary>
+        /// <param name="treView">TreeView to sort.</param>
+        public static void SortCustom(this TreeView treView, object objSelectedNodeTag = null)
+        {
+            TreeNodeCollection lstTreeViewNodes = treView?.Nodes;
+            if (lstTreeViewNodes == null)
+                return;
+            if (objSelectedNodeTag == null)
+                objSelectedNodeTag = treView.SelectedNode?.Tag;
+            for (int i = 0; i < lstTreeViewNodes.Count; ++i)
+            {
+                TreeNode objLoopNode = lstTreeViewNodes[i];
+                TreeNodeCollection objLoopNodeChildren = objLoopNode.Nodes;
+                int intChildrenCount = objLoopNodeChildren.Count;
+                if (intChildrenCount > 0)
+                {
+                    TreeNode[] lstNodes = new TreeNode[intChildrenCount];
+                    objLoopNodeChildren.CopyTo(lstNodes, 0);
+                    objLoopNodeChildren.Clear();
+                    Array.Sort(lstNodes, CompareTreeNodes.CompareText);
+                    objLoopNodeChildren.AddRange(lstNodes);
+
+                    objLoopNode.Expand();
+                }
+            }
+
+            TreeNode objSelectedNode = treView.FindNodeByTag(objSelectedNodeTag);
+            if (objSelectedNode != null)
+                treView.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
         /// Clear the background colour for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
         /// <param name="treTree">TreeView to check.</param>
@@ -145,6 +207,32 @@ namespace Chummer
                     if (blnDeep)
                     {
                         objFound = objNode.FindNode(strGuid);
+                        if (objFound != null)
+                            return objFound;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Find a TreeNode in a TreeView based on its Tag.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Node to find.</param>
+        /// <param name="treTree">TreeView to search.</param>
+        public static TreeNode FindNodeByTag(this TreeView treTree, object objTag, bool blnDeep = true)
+        {
+            if (treTree != null && objTag != null)
+            {
+                TreeNode objFound;
+                foreach (TreeNode objNode in treTree.Nodes)
+                {
+                    if (objNode.Tag == objTag)
+                        return objNode;
+
+                    if (blnDeep)
+                    {
+                        objFound = objNode.FindNodeByTag(objTag);
                         if (objFound != null)
                             return objFound;
                     }

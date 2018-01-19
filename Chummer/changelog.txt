@@ -35,7 +35,7 @@ Application Changes:
 - Fixed bugs where complex Forms and critter Powers added by bonuses could be removed, and one where spells added by bonuses could be removed in create mode.
 - Fixed a bug where removing a metatype-removable quality in create mode would cause the affected quality to no longer apply any bonuses when added to other characters until Chummer5 was restarted.
 - Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
-- Fixed incorect behaviour in the Crash Handler preventing it from running properly.
+- Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
 
 Data Changes:
 

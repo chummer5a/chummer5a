@@ -214,15 +214,15 @@ namespace Chummer
         private List<Focus> _lstFoci = new List<Focus>();
         private List<StackedFocus> _lstStackedFoci = new List<StackedFocus>();
         private BindingList<Power> _lstPowers = new BindingList<Power>();
-        private List<ComplexForm> _lstComplexForms = new List<ComplexForm>();
-        private List<AIProgram> _lstAIPrograms = new List<AIProgram>();
+        private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
+        private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private List<Armor> _lstArmor = new List<Armor>();
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
         private List<Weapon> _lstWeapons = new List<Weapon>();
-        private List<Quality> _lstQualities = new List<Quality>();
+        private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
         private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
         private List<Gear> _lstGear = new List<Gear>();
@@ -231,7 +231,7 @@ namespace Chummer
         private List<Art> _lstArts = new List<Art>();
         private List<Enhancement> _lstEnhancements = new List<Enhancement>();
         private List<ExpenseLogEntry> _lstExpenseLog = new List<ExpenseLogEntry>();
-        private List<CritterPower> _lstCritterPowers = new List<CritterPower>();
+        private ObservableCollection<CritterPower> _lstCritterPowers = new ObservableCollection<CritterPower>();
         private List<InitiationGrade> _lstInitiationGrades = new List<InitiationGrade>();
         private List<string> _lstOldQualities = new List<string>();
         private List<string> _lstGearLocations = new List<string>();
@@ -1298,6 +1298,9 @@ namespace Chummer
                     {
                         Quality objQuality = new Quality(this);
                         objQuality.Load(objXmlQuality);
+                        // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                        if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                            objQuality.SetGUID(Guid.NewGuid());
                         _lstQualities.Add(objQuality);
                         if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
@@ -2961,8 +2964,8 @@ namespace Chummer
             _lstFoci = new List<Focus>();
             _lstStackedFoci = new List<StackedFocus>();
             _lstPowers = new BindingList<Power>();
-            _lstComplexForms = new List<ComplexForm>();
-            _lstAIPrograms = new List<AIProgram>();
+            _lstComplexForms = new ObservableCollection<ComplexForm>();
+            _lstAIPrograms = new ObservableCollection<AIProgram>();
             _lstMartialArts = new List<MartialArt>();
             _lstMartialArtManeuvers = new List<MartialArtManeuver>();
             _lstLimitModifiers = new List<LimitModifier>();
@@ -2976,9 +2979,9 @@ namespace Chummer
             _lstGear = new List<Gear>();
             _lstVehicles = new List<Vehicle>();
             _lstExpenseLog = new List<ExpenseLogEntry>();
-            _lstCritterPowers = new List<CritterPower>();
+            _lstCritterPowers = new ObservableCollection<CritterPower>();
             _lstInitiationGrades = new List<InitiationGrade>();
-            _lstQualities = new List<Quality>();
+            _lstQualities = new ObservableCollection<Quality>();
             _lstOldQualities = new List<string>();
             _lstCalendar = new List<CalendarWeek>();
 
@@ -6429,7 +6432,7 @@ namespace Chummer
         /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
-        public IList<ComplexForm> ComplexForms
+        public ObservableCollection<ComplexForm> ComplexForms
         {
             get
             {
@@ -6440,7 +6443,7 @@ namespace Chummer
         /// <summary>
         /// AI Programs and Advanced Programs
         /// </summary>
-        public IList<AIProgram> AIPrograms
+        public ObservableCollection<AIProgram> AIPrograms
         {
             get
             {
@@ -6583,7 +6586,7 @@ namespace Chummer
         /// <summary>
         /// Critter Powers.
         /// </summary>
-        public IList<CritterPower> CritterPowers
+        public ObservableCollection<CritterPower> CritterPowers
         {
             get
             {
@@ -6616,7 +6619,7 @@ namespace Chummer
         /// <summary>
         /// Qualities (Positive and Negative).
         /// </summary>
-        public IList<Quality> Qualities
+        public ObservableCollection<Quality> Qualities
         {
             get
             {
@@ -8789,7 +8792,7 @@ namespace Chummer
                 for (int i = 0; i < intRanks; ++i)
                 {
                     Quality objQuality = new Quality(this);
-                    if (Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
+                    if (i == 0 && Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
                     objQuality.Create(objXmlNewQuality, this, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);

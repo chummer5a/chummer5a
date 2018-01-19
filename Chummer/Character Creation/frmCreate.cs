@@ -161,7 +161,6 @@ namespace Chummer
 
             SetTooltips();
             MoveControls();
-            UpdateQualityLevelValue();
         }
 
         private void TreeView_MouseDown(object sender, MouseEventArgs e)
@@ -354,7 +353,8 @@ namespace Chummer
             }
 
             // Populate the Qualities list.
-            RefreshQualities(treQualities, cmsQuality, true);
+            RefreshQualities(treQualities, cmsQuality);
+
             // Populate the Magician Traditions list.
             XmlDocument objXmlDocument = XmlManager.Load("traditions.xml");
             List<ListItem> lstTraditions = new List<ListItem>();
@@ -519,9 +519,6 @@ namespace Chummer
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
 
-            // Populate Spell list.
-            RefreshSpells(treSpells, cmsSpell);
-
             // Populate Magician Spirits and Technomancer Sprites.
             for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
             {
@@ -542,8 +539,10 @@ namespace Chummer
                     panSprites.Controls.Add(objSpiritControl);
             }
 
+            RefreshSpells(treSpells, cmsSpell);
             RefreshComplexForms(treComplexForms, cmsComplexForm);
             RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
             // Populate Lifestyles.
@@ -556,9 +555,7 @@ namespace Chummer
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
-
-            RefreshCritterPowers(treCritterPowers,cmsCritterPowers);
-
+            
             // Populate the Grade list.
             PopulateCyberwareGradeList();
 
@@ -628,6 +625,10 @@ namespace Chummer
             BuildAttributePanel();
 
             CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
+            CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
+            CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
+            CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
+            CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
             // Hacky, but necessary
             // UpdateCharacterInfo() needs to be run before BuildAttributesPanel() so that it can properly regenerate Essence Loss improvements based on options...
             // ...but BuildAttributePanel() ends up requesting a character update when it sets up the values of attribute NumericalUpDowns
@@ -698,6 +699,13 @@ namespace Chummer
                     ToolStripManager.RevertMerge("toolStrip");
 
                 // Unsubscribe from events.
+                lstPrimaryAttributes.CollectionChanged -= AttributeCollectionChanged;
+                lstSpecialAttributes.CollectionChanged -= AttributeCollectionChanged;
+                CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
+                CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
+                CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
+                CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
+                CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -1511,7 +1519,6 @@ namespace Chummer
             CharacterObject.CritterEnabled = true;
 
             // Gain the Dual Natured Critter Power if it does not yet exist.
-            bool blnRefreshPowers = false;
             if (!CharacterObject.CritterPowers.Any(x => x.Name == "Dual Natured"))
             {
                 XmlDocument objXmlPowerDocument = XmlManager.Load("critterpowers.xml");
@@ -1520,7 +1527,6 @@ namespace Chummer
                 CritterPower objCritterPower = new CritterPower(CharacterObject);
                 objCritterPower.Create(objXmlPowerNode);
                 CharacterObject.CritterPowers.Add(objCritterPower);
-                blnRefreshPowers = true;
             }
 
             // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
@@ -1532,14 +1538,10 @@ namespace Chummer
                 CritterPower objCritterPower = new CritterPower(CharacterObject);
                 objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
                 CharacterObject.CritterPowers.Add(objCritterPower);
-                blnRefreshPowers = true;
             }
 
             mnuSpecialCyberzombie.Visible = false;
-
-            if (blnRefreshPowers)
-                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-
+            
             IsDirty = true;
 
             IsCharacterUpdateRequested = true;
@@ -1649,7 +1651,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                         {
                             objQuality.Extra = ImprovementManager.SelectedValue;
-                            TreeNode objTreeNode = treQualities.FindNode(objQuality.InternalId);
+                            TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
                             if (objTreeNode != null)
                                 objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                         }
@@ -1677,7 +1679,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 objQuality.Extra = ImprovementManager.SelectedValue;
-                                TreeNode objTreeNode = treQualities.FindNode(objQuality.InternalId);
+                                TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
                                 if (objTreeNode != null)
                                     objTreeNode.Text = objQuality.DisplayName(GlobalOptions.Language);
                             }
@@ -2062,11 +2064,8 @@ namespace Chummer
                 objCharacter_RESEnabledChanged(this);
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
                 objCharacter_DEPEnabledChanged(this);
-
-            RefreshQualities(treQualities, cmsQuality, true);
-            UpdateQualityLevelValue();
+            
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             RefreshContacts();
 
@@ -2928,8 +2927,7 @@ namespace Chummer
 
             CharacterObject.MetatypeCategory = "Free Sprite";
             mnuSpecialConvertToFreeSprite.Visible = false;
-
-            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -3478,12 +3476,10 @@ namespace Chummer
                     }
 
                     // Fix for legacy characters with old addqualities improvements.
-                    if (RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"), treQualities))
-                        RefreshQualities(treQualities, cmsQuality, true);
+                    RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"));
                     // Remove any Improvements created by the piece of Cyberware.
                     ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
                     CharacterObject.Cyberware.Remove(objCyberware);
-                    RefreshQualities(treQualities, cmsQuality);
 
                     // If the Parent is populated, remove the item from its Parent.
                     if (objCyberware.Parent != null)
@@ -3567,9 +3563,6 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
-
-            if (IsCharacterUpdateRequested)
-                RefreshComplexForms(treComplexForms, cmsComplexForm);
         }
 
         private void cmdAddAIProgram_Click(object sender, EventArgs e)
@@ -3621,9 +3614,6 @@ namespace Chummer
                 frmPickProgram.Dispose();
             }
             while (blnAddAgain);
-
-            if (IsCharacterUpdateRequested)
-                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
         }
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
@@ -4411,14 +4401,12 @@ namespace Chummer
             MartialArt objMartialArt = CharacterObject.MartialArts.FindById(treMartialArts.SelectedNode.Tag.ToString());
             if (objMartialArt != null)
             {
-                bool blnDoQualityRefresh = false;
                 if (objMartialArt.Name == "One Trick Pony")
                 {
                     Quality objQuality = CharacterObject.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.Name == "One Trick Pony");
                     if (objQuality != null)
                     {
                         CharacterObject.Qualities.Remove(objQuality);
-                        blnDoQualityRefresh = true;
                     }
                 }
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
@@ -4431,8 +4419,6 @@ namespace Chummer
                 CharacterObject.MartialArts.Remove(objMartialArt);
 
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                if (blnDoQualityRefresh)
-                    RefreshQualities(treQualities, cmsQuality, true);
 
                 IsCharacterUpdateRequested = true;
 
@@ -4890,8 +4876,7 @@ namespace Chummer
                 }
 
                 CharacterObject.CritterPowers.Add(objPower);
-
-                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -4914,9 +4899,7 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
 
                 CharacterObject.CritterPowers.Remove(objPower);
-
-                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -4936,8 +4919,6 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
 
                 CharacterObject.ComplexForms.Remove(objComplexForm);
-
-                RefreshComplexForms(treComplexForms, cmsComplexForm);
 
                 IsCharacterUpdateRequested = true;
 
@@ -5049,7 +5030,6 @@ namespace Chummer
 
             if (IsCharacterUpdateRequested)
             {
-                RefreshQualities(treQualities, cmsQuality);
                 RefreshContacts();
             }
         }
@@ -5205,14 +5185,10 @@ namespace Chummer
 
             if (IsCharacterUpdateRequested)
             {
-                RefreshQualities(treQualities, cmsQuality, true);
-                UpdateQualityLevelValue();
                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                 RefreshContacts();
                 PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             }
         }
 
@@ -5360,8 +5336,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            if (RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"), treQualities))
-                RefreshQualities(treQualities, cmsQuality, true);
+            RemoveAddedQualities(objXmlDeleteQuality?.SelectNodes("addqualities/addquality"));
 
             CharacterObject.Qualities.Remove(objSelectedQuality);
             return true;
@@ -5370,39 +5345,36 @@ namespace Chummer
         private void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
-                return;
-
-            Quality objSelectedQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
-            string strInternalIDToRemove = objSelectedQuality.QualityId;
-            // Can't do a foreach because we're removing items, this is the next best thing
-            bool blnFirstRemoval = true;
-            for(int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
+            Quality objSelectedQuality = treQualities.SelectedNode?.Tag as Quality;
+            if (objSelectedQuality != null)
             {
-                Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
-                if (objLoopQuality.QualityId == strInternalIDToRemove)
+                string strInternalIDToRemove = objSelectedQuality.QualityId;
+                // Can't do a foreach because we're removing items, this is the next best thing
+                bool blnFirstRemoval = true;
+                for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
                 {
-                    if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
-                        break;
-                    blnFirstRemoval = false;
-                    if (i > CharacterObject.Qualities.Count)
+                    Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
+                    if (objLoopQuality.QualityId == strInternalIDToRemove)
                     {
-                        i = CharacterObject.Qualities.Count;
+                        if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
+                            break;
+                        blnFirstRemoval = false;
+                        if (i > CharacterObject.Qualities.Count)
+                        {
+                            i = CharacterObject.Qualities.Count;
+                        }
                     }
                 }
-            }
 
-            // Only refresh if at least one quality was removed
-            if (!blnFirstRemoval)
-            {
-                RefreshQualities(treQualities, cmsQuality, true);
-                UpdateQualityLevelValue();
-                IsCharacterUpdateRequested = true;
-                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                RefreshContacts();
-                IsDirty = true;
+                // Only refresh if at least one quality was removed
+                if (!blnFirstRemoval)
+                {
+                    IsCharacterUpdateRequested = true;
+                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                    PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                    RefreshContacts();
+                    IsDirty = true;
+                }
             }
         }
 
@@ -7394,37 +7366,38 @@ namespace Chummer
 
         private void tsQualityNotes_Click(object sender, EventArgs e)
         {
-            if (treQualities.SelectedNode == null)
-                return;
-
-            Quality objQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
-            if (objQuality != null)
+            TreeNode objNode = treQualities.SelectedNode;
+            if (objNode != null)
             {
-                string strOldValue = objQuality.Notes;
-                frmNotes frmItemNotes = new frmNotes
+                Quality objQuality = objNode.Tag as Quality;
+                if (objQuality != null)
                 {
-                    Notes = strOldValue
-                };
-                frmItemNotes.ShowDialog(this);
-
-                if (frmItemNotes.DialogResult == DialogResult.OK)
-                {
-                    objQuality.Notes = frmItemNotes.Notes;
-                    if (objQuality.Notes != strOldValue)
+                    string strOldValue = objQuality.Notes;
+                    frmNotes frmItemNotes = new frmNotes
                     {
-                        IsDirty = true;
+                        Notes = strOldValue
+                    };
+                    frmItemNotes.ShowDialog(this);
+
+                    if (frmItemNotes.DialogResult == DialogResult.OK)
+                    {
+                        objQuality.Notes = frmItemNotes.Notes;
+                        if (objQuality.Notes != strOldValue)
+                        {
+                            IsDirty = true;
+
+                            if (!objQuality.Implemented)
+                                objNode.ForeColor = Color.Red;
+                            else if (!string.IsNullOrEmpty(objQuality.Notes))
+                                objNode.ForeColor = Color.SaddleBrown;
+                            else if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable || objQuality.OriginSource == QualitySource.Improvement)
+                                objNode.ForeColor = SystemColors.GrayText;
+                            else
+                                objNode.ForeColor = SystemColors.WindowText;
+                            objNode.ToolTipText = objQuality.Notes.WordWrap(100);
+                        }
                     }
                 }
-
-                if (!string.IsNullOrEmpty(objQuality.Notes))
-                    treQualities.SelectedNode.ForeColor = Color.SaddleBrown;
-                else if (objQuality.OriginSource == QualitySource.Metatype || objQuality.OriginSource == QualitySource.MetatypeRemovable || objQuality.OriginSource == QualitySource.Improvement)
-                    treQualities.SelectedNode.ForeColor = SystemColors.GrayText;
-                else if (!objQuality.Implemented)
-                    treQualities.SelectedNode.ForeColor = Color.Red;
-                else
-                    treQualities.SelectedNode.ForeColor = SystemColors.WindowText;
-                treQualities.SelectedNode.ToolTipText = objQuality.Notes.WordWrap(100);
             }
         }
 
@@ -9030,23 +9003,22 @@ namespace Chummer
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
-            lblQualitySource.Text = string.Empty;
-            tipTooltip.SetToolTip(lblQualitySource, null);
-            if (treQualities.SelectedNode == null || treQualities.SelectedNode.Level <= 0)
-            {
-                UpdateQualityLevelValue();
-                return;
-            }
-
-            Quality objQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
-
-            string strBook = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
-            string strPage = objQuality.Page(GlobalOptions.Language);
-            lblQualitySource.Text = strBook + ' ' + strPage;
-            tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-            lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            Quality objQuality = treQualities.SelectedNode?.Tag as Quality;
 
             UpdateQualityLevelValue(objQuality);
+            if (objQuality == null)
+            {
+                lblQualitySource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblQualitySource, null);
+            }
+            else
+            {
+                string strBook = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language);
+                string strPage = objQuality.Page(GlobalOptions.Language);
+                lblQualitySource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
+            }
         }
         
         private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
@@ -9073,14 +9045,13 @@ namespace Chummer
 
         private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
-            if (nudQualityLevel.Enabled && treQualities.SelectedNode != null && treQualities.SelectedNode.Level > 0)
+            // Locate the selected Quality.
+            Quality objSelectedQuality = treQualities.SelectedNode?.Tag as Quality;
+            if (objSelectedQuality != null)
             {
-                // Locate the selected Quality.
-                Quality objSelectedQuality = CharacterObject.Qualities.FindById(treQualities.SelectedNode.Tag.ToString());
                 int intCurrentLevels = objSelectedQuality.Levels;
                 
                 bool blnRequireUpdate = false;
-                bool blnRequireTreQualitiesRebuild = false;
                 // Adding new levels
                 for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
                 {
@@ -9218,7 +9189,6 @@ namespace Chummer
                     else if (RemoveQuality(objSelectedQuality, false, false))
                     {
                         blnRequireUpdate = true;
-                        blnRequireTreQualitiesRebuild = true;
                         break;
                     }
                     else
@@ -9230,15 +9200,9 @@ namespace Chummer
 
                 if (blnRequireUpdate)
                 {
-                    if (blnRequireTreQualitiesRebuild)
-                        RefreshQualities(treQualities, cmsQuality, true);
-                    else
-                        RefreshQualityNames(treQualities);
                     IsCharacterUpdateRequested = true;
                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                    RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                     RefreshContacts();
                     IsDirty = true;
                 }
@@ -11479,9 +11443,7 @@ namespace Chummer
         private void ClearTechnomancerTab()
         {
             CharacterObject.ClearResonance();
-
-            RefreshComplexForms(treComplexForms, null);
-
+            
             // Remove the Sprites.
             panSprites.Controls.Clear();
 
@@ -11495,9 +11457,7 @@ namespace Chummer
         private void ClearAdvancedProgramsTab()
         {
             CharacterObject.ClearAdvancedPrograms();
-
-            RefreshAIPrograms(treAIPrograms, null);
-
+            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -11520,8 +11480,6 @@ namespace Chummer
         private void ClearCritterTab()
         {
             CharacterObject.ClearCritterPowers();
-
-            RefreshCritterPowers(treCritterPowers, null);
 
             IsDirty = true;
             IsCharacterUpdateRequested = true;
@@ -12397,12 +12355,7 @@ namespace Chummer
             lblMetatypeSource.Text = strBook + ' ' + strPage;
 
             // Update various lists
-            RefreshQualities(treQualities, cmsQuality, true);
-            UpdateQualityLevelValue();
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-            RefreshComplexForms(treComplexForms, cmsComplexForm);
-            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             RefreshContacts();
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
@@ -12770,6 +12723,7 @@ namespace Chummer
             RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             UpdateInitiationCost();
             UpdateMentorSpirits();
+            UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 
             txtCharacterName.Text = CharacterObject.Name;
             txtSex.Text = CharacterObject.Sex;
@@ -14242,8 +14196,7 @@ namespace Chummer
             _blnSkipRefresh = true;
             PopulateCyberwareGradeList();
             _blnSkipRefresh = false;
-
-            RefreshQualities(treQualities,cmsQuality);
+            
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
 
             IsCharacterUpdateRequested = true;
@@ -16884,7 +16837,6 @@ namespace Chummer
             TreeNode objVehicleTreeNodes = treVehicles.Nodes[0];
 
             XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
-            bool blnDoQualityTreeUpdate = false;
             // Update Qualities.
             XmlNode xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
@@ -16903,7 +16855,6 @@ namespace Chummer
                         string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                         objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
-                        blnDoQualityTreeUpdate = true;
 
                         CharacterObject.Qualities.Add(objQuality);
 
@@ -16930,7 +16881,6 @@ namespace Chummer
 
                         objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
                         CharacterObject.Qualities.Add(objQuality);
-                        blnDoQualityTreeUpdate = true;
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
@@ -17036,8 +16986,6 @@ namespace Chummer
                         CharacterObject.ComplexForms.Add(objComplexForm);
                     }
                 }
-
-                RefreshComplexForms(treComplexForms, cmsComplexForm);
             }
 
             // Update AI Programs.
@@ -17058,8 +17006,6 @@ namespace Chummer
                         CharacterObject.AIPrograms.Add(objProgram);
                     }
                 }
-
-                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             }
 
             // Update Spells.
@@ -17585,7 +17531,6 @@ namespace Chummer
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             IsCharacterUpdateRequested = true;
-            RefreshQualities(treQualities, cmsQuality, blnDoQualityTreeUpdate);
             IsDirty = true;
 
             return frmPickPACKSKit.AddAgain;
@@ -17776,9 +17721,6 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                 CharacterObject.Qualities.Remove(objQuality);
             }
-
-            // Populate the Qualities list.
-            RefreshQualities(treQualities, cmsQuality,true);
 
             XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
             XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
@@ -19510,6 +19452,26 @@ namespace Chummer
         private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshSpells(treSpells, cmsSpell, notifyCollectionChangedEventArgs);
+        }
+
+        private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshComplexForms(treComplexForms, cmsComplexForm, notifyCollectionChangedEventArgs);
+        }
+
+        private void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, notifyCollectionChangedEventArgs);
+        }
+
+        private void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshCritterPowers(treCritterPowers, cmsCritterPowers, notifyCollectionChangedEventArgs);
+        }
+
+        private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshQualities(treQualities, cmsQuality, notifyCollectionChangedEventArgs);
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)

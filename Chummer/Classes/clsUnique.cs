@@ -789,7 +789,7 @@ namespace Chummer
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
-                Tag = InternalId,
+                Tag = this,
                 ContextMenuStrip = cmsQuality
             };
             if (!Implemented)

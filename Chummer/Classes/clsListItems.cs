@@ -79,7 +79,7 @@ namespace Chummer
             }
             else if (ty == null)
                 return 1;
-            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'));
+            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
         }
 
         public class TextComparer : IComparer
@@ -118,7 +118,7 @@ namespace Chummer
         /// </summary>
         public static int CompareNames(ListItem objX, ListItem objY)
         {
-            return string.Compare(objX.Name, objY.Name);
+            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
         }
     }
 
@@ -129,14 +129,13 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        private readonly CaseInsensitiveComparer _objObjectCompare = new CaseInsensitiveComparer();
         
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
                 return 0;
 
-            int compareResult;
+            int intCompareResult;
 
             // Cast the objects to be compared to ListViewItem objects
             ListViewItem listviewX = (ListViewItem)x;
@@ -146,16 +145,16 @@ namespace Chummer
             string strX = listviewX.SubItems[_intColumnToSort].Text;
             string strY = listviewY.SubItems[_intColumnToSort].Text;
             if (_intColumnToSort == 0)
-                compareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
+                intCompareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
             else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape('¥', ',', ' ')), Convert.ToInt32(strY.FastEscape('¥', ',', ' ')));
+                intCompareResult = string.Compare(strX.FastEscape('¥', ' '), strY.FastEscape('¥', ' '), true, GlobalOptions.CultureInfo);
             else
-                compareResult = _objObjectCompare.Compare(strX, strY);
+                intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
-                return compareResult;
-            return (-compareResult);
+                return intCompareResult;
+            return (-intCompareResult);
         }
 
         /// <summary>

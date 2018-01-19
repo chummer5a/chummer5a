@@ -301,15 +301,17 @@ namespace Chummer
             TreeNode objEnchantmentsNode = null;
             if (notifyCollectionChangedEventArgs == null)
             {
+                string strSelectedId = treSpells.SelectedNode?.Tag.ToString();
+
                 // Clear the default nodes of entries.
                 treSpells.Nodes.Clear();
 
                 // Add the Spells that exist.
                 foreach (Spell objSpell in _objCharacter.Spells)
                 {
-                    AddSpellToTree(objSpell);
+                    AddToTree(objSpell, false);
                 }
-                treSpells.SortCustom();
+                treSpells.SortCustom(strSelectedId);
             }
             else
             {
@@ -326,7 +328,7 @@ namespace Chummer
                         {
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddSpellToTree(objSpell);
+                                AddToTree(objSpell);
                             }
                             break;
                         }
@@ -345,6 +347,11 @@ namespace Chummer
                             }
                             break;
                         }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshSpells(treSpells, cmsSpell);
+                            break;
+                        }
                     case NotifyCollectionChangedAction.Replace:
                         {
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
@@ -356,7 +363,7 @@ namespace Chummer
                                     objOldParent = objNode.Parent;
                                     objNode.Remove();
                                 }
-                                AddSpellToTree(objSpell);
+                                AddToTree(objSpell);
                                 if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
@@ -365,12 +372,9 @@ namespace Chummer
                 }
             }
 
-            void AddSpellToTree(Spell objSpell)
+            void AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
-                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
-
-                string strNodeTag = string.Empty;
-                TreeNode objSpellTypeNode = null;
+                TreeNode objParentNode = null;
                 switch (objSpell.Category)
                 {
                     case "Combat":
@@ -384,7 +388,7 @@ namespace Chummer
                             treSpells.Nodes.Insert(0, objCombatNode);
                             objCombatNode.Expand();
                         }
-                        objSpellTypeNode = objCombatNode;
+                        objParentNode = objCombatNode;
                         break;
                     case "Detection":
                         if (objDetectionNode == null)
@@ -397,7 +401,7 @@ namespace Chummer
                             treSpells.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
                             objDetectionNode.Expand();
                         }
-                        objSpellTypeNode = objDetectionNode;
+                        objParentNode = objDetectionNode;
                         break;
                     case "Health":
                         if (objHealthNode == null)
@@ -411,7 +415,7 @@ namespace Chummer
                                 (objDetectionNode == null ? 0 : 1), objHealthNode);
                             objHealthNode.Expand();
                         }
-                        objSpellTypeNode = objHealthNode;
+                        objParentNode = objHealthNode;
                         break;
                     case "Illusion":
                         if (objIllusionNode == null)
@@ -426,7 +430,7 @@ namespace Chummer
                                 (objHealthNode == null ? 0 : 1), objIllusionNode);
                             objIllusionNode.Expand();
                         }
-                        objSpellTypeNode = objIllusionNode;
+                        objParentNode = objIllusionNode;
                         break;
                     case "Manipulation":
                         if (objManipulationNode == null)
@@ -442,7 +446,7 @@ namespace Chummer
                                 (objIllusionNode == null ? 0 : 1), objManipulationNode);
                             objManipulationNode.Expand();
                         }
-                        objSpellTypeNode = objManipulationNode;
+                        objParentNode = objManipulationNode;
                         break;
                     case "Rituals":
                         if (objRitualsNode == null)
@@ -459,7 +463,7 @@ namespace Chummer
                                 (objManipulationNode == null ? 0 : 1), objRitualsNode);
                             objRitualsNode.Expand();
                         }
-                        objSpellTypeNode = objRitualsNode;
+                        objParentNode = objRitualsNode;
                         break;
                     case "Enchantments":
                         if (objEnchantmentsNode == null)
@@ -472,59 +476,234 @@ namespace Chummer
                             treSpells.Nodes.Add(objEnchantmentsNode);
                             objEnchantmentsNode.Expand();
                         }
-                        objSpellTypeNode = objEnchantmentsNode;
+                        objParentNode = objEnchantmentsNode;
                         break;
                 }
-                objSpellTypeNode.Nodes.Add(objNode);
+                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treSpells.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
             }
         }
 
-        protected void RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram)
+        protected void RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treAIPrograms.SelectedNode?.Tag.ToString();
-
-            treAIPrograms.Nodes.Clear();
-
-            TreeNode objParentNode = new TreeNode()
+            TreeNode objParentNode = null;
+            if (notifyCollectionChangedEventArgs == null)
             {
-                Tag = "Node_SelectedAIPrograms",
-                Text = LanguageManager.GetString("Node_SelectedAIPrograms", GlobalOptions.Language)
-            };
+                string strSelectedId = treAIPrograms.SelectedNode?.Tag.ToString();
 
-            treAIPrograms.Nodes.Add(objParentNode);
+                treAIPrograms.Nodes.Clear();
 
-            // Populate AI Programs.
-            foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
-            {
-                objParentNode.Nodes.Add(objAIProgram.CreateTreeNode(cmsAdvancedProgram));
+                // Populate AI Programs.
+                foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
+                {
+                    AddToTree(objAIProgram, false);
+                }
+
+                treAIPrograms.SortCustom(strSelectedId);
             }
-            objParentNode.Expand();
+            else
+            {
+                objParentNode = treAIPrograms.FindNode("Node_SelectedAIPrograms", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objAIProgram);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objAIProgram);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
 
-            treAIPrograms.SortCustom(strSelectedId);
+            void AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            {
+                if (objParentNode == null)
+                {
+                    objParentNode = new TreeNode()
+                    {
+                        Tag = "Node_SelectedAIPrograms",
+                        Text = LanguageManager.GetString("Node_SelectedAIPrograms", GlobalOptions.Language)
+                    };
+                    treAIPrograms.Nodes.Add(objParentNode);
+                    objParentNode.Expand();
+                }
+                TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = -1;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treAIPrograms.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
         }
 
-        protected void RefreshComplexForms(TreeView treComplexForms, ContextMenuStrip cmsComplexForm)
+        protected void RefreshComplexForms(TreeView treComplexForms, ContextMenuStrip cmsComplexForm, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
-
-            treComplexForms.Nodes.Clear();
-
-            TreeNode objParentNode = new TreeNode()
+            TreeNode objParentNode = null;
+            if (notifyCollectionChangedEventArgs == null)
             {
-                Tag = "Node_SelectedAdvancedComplexForms",
-                Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms", GlobalOptions.Language)
-            };
+                string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
 
-            treComplexForms.Nodes.Add(objParentNode);
+                treComplexForms.Nodes.Clear();
 
-            // Populate Complex Forms.
-            foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
-            {
-                objParentNode.Nodes.Add(objComplexForm.CreateTreeNode(cmsComplexForm));
+                // Populate Complex Forms.
+                foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
+                {
+                    AddToTree(objComplexForm, false);
+                }
+
+                treComplexForms.SortCustom(strSelectedId);
             }
-            objParentNode.Expand();
+            else
+            {
+                objParentNode = treComplexForms.FindNode("Node_SelectedAdvancedComplexForms", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objComplexForm);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshComplexForms(treComplexForms, cmsComplexForm);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objComplexForm);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
 
-            treComplexForms.SortCustom(strSelectedId);
+            void AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
+            {
+                if (objParentNode == null)
+                {
+                    objParentNode = new TreeNode()
+                    {
+                        Tag = "Node_SelectedAdvancedComplexForms",
+                        Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms", GlobalOptions.Language)
+                    };
+                    treComplexForms.Nodes.Add(objParentNode);
+                    objParentNode.Expand();
+                }
+                TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treComplexForms.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
         }
 
         protected void RefreshLimitModifiers(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
@@ -701,48 +880,128 @@ namespace Chummer
         /// </summary>
         /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
-        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
+        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            string strSelectedId = treCritterPowers.SelectedNode?.Tag.ToString();
-            treCritterPowers.Nodes.Clear();
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            // Add the Critter Powers that exist.
-            foreach (CritterPower objPower in _objCharacter.CritterPowers)
-            {
-                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
 
-                if (objPower.Category != "Weakness")
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                string strSelectedId = treCritterPowers.SelectedNode?.Tag.ToString();
+                treCritterPowers.Nodes.Clear();
+                // Add the Critter Powers that exist.
+                foreach (CritterPower objPower in _objCharacter.CritterPowers)
                 {
-                    if (objPowersNode == null)
-                    {
-                        objPowersNode = new TreeNode()
-                        {
-                            Tag = "Node_CritterPowers",
-                            Text = LanguageManager.GetString("Node_CritterPowers", GlobalOptions.Language)
-                        };
-                        treCritterPowers.Nodes.Insert(0, objPowersNode);
-                        objPowersNode.Expand();
-                    }
-                    objPowersNode.Nodes.Add(objNode);
+                    AddToTree(objPower, false);
                 }
-                else
+
+                treCritterPowers.SortCustom(strSelectedId);
+            }
+            else
+            {
+                objPowersNode = treCritterPowers.FindNode("Node_CritterPowers", false);
+                objWeaknessesNode = treCritterPowers.FindNode("Node_CritterWeaknesses", false);
+                switch (notifyCollectionChangedEventArgs.Action)
                 {
-                    if (objWeaknessesNode == null)
-                    {
-                        objWeaknessesNode = new TreeNode()
+                    case NotifyCollectionChangedAction.Add:
                         {
-                            Tag = "Node_CritterWeaknesses",
-                            Text = LanguageManager.GetString("Node_CritterWeaknesses", GlobalOptions.Language)
-                        };
-                        treCritterPowers.Nodes.Add(objWeaknessesNode);
-                        objWeaknessesNode.Expand();
-                    }
-                    objWeaknessesNode.Nodes.Add(objNode);
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objPower);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objPower);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
                 }
             }
 
-            treCritterPowers.SortCustom(strSelectedId);
+            void AddToTree(CritterPower objPower, bool blnSingleAdd = true)
+            {
+                TreeNode objParentNode = null;
+                switch (objPower.Category)
+                {
+                    case "Weakness":
+                        if (objWeaknessesNode == null)
+                        {
+                            objWeaknessesNode = new TreeNode()
+                            {
+                                Tag = "Node_CritterWeaknesses",
+                                Text = LanguageManager.GetString("Node_CritterWeaknesses", GlobalOptions.Language)
+                            };
+                            treCritterPowers.Nodes.Add(objWeaknessesNode);
+                            objWeaknessesNode.Expand();
+                        }
+                        objParentNode = objWeaknessesNode;
+                        break;
+                    default:
+                        if (objPowersNode == null)
+                        {
+                            objPowersNode = new TreeNode()
+                            {
+                                Tag = "Node_CritterPowers",
+                                Text = LanguageManager.GetString("Node_CritterPowers", GlobalOptions.Language)
+                            };
+                            treCritterPowers.Nodes.Insert(0, objPowersNode);
+                            objPowersNode.Expand();
+                        }
+                        objParentNode = objPowersNode;
+                        break;
+                }
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treCritterPowers.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
         }
 
         /// <summary>
@@ -751,28 +1010,18 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
         /// <param name="blnForce">Forces a refresh of the TreeNode despite a match.</param>
-        protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, bool blnForce = false)
+        protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Count the child nodes in each treenode.
-            int intQualityCount = 0;
-            if (!blnForce)
-            {
-                foreach (TreeNode objTreeNode in treQualities.Nodes)
-                {
-                    intQualityCount += objTreeNode.Nodes.Count;
-                }
-            }
+            TreeNode objPositiveQualityRoot = null;
+            TreeNode objNegativeQualityRoot = null;
+            TreeNode objLifeModuleRoot = null;
 
-            //If the node count is the same as the quality count, there's no need to do anything.
-            if (blnForce || intQualityCount != _objCharacter.Qualities.Count)
+            if (notifyCollectionChangedEventArgs == null)
             {
                 string strSelectedNode = treQualities.SelectedNode?.Tag.ToString();
-                
+
                 // Create the root nodes.
                 treQualities.Nodes.Clear();
-                TreeNode objPositiveQualityRoot = null;
-                TreeNode objNegativeQualityRoot = null;
-                TreeNode objLifeModuleRoot = null;
 
                 // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                 HashSet<string> strQualitiesToPrint = new HashSet<string>();
@@ -785,53 +1034,153 @@ namespace Chummer
                 {
                     if (!strQualitiesToPrint.Remove(objQuality.QualityId + ' ' + objQuality.GetSourceName(GlobalOptions.Language) + ' ' + objQuality.Extra))
                         continue;
-                    TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
 
-                    switch (objQuality.Type)
-                    {
-                        case QualityType.Positive:
-                            if (objPositiveQualityRoot == null)
-                            {
-                                objPositiveQualityRoot = new TreeNode
-                                {
-                                    Tag = "Node_SelectedPositiveQualities",
-                                    Text = LanguageManager.GetString("Node_SelectedPositiveQualities", GlobalOptions.Language)
-                                };
-                                treQualities.Nodes.Insert(0, objPositiveQualityRoot);
-                                objPositiveQualityRoot.Expand();
-                            }
-                            objPositiveQualityRoot.Nodes.Add(objNode);
-                            break;
-                        case QualityType.Negative:
-                            if (objNegativeQualityRoot == null)
-                            {
-                                objNegativeQualityRoot = new TreeNode
-                                {
-                                    Tag = "Node_SelectedNegativeQualities",
-                                    Text = LanguageManager.GetString("Node_SelectedNegativeQualities", GlobalOptions.Language)
-                                };
-                                treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
-                                objNegativeQualityRoot.Expand();
-                            }
-                            objNegativeQualityRoot.Nodes.Add(objNode);
-                            break;
-                        case QualityType.LifeModule:
-                            if (objLifeModuleRoot == null)
-                            {
-                                objLifeModuleRoot = new TreeNode
-                                {
-                                    Tag = "String_LifeModules",
-                                    Text = LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)
-                                };
-                                treQualities.Nodes.Add(objLifeModuleRoot);
-                                objLifeModuleRoot.Expand();
-                            }
-                            objLifeModuleRoot.Nodes.Add(objNode);
-                            break;
-                    }
+                    AddToTree(objQuality, false);
                 }
 
                 treQualities.SortCustom(strSelectedNode);
+            }
+            else
+            {
+                objPositiveQualityRoot = treQualities.FindNodeByTag("Node_SelectedPositiveQualities", false);
+                objNegativeQualityRoot = treQualities.FindNodeByTag("Node_SelectedNegativeQualities", false);
+                objLifeModuleRoot = treQualities.FindNodeByTag("String_LifeModules", false);
+                bool blnDoNameRefresh = false;
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objQuality.Levels > 1)
+                                    blnDoNameRefresh = true;
+                                else
+                                    AddToTree(objQuality);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
+                                {
+                                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshQualities(treQualities, cmsQuality);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
+                                {
+                                    TreeNode objOldParent = null;
+                                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objNode != null)
+                                    {
+                                        objOldParent = objNode.Parent;
+                                        objNode.Remove();
+                                    }
+                                    else
+                                    {
+                                        RefreshQualityNames(treQualities);
+                                    }
+                                    if (objQuality.Levels > 1)
+                                        RefreshQualityNames(treQualities);
+                                    else
+                                        AddToTree(objQuality);
+                                    if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                }
+                if (blnDoNameRefresh)
+                    RefreshQualityNames(treQualities);
+            }
+
+            void AddToTree(Quality objQuality, bool blnSingleAdd = true)
+            {
+                TreeNode objParentNode = null;
+                switch (objQuality.Type)
+                {
+                    case QualityType.Positive:
+                        if (objPositiveQualityRoot == null)
+                        {
+                            objPositiveQualityRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedPositiveQualities",
+                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Insert(0, objPositiveQualityRoot);
+                            objPositiveQualityRoot.Expand();
+                        }
+                        objParentNode = objPositiveQualityRoot;
+                        break;
+                    case QualityType.Negative:
+                        if (objNegativeQualityRoot == null)
+                        {
+                            objNegativeQualityRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedNegativeQualities",
+                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
+                            objNegativeQualityRoot.Expand();
+                        }
+                        objParentNode = objNegativeQualityRoot;
+                        break;
+                    case QualityType.LifeModule:
+                        if (objLifeModuleRoot == null)
+                        {
+                            objLifeModuleRoot = new TreeNode
+                            {
+                                Tag = "String_LifeModules",
+                                Text = LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Add(objLifeModuleRoot);
+                            objLifeModuleRoot.Expand();
+                        }
+                        objParentNode = objLifeModuleRoot;
+                        break;
+                }
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treQualities.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
             }
         }
 
@@ -842,26 +1191,24 @@ namespace Chummer
         protected void RefreshQualityNames(TreeView treQualities)
         {
             TreeNode objSelectedNode = treQualities.SelectedNode;
-            foreach (Quality objQuality in _objCharacter.Qualities)
+            foreach (TreeNode objQualityTypeNode in treQualities.Nodes)
             {
-                TreeNode objQualityNode = treQualities.FindNode(objQuality.InternalId);
-                if (objQualityNode != null)
-                    objQualityNode.Text = objQuality.DisplayName(GlobalOptions.Language);
+                foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
+                {
+                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.Language);
+                }
             }
-            treQualities.SortCustom(objSelectedNode?.ToString());
+            treQualities.SortCustom(objSelectedNode?.Tag);
         }
 
         /// <summary>
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
-        /// <param name="treQualities"></param>
-        /// <param name="_objImprovementManager"></param>
-        protected bool RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities)
+        protected void RemoveAddedQualities(XmlNodeList objNodeList)
         {
             if (objNodeList == null || objNodeList.Count == 0)
-                return false;
-            bool blnReturn = false;
+                return;
             foreach (XmlNode objNode in objNodeList)
             {
                 Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
@@ -869,10 +1216,8 @@ namespace Chummer
                 {
                     _objCharacter.Qualities.Remove(objQuality);
                     ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
-                    blnReturn = true;
                 }
             }
-            return blnReturn;
         }
 
         /// <summary>
@@ -1304,6 +1649,8 @@ namespace Chummer
         /// </summary>
         protected void RefreshImprovements(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement)
         {
+            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
+
             treImprovements.Nodes.Clear();
 
             TreeNode objRoot = new TreeNode
@@ -1387,7 +1734,7 @@ namespace Chummer
             }
 
             // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-            treImprovements.SortCustom();
+            treImprovements.SortCustom(strSelectedId);
         }
 
         /// <summary>
