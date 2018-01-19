@@ -300,41 +300,34 @@ namespace Chummer
 
                 LoadMetatypes();
                 //Selected Category of Metatype
-                index = cboCategory.FindString(_strSelectedMetatypeCategory);
-                cboCategory.SelectedIndex = index;
+                cboCategory.SelectedValue = _strSelectedMetatypeCategory;
                 PopulateMetatypes();
                 //Selected Metatype
-                index = lstMetatypes.FindString(_strSelectedMetatype);
-                lstMetatypes.SelectedIndex = index;
+                lstMetatypes.SelectedValue = _strSelectedMetatype;
                 //Selected Metavariant
-                index = cboMetavariant.FindString(_strSelectedMetavariant);
-                cboMetavariant.SelectedIndex = index;
+                cboMetavariant.SelectedValue = string.IsNullOrEmpty(_strSelectedMetavariant) ? "None" : _strSelectedMetavariant;
 
                 //Magical/Resonance Type
-                index = cboTalents.FindString(_strSelectedTalent);
-                cboTalents.SelectedIndex = index;
+                cboTalents.SelectedValue = _strSelectedTalent;
                 //Selected Magical Bonus Skill
                 string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
-                    index = cboSkill1.FindString(strSkill);
-                    cboSkill1.SelectedIndex = index;
+                    cboSkill1.SelectedValue = strSkill;
                 }
                 else
                     cboSkill1.Visible = false;
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
-                    index = cboSkill2.FindString(strSkill);
-                    cboSkill2.SelectedIndex = index;
+                    cboSkill2.SelectedValue = strSkill;
                 }
                 else
                     cboSkill2.Visible = false;
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
-                    index = cboSkill3.FindString(strSkill);
-                    cboSkill3.SelectedIndex = index;
+                    cboSkill3.SelectedValue = strSkill;
                 }
                 else
                     cboSkill3.Visible = false;
@@ -1493,7 +1486,7 @@ namespace Chummer
 
                             foreach (XmlNode xmlQuality in xmlQualitiesNode.SelectNodes("quality"))
                             {
-                                if (xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[" + _objCharacter.Options.BookXPath() + " and name = \"" + xmlQuality.InnerText + "\"") == null)
+                                if (xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[" + _objCharacter.Options.BookXPath() + " and name = \"" + xmlQuality.InnerText + "\"]") == null)
                                 {
                                     blnFoundUnavailableQuality = true;
                                     break;

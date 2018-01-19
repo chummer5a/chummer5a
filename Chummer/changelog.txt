@@ -40,6 +40,7 @@ Application Changes:
 - Fixed issues related to sorting by nuyen, sourcebook, and/or availability in the Browse tabs of the armor and weapon selection screens. Fixes #2350.
 - Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
 - Fixed an issue with assigning ratings for gear that has a higher minimum rating than maximum rating. Fixes #2348.
+- Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
 
 Data Changes:
 
