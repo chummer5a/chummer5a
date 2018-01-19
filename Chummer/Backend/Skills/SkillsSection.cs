@@ -379,7 +379,7 @@ namespace Chummer.Backend.Skills
                     }
                     else
                     {
-                        lstNodesToChange[i].InnerText = Guid.Empty.ToString("D"); //This creates 00.. guid in default formatting
+                        lstNodesToChange[i].InnerText = StringExtensions.EmptyGuid; //This creates 00.. guid in default formatting
                     }
                 }
             }

@@ -527,7 +527,7 @@ namespace Translator
                     if (_workerDataProcessor.CancellationPending)
                         break;
                     s_LstProcessFunctions[i].Invoke(objDataDoc, _workerDataProcessor);
-                
+
                     _workerDataProcessor.ReportProgress(i * 100 / (intFunctionCount));
                 }
             }
@@ -771,11 +771,11 @@ namespace Translator
                         xmlExistsAttribute.Value = "False";
                         xmlArmorNode.Attributes.Append(xmlExistsAttribute);
                     }
-                    #else
+#else
                     {
                         xmlArmorNodesParent.RemoveChild(xmlArmorNode);
                     }
-                    #endif
+#endif
                 }
             }
 
@@ -870,17 +870,17 @@ namespace Translator
                 }
                 if (xmlDataArmorModNodeList?.SelectSingleNode("mod[id = \"" + xmlArmorModNode["id"]?.InnerText + "\"]") == null)
                 {
-                    #if !DELETE
+#if !DELETE
                     {
                         XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
                         xmlExistsAttribute.Value = "False";
                         xmlArmorModNode.Attributes.Append(xmlExistsAttribute);
                     }
-                    #else
+#else
                     {
                         xmlArmorModNodesParent.RemoveChild(xmlArmorModNode);
                     }
-                    #endif
+#endif
                 }
             }
         }
@@ -3998,111 +3998,8 @@ namespace Translator
                     }
 
                     // Process Metavariants
+                    AuxProcessSubItems(xmlMetatypeNode, xmlDataMetatypeNode, "metavariants", "metavariant", true, objDataDoc, objWorker);
 
-                    XmlNode xmlMetavariantNodesParent = xmlMetatypeNode.SelectSingleNode("metavariants");
-                    XmlNode xmlDataMetavariantNodeList = xmlDataMetatypeNode.SelectSingleNode("metavariants");
-
-                    if (xmlDataMetavariantNodeList != null)
-                    {
-                        if (xmlMetavariantNodesParent == null)
-                        {
-                            xmlMetavariantNodesParent = objDataDoc.CreateElement("metavariants");
-                            xmlMetatypeNode.AppendChild(xmlMetavariantNodesParent);
-                        }
-                        foreach (XmlNode xmlDataMetavariantNode in xmlDataMetavariantNodeList.SelectNodes("metavariant"))
-                        {
-                            if (objWorker.CancellationPending)
-                                return;
-                            string strDataMetavariantName = xmlDataMetavariantNode["name"].InnerText;
-                            XmlNode xmlMetavariantNode = xmlMetavariantNodesParent.SelectSingleNode("metavariant[name=\"" + strDataMetavariantName + "\"]");
-                            if (xmlMetavariantNode != null)
-                            {
-                                if (xmlMetavariantNode["name"] == null)
-                                {
-                                    XmlNode xmlNameElement = objDataDoc.CreateElement("name");
-                                    xmlNameElement.InnerText = strDataMetavariantName;
-                                    xmlMetavariantNode.AppendChild(xmlNameElement);
-                                }
-
-                                if (xmlMetavariantNode["translate"] == null)
-                                {
-                                    XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
-                                    xmlTranslateElement.InnerText = strDataMetavariantName;
-                                    xmlMetavariantNode.AppendChild(xmlTranslateElement);
-                                }
-
-                                XmlNode xmlPage = xmlMetavariantNode["page"];
-                                if (xmlMetavariantNode["altpage"] == null)
-                                {
-                                    string strPage = xmlPage?.InnerText ?? xmlDataMetavariantNode["page"].InnerText;
-                                    XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
-                                    xmlIdElement.InnerText = strPage;
-                                    xmlMetavariantNode.AppendChild(xmlIdElement);
-                                }
-                                if (xmlPage != null)
-                                {
-                                    xmlMetavariantNode.RemoveChild(xmlPage);
-                                }
-                            }
-                            else
-                            {
-                                xmlMetavariantNode = objDataDoc.CreateElement("metavariant");
-
-                                XmlNode xmlNameElement = objDataDoc.CreateElement("name");
-                                xmlNameElement.InnerText = strDataMetavariantName;
-                                xmlMetavariantNode.AppendChild(xmlNameElement);
-
-                                XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
-                                xmlTranslateElement.InnerText = strDataMetavariantName;
-                                xmlMetavariantNode.AppendChild(xmlTranslateElement);
-
-                                XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
-                                xmlPageElement.InnerText = xmlDataMetavariantNode["page"].InnerText;
-                                xmlMetavariantNode.AppendChild(xmlPageElement);
-
-                                xmlMetavariantNodesParent.AppendChild(xmlMetavariantNode);
-                            }
-                        }
-                        foreach (XmlNode xmlMetavariantNode in xmlMetavariantNodesParent.SelectNodes("metavariant"))
-                        {
-                            if (objWorker.CancellationPending)
-                                return;
-                            for (int i = xmlMetavariantNode.Attributes.Count - 1; i >= 0; --i)
-                            {
-                                XmlAttribute xmlAttribute = xmlMetavariantNode.Attributes[i];
-                                if (xmlAttribute.Name != "translated")
-                                    xmlMetavariantNode.Attributes.RemoveAt(i);
-                            }
-                            if (xmlDataMetavariantNodeList?.SelectSingleNode("metavariant[name = \"" + xmlMetavariantNode["name"]?.InnerText + "\"]") == null)
-                            {
-#if !DELETE
-                                {
-                                    XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                                    xmlExistsAttribute.Value = "False";
-                                    xmlMetavariantNode.Attributes.Append(xmlExistsAttribute);
-                                }
-#else
-                                {
-                                    xmlMetavariantNodesParent.RemoveChild(xmlMetavariantNode);
-                                }
-#endif
-                            }
-                        }
-                    }
-                    else if (xmlMetavariantNodesParent != null)
-                    {
-#if !DELETE
-                        {
-                            XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                            xmlExistsAttribute.Value = "False";
-                            xmlMetatypeNode.Attributes.Append(xmlExistsAttribute);
-                        }
-#else
-                        {
-                            xmlMetatypeNode.RemoveChild(xmlMetavariantNodesParent);
-                        }
-#endif
-                    }
                 }
             }
             foreach (XmlNode xmlMetatypeNode in xmlMetatypeNodesParent.SelectNodes("metatype"))
@@ -4944,6 +4841,10 @@ namespace Translator
 
                         xmlPriorityNodesParent.AppendChild(xmlPriorityNode);
                     }
+
+                    // Process Talents
+                    AuxProcessSubItems(xmlPriorityNode, xmlDataPriorityNode, "talents", "talent", false, objDataDoc, objWorker);
+
                 }
             }
             foreach (XmlNode xmlPriorityNode in xmlPriorityNodesParent.SelectNodes("priority"))
@@ -7673,7 +7574,137 @@ namespace Translator
                 }
             }
         }
+
+        /// <summary>
+        /// Process translation of child elements inside individual item elements 
+        /// </summary>
+        /// <param name="xmlItemNode">The item on the translation data</param>
+        /// <param name="xmlDataItemNode">The item on the source data</param>
+        /// <param name="strSubItemParent">Name of the parent tag for the subnodes, ex: "metavariants"</param>
+        /// <param name="strSubItem">Name of the subnodes tag, ex: "metavariant"</param>
+        /// <param name="blnProcessPages">Does the subnodes have page information?</param>
+        /// <param name="objDataDoc">The XmlDocument that holds the translation data</param>
+        /// <param name="objWorker">The BackgroundWorker if it used.</param>
+        private static void AuxProcessSubItems(XmlNode xmlItemNode, XmlNode xmlDataItemNode, string strSubItemParent, string strSubItem, bool blnProcessPages, XmlDocument objDataDoc, BackgroundWorker objWorker = null)
+        {
+            XmlNode xmlSubItemsParent = xmlItemNode.SelectSingleNode(strSubItemParent);
+            XmlNode xmlDataSubItemsList = xmlDataItemNode.SelectSingleNode(strSubItemParent);
+
+            if (xmlDataSubItemsList != null)
+            {
+                if (xmlSubItemsParent == null)
+                {
+                    xmlSubItemsParent = objDataDoc.CreateElement(strSubItemParent);
+                    xmlItemNode.AppendChild(xmlSubItemsParent);
+                }
+                foreach (XmlNode xmlDataSubItem in xmlDataSubItemsList.SelectNodes(strSubItem))
+                {
+                    if (objWorker?.CancellationPending ?? false)
+                        return;
+                    string strDataSubItemName = xmlDataSubItem["name"].InnerText;
+                    XmlNode xmlSubItem = xmlSubItemsParent.SelectSingleNode(strSubItem + "[name=\"" + strDataSubItemName + "\"]");
+                    if (xmlSubItem != null)
+                    {
+                        if (xmlSubItem["name"] == null)
+                        {
+                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            xmlNameElement.InnerText = strDataSubItemName;
+                            xmlSubItem.AppendChild(xmlNameElement);
+                        }
+
+                        if (xmlSubItem["translate"] == null)
+                        {
+                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            xmlTranslateElement.InnerText = strDataSubItemName;
+                            xmlSubItem.AppendChild(xmlTranslateElement);
+                        }
+                        // do we process pages?
+                        if (blnProcessPages)
+                        {
+                            XmlNode xmlPage = xmlSubItem["page"];
+                            if (xmlSubItem["altpage"] == null)
+                            {
+                                string strPage = xmlPage?.InnerText ?? xmlDataSubItem["page"].InnerText;
+                                XmlNode xmlIdElement = objDataDoc.CreateElement("altpage");
+                                xmlIdElement.InnerText = strPage;
+                                xmlSubItem.AppendChild(xmlIdElement);
+                            }
+                            if (xmlPage != null)
+                            {
+                                xmlSubItem.RemoveChild(xmlPage);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        xmlSubItem = objDataDoc.CreateElement(strSubItem);
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        xmlNameElement.InnerText = strDataSubItemName;
+                        xmlSubItem.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataSubItemName;
+                        xmlSubItem.AppendChild(xmlTranslateElement);
+
+                        // do we process pages?
+                        if (blnProcessPages)
+                        {
+                            XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                            xmlPageElement.InnerText = xmlDataSubItem["page"].InnerText;
+                            xmlSubItem.AppendChild(xmlPageElement);
+                        }
+
+                        xmlSubItemsParent.AppendChild(xmlSubItem);
+                    }
+                }
+                foreach (XmlNode xmlSubItem in xmlSubItemsParent.SelectNodes(strSubItem))
+                {
+                    if (objWorker?.CancellationPending ?? false)
+                        return;
+                    for (int i = xmlSubItem.Attributes.Count - 1; i >= 0; --i)
+                    {
+                        XmlAttribute xmlAttribute = xmlSubItem.Attributes[i];
+                        if (xmlAttribute.Name != "translated")
+                            xmlSubItem.Attributes.RemoveAt(i);
+                    }
+                    if (xmlDataSubItemsList?.SelectSingleNode(strSubItem + "[name = \"" + xmlSubItem["name"]?.InnerText + "\"]") == null)
+                    {
+#if !DELETE
+                                {
+                                    XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                    xmlExistsAttribute.Value = "False";
+                                    xmlSubItem.Attributes.Append(xmlExistsAttribute);
+                                }
+#else
+                        {
+                            xmlSubItemsParent.RemoveChild(xmlSubItem);
+                        }
+#endif
+                    }
+                }
+            }
+            else if (xmlSubItemsParent != null)
+            {
+#if !DELETE
+                        {
+                            XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                            xmlExistsAttribute.Value = "False";
+                            xmlSubItem.Attributes.Append(xmlExistsAttribute);
+                        }
+#else
+                {
+                    xmlItemNode.RemoveChild(xmlSubItemsParent);
+                }
+#endif
+            }
+        }
+
+
+
         #endregion Data Processing
+
+
 
         #region Properties
         public IList<frmTranslate> OpenTranslateWindows

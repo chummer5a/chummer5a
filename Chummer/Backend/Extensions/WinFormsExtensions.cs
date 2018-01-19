@@ -66,7 +66,7 @@ namespace Chummer
         /// <param name="objNode">TreeNode to search.</param>
         public static TreeNode FindNode(this TreeNode objNode, string strGuid)
         {
-            if (objNode != null && strGuid != Guid.Empty.ToString("D"))
+            if (objNode != null && !strGuid.IsEmptyGuid())
             {
                 TreeNode objFound;
                 foreach (TreeNode objChild in objNode.Nodes)
@@ -134,7 +134,7 @@ namespace Chummer
         /// <param name="treTree">TreeView to search.</param>
         public static TreeNode FindNode(this TreeView treTree, string strGuid, bool blnDeep = true)
         {
-            if (treTree != null && !string.IsNullOrEmpty(strGuid) && strGuid != Guid.Empty.ToString("D"))
+            if (treTree != null && !string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
                 TreeNode objFound;
                 foreach (TreeNode objNode in treTree.Nodes)

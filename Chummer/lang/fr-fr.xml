@@ -7140,14 +7140,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Echo:</text>
     </string>
     <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>Cet element ne peut pas être supprimé car elle a été acquise comme un bonus d'initiation.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Impossible de supprimer ce sort</text>
-    </string>
-    <string>
       <key>Message_ConfirmKarmaandNuyenExpense</key>
       <text>Etes-vous sûr de vouloir dépenser {2} Karma et {3} Nuyens pour améliorer de {0} à {1} ?</text>
     </string>

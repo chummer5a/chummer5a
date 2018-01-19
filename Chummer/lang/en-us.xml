@@ -1772,6 +1772,10 @@
       <text>Are you sure you want to remove this Metatype Quality for {0}?</text>
     </string>
     <string>
+      <key>Message_LowerMetatypeQualityLevel</key>
+      <text>Are you sure you want to remove a level from this Metatype Quality for {0}?</text>
+    </string>
+    <string>
       <key>Message_DeleteKnowledgeSkill</key>
       <text>Are you sure you want to delete this Knowledge Skill?</text>
     </string>
@@ -1934,14 +1938,6 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Cannot Remove Cyberware</text>
-    </string>
-    <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>This item cannot be removed because it was acquired as an initiation bonus.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Cannot Remove Spell</text>
     </string>
     <string>
       <key>Message_ComplexFormLimitCareer</key>

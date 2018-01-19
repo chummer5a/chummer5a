@@ -253,7 +253,9 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            string strGuid = objSelectedNode.Tag.ToString();
+            string strGuid = objSelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                return;
             LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
@@ -275,8 +277,6 @@ namespace Chummer
             string strCondition = frmPickLimitModifier.SelectedCondition;
             objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
             objLimitModifier.Guid = new Guid(strGuid);
-            if (objLimitModifier.InternalId == Guid.Empty.ToString("D"))
-                return;
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
@@ -1165,6 +1165,92 @@ namespace Chummer
             TreeNode objSelectedNode = treVehicles.FindNode(strSelectedId);
             if (objSelectedNode != null)
                 treVehicles.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Populate the list of Bonded Foci.
+        /// </summary>
+        public void PopulateFocusList(TreeView treFoci, ContextMenuStrip cmsGear)
+        {
+            string strSelectedId = treFoci.SelectedNode?.Tag.ToString();
+
+            treFoci.Nodes.Clear();
+
+            int intFociTotal = 0;
+            bool blnWarned = false;
+
+            int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
+            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+            foreach (Gear objGear in _objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
+            {
+                List<Focus> lstRemoveFoci = new List<Focus>();
+                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                foreach (Focus objFocus in _objCharacter.Foci)
+                {
+                    if (objFocus.GearId == objGear.InternalId)
+                    {
+                        objNode.Checked = true;
+                        objFocus.Rating = objGear.Rating;
+                        intFociTotal += objFocus.Rating;
+                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
+                        if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                        {
+                            // Mark the Gear a Bonded.
+                            foreach (Gear objCharacterGear in _objCharacter.Gear)
+                            {
+                                if (objCharacterGear.InternalId == objFocus.GearId)
+                                    objCharacterGear.Bonded = false;
+                            }
+                            lstRemoveFoci.Add(objFocus);
+                            if (!blnWarned)
+                            {
+                                objNode.Checked = false;
+                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                blnWarned = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach (Focus objFocus in lstRemoveFoci)
+                {
+                    _objCharacter.Foci.Remove(objFocus);
+                }
+                treFoci.Nodes.Add(objNode);
+            }
+
+            // Add Stacked Foci.
+            foreach (Gear objGear in _objCharacter.Gear)
+            {
+                if (objGear.Category == "Stacked Focus")
+                {
+                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                    {
+                        if (objStack.GearId == objGear.InternalId)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+
+                            if (objStack.Bonded)
+                            {
+                                foreach (Gear objFociGear in objStack.Gear)
+                                {
+                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    if (objFociGear.WirelessOn)
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                }
+                            }
+
+                            treFoci.Nodes.Add(objStack.CreateTreeNode(objGear, null));
+                        }
+                    }
+                }
+            }
+
+            treFoci.SortCustom(strSelectedId);
         }
 
         protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique)

@@ -3650,89 +3650,38 @@ namespace Chummer
 
             return strMessage;
         }
+
+        /// <summary>
+        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
+        /// </summary>
+        public HashSet<string> GenerateBlackMarketMappings(XmlDocument xmlCategoryDocument)
+        {
+            HashSet<string> setBlackMarketMaps = new HashSet<string>();
+            // Character has no Black Market discount qualities. Fail out early. 
+            if (BlackMarketDiscount)
+            {
+                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
+                HashSet<string> setNames = new HashSet<string>();
+                foreach (Improvement objImprovement in Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.BlackMarketDiscount && objImprovement.Enabled)
+                        setNames.Add(objImprovement.ImprovedName);
+                }
+                // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement. 
+                foreach (XmlNode xmlCategoryNode in xmlCategoryDocument.SelectNodes("/chummer/categories/category"))
+                {
+                    string strBlackMarketAttribute = xmlCategoryNode.Attributes?["blackmarket"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBlackMarketAttribute) && strBlackMarketAttribute.Split(',').Any(x => setNames.Contains(x)))
+                    {
+                        setBlackMarketMaps.Add(xmlCategoryNode.InnerText);
+                    }
+                }
+            }
+            return setBlackMarketMaps;
+        }
         #endregion
 
         #region UI Methods
-        /// <summary>
-        /// Populate the list of Bonded Foci.
-        /// </summary>
-        public void PopulateFocusList(TreeView treFoci, ContextMenuStrip cmsGear)
-        {
-            treFoci.Nodes.Clear();
-            int intFociTotal = 0;
-            bool blnWarned = false;
-
-            int intMaxFocusTotal = MAG.TotalValue * 5;
-            if (Options.MysAdeptSecondMAGAttribute && IsMysticAdept)
-                intMaxFocusTotal = Math.Min(intMaxFocusTotal, MAGAdept.TotalValue * 5);
-            foreach (Gear objGear in Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
-            {
-                List<Focus> lstRemoveFoci = new List<Focus>();
-                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
-                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
-                foreach (Focus objFocus in Foci)
-                {
-                    if (objFocus.GearId == objGear.InternalId)
-                    {
-                        objNode.Checked = true;
-                        objFocus.Rating = objGear.Rating;
-                        intFociTotal += objFocus.Rating;
-                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                        if (intFociTotal > intMaxFocusTotal && !IgnoreRules)
-                        {
-                            // Mark the Gear a Bonded.
-                            foreach (Gear objCharacterGear in Gear)
-                            {
-                                if (objCharacterGear.InternalId == objFocus.GearId)
-                                    objCharacterGear.Bonded = false;
-                            }
-                            lstRemoveFoci.Add(objFocus);
-                            if (!blnWarned)
-                            {
-                                objNode.Checked = false;
-                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                blnWarned = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    Foci.Remove(objFocus);
-                }
-                treFoci.Nodes.Add(objNode);
-            }
-
-            // Add Stacked Foci.
-            foreach (Gear objGear in Gear)
-            {
-                if (objGear.Category == "Stacked Focus")
-                {
-                    foreach (StackedFocus objStack in StackedFoci)
-                    {
-                        if (objStack.GearId == objGear.InternalId)
-                        {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-
-                            if (objStack.Bonded)
-                            {
-                                foreach (Gear objFociGear in objStack.Gear)
-                                {
-                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                        ImprovementManager.ForcedValue = objFociGear.Extra;
-                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
-                                    if (objFociGear.WirelessOn)
-                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
-                                }
-                            }
-
-                            treFoci.Nodes.Add(objStack.CreateTreeNode(objGear, null));
-                        }
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Verify that the user wants to delete an item.
@@ -3761,59 +3710,77 @@ namespace Chummer
         /// Clear all Spell tab elements from the character.
         /// </summary>
         /// <param name="treSpells"></param>
-        public void ClearSpellTab(TreeView treSpells)
+        public void ClearMagic()
         {
             // Run through all of the Spells and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, string.Empty);
+            for (int i = Spells.Count - 1; i >= 0; --i)
+            {
+                Spell objToRemove = Spells[i];
+                if (objToRemove.Grade == 0)
+                {
+                    // Remove the Improvements created by the Spell.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, objToRemove.InternalId);
+                    Spells.RemoveAt(i);
+                }
+            }
 
-            // Clear the list of Spells.
-            foreach (TreeNode objNode in treSpells.Nodes)
-                objNode.Nodes.Clear();
-
-            Spells.Clear();
             ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Spirit);
         }
 
         /// <summary>
         /// Clear all Adept tab elements from the character.
         /// </summary>
-        public void ClearAdeptTab()
+        public void ClearAdeptPowers()
         {
-            // Run through all of the Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, string.Empty);
-
-            Powers.Clear();
+            // Run through all powers and remove the ones not added by improvements or foci
+            for (int i = Powers.Count - 1; i >= 0; --i)
+            {
+                Power objToRemove = Powers[i];
+                if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                {
+                    // Remove the Improvements created by the Power.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, objToRemove.InternalId);
+                    Powers.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
         /// Clear all Technomancer tab elements from the character.
         /// </summary>
-        public void ClearTechnomancerTab(TreeView treComplexForms)
+        public void ClearResonance()
         {
             // Run through all of the Complex Forms and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, string.Empty);
-
-            // Clear the list of Complex Forms.
-            foreach (TreeNode objNode in treComplexForms.Nodes)
-                objNode.Nodes.Clear();
+            for (int i = ComplexForms.Count - 1; i >= 0; --i)
+            {
+                ComplexForm objToRemove = ComplexForms[i];
+                if (objToRemove.Grade == 0)
+                {
+                    // Remove the Improvements created by the Spell.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, objToRemove.InternalId);
+                    ComplexForms.RemoveAt(i);
+                }
+            }
 
             ((List<Spirit>)Spirits).RemoveAll(x => x.EntityType == SpiritType.Sprite);
-            ComplexForms.Clear();
         }
 
         /// <summary>
         /// Clear all Advanced Programs tab elements from the character.
         /// </summary>
-        public void ClearAdvancedProgramsTab(TreeView treAIPrograms)
+        public void ClearAdvancedPrograms()
         {
-            // Run through all of the Advanced Programs and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, string.Empty);
-
-            // Clear the list of Advanced Programs.
-            foreach (TreeNode objNode in treAIPrograms.Nodes)
-                objNode.Nodes.Clear();
-
-            AIPrograms.Clear();
+            // Run through all advanced programs and remove the ones not added by improvements
+            for (int i = AIPrograms.Count - 1; i >= 0; --i)
+            {
+                AIProgram objToRemove = AIPrograms[i];
+                if (objToRemove.CanDelete)
+                {
+                    // Remove the Improvements created by the Program.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, objToRemove.InternalId);
+                    AIPrograms.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
@@ -3826,25 +3793,17 @@ namespace Chummer
                 objCyberware.DeleteCyberware(treWeapons, treVehicles);
             }
             Cyberware.Clear();
-
-            // Clear the list of Advanced Programs.
-            // Remove the item from the TreeView.
-            foreach (TreeNode objNode in treCyberware.Nodes)
-                objNode.Nodes.Clear();
+            
             treCyberware.Nodes.Clear();
         }
 
         /// <summary>
         /// Clear all Critter tab elements from the character.
         /// </summary>
-        public void ClearCritterTab(TreeView treCritterPowers)
+        public void ClearCritterPowers()
         {
             // Run through all of the Critter Powers and remove their Improvements.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, string.Empty);
-
-            // Clear the list of Critter Powers.
-            foreach (TreeNode objNode in treCritterPowers.Nodes)
-                objNode.Nodes.Clear();
 
             CritterPowers.Clear();
         }
