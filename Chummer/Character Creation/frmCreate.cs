@@ -14691,7 +14691,7 @@ namespace Chummer
         private void RefreshSelectedVehicle()
         {
             _blnSkipRefresh = true;
-            cmdDeleteVehicle.Enabled = treVehicles.SelectedNode != null && treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedVehicles" && treVehicles.SelectedNode.Tag.ToString() != "String_WeaponMounts";
+            cmdDeleteVehicle.Enabled = treVehicles.SelectedNode != null && treVehicles.SelectedNode.Tag.ToString() != "Node_SelectedVehicles" && treVehicles.SelectedNode.Tag.ToString() != "String_WeaponMounts";
             cmdVehicleCyberwareChangeMount.Visible = false;
             nudVehicleGearQty.Enabled = false;
 
