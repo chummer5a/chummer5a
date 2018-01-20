@@ -17055,7 +17055,7 @@ namespace Chummer
 
         private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh || treCyberware.SelectedNode == null)
+            if (_blnSkipRefresh || treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
                 return;
 
             // Locate the selected Cyberware.
@@ -18011,6 +18011,7 @@ namespace Chummer
             lblCyberFirewallLabel.Visible = false;
             cmdDeleteCyberware.Enabled = treCyberware.SelectedNode != null && treCyberware.SelectedNode.Level != 0;
             cmdCyberwareChangeMount.Visible = false;
+            tabCyberwareCM.Visible = false;
 
             chkCyberwareActiveCommlink.Visible = false;
             chkCyberwareHomeNode.Visible = false;
