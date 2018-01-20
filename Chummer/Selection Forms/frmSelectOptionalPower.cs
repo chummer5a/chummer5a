@@ -26,13 +26,13 @@ namespace Chummer
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
+        private readonly List<Tuple<string, KeyValuePair<string, string>>> _lstPowers = new List<Tuple<string, KeyValuePair<string, string>>>();
 
         #region Control Events
         public frmSelectOptionalPower()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -99,11 +99,10 @@ namespace Chummer
         /// <param name="strValue">Single Power to display.</param>
         public void SinglePower(string strValue)
         {
-            List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
-            lstItems.Add(objItem);
+            List<ListItem> lstItems = new List<ListItem>
+            {
+                new ListItem(strValue, strValue)
+            };
             cboPower.BeginUpdate();
             cboPower.DataSource = null;
             cboPower.ValueMember = "Value";
@@ -124,7 +123,7 @@ namespace Chummer
                 string strName = lstObject.Key;
                 if (!string.IsNullOrEmpty(lstObject.Value))
                 {
-                    strName += " (" + lstObject.Value + ")";
+                    strName += " (" + lstObject.Value + ')';
                 }
                 _lstPowers.Add(new Tuple<string, KeyValuePair<string, string>>(strName, lstObject));
             }

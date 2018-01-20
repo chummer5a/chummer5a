@@ -33,7 +33,7 @@ namespace Chummer
         public frmReload()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             MoveControls();
         }
 
@@ -44,36 +44,33 @@ namespace Chummer
             // Add each of the items to a new List since we need to also grab their plugin information.
             foreach (Gear objGear in _lstAmmo)
             {
-                ListItem objAmmo = new ListItem();
-                objAmmo.Value = objGear.InternalId;
-                objAmmo.Name = objGear.DisplayNameShort;
-                objAmmo.Name += " x" + objGear.Quantity.ToString();
+                string strName = objGear.DisplayNameShort(GlobalOptions.Language) + " x" + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo);
                 if (objGear.Parent != null)
                 {
-                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort))
+                    if (!string.IsNullOrEmpty(objGear.Parent.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        objAmmo.Name += " (" + objGear.Parent.DisplayNameShort;
+                        strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
                         if (!string.IsNullOrEmpty(objGear.Parent.Location))
-                            objAmmo.Name += " @ " + objGear.Parent.Location;
-                        objAmmo.Name += ")";
+                            strName += " @ " + objGear.Parent.Location;
+                        strName += ')';
                     }
                 }
                 else if (!string.IsNullOrEmpty(objGear.Location))
-                    objAmmo.Name += " (" + objGear.Location + ")";
+                    strName += " (" + objGear.Location + ')';
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
                     string strPlugins = string.Empty;
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort + ", ";
+                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
                     }
                     // Remove the trailing comma.
                     strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
                     // Append the plugin information to the name.
-                    objAmmo.Name += " [" + strPlugins + "]";
+                    strName += " [" + strPlugins + "]";
                 }
-                lstAmmo.Add(objAmmo);
+                lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }
 
             // Populate the lists.

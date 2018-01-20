@@ -35,7 +35,7 @@ namespace Chummer
         public frmSelectSkillGroup()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objXmlDocument = XmlManager.Load("skills.xml");
         }
 
@@ -67,22 +67,16 @@ namespace Chummer
 
                     if (blnAdd)
                     {
-                        ListItem objItem = new ListItem();
-                        objItem.Value = objXmlSkill.InnerText;
-                        objItem.Name = objXmlSkill.Attributes["translate"]?.InnerText ?? objXmlSkill.InnerText;
-                        lstGroups.Add(objItem);
+                        string strInnerText = objXmlSkill.InnerText;
+                        lstGroups.Add(new ListItem(strInnerText, objXmlSkill.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
             }
             else
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = _strForceValue;
-                objItem.Name = _strForceValue;
-                lstGroups.Add(objItem);
+                lstGroups.Add(new ListItem(_strForceValue, _strForceValue));
             }
-            SortListItem objSort = new SortListItem();
-            lstGroups.Sort(objSort.Compare);
+            lstGroups.Sort(CompareListItems.CompareNames);
             cboSkillGroup.BeginUpdate();
             cboSkillGroup.ValueMember = "Value";
             cboSkillGroup.DisplayMember = "Name";

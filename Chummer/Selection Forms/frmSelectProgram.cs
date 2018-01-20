@@ -28,9 +28,9 @@ namespace Chummer
     public partial class frmSelectProgram : Form
     {
         private string _strSelectedProgram = string.Empty;
+        private string _strForceComplexForm = string.Empty;
 
         private bool _blnAddAgain = false;
-        private string _strLimitCategory = string.Empty;
         private readonly Character _objCharacter;
 
         private readonly XmlDocument _objXmlDocument = null;
@@ -41,7 +41,7 @@ namespace Chummer
         public frmSelectProgram(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Programs information.
@@ -50,64 +50,36 @@ namespace Chummer
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
+            // If a value is forced, set the name of the complex form and accept the form.
+            if (!string.IsNullOrEmpty(_strForceComplexForm))
+            {
+                _strSelectedProgram = _strForceComplexForm;
+                DialogResult = DialogResult.OK;
+            }
+
             foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + _objCharacter.Options.BookXPath() + "]");
-
-            bool blnCheckForOptional = false;
-            XmlNode objXmlCritter = null;
-            if (_objCharacter.IsCritter)
-            {
-                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
-                objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
-                    blnCheckForOptional = true;
-            }
-
-            /*
-            // Check to see if the character has the Biowire Echo.
-            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-            {
-                if (objMetamagic.Name == "Biowire")
-                    _blnBiowireEnabled = true;
-            }
-            */
-
-            trePrograms.TreeViewNodeSorter = new SortByName();
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
-            {
-                bool blnAdd = true;
-                TreeNode nodProgram = new TreeNode();
-                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["id"].InnerText;
-
-                // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (blnCheckForOptional)
-                {
-                    blnAdd = false;
-                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
-                    {
-                        if (objXmlForm.InnerText == objXmlProgram["name"].InnerText)
-                            blnAdd = true;
-                    }
-                }
-
-                // Add the Program to the Category node.
-                if (blnAdd)
-                    trePrograms.Nodes.Add(nodProgram);
-            }
-            trePrograms.Nodes[0].Expand();
+            BuildComplexFormList();
         }
 
-        private void trePrograms_AfterSelect(object sender, TreeViewEventArgs e)
+        private void lstPrograms_SelectedIndexChanged(object sender, EventArgs e)
         {
+            string strSelectedComplexFormId = lstPrograms.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedComplexFormId))
+            {
+                lblDuration.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                lblFV.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+                return;
+            }
+
             // Display the Program information.
-            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + trePrograms.SelectedNode.Tag + "\"]");
+            XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + strSelectedComplexFormId + "\"]");
             if (objXmlProgram != null)
             {
                 string strDuration = objXmlProgram["duration"].InnerText;
@@ -118,29 +90,27 @@ namespace Chummer
                 lblTarget.Text = strTarget;
                 lblFV.Text = strFV;
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlProgram["source"].InnerText);
-                string strPage = objXmlProgram["page"].InnerText;
-                if (objXmlProgram["altpage"] != null)
-                    strPage = objXmlProgram["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
+                string strBook = CommonFunctions.LanguageBookShort(objXmlProgram["source"].InnerText, GlobalOptions.Language);
+                string strPage = objXmlProgram["altpage"]?.InnerText ?? objXmlProgram["page"].InnerText;
+                lblSource.Text = strBook + ' ' + strPage;
 
                 tipTooltip.SetToolTip(lblSource,
-                    _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " +
-                    LanguageManager.GetString("String_Page") + " " + strPage);
+                    CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + ' ' +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null)
+            if (lstPrograms.SelectedValue != null)
             {
                 AcceptForm();
             }
         }
 
-        private void trePrograms_DoubleClick(object sender, EventArgs e)
+        private void lstPrograms_DoubleClick(object sender, EventArgs e)
         {
-            if (trePrograms.SelectedNode != null)
+            if (lstPrograms.SelectedValue != null)
             {
                 AcceptForm();
             }
@@ -159,47 +129,31 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/complexforms/complexform[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-
-            trePrograms.Nodes.Clear();
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
-            trePrograms.TreeViewNodeSorter = new SortByName();
-            foreach (XmlNode objXmlProgram in objXmlNodeList)
-            {
-                TreeNode nodProgram = new TreeNode();
-                nodProgram.Text = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                nodProgram.Tag = objXmlProgram["id"].InnerText;
-                trePrograms.Nodes.Add(nodProgram);
-            }
+            BuildComplexFormList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (trePrograms.SelectedNode == null)
+            if (lstPrograms.SelectedIndex == -1)
             {
-                if (trePrograms.Nodes.Count > 0)
-                    trePrograms.SelectedNode = trePrograms.Nodes[0];
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = 0;
             }
             if (e.KeyCode == Keys.Down)
             {
-                if (trePrograms.SelectedNode != null)
-                {
-                    trePrograms.SelectedNode = trePrograms.SelectedNode.NextVisibleNode;
-                    if (trePrograms.SelectedNode == null)
-                        trePrograms.SelectedNode = trePrograms.Nodes[0];
-                }
+                int intNewIndex = lstPrograms.SelectedIndex + 1;
+                if (intNewIndex >= lstPrograms.Items.Count)
+                    intNewIndex = 0;
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = intNewIndex;
             }
             if (e.KeyCode == Keys.Up)
             {
-                if (trePrograms.SelectedNode != null)
-                {
-                    trePrograms.SelectedNode = trePrograms.SelectedNode.PrevVisibleNode;
-                    if (trePrograms.SelectedNode == null && trePrograms.Nodes.Count > 0)
-                        trePrograms.SelectedNode = trePrograms.Nodes[trePrograms.Nodes.Count - 1].LastNode;
-                }
+                int intNewIndex = lstPrograms.SelectedIndex - 1;
+                if (intNewIndex <= 0)
+                    intNewIndex = lstPrograms.Items.Count - 1;
+                if (lstPrograms.Items.Count > 0)
+                    lstPrograms.SelectedIndex = intNewIndex;
             }
         }
 
@@ -223,6 +177,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Force a particular Complex Form to be selected.
+        /// </summary>
+        public string ForceComplexFormName
+        {
+            set
+            {
+                _strForceComplexForm = value;
+            }
+        }
+
+        /// <summary>
         /// Program that was selected in the dialogue.
         /// </summary>
         public string SelectedProgram
@@ -235,12 +200,70 @@ namespace Chummer
         #endregion
 
         #region Methods
+        private void BuildComplexFormList()
+        {
+            bool blnCheckForOptional = false;
+            XmlNode objXmlCritter = null;
+            if (_objCharacter.IsCritter)
+            {
+                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
+                objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
+                if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
+                    blnCheckForOptional = true;
+            }
+
+            string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            // Populate the Program list.
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + ']');
+
+            List<ListItem> lstComplexFormItems = new List<ListItem>();
+            foreach (XmlNode objXmlProgram in objXmlNodeList)
+            {
+                string strName = objXmlProgram["name"]?.InnerText ?? string.Empty;
+                // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
+                if (blnCheckForOptional)
+                {
+                    bool blnAdd = false;
+                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
+                    {
+                        if (objXmlForm.InnerText == strName)
+                        {
+                            blnAdd = true;
+                            break;
+                        }
+                    }
+                    if (!blnAdd)
+                        continue;
+                }
+
+                lstComplexFormItems.Add(new ListItem(objXmlProgram["id"].InnerText, objXmlProgram["translate"]?.InnerText ?? strName));
+            }
+
+            lstComplexFormItems.Sort(CompareListItems.CompareNames);
+            lstPrograms.BeginUpdate();
+            lstPrograms.DataSource = null;
+            lstPrograms.ValueMember = "Value";
+            lstPrograms.DisplayMember = "Name";
+            lstPrograms.DataSource = lstComplexFormItems;
+            lstPrograms.EndUpdate();
+        }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedProgram = trePrograms.SelectedNode.Tag.ToString();
+            string strSelectedItem = lstPrograms.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedItem))
+                return;
+            _strSelectedProgram = strSelectedItem;
             DialogResult = DialogResult.OK;
         }
 
@@ -259,10 +282,5 @@ namespace Chummer
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

@@ -1,6 +1,6 @@
 namespace Chummer.UI.Skills
 {
-    partial class KnowledgeSkillControl
+    public sealed partial class KnowledgeSkillControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -39,8 +39,8 @@ namespace Chummer.UI.Skills
             this.lblSpec = new System.Windows.Forms.Label();
             this.btnCareerIncrease = new System.Windows.Forms.Button();
             this.btnAddSpec = new System.Windows.Forms.Button();
-            this.nudSkill = new Chummer.helpers.NumericUpDownEx();
-            this.nudKarma = new Chummer.helpers.NumericUpDownEx();
+            this.nudSkill = new NumericUpDownEx();
+            this.nudKarma = new NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.nudSkill)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarma)).BeginInit();
             this.SuspendLayout();
@@ -93,9 +93,6 @@ namespace Chummer.UI.Skills
             this.cboSkill.Size = new System.Drawing.Size(190, 21);
             this.cboSkill.Sorted = true;
             this.cboSkill.TabIndex = 20;
-            this.cboSkill.SelectedIndexChanged += new System.EventHandler(this.cboSkill_TextChanged);
-            this.cboSkill.SelectionChangeCommitted += new System.EventHandler(this.cboSkill_TextChanged);
-            this.cboSkill.TextChanged += new System.EventHandler(this.cboSkill_TextChanged);
             // 
             // cboType
             // 
@@ -161,7 +158,7 @@ namespace Chummer.UI.Skills
             // 
             // nudSkill
             // 
-            this.nudSkill.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudSkill.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudSkill.Location = new System.Drawing.Point(206, 2);
             this.nudSkill.Maximum = new decimal(new int[] {
             99,
@@ -174,7 +171,7 @@ namespace Chummer.UI.Skills
             // 
             // nudKarma
             // 
-            this.nudKarma.InterceptMouseWheel = Chummer.helpers.NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
+            this.nudKarma.InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver;
             this.nudKarma.Location = new System.Drawing.Point(248, 2);
             this.nudKarma.Maximum = new decimal(new int[] {
             99,
@@ -213,8 +210,8 @@ namespace Chummer.UI.Skills
         }
 
         #endregion
-        private Chummer.helpers.NumericUpDownEx nudKarma;
-        private Chummer.helpers.NumericUpDownEx nudSkill;
+        private NumericUpDownEx nudKarma;
+        private NumericUpDownEx nudSkill;
         private System.Windows.Forms.Label lblModifiedRating;
         private System.Windows.Forms.ComboBox cboSpec;
         private System.Windows.Forms.CheckBox chkKarma;

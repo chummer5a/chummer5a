@@ -96,7 +96,7 @@
                     </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="ess" minOccurs="0" maxOccurs="1">
+            <xs:element name="ess" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                     <xs:simpleContent>
                         <xs:extension base="xs:string">

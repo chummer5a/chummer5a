@@ -94,25 +94,18 @@
       <HintPath>..\packages\HtmlRenderer.Core.1.5.1-beta1\lib\net45\HtmlRenderer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HtmlRenderer.PdfSharp, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlRenderer.PdfSharp.1.5.1-beta1\lib\net45\HtmlRenderer.PdfSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.1-beta1\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.12.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.12\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="MersenneTwister, Version=1.0.6146.4688, Culture=neutral, PublicKeyToken=9c84633ec57842f3, processorArchitecture=MSIL">
       <HintPath>..\packages\MersenneTwister.1.0.5\lib\portable-net45+netcore45+win8+wp8\MersenneTwister.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp, Version=1.50.4619.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.50.4619-beta4c\lib\net20\PdfSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Charting, Version=1.50.4619.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.1.50.4619-beta4c\lib\net20\PdfSharp.Charting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -137,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
+    <Compile Include="Backend\Datastructures\AvailabilityString.cs" />
+    <Compile Include="Backend\Datastructures\NuyenString.cs" />
+    <Compile Include="Backend\Datastructures\SourceString.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
@@ -154,9 +150,7 @@
     <Compile Include="Backend\Debugging\ExceptionHeatMap.cs" />
     <Compile Include="Backend\Equipment\Armor.cs" />
     <Compile Include="Backend\Equipment\CapacityStyle.cs" />
-    <Compile Include="Backend\Equipment\Commlink.cs" />
     <Compile Include="Backend\Equipment\Cyberware.cs" />
-    <Compile Include="Backend\Equipment\Equipment.cs" />
     <Compile Include="Backend\Equipment\Gear.cs" />
     <Compile Include="Backend\Equipment\Grade.cs" />
     <Compile Include="Backend\Equipment\Lifestyle.cs" />
@@ -191,10 +185,10 @@
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
     <Compile Include="Classes\clsCommon.cs" />
-    <Compile Include="Classes\clsCrashreport.cs" />
+    <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
     <Compile Include="Classes\clsCharacter.cs" />
-    <Compile Include="Classes\clsHoverDisplayCordinator.cs" />
+    <Compile Include="Classes\clsHoverDisplayCoordinator.cs" />
     <Compile Include="Classes\clsImprovement.cs" />
     <Compile Include="Classes\clsExpenses.cs" />
     <Compile Include="Classes\clsLanguageManager.cs" />
@@ -226,6 +220,9 @@
     <Compile Include="frmCreateWeaponMount.Designer.cs">
       <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\ElasticComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="helpers\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -235,7 +232,11 @@
     <Compile Include="helpers\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interfaces\INamedItemWithGuid.cs" />
+    <Compile Include="Interfaces\IHasChildren.cs" />
+    <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
+    <Compile Include="Interfaces\IHasMugshots.cs" />
+    <Compile Include="Interfaces\IHasInternalId.cs" />
+    <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -257,7 +258,6 @@
     <Compile Include="Controls\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="controllers\clsDashboardController.cs" />
     <Compile Include="Controls\DiceRollerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -745,11 +745,11 @@
     <Compile Include="Selection Forms\frmSelectText.Designer.cs">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="frmChummerMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="frmChummerMain.Designer.cs">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectWeaponAccessory.cs">
       <SubType>Form</SubType>
@@ -1118,8 +1118,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectText.resx">
       <DependentUpon>frmSelectText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="frmChummerMain.resx">
+      <DependentUpon>frmChummerMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectWeaponAccessory.resx">
@@ -1185,146 +1185,162 @@
     </None>
     <None Include="Chummer_TemporaryKey.pfx" />
     <None Include="data\armor.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\bioware.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\bonuses.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xsc">
       <DependentUpon>books.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\books.xss">
       <DependentUpon>books.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\character.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\complexforms.xsd" />
+    <None Include="data\complexforms.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\critterpowers.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\critters.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\cyberware.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\echoes.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\gear.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xsc">
       <DependentUpon>lifestyles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\lifestyles.xss">
       <DependentUpon>lifestyles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\martialarts.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\mentors.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\metamagic.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\metatypes.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\packs.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\paragons.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\powers.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\programs.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\qualities.xsd">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xsc">
       <DependentUpon>ranges.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\conditions.xsd">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\ranges.xss">
       <DependentUpon>ranges.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xsc">
       <DependentUpon>skills.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\skills.xss">
       <DependentUpon>skills.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\spells.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xsc">
       <DependentUpon>streams.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\streams.xss">
       <DependentUpon>streams.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xsc">
       <DependentUpon>traditions.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\traditions.xss">
       <DependentUpon>traditions.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xsc">
       <DependentUpon>vehicles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vehicles.xss">
       <DependentUpon>vehicles.xsd</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\vessels.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xsc">
       <DependentUpon>weapons.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\weapons.xss">
       <DependentUpon>weapons.xsd</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Documentation\Lifemodule.md" />
     <None Include="lang\language.xsc">
@@ -1599,7 +1615,23 @@
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\amend_AdapsinMultiplier_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml" />
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml" />
+    <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml" />
+    <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rainforest Carbine Missions Errata\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\ShadowNET Rules\amend_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1660,6 +1692,7 @@
     <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml" />
     <Content Include="data\sheets.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2146,6 +2179,7 @@
     <Content Include="icons\html_delete.png" />
     <Content Include="icons\html_go.png" />
     <Content Include="icons\html_valid.png" />
+    <Content Include="icons\icons8-discord-16.png" />
     <Content Include="icons\image.png" />
     <Content Include="icons\images.png" />
     <Content Include="icons\image_add.png" />
@@ -2648,6 +2682,12 @@
     <Content Include="icons\zoom.png" />
     <Content Include="icons\zoom_in.png" />
     <Content Include="icons\zoom_out.png" />
+    <Content Include="lang\pt-br.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lang\pt-br_data.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="LICENSES-MersenneTwister.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2672,28 +2712,28 @@
     <Content Include="sheets\de-de\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Fahrzeuge.xsl">
+    <Content Include="sheets\de-de\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Formatieren Nur Text.xsl">
+    <Content Include="sheets\de-de\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kalender.xsl">
+    <Content Include="sheets\de-de\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kommlinks.xsl">
+    <Content Include="sheets\de-de\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kontakte.xsl">
+    <Content Include="sheets\de-de\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Kosten.xsl">
+    <Content Include="sheets\de-de\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Notizen.xsl">
+    <Content Include="sheets\de-de\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Nur Text.xsl">
+    <Content Include="sheets\de-de\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Fancy Blocks.xsl">
@@ -2720,7 +2760,7 @@
     <Content Include="sheets\de-de\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\de-de\Shadowrun 5 %28Kern%29.xsl">
+    <Content Include="sheets\de-de\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\de-de\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
@@ -2764,10 +2804,10 @@
     <Content Include="sheets\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Blocs fantaisie.xsl">
+    <Content Include="sheets\fr-fr\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Calendrier.xsl">
+    <Content Include="sheets\fr-fr\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Commlinks.xsl">
@@ -2785,13 +2825,13 @@
     <Content Include="sheets\fr-fr\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Remarques.xsl">
+    <Content Include="sheets\fr-fr\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Shadowrun 5 %28Coeur%29.xsl">
+    <Content Include="sheets\fr-fr\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
@@ -2824,7 +2864,7 @@
     <Content Include="sheets\fr-fr\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\fr-fr\Texte seulement.xsl">
+    <Content Include="sheets\fr-fr\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\fr-fr\Vehicles.xsl">
@@ -2839,79 +2879,148 @@
     <Content Include="sheets\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Calendar.xsl">
+    <Content Include="sheets\ja-jp\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Commlinks.xsl">
+    <Content Include="sheets\ja-jp\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Contacts.xsl">
+    <Content Include="sheets\ja-jp\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Dossier.xsl">
+    <Content Include="sheets\ja-jp\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Expenses.xsl">
+    <Content Include="sheets\ja-jp\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Fancy Blocks.xsl">
+    <Content Include="sheets\ja-jp\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Formatted Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Game Master Summary.xsl">
+    <Content Include="sheets\ja-jp\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Notes.xsl">
+    <Content Include="sheets\ja-jp\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Core%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5 set CSS.xslt">
+    <Content Include="sheets\ja-jp\Shadowrun 5 set CSS.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Shadowrun 5.xsl">
+    <Content Include="sheets\ja-jp\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Text-Only.xsl">
+    <Content Include="sheets\ja-jp\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\Vehicles.xsl">
+    <Content Include="sheets\ja-jp\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\jp-jp\xz.language.xslt">
+    <Content Include="sheets\ja-jp\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Notes set.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Notes.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Calendar.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Commlinks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Contacts.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Dossier.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Expenses.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Fancy Blocks.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Formatted Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Game Master Summary.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Notes.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name and Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating and Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 %28Rating greater 0, Grouped by Category%29.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5 set CSS.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Shadowrun 5.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Text-Only.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\Vehicles.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sheets\pt-br\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
@@ -3000,6 +3109,9 @@
     <Content Include="sheets\xt.Notes.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="sheets\xt.Nothing2Show.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sheets\xt.PreserveLineBreaks.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3030,7 +3142,7 @@
     <Content Include="sheets\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\GM简要.xsl">
+    <Content Include="sheets\zh-cn\Game Master Summary.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="sheets\zh-cn\Shadowrun 5 %28Core, Grouped by Category%29.xsl">
@@ -3054,63 +3166,57 @@
     <Content Include="sheets\zh-cn\xz.language.xslt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\人脉.xsl">
+    <Content Include="sheets\zh-cn\Contacts.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\仅文本.xsl">
+    <Content Include="sheets\zh-cn\Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\备注.xsl">
+    <Content Include="sheets\zh-cn\Notes.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\多彩方块.xsl">
+    <Content Include="sheets\zh-cn\Fancy Blocks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\收支.xsl">
+    <Content Include="sheets\zh-cn\Expenses.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\日程表.xsl">
+    <Content Include="sheets\zh-cn\Calendar.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（名称排列）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Name%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（技能等级＞0）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Rating greater 0%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（核心）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Core%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\暗影狂奔5（等级排列）.xsl">
+    <Content Include="sheets\zh-cn\Shadowrun 5 %28Grouped Skills by Rating%29.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\格式仅文本.xsl">
+    <Content Include="sheets\zh-cn\Formatted Text-Only.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\档案.xsl">
+    <Content Include="sheets\zh-cn\Dossier.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\矩阵设备.xsl">
+    <Content Include="sheets\zh-cn\Commlinks.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sheets\zh-cn\载具和无人机.xsl">
+    <Content Include="sheets\zh-cn\Vehicles.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="wkhtmltopdf.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Collapse.png" />
-    <Content Include="customdata\Radar Sensor as Sensor Function\custom_radarsensorfunction_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Cyberlimbs Cannot Add Headware\amend_cyberlimbheadware_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="data\options.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Properties\Contributors.tt">
@@ -3118,136 +3224,136 @@
       <LastGenOutput>Contributors.cs</LastGenOutput>
     </Content>
     <Content Include="data\armor.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\bioware.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\books.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\complexforms.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\contacts.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critterpowers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\critters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\cyberware.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\echoes.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\gameplayoptions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\gear.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\improvements.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\licenses.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\lifemodules.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\lifestyles.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\martialarts.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\mentors.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metamagic.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\metatypes.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\packs.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\paragons.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\powers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\priorities.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\programs.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\qualities.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\ranges.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\skills.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spells.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\spiritpowers.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\streams.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\traditions.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vehicles.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\vessels.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="data\weapons.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Expand.png" />
@@ -3273,11 +3379,11 @@
     <Content Include="lang\fr-fr_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="lang\jp-jp.xml">
+    <Content Include="lang\ja-jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="lang\jp-jp_data.xml">
+    <Content Include="lang\ja-jp_data.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="lang\zh-cn.xml">

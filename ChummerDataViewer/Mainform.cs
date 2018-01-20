@@ -124,23 +124,21 @@ namespace ChummerDataViewer
 
 		private void MainThreadAction(INotifyThreadStatus sender, StatusChangedEventArgs args)
 		{
-			ToolStripItem item;
-			if (_statusLabels.TryGetValue(sender, out item))
-			{
-				item.Text =  $"{sender.Name}: {args.Status}";
-			}
-			else
-			{
-				item = tsBackground.Items.Add($"{sender.Name}: {args.Status}");
-				_statusLabels.Add(sender, item);
-			}
+            if (_statusLabels.TryGetValue(sender, out ToolStripItem item))
+            {
+                item.Text = $"{sender.Name}: {args.Status}";
+            }
+            else
+            {
+                item = tsBackground.Items.Add($"{sender.Name}: {args.Status}");
+                _statusLabels.Add(sender, item);
+            }
 
-			Action<StatusChangedEventArgs> action;
-			if (_specificHandlers.TryGetValue(sender.Name, out action))
-			{
-				action(args);
-			}
-		}
+            if (_specificHandlers.TryGetValue(sender.Name, out Action<StatusChangedEventArgs> action))
+            {
+                action(args);
+            }
+        }
 
 		private void DynamoDbStatus(StatusChangedEventArgs statusChangedEventArgs)
 		{
@@ -195,9 +193,9 @@ namespace ChummerDataViewer
 
 		}
 
-		private bool TextFilter(CrashReport report, string search)
+		private static bool TextFilter(CrashReport report, string search)
 		{
-			if (report.Guid.ToString().Contains(search)) return true;
+			if (report.Guid.ToString("D").Contains(search)) return true;
 
 			if (report.ErrorFrindly.Contains(search)) return true;
 
@@ -209,7 +207,7 @@ namespace ChummerDataViewer
 		}
 	}
 
-	internal class CrashReportTimeStampFilter : IComparer<CrashReport>
+	public sealed class CrashReportTimeStampFilter : IComparer<CrashReport>
 	{
 		public int Compare(CrashReport x, CrashReport y)
 		{

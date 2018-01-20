@@ -22,8 +22,8 @@
     <bioware>
       <name>Adapsin</name>
       <bonus>
-        <adapsin remove="yes" />
-		<cyberwaretotalessmultipliernonretroactive>90</cyberwaretotalessmultipliernonretroactive>
+        <adapsin amendoperation="remove" />
+        <cyberwaretotalessmultipliernonretroactive>90</cyberwaretotalessmultipliernonretroactive>
       </bonus>
     </bioware>
   </biowares>

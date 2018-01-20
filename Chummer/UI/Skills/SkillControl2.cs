@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,14 +23,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
-using Chummer.helpers;
 
 namespace Chummer.UI.Skills
 {
     [DebuggerDisplay("{_skill.Name} {Visible} {btnAddSpec.Visible}")]
-    public partial class SkillControl2 : UserControl
+    public sealed partial class SkillControl2 : UserControl
     {
         private readonly Skill _skill;
         private readonly Font _normal;
@@ -25,6 +42,11 @@ namespace Chummer.UI.Skills
             InitializeComponent();
             SuspendLayout();
 
+            foreach (ToolStripItem objItem in cmsSkillLabel.Items)
+            {
+                LanguageManager.TranslateToolStripItemsRecursively(objItem, GlobalOptions.Language);
+            }
+
             DataBindings.Add("Enabled", skill, nameof(Skill.Enabled), false, DataSourceUpdateMode.OnPropertyChanged);
 
             //Display
@@ -32,7 +54,7 @@ namespace Chummer.UI.Skills
             {
                 lblName.Font = new Font(lblName.Font, FontStyle.Italic);
             }
-            if (!String.IsNullOrWhiteSpace(_skill.Notes))
+            if (!string.IsNullOrWhiteSpace(_skill.Notes))
             {
                 lblName.ForeColor = Color.SaddleBrown;
             }
@@ -123,7 +145,7 @@ namespace Chummer.UI.Skills
             if (skill.AllowDelete)
             {
                 cmdDelete.Visible = true;
-                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecialization + ")" : skill.Name); };
+                cmdDelete.Click += (sender, args) => { skill.CharacterObject.SkillsSection.Skills.Remove(skill); skill.CharacterObject.SkillsSection.SkillsDictionary.Remove(skill.IsExoticSkill ? skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.Language) + ')' : skill.Name); };
 
                 if (skill.CharacterObject.Created)
                 {
@@ -141,15 +163,6 @@ namespace Chummer.UI.Skills
 
             _attributeActive.PropertyChanged += AttributeActiveOnPropertyChanged;
             AttributeActiveOnPropertyChanged(null, null);
-        }
-
-        private void ContextMenu_Opening(object sender, CancelEventArgs e)
-        {
-            foreach (ToolStripItem objItem in ((ContextMenuStrip)sender).Items)
-            {
-                if (objItem.Tag != null)
-                    objItem.Text = LanguageManager.GetString(objItem.Tag.ToString());
-            }
         }
 
         private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -207,52 +220,44 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            frmCareer parrent = ParentForm as frmCareer;
-            if (parrent != null)
-            {
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpense", GlobalOptions.Language),
                     _skill.DisplayName, _skill.Rating + 1, _skill.UpgradeKarmaCost());
 
-                if (!parrent.ConfirmKarmaExpense(confirmstring))
-                    return;
-            }
+            if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+                return;
 
             _skill.Upgrade();
         }
 
         private void btnAddSpec_Click(object sender, EventArgs e)
         {
-            frmCareer parrent = ParentForm as frmCareer;
-            if (parrent != null)
-            {
-                int price = _skill.CharacterObject.Options.KarmaSpecialization;
+            int price = _skill.CharacterObject.Options.KarmaSpecialization;
 
-                int intExtraSpecCost = 0;
-                int intTotalBaseRating = _skill.TotalBaseRating;
-                decimal decSpecCostMultiplier = 1.0m;
-                foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+            int intExtraSpecCost = 0;
+            int intTotalBaseRating = _skill.TotalBaseRating;
+            decimal decSpecCostMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+            {
+                if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
                 {
-                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created) && objLoopImprovement.Enabled)
+                    if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
                     {
-                        if (objLoopImprovement.ImprovedName == _skill.SkillCategory)
-                        {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                                intExtraSpecCost += objLoopImprovement.Value;
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                        }
+                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
+                            intExtraSpecCost += objLoopImprovement.Value;
+                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                     }
                 }
-                if (decSpecCostMultiplier != 1.0m)
-                    price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
-                price += intExtraSpecCost; //Spec
-
-                string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price.ToString());
-
-                if (!parrent.ConfirmKarmaExpense(confirmstring))
-                    return;
             }
+            if (decSpecCostMultiplier != 1.0m)
+                price = decimal.ToInt32(decimal.Ceiling(price * decSpecCostMultiplier));
+            price += intExtraSpecCost; //Spec
+
+            string confirmstring = string.Format(LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization", GlobalOptions.Language), price.ToString());
+
+            if (!_skill.CharacterObject.ConfirmKarmaExpense(confirmstring))
+                return;
 
             frmSelectSpec selectForm = new frmSelectSpec(_skill);
             selectForm.ShowDialog();
@@ -262,9 +267,10 @@ namespace Chummer.UI.Skills
             _skill.AddSpecialization(selectForm.SelectedItem);
 
             //TODO turn this into a databinding, but i don't care enough right now
-            lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName));
+            lblCareerSpec.Text = string.Join(", ", _skill.Specializations.Select(x => x.DisplayName(GlobalOptions.Language)));
 
-            parrent?.ScheduleCharacterUpdate();
+            if (ParentForm is CharacterShared frmParent)
+                frmParent.IsCharacterUpdateRequested = true;
         }
 
         private void SetupDropdown()
@@ -272,7 +278,8 @@ namespace Chummer.UI.Skills
             List<ListItem> lstAttributeItems = new List<ListItem>();
 		    foreach (string strLoopAttribute in AttributeSection.AttributeStrings)
 		    {
-                lstAttributeItems.Add(new ListItem(strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short")));
+                if (strLoopAttribute != "MAGAdept")
+                    lstAttributeItems.Add(new ListItem (strLoopAttribute, LanguageManager.GetString($"String_Attribute{strLoopAttribute}Short", GlobalOptions.Language)));
             }
 
             cboSelectAttribute.BeginUpdate();
@@ -321,14 +328,16 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            frmNotes frmItemNotes = new frmNotes();
-            frmItemNotes.Notes = _skill.Notes;
+            frmNotes frmItemNotes = new frmNotes
+            {
+                Notes = _skill.Notes
+            };
             frmItemNotes.ShowDialog(this);
 
             if (frmItemNotes.DialogResult == DialogResult.OK)
             {
                 _skill.Notes = frmItemNotes.Notes;
-                _skill.Notes = CommonFunctions.WordWrap(_skill.Notes, 100);
+                _skill.Notes = _skill.Notes.WordWrap(100);
                 tipTooltip.SetToolTip(lblName, _skill.SkillToolTip);
             }
             if (!string.IsNullOrEmpty(_skill.Notes))
@@ -348,7 +357,7 @@ namespace Chummer.UI.Skills
         
         private void lblName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(_skill.Source + " " + _skill.Page, _skill.CharacterObject);
+            CommonFunctions.OpenPDF(_skill.Source + ' ' + _skill.DisplayPage(GlobalOptions.Language));
         }
 
         private void cboSpec_TextChanged(object sender, EventArgs e)

@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using Chummer.Backend;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -39,7 +40,7 @@ namespace Chummer
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
             // Load the Martial Arts information.
@@ -54,29 +55,25 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
-            XmlNodeList objArtList;
+            XmlNodeList objArtList = null;
             List<ListItem> lstMartialArt = new List<ListItem>();
 
             // Populate the Martial Arts list.
-            if (string.IsNullOrEmpty(_strForcedValue))
-                objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
-            else
+            if (!string.IsNullOrEmpty(_strForcedValue))
+            {
                 objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[name = \"" + _strForcedValue + "\"]");
+            }
+            if (objArtList == null || objArtList.Count == 0)
+                objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlArt in objArtList)
             {
-                XmlNode objXmlQuality = objXmlArt["quality"];
-                if (_blnShowQualities != (objXmlQuality != null))
-                    continue;
-                if (Backend.Shared_Methods.SelectionShared.RequirementsMet(objXmlArt, false, _objCharacter))
+                if (_blnShowQualities == (objXmlArt["quality"] != null) && objXmlArt.RequirementsMet(_objCharacter))
                 {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlArt["name"].InnerText;
-                    objItem.Name = objXmlArt["translate"]?.InnerText ?? objXmlArt["name"].InnerText;
-                    lstMartialArt.Add(objItem);
+                    string strName = objXmlArt["name"].InnerText;
+                    lstMartialArt.Add(new ListItem(strName, objXmlArt["translate"]?.InnerText ?? strName));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            lstMartialArt.Sort(objSort.Compare);
+            lstMartialArt.Sort(CompareListItems.CompareNames);
             lstMartialArts.BeginUpdate();
             lstMartialArts.DataSource = null;
             lstMartialArts.ValueMember = "Value";
@@ -112,13 +109,11 @@ namespace Chummer
             // Populate the Martial Arts list.
             XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + lstMartialArts.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlArt["source"].InnerText);
-            string strPage = objXmlArt["page"].InnerText;
-            if (objXmlArt["altpage"] != null)
-                strPage = objXmlArt["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strBook = CommonFunctions.LanguageBookShort(objXmlArt["source"].InnerText, GlobalOptions.Language);
+            string strPage = objXmlArt["altpage"]?.InnerText ?? objXmlArt["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlArt["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -188,10 +183,5 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmSelectBuildMethod
+    public sealed partial class frmSelectBuildMethod
     {
         /// <summary>
         /// Required designer variable.

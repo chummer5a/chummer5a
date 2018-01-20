@@ -30,26 +30,27 @@ namespace Chummer
         private XmlNode _nodChoice1Bonus;
         private XmlNode _nodChoice2Bonus;
         private string _strXmlFile = "mentors.xml";
+        private string _strForceMentor = string.Empty;
 
-        private readonly XmlDocument _objXmlDocument = null;
+        private XmlDocument _objXmlDocument = null;
         private readonly Character _objCharacter;
 
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
         public frmSelectMentorSpirit(Character objCharacter)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-            // Load the Mentor information.
-            _objXmlDocument = XmlManager.Load(_strXmlFile);
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
         {
+            // Load the Mentor information.
+            _objXmlDocument = XmlManager.Load(_strXmlFile);
             if (_strXmlFile == "paragons.xml")
-                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon");
+                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon", GlobalOptions.Language);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {
@@ -63,19 +64,26 @@ namespace Chummer
             XmlNodeList objXmlMentorList = _objXmlDocument.SelectNodes("/chummer/mentors/mentor[(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlMentor in objXmlMentorList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlMentor["id"].InnerText;
-                objItem.Name = objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText;
-                lstMentors.Add(objItem);
+                lstMentors.Add(new ListItem(objXmlMentor["id"].InnerText, objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText));
             }
-            SortListItem objSort = new SortListItem();
-            lstMentors.Sort(objSort.Compare);
+            lstMentors.Sort(CompareListItems.CompareNames);
             lstMentor.BeginUpdate();
             lstMentor.DataSource = null;
             lstMentor.ValueMember = "Value";
             lstMentor.DisplayMember = "Name";
             lstMentor.DataSource = lstMentors;
             lstMentor.EndUpdate();
+
+            if (!string.IsNullOrEmpty(_strForceMentor))
+            {
+                int intForceMentorIndex = lstMentor.FindStringExact(_strForceMentor);
+                if (intForceMentorIndex != -1)
+                {
+                    lstMentor.SelectedIndex = intForceMentorIndex;
+                    lstMentor.Enabled = false;
+                }
+            }
+            chkMentorMask.Visible = _strXmlFile == "mentors.xml";
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -112,24 +120,14 @@ namespace Chummer
 
                 foreach (XmlNode objChoice in objXmlMentor["choices"].SelectNodes("choice"))
                 {
-                    bool blnShow = !(objChoice["name"].InnerText.StartsWith("Adept:") && !_objCharacter.AdeptEnabled);
-                    if (objChoice["name"].InnerText.StartsWith("Magician:") && !_objCharacter.MagicianEnabled)
-                        blnShow = false;
-
-                    if (!blnShow) continue;
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objChoice["name"].InnerText;
-                    objItem.Name = objChoice["translate"]?.InnerText ?? objChoice["name"].InnerText;
-
-                    if (objChoice.Attributes["set"] != null)
+                    string strName = objChoice["name"].InnerText;
+                    if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
                     {
-                        if (objChoice.Attributes["set"].InnerText == "2")
-                            lstChoice2.Add(objItem);
+                        if (objChoice.Attributes["set"]?.InnerText == "2")
+                            lstChoice2.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
                         else
-                            lstChoice1.Add(objItem);
+                            lstChoice1.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
                     }
-                    else
-                        lstChoice1.Add(objItem);
                 }
 
                 lblChoice1.Visible = true;
@@ -172,13 +170,11 @@ namespace Chummer
             cboChoice1.EndUpdate();
             cboChoice2.EndUpdate();
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlMentor["source"].InnerText);
-            string strPage = objXmlMentor["page"].InnerText;
-            if (objXmlMentor["altpage"] != null)
-                strPage = objXmlMentor["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strBook = CommonFunctions.LanguageBookShort(objXmlMentor["source"].InnerText, GlobalOptions.Language);
+            string strPage = objXmlMentor["altpage"]?.InnerText ?? objXmlMentor["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlMentor["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMentor["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
         #endregion
 
@@ -191,6 +187,17 @@ namespace Chummer
             set
             {
                 _strXmlFile = value;
+            }
+        }
+
+        /// <summary>
+        /// Forced selection for mentor spirit
+        /// </summary>
+        public string ForcedMentor
+        {
+            set
+            {
+                _strForceMentor = value;
             }
         }
 
@@ -261,10 +268,5 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

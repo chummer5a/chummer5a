@@ -38,7 +38,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             // Load the Martial Art information.
             _objXmlDocument = XmlManager.Load("martialarts.xml");
         }
@@ -57,13 +57,10 @@ namespace Chummer
             XmlNodeList objManeuverList = _objXmlDocument.SelectNodes("/chummer/maneuvers/maneuver[" + _objCharacter.Options.BookXPath() + "]");
             foreach (XmlNode objXmlManeuver in objManeuverList)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlManeuver["name"].InnerText;
-                objItem.Name = objXmlManeuver["translate"]?.InnerText ?? objXmlManeuver["name"].InnerText;
-                lstManeuver.Add(objItem);
+                string strName = objXmlManeuver["name"].InnerText;
+                lstManeuver.Add(new ListItem(strName, objXmlManeuver["translate"]?.InnerText ?? strName));
             }
-            SortListItem objSort = new SortListItem();
-            lstManeuver.Sort(objSort.Compare);
+            lstManeuver.Sort(CompareListItems.CompareNames);
             lstManeuvers.BeginUpdate();
             lstManeuvers.DataSource = null;
             lstManeuvers.ValueMember = "Value";
@@ -93,13 +90,11 @@ namespace Chummer
             // Populate the Maneuvers list.
             XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
 
-            string strBook = _objCharacter.Options.LanguageBookShort(objXmlManeuver["source"].InnerText);
-            string strPage = objXmlManeuver["page"].InnerText;
-            if (objXmlManeuver["altpage"] != null)
-                strPage = objXmlManeuver["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
+            string strBook = CommonFunctions.LanguageBookShort(objXmlManeuver["source"].InnerText, GlobalOptions.Language);
+            string strPage = objXmlManeuver["altpage"]?.InnerText ?? objXmlManeuver["page"].InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlManeuver["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlManeuver["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -143,10 +138,5 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectCyberware
     {
@@ -67,6 +67,7 @@
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new System.Windows.Forms.CheckBox();
             this.chkPrototypeTranshuman = new System.Windows.Forms.CheckBox();
+            this.chkHideBannedGrades = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
@@ -269,7 +270,6 @@
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 21;
             this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceLabel
             // 
@@ -311,7 +311,6 @@
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
             this.chkFree.UseVisualStyleBackColor = true;
-            this.chkFree.Visible = false;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
             // nudESSDiscount
@@ -489,6 +488,20 @@
             this.chkPrototypeTranshuman.Visible = false;
             this.chkPrototypeTranshuman.CheckedChanged += new System.EventHandler(this.chkPrototypeTranshuman_CheckedChanged);
             // 
+            // chkHideBannedGrades
+            // 
+            this.chkHideBannedGrades.AutoSize = true;
+            this.chkHideBannedGrades.Checked = true;
+            this.chkHideBannedGrades.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkHideBannedGrades.Location = new System.Drawing.Point(258, 329);
+            this.chkHideBannedGrades.Name = "chkHideBannedGrades";
+            this.chkHideBannedGrades.Size = new System.Drawing.Size(178, 17);
+            this.chkHideBannedGrades.TabIndex = 67;
+            this.chkHideBannedGrades.Tag = "Checkbox_HideBannedCyberwareGrades";
+            this.chkHideBannedGrades.Text = "Hide Banned Cyberware Grades";
+            this.chkHideBannedGrades.UseVisualStyleBackColor = true;
+            this.chkHideBannedGrades.CheckedChanged += new System.EventHandler(this.chkHideBannedGrades_CheckedChanged);
+            // 
             // frmSelectCyberware
             // 
             this.AcceptButton = this.cmdOK;
@@ -496,6 +509,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(549, 417);
+            this.Controls.Add(this.chkHideBannedGrades);
             this.Controls.Add(this.chkPrototypeTranshuman);
             this.Controls.Add(this.chkHideOverAvailLimit);
             this.Controls.Add(this.nudMarkup);
@@ -592,5 +606,6 @@
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private System.Windows.Forms.CheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.CheckBox chkPrototypeTranshuman;
+        private System.Windows.Forms.CheckBox chkHideBannedGrades;
     }
 }

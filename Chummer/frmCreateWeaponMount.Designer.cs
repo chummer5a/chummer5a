@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmCreateWeaponMount
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Additional Mods");
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblVisbility = new System.Windows.Forms.Label();
@@ -44,12 +45,20 @@
             this.lblCost = new System.Windows.Forms.Label();
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
+            this.chkFreeItem = new System.Windows.Forms.CheckBox();
+            this.nudMarkup = new System.Windows.Forms.NumericUpDown();
+            this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
+            this.lblMarkupLabel = new System.Windows.Forms.Label();
+            this.treMods = new System.Windows.Forms.TreeView();
+            this.cmdDeleteMod = new System.Windows.Forms.Button();
+            this.cmdAddMod = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdCancel
             // 
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(189, 114);
+            this.cmdCancel.Location = new System.Drawing.Point(434, 153);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 19;
@@ -60,7 +69,7 @@
             // 
             // cmdOK
             // 
-            this.cmdOK.Location = new System.Drawing.Point(270, 114);
+            this.cmdOK.Location = new System.Drawing.Point(515, 153);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 20;
@@ -72,18 +81,18 @@
             // lblVisbility
             // 
             this.lblVisbility.AutoSize = true;
-            this.lblVisbility.Location = new System.Drawing.Point(12, 66);
+            this.lblVisbility.Location = new System.Drawing.Point(267, 66);
             this.lblVisbility.Name = "lblVisbility";
             this.lblVisbility.Size = new System.Drawing.Size(44, 13);
             this.lblVisbility.TabIndex = 21;
-            this.lblVisbility.Tag = "";
+            this.lblVisbility.Tag = "Label_Visibility";
             this.lblVisbility.Text = "Visbility:";
             // 
             // cboVisibility
             // 
             this.cboVisibility.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVisibility.FormattingEnabled = true;
-            this.cboVisibility.Location = new System.Drawing.Point(89, 61);
+            this.cboVisibility.Location = new System.Drawing.Point(344, 61);
             this.cboVisibility.Name = "cboVisibility";
             this.cboVisibility.Size = new System.Drawing.Size(182, 21);
             this.cboVisibility.TabIndex = 22;
@@ -92,18 +101,18 @@
             // lblControl
             // 
             this.lblControl.AutoSize = true;
-            this.lblControl.Location = new System.Drawing.Point(12, 39);
+            this.lblControl.Location = new System.Drawing.Point(267, 39);
             this.lblControl.Name = "lblControl";
             this.lblControl.Size = new System.Drawing.Size(43, 13);
             this.lblControl.TabIndex = 23;
-            this.lblControl.Tag = "";
+            this.lblControl.Tag = "Label_Control";
             this.lblControl.Text = "Control:";
             // 
             // cboControl
             // 
             this.cboControl.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboControl.FormattingEnabled = true;
-            this.cboControl.Location = new System.Drawing.Point(89, 35);
+            this.cboControl.Location = new System.Drawing.Point(344, 35);
             this.cboControl.Name = "cboControl";
             this.cboControl.Size = new System.Drawing.Size(182, 21);
             this.cboControl.TabIndex = 24;
@@ -112,18 +121,18 @@
             // lblSize
             // 
             this.lblSize.AutoSize = true;
-            this.lblSize.Location = new System.Drawing.Point(12, 12);
+            this.lblSize.Location = new System.Drawing.Point(267, 12);
             this.lblSize.Name = "lblSize";
             this.lblSize.Size = new System.Drawing.Size(30, 13);
             this.lblSize.TabIndex = 25;
-            this.lblSize.Tag = "";
+            this.lblSize.Tag = "Label_Size";
             this.lblSize.Text = "Size:";
             // 
             // cboSize
             // 
             this.cboSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSize.FormattingEnabled = true;
-            this.cboSize.Location = new System.Drawing.Point(89, 9);
+            this.cboSize.Location = new System.Drawing.Point(344, 9);
             this.cboSize.Name = "cboSize";
             this.cboSize.Size = new System.Drawing.Size(182, 21);
             this.cboSize.TabIndex = 26;
@@ -132,7 +141,7 @@
             // lblFlexibility
             // 
             this.lblFlexibility.AutoSize = true;
-            this.lblFlexibility.Location = new System.Drawing.Point(12, 90);
+            this.lblFlexibility.Location = new System.Drawing.Point(267, 90);
             this.lblFlexibility.Name = "lblFlexibility";
             this.lblFlexibility.Size = new System.Drawing.Size(51, 13);
             this.lblFlexibility.TabIndex = 27;
@@ -143,7 +152,7 @@
             // 
             this.cboFlexibility.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFlexibility.FormattingEnabled = true;
-            this.cboFlexibility.Location = new System.Drawing.Point(89, 87);
+            this.cboFlexibility.Location = new System.Drawing.Point(344, 87);
             this.cboFlexibility.Name = "cboFlexibility";
             this.cboFlexibility.Size = new System.Drawing.Size(182, 21);
             this.cboFlexibility.TabIndex = 28;
@@ -152,27 +161,27 @@
             // lblAvailabilityLabel
             // 
             this.lblAvailabilityLabel.AutoSize = true;
-            this.lblAvailabilityLabel.Location = new System.Drawing.Point(277, 9);
+            this.lblAvailabilityLabel.Location = new System.Drawing.Point(532, 9);
             this.lblAvailabilityLabel.Name = "lblAvailabilityLabel";
             this.lblAvailabilityLabel.Size = new System.Drawing.Size(33, 13);
             this.lblAvailabilityLabel.TabIndex = 30;
-            this.lblAvailabilityLabel.Tag = "";
+            this.lblAvailabilityLabel.Tag = "Label_Avail";
             this.lblAvailabilityLabel.Text = "Avail:";
             // 
             // lblCostLabel
             // 
             this.lblCostLabel.AutoSize = true;
-            this.lblCostLabel.Location = new System.Drawing.Point(277, 36);
+            this.lblCostLabel.Location = new System.Drawing.Point(532, 36);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblCostLabel.TabIndex = 29;
-            this.lblCostLabel.Tag = "";
+            this.lblCostLabel.Tag = "Label_Cost";
             this.lblCostLabel.Text = "Cost:";
             // 
             // lblAvailability
             // 
             this.lblAvailability.AutoSize = true;
-            this.lblAvailability.Location = new System.Drawing.Point(316, 9);
+            this.lblAvailability.Location = new System.Drawing.Point(571, 9);
             this.lblAvailability.Name = "lblAvailability";
             this.lblAvailability.Size = new System.Drawing.Size(19, 13);
             this.lblAvailability.TabIndex = 32;
@@ -182,7 +191,7 @@
             // lblCost
             // 
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(314, 36);
+            this.lblCost.Location = new System.Drawing.Point(569, 36);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(19, 13);
             this.lblCost.TabIndex = 31;
@@ -192,7 +201,7 @@
             // lblSlots
             // 
             this.lblSlots.AutoSize = true;
-            this.lblSlots.Location = new System.Drawing.Point(314, 63);
+            this.lblSlots.Location = new System.Drawing.Point(569, 63);
             this.lblSlots.Name = "lblSlots";
             this.lblSlots.Size = new System.Drawing.Size(13, 13);
             this.lblSlots.TabIndex = 34;
@@ -202,18 +211,105 @@
             // lblSlotsLabel
             // 
             this.lblSlotsLabel.AutoSize = true;
-            this.lblSlotsLabel.Location = new System.Drawing.Point(277, 63);
+            this.lblSlotsLabel.Location = new System.Drawing.Point(532, 63);
             this.lblSlotsLabel.Name = "lblSlotsLabel";
             this.lblSlotsLabel.Size = new System.Drawing.Size(33, 13);
             this.lblSlotsLabel.TabIndex = 33;
-            this.lblSlotsLabel.Tag = "";
+            this.lblSlotsLabel.Tag = "Label_Slots";
             this.lblSlotsLabel.Text = "Slots:";
+            // 
+            // chkFreeItem
+            // 
+            this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.Location = new System.Drawing.Point(535, 89);
+            this.chkFreeItem.Name = "chkFreeItem";
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeItem.TabIndex = 59;
+            this.chkFreeItem.Tag = "Checkbox_Free";
+            this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.UseVisualStyleBackColor = true;
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            // 
+            // nudMarkup
+            // 
+            this.nudMarkup.DecimalPlaces = 2;
+            this.nudMarkup.Location = new System.Drawing.Point(332, 156);
+            this.nudMarkup.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudMarkup.Minimum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            -2147352576});
+            this.nudMarkup.Name = "nudMarkup";
+            this.nudMarkup.Size = new System.Drawing.Size(56, 20);
+            this.nudMarkup.TabIndex = 63;
+            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+            // 
+            // lblMarkupPercentLabel
+            // 
+            this.lblMarkupPercentLabel.AutoSize = true;
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(387, 158);
+            this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
+            this.lblMarkupPercentLabel.TabIndex = 64;
+            this.lblMarkupPercentLabel.Text = "%";
+            // 
+            // lblMarkupLabel
+            // 
+            this.lblMarkupLabel.AutoSize = true;
+            this.lblMarkupLabel.Location = new System.Drawing.Point(272, 158);
+            this.lblMarkupLabel.Name = "lblMarkupLabel";
+            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblMarkupLabel.TabIndex = 62;
+            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
+            this.lblMarkupLabel.Text = "Markup:";
+            // 
+            // treMods
+            // 
+            this.treMods.Location = new System.Drawing.Point(12, 35);
+            this.treMods.Name = "treMods";
+            treeNode1.Name = "nodMods";
+            treeNode1.Text = "Additional Mods";
+            this.treMods.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.treMods.Size = new System.Drawing.Size(249, 141);
+            this.treMods.TabIndex = 65;
+            // 
+            // cmdDeleteMod
+            // 
+            this.cmdDeleteMod.Location = new System.Drawing.Point(140, 4);
+            this.cmdDeleteMod.Name = "cmdDeleteMod";
+            this.cmdDeleteMod.Size = new System.Drawing.Size(122, 23);
+            this.cmdDeleteMod.TabIndex = 67;
+            this.cmdDeleteMod.Text = "Delete Mod";
+            this.cmdDeleteMod.UseVisualStyleBackColor = true;
+            // 
+            // cmdAddMod
+            // 
+            this.cmdAddMod.Location = new System.Drawing.Point(12, 4);
+            this.cmdAddMod.Name = "cmdAddMod";
+            this.cmdAddMod.Size = new System.Drawing.Size(122, 23);
+            this.cmdAddMod.TabIndex = 66;
+            this.cmdAddMod.Text = "Add Mod";
+            this.cmdAddMod.UseVisualStyleBackColor = true;
+            this.cmdAddMod.Click += new System.EventHandler(this.cmdAddMod_Click);
             // 
             // frmCreateWeaponMount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(355, 144);
+            this.ClientSize = new System.Drawing.Size(597, 188);
+            this.Controls.Add(this.cmdDeleteMod);
+            this.Controls.Add(this.cmdAddMod);
+            this.Controls.Add(this.treMods);
+            this.Controls.Add(this.nudMarkup);
+            this.Controls.Add(this.lblMarkupPercentLabel);
+            this.Controls.Add(this.lblMarkupLabel);
+            this.Controls.Add(this.chkFreeItem);
             this.Controls.Add(this.lblSlots);
             this.Controls.Add(this.lblSlotsLabel);
             this.Controls.Add(this.lblAvailability);
@@ -233,6 +329,7 @@
             this.Name = "frmCreateWeaponMount";
             this.Text = "Create Weapon Mount";
             this.Load += new System.EventHandler(this.frmCreateWeaponMount_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,5 +353,12 @@
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblSlots;
         private System.Windows.Forms.Label lblSlotsLabel;
+        private System.Windows.Forms.CheckBox chkFreeItem;
+        private System.Windows.Forms.NumericUpDown nudMarkup;
+        private System.Windows.Forms.Label lblMarkupPercentLabel;
+        private System.Windows.Forms.Label lblMarkupLabel;
+        private System.Windows.Forms.TreeView treMods;
+        private System.Windows.Forms.Button cmdDeleteMod;
+        private System.Windows.Forms.Button cmdAddMod;
     }
 }

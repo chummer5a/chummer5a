@@ -29,288 +29,234 @@ using System.Xml;
 
 namespace Chummer
 {
-    public sealed class LanguageManager
+    public static class LanguageManager
     {
         /// <summary>
         /// An individual language string.
         /// </summary>
-        private class LanguageString
+        private struct LanguageString
         {
-            private string _strKey = string.Empty;
-            private string _strText = string.Empty;
-
             /// <summary>
             /// String's unique Key.
             /// </summary>
-            public string Key
-            {
-                get
-                {
-                    return _strKey;
-                }
-                set
-                {
-                    _strKey = value;
-                }
-            }
+            public string Key { get; }
 
             /// <summary>
             /// String's text.
             /// </summary>
-            public string Text
+            public string Text { get; }
+
+            public LanguageString(string strKey, string strText)
             {
-                get
-                {
-                    return _strText;
-                }
-                set
-                {
-                    _strText = value;
-                }
+                Key = strKey ?? string.Empty;
+                Text = strText ?? string.Empty;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Key.Equals(obj.ToString());
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return Key;
             }
         }
 
-#if DEBUG
-        private static readonly bool _blnDebug = false;
-#endif
-        private static string _strLanguage = string.Empty;
-        private static readonly ConcurrentDictionary<string, string> _objDictionary = new ConcurrentDictionary<string, string>();
-        static bool _blnLoaded = false;
-        static readonly XmlDocument _objXmlDocument = new XmlDocument();
-        static XmlDocument _objXmlDataDocument;
+        public class LanguageData
+        {
+            public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
+            public XmlDocument DataDocument { get; } = new XmlDocument();
+            public bool IsLoaded { get; private set; } = true;
+
+            public LanguageData(string strLanguage)
+            {
+                string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
+                if (File.Exists(strFilePath))
+                {
+                    XmlDocument objLanguageDocument = new XmlDocument();
+                    objLanguageDocument.Load(strFilePath);
+                    if (objLanguageDocument != null)
+                    {
+                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        {
+                            // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                            // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                            string strKey = objNode["key"]?.InnerText;
+                            string strText = objNode["text"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                            {
+                                if (TranslatedStrings.ContainsKey(strKey))
+                                    TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                else
+                                    TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                            }
+                        }
+                    }
+                    else
+                        IsLoaded = false;
+                }
+                else
+                    IsLoaded = false;
+
+                // Check to see if the data translation file for the selected language exists.
+                string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
+                if (File.Exists(strDataPath))
+                {
+                    DataDocument.Load(strDataPath);
+                }
+                else
+                    IsLoaded = false;
+            }
+        }
+        
+        private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
+        public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages { get => s_DictionaryLanguages; }
+        private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
 
         #region Constructor
         static LanguageManager()
         {
-#if DEBUG
-            string[] strArgs = Environment.GetCommandLineArgs();
-            if (strArgs.GetUpperBound(0) > 0)
+            if (!Utils.IsRunningInVisualStudio)
             {
-                if (strArgs[1] == "/debug")
-                    _blnDebug = true;
-            }
-#endif
-            if (!Utils.IsRunningInVisualStudio())
-            {
-                _objDictionary.Clear();
                 XmlDocument objEnglishDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
+                string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                 if (File.Exists(strFilePath))
                 {
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        if (objNode["key"] != null && objNode["text"] != null)
+                        string strKey = objNode["key"]?.InnerText;
+                        string strText = objNode["text"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
                         {
-                            if (!_objDictionary.TryAdd(objNode["key"].InnerText, objNode["text"].InnerText.Replace("\\n", "\n")))
-                            {
+                            if (s_DictionaryEnglishStrings.ContainsKey(strKey))
                                 Utils.BreakIfDebug();
-                            }
+                            else
+                                s_DictionaryEnglishStrings.Add(strKey, strText.Replace("\\n", "\n"));
                         }
                     }
                 }
-            }
-            _blnLoaded = true;
-        }
-
-        LanguageManager()
-        {
-        }
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Whether or not the LanguageManager loaded the default language successfully.
-        /// </summary>
-        public static bool Loaded
-        {
-            get
-            {
-                return _blnLoaded;
-            }
-        }
-
-        /// <summary>
-        /// XmlDocument that holds UI translations.
-        /// </summary>
-        public static XmlDocument XmlDoc
-        {
-            get
-            {
-                return _objXmlDocument;
-            }
-        }
-
-        /// <summary>
-        /// XmlDocument that holds item name translations.
-        /// </summary>
-        public static XmlDocument DataDoc
-        {
-            get
-            {
-                return _objXmlDataDocument;
+                else
+                    MessageBox.Show("Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Load the selected XML file and its associated custom file.
+        /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strLanguage">Language to Load.</param>
-        /// <param name="objObject">Object to translate after loading the data.</param>
-        public static void Load(string strLanguage, object objObject)
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
+        /// <param name="objObject">Object to translate.</param>
+        public static void TranslateWinForm(string strIntoLanguage, Control objObject)
         {
-            // _strLanguage is populated when the language is read for the first time, meaning this is only triggered once (and language is only read in once since it shouldn't change).
-            if (string.IsNullOrEmpty(_strLanguage) && strLanguage != GlobalOptions.DefaultLanguage)
+            if (LoadLanguage(strIntoLanguage))
+                UpdateControls(objObject, strIntoLanguage);
+        }
+
+        private static bool LoadLanguage(string strLanguage)
+        {
+            if (strLanguage != GlobalOptions.DefaultLanguage && !s_DictionaryLanguages.ContainsKey(strLanguage))
             {
-                _strLanguage = strLanguage;
-                XmlDocument objLanguageDocument = new XmlDocument();
-                string strFilePath = Path.Combine(Application.StartupPath, "lang", strLanguage + ".xml");
-                if (File.Exists(strFilePath))
+                LanguageData objNewLanguage = new LanguageData(strLanguage);
+                if (!objNewLanguage.IsLoaded)
                 {
-                    objLanguageDocument.Load(strFilePath);
-                    if (objLanguageDocument != null)
-                    {
-                        _objXmlDocument.Load(strFilePath);
-                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
-                        {
-                            // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
-                            // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                            if (objNode["text"] != null && objNode["key"] != null)
-                            {
-                                string strKey = objNode["key"].InnerText;
-                                if (_objDictionary.ContainsKey(strKey))
-                                    _objDictionary[strKey] = objNode["text"].InnerText.Replace("\\n", "\n");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                    MessageBox.Show("Language with code " + strLanguage + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
                 }
                 else
-                {
-                    MessageBox.Show("Language file " + strFilePath + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Check to see if the data translation file for the selected language exists.
-                string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
-                if (File.Exists(strDataPath))
-                {
-                    _objXmlDataDocument = new XmlDocument();
-                    _objXmlDataDocument.Load(strDataPath);
-                }
+                    s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
             }
-
-            // If the object is a Form, call the UpdateForm method to provide its translations.
-            Form objForm = objObject as Form;
-            if (objForm != null)
-                UpdateForm(objForm);
-
-            // If the object is a UserControl, call the UpdateUserControl method to provide its translations.
-            UserControl objUserControl = objObject as UserControl;
-            if (objUserControl != null)
-                UpdateUserControl(objUserControl);
+            return true;
         }
 
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
         /// <param name="objParent">Control container to translate.</param>
-        private static void UpdateControls(Control objParent)
+        private static void UpdateControls(Control objParent, string strIntoLanguage)
         {
             if (objParent == null)
                 return;
+
+            if (objParent is Form frmForm)
+            {
+                // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
+                // Update the Form itself.
+                string strControlTag = frmForm.Tag?.ToString();
+                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                    frmForm.Text = GetString(strControlTag, strIntoLanguage);
+
+                // update any menu strip items that have tags
+                if (frmForm.MainMenuStrip != null)
+                    foreach (ToolStripMenuItem tssItem in frmForm.MainMenuStrip.Items)
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
+            }
+
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-
-            foreach (Label lblLabel in objParent.Controls.OfType<Label>())
+            foreach (Control objChild in objParent.Controls)
             {
-                if (!string.IsNullOrEmpty(lblLabel.Tag?.ToString()))
+                if (objChild as Label != null || objChild as Button != null || objChild as CheckBox != null)
                 {
-                    lblLabel.Text = GetString(lblLabel.Tag.ToString());
+                    string strControlTag = objChild.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                        objChild.Text = GetString(strControlTag, strIntoLanguage);
                 }
-            }
-            foreach (Button cmdButton in objParent.Controls.OfType<Button>())
-            {
-                if (!string.IsNullOrEmpty(cmdButton.Tag?.ToString()))
+                else if (objChild is ToolStrip tssStrip)
                 {
-                    cmdButton.Text = GetString(cmdButton.Tag.ToString());
-                }
-            }
-            foreach (CheckBox chkCheckbox in objParent.Controls.OfType<CheckBox>())
-            {
-                if (!string.IsNullOrEmpty(chkCheckbox.Tag?.ToString()))
-                {
-                    chkCheckbox.Text = GetString(chkCheckbox.Tag.ToString());
-                }
-            }
-            foreach (ListView lstList in objParent.Controls.OfType<ListView>())
-            {
-                foreach (ColumnHeader objHeader in lstList.Columns)
-                {
-                    if (!string.IsNullOrEmpty(objHeader.Tag?.ToString()))
+                    foreach (ToolStripItem tssItem in tssStrip.Items)
                     {
-                        objHeader.Text = GetString(objHeader.Tag.ToString());
+                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage);
                     }
                 }
-            }
-
-            // Run through any Panels on the container.
-            foreach (Panel objPanel in objParent.Controls.OfType<Panel>())
-            {
-                UpdateControls(objPanel);
-            }
-
-            // Run through any Tabs on the container.
-            foreach (TabControl objTabControl in objParent.Controls.OfType<TabControl>())
-            {
-                foreach (TabPage tabPage in objTabControl.TabPages)
+                else if (objChild is ListView lstList)
                 {
-                    if (!string.IsNullOrEmpty(tabPage.Tag?.ToString()))
+                    foreach (ColumnHeader objHeader in lstList.Columns)
                     {
-                        tabPage.Text = GetString(tabPage.Tag.ToString());
+                        string strControlTag = objHeader.Tag?.ToString();
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                            objHeader.Text = GetString(strControlTag, strIntoLanguage);
                     }
-
-                    UpdateControls(tabPage);
                 }
-            }
-
-            // Run through everything in any SplitContainers.
-            foreach (SplitContainer objSplitControl in objParent.Controls.OfType<SplitContainer>())
-            {
-                for (int i = 1; i <= 2; i++)
+                else if (objChild is TabControl objTabControl)
                 {
-                    SplitterPanel objSplitPanel;
-                    if (i == 1)
-                        objSplitPanel = objSplitControl.Panel1;
-                    else
-                        objSplitPanel = objSplitControl.Panel2;
-
-                    UpdateControls(objSplitPanel);
-                }
-            }
-
-            // Run through any FlowLayoutPanels on the container.
-            foreach (FlowLayoutPanel objContainer in objParent.Controls.OfType<FlowLayoutPanel>())
-            {
-                UpdateControls(objContainer);
-            }
-
-            foreach (TreeView treTree in objParent.Controls.OfType<TreeView>())
-            {
-                foreach (TreeNode objNode in treTree.Nodes)
-                {
-                    if (objNode.Level == 0)
+                    foreach (TabPage tabPage in objTabControl.TabPages)
                     {
-                        if (objNode.Tag != null)
+                        string strControlTag = tabPage.Tag?.ToString();
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                            tabPage.Text = GetString(strControlTag, strIntoLanguage);
+
+                        UpdateControls(tabPage, strIntoLanguage);
+                    }
+                }
+                else if (objChild is SplitContainer objSplitControl)
+                {
+                    UpdateControls(objSplitControl.Panel1, strIntoLanguage);
+                    UpdateControls(objSplitControl.Panel2, strIntoLanguage);
+                }
+                else if (objChild as Panel != null)
+                {
+                    UpdateControls(objChild, strIntoLanguage);
+                }
+                else if (objChild is TreeView treTree)
+                {
+                    foreach (TreeNode objNode in treTree.Nodes)
+                    {
+                        if (objNode.Level == 0)
                         {
-                            if (objNode.Tag.ToString().StartsWith("Node_"))
+                            string strControlTag = objNode.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag))
                             {
-                                objNode.Text = GetString(objNode.Tag.ToString());
+                                if (strControlTag.StartsWith("Node_"))
+                                {
+                                    objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                }
                             }
                         }
                     }
@@ -319,65 +265,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Translate the contents of a UserControl.
-        /// </summary>
-        /// <param name="objControl">UserControl to translate.</param>
-        private static void UpdateUserControl(UserControl objControl)
-        {
-            UpdateControls(objControl);
-        }
-
-        /// <summary>
-        /// Translate the contents of a Form.
-        /// </summary>
-        /// <param name="objForm">Form to translate.</param>
-        private static void UpdateForm(Form objForm)
-        {
-            // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
-            // Update the Form itself.
-            if (objForm.Tag != null)
-            {
-                objForm.Text = GetString(objForm.Tag.ToString());
-            }
-
-            // update any menu strip items that have tags
-            if (objForm.MainMenuStrip != null)
-            {
-                foreach (ToolStripMenuItem objItem in objForm.MainMenuStrip.Items)
-                    SetMenuItemsRecursively(objItem);
-            }
-
-            // Run through any StatusStrips.
-            foreach (ToolStrip objStrip in objForm.Controls.OfType<ToolStrip>())
-            {
-                foreach (ToolStripStatusLabel tssLabel in objStrip.Items.OfType<ToolStripStatusLabel>())
-                {
-                    if (tssLabel.Tag != null)
-                        tssLabel.Text = GetString(tssLabel.Tag.ToString());
-                }
-            }
-
-            // Handle control over to the method that handles translating all of the other Controls.
-            UpdateControls(objForm);
-        }
-
-        /// <summary>
         /// Loads the proper language from the language file for every menu item recursively
         /// </summary>
-        /// <param name="objItem"></param>
-        private static void SetMenuItemsRecursively(ToolStripDropDownItem objItem)
+        /// <param name="tssItem"></param>
+        public static void TranslateToolStripItemsRecursively(ToolStripItem tssItem, string strIntoLanguage)
         {
-            if (objItem.DropDownItems.Count == 0)
-                return; // we have no more drop down items to pull
-            if (objItem.Tag != null)
-                objItem.Text = GetString(objItem.Tag.ToString());
+            string strControlTag = tssItem.Tag?.ToString();
+            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
+                tssItem.Text = GetString(strControlTag, strIntoLanguage);
 
-            foreach (ToolStripDropDownItem objRecursiveItem in objItem.DropDownItems.OfType<ToolStripDropDownItem>())
-            {
-                SetMenuItemsRecursively(objRecursiveItem);
-                if (objItem.Tag != null)
-                    objItem.Text = GetString(objItem.Tag.ToString());
-            }
+            if (tssItem is ToolStripDropDownItem tssDropDownItem)
+                foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                    TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage);
         }
 
         /// <summary>
@@ -385,18 +284,38 @@ namespace Chummer
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
-        public static string GetString(string strKey, bool blnReturnError = true)
+        public static string GetString(string strKey, string strLanguage, bool blnReturnError = true)
         {
             string strReturn;
-            if (_objDictionary.TryGetValue(strKey, out strReturn))
+            if (LoadLanguage(strLanguage))
+            {
+                if (s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+                {
+                    if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
+                }
+            }
+            if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))
             {
                 return strReturn;
             }
-            if (!blnReturnError)
+            return !blnReturnError ? string.Empty : $"{strKey} not found; check language file for string";
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        public static XmlDocument GetDataDocument(string strLanguage)
+        {
+            if (LoadLanguage(strLanguage) && s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
             {
-                return string.Empty;
+                return objLanguageData.DataDocument;
             }
-            return "Error finding string for key - " + strKey;
+            return null;
         }
 
         /// <summary>
@@ -412,14 +331,11 @@ namespace Chummer
                 {
                     // Load the English version.
                     XmlDocument objEnglishDocument = new XmlDocument();
-                    string strFilePath = Path.Combine(Application.StartupPath, "lang", "en-us.xml");
+                    string strFilePath = Path.Combine(Application.StartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
                     objEnglishDocument.Load(strFilePath);
                     foreach (XmlNode objNode in objEnglishDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString();
-                        objString.Key = objNode["key"]?.InnerText;
-                        objString.Text = objNode["text"]?.InnerText;
-                        lstEnglish.Add(objString);
+                        lstEnglish.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
                     }
                 },
                 () =>
@@ -430,10 +346,7 @@ namespace Chummer
                     objLanguageDocument.Load(strLangPath);
                     foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
                     {
-                        LanguageString objString = new LanguageString();
-                        objString.Key = objNode["key"]?.InnerText;
-                        objString.Text = objNode["text"]?.InnerText;
-                        lstLanguage.Add(objString);
+                        lstLanguage.Add(new LanguageString(objNode["key"]?.InnerText, objNode["text"]?.InnerText));
                     }
                 }
             );
@@ -470,7 +383,7 @@ namespace Chummer
         }
 
         // List of XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter
-        private static readonly Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>[] lstXPathsToSearch =
+        private static readonly Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>[] s_LstXPathsToSearch =
         {
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("weapons.xml", "/chummer/categories/category",
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
@@ -480,11 +393,27 @@ namespace Chummer
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/skills/skill/specs/spec",
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/knowledgeskills/skill/specs/spec",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/skillgroups/name",
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("skills.xml", "/chummer/categories/category",
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("licenses.xml", "/chummer/licenses/license",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/contacts/contact",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/sexes/sex",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/ages/age",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/personallives/personallife",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/types/type",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/preferredpayments/preferredpayment",
+                new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("contacts.xml", "/chummer/hobbiesvices/hobbyvice",
                 new Func<XmlNode, string>(x => x.InnerText), new Func<XmlNode, string>(x => x.Attributes?["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("weapons.xml", "/chummer/weapons/weapon",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
@@ -510,93 +439,98 @@ namespace Chummer
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("metatypes.xml", "/chummer/metatypes/metatype",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("metatypes.xml", "/chummer/metatypes/metatype/metavariants/metavariant",
+                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("cyberware.xml", "/chummer/cyberwares/cyberware",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("critterpowers.xml", "/chummer/powers/power",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("qualities.xml", "/chummer/qualities/quality",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
+            new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("ranges.xml", "/chummer/ranges/range",
+                new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
             new Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
                 new Func<XmlNode, string>(x => x["name"]?.InnerText), new Func<XmlNode, string>(x => x["translate"]?.InnerText)),
         };
+
         /// <summary>
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        public static string TranslateExtra(string strExtra)
+        public static string TranslateExtra(string strExtra, string strIntoLanguage)
         {
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (_strLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            if (strIntoLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
                 {
                     case "BOD":
-                        strReturn = GetString("String_AttributeBODShort");
+                        strReturn = GetString("String_AttributeBODShort", strIntoLanguage);
                         break;
                     case "AGI":
-                        strReturn = GetString("String_AttributeAGIShort");
+                        strReturn = GetString("String_AttributeAGIShort", strIntoLanguage);
                         break;
                     case "REA":
-                        strReturn = GetString("String_AttributeREAShort");
+                        strReturn = GetString("String_AttributeREAShort", strIntoLanguage);
                         break;
                     case "STR":
-                        strReturn = GetString("String_AttributeSTRShort");
+                        strReturn = GetString("String_AttributeSTRShort", strIntoLanguage);
                         break;
                     case "CHA":
-                        strReturn = GetString("String_AttributeCHAShort");
+                        strReturn = GetString("String_AttributeCHAShort", strIntoLanguage);
                         break;
                     case "INT":
-                        strReturn = GetString("String_AttributeINTShort");
+                        strReturn = GetString("String_AttributeINTShort", strIntoLanguage);
                         break;
                     case "LOG":
-                        strReturn = GetString("String_AttributeLOGShort");
+                        strReturn = GetString("String_AttributeLOGShort", strIntoLanguage);
                         break;
                     case "WIL":
-                        strReturn = GetString("String_AttributeWILShort");
+                        strReturn = GetString("String_AttributeWILShort", strIntoLanguage);
                         break;
                     case "EDG":
-                        strReturn = GetString("String_AttributeEDGShort");
+                        strReturn = GetString("String_AttributeEDGShort", strIntoLanguage);
                         break;
                     case "MAG":
-                        strReturn = GetString("String_AttributeMAGShort");
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
                     case "MAGAdept":
-                        strReturn = GetString("String_AttributeMAGShort") + " (" + GetString("String_DescAdept") + ")";
+                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage) + " (" + GetString("String_DescAdept", strIntoLanguage) + ')';
                         break;
                     case "RES":
-                        strReturn = GetString("String_AttributeRESShort");
+                        strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
                         break;
                     case "DEP":
-                        strReturn = GetString("String_AttributeDEPShort");
+                        strReturn = GetString("String_AttributeDEPShort", strIntoLanguage);
                         break;
                     case "Physical":
-                        strReturn = GetString("Node_Physical");
+                        strReturn = GetString("Node_Physical", strIntoLanguage);
                         break;
                     case "Mental":
-                        strReturn = GetString("Node_Mental");
+                        strReturn = GetString("Node_Mental", strIntoLanguage);
                         break;
                     case "Social":
-                        strReturn = GetString("Node_Social");
+                        strReturn = GetString("Node_Social", strIntoLanguage);
                         break;
                     case "Left":
-                        strReturn = GetString("String_Improvement_SideLeft");
+                        strReturn = GetString("String_Improvement_SideLeft", strIntoLanguage);
                         break;
                     case "Right":
-                        strReturn = GetString("String_Improvement_SideRight");
+                        strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
                     default:
                         string strExtraNoQuotes = strExtra.FastEscape('\"');
 
                         object strReturnLock = new object();
-                        Parallel.For(0, lstXPathsToSearch.Length, (i, state) =>
+                        Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
                         {
-                            Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = lstXPathsToSearch[i];
-                            foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1).SelectNodes(objXPathPair.Item2))
+                            Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
+                            foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strIntoLanguage).SelectNodes(objXPathPair.Item2))
                             {
                                 if (objXPathPair.Item3(objNode) == strExtraNoQuotes)
                                 {
@@ -616,8 +550,120 @@ namespace Chummer
             }
 
             // If no translation could be found, just use whatever we were passed.
-            if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("Error finding string for key - "))
+            if (string.IsNullOrEmpty(strReturn) || strReturn.Contains("not found; check language file for string"))
                 strReturn = strExtra;
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage)
+        {
+            // If no original could be found, just use whatever we were passed.
+            string strReturn = strExtra;
+
+            // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
+            if (strFromLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            {
+                // Attempt to translate CharacterAttribute names.
+                if (strExtra == GetString("String_AttributeBODShort", strFromLanguage))
+                {
+                    return "BOD";
+                }
+                else if (strExtra == GetString("String_AttributeAGIShort", strFromLanguage))
+                {
+                    return "AGI";
+                }
+                else if (strExtra == GetString("String_AttributeREAShort", strFromLanguage))
+                {
+                    return "REA";
+                }
+                else if (strExtra == GetString("String_AttributeSTRShort", strFromLanguage))
+                {
+                    return "STR";
+                }
+                else if (strExtra == GetString("String_AttributeCHAShort", strFromLanguage))
+                {
+                    return "CHA";
+                }
+                else if (strExtra == GetString("String_AttributeINTShort", strFromLanguage))
+                {
+                    return "INT";
+                }
+                else if (strExtra == GetString("String_AttributeLOGShort", strFromLanguage))
+                {
+                    return "LOG";
+                }
+                else if (strExtra == GetString("String_AttributeWILShort", strFromLanguage))
+                {
+                    return "WIL";
+                }
+                else if (strExtra == GetString("String_AttributeEDGShort", strFromLanguage))
+                {
+                    return "EDG";
+                }
+                else if(strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
+                {
+                    return "MAG";
+                }
+                else if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage) + " (" + GetString("String_DescAdept", strFromLanguage) + ')')
+                {
+                    return "MAGAdept";
+                }
+                else if (strExtra == GetString("String_AttributeRESShort", strFromLanguage))
+                {
+                    return "RES";
+                }
+                else if (strExtra == GetString("String_AttributeDEPShort", strFromLanguage))
+                {
+                    return "DEP";
+                }
+                else if (strExtra == GetString("Node_Physical", strFromLanguage))
+                {
+                    return "Physical";
+                }
+                else if (strExtra == GetString("Node_Mental", strFromLanguage))
+                {
+                    return "Mental";
+                }
+                else if (strExtra == GetString("Node_Social", strFromLanguage))
+                {
+                    return "Social";
+                }
+                else if (strExtra == GetString("String_Improvement_SideLeft", strFromLanguage))
+                {
+                    return "Left";
+                }
+                else if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
+                {
+                    return "Right";
+                }
+
+                string strExtraNoQuotes = strExtra.FastEscape('\"');
+
+                object strReturnLock = new object();
+                Parallel.For(0, s_LstXPathsToSearch.Length, (i, state) =>
+                {
+                    Tuple<string, string, Func<XmlNode, string>, Func<XmlNode, string>> objXPathPair = s_LstXPathsToSearch[i];
+                    foreach (XmlNode objNode in XmlManager.Load(objXPathPair.Item1, strFromLanguage).SelectNodes(objXPathPair.Item2))
+                    {
+                        if (objXPathPair.Item4(objNode) == strExtraNoQuotes)
+                        {
+                            string strOriginal = objXPathPair.Item3(objNode);
+                            if (!string.IsNullOrEmpty(strOriginal))
+                            {
+                                lock (strReturnLock)
+                                    strReturn = strOriginal;
+                                state.Stop();
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
 
             return strReturn;
         }

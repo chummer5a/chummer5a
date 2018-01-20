@@ -18,8 +18,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <licenses remove="yes" />
-  <licenses>
+  <licenses amendoperation="replace">
     <license>Adept License</license>
     <license>Bodyguard License</license>
     <license>Bounty Hunter's License</license>

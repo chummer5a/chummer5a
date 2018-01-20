@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -27,7 +28,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
-using Chummer.Skills;
+using Chummer.Backend.Skills;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
@@ -42,42 +43,52 @@ namespace Chummer
     [System.ComponentModel.DesignerCategory("")]
     public class CharacterShared : Form
     {
-        protected readonly Character _objCharacter;
-        protected readonly CharacterOptions _objOptions;
-        protected bool _blnIsDirty = false;
+        private readonly Character _objCharacter;
+        private readonly CharacterOptions _objOptions;
+        private bool _blnIsDirty = false;
+        private bool _blnRequestCharacterUpdate = false;
 
         public CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
+            _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public CharacterShared()
         {
-            _gunneryCached = new Lazy<Skill>(() => _objCharacter.SkillsSection.GetActiveSkill("Gunnery"));
         }
 
         /// <summary>
         /// Wrapper for relocating contact forms. 
         /// </summary>
-        public class TransportWrapper
+        protected struct TransportWrapper
         {
-            private readonly Control _control;
+            public Control Control { get; }
 
-            public TransportWrapper(Control control)
+            public TransportWrapper(Control objControl)
             {
-                _control = control;
+                Control = objControl;
             }
 
-            public Control Control
+            public override bool Equals(object obj)
             {
-                get { return _control; }
+                return Control.Equals(obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return Control.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return Control.ToString();
             }
         }
 
-        public Stopwatch Autosave_StopWatch = Stopwatch.StartNew();
+        public Stopwatch Autosave_StopWatch { get; } = Stopwatch.StartNew();
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
@@ -94,7 +105,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     Cursor = Cursors.Default;
-                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    MessageBox.Show(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", GlobalOptions.Language));
                     Autosave_StopWatch.Restart();
                     return;
                 }
@@ -104,7 +115,7 @@ namespace Chummer
             string strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
             string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
             _objCharacter.Save(strFilePath);
             Cursor = Cursors.Default;
@@ -133,13 +144,13 @@ namespace Chummer
                 int intWIL = _objCharacter.WIL.TotalValue;
                 string strCM = $"8 + ({_objCharacter.BOD.DisplayAbbrev}/2)({(intBOD + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ")";
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.PhysicalCM).ToString() + ')';
                 tipTooltip.SetToolTip(lblPhysical, strCM);
                 strCM = $"8 + ({_objCharacter.WIL.DisplayAbbrev}/2)({(intWIL + 1) / 2})";
                 if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM) != 0)
-                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ")";
+                    strCM += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
+                             ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.StunCM).ToString() + ')';
                 tipTooltip.SetToolTip(lblStun, strCM);
             }
         }
@@ -159,10 +170,10 @@ namespace Chummer
             lblArmor.Text = intTotalArmorRating.ToString();
             if (tipTooltip != null)
             {
-                string strArmorToolTip = LanguageManager.GetString("Tip_Armor") + " (" + intArmorRating.ToString() + ")";
+                string strArmorToolTip = LanguageManager.GetString("Tip_Armor", GlobalOptions.Language) + " (" + intArmorRating.ToString() + ')';
                 if (intArmorRating != intTotalArmorRating)
-                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" +
-                                       (intTotalArmorRating - intArmorRating).ToString() + ")";
+                    strArmorToolTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" +
+                                       (intTotalArmorRating - intArmorRating).ToString() + ')';
                 tipTooltip.SetToolTip(lblArmor, strArmorToolTip);
                 if (lblCMArmor != null)
                 {
@@ -215,13 +226,13 @@ namespace Chummer
                     switch (objLoopImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.PhysicalLimit:
-                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objPhysical.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.MentalLimit:
-                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objMental.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                         case Improvement.ImprovementType.SocialLimit:
-                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement)} ({objLoopImprovement.Value})");
+                            objSocial.Append($" + {_objCharacter.GetObjectName(objLoopImprovement, GlobalOptions.Language)} ({objLoopImprovement.Value})");
                             break;
                     }
                 }
@@ -234,32 +245,6 @@ namespace Chummer
             lblAstral.Text = _objCharacter.LimitAstral.ToString();
         }
 
-        private readonly Lazy<Skill> _gunneryCached;
-
-        protected int MountedGunManualOperationDicePool(/*Weapon weapon*/)
-        {
-            return _gunneryCached.Value.Pool;
-        }
-
-        protected int MountedGunCommandDeviceDicePool(/*Weapon weapon*/)
-        {
-            return _gunneryCached.Value.PoolOtherAttribute(_objCharacter.LOG.TotalValue);
-        }
-
-        protected int MountedGunDogBrainDicePool(Weapon weapon, Vehicle vehicle)
-        {
-            int pilotRating = vehicle.Pilot;
-
-            Gear maybeAutoSoft = vehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == weapon.Name || x.Extra == weapon.DisplayName));
-
-            if (maybeAutoSoft != null)
-            {
-                return maybeAutoSoft.Rating + pilotRating;
-            }
-
-            return 0;
-        }
-
         /// <summary>
         /// Edit and update a Limit Modifier.
         /// </summary>
@@ -268,12 +253,14 @@ namespace Chummer
         protected void UpdateLimitModifier(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objSelectedNode = treLimit.SelectedNode;
-            LimitModifier objLimitModifier = CommonFunctions.FindByIdWithNameCheck(treLimit.SelectedNode.Tag.ToString(),
-                _objCharacter.LimitModifiers);
+            string strGuid = objSelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
+                return;
+            LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound"));
+                MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                 return;
             }
             frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);
@@ -285,23 +272,16 @@ namespace Chummer
             //Remove the old LimitModifier to ensure we don't double up.
             _objCharacter.LimitModifiers.Remove(objLimitModifier);
             // Create the new limit modifier.
-            TreeNode objNode = new TreeNode();
             objLimitModifier = new LimitModifier(_objCharacter);
             string strLimit = treLimit.SelectedNode.Parent.Text;
             string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit,
-                strCondition, objNode);
-            objLimitModifier.Guid = new Guid(objSelectedNode.Tag.ToString());
-            if (objLimitModifier.InternalId == Guid.Empty.ToString())
-                return;
+            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+            objLimitModifier.Guid = new Guid(strGuid);
 
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             //Add the new treeview node for the LimitModifier.
-            objNode.ContextMenuStrip = cmsLimitModifier;
-            objNode.Text = objLimitModifier.DisplayName;
-            objNode.Tag = objLimitModifier.InternalId;
-            objSelectedNode.Parent.Nodes.Add(objNode);
+            objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
             objSelectedNode.Remove();
         }
 
@@ -310,18 +290,589 @@ namespace Chummer
         /// </summary>
         /// <param name="treSpells">Treenode that will be cleared and populated.</param>
         /// <param name="cmsSpell">ContextMenuStrip that will be added to each power.</param>
-        protected static void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, Character _objCharacter)
+        protected void RefreshSpells(TreeView treSpells, ContextMenuStrip cmsSpell, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Clear the default nodes of entries.
-            foreach (TreeNode objNode in treSpells.Nodes)
+            TreeNode objCombatNode = null;
+            TreeNode objDetectionNode = null;
+            TreeNode objHealthNode = null;
+            TreeNode objIllusionNode = null;
+            TreeNode objManipulationNode = null;
+            TreeNode objRitualsNode = null;
+            TreeNode objEnchantmentsNode = null;
+            if (notifyCollectionChangedEventArgs == null)
             {
-                objNode.Nodes.Clear();
+                string strSelectedId = treSpells.SelectedNode?.Tag.ToString();
+
+                // Clear the default nodes of entries.
+                treSpells.Nodes.Clear();
+
+                // Add the Spells that exist.
+                foreach (Spell objSpell in _objCharacter.Spells)
+                {
+                    AddToTree(objSpell, false);
+                }
+                treSpells.SortCustom(strSelectedId);
             }
-            //Add the Spells that exist.
-            foreach (Spell s in _objCharacter.Spells)
+            else
             {
-                treSpells.Add(s, cmsSpell);
+                objCombatNode = treSpells.FindNode("Node_SelectedCombatSpells", false);
+                objDetectionNode = treSpells.FindNode("Node_SelectedDetectionSpells", false);
+                objHealthNode = treSpells.FindNode("Node_SelectedHealthSpells", false);
+                objIllusionNode = treSpells.FindNode("Node_SelectedIllusionSpells", false);
+                objManipulationNode = treSpells.FindNode("Node_SelectedManipulationSpells", false);
+                objRitualsNode = treSpells.FindNode("Node_SelectedGeomancyRituals", false);
+                objEnchantmentsNode = treSpells.FindNode("Node_SelectedEnchantments", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objSpell);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treSpells.FindNode(objSpell.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshSpells(treSpells, cmsSpell);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treSpells.FindNode(objSpell.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objSpell);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
             }
+
+            void AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            {
+                TreeNode objParentNode = null;
+                switch (objSpell.Category)
+                {
+                    case "Combat":
+                        if (objCombatNode == null)
+                        {
+                            objCombatNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedCombatSpells",
+                                Text = LanguageManager.GetString("Node_SelectedCombatSpells", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert(0, objCombatNode);
+                            objCombatNode.Expand();
+                        }
+                        objParentNode = objCombatNode;
+                        break;
+                    case "Detection":
+                        if (objDetectionNode == null)
+                        {
+                            objDetectionNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedDetectionSpells",
+                                Text = LanguageManager.GetString("Node_SelectedDetectionSpells", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
+                            objDetectionNode.Expand();
+                        }
+                        objParentNode = objDetectionNode;
+                        break;
+                    case "Health":
+                        if (objHealthNode == null)
+                        {
+                            objHealthNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedHealthSpells",
+                                Text = LanguageManager.GetString("Node_SelectedHealthSpells", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                (objDetectionNode == null ? 0 : 1), objHealthNode);
+                            objHealthNode.Expand();
+                        }
+                        objParentNode = objHealthNode;
+                        break;
+                    case "Illusion":
+                        if (objIllusionNode == null)
+                        {
+                            objIllusionNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedIllusionSpells",
+                                Text = LanguageManager.GetString("Node_SelectedIllusionSpells", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                (objDetectionNode == null ? 0 : 1) +
+                                (objHealthNode == null ? 0 : 1), objIllusionNode);
+                            objIllusionNode.Expand();
+                        }
+                        objParentNode = objIllusionNode;
+                        break;
+                    case "Manipulation":
+                        if (objManipulationNode == null)
+                        {
+                            objManipulationNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedManipulationSpells",
+                                Text = LanguageManager.GetString("Node_SelectedManipulationSpells", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                (objDetectionNode == null ? 0 : 1) +
+                                (objHealthNode == null ? 0 : 1) +
+                                (objIllusionNode == null ? 0 : 1), objManipulationNode);
+                            objManipulationNode.Expand();
+                        }
+                        objParentNode = objManipulationNode;
+                        break;
+                    case "Rituals":
+                        if (objRitualsNode == null)
+                        {
+                            objRitualsNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedGeomancyRituals",
+                                Text = LanguageManager.GetString("Node_SelectedGeomancyRituals", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                (objDetectionNode == null ? 0 : 1) +
+                                (objHealthNode == null ? 0 : 1) +
+                                (objIllusionNode == null ? 0 : 1) +
+                                (objManipulationNode == null ? 0 : 1), objRitualsNode);
+                            objRitualsNode.Expand();
+                        }
+                        objParentNode = objRitualsNode;
+                        break;
+                    case "Enchantments":
+                        if (objEnchantmentsNode == null)
+                        {
+                            objEnchantmentsNode = new TreeNode
+                            {
+                                Tag = "Node_SelectedEnchantments",
+                                Text = LanguageManager.GetString("Node_SelectedEnchantments", GlobalOptions.Language)
+                            };
+                            treSpells.Nodes.Add(objEnchantmentsNode);
+                            objEnchantmentsNode.Expand();
+                        }
+                        objParentNode = objEnchantmentsNode;
+                        break;
+                }
+                TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treSpells.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
+        }
+
+        protected void RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            TreeNode objParentNode = null;
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                string strSelectedId = treAIPrograms.SelectedNode?.Tag.ToString();
+
+                treAIPrograms.Nodes.Clear();
+
+                // Populate AI Programs.
+                foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
+                {
+                    AddToTree(objAIProgram, false);
+                }
+
+                treAIPrograms.SortCustom(strSelectedId);
+            }
+            else
+            {
+                objParentNode = treAIPrograms.FindNode("Node_SelectedAIPrograms", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objAIProgram);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objAIProgram);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
+
+            void AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            {
+                if (objParentNode == null)
+                {
+                    objParentNode = new TreeNode()
+                    {
+                        Tag = "Node_SelectedAIPrograms",
+                        Text = LanguageManager.GetString("Node_SelectedAIPrograms", GlobalOptions.Language)
+                    };
+                    treAIPrograms.Nodes.Add(objParentNode);
+                    objParentNode.Expand();
+                }
+                TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = -1;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treAIPrograms.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
+        }
+
+        protected void RefreshComplexForms(TreeView treComplexForms, ContextMenuStrip cmsComplexForm, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            TreeNode objParentNode = null;
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                string strSelectedId = treComplexForms.SelectedNode?.Tag.ToString();
+
+                treComplexForms.Nodes.Clear();
+
+                // Populate Complex Forms.
+                foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
+                {
+                    AddToTree(objComplexForm, false);
+                }
+
+                treComplexForms.SortCustom(strSelectedId);
+            }
+            else
+            {
+                objParentNode = treComplexForms.FindNode("Node_SelectedAdvancedComplexForms", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objComplexForm);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshComplexForms(treComplexForms, cmsComplexForm);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objComplexForm);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
+
+            void AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
+            {
+                if (objParentNode == null)
+                {
+                    objParentNode = new TreeNode()
+                    {
+                        Tag = "Node_SelectedAdvancedComplexForms",
+                        Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms", GlobalOptions.Language)
+                    };
+                    treComplexForms.Nodes.Add(objParentNode);
+                    objParentNode.Expand();
+                }
+                TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treComplexForms.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
+        }
+
+        protected void RefreshLimitModifiers(TreeView treLimit, ContextMenuStrip cmsLimitModifier)
+        {
+            treLimit.Nodes.Clear();
+
+            TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
+
+            // Populate Limit Modifiers.
+            foreach (LimitModifier objLimitModifier in CharacterObject.LimitModifiers)
+            {
+                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
+                if (!objParentNode.Nodes.ContainsKey(objLimitModifier.DisplayName))
+                {
+                    objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
+                }
+            }
+
+            // Populate Limit Modifiers from Improvements
+            foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
+            {
+                int intTargetLimit = -1;
+                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
+                    intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                else if (objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit)
+                    intTargetLimit = (int)LimitType.Physical;
+                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
+                    intTargetLimit = (int)LimitType.Mental;
+                else if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
+                    intTargetLimit = (int)LimitType.Social;
+                if (intTargetLimit != -1)
+                {
+                    TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
+                    string strName = objImprovement.UniqueName + ": ";
+                    if (objImprovement.Value > 0)
+                        strName += '+';
+                    strName += objImprovement.Value.ToString();
+                    if (!string.IsNullOrEmpty(objImprovement.Condition))
+                        strName += ", " + objImprovement.Condition;
+                    if (!objParentNode.Nodes.ContainsKey(strName))
+                    {
+                        TreeNode newNode = new TreeNode
+                        {
+                            Name = strName,
+                            Text = strName,
+                            Tag = objImprovement.SourceName,
+                            ContextMenuStrip = cmsLimitModifier
+                        };
+                        if (!string.IsNullOrEmpty(objImprovement.Notes))
+                            newNode.ForeColor = Color.SaddleBrown;
+                        newNode.ToolTipText = objImprovement.Notes.WordWrap(100);
+                        if (string.IsNullOrEmpty(objImprovement.ImprovedName))
+                        {
+                            if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
+                                objImprovement.ImprovedName = "Social";
+                            else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
+                                objImprovement.ImprovedName = "Mental";
+                            else
+                                objImprovement.ImprovedName = "Physical";
+                        }
+
+                        objParentNode.Nodes.Add(newNode);
+                        objParentNode.Expand();
+                    }
+                }
+            }
+
+            TreeNode GetLimitModifierParentNode(int intTargetLimit)
+            {
+                TreeNode objParentNode = aobjLimitNodes[intTargetLimit];
+                if (objParentNode == null)
+                {
+                    switch (intTargetLimit)
+                    {
+                        case 0:
+                            objParentNode = new TreeNode()
+                            {
+                                Tag = "Node_Physical",
+                                Text = LanguageManager.GetString("Node_Physical", GlobalOptions.Language)
+                            };
+                            treLimit.Nodes.Insert(0, objParentNode);
+                            break;
+                        case 1:
+                            objParentNode = new TreeNode()
+                            {
+                                Tag = "Node_Mental",
+                                Text = LanguageManager.GetString("Node_Mental", GlobalOptions.Language)
+                            };
+                            treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
+                            break;
+                        case 2:
+                            objParentNode = new TreeNode()
+                            {
+                                Tag = "Node_Social",
+                                Text = LanguageManager.GetString("Node_Social", GlobalOptions.Language)
+                            };
+                            treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
+                            break;
+                        case 3:
+                            objParentNode = new TreeNode()
+                            {
+                                Tag = "Node_Astral",
+                                Text = LanguageManager.GetString("Node_Astral", GlobalOptions.Language)
+                            };
+                            treLimit.Nodes.Add(objParentNode);
+                            break;
+                    }
+                    objParentNode.Expand();
+                }
+                return objParentNode;
+            }
+        }
+
+        protected void RefreshInitiationGradesTree(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes)
+        {
+            treMetamagic.Nodes.Clear();
+            foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+            {
+                TreeNode nodGrade = objGrade.CreateTreeNode(cmsMetamagic);
+
+                foreach (Art objArt in _objCharacter.Arts)
+                {
+                    if (objArt.Grade == objGrade.Grade)
+                    {
+                        nodGrade.Nodes.Add(objArt.CreateTreeNode(cmsInitiationNotes, true));
+                    }
+                }
+                foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                {
+                    if (objMetamagic.Grade == objGrade.Grade)
+                    {
+                        nodGrade.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
+                    }
+                }
+                foreach (Spell objSpell in _objCharacter.Spells)
+                {
+                    if (objSpell.Grade == objGrade.Grade)
+                    {
+                        nodGrade.Nodes.Add(objSpell.CreateTreeNode(cmsInitiationNotes, true));
+                    }
+                }
+                foreach (Enhancement objEnhancement in _objCharacter.Enhancements)
+                {
+                    if (objEnhancement.Grade == objGrade.Grade)
+                    {
+                        nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
+                    }
+                }
+                foreach (Power objPower in _objCharacter.Powers)
+                {
+                    foreach (Enhancement objEnhancement in objPower.Enhancements)
+                    {
+                        if (objEnhancement.Grade == objGrade.Grade)
+                        {
+                            nodGrade.Nodes.Add(objEnhancement.CreateTreeNode(cmsInitiationNotes, true));
+                        }
+                    }
+                }
+                treMetamagic.Nodes.Add(nodGrade);
+            }
+            foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+            {
+                if (objMetamagic.Grade < 0)
+                {
+                    treMetamagic.Nodes.Add(objMetamagic.CreateTreeNode(cmsInitiationNotes, true));
+                }
+            }
+            treMetamagic.ExpandAll();
         }
 
         /// <summary>
@@ -329,34 +880,127 @@ namespace Chummer
         /// </summary>
         /// <param name="treCritterPowers">Treenode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
-        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers)
+        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Clear the default nodes of entries.
-            foreach (TreeNode objNode in treCritterPowers.Nodes)
-            {
-                objNode.Nodes.Clear();
-            }
-            //Add the Critter Powers that exist.
-            foreach (CritterPower objPower in _objCharacter.CritterPowers)
-            {
-                TreeNode objNode = new TreeNode();
-                objNode.Text = objPower.DisplayName;
-                objNode.Tag = objPower.InternalId;
-                objNode.ContextMenuStrip = cmsCritterPowers;
-                if (!string.IsNullOrEmpty(objPower.Notes))
-                    objNode.ForeColor = Color.SaddleBrown;
-                objNode.ToolTipText = CommonFunctions.WordWrap(objPower.Notes, 100);
+            TreeNode objPowersNode = null;
+            TreeNode objWeaknessesNode = null;
 
-                if (objPower.Category != "Weakness")
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                string strSelectedId = treCritterPowers.SelectedNode?.Tag.ToString();
+                treCritterPowers.Nodes.Clear();
+                // Add the Critter Powers that exist.
+                foreach (CritterPower objPower in _objCharacter.CritterPowers)
                 {
-                    treCritterPowers.Nodes[0].Nodes.Add(objNode);
-                    treCritterPowers.Nodes[0].Expand();
+                    AddToTree(objPower, false);
+                }
+
+                treCritterPowers.SortCustom(strSelectedId);
+            }
+            else
+            {
+                objPowersNode = treCritterPowers.FindNode("Node_CritterPowers", false);
+                objWeaknessesNode = treCritterPowers.FindNode("Node_CritterWeaknesses", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objPower);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objPower);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
+
+            void AddToTree(CritterPower objPower, bool blnSingleAdd = true)
+            {
+                TreeNode objParentNode = null;
+                switch (objPower.Category)
+                {
+                    case "Weakness":
+                        if (objWeaknessesNode == null)
+                        {
+                            objWeaknessesNode = new TreeNode()
+                            {
+                                Tag = "Node_CritterWeaknesses",
+                                Text = LanguageManager.GetString("Node_CritterWeaknesses", GlobalOptions.Language)
+                            };
+                            treCritterPowers.Nodes.Add(objWeaknessesNode);
+                            objWeaknessesNode.Expand();
+                        }
+                        objParentNode = objWeaknessesNode;
+                        break;
+                    default:
+                        if (objPowersNode == null)
+                        {
+                            objPowersNode = new TreeNode()
+                            {
+                                Tag = "Node_CritterPowers",
+                                Text = LanguageManager.GetString("Node_CritterPowers", GlobalOptions.Language)
+                            };
+                            treCritterPowers.Nodes.Insert(0, objPowersNode);
+                            objPowersNode.Expand();
+                        }
+                        objParentNode = objPowersNode;
+                        break;
+                }
+                TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treCritterPowers.SelectedNode = objNode;
                 }
                 else
-                {
-                    treCritterPowers.Nodes[1].Nodes.Add(objNode);
-                    treCritterPowers.Nodes[1].Expand();
-                }
+                    objParentNode.Nodes.Add(objNode);
             }
         }
 
@@ -366,67 +1010,177 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
         /// <param name="blnForce">Forces a refresh of the TreeNode despite a match.</param>
-        protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, bool blnForce = false)
+        protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            //Count the child nodes in each treenode.
-            int intQualityCount = 0;
-            if (!blnForce)
-            {
-                foreach (TreeNode objTreeNode in treQualities.Nodes)
-                {
-                    intQualityCount += objTreeNode.Nodes.Count;
-                }
-            }
+            TreeNode objPositiveQualityRoot = null;
+            TreeNode objNegativeQualityRoot = null;
+            TreeNode objLifeModuleRoot = null;
 
-            //If the node count is the same as the quality count, there's no need to do anything.
-            if (blnForce || intQualityCount != _objCharacter.Qualities.Count)
+            if (notifyCollectionChangedEventArgs == null)
             {
+                string strSelectedNode = treQualities.SelectedNode?.Tag.ToString();
+
+                // Create the root nodes.
+                treQualities.Nodes.Clear();
+
                 // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                 HashSet<string> strQualitiesToPrint = new HashSet<string>();
-                foreach (TreeNode objTreeNode in treQualities.Nodes)
-                {
-                    objTreeNode.Nodes.Clear();
-                }
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    strQualitiesToPrint.Add(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra);
+                    strQualitiesToPrint.Add(objQuality.QualityId + ' ' + objQuality.GetSourceName(GlobalOptions.Language) + ' ' + objQuality.Extra);
                 }
                 // Populate the Qualities list.
                 foreach (Quality objQuality in _objCharacter.Qualities)
                 {
-                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + " " + objQuality.SourceName + " " + objQuality.Extra))
+                    if (!strQualitiesToPrint.Remove(objQuality.QualityId + ' ' + objQuality.GetSourceName(GlobalOptions.Language) + ' ' + objQuality.Extra))
                         continue;
-                    TreeNode objNode = new TreeNode();
-                    objNode.Text = objQuality.DisplayName;
-                    objNode.Tag = objQuality.InternalId;
-                    objNode.ContextMenuStrip = cmsQuality;
 
-                    if (!string.IsNullOrEmpty(objQuality.Notes))
-                        objNode.ForeColor = Color.SaddleBrown;
-                    else if (objQuality.OriginSource == QualitySource.Metatype ||
-                            objQuality.OriginSource == QualitySource.MetatypeRemovable ||
-                            objQuality.OriginSource == QualitySource.Improvement)
-                    {
-                        objNode.ForeColor = SystemColors.GrayText;
-                    }
-                    objNode.ToolTipText = CommonFunctions.WordWrap(objQuality.Notes, 100);
-
-                    switch (objQuality.Type)
-                    {
-                        case QualityType.Positive:
-                            treQualities.Nodes[0].Nodes.Add(objNode);
-                            treQualities.Nodes[0].Expand();
-                            break;
-                        case QualityType.Negative:
-                            treQualities.Nodes[1].Nodes.Add(objNode);
-                            treQualities.Nodes[1].Expand();
-                            break;
-                        case QualityType.LifeModule:
-                            treQualities.Nodes[2].Nodes.Add(objNode);
-                            treQualities.Nodes[2].Expand();
-                            break;
-                    }
+                    AddToTree(objQuality, false);
                 }
+
+                treQualities.SortCustom(strSelectedNode);
+            }
+            else
+            {
+                objPositiveQualityRoot = treQualities.FindNodeByTag("Node_SelectedPositiveQualities", false);
+                objNegativeQualityRoot = treQualities.FindNodeByTag("Node_SelectedNegativeQualities", false);
+                objLifeModuleRoot = treQualities.FindNodeByTag("String_LifeModules", false);
+                bool blnDoNameRefresh = false;
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objQuality.Levels > 1)
+                                    blnDoNameRefresh = true;
+                                else
+                                    AddToTree(objQuality);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
+                                {
+                                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshQualities(treQualities, cmsQuality);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
+                                {
+                                    TreeNode objOldParent = null;
+                                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objNode != null)
+                                    {
+                                        objOldParent = objNode.Parent;
+                                        objNode.Remove();
+                                    }
+                                    else
+                                    {
+                                        RefreshQualityNames(treQualities);
+                                    }
+                                    if (objQuality.Levels > 1)
+                                        RefreshQualityNames(treQualities);
+                                    else
+                                        AddToTree(objQuality);
+                                    if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                }
+                if (blnDoNameRefresh)
+                    RefreshQualityNames(treQualities);
+            }
+
+            void AddToTree(Quality objQuality, bool blnSingleAdd = true)
+            {
+                TreeNode objParentNode = null;
+                switch (objQuality.Type)
+                {
+                    case QualityType.Positive:
+                        if (objPositiveQualityRoot == null)
+                        {
+                            objPositiveQualityRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedPositiveQualities",
+                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Insert(0, objPositiveQualityRoot);
+                            objPositiveQualityRoot.Expand();
+                        }
+                        objParentNode = objPositiveQualityRoot;
+                        break;
+                    case QualityType.Negative:
+                        if (objNegativeQualityRoot == null)
+                        {
+                            objNegativeQualityRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedNegativeQualities",
+                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
+                            objNegativeQualityRoot.Expand();
+                        }
+                        objParentNode = objNegativeQualityRoot;
+                        break;
+                    case QualityType.LifeModule:
+                        if (objLifeModuleRoot == null)
+                        {
+                            objLifeModuleRoot = new TreeNode
+                            {
+                                Tag = "String_LifeModules",
+                                Text = LanguageManager.GetString("String_LifeModules", GlobalOptions.Language)
+                            };
+                            treQualities.Nodes.Add(objLifeModuleRoot);
+                            objLifeModuleRoot.Expand();
+                        }
+                        objParentNode = objLifeModuleRoot;
+                        break;
+                }
+                TreeNode objNode = objQuality.CreateTreeNode(cmsQuality);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treQualities.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
             }
         }
 
@@ -436,70 +1190,551 @@ namespace Chummer
         /// <param name="treQualities">Treeview to insert the qualities into.</param>
         protected void RefreshQualityNames(TreeView treQualities)
         {
-            TreeNode objSelectedNode = null;
-            foreach (Quality objQuality in _objCharacter.Qualities)
+            TreeNode objSelectedNode = treQualities.SelectedNode;
+            foreach (TreeNode objQualityTypeNode in treQualities.Nodes)
             {
-                for (int i = 0; i <= 1; i++)
+                foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                 {
-                    foreach (TreeNode objTreeNode in treQualities.Nodes[i].Nodes)
-                    {
-                        if (objSelectedNode == null && objTreeNode == treQualities.SelectedNode)
-                            objSelectedNode = objTreeNode;
-                        if (objTreeNode.Tag.ToString() == objQuality.InternalId)
-                        {
-                            objTreeNode.Text = objQuality.DisplayName;
-                            goto NextQuality;
-                        }
-                    }
+                    objQualityNode.Text = ((Quality)objQualityNode.Tag).DisplayName(GlobalOptions.Language);
                 }
-                NextQuality:;
             }
-            if (objSelectedNode != null)
-                treQualities.SelectedNode = objSelectedNode;
+            treQualities.SortCustom(objSelectedNode?.Tag);
         }
 
         /// <summary>
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
-        /// <param name="treQualities"></param>
-        /// <param name="_objImprovementManager"></param>
-        protected void RemoveAddedQualities(XmlNodeList objNodeList, TreeView treQualities)
+        protected void RemoveAddedQualities(XmlNodeList objNodeList)
         {
+            if (objNodeList == null || objNodeList.Count == 0)
+                return;
             foreach (XmlNode objNode in objNodeList)
             {
-                foreach (Quality objQuality in _objCharacter.Qualities)
+                Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
+                if (objQuality != null)
                 {
-                    if (objQuality.Name == objNode.InnerText)
+                    _objCharacter.Qualities.Remove(objQuality);
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populate the TreeView that contains all of the character's Gear.
+        /// </summary>
+        protected void PopulateGearList(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly)
+        {
+            string strSelectedId = treGear.SelectedNode?.Tag.ToString();
+
+            // Populate Gear.
+            // Create the root node.
+            treGear.Nodes.Clear();
+            TreeNode objRoot = new TreeNode
+            {
+                Tag = "Node_SelectedGear",
+                Text = LanguageManager.GetString("Node_SelectedGear", GlobalOptions.Language)
+            };
+            treGear.Nodes.Add(objRoot);
+
+            // Start by populating Locations.
+            foreach (string strLocation in CharacterObject.GearLocations)
+            {
+                TreeNode objLocation = new TreeNode
+                {
+                    Tag = strLocation,
+                    Text = strLocation,
+                    ContextMenuStrip = cmsGearLocation
+                };
+                treGear.Nodes.Add(objLocation);
+            }
+
+            foreach (Gear objGear in CharacterObject.Gear)
+            {
+                if (!blnCommlinksOnly || objGear.IsCommlink)
+                {
+                    TreeNode objParent = objRoot;
+                    if (!string.IsNullOrEmpty(objGear.Location))
                     {
-                        _objCharacter.Qualities.Remove(objQuality);
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
-                        if (!_objCharacter.Qualities.Any(objExistingQuality => objExistingQuality.Name == objQuality.Name && objExistingQuality.Extra == objQuality.Extra))
+                        foreach (TreeNode objFind in treGear.Nodes)
                         {
-                            switch (objQuality.Type)
+                            if (objFind.Text == objGear.Location)
                             {
-                                case QualityType.Positive:
-                                    foreach (TreeNode nodQuality in treQualities.Nodes[0].Nodes)
-                                    {
-                                        if (nodQuality.Text == objQuality.Name)
-                                            nodQuality.Remove();
-                                    }
-                                    break;
-                                case QualityType.Negative:
-                                    foreach (TreeNode nodQuality in treQualities.Nodes[1].Nodes)
-                                    {
-                                        if (nodQuality.Text == objQuality.Name)
-                                            nodQuality.Remove();
-                                    }
-                                    break;
+                                objParent = objFind;
+                                break;
                             }
                         }
-                        else
-                            RefreshQualityNames(treQualities);
-                        break;
+                    }
+                    objParent.Nodes.Add(objGear.CreateTreeNode(cmsGear));
+                }
+            }
+            foreach (TreeNode objNode in treGear.Nodes)
+                if (objNode.Nodes.Count > 0)
+                    objNode.Expand();
+
+            TreeNode objSelectedNode = treGear.FindNode(strSelectedId);
+            if (objSelectedNode != null)
+                treGear.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Populate the TreeView that contains all of the character's Weapons.
+        /// </summary>
+        protected void PopulateWeaponList(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+        {
+            string strSelectedId = treWeapons.SelectedNode?.Tag.ToString();
+
+            // Populate Weapons.
+            // Create the root node.
+            treWeapons.Nodes.Clear();
+            TreeNode objRoot = new TreeNode
+            {
+                Tag = "Node_SelectedWeapons",
+                Text = LanguageManager.GetString("Node_SelectedWeapons", GlobalOptions.Language)
+            };
+            treWeapons.Nodes.Add(objRoot);
+
+            // Start by populating Locations.
+            foreach (string strLocation in CharacterObject.WeaponLocations)
+            {
+                TreeNode objLocation = new TreeNode
+                {
+                    Tag = strLocation,
+                    Text = strLocation,
+                    ContextMenuStrip = cmsWeaponLocation
+                };
+                treWeapons.Nodes.Add(objLocation);
+            }
+            foreach (Weapon objWeapon in CharacterObject.Weapons)
+            {
+                TreeNode objParent = objRoot;
+                if (!string.IsNullOrEmpty(objWeapon.Location))
+                {
+                    foreach (TreeNode objFind in treWeapons.Nodes)
+                    {
+                        if (objFind.Text == objWeapon.Location)
+                        {
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+                }
+                objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+            }
+            foreach (TreeNode objNode in treWeapons.Nodes)
+                if (objNode.Nodes.Count > 0)
+                    objNode.Expand();
+
+            TreeNode objSelectedNode = treWeapons.FindNode(strSelectedId);
+            if (objSelectedNode != null)
+                treWeapons.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Populate the TreeView that contains all of the character's Armor.
+        /// </summary>
+        protected void PopulateArmorList(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
+        {
+            string strSelectedId = treArmor.SelectedNode?.Tag.ToString();
+
+            // Populate Armor.
+            // Create the root node.
+            treArmor.Nodes.Clear();
+            TreeNode objRoot = new TreeNode
+            {
+                Tag = "Node_SelectedArmor",
+                Text = LanguageManager.GetString("Node_SelectedArmor", GlobalOptions.Language)
+            };
+            treArmor.Nodes.Add(objRoot);
+
+            // Start by populating Locations.
+            foreach (string strLocation in CharacterObject.ArmorLocations)
+            {
+                TreeNode objLocation = new TreeNode
+                {
+                    Tag = strLocation,
+                    Text = strLocation,
+                    ContextMenuStrip = cmsArmorLocation
+                };
+                treArmor.Nodes.Add(objLocation);
+            }
+            foreach (Armor objArmor in CharacterObject.Armor)
+            {
+                TreeNode objParent = objRoot;
+                if (!string.IsNullOrEmpty(objArmor.Location))
+                {
+                    foreach (TreeNode objFind in treArmor.Nodes)
+                    {
+                        if (objFind.Text == objArmor.Location)
+                        {
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+                }
+                objParent.Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
+            }
+            foreach (TreeNode objNode in treArmor.Nodes)
+                if (objNode.Nodes.Count > 0)
+                    objNode.Expand();
+
+            TreeNode objSelectedNode = treArmor.FindNode(strSelectedId);
+            if (objSelectedNode != null)
+                treArmor.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Populate the TreeView that contains all of the character's Cyberware and Bioware.
+        /// </summary>
+        protected void PopulateCyberwareList(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
+        {
+            string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
+
+            // Create the root nodes.
+            treCyberware.Nodes.Clear();
+            TreeNode objCyberwareRoot = null;
+            TreeNode objBiowareRoot = null;
+            TreeNode objModularRoot = null;
+            TreeNode objHoleNode = null;
+
+            Guid guidHoleId = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
+            foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+            {
+                if (objCyberware.SourceID == guidHoleId && objHoleNode == null)
+                {
+                    objHoleNode = objCyberware.CreateTreeNode(null, null);
+                    treCyberware.Nodes.Insert(3, objHoleNode);
+                }
+                // Populate Cyberware.
+                else if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                {
+                    if (objCyberware.IsModularCurrentlyEquipped)
+                    {
+                        if (objCyberwareRoot == null)
+                        {
+                            objCyberwareRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedCyberware",
+                                Text = LanguageManager.GetString("Node_SelectedCyberware", GlobalOptions.Language)
+                            };
+                            treCyberware.Nodes.Insert(0, objCyberwareRoot);
+                            objCyberwareRoot.Expand();
+                        }
+                        objCyberwareRoot.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
+                    }
+                    else
+                    {
+                        if (objModularRoot == null)
+                        {
+                            objModularRoot = new TreeNode
+                            {
+                                Tag = "Node_UnequippedModularCyberware",
+                                Text = LanguageManager.GetString("Node_UnequippedModularCyberware", GlobalOptions.Language)
+                            };
+                            treCyberware.Nodes.Insert(objBiowareRoot == null && objCyberwareRoot == null ? 0 :
+                                (objBiowareRoot == null) != (objCyberwareRoot == null) ? 1 : 2, objModularRoot);
+                            objModularRoot.Expand();
+                        }
+                        objModularRoot.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
+                    }
+                }
+                // Populate Bioware.
+                else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    if (objBiowareRoot == null)
+                    {
+                        objBiowareRoot = new TreeNode
+                        {
+                            Tag = "Node_SelectedBioware",
+                            Text = LanguageManager.GetString("Node_SelectedBioware", GlobalOptions.Language)
+                        };
+                        treCyberware.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
+                        objBiowareRoot.Expand();
+                    }
+                    objBiowareRoot.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
+                }
+            }
+
+            treCyberware.SortCustom(strSelectedId);
+        }
+
+        /// <summary>
+        /// Populate the TreeView that contains all of the character's Vehicles.
+        /// </summary>
+        protected void PopulateVehicleList(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear)
+        {
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+
+            // Populate Gear.
+            // Create the root node.
+            treVehicles.Nodes.Clear();
+            TreeNode objRoot = new TreeNode
+            {
+                Tag = "Node_SelectedVehicles",
+                Text = LanguageManager.GetString("Node_SelectedVehicles", GlobalOptions.Language)
+            };
+            treVehicles.Nodes.Add(objRoot);
+
+            // Start by populating Locations.
+            foreach (string strLocation in CharacterObject.VehicleLocations)
+            {
+                TreeNode objLocation = new TreeNode
+                {
+                    Tag = strLocation,
+                    Text = strLocation,
+                    ContextMenuStrip = cmsVehicleLocation
+                };
+                treVehicles.Nodes.Add(objLocation);
+            }
+
+            foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+            {
+                TreeNode objParent = objRoot;
+                if (!string.IsNullOrEmpty(objVehicle.Location))
+                {
+                    foreach (TreeNode objFind in treVehicles.Nodes)
+                    {
+                        if (objFind.Text == objVehicle.Location)
+                        {
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+                }
+                objParent.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsVehicleWeaponMount, cmsCyberware, cmsCyberwareGear));
+            }
+            foreach (TreeNode objNode in treVehicles.Nodes)
+                if (objNode.Nodes.Count > 0)
+                    objNode.Expand();
+
+            TreeNode objSelectedNode = treVehicles.FindNode(strSelectedId);
+            if (objSelectedNode != null)
+                treVehicles.SelectedNode = objSelectedNode;
+        }
+
+        /// <summary>
+        /// Populate the list of Bonded Foci.
+        /// </summary>
+        public void PopulateFocusList(TreeView treFoci, ContextMenuStrip cmsGear)
+        {
+            string strSelectedId = treFoci.SelectedNode?.Tag.ToString();
+
+            treFoci.Nodes.Clear();
+
+            int intFociTotal = 0;
+            bool blnWarned = false;
+
+            int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
+            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+            foreach (Gear objGear in _objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
+            {
+                List<Focus> lstRemoveFoci = new List<Focus>();
+                TreeNode objNode = objGear.CreateTreeNode(cmsGear);
+                objNode.Text = objNode.Text.Replace(LanguageManager.GetString("String_Rating", GlobalOptions.Language), LanguageManager.GetString("String_Force", GlobalOptions.Language));
+                foreach (Focus objFocus in _objCharacter.Foci)
+                {
+                    if (objFocus.GearId == objGear.InternalId)
+                    {
+                        objNode.Checked = true;
+                        objFocus.Rating = objGear.Rating;
+                        intFociTotal += objFocus.Rating;
+                        // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
+                        if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                        {
+                            // Mark the Gear a Bonded.
+                            foreach (Gear objCharacterGear in _objCharacter.Gear)
+                            {
+                                if (objCharacterGear.InternalId == objFocus.GearId)
+                                    objCharacterGear.Bonded = false;
+                            }
+                            lstRemoveFoci.Add(objFocus);
+                            if (!blnWarned)
+                            {
+                                objNode.Checked = false;
+                                MessageBox.Show(LanguageManager.GetString("Message_FocusMaximumForce", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_FocusMaximum", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                blnWarned = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach (Focus objFocus in lstRemoveFoci)
+                {
+                    _objCharacter.Foci.Remove(objFocus);
+                }
+                treFoci.Nodes.Add(objNode);
+            }
+
+            // Add Stacked Foci.
+            foreach (Gear objGear in _objCharacter.Gear)
+            {
+                if (objGear.Category == "Stacked Focus")
+                {
+                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                    {
+                        if (objStack.GearId == objGear.InternalId)
+                        {
+                            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+
+                            if (objStack.Bonded)
+                            {
+                                foreach (Gear objFociGear in objStack.Gear)
+                                {
+                                    if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                        ImprovementManager.ForcedValue = objFociGear.Extra;
+                                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.Bonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                    if (objFociGear.WirelessOn)
+                                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objFociGear.WirelessBonus, false, objFociGear.Rating, objFociGear.DisplayNameShort(GlobalOptions.Language));
+                                }
+                            }
+
+                            treFoci.Nodes.Add(objStack.CreateTreeNode(objGear, null));
+                        }
                     }
                 }
             }
+
+            treFoci.SortCustom(strSelectedId);
+        }
+
+        protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique)
+        {
+            string strSelectedId = treMartialArts.SelectedNode?.Tag.ToString();
+
+            treMartialArts.Nodes.Clear();
+
+            TreeNode objMartialArtsParentNode = null;
+            TreeNode objQualityNode = null;
+
+            foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+            {
+                TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
+
+                if (objMartialArt.IsQuality)
+                {
+                    if (objQualityNode == null)
+                    {
+                        objQualityNode = new TreeNode()
+                        {
+                            Tag = "Node_SelectedQualities",
+                            Text = LanguageManager.GetString("Node_SelectedQualities", GlobalOptions.Language)
+                        };
+                        treMartialArts.Nodes.Add(objQualityNode);
+                        objQualityNode.Expand();
+                    }
+                    objQualityNode.Nodes.Add(objNode);
+                }
+                else
+                {
+                    if (objMartialArtsParentNode == null)
+                    {
+                        objMartialArtsParentNode = new TreeNode()
+                        {
+                            Tag = "Node_SelectedMartialArts",
+                            Text = LanguageManager.GetString("Node_SelectedMartialArts", GlobalOptions.Language)
+                        };
+                        treMartialArts.Nodes.Insert(0, objMartialArtsParentNode);
+                        objMartialArtsParentNode.Expand();
+                    }
+                    objMartialArtsParentNode.Nodes.Add(objNode);
+                }
+            }
+
+            treMartialArts.SortCustom(strSelectedId);
+        }
+
+        /// <summary>
+        /// Refresh the list of Improvements.
+        /// </summary>
+        protected void RefreshImprovements(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement)
+        {
+            string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
+
+            treImprovements.Nodes.Clear();
+
+            TreeNode objRoot = new TreeNode
+            {
+                Tag = "Node_SelectedImprovements",
+                Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+            };
+            treImprovements.Nodes.Add(objRoot);
+
+            // Populate the Locations.
+            foreach (string strGroup in CharacterObject.ImprovementGroups)
+            {
+                TreeNode objGroup = new TreeNode
+                {
+                    Tag = strGroup,
+                    Text = strGroup,
+                    ContextMenuStrip = cmsImprovementLocation
+                };
+                treImprovements.Nodes.Add(objGroup);
+            }
+
+            List<ListItem> lstImprovements = new List<ListItem>();
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            {
+                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                {
+                    string strName = "000000";
+                    strName = strName.Substring(0, 6 - objImprovement.SortOrder.ToString().Length) + objImprovement.SortOrder.ToString();
+                    lstImprovements.Add(new ListItem(objImprovement.SourceName, strName));
+                }
+            }
+
+            // Populate the Improvements TreeView.
+            for (int i = 0; i < lstImprovements.Count; ++i)
+            {
+                ListItem objItem = lstImprovements[i];
+                Improvement objImprovement = null;
+                foreach (Improvement objCharacterImprovement in CharacterObject.Improvements)
+                {
+                    if (objCharacterImprovement.SourceName == objItem.Value)
+                    {
+                        objImprovement = objCharacterImprovement;
+                        break;
+                    }
+                }
+
+                TreeNode nodImprovement = new TreeNode
+                {
+                    Tag = objImprovement.SourceName,
+                    Text = objImprovement.CustomName,
+                    ToolTipText = objImprovement.Notes.WordWrap(100),
+                    ContextMenuStrip = cmsImprovement
+                };
+                if (!string.IsNullOrEmpty(objImprovement.Notes))
+                {
+                    if (objImprovement.Enabled)
+                        nodImprovement.ForeColor = Color.SaddleBrown;
+                    else
+                        nodImprovement.ForeColor = Color.SandyBrown;
+                }
+                else if (objImprovement.Enabled)
+                    nodImprovement.ForeColor = SystemColors.WindowText;
+                else
+                    nodImprovement.ForeColor = SystemColors.GrayText;
+
+                TreeNode objParent = objRoot;
+                if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
+                {
+                    foreach (TreeNode objFind in treImprovements.Nodes)
+                    {
+                        if (objFind.Text == objImprovement.CustomGroup)
+                        {
+                            objParent = objFind;
+                            break;
+                        }
+                    }
+                }
+
+                objParent.Nodes.Add(nodImprovement);
+                objParent.Expand();
+            }
+
+            // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
+            treImprovements.SortCustom(strSelectedId);
         }
 
         /// <summary>
@@ -530,6 +1765,8 @@ namespace Chummer
                 Bitmap imgMugshot = (new Bitmap(openFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
 
                 _objCharacter.Mugshots.Add(imgMugshot);
+                if (_objCharacter.MainMugshotIndex == -1)
+                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
             }
             return blnSuccess;
         }
@@ -572,7 +1809,7 @@ namespace Chummer
             _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
             if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
             {
-                _objCharacter.MainMugshotIndex = 0;
+                _objCharacter.MainMugshotIndex = -1;
             }
             else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
             {
@@ -586,6 +1823,42 @@ namespace Chummer
             {
                 return _blnIsDirty;
             }
+            set
+            {
+                if (_blnIsDirty != value)
+                {
+                    _blnIsDirty = value;
+                    UpdateWindowTitle(true);
+                }
+            }
+        }
+
+        public void MakeDirtyWithCharacterUpdate()
+        {
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender)
+        {
+            MakeDirtyWithCharacterUpdate();
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
+        {
+            MakeDirtyWithCharacterUpdate();
+        }
+
+        public bool IsCharacterUpdateRequested
+        {
+            get
+            {
+                return _blnRequestCharacterUpdate;
+            }
+            set
+            {
+                _blnRequestCharacterUpdate = value;
+            }
         }
 
         public Character CharacterObject
@@ -596,29 +1869,59 @@ namespace Chummer
             }
         }
 
-        /// <summary>
-        /// Update the Window title to show the Character's name and unsaved changes status.
-        /// </summary>
-        public virtual void UpdateWindowTitle(bool blnCanSkip = true)
+        public CharacterOptions CharacterObjectOptions
         {
-            UpdateWindowTitle(string.Empty, string.Empty, blnCanSkip);
+            get
+            {
+                return _objOptions;
+            }
+        }
+
+        private void objCharacter_CharacterNameChanged(object sender)
+        {
+            UpdateWindowTitle(false);
+        }
+
+        public virtual string FormMode
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
+        protected void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
+        {
+            //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
+            //allow wrapping back to first/last tab item based on scroll direction
+            TabControl tabControl = (sender as TabControl);
+            if (e.Location.Y <= tabControl.ItemSize.Height)
+            {
+                int intScrollAmount = e.Delta;
+                int intSelectedTabIndex = tabControl.SelectedIndex;
+
+                if (intScrollAmount < 0)
+                {
+                    if (intSelectedTabIndex < tabControl.TabCount - 1)
+                        tabControl.SelectedIndex = intSelectedTabIndex + 1;
+                }
+                else if (intSelectedTabIndex > 0)
+                    tabControl.SelectedIndex = intSelectedTabIndex - 1;
+            }
         }
 
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        public void UpdateWindowTitle(string strAlias, string strMode, bool blnCanSkip = true)
+        public void UpdateWindowTitle(bool blnCanSkip)
         {
-            if (Text.EndsWith('*') && blnCanSkip)
+            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
-
-            Text = string.Empty;
-            if (!string.IsNullOrEmpty(strAlias))
-                Text += strAlias + " - ";
-            Text += strMode;
-            Text += " (" + _objCharacter.Options.Name + ")";
+            
+            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ')';
             if (_blnIsDirty)
-                Text += "*";
+                strTitle += '*';
+            this.DoThreadSafe(() => Text = strTitle);
         }
 
         /// <summary>
@@ -643,9 +1946,8 @@ namespace Chummer
             Cursor = Cursors.WaitCursor;
             if (_objCharacter.Save())
             {
-                _blnIsDirty = false;
-                GlobalOptions.AddToMRUList(_objCharacter.FileName);
-                UpdateWindowTitle(false);
+                GlobalOptions.AddToMRUList(_objCharacter.FileName, "mru", true, true);
+                IsDirty = false;
                 Cursor = Cursors.Default;
 
                 // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
@@ -674,15 +1976,17 @@ namespace Chummer
                 }
             }
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*"
+            };
 
             string strShowFileName = string.Empty;
             string[] strFile = _objCharacter.FileName.Split(Path.DirectorySeparatorChar);
             strShowFileName = strFile[strFile.Length - 1];
 
             if (string.IsNullOrEmpty(strShowFileName))
-                strShowFileName = _objCharacter.Alias;
+                strShowFileName = _objCharacter.CharacterName;
 
             saveFileDialog.FileName = strShowFileName;
 
@@ -731,7 +2035,7 @@ namespace Chummer
                     string strAttribTotalValue = objAttrib.TotalValue.ToString();
                     objDrain?.Replace(objAttrib.Abbrev, strAttribTotalValue);
                     objDisplayDrain?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev);
-                    objTip?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + strAttribTotalValue + ")");
+                    objTip?.Replace(objAttrib.Abbrev, objAttrib.DisplayAbbrev + " (" + strAttribTotalValue + ')');
                 }
             }
             if (objDrain != null)
@@ -751,7 +2055,7 @@ namespace Chummer
                 if (intBonusDrain != 0)
                 {
                     intDrain += intBonusDrain;
-                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers") + " (" + intBonusDrain.ToString() + ")");
+                    objTip?.Append(" + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intBonusDrain.ToString() + ')');
                 }
             }
 

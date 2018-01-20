@@ -1,6 +1,6 @@
-﻿namespace Chummer
+namespace Chummer
 {
-    partial class frmSelectCyberwareSuite
+    public sealed partial class frmSelectCyberwareSuite
     {
         /// <summary>
         /// Required designer variable.

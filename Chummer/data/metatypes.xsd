@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-<xs:include schemaLocation="../data../bonuses.xsd" />
+<xs:include schemaLocation="bonuses.xsd" />
 
   <xs:element name="metavariant">
     <xs:complexType>
@@ -35,7 +35,7 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
-    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
     </xs:sequence>
@@ -173,7 +173,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element ref="bonus" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
                     <xs:element name="powers" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>

@@ -31,27 +31,21 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private List<ListItem> _lstLimits = new List<ListItem>();
+        private readonly List<ListItem> _lstLimits = null;
 
         #region Control Events
         public frmSelectLimit()
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Limits.
-            ListItem objPhysical = new ListItem();
-            ListItem objMental = new ListItem();
-            ListItem objSocial = new ListItem();
-            objPhysical.Value = "Physical";
-            objPhysical.Name = LanguageManager.GetString("Node_Physical");
-            objMental.Value = "Mental";
-            objMental.Name = LanguageManager.GetString("Node_Mental");
-            objSocial.Value = "Social";
-            objSocial.Name = LanguageManager.GetString("Node_Social");
-            _lstLimits.Add(objPhysical);
-            _lstLimits.Add(objMental);
-            _lstLimits.Add(objSocial);
+            _lstLimits = new List<ListItem>
+            {
+                new ListItem("Physical", LanguageManager.GetString("Node_Physical", GlobalOptions.Language)),
+                new ListItem("Mental", LanguageManager.GetString("Node_Mental", GlobalOptions.Language)),
+                new ListItem("Social", LanguageManager.GetString("Node_Social", GlobalOptions.Language))
+            };
 
             cboLimit.BeginUpdate();
             cboLimit.ValueMember = "Value";
@@ -117,11 +111,10 @@ namespace Chummer
         /// <param name="strValue">Single Limit to display.</param>
         public void SingleLimit(string strValue)
         {
-            List<ListItem> lstItems = new List<ListItem>();
-            ListItem objItem = new ListItem();
-            objItem.Value = strValue;
-            objItem.Name = strValue;
-            lstItems.Add(objItem);
+            List<ListItem> lstItems = new List<ListItem>
+            {
+                new ListItem(strValue, LanguageManager.GetString("String_Limit" + strValue + "Short", GlobalOptions.Language))
+            };
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
             cboLimit.ValueMember = "Value";
@@ -134,15 +127,12 @@ namespace Chummer
         /// Limit the list to a few Limits.
         /// </summary>
         /// <param name="strValue">List of Limits.</param>
-        public void LimitToList(List<string> strValue)
+        public void LimitToList(IEnumerable<string> strValue)
         {
             _lstLimits.Clear();
             foreach (string strLimit in strValue)
             {
-                ListItem objItem = new ListItem();
-                objItem.Value = strLimit;
-                objItem.Name = LanguageManager.GetString("String_Limit" + strLimit + "Short");
-                _lstLimits.Add(objItem);
+                _lstLimits.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short", GlobalOptions.Language)));
             }
             cboLimit.BeginUpdate();
             cboLimit.DataSource = null;
@@ -156,7 +146,7 @@ namespace Chummer
         /// Exclude the list of Limits.
         /// </summary>
         /// <param name="strValue">List of Limits.</param>
-        public void RemoveFromList(List<string> strValue)
+        public void RemoveFromList(IEnumerable<string> strValue)
         {
             foreach (string strLimit in strValue)
             {

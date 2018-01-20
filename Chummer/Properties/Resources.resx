@@ -124,8 +124,14 @@
   <data name="page" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\page.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="application_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\application_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="application_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\application_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="link_go" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\link_go.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -141,11 +147,6 @@
   </data>
   <data name="possessinanimate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\possessinanimate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Disclaimer" xml:space="preserve">
-    <value>Chummer5a is currently running in legacy mode.
- While this is possible, the Chummer5a team won't provide support if anything goes wrong
- This feature may be removed without warning</value>
   </data>
   <data name="table_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\table_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -177,6 +178,9 @@
   <data name="arrow_divide" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\arrow_divide.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="page_refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\page_refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -195,14 +199,11 @@
   <data name="accept" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\accept.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="link_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\link_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="page_refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\page_refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="building_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\building_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="brick_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\brick_delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -236,6 +237,9 @@
   </data>
   <data name="plugin_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\plugin_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="link_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\link_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="printer_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\printer_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -300,6 +304,9 @@
   <data name="award_star_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\award_star_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="page_white_world" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\page_white_world.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="emoticon_tongue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\emoticon_tongue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -312,14 +319,19 @@
   <data name="emoticon_surprised" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\emoticon_surprised.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="arrow_undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\arrow_undo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Disclaimer" xml:space="preserve">
+    <value>Chummer5a is currently running in legacy mode.
+ While this is possible, the Chummer5a team won't provide support if anything goes wrong
+ This feature may be removed without warning</value>
   </data>
   <data name="folder_page" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\folder_page.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="briefcase_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\briefcase_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\arrow_undo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="user_go" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\user_go.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -342,7 +354,7 @@
   <data name="possession" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\possession.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icons\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icons8-discord-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\icons8-discord-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

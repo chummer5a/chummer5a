@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectLimitModifier : Form
+    public sealed partial class frmSelectLimitModifier : Form
     {
         private string _strReturnName = string.Empty;
         private int _intBonus = 1;
@@ -37,7 +37,7 @@ namespace Chummer
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             if (objLimitModifier != null)
             {
                 txtName.Text = objLimitModifier.Name;

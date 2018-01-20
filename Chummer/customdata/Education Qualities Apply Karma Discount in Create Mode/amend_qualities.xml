@@ -20,11 +20,12 @@
 <chummer>
   <qualities>
     <quality>
-      <name>College Education.RF</name>
+      <id>604aea10-3f13-4f28-a87b-25b8bf677276</id>
+      <name>College Education</name>
       <bonus>
         <skillcategorykarmacost>
           <name>Academic</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -33,7 +34,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Language</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -42,7 +43,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Street</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>
@@ -51,7 +52,7 @@
       <bonus>
         <skillcategorykarmacost>
           <name>Professional</name>
-          <condition remove="yes" />
+          <condition amendoperation="remove" />
         </skillcategorykarmacost>
       </bonus>
     </quality>

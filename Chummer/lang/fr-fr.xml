@@ -1842,7 +1842,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>Êtes-vous sûr de vouloir réduire cette quantité de 1 ?</text>
+      <text>Êtes-vous sûr de vouloir réduire cette quantité de {0}?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>
@@ -4980,18 +4980,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Nb de membres standard :</text>
     </string>
     <string>
-      <key>String_LimbCount6</key>
-      <text>6 (2 bras, 2 jambes, torse, tête)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Torso</key>
-      <text>5 (2 bras, 2 jambes, torse)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Skull</key>
-      <text>5 (2 bras, 2 jambes, tête)</text>
-    </string>
-    <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>Nuyen par PC :</text>
     </string>
@@ -7150,14 +7138,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Label_Echo</key>
       <text>Echo:</text>
-    </string>
-    <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>Cet element ne peut pas être supprimé car elle a été acquise comme un bonus d'initiation.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Impossible de supprimer ce sort</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaandNuyenExpense</key>

@@ -19,6 +19,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -30,10 +31,10 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
 
         private bool _blnAddAgain = false;
-        private bool _blnAdvancedProgramAllowed = true;
-        private bool _blnInherentProgram = false;
+        private readonly bool _blnAdvancedProgramAllowed = true;
+        private readonly bool _blnInherentProgram = false;
         private readonly Character _objCharacter;
-        private List<ListItem> _lstCategory = new List<ListItem>();
+        private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         private readonly XmlDocument _objXmlDocument = null;
 
@@ -41,7 +42,7 @@ namespace Chummer
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
-            LanguageManager.Load(GlobalOptions.Language, this);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
             _blnAdvancedProgramAllowed = blnAdvancedProgramAllowed;
             _blnInherentProgram = blnInherentProgram;
@@ -62,30 +63,24 @@ namespace Chummer
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/categories/category");
             foreach (XmlNode objXmlCategory in objXmlNodeList)
             {
-                if (_blnInherentProgram && objXmlCategory.InnerText != "Common Programs" && objXmlCategory.InnerText != "Hacking Programs")
+                string strInnerText = objXmlCategory.InnerText;
+                if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
                     continue;
-                if (!_blnAdvancedProgramAllowed && objXmlCategory.InnerText == "Advanced Programs")
+                if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
                     continue;
-                bool blnAddItem = true;
                 // Make sure it is not already in the Category list.
-                foreach (ListItem objItem in _lstCategory)
+                if (!_lstCategory.Any(objItem => objItem.Value == strInnerText))
                 {
-                    if (objItem.Value == objXmlCategory.InnerText)
-                    {
-                        blnAddItem = false;
-                        break;
-                    }
-                }
-                if (blnAddItem)
-                {
-                    ListItem objItem = new ListItem();
-                    objItem.Value = objXmlCategory.InnerText;
-                    objItem.Name = objXmlCategory.Attributes?["translate"]?.InnerText ?? objXmlCategory.InnerText;
-                    _lstCategory.Add(objItem);
+                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
-            SortListItem objSort = new SortListItem();
-            _lstCategory.Sort(objSort.Compare);
+            _lstCategory.Sort(CompareListItems.CompareNames);
+
+            if (_lstCategory.Count > 0)
+            {
+                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll", GlobalOptions.Language)));
+            }
+
             cboCategory.BeginUpdate();
             cboCategory.DataSource = null;
             cboCategory.ValueMember = "Value";
@@ -101,15 +96,7 @@ namespace Chummer
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboCategory.SelectedValue == null)
-                return;
-
-            txtSearch.Text = string.Empty;
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[category = \"" + cboCategory.SelectedValue + "\" and (" + _objCharacter.Options.BookXPath() + ")]");
-
-            UpdateProgramList(objXmlNodeList);
+            RefreshList();
         }
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -152,18 +139,7 @@ namespace Chummer
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtSearch.Text))
-            {
-                cboCategory_SelectedIndexChanged(sender, e);
-                return;
-            }
-
-            // Treat everything as being uppercase so the search is case-insensitive.
-            string strSearch = "/chummer/programs/program[(" + _objCharacter.Options.BookXPath() + ") and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + txtSearch.Text.ToUpper() + "\"))]";
-
-            // Populate the Program list.
-            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes(strSearch);
-            UpdateProgramList(objXmlNodeList);
+            RefreshList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -235,20 +211,52 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(lstAIPrograms.Text))
             {
-                string strRequiresProgram = LanguageManager.GetString("String_None");
-                if (objXmlProgram["require"] != null)
-                    strRequiresProgram = objXmlProgram["require"].InnerText;
+                string strRequiresProgram = strRequiresProgram = objXmlProgram["require"]?.InnerText ?? LanguageManager.GetString("String_None", GlobalOptions.Language);
 
                 lblRequiresProgram.Text = strRequiresProgram;
 
-                string strBook = _objCharacter.Options.LanguageBookShort(objXmlProgram["source"].InnerText);
-                string strPage = objXmlProgram["page"].InnerText;
-                if (objXmlProgram["altpage"] != null)
-                    strPage = objXmlProgram["altpage"].InnerText;
-                lblSource.Text = strBook + " " + strPage;
+                string strBook = CommonFunctions.LanguageBookShort(objXmlProgram["source"].InnerText, GlobalOptions.Language);
+                string strPage = objXmlProgram["altpage"]?.InnerText ?? objXmlProgram["page"].InnerText;
+                lblSource.Text = strBook + ' ' + strPage;
 
-                tipTooltip.SetToolTip(lblSource, _objCharacter.Options.LanguageBookLong(objXmlProgram["source"].InnerText) + " " + LanguageManager.GetString("String_Page") + " " + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
             }
+        }
+
+        /// <summary>
+        /// Refreshes the displayed lists
+        /// </summary>
+        private void RefreshList()
+        {
+            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+
+            string strCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                strFilter += " and category = \"" + strCategory + '\"';
+            else
+            {
+                StringBuilder objCategoryFilter = new StringBuilder();
+                foreach (string strItem in _lstCategory.Select(x => x.Value))
+                {
+                    if (!string.IsNullOrEmpty(strItem))
+                        objCategoryFilter.Append("category = \"" + strItem + "\" or ");
+                }
+                if (objCategoryFilter.Length > 0)
+                {
+                    strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
+                }
+            }
+            if (txtSearch.TextLength != 0)
+            {
+                // Treat everything as being uppercase so the search is case-insensitive.
+                string strSearchText = txtSearch.Text.ToUpper();
+                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
+            }
+
+            // Populate the Program list.
+            XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/programs/program[" + strFilter + ']');
+
+            UpdateProgramList(objXmlNodeList);
         }
 
         /// <summary>
@@ -300,22 +308,23 @@ namespace Chummer
                     if (!blnAdd)
                         continue;
                 }
-                ListItem objItem = new ListItem();
-                objItem.Value = objXmlProgram["id"].InnerText;
-                objItem.Name = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
-                if (!string.IsNullOrEmpty(txtSearch.Text) && objXmlProgram["category"] != null && objXmlProgram["category"].InnerText != cboCategory.SelectedValue.ToString())
+                string strDisplayName = objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"].InnerText;
+                if (!_objCharacter.Options.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {
-                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == objXmlProgram["category"].InnerText);
-                    if (objFoundItem != null)
+                    string strCategory = objXmlProgram["category"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strCategory))
                     {
-                        objItem.Name += " [" + objFoundItem.Name + "]";
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                        if (!string.IsNullOrEmpty(objFoundItem.Name))
+                        {
+                            strDisplayName += " [" + objFoundItem.Name + "]";
+                        }
                     }
                 }
-                lstPrograms.Add(objItem);
+                lstPrograms.Add(new ListItem(objXmlProgram["id"].InnerText, strDisplayName));
             }
-
-            SortListItem objSort = new SortListItem();
-            lstPrograms.Sort(objSort.Compare);
+            
+            lstPrograms.Sort(CompareListItems.CompareNames);
             lstAIPrograms.BeginUpdate();
             lstAIPrograms.DataSource = null;
             lstAIPrograms.ValueMember = "Value";
@@ -367,8 +376,8 @@ namespace Chummer
                     DialogResult = DialogResult.OK;
                 else
                 {
-                    MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement") + strRequiresProgram,
-                        LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement"),
+                    MessageBox.Show(LanguageManager.GetString("Message_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language) + strRequiresProgram,
+                        LanguageManager.GetString("MessageTitle_SelectAIProgram_AdvancedProgramRequirement", GlobalOptions.Language),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -386,10 +395,5 @@ namespace Chummer
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
         #endregion
-
-        private void lblSource_Click(object sender, EventArgs e)
-        {
-            CommonFunctions.OpenPDF(lblSource.Text, _objCharacter);
-        }
     }
 }

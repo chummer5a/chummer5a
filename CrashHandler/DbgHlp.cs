@@ -17,9 +17,8 @@ namespace CrashHandler
 		[MarshalAs(UnmanagedType.Bool)]
         internal bool ClientPointers;
 	}
-
-    [SuppressUnmanagedCodeSecurity]
-    internal static class SafeNativeMethods
+    
+    internal static class NativeMethods
 	{
 		[DllImport("Dbghelp.dll", CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		internal static extern bool MiniDumpWriteDump

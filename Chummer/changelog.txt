@@ -1,4 +1,300 @@
-Future Build 196
+Future Build 198
+
+Application Changes:
+
+- Fixed an issue with skill groups not loading properly.
+- Fixed an issue that prevented the note grabber for qualities from working properly. Fixes #2322.
+- Fixed an issue where special attribute loss from Essence loss was calculated (and saved) incorrectly in career mode.
+- Fixed an issue where condition monitor boxes would display their numerical tags (which should only be used for internal code) as text. Fixes #2323.
+- Fixed a bug where Armor Mods and Weapon Accessories whose costs relied on their parent armor's or weapon's costs would not consider any discounts applied to their parent armor or weapon.
+- Fixed a bug where the Browse tab in the armor selection screen would display all costs as "0¥". Fixes #2324.
+- Fixed a bug where changing an armor's rating after purchase would not reflect the change on its cost if its cost relied on its rating.
+- Fixed a bug where the armor selection screen would not properly account for Rating-based capacities, Rating-based armor values, and Rating-based names.
+- Migrated all instances of use of "yes" and "no" strings in data to use "True" and "False" instead respectively. Any custom content that relies on strings like these will need to be altered, and any items reliant on improvements that use these strings will need to be fixed with Reapply Improvements.
+- Toggling the "Show" attribute of a block in the Shadowrun 5 character sheet set to "No" will now immediately hide the block instead of it only getting applied when the sheet is printed. Fixes #2327.
+- If Chummer5a fails to export a character sheet to a PDF format, it will now display a message detailing the issue instead of crashing. Fixes #2325.
+- Fixed a crash that occurred when trying to add qualities to an advanced lifestyle.
+- Fixed various bugs related the adding gear that comes with vehicles. Fixes #2328.
+- Fixed a bug where characters who had Burnout's Way were locked out of taking 'ware at any grade other than Standard (Burnout's Way).
+- Fixed an issue where the Updater would delete "old" files in the current Chummer5a directory that are not normally a part of Chummer5a. Fixes #2331.
+- Fixed an issue where vehicles could not be moved into or out of vehicle locations.
+- Fixed an issue where selecting cyberware that comes pre-installed with a vehicle mod will grey out the "Delete Cyberware" button in the cyberware tab.
+- Fixed an issue with some Martial Arts information not getting translated in the UI.
+- Root nodes for Qualities, Martial Arts, Spells, Cyberware, Critter Powers, and Limit Modifiers will now be hidden if they have no children attached. For example, if a character does not have any Negative Qualities, the "Negative Qualities" root node will no longer be displayed, or if the character does not know any Combat spells, the "Combat Spells" root node will no longer be displayed.
+- Fixed an issue where Credsticks from Shadowrun 2050 were not properly printed as SINs.
+- Fixed an issue where limit modifiers to Astral limit would not be displayed in the list of active limit modifiers.
+- Fixed an issue where Sprites could be fettered. Fixes #2333.
+- Fixed an issue where Composure modifiers were not properly displayed in the tooltip when hovering over a character's Composure value.
+- Fixed an issue where items other than qualities that could add a mentor spirit would not end up resulting in mentor spirit information getting updated in the UI.
+- Fixed an issue where changing the name of a knowledge skill would not cause Chummer5a to recalculate what free levels, if any, the knowledge skill should receive.
+- Fixed an issue where translations for priority talents did not load properly.
+- Shifted the translation method for options so that they all use the method associated with translating data entries (i.e. via `translate` element for items with element children and via `translate` attribute for items without them).
+- Added support for processing of options.xml to the Translator tool.
+- Added support for translation of notes that come with an item, via the `altnotes` element.
+- Fixed an issue with bioware grades not populating if the character has Adapsin.
+- Fixed bugs where complex Forms and critter Powers added by bonuses could be removed, and one where spells added by bonuses could be removed in create mode.
+- Fixed a bug where removing a metatype-removable quality in create mode would cause the affected quality to no longer apply any bonuses when added to other characters until Chummer5 was restarted.
+- Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
+- Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
+- Corrected issues related to the deleting of bonus-granted Martial Arts from sources other than the version of One Trick Pony that is RAW.
+- Fixed issues related to sorting by nuyen, sourcebook, and/or availability in the Browse tabs of the armor and weapon selection screens. Fixes #2350.
+- Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
+- Fixed an issue with assigning ratings for gear that has a higher minimum rating than maximum rating. Fixes #2348.
+- Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
+
+Data Changes:
+
+- Added new items to allow for translation of certain extras, special equipment, and non-standard form factors that come with certain vehicles, weapons, and gear. Fixes #2309.
+- Dodge General Trailer now properly contains an Aeronautics Mechanic Workshop (it's "Aircraft Repair" in the sourcebook, but this would not line up with the skill associated with repairing aircraft for which said workshop would be used).
+- Basic Razorboi and Advanced Razorboi Packs now properly come with Cybertechnology Toolkits (it's "Cybernetics" in the sourceboo, but this would not line up with the skill associated with cybernetics for which said toolkit would be used).
+- Removed the ".RF" identifier from the name of Run Faster's College Education and Inspired qualities. Removed the "(SASS)" identifier from the name of Sail Away Sweet Sister's Great Mother mentor spirit. Data that targets these items will need to rely on their id nodes.
+- Fixed an issue where custom improvements for bonus street cred and street cred multiplier had incorrect names. Fixes #2338.
+- Fixed various typos in life module descriptions and skills.
+- Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
+
+New Strings:
+
+- Message_DeleteVehicleLocationBase
+
+Changed Strings:
+
+- Node_SelectedPositiveQualities
+- Node_SelectedNegativeQualities
+- Node_SelectedCombatSpells
+- Node_SelectedDetectionSpells
+- Node_SelectedHealthSpells
+- Node_SelectedIllusionSpells
+- Node_SelectedManipulationSpells
+- Node_SelectedGeomancyRituals
+- Node_SelectedEnchantments
+- Node_CritterPowers
+- Node_CritterWeaknesses
+- Node_SelectedCyberware
+- Node_SelectedBioware
+
+Removed Strings:
+
+- String_LimbCount4
+- String_LimbCount6
+- String_LimbCount5Torso
+- String_LimbCount5Skull
+- Message_CannotRemoveSpell
+- MessageTitle_CannotRemoveSpell
+
+Build 197
+
+Application Changes:
+
+- Fixed issues with certain selection forms not obeying restriction requirements if the search field is not empty.
+- Switched the spell selection form to a style similar to most other selection forms, i.e. categories are selectable in a dropdown box and spells are located in a list view, instead of using funky tree views.
+- Users can now use the Search function in the spell selection screen even if spell categories are limited to a single category.
+- PACKS kits will no longer display or add items that require sourcebooks that are not enabled for the character.
+- Chummer5 will no longer do spooky things if it cannot find an item tied to a particular forced value for a selection screen.
+- Lifestyle dropdown boxes will now only be populated by items that abide by the character's enabled sourcebook list (so e.g. Commercial lifestyle will not show up if Run Faster is not enabled).
+- When selecting critter powers for someone who can have optional critter powers, the displayed powers will now properly be filtered by the category selected in the category dropdown box.
+- Fixed a crash that occured when an expense was undone or when a character file got an update outside of Chummer and the "live updates from character file" option was enabled.
+- Fixed a crash when adding PACKS kits containing vehicles. Fixes #2155.
+- Fixed an issue with the Notes sheet not loading under fr-FR localization.
+- Fixed a bug where knowledge skill specializations bought with points under Point Buy or Life Modules would still deduct karma from the character.
+- Fixed a bug where skill pool tooltips and other texts that fetch the names of bonus sources would not fetch the name of Mentor Spirits.
+- Fixed a crash when attempting to fire Vehicle Weapons.
+- Fixed calculation of armour to properly account for armour with override values (ie High Fashion Armour Clothing).
+- Fixed a crash when attempting to add a specialization to a custom knowledge skill in career mode. Fixes #2156.
+- Fixed standard weapon mounts accidentally adding their costs to their parent's total cost. 
+- Added Free and Markup checkboxes to the weapon mount creator for use in Career mode.
+- Completely merged the Commlink and Gear classes. Matrix stats now function independently of whether or not a gear can form a persona, and only gears that can form personas will now show up in commlink sections. This should also fix Persona Firmware not being required to allow a gear to be marked as an active commlink. Fixes #2158.
+- Gear no longer adds its children's Matrix attributes to its own. Instead, separate stats are kept track of for Matrix attribute modifiers.
+- Quantities of gear entries that begin with "Nuyen" will now follow the decimal formatting of nuyen cost formatting. Fixes #2157.
+- The updater's install code will now attempt to handle files that are currently in use and then abort with a warning if it does not succeed instead of crashing. Fixes #2165.
+- Fixed an issue with reapplying improvements for Mentor Spirits who have an "all" bonus where choices are required. Fixes #2153.
+- Implemented an improvement to the selectquality method that allows having another quality provide a discount, which is used by the Wildcard Chimera quality.
+- Fixed the implementation of the selectskill improvement to properly support Exotic skills. Characters with improvements such as Improved Ability (skill) should Reapply Improvements or remove and re-add the improvement source.
+- Matrix Attributes are now an interface that is connected to Gear, Vehicle, and Cyberware and are able to fully interact with one another. Among other things, this means that Matrix Attributes will always show up for those items, that Electronic Modifications for Cyberware and Vehicles are possible, and that Cyberware with the Persona Firmware Electronic Modification will show up as a Commlink (and if the appropriate checkboxes are available in the UI, can be marked as an AI home node and/or the user's active commlink).
+- Limit Modifier sources will now automatically display translated names when switching languages.
+- Improvement source names will now also contain information about the source's parents. Fixes #2082.
+- Fixed characters with Friends in High Places not being able to pass character validity checks for their Friends in High Places contacts. Fixes #2171.
+- An AI can no longer adopt an item as a home node if it would not have enough program slots to hold it.
+- Vehicles and cyberware can now have custom-defined Matrix attributes and/or Matrix attribute arrays in their data files.
+- Added Notes fields to all Create methods for objects.
+- The Translator tool can now be opened from within Chummer via Tools > Translator.
+- Added a "Rebuild" button to the Translator tool. When used, it will regenerate the strings of an existing translation, removing any unused strings and adding any new ones that have been added after the document was initially created.
+- Fixed a crash when refunding vehicle purchases in career mode. Fixes #2184.
+- Fixed weapons on weapon mounts not being calculated into sell and refund amounts.
+- Fixed behaviour of ArmorRating property to properly account for the Custom Fit (Stack) rules from Run and Gun again.
+- Fixed a bug where the quality level numerical up-down would never be enabled in Career mode.
+- Fixed a bug where Re-Apply Improvements would not properly re-apply bonuses of 'ware, first level bonuses of qualities, and bonuses tied to items that were included in a filter list but whose parents were not included.
+- If the updater encounters an error during installation of the new update, it will now restore the old versions of all files. Fixes #2175.
+- Added support for translation of items in ranges.xml and spiritpowers.xml. Updated the translator to also process data from these files.
+- Fixed various issues regarding encumbrance, Custom Fit, clothing, and items that add armor value. Fixes #2188.
+- Made some minor tweaks to lifestyles. Fixes a quirk if a character gains Improvements that change their lifestyle costs, cost alterations from lifestyle qualities are shown in their treenode. 
+- Fixed incorrect Concealment values for Bio-Spike II and III.
+- Multiple languages can be translated at the same time using Translator, and it now supports cancellation of Create and Rebuild operations.
+- Altered the format of entries in ranges.xml so that they conform to a similar format as other data types (their names are now stored in "name" nodes instead of "category" nodes). This also fixes issues with the Translator incorrectly loading and saving range entries.
+- The amend system for custom data now supports the use of custom XPath filters. This means that a single amending node can now modify multiple nodes based on whatever XPath filters are defined in its xpathfilter attribute. The "Cyberlimbs Cannot Add Headware" custom ruleset in the customdata folder has been updated to use this system, and it now also serves as an example for how to use custom XPath filters for amends.
+- Tabs can now be scrolled through with the mousewheel.
+- Ghetto workaround to allow exotic ranged weapons to buy their own ammunition again in career mode. Super fragile, may break at the drop of a hat.
+- Added "Active Commlink" and "Home Node" checkboxes to the Cyberware tab, and added an "Active Commlink" checkbox to the Vehicles tab.
+- Fixed a bug where player names would not show up in the character roster. Fixes #2195.
+- Weapons on vehicles/drones that use STR, Physical Limit, and/or AGI for their stats will now properly use attributes based on that vehicle/drone.
+- Fixed issues regarding undoing expenses involving weapon mounts, armor, and/or armor mods.
+- Fixed issues with refunding lifestyle expenses if a character has two or more lifestyles of the same type/level.
+- Added support to use attributes and XPath expressions in a weapon's AP field.
+- Added a label in Create mode that becomes visible when a character has Prototype Transhuman. This label tracks the current amount of essence used up by 'ware marked as Prototype Transhuman. Fixes #1764.
+- Fixed being able to mark 'ware children as Prototype Transhuman independently from the main 'ware itself.
+- Fixed being able to mark Cyberware as Prototype Transhuman.
+- Fixed Essence usage displays in the 'ware tab not properly reflecting the setting for Essence decimals to which to round.
+- Fixed a bug where player names would not show up in the character roster.
+- Cyberware, Gear, Armor and Armor Mod Ratings are now properly bound by their Min and Max Ratings. May cause issues in career mode if you suddenly become Aged with cyberware or something, but eh. Baby steps.
+- Fixed a crash when adding multiple armor mods a given piece of armor in career mode.
+- Fixed a potential crash when loading lifestyles that didn't have their base lifestyle saved properly.
+- Added preliminary support for being able to switch languages without restarting Chummer. This also feeds into character sheets that would be printed in a language different from the one under which Chummer is running. Note that not all strings properly update yet.
+- Added a basic system for management of vehicle-based firing modes. 
+- Implemented support for vehicle mods altering the ammo capacity of a given weapon mount's weapon(s). 
+- Added support for editing weapon mounts in create mode, career mode edits will come when I sort out how to manage the Expenses properly. 
+- Fixed behaviour of the selectpowers improvement not working properly for powers that depend on having a Rating.
+- Various build methods can now ban specific grades of 'ware instead of relying on a blanket ban of Betaware, Deltaware and Gammaware at character creation. Custom and override gameplayoptions.xml files will need to be updated manually to accommodate this change.
+- Banned grades are now not shown while in create mode. Optional rules to override this behaviour if the character has Restricted Gear or under other specific circumstances will come in a later build as part of #1089.
+- Fixed a bug where selected category and selected grade were not saved in the cyberware and bioware selection screens.
+- Fixed a bug where the Translator tool was saving page numbers in an incorrectly named node. Existing translations will automatically get their page number nodes renamed if they are rebuilt.
+- Fixed an issue with the Translator tool incorrectly saving gameplay options as part of the entries for the priorities file.
+- Fixed alternate page references never showing up for translated skills.
+- Fixed a bug where the Translator tool would not properly consider and treat alternate codes for books.
+- Added a small shim to the skill loader that prevents an error if the character somehow gains two copies of the same skill.
+- Removed the nomission property, as this is now managed by customdata.
+- Fixed a bug where the optional rule for having positive quality costs double if over the limit would not get enabled/disabled properly.
+- Added the ability to have echoes as part of "forbidden" and "required" nodes.
+- Removed a readonly flag that prevented using the selectparagon bonus.
+- Fixed the selectspell improvement to properly add the relevant spell to the character. 
+- Tweaked the list of Spells to be an observable collection to allow updating the UI whenever the spell list changes.
+- Added support to the Amend system to be able to use operations other than the default ones. The four currently supported operations are "recurse" (perform amending recursively on children), "replace" (completely replace the target node's InnerXml), "append" (add to the target node's InnerXml), and "remove" (remove the target node). If no operation is specified, "recurse" is the default if the target node(s) have children and "replace" is the default if they do not. The 'remove="yes"' system for marking nodes for removal has been replaced by 'amendoperation="remove"'.
+- Fixed a bug where strings related to contacts were not properly translated.
+- Fixed a bug where certain changes to maximum MAG and/or maximum RES would not properly change the maximum Force/Level values for spirits and sprites tied to the character.
+- Fixed a bug where canceling out of the karma spending prompt to fetter a spirit would still cause the spirit to be fettered.
+- Fixed translation system for certain strings in the Relationships tab, metatypes in the character roster, labels in the weapon mount creation screen, and other, miscellaneous strings. Fixes #2238.
+- Fixed issues with printing nested gear and nested cyberware in the Shadowrun 5 character sheet set.
+- Fixed an issue with the Vehicles character sheet set trying to fetch "Parachuting" instead of "Free-Fall" for skills relevant to aerial vehicles.
+- Updated the livingpersona improvement so that it uses SR5e values instead of SR4e ones. Fixes #2239.
+- Added improvements for adding complex forms through bonus nodes via selectcomplexform and addcomplexform, which function almost identically to their spell counterparts. Fixes #2242.
+- Added a checkbox to disable or enable the filter for banned grades of 'ware in create mode. When selecting the cyberware, you will not be permitted to add the item if the grade is in the banned list.
+- Altered requirements checker to test for submersion grade and echo limitations.
+- Fixed a crash when attempting to create spells.
+- Fixed spells in create mode not working properly with Limited, Extended and Alchemical settings.
+- Fixed an issue with WeaponCategoryDV improvements such as Critical Strike not properly applying to Unarmed Combat-linked weapons.
+- Fixed an issue in which items with no accessory mounts would cause a generation issue when using non-English strings.
+- Fixed an issue with the XML amendment system that prevented new nodes from being added to the parent object. The main affected entry for this involves Adapsin; characters using this bioware should Reapply Improvements.
+- Fixed an issue with the id node checker that prevented it from properly checking items with ids that were not specifically grandparents of the root chummer node in an xml file (e.g. Metavariants, Life Modules).
+- Fixed issues with the karma value calculator when calculating the karma value of MAG and the karma value of attributes on shapeshifters.
+- Fixed a bug where only the first specialization was indented in the Shadowrun 5 character sheet set. Fixes #2253.
+- Added a dropdown menu option to bulk-add contacts, enemies and pets from a given XML file. To use this, create an XML file that contains valid contacts from an existing Chummer file, or alter this template: https://pastebin.com/W9q8jEnt Note that this system is designed to import ALL valid contacts in the file, irrespective of whether you click on Contacts or Enemies.
+- Fixed a bug where requirement nodes reliant on having a certain number of spells from a category would not get processed correctly.
+- Implemented a house rule to control whether the karma gained from enemies counts against your Negative Quality limit in create mode.
+- The Translator will now process paragons, vessels, and mods for vehicle weapon mounts.
+- Fixed issues regarding the translation, deletion, and selling of mods to vehicle weapon mounts and weapons added to mods of vehicle weapon mounts.
+- Fixed issues loading characters made with gameplay options that are not present in the current dataset.
+- Fixed a typo where the character validity checker would display unspent skill group points as unspent special attribute points.
+- Metatype, attributes, and special attributes priority categories now also support gameplayoptions-specific choices.
+- Fixed a crash when loading characters in career mode that have access to the Spells and Spirits tab, but don't have a Tradition.
+- Metatypes for pets/cohorts are now alterable as a combobox if there is no character linked to a given pet/cohort. The suggested values loaded for the combobox are populated based on content in critters.xml. Fixes #2269.
+- Added a menu option in Create mode to change your existing Options file choice. It is still strongly recommended that you create your custom options file before making any characters in order to ensure that all options are adhered to correctly, but in most cases anything weird will get caught by the next save/load.
+- Fixed an issue where characters' trust fund-enabled lifestyles would be kept free after they lose their trust found source.
+- Fixed a bug where characters with Ex-Con could still buy (non-modular) Restricted and/or Forbidden 'ware. Getting Ex-Con in Create mode will now remove all ineligible 'ware from the character, and getting Ex-Con in Career mode will do the same for all 'ware that does not have a "None" grade (so e.g. genemods are kept).
+- Fixed a bug where characters with Erased did not have their Public Awareness capped to 1.
+- Fixed a bug where losing the Overclocker quality would not remove the overclocked benefit from affected gear.
+- Fixed a crash in the Translator when a user attempts to search for an item while having no cell selected.
+- Fixed an issue where Redliner would not trigger off of modular full cyberlimbs. Fixes #2275.
+- Implemented a proof-of-concept system for extracting text from the sourcebook for a given object. Currently only works with qualities that are being created, because string manipulation with unreliable formats is annoying. If you can think of a reliable way to parse paragraphs out of a plaintext block, feel free to let me know.
+- Fixed an issue where knowledge hardwires would not let the user choose a knowledge skill.
+- Added an invite link to the Chummer Discord to the help menu toolstrip.
+- Fixed an issue with loading the Black Market Discount property. Existing characters will need to reapply improvements to fix it. 
+- Fully implemented the automatic system for Black Market Pipeline to apply to all valid object types (Armor, Armor Mod, Bio/Cyberware, Gear, Vehicles, Vehicle Mods, Weapons). Weapon Accessories don't use the category system that this binds to, so another solution will need to be found for them. I'm unsure what to bind most of the Gear categories to, so I've just been rather generous with Drugs and Electronics for now. 
+- Fixed a crash when selecting a character with a 'None' metavariant in the roster. Shouldn't happen, but just in case.
+- Fixed an issue where the Life Modules root node would not get translated.
+- Added a warning prompt about Life Modules not being fully supported when enabling the relevant option.
+- Fixed an issue where clicking on a cell under the "Browse" tab in the armor selection screen would result in that armor getting added to the character. Fixes #2303.
+- Fixed a bug where restoring essence to a character would also restore lost special attribute values.
+- Chummer5a will now use the number localization of the currently loaded language (if possible) instead of that of the user's system.
+- Added the option to remove a quantity of gear other than 1 in Career mode.
+- Added a Matrix Condition Monitor to the Weapons tab.
+
+Data Changes:
+
+- Fixed Virtual Machine so that it can hold 2 cyberprograms (for when proper support for cyberprogram handling is added).
+- Data lock cyberware will now display its proper Matrix attributes, i.e. with a Device Rating equal to its rating instead of being based off of its grade.
+- Implemented priority mode requirements for shapeshifters. 
+- Added a missing bonus to The Magician's Way quality that prevented it from granting discounted powers.
+- Corrected the code of the Japanese localization to ja-JP (from jp-JP).
+- Fixed Berserker's Rage being eligible for a PP discount under The Spiritual Way. Part of #2180.
+- Fixed a crash caused by a typo in Thundercloud Morgan's weapon mounts. Fixes #2183.
+- Fixed being able to change the spirit category of Summoning, Binding, and Banishing foci.
+- The Spiritual Way now allows discounting the following powers that were previously missed: Heightened Concentration, Spirit Ram, Nimble Fingers, Metabolic Control, Magic Sense, Kinesics Mastery, Traceless Walk, Pain Resistance, Improved Physical Attribute.
+- The Ultimax Carbine has been converted back to using its actual stats from Gun H(e)aven 3, as no official errata has ever been released for it. An amend entry has been added to the SR Missions 1.4 Rules customdata folder, and a separate entry has been added for users that want to treat Missions as official errata for it. Characters that already have this weapon should not be affected, but I'd recommend enabling the rule if you intend to reapply improvements or purchase a new one at some point.
+- Fixed Karma values for qualities from Dark Terrors.
+- Fixed being unable to buy Flex Hand if the user had bought any cyberarms. Fixes #2202.
+- Removed extra recoil compensation from the Walther P118.
+- Old weapon mount mods have been flagged as hidden.
+- Added missing improvement to the Burnout's Way quality that allowed the replacement Grade to show up properly. Existing characters will need to remove and re-add the quality or use the Reapply Improvements menu.
+- Added default banned grades to the default gameplayoptions.xml entries. 
+- Fixed incorrect categories for the Claw and Barrage spells.
+- Implemented the Gyro-Stabilization vehicle mod as a customdata entry per the entry in the German version of Rigger 5.0. This file will be merged into the main file if the mod ever gets erratad into the English version.
+- Fixed a bug where the incorrect message was displayed if someone exceeded their maximum amount of negative metagenetic qualities. Fixes #2225.
+- Fixed a bug where loading a character in create mode who had more priority points spent in an attribute than their attribute maximum would cause Chummer to crash. Fixes #2222.
+- Fixed incorrect page reference for Rockblood Signature Armored Shirt. Fixes #2233.
+- Implemented the Hedge Witch and Elementalist Focused Awakened as qualities. 
+- Implemented the bonus for the Structured Spellcasting metamagic.
+- Fixed a duplicate id in the Pomorya Nationality Life Module.
+- Fixed incorrect category for Ford Titan. Fixes #2262.
+- Fixed an issue where characters could take the Trust Fund quality multiple times.
+- Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
+- Added missing id nodes to vessels in vessels.xml.
+- Fixed an issue where characters were limited to only one active hardwire and one knowledge hardwire. Fixes #2289.
+- Fixed the Growth spell having "Special" as its drain code instead of F+3.
+- Added an amend entry to convert the Growth spell to the version used by the German version of Forbidden Arcana.
+- Corrected "The Seattle Gauntlet" to "The Seattle Gambit".
+
+New Strings:
+
+- Menu_Main_Translator
+- Label_PrototypeTranshuman
+- String_CannotFindLifestyle
+- Tip_Skill_Cannot_Default
+- Label_FiringMode
+- Enum_Skill
+- Enum_GunneryCommandDevice
+- Enum_RemoteOperated
+- Enum_DogBrain
+- Enum_ManualOperation
+- Menu_EditWeaponMount
+- Checkbox_IsMainMugshot
+- String_SpellDefense
+- String_Relationships
+- Button_SwapOrdering
+- Label_CyberlimbAGI
+- Label_CyberlimbSTR
+- Label_Overclocker
+- Label_Visibility
+- Label_Control
+- Label_Size
+- Node_SelectedQualities
+- String_WorkingForTheManPeople
+- Checkbox_HideBannedCyberwareGrades
+- MessageTitle_BannedGrade
+- Message_BannedGrade
+- Menu_AddFromFile
+- Checkbox_Options_EnemyKarmaQualityLimit
+- Message_MissingGameplayOption
+- Message_MissingGameplayOption_Title
+- Menu_SpecialChangeOptions
+- Menu_Main_ChummerDiscord
+- String_LifeModules
+- Tip_LifeModule_Warning
+- String_Month
+- String_ReduceGear
+
+Changed Strings:
+
+- Message_ReduceQty
+
+Build 196
 
 Application Changes:
 
@@ -7,7 +303,7 @@ Application Changes:
 - Fixed an issue when loading critters that caused them to have lower attribute values than intended.
 - Added backend support for wireless bonuses to Gear, Armor, Armor Mods, Vehicle Mods, and Cyberware.
 - Fixed an issue where lifestyle qualities would not have closing square brackets for their costs.
-- Altered the Limit Spirit Selection bonus so that it also adds to its selection to the bonus' source. This also makes Apprentice indicate the chosen spirit instead of the chosen spell.
+- Altered the Limit Spirit Selection bonus so that it also adds to its selection to the bonus' source. This also makes Apprentice indicate the both the chosen spirit type and the chosen spell category.
 - Fixed an issue that allowed priority choices that received a single skill or skill group to receive multiples.
 - Fixed incorrect costs for binding foci when using non-English language files.
 - Fixed an issue with free spells from Dedicated Spellslinger improperly prompting for Karma in career mode.
@@ -299,6 +595,22 @@ Application Changes:
 - Moved Complex Form Context Menu Strip into the treenodes for each complex form to bring it back into line with the usual standard, removed it from the button.
 - Fixed a crash when moving characters between the "Favorites" and "Recent" lists in the character roster.
 - The "Favorites" list will now be shown in the character roster even when it is empty so that characters can immediately be moved to it.
+- Double clicking a character on the character roster (or opening a character file linked to a contact, pet, or spirit) who is already open will now switch to the character's tab instead of attempting to open a new tab of the character. Open characters are now marked with an asterisk. If there are more than 10 characters open, open characters will still show up in the "Recent" list.
+- Fixed a bug where testing a PDF inside the options menu would automatically save the currently selected options, which would cause them to be applied even if the user would choose not to apply changes to options in the prompt when they exited the options menu.
+- Contacts, Pets, and Spirits linked to character files will automatically load those files in the background and fill in and update appropriate fields based on values in their linked file.
+- Fixed a bug where pet metatypes/species labels in the Relationships tab were not translated properly.
+- Added a proof-of-concept helper combobox that has a variable-width dropdown and tooltip functionality to assist with long text, such as sheet names in the options.
+- Sheets printing free expenses is now something that can be toggled off in the options menu. Fixes #1800.
+- Fixed a bug where having the Adapsin version of a grade for a piece of 'ware would cause it to not load the proper amount of Matrix Condition Monitor boxes.
+- Fixed a bug where characters with Gammaware and/or the Adapsin versions of Betaware, Deltaware, and Gammaware would pass the character validity check for Career mode.
+- Unhardcoded the device rating values of 'ware grades. They can now be modified with custom data files.
+- Added the ability to perform a clean reinstall from within the updater.
+- Added the ability to have Martial Arts with karma costs different from the default of 7.
+- When warning about duplicate GUIDs in data files, Chummer5a will now display the names of the items to which those duplicate IDs belong.
+- In addition to checking for duplicate GUIDs, Chummer5a will now also check for ID fields that do not contain GUIDs, and if it finds any, it will warn users in a manner similar to the warning for duplicate GUIDs.
+- Fixed a bug where items that both consumed capacity and had capacity did not cause selection forms to enforce their maximum capacity remaining. Fixes #1806.
+- The Shadowrun 5 character sheet set will now print the various resistance dicepools that the character has. Fixes #1935.
+- Fixed the use of sensor upgrades to replace the current rating rather than adding to it.
 
 Data Changes:
 
@@ -457,6 +769,18 @@ Data Changes:
 - Added content from The Seattle Gauntlet Enhanced Fiction novel.
 - Added missing entries for Magecuff and Magemask from Street Grimoire.
 - Added missing damage resistance bonus to the Bear mentor spirit.
+- Added missing social limit penalty to the Move-By-Wire System.
+- Fixed bonus for Superhuman Psychosis not applying to Exotic Melee Weapons.
+- Fixed incorrect concealability for the Altmayr SPX.
+- Added bonuses for the Death Dealer mentor.
+- Added an amend file to allow converting Heightened Concentration to have levels, per the German version of Shadow Spells.
+- Added the missing troop transport module for the Ruhrmetall Wolf II. Other modules require errata clarification.
+- Added a bonus for the Muzzle bioware to increase Accuracy for any weapon with 'fangs' in the name.
+- Fixed being able to get Way of Unified Mana (Hapsum-Do) without being an Adept or Mystic Adept. Fixed Way of Unified Mana (Hapsum-Do) costing 7 karma instead of 15.
+- Fixed an incorrect tag used in the options menu.
+- Fixed incorrect drain and duration values on the Comet spell.
+- Fixed Thundercloud Morgan's mod selection to properly include the Manual Operation mod.
+- Fixed missing requirements for the HK Urban Fighter and Onotri Arms Pressure KS-X custom silencers.
 
 New Strings:
 - Message_Improvement_EmptySelectionList
@@ -527,18 +851,30 @@ New Strings:
 - Checkbox_Contact_Family
 - Checkbox_Options_ExceedPositiveQualitiesCostDoubled
 - Checkbox_Option_DontRoundEssenceInternally
-- Label_Options_NuyenDecimalsAlways
+- Label_Options_NuyenDecimalsMinimum
 - Label_Options_NuyenDecimalsMaximum
 - Label_Options_NewKnoSpecialization
 - Label_Options_NewRatingPlus
 - Checkbox_Options_LiveUpdateCleanCharacterFiles
 - Checkbox_Options_CompensateSkillGroupKarmaDifference
 - Button_ContactsExpansionToggle
+- String_Loading_Characters
+- String_Generating_Sheet
+- Menu_Delete
+- Menu_Sort
+- Menu_ToggleFavourite
+- Checkbox_Options_PrintFreeExpenses
+- Button_Clean_Reinstall
+- MessageTitle_Updater_CleanReinstallPrompt
+- Message_Updater_CleanReinstallPrompt
+- Message_NonGuidIdWarning
+- Node_UnequippedModularCyberware
 
 Changed Strings:
 - Message_PositiveQualityLimit
 - Label_LifestyleNuyen_ResultOf
 - Label_Options_NewSpecialization
+- Message_DuplicateGuidWarning
 
 Removed Strings:
 - Label_MugshotDimensions
@@ -1307,6 +1643,7 @@ Application Changes:
 - Changes to the condition monitor now immediately refresh skill dicepools.
 - The cost label for qualities in create mode now shows as Current/Maximum (Total) to assist with calculating quality values. 
     -The total value is mostly going to be seen for Changelings and Point-Buy characters, as it shows qualities that don't contribute to your limit. 
+- Fixed rendering of armour values for accessories and such that have a positive/negative modifier.
 
 Data Changes:
 
@@ -1407,6 +1744,7 @@ Data Changes:
 - Added all missing Critter Gear from HS.
 - Added Specialized Biodrone Cyberware from HS.
 - Certain Martial Arts will now automatically add a free skill specialisation, per Run and Gun page 135. Characters that already have these martial arts will need to remove and re-add the martial art for it to take effect.
+- Fixed CHA bonuses for the Ugly and Doesn't Care quality.
 
 Sheet Changes:
 

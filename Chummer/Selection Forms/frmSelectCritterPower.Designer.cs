@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectCritterPower
     {
@@ -65,7 +65,7 @@
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
             this.lblCritterPowerSource.TabIndex = 16;
             this.lblCritterPowerSource.Text = "[Source]";
-            this.lblCritterPowerSource.Click += new System.EventHandler(this.lblCritterPowerSource_Click);
+            this.lblCritterPowerSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCritterPowerSourceLabel
             // 

@@ -10,9 +10,11 @@
   <xsl:variable name="lang.Accel"      select="'Accél'"/>
   <xsl:variable name="lang.Accessories"  select="'Accessoires'"/>
   <xsl:variable name="lang.Accuracy"    select="'Précision'"/>
+  <xsl:variable name="lang.Acid"      select="'Acide'"/>
+  <xsl:variable name="lang.Addiction"  select="'Dépendance'"/>
   <xsl:variable name="lang.Age"      select="'Âge'"/>
-  <xsl:variable name="lang.Agility"    select="'Agilité'"/>
   <xsl:variable name="lang.AGI"      select="'AGI'"/>
+  <xsl:variable name="lang.Agility"    select="'Agilité'"/>
   <xsl:variable name="lang.AI"      select="'AI'"/>
   <xsl:variable name="lang.Alias"      select="'Pseudonyme'"/>
   <xsl:variable name="lang.Ammo"      select="'Munitions'"/>
@@ -34,22 +36,24 @@
   <xsl:variable name="lang.Background"  select="'Background'"/>
   <xsl:variable name="lang.Base"      select="'Base'"/>
   <xsl:variable name="lang.Bioware"    select="'Bioware'"/>
-  <xsl:variable name="lang.Body"      select="'Corps'"/>
   <xsl:variable name="lang.BOD"      select="'CON'"/>
+  <xsl:variable name="lang.Body"      select="'Corps'"/>
   <xsl:variable name="lang.Bonus"      select="'Bonus'"/>
   <xsl:variable name="lang.Bound"      select="'Lié'"/>
   <xsl:variable name="lang.Calendar"    select="'Calendrier'"/>
   <xsl:variable name="lang.Career"    select="'Carrière'"/>
   <xsl:variable name="lang.Category"    select="'Catégorie'"/>
-  <xsl:variable name="lang.Charisma"    select="'Charisme'"/>
   <xsl:variable name="lang.CHA"      select="'CHA'"/>
+  <xsl:variable name="lang.Charisma"    select="'Charisme'"/>
   <xsl:variable name="lang.CM"      select="'MC'"/>
+  <xsl:variable name="lang.Cold"      select="'Froid'"/>
   <xsl:variable name="lang.Combat"    select="'Combat'"/>
   <xsl:variable name="lang.Commlink"    select="'Commlink'"/>
   <xsl:variable name="lang.Composure"    select="'Sang-Froid'"/>
   <xsl:variable name="lang.Concept"    select="'Concept'"/>
   <xsl:variable name="lang.Connection"  select="'Connexion'"/>
   <xsl:variable name="lang.Contact"    select="'Contact'"/>
+  <xsl:variable name="lang.ContactDrug"    select="'Contact'"/>
   <xsl:variable name="lang.Contacts"    select="'Contacts'"/>
   <xsl:variable name="lang.Cost"      select="'Coût'"/>
   <xsl:variable name="lang.Critter"    select="'Créature'"/>
@@ -59,29 +63,36 @@
   <xsl:variable name="lang.Data"      select="'Donnée'"/>
   <xsl:variable name="lang.Date"      select="'Date'"/>
   <xsl:variable name="lang.Dead"      select="'Mort'"/>
-  <xsl:variable name="lang.Depth"  select="'Depth'"/>
+  <xsl:variable name="lang.Defense"      select="'Défense'"/>
   <xsl:variable name="lang.DEP"  select="'DEP'"/>
+  <xsl:variable name="lang.Depth"  select="'Depth'"/>
   <xsl:variable name="lang.Description"  select="'Description'"/>
   <xsl:variable name="lang.Detection"    select="'Détection'"/>
   <xsl:variable name="lang.Device"    select="'Appareil'"/>
   <xsl:variable name="lang.Devices"    select="'Appareils'"/>
+  <xsl:variable name="lang.Direct"      select="'Direct'"/>
   <xsl:variable name="lang.Down"      select="'A Terre'"/>
+  <xsl:variable name="lang.DP"        select="'TD'"/>
   <xsl:variable name="lang.Drain"      select="'Drain'"/>
   <xsl:variable name="lang.Drone"      select="'Drone'"/>
   <xsl:variable name="lang.Duration"    select="'Durée'"/>
   <xsl:variable name="lang.DV"      select="'VD'"/>
   <xsl:variable name="lang.E"        select="'E'"/>
   <xsl:variable name="lang.Echoes"    select="'Échos'"/>
-  <xsl:variable name="lang.Edge"      select="'Chance'"/>
   <xsl:variable name="lang.EDG"      select="'CHN'"/>
+  <xsl:variable name="lang.Edge"      select="'Chance'"/>
+  <xsl:variable name="lang.Electricity"    select="'Électricité'"/>
   <xsl:variable name="lang.Enemies"    select="'Ennemis'"/>
   <xsl:variable name="lang.Enhancements"  select="'Améliorations'"/>
   <xsl:variable name="lang.Entries"    select="'Entrées'"/>
   <xsl:variable name="lang.Equipped"    select="'Équipé'"/>
-  <xsl:variable name="lang.Essence"    select="'Essence'"/>
   <xsl:variable name="lang.ESS"      select="'ESS'"/>
+  <xsl:variable name="lang.Essence"    select="'Essence'"/>
   <xsl:variable name="lang.Expenses"    select="'Dépenses'"/>
   <xsl:variable name="lang.Eyes"      select="'Yeux'"/>
+  <xsl:variable name="lang.Falling"    select="'Tomber'"/>
+  <xsl:variable name="lang.Fatigue"      select="'Fatigue'"/>
+  <xsl:variable name="lang.Fire"    select="'Feu'"/>
   <xsl:variable name="lang.Firewall"    select="'Firewall'"/>
   <xsl:variable name="lang.Fly"      select="'Mouche'"/>
   <xsl:variable name="lang.FWL"      select="'FWL'"/>
@@ -96,13 +107,17 @@
   <xsl:variable name="lang.hit"      select="'Succès'"/>
   <xsl:variable name="lang.Illusion"    select="'Illusion'"/>
   <xsl:variable name="lang.Implant"    select="'Implant'"/>
+  <xsl:variable name="lang.Indirect"      select="'Indirect'"/>
   <xsl:variable name="lang.Info"      select="'Info'"/>
+  <xsl:variable name="lang.Ingestion"      select="'Ingestion'"/>
+  <xsl:variable name="lang.Inhalation"      select="'Inhalation'"/>
+  <xsl:variable name="lang.Init"      select="'Init'"/>
   <xsl:variable name="lang.Initiation"  select="'Initiation'"/>
   <xsl:variable name="lang.Initiative"  select="'Initiative'"/>
-  <xsl:variable name="lang.Init"      select="'Init'"/>
+  <xsl:variable name="lang.Injection"      select="'Injection'"/>
+  <xsl:variable name="lang.INT"      select="'INT'"/>
   <xsl:variable name="lang.Intentions"  select="'Intentions'"/>
   <xsl:variable name="lang.Intuition"    select="'Intuition'"/>
-  <xsl:variable name="lang.INT"      select="'INT'"/>
   <xsl:variable name="lang.Instantaneous"  select="'Instantané'"/>
   <xsl:variable name="lang.Karma"      select="'Karma'"/>
   <xsl:variable name="lang.L"        select="'L'"/>
@@ -112,12 +127,13 @@
   <xsl:variable name="lang.Limits"    select="'Limites'"/>
   <xsl:variable name="lang.Loaded"    select="'Chargé'"/>
   <xsl:variable name="lang.Location"    select="'Emplacement'"/>
-  <xsl:variable name="lang.Logic"      select="'Logique'"/>
   <xsl:variable name="lang.LOG"      select="'LOG'"/>
+  <xsl:variable name="lang.Logic"      select="'Logique'"/>
   <xsl:variable name="lang.Loyalty"    select="'Loyauté'"/>
   <xsl:variable name="lang.M"        select="'M'"/>
-  <xsl:variable name="lang.Magic"      select="'Magie'"/>
   <xsl:variable name="lang.MAG"      select="'MAG'"/>
+  <xsl:variable name="lang.Magic"      select="'Magie'"/>
+  <xsl:variable name="lang.Mana"    select="'Mana'"/>
   <xsl:variable name="lang.Maneuvers"    select="'Manœuvres'"/>
   <xsl:variable name="lang.Manipulation"  select="'Manipulation'"/>
   <xsl:variable name="lang.Memory"    select="'Mémoire'"/>
@@ -132,6 +148,7 @@
   <xsl:variable name="lang.Month"      select="'Mois'"/>
   <xsl:variable name="lang.Months"    select="'Mois'"/>
   <xsl:variable name="lang.Movement"    select="'Mouvement'"/>
+  <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
   <xsl:variable name="lang.Name"      select="'Nom'"/>
   <xsl:variable name="lang.Native"    select="'Maternelle'"/>
   <xsl:variable name="lang.No"      select="'Non'"/>
@@ -140,9 +157,11 @@
   <xsl:variable name="lang.Nuyen"      select="'Nuyen'"/>
   <xsl:variable name="lang.Other"      select="'Autre'"/>
   <xsl:variable name="lang.OVR"      select="'OVR&#160;'"/>
+  <xsl:variable name="lang.Pathogen"    select="'Pathogènes'"/>
   <xsl:variable name="lang.Permanent"    select="'Permanent'"/>
   <xsl:variable name="lang.Persona"    select="'Persona'"/>
   <xsl:variable name="lang.Physical"    select="'Physique'"/>
+  <xsl:variable name="lang.Physiological"  select="'Physiologique'"/>
   <xsl:variable name="lang.Pilot"      select="'Pilote'"/>
   <xsl:variable name="lang.Player"    select="'Joueur'"/>
   <xsl:variable name="lang.Points"    select="'Points'"/>
@@ -153,9 +172,11 @@
   <xsl:variable name="lang.Processor"    select="'Processeur'"/>
   <xsl:variable name="lang.Program"    select="'Programme'"/>
   <xsl:variable name="lang.Programs"    select="'Programmes'"/>
+  <xsl:variable name="lang.Psychological"  select="'Psychologique'"/>
   <xsl:variable name="lang.Qty"      select="'Qté'"/>
   <xsl:variable name="lang.Quality"    select="'Trait'"/>
   <xsl:variable name="lang.Qualities"    select="'Traits'"/>
+  <xsl:variable name="lang.Radiation"      select="'Radiation'"/>
   <xsl:variable name="lang.Range"      select="'Portée'"/>
   <xsl:variable name="lang.Rating"    select="'Puissance'"/>
   <xsl:variable name="lang.RC"      select="'CR'"/>
@@ -165,8 +186,10 @@
   <xsl:variable name="lang.Reason"    select="'Raison'"/>
   <xsl:variable name="lang.Registered"  select="'Enregistré'"/>
   <xsl:variable name="lang.Requires"    select="'Requis'"/>
-  <xsl:variable name="lang.Resonance"    select="'Résonance'"/>
   <xsl:variable name="lang.RES"      select="'RES'"/>
+  <xsl:variable name="lang.Resistance"    select="'Résistance'"/>
+  <xsl:variable name="lang.Resistances"    select="'Résistances'"/>
+  <xsl:variable name="lang.Resonance"    select="'Résonance'"/>
   <xsl:variable name="lang.Resources"    select="'Ressources'"/>
   <xsl:variable name="lang.Rigger"    select="'Interfacé'"/>
   <xsl:variable name="lang.Rtg"      select="'Ind'"/>
@@ -183,6 +206,7 @@
   <xsl:variable name="lang.Sleaze"    select="'Corruption'"/>
   <xsl:variable name="lang.SLZ"      select="'SLZ'"/>
   <xsl:variable name="lang.Social"    select="'Sociale'"/>
+  <xsl:variable name="lang.Sonic"      select="'Sonique'"/>
   <xsl:variable name="lang.Source"    select="'Source'"/>
   <xsl:variable name="lang.Special"    select="'Spécial'"/>
   <xsl:variable name="lang.Speed"      select="'Vitesse'"/>
@@ -193,16 +217,16 @@
   <xsl:variable name="lang.Sprite"    select="'Sprite'"/>
   <xsl:variable name="lang.Sprites"    select="'Sprites'"/>
   <xsl:variable name="lang.Stream"    select="'Grille'"/>
-  <xsl:variable name="lang.Strength"    select="'Force'"/>
   <xsl:variable name="lang.STR"      select="'FOR'"/>
+  <xsl:variable name="lang.Strength"    select="'Force'"/>
   <xsl:variable name="lang.Stun"      select="'Étourdi'"/>
   <xsl:variable name="lang.Sustained"    select="'Maintenu'"/>
   <xsl:variable name="lang.Swim"      select="'Nager'"/>
   <xsl:variable name="lang.Target"    select="'Cible'"/>
   <xsl:variable name="lang.Total"      select="'Total'"/>
   <xsl:variable name="lang.Touch"      select="'Toucher'"/>
+  <xsl:variable name="lang.Toxin"      select="'Toxines'"/>
   <xsl:variable name="lang.Tradition"    select="'Tradition'"/>
-  <xsl:variable name="lang.Track"      select="'Piste'"/>
   <xsl:variable name="lang.Type"      select="'Type'"/>
   <xsl:variable name="lang.Unbound"    select="'Non lié'"/>
   <xsl:variable name="lang.Unknown"    select="'Inconnu'"/>
@@ -217,8 +241,8 @@
   <xsl:variable name="lang.Weapons"    select="'Armes'"/>
   <xsl:variable name="lang.Week"      select="'Semaine'"/>
   <xsl:variable name="lang.Weight"    select="'Poids'"/>
-  <xsl:variable name="lang.Willpower"    select="'Volonté'"/>
   <xsl:variable name="lang.WIL"      select="'VOL'"/>
+  <xsl:variable name="lang.Willpower"    select="'Volonté'"/>
   <xsl:variable name="lang.with"      select="'avec'"/>
   <xsl:variable name="lang.Yes"      select="'Oui'"/>
 
@@ -226,7 +250,8 @@
   <xsl:variable name="lang.ActiveSkills"    select="'Compétences Actives'"/>
   <xsl:variable name="lang.AdeptPowers"    select="'Pouvoirs adeptes'"/>
   <xsl:variable name="lang.AIandAdvanced"    select="'IA Programmes et Programmes Avancés'"/>
-  <xsl:variable name="lang.ArmorValue"    select="concat('Valeur d','$APOS','armure')"/>
+  <xsl:variable name="lang.AlreadyAddicted"  select="'Déjà adonné'"/>
+  <xsl:variable name="lang.ArmorValue"    select="concat('Valeur d',$APOS,'armure')"/>
   <xsl:variable name="lang.AstralInitiative"  select="'Initiative Astrale'"/>
   <xsl:variable name="lang.CombatSkill"    select="'Compétences de combat'"/>
   <xsl:variable name="lang.ComplexForm"    select="'Forme Complexe'"/>
@@ -235,9 +260,10 @@
   <xsl:variable name="lang.ContactList"    select="'Liste de contacts'"/>
   <xsl:variable name="lang.CritterPowers"    select="'Pouvoirs de Créature'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'Points de chance courants'"/>
-  <xsl:variable name="lang.DataProcessing"  select="'Traitement de Données'"/>
-  <xsl:variable name="lang.DP"        select="'TD'"/>
+  <xsl:variable name="lang.DamageType"  select="'Type de dommage'"/>
   <xsl:variable name="lang.DataProc"      select="'Trait. Données'"/>
+  <xsl:variable name="lang.DataProcessing"  select="'Traitement de Données'"/>
+  <xsl:variable name="lang.DecreaseAttribute"    select="'Decrease Attribute'"/>
   <xsl:variable name="lang.DerivedAttributes"  select="'Attributs Dérivés'"/>
   <xsl:variable name="lang.DeviceRating"    select="'Évaluation'"/>
   <xsl:variable name="lang.FadingValue"    select="'Technodrain'"/>
@@ -255,13 +281,17 @@
   <xsl:variable name="lang.MatrixHot"      select="'Hot SIM'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'Moniteur de Condition Matricielle'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'Armes de corps á corps'"/>
-  <xsl:variable name="lang.Mugshot"    select="'Portrait'"/>
+  <xsl:variable name="lang.NotAddictedYet"  select="'Pas encore adonné'"/>
+  <xsl:variable name="lang.Nothing2Show4Devices"    select="'Aucun appareil à répertorier'"/>
+  <xsl:variable name="lang.Nothing2Show4Notes"    select="'Pas de notes à la liste'"/>
+  <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'Aucun véhicule à la liste'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'Autres portraits'"/>
   <xsl:variable name="lang.PageBreak"      select="'Saut de page: '"/>
+  <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxines et Pathogènes'"/>
   <xsl:variable name="lang.PersonalData"    select="'Données personnelles'"/>
   <xsl:variable name="lang.PersonalLife"    select="'Vie privée'"/>
-  <xsl:variable name="lang.PhysicalTrack"  select="'Moniteur de Condition Physique'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PhysicalTrack"  select="'Moniteur de Condition Physique'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Paiement Préféré'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'Bras primaire'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'Renommée'"/>
@@ -274,8 +304,8 @@
   <xsl:variable name="lang.SkillGroups"    select="'Groupes de compétences'"/>
   <xsl:variable name="lang.StreetCred"    select="'Crédibilité'"/>
   <xsl:variable name="lang.StreetName"    select="'Nom de rue'"/>
-  <xsl:variable name="lang.StunTrack"    select="'Moniteur de Condition Étourdissant'"/>
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
+  <xsl:variable name="lang.StunTrack"    select="'Moniteur de Condition Étourdissant'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'Degré de submersion'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'Personnage sans nom'"/>
   <xsl:variable name="lang.VehicleBody"    select="'Structure du véhicule'"/>
@@ -292,7 +322,7 @@
   <xsl:variable name="lang.DetectionSpells"  select="'Sorts de détection'"/>
   <xsl:variable name="lang.Enchantments"    select="'Enchantements'"/>
   <xsl:variable name="lang.HealthSpells"     select="'Sorts de santé'"/>
-  <xsl:variable name="lang.IllusionSpells"   select="concat('Sorts d','$APOS','illusion')"/>
+  <xsl:variable name="lang.IllusionSpells"   select="concat('Sorts d',$APOS,'illusion')"/>
   <xsl:variable name="lang.ManipulationSpells" select="'Sorts de manipulation'"/>
   <xsl:variable name="lang.Rituals"      select="'Rituels'"/>
 

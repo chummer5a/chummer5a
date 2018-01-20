@@ -32,127 +32,27 @@ namespace Chummer
 {
     static class Utils
     {
-        //someday this should parse into an abstract syntax tree, but this hack
-        //have worked for a few years, and will work a few years more
-        public static bool TryFloat(string number, out float parsed, Dictionary<string, float> keywords)
-        {
-            //parse to base math string
-            Regex regex = new Regex(string.Join("|", keywords.Keys));
-            number = regex.Replace(number, m => keywords[m.Value].ToString(GlobalOptions.InvariantCultureInfo));
-            
-            try
-            {
-                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                if (float.TryParse(CommonFunctions.EvaluateInvariantXPath(number)?.ToString(), out parsed))
-                {
-                    return true;
-                }
-            }
-            catch (XPathException ex)
-            {
-                Log.Exception(ex);
-            }
-
-            parsed = 0;
-            return false;
-        }
-
         public static void BreakIfDebug()
         {
+#if DEBUG
             if (Debugger.IsAttached)
                 Debugger.Break();
+#endif
         }
 
-        public static bool IsRunningInVisualStudio()
-        {
-            return Process.GetCurrentProcess().ProcessName == "devenv";
-        }
+        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv";
 
-        private static Version _objCachedGitVersion = null;
+        private static Version s_VersionCachedGitVersion = null;
         public static Version CachedGitVersion
         {
             get
             {
-                return _objCachedGitVersion;
+                return s_VersionCachedGitVersion;
             }
             set
             {
-                _objCachedGitVersion = value;
+                s_VersionCachedGitVersion = value;
             }
-        }
-        public static void DoCacheGitVersion(object sender, EventArgs e)
-        {
-            string strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases/latest";
-            if (GlobalOptions.PreferNightlyBuilds)
-            {
-                strUpdateLocation = "https://api.github.com/repos/chummer5a/chummer5a/releases";
-            }
-            HttpWebRequest request = null;
-            try
-            {
-                WebRequest objTemp = WebRequest.Create(strUpdateLocation);
-                request = objTemp as HttpWebRequest;
-            }
-            catch (System.Security.SecurityException)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            if (request == null)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-            request.Accept = "application/json";
-            // Get the response.
-
-            HttpWebResponse response = null;
-            try
-            {
-                response = request.GetResponse() as HttpWebResponse;
-            }
-            catch (WebException)
-            {
-            }
-
-            // Get the stream containing content returned by the server.
-            Stream dataStream = response?.GetResponseStream();
-            if (dataStream == null)
-            {
-                CachedGitVersion = null;
-                return;
-            }
-            Version verLatestVersion = null;
-            // Open the stream using a StreamReader for easy access.
-            StreamReader reader = new StreamReader(dataStream);
-            // Read the content.
-
-            string responseFromServer = reader.ReadToEnd();
-            string[] stringSeparators = new string[] { "," };
-            string[] result = responseFromServer.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-            string line = result.FirstOrDefault(x => x.Contains("tag_name"));
-            if (!string.IsNullOrEmpty(line))
-            {
-                string strVersion = line.Substring(line.IndexOf(':') + 1);
-                if (strVersion.Contains('}'))
-                    strVersion = strVersion.Substring(0, strVersion.IndexOf('}'));
-                strVersion = strVersion.FastEscape('\"');
-                // Adds zeroes if minor and/or build version are missing
-                while (strVersion.Count(x => x == '.') < 2)
-                {
-                    strVersion = strVersion + ".0";
-                }
-                Version.TryParse(strVersion.TrimStart("Nightly-v"), out verLatestVersion);
-            }
-            // Cleanup the streams and the response.
-            reader.Close();
-            dataStream.Close();
-            response.Close();
-
-            CachedGitVersion = verLatestVersion;
-            return;
         }
 
         public static int GitUpdateAvailable()
@@ -166,27 +66,25 @@ namespace Chummer
         /// Restarts Chummer5a.
         /// </summary>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static void RestartApplication(string strText = "Message_Options_Restart")
+        public static void RestartApplication(string strLanguage, string strText)
         {
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = LanguageManager.GetString(strText);
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms");
+                string text = LanguageManager.GetString(strText, strLanguage);
+                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", strLanguage);
 
                 if (MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
             // Need to do this here in case filenames are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
-            for (int i = 0; i < GlobalOptions.MainForm.OpenCharacterForms.Count; ++i)
+            for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
             {
-                CharacterShared objOpenCharacterForm = GlobalOptions.MainForm.OpenCharacterForms[i];
+                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
-                    string strCharacterName = objOpenCharacterForm.CharacterObject.Alias;
-                    if (string.IsNullOrWhiteSpace(strCharacterName))
-                        strCharacterName = LanguageManager.GetString("String_UnnamedCharacter");
-                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges").Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
+                    DialogResult objResult = MessageBox.Show(LanguageManager.GetString("Message_UnsavedChanges", strLanguage).Replace("{0}", strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (objResult == DialogResult.Yes)
                     {
                         // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
@@ -195,7 +93,7 @@ namespace Chummer
                             return;
                         // We saved a character as created, which closed the current form and added a new one
                         // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        else if (!GlobalOptions.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
                             i -= 1;
                     }
                     else if (objResult == DialogResult.Cancel)
@@ -205,16 +103,16 @@ namespace Chummer
                 }
             }
             Log.Info("Restart Chummer");
-            GlobalOptions.MainForm.Cursor = Cursors.WaitCursor;
+            Program.MainForm.Cursor = Cursors.WaitCursor;
             // Get the parameters/arguments passed to program if any
             string arguments = string.Empty;
-            foreach (Character objOpenCharacter in GlobalOptions.MainForm.OpenCharacters)
+            foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
             {
-                arguments += "\"" + objOpenCharacter.FileName + "\" ";
+                arguments += '\"' + objOpenCharacterForm.CharacterObject.FileName + "\" ";
             }
             arguments = arguments.Trim();
             // Restart current application, with same arguments/parameters
-            foreach (Form objForm in GlobalOptions.MainForm.MdiChildren)
+            foreach (Form objForm in Program.MainForm.MdiChildren)
             {
                 objForm.Close();
             }

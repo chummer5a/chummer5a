@@ -8,6 +8,7 @@
   <xsl:include href="xs.TitleName.xslt"/>
 
   <xsl:include href="xt.ConditionMonitor.xslt"/>
+  <xsl:include href="xt.Nothing2Show.xslt"/>
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
   <xsl:include href="xt.RangedWeapons.xslt"/>
   <xsl:include href="xt.RowSummary.xslt"/>
@@ -129,6 +130,11 @@
             <xsl:with-param name="VehicleNumber">VehicleBlock<xsl:value-of select="position()"/></xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
+        <xsl:if test="not (vehicles/vehicle)">
+          <xsl:call-template name="nothing2show">
+            <xsl:with-param name="namethesheet" select="$lang.Nothing2Show4Vehicles"/>
+          </xsl:call-template>
+		</xsl:if>
       </body>
     </html>
   </xsl:template>
@@ -269,7 +275,9 @@
         <xsl:if test="notes != ''">
           <tr><td colspan="100%">
             <strong><xsl:value-of select="$lang.Notes"/>: </strong>
-            <xsl:value-of select="notes"/>
+            <xsl:call-template name="PreserveLineBreaks">
+                <xsl:with-param name="text" select="notes" />
+            </xsl:call-template>
           </td></tr>
           <tr><td colspan="100%" class="hseparator"></td></tr>
         </xsl:if>
@@ -367,13 +375,13 @@
           <xsl:value-of select="$lang.ActiveSkills"/>
         </th>
         <th width="20%">
-          <strong><xsl:value-of select="$lang.Pool"/></strong>
+          <strong><xsl:value-of select="$lang.Attribute"/></strong>
         </th>
         <th width="10%">
           <strong><xsl:value-of select="$lang.Rtg"/></strong>
         </th>
         <th width="20%">
-          <strong><xsl:value-of select="$lang.Attribute"/></strong>
+          <strong><xsl:value-of select="$lang.Pool"/></strong>
         </th>
       </tr>
       <xsl:call-template name="VehicleSkills">
@@ -490,12 +498,12 @@
         <xsl:when test="category = 'Gliders and FPMV'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'LAVs'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Military, Security and Medical Craft'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aerospace</xsl:with-param></xsl:call-template>
@@ -506,7 +514,7 @@
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Automotive Mechanic</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Nautical Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Boats &amp; Subs'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Watercraft</xsl:with-param></xsl:call-template>
@@ -515,17 +523,17 @@
         <xsl:when test="category = 'Winged Planes'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Rotorcraft'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Zeppelin'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Aeronautics Mechanic</xsl:with-param></xsl:call-template>
-          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Parachuting</xsl:with-param></xsl:call-template>
+          <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Free-Fall</xsl:with-param></xsl:call-template>
         </xsl:when>
         <xsl:when test="category = 'Drones: Micro'">
           <xsl:call-template name="SkillPull"><xsl:with-param name="SkillName">Pilot Aircraft</xsl:with-param></xsl:call-template>
@@ -589,14 +597,14 @@
           <xsl:if test="spec != ''"> (<xsl:value-of select="spec"/>)</xsl:if>
         </td>
         <td width="10%" style="text-align:center;">
-          <xsl:value-of select="total"/>
-          <xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="total + 2"/>)</xsl:if>
+          <xsl:value-of select="attributemod"/> (<xsl:value-of select="displayattribute"/>)
         </td>
         <td width="10%" style="text-align:center;">
           <xsl:value-of select="rating"/>
         </td>
         <td width="10%" style="text-align:center;">
-          <xsl:value-of select="attributemod"/> (<xsl:value-of select="displayattribute"/>)
+          <xsl:value-of select="total"/>
+          <xsl:if test="spec != '' and exotic = 'False'"> (<xsl:value-of select="total + 2"/>)</xsl:if>
         </td>
       </tr>
     </xsl:for-each>

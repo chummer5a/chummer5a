@@ -90,7 +90,7 @@
           </oneof>
         </required>
       </adeptwayrequires>
-	  <bonus>
+      <bonus>
         <dodge>Rating</dodge>
       </bonus>
     </power>
@@ -172,7 +172,7 @@
       <bonus>
         <selectskill skillcategory="Combat Active">
           <val>0</val>
-          <applytoaccuracy>yes</applytoaccuracy>
+          <applytoaccuracy>True</applytoaccuracy>
         </selectskill>
       </bonus>
     </power>
@@ -200,7 +200,7 @@
       <bonus>
         <selectskill minimumrating="1">
           <val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
           <skillcategories>
             <category>Combat Active</category>
             <category>Physical Active</category>
@@ -224,6 +224,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -311,9 +312,9 @@
       <limit>1</limit>
       <source>SR5</source>
       <page>310</page>
-	  <adeptwayrequires>
-		<!-- Note, this isn't required here because the power cannot be discounted anyway, but in the future, this is how to blacklist a power from Magician's Way -->
-        <magicianswayforbids /> 
+      <adeptwayrequires>
+        <!-- Note, this isn't required here because the power cannot be discounted anyway, but in the future, this is how to blacklist a power from Magician's Way -->
+        <magicianswayforbids />
       </adeptwayrequires>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
@@ -322,7 +323,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <doublecost>no</doublecost>
+      <doublecost>False</doublecost>
       <extrapointcost>0.5</extrapointcost>
       <maxlevels>3</maxlevels>
     </power>
@@ -371,9 +372,9 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-	    <bonus>
-		    <judgeintentionsdefense>Rating</judgeintentionsdefense>
-	    </bonus>
+      <bonus>
+        <judgeintentionsdefense>Rating</judgeintentionsdefense>
+      </bonus>
       <source>SR5</source>
       <page>310</page>
     </power>
@@ -423,16 +424,16 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-	  <bonus>
-		<toxincontactresist>1</toxincontactresist>
-		<toxiningestionresist>1</toxiningestionresist>
-		<toxininhalationresist>1</toxininhalationresist>
-		<toxininjectionresist>1</toxininjectionresist>
-		<pathogencontactresist>1</pathogencontactresist>
-		<pathogeningestionresist>1</pathogeningestionresist>
-		<pathogeninhalationresist>1</pathogeninhalationresist>
-		<pathogeninjectionresist>1</pathogeninjectionresist>
-	  </bonus>
+      <bonus>
+        <toxincontactresist>1</toxincontactresist>
+        <toxiningestionresist>1</toxiningestionresist>
+        <toxininhalationresist>1</toxininhalationresist>
+        <toxininjectionresist>1</toxininjectionresist>
+        <pathogencontactresist>1</pathogencontactresist>
+        <pathogeningestionresist>1</pathogeningestionresist>
+        <pathogeninhalationresist>1</pathogeninhalationresist>
+        <pathogeninjectionresist>1</pathogeninjectionresist>
+      </bonus>
       <source>SR5</source>
       <page>311</page>
     </power>
@@ -449,6 +450,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -457,7 +459,7 @@
           <thresholdoffset>Rating</thresholdoffset>
         </conditionmonitor>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <quality>High Pain Tolerance</quality>
         </oneof>
@@ -480,10 +482,10 @@
           </oneof>
         </required>
       </adeptwayrequires>
-	  <bonus>
-		<stuncmrecovery>Rating</stuncmrecovery>
-		<physicalcmrecovery>Rating</physicalcmrecovery>
-	  </bonus>
+      <bonus>
+        <stuncmrecovery>Rating</stuncmrecovery>
+        <physicalcmrecovery>Rating</physicalcmrecovery>
+      </bonus>
     </power>
     <power>
       <id>82d8c376-7509-468a-be17-8c9cba4c86c4</id>
@@ -512,6 +514,7 @@
           <oneof>
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -622,13 +625,7 @@
       <page>169</page>
       <action>Complex</action>
       <adeptway>.5</adeptway>
-      <adeptwayrequires>
-        <required>
-          <oneof>
-            <quality>The Spiritual Way</quality>
-          </oneof>
-        </required>
-      </adeptwayrequires>
+      <adeptwayrequires />
       <required>
         <oneof>
           <power>Berserk</power>
@@ -660,9 +657,9 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-	  <bonus>
-		<detectionspellresist>Rating</detectionspellresist>
-	  </bonus>
+      <bonus>
+        <detectionspellresist>Rating</detectionspellresist>
+      </bonus>
       <source>SG</source>
       <page>169</page>
     </power>
@@ -731,7 +728,7 @@
       <source>SG</source>
       <page>170</page>
       <adeptway>0.25</adeptway>
-	  <!-- Awaiting activation by errata
+      <!-- Awaiting activation by errata
 	  <adeptwayrequires>
         <required>
           <oneof>
@@ -771,7 +768,7 @@
       <page>170</page>
       <action>Complex</action>
       <adeptway>.5</adeptway>
-	  <required>
+      <required>
         <oneof>
           <power>Elemental Strike</power>
         </oneof>
@@ -790,7 +787,7 @@
       <page>170</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
-	  <required>
+      <required>
         <oneof>
           <power>Killing Hands</power>
         </oneof>
@@ -926,6 +923,7 @@
           <oneof>
             <quality>The Artist's Way</quality>
             <quality>The Speaker's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -999,6 +997,7 @@
           <oneof>
             <quality>The Artisan's Way</quality>
             <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1043,6 +1042,7 @@
             <quality>The Beast's Way</quality>
             <quality>The Invisible Way</quality>
             <quality>The Spiritual Way</quality>
+            <quality>The Warrior's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1077,6 +1077,7 @@
         <required>
           <oneof>
             <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1203,6 +1204,7 @@
         <required>
           <oneof>
             <quality>The Athlete's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1232,10 +1234,10 @@
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-	  <bonus>
-		<firearmor>Rating</firearmor>
-		<coldarmor>Rating</coldarmor>
-	  </bonus>
+      <bonus>
+        <firearmor>Rating</firearmor>
+        <coldarmor>Rating</coldarmor>
+      </bonus>
       <source>SG</source>
       <page>175</page>
     </power>
@@ -1269,12 +1271,12 @@
       <page>176</page>
       <action>Simple</action>
       <adeptway>.25</adeptway>
-	  <required>
+      <required>
         <oneof>
           <power>Killing Hands</power>
         </oneof>
       </required>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
     </power>
@@ -1339,7 +1341,7 @@
       <source>SS</source>
       <page>191</page>
       <adeptway>0.5</adeptway>
-    </power>    
+    </power>
     <!-- End Region -->
     <!-- Region Shadow Spells -->
     <power>
@@ -1385,6 +1387,7 @@
         <required>
           <oneof>
             <quality>The Artisan's Way</quality>
+            <quality>The Spiritual Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
@@ -1406,22 +1409,22 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>23</page>
-	  <bonus>
-		<toxiningestionresist>Rating</toxiningestionresist>
-	  </bonus>
-    </power>    
+      <bonus>
+        <toxiningestionresist>Rating</toxiningestionresist>
+      </bonus>
+    </power>
     <power>
       <id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
       <name>Iron Lungs</name>
       <points>.25</points>
       <levels>True</levels>
       <limit>1</limit>
-	  <bonus>
-		<fatigueresist>Rating</fatigueresist>
-	  </bonus>
+      <bonus>
+        <fatigueresist>Rating</fatigueresist>
+      </bonus>
       <source>SSP</source>
       <page>23</page>
-    </power>    
+    </power>
     <power>
       <id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
       <name>Iron Will</name>
@@ -1431,10 +1434,10 @@
       <source>SSP</source>
       <page>23</page>
       <adeptway>0.25</adeptway>
-	  <bonus>
-		<mentalmanipulationresist>Rating</mentalmanipulationresist>
-	  </bonus>
-    </power>    
+      <bonus>
+        <mentalmanipulationresist>Rating</mentalmanipulationresist>
+      </bonus>
+    </power>
     <power>
       <id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
       <name>Keratin Control</name>
@@ -1444,7 +1447,7 @@
       <source>SSP</source>
       <page>24</page>
       <adeptway>0.25</adeptway>
-    </power>    
+    </power>
     <power>
       <id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
       <name>Living Focus</name>
@@ -1483,68 +1486,68 @@
       <limit>1</limit>
       <source>SSP</source>
       <page>24</page>
-	  <bonus>
-		<manaillusionresist>Rating</manaillusionresist>
-		<physicalillusionresist>Rating</physicalillusionresist>
-	  </bonus>
-    </power>    
+      <bonus>
+        <manaillusionresist>Rating</manaillusionresist>
+        <physicalillusionresist>Rating</physicalillusionresist>
+      </bonus>
+    </power>
     <power>
       <id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
       <name>Power Swimming</name>
       <points>1</points>
       <levels>False</levels>
       <limit>1</limit>
-	  <includeinlimit>
+      <includeinlimit>
         <name>Power Swimming (Elf or Troll)</name>
       </includeinlimit>
       <source>SSP</source>
       <page>24</page>
       <adeptway>0.5</adeptway>
-	  <bonus>
-		<walkmultiplier>
-		  <category>Swim</category>
-		  <percent>100</percent>
-		</walkmultiplier>
-		<sprintbonus>
-		  <category>Swim</category>
-		  <val>200</val>
-		</sprintbonus>
-	  </bonus>
-	  <forbidden>
-		<oneof>
-		  <metatype>Elf</metatype>
-		  <metatype>Troll</metatype>
-		</oneof>
-	  </forbidden>
+      <bonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
+        <sprintbonus>
+          <category>Swim</category>
+          <val>200</val>
+        </sprintbonus>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <metatype>Elf</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </forbidden>
     </power>
-	<power>
+    <power>
       <id>639a2d7f-9018-4016-a61c-b7f83ebcd9b9</id>
       <name>Power Swimming (Elf or Troll)</name>
       <points>1</points>
       <levels>False</levels>
       <limit>1</limit>
-	  <includeinlimit>
+      <includeinlimit>
         <name>Power Swimming</name>
       </includeinlimit>
       <source>SSP</source>
       <page>24</page>
       <adeptway>0.5</adeptway>
-	  <bonus>
-		<walkmultiplier>
-		  <category>Swim</category>
-		  <percent>100</percent>
-		</walkmultiplier>
-		<sprintbonus>
-		  <category>Swim</category>
-		  <val>400</val>
-		</sprintbonus>
-	  </bonus>
-	  <required>
-		<oneof>
-		  <metatype>Elf</metatype>
-		  <metatype>Troll</metatype>
-		</oneof>
-	  </required>
+      <bonus>
+        <walkmultiplier>
+          <category>Swim</category>
+          <percent>100</percent>
+        </walkmultiplier>
+        <sprintbonus>
+          <category>Swim</category>
+          <val>400</val>
+        </sprintbonus>
+      </bonus>
+      <required>
+        <oneof>
+          <metatype>Elf</metatype>
+          <metatype>Troll</metatype>
+        </oneof>
+      </required>
     </power>
     <power>
       <id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
@@ -1631,9 +1634,9 @@
       <bonus>
         <weaponcategorydice>
           <category>
-			<name>Bows</name>
-			<value>1</value>
-		  </category>
+            <name>Bows</name>
+            <value>1</value>
+          </category>
         </weaponcategorydice>
       </bonus>
     </power>
@@ -1750,9 +1753,9 @@
       <power>Keratin Control</power>
       <source>SG</source>
       <page>157</page>
-	  <bonus>
-		<unarmeddv>1</unarmeddv>
-	  </bonus>
+      <bonus>
+        <unarmeddv>1</unarmeddv>
+      </bonus>
       <required>
         <allof>
           <power>Keratin Control</power>
