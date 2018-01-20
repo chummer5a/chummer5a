@@ -41,6 +41,8 @@ Application Changes:
 - Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
 - Fixed an issue with assigning ratings for gear that has a higher minimum rating than maximum rating. Fixes #2348.
 - Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
+- Fixed an issue where weapon mount options with requirement nodes related to Xml data details could not be applied. Fixes #2355.
+- Fixed an issue where modifying an existing weapon mount would not properly update its node in the vehicle tree view.
 
 Data Changes:
 

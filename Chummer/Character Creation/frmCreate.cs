@@ -19718,17 +19718,25 @@ namespace Chummer
 
         private void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
-            WeaponMount wm = CharacterObject.Vehicles.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), out Vehicle v);
-            if (wm == null) return;
-            frmCreateWeaponMount frmPickVehicleMod = new frmCreateWeaponMount(v, CharacterObject, wm);
-            frmPickVehicleMod.ShowDialog(this);
+            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), out Vehicle objVehicle);
+            if (objWeaponMount == null)
+                return;
+            frmCreateWeaponMount frmCreateWeaponMount = new frmCreateWeaponMount(objVehicle, CharacterObject, objWeaponMount);
+            frmCreateWeaponMount.ShowDialog(this);
 
-            if (frmPickVehicleMod.DialogResult != DialogResult.Cancel)
+            if (frmCreateWeaponMount.DialogResult != DialogResult.Cancel)
             {
-                if (frmPickVehicleMod.FreeCost)
-                    frmPickVehicleMod.WeaponMount.Cost = "0";
+                if (frmCreateWeaponMount.FreeCost)
+                    frmCreateWeaponMount.WeaponMount.Cost = "0";
 
-                treVehicles.SelectedNode.ExpandAll();
+                TreeNode objSelectedParent = objSelectedNode.Parent;
+                int intOldIndex = objSelectedNode.Index;
+                objSelectedNode.Remove();
+                TreeNode objNewNode = objWeaponMount.CreateTreeNode(cmsWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle);
+                objSelectedParent.Nodes.Insert(intOldIndex, objNewNode);
+                treVehicles.SelectedNode = objNewNode;
+                objNewNode.ExpandAll();
             }
         }
     }
