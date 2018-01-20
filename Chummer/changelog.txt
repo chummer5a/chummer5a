@@ -51,6 +51,7 @@ Data Changes:
 - Fixed an issue where custom improvements for bonus street cred and street cred multiplier had incorrect names. Fixes #2338.
 - Fixed various typos in life module descriptions and skills.
 - Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
+- Added an amend entry to override Exotic Weapon skills used by the Pazrashield Dart Pistol, Rifle and Super Squirrt to use non-Exotic skills. Fixes #2359.
 
 New Strings:
 
