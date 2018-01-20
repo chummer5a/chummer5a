@@ -52,7 +52,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            _objCharacter.CharacterNameChanged += ForceUpdateWindowTitle;
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -1525,7 +1525,7 @@ namespace Chummer
             bool blnWarned = false;
 
             int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+            if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
             foreach (Gear objGear in _objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
             {
@@ -1877,7 +1877,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CharacterNameChanged(object sender)
+        private void ForceUpdateWindowTitle(object sender)
         {
             UpdateWindowTitle(false);
         }
@@ -1918,7 +1918,7 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
             
-            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ')';
+            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objOptions.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.DoThreadSafe(() => Text = strTitle);

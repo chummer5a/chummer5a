@@ -4396,14 +4396,14 @@ namespace Chummer
         private void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
             // Delete the selected Vehicle.
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level == 0)
+            if (treVehicles.SelectedNode == null)
             {
                 return;
             }
 
             if (treVehicles.SelectedNode.Level == 0)
             {
-                if (treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedGear")
+                if (treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedVehicles")
                     return;
 
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
@@ -4446,11 +4446,8 @@ namespace Chummer
                 }
             }
 
-            if (treVehicles.SelectedNode.Level != 2)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                    return;
-            }
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                return;
 
             // Locate the Vehicle that is selected in the tree.
             Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
@@ -4483,6 +4480,17 @@ namespace Chummer
                     foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
                     {
                         objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    }
+                    foreach (VehicleMod objLoopMod in objLoopMount.Mods)
+                    {
+                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                        {
+                            objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                        }
+                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+                        {
+                            objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                        }
                     }
                 }
                 treVehicles.SelectedNode.Remove();
@@ -4523,9 +4531,6 @@ namespace Chummer
                     // Removing a Vehicle Mod
                     if (objMod != null)
                     {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                            return;
-
                         // Check for Improved Sensor bonus.
                         if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
                         {
@@ -4639,9 +4644,6 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    objVehicle = null;
-                                    objWeaponAccessory = null;
-                                    objCyberware = null;
                                     Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out objVehicle, out objWeaponAccessory, out objCyberware);
                                     if (objGear != null)
                                     {

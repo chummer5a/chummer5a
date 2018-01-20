@@ -4064,7 +4064,7 @@ namespace Chummer
 
             if (treVehicles.SelectedNode.Level == 0)
             {
-                if (treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedGear")
+                if (treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedVehicles")
                     return;
 
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
@@ -4107,11 +4107,8 @@ namespace Chummer
                 }
             }
 
-            if (treVehicles.SelectedNode.Level != 2)
-            {
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                    return;
-            }
+            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                return;
 
             // Locate the Vehicle that is selected in the tree.
             Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
@@ -4139,6 +4136,24 @@ namespace Chummer
                         objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                     }
                 }
+                foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
+                {
+                    foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
+                    {
+                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                    }
+                    foreach (VehicleMod objLoopMod in objLoopMount.Mods)
+                    {
+                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                        {
+                            objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                        }
+                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+                        {
+                            objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                        }
+                    }
+                }
                 treVehicles.SelectedNode.Remove();
             }
             else
@@ -4147,9 +4162,6 @@ namespace Chummer
                 // Removing a Weapon Mount
                 if (objWeaponMount != null)
                 {
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                        return;
-
                     objVehicle.WeaponMounts.Remove(objWeaponMount);
                     foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
                     {
@@ -4180,9 +4192,6 @@ namespace Chummer
                     // Removing a Vehicle Mod
                     if (objMod != null)
                     {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                            return;
-
                         // Check for Improved Sensor bonus.
                         if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
                         {
@@ -4296,9 +4305,6 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    objVehicle = null;
-                                    objWeaponAccessory = null;
-                                    objCyberware = null;
                                     Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out objVehicle, out objWeaponAccessory, out objCyberware);
                                     if (objGear != null)
                                     {
@@ -4319,15 +4325,6 @@ namespace Chummer
                                         treVehicles.SelectedNode.Remove();
 
                                         objGear.DeleteGear(treWeapons, treVehicles);
-                                    }
-                                    else
-                                    {
-                                        WeaponMount objMount = CharacterObject.Vehicles.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), out objVehicle);
-                                        if (objMount != null)
-                                        {
-                                            objVehicle.WeaponMounts.Remove(objMount);
-                                        }
-                                        treVehicles.SelectedNode.Remove();
                                     }
                                 }
                             }
