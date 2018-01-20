@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
 	Chummer5a is free software: you can redistribute it and/or modify
@@ -1118,32 +1118,32 @@
 			<armor>
 				<id>c38ca685-f333-4529-93e8-a8248df52e64</id>
 				<name>Team Jersey (Licensed)</name>
-				<translate>Team Jersey (Licensed)</translate>
-				<altpage>136</altpage>
+				<translate>Gepanzerte Mannschaftstrikots (Lizensiert)</translate>
+				<altpage>139</altpage>
 			</armor>
 			<armor>
 				<id>6adcc6aa-cb83-434f-b9a4-2c263f738829</id>
 				<name>Team Jersey (Unlicensed)</name>
-				<translate>Team Jersey (Unlicensed)</translate>
-				<altpage>136</altpage>
+				<translate>Gepanzerte Mannschaftstrikots (Unlizensiert)</translate>
+				<altpage>139</altpage>
 			</armor>
 			<armor>
 				<id>b9554fe8-fc04-4746-8f5f-32d5ee9053be</id>
 				<name>Ares Briefcase Shield</name>
-				<translate>Ares Briefcase Shield</translate>
-				<altpage>136</altpage>
+				<translate>Ares Aktentaschen-Schild</translate>
+				<altpage>138</altpage>
 			</armor>
-			<armor>
+			<armor translated="True">
 				<id>c9424dfb-1e01-4073-995a-7935efc1894d</id>
 				<name>Catsuit</name>
 				<translate>Catsuit</translate>
-				<altpage>136</altpage>
+				<altpage>139</altpage>
 			</armor>
 			<armor>
 				<id>f22a86ba-e660-4c32-a998-d04def23d287</id>
 				<name>Scout's Tux</name>
-				<translate>Scout's Tux</translate>
-				<altpage>136</altpage>
+				<translate>Abenteurer-Smoking</translate>
+				<altpage>138</altpage>
 			</armor>
 			<armor>
 				<id>efa1f97d-1408-4f75-befe-4e0b22f9f2c5</id>
@@ -1498,14 +1498,14 @@
 			<mod>
 				<id>151d8957-aeb1-4fda-af19-35f4c9c602e1</id>
 				<name>Voidblack Coating</name>
-				<translate>Voidblack Coating</translate>
-				<altpage>138</altpage>
+				<translate>Voidblade-Beschichtung</translate>
+				<altpage>141</altpage>
 			</mod>
 			<mod>
 				<id>851f226f-2116-4001-8937-408d4570396e</id>
 				<name>AR Fashion</name>
-				<translate>AR Fashion</translate>
-				<altpage>138</altpage>
+				<translate>AR-Mode</translate>
+				<altpage>140</altpage>
 			</mod>
 		</mods>
 	</chummer>
@@ -3152,12 +3152,6 @@
 				<name>Energy Aura</name>
 				<translate>Energieaura</translate>
 				<altpage>396</altpage>
-			</power>
-			<power>
-				<id>33be7248-a267-4085-a5d8-b15bd79d7e5f</id>
-				<name>Engulf</name>
-				<translate>Verschlingen</translate>
-				<altpage>401</altpage>
 			</power>
 			<power>
 				<id>b289f6de-dc68-49a2-9d08-a9dcafdf9bac</id>
@@ -7756,7 +7750,7 @@
 				<altpage>456</altpage>
 			</grade>
 			<grade translated="True">
-				<id>7dedfc1d-74c3-4ec4-a0e4-ec5145a3e834</id>
+				<id>7ea3a157-867f-4c66-9f62-66b14b36b763</id>
 				<name>Deltaware</name>
 				<translate>Deltaware</translate>
 				<altpage>456</altpage>
@@ -8858,7 +8852,7 @@
 				<altpage>87</altpage>
 			</cyberware>
 			<cyberware>
-				<id>AA9BD255-2FA0-4FFF-826E-1DAE3377AE6E</id>
+				<id>d97a6e2f-0e3d-4f9b-a046-e1a86d5dad88</id>
 				<name>Auto Injector Expansion</name>
 				<translate>Injektionssystem Erweiterter Vorrat</translate>
 				<altpage>87</altpage>
@@ -9440,7 +9434,7 @@
 				<altpage>178</altpage>
 			</cyberware>
 			<cyberware>
-				<id>fc8df59c-c4HT-4035-b99c-0a5550f4534c</id>
+				<id>fc8df59c-c48f-4035-b99c-0a5550f4534c</id>
 				<name>Infrasonic Generator</name>
 				<translate>Infraschallgenerator</translate>
 				<altpage>178</altpage>
@@ -10185,7 +10179,7 @@
 			<category translate="Währung">Currency</category>
 			<category translate="Cyberterminals">Cyberterminals</category>
 			<category translate="Metatype-Specific">Metatype-Specific</category>
-			<category translate="Tailored Perfume/Cologne">Tailored Perfume/Cologne</category>
+			<category translate="Maßgeschneidertes Parfum/Rasierwasser">Tailored Perfume/Cologne</category>
 		</categories>
 		<gears>
 			<gear translated="True">
@@ -11085,12 +11079,6 @@
 				<altpage>414</altpage>
 			</gear>
 			<gear translated="True">
-				<id>02514259-a41d-49e4-b1e4-b528feae2917</id>
-				<name>Narcoject</name>
-				<translate>Narcoject</translate>
-				<altpage>412</altpage>
-			</gear>
-			<gear translated="True">
 				<id>a79225da-7507-4b40-8cc1-867213a3c7d8</id>
 				<name>Pepper Punch</name>
 				<translate>Pepper Punch</translate>
@@ -11733,7 +11721,7 @@
 				<altpage>28</altpage>
 			</gear>
 			<gear>
-				<id>03900ccd-ebb0-492e-a0bc-90e4b4492a85</id>
+				<id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
 				<name>Net Gun Reload (Standard)</name>
 				<translate>Netzpistole, Munitionsladung (Standard)</translate>
 				<altpage>28</altpage>
@@ -14115,12 +14103,6 @@
 				<altpage>55</altpage>
 			</gear>
 			<gear>
-				<id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
-				<name>Net Gun Reload (Standard)</name>
-				<page>28</page>
-				<translate>Netzpistolenmunition (Standard)</translate>
-			</gear>
-			<gear>
 				<id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
 				<name>Smokebomb</name>
 				<translate>Rauchbombe</translate>
@@ -14814,17 +14796,17 @@
 				<translate>K-10</translate>
 				<altpage>181</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>f818d571-c817-49b2-86b6-ad9fb94ead54</id>
 				<name>Laés</name>
-				<page>186</page>
 				<translate>Laés</translate>
+				<altpage>186</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1c672c5d-88f7-43dd-b4d0-42571eb07547</id>
 				<name>Leäl</name>
-				<page>186</page>
 				<translate>Leäl</translate>
+				<altpage>186</altpage>
 			</gear>
 			<gear>
 				<id>58319c25-b724-4db4-b492-1068ca44cb73</id>
@@ -14916,11 +14898,11 @@
 				<translate>Düsternis</translate>
 				<altpage>186</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
 				<name>Slab</name>
-				<page>183</page>
 				<translate>Slab</translate>
+				<altpage>183</altpage>
 			</gear>
 			<gear translated="True">
 				<id>cd2dd310-464f-4f12-ae42-cdc293e3a2df</id>
@@ -16599,8 +16581,8 @@
 			<gear>
 				<id>c1c3e1cf-c149-4bde-9d49-7228ffd3c3f7</id>
 				<name>Subliminal Subacoustics Software</name>
-				<translate>Subliminal Subacoustics Software</translate>
-				<altpage>146</altpage>
+				<translate>Subliminale Tonerzeugung</translate>
+				<altpage>147</altpage>
 			</gear>
 			<gear>
 				<id>9d81218f-ee70-4304-9a09-ac865d84b8e0</id>
@@ -16611,38 +16593,38 @@
 			<gear>
 				<id>641aa926-0e5f-4e8b-935e-ec704db4df13</id>
 				<name>AR Nails</name>
-				<translate>AR Nails</translate>
-				<altpage>138</altpage>
+				<translate>AR-Fingernägel</translate>
+				<altpage>142</altpage>
 			</gear>
 			<gear>
 				<id>3351db33-0dbb-4f46-9ade-4ee0ceb10f81</id>
 				<name>Bug Promotional Pen</name>
-				<translate>Bug Promotional Pen</translate>
-				<altpage>140</altpage>
+				<translate>Wanzen-Werbekugelschreiber</translate>
+				<altpage>148</altpage>
 			</gear>
 			<gear>
 				<id>c03e4428-f3fe-434c-881a-68d638408715</id>
 				<name>Concealable Surveillance Gear</name>
-				<translate>Concealable Surveillance Gear</translate>
-				<altpage>140</altpage>
+				<translate>Getarnte Überwachungsgeräte</translate>
+				<altpage>143</altpage>
 			</gear>
 			<gear>
 				<id>81286ef0-d51d-4c8d-9966-08e5c866d9d3</id>
 				<name>Ghost Box</name>
-				<translate>Ghost Box</translate>
-				<altpage>141</altpage>
+				<translate>Geisterbox</translate>
+				<altpage>142</altpage>
 			</gear>
 			<gear>
 				<id>a3a48c11-9549-4975-a99b-41dbcad85dd0</id>
 				<name>Holo Bracelet</name>
-				<translate>Holo Bracelet</translate>
-				<altpage>141</altpage>
+				<translate>Holo-Armband</translate>
+				<altpage>143</altpage>
 			</gear>
 			<gear>
 				<id>fe75752e-5542-4469-862b-66c8a41d7ab0</id>
 				<name>Long Range Acoustic Device</name>
-				<translate>Long Range Acoustic Device</translate>
-				<altpage>142</altpage>
+				<translate>Langstrecken-Audiosignalgeber</translate>
+				<altpage>144</altpage>
 			</gear>
 			<gear>
 				<id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
@@ -16755,32 +16737,32 @@
 			<gear>
 				<id>295350cc-692d-49d8-aa85-d61ff0badcfc</id>
 				<name>Chem Detect Nail Polish</name>
-				<translate>Chem Detect Nail Polish</translate>
-				<altpage>140</altpage>
+				<translate>Indikator-Nagellack</translate>
+				<altpage>143</altpage>
 			</gear>
 			<gear>
 				<id>8b1156ef-606d-4dac-b950-69a03200e4a1</id>
 				<name>Chemsniffer Ring</name>
-				<translate>Chemsniffer Ring</translate>
-				<altpage>140</altpage>
+				<translate>Chemsniffer-Ring</translate>
+				<altpage>142</altpage>
 			</gear>
 			<gear>
 				<id>975b5ab6-c230-44ba-8491-261aaa012489</id>
 				<name>Genemarked Pheromones</name>
-				<translate>Genemarked Pheromones</translate>
+				<translate>Genmarkierte Pheromone</translate>
 				<altpage>142</altpage>
 			</gear>
 			<gear>
 				<id>dcecc477-92eb-427e-ae90-7f4465f1ebbc</id>
 				<name>Fashion Gasmask</name>
-				<translate>Fashion Gasmask</translate>
-				<altpage>141</altpage>
+				<translate>Modische Gasmaske</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>314566c7-4ea1-4f8d-94cd-f213af1e0535</id>
 				<name>Fashion Respirator</name>
-				<translate>Fashion Respirator</translate>
-				<altpage>141</altpage>
+				<translate>Modische Atemschutzmaske</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>24299462-b0d1-470e-b520-64fb755421db</id>
@@ -16803,68 +16785,68 @@
 			<gear>
 				<id>900b78b7-3430-46a2-92a0-b4dbae0455eb</id>
 				<name>AR Fashion Subscription, Casual (1 Month Advance Payment)</name>
-				<translate>AR Fashion Subscription, Casual (1 Month Advance Payment)</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Freizeit (1 Monat Vorauszahlung)</translate>
+				<altpage>140</altpage>
 			</gear>
 			<gear>
 				<id>150ffef7-d9d4-417a-bc52-1558a8e0937f</id>
 				<name>AR Fashion Subscription, Business (1 Month Advance Payment)</name>
-				<translate>AR Fashion Subscription, Business (1 Month Advance Payment)</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Geschäft (1 Monat Vorauszahlung)</translate>
+				<altpage>140</altpage>
 			</gear>
 			<gear>
 				<id>3278a921-4730-466d-b93e-69a9bfdaca9c</id>
 				<name>AR Fashion Subscription, Formal (1 Month Advance Payment)</name>
-				<translate>AR Fashion Subscription, Formal (1 Month Advance Payment)</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Formell (1 Monat Vorauszahlung)</translate>
+				<altpage>140</altpage>
 			</gear>
 			<gear>
 				<id>2030f953-d2f5-4193-b1a8-7b96b12cb5df</id>
 				<name>AR Fashion Subscription, Designer (1 Month Advance Payment)</name>
-				<translate>AR Fashion Subscription, Designer (1 Month Advance Payment)</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Designer (1 Monat Vorauszahlung)</translate>
+				<altpage>140</altpage>
 			</gear>
 			<gear>
 				<id>ab4867e5-86a6-407d-9a6e-463dcfc5dd89</id>
 				<name>CarnivoreGold (1 Month Advance Payment)</name>
-				<translate>CarnivoreGold (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>CarnivoreGold (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>bf857fd3-89be-4fe1-91ea-a3b5aeb8aa10</id>
 				<name>MonaLisa (1 Month Advance Payment)</name>
-				<translate>MonaLisa (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>MonaLisa (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>c9bf1a47-d7ca-4fa3-8a32-4830a6db6d72</id>
 				<name>Pheromone Detection (1 Month Advance Payment)</name>
-				<translate>Pheromone Detection (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>Pheromonerkennung (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>a4ed0c76-8eb5-42db-b39f-777025f017cd</id>
 				<name>Speech Template Comparison (1 Month Advance Payment)</name>
-				<translate>Speech Template Comparison (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>Sprachmustervergleich (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>6600ea2c-274a-4fb6-bc76-fbbcf9ef3aa2</id>
 				<name>Target Tracking Software (1 Month Advance Payment)</name>
-				<translate>Target Tracking Software (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>Zielverfolgungssoftware (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>090adeeb-de00-414d-811e-b71b9cb363e6</id>
 				<name>Thermal Mood Reading (1 Month Advance Payment)</name>
-				<translate>Thermal Mood Reading (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>Thermale Stimmungserkennung (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>d3dd5cef-2e2b-47af-9c7d-a1166f8cbe8c</id>
 				<name>Vocal Tension Lie Detection (1 Month Advance Payment)</name>
-				<translate>Vocal Tension Lie Detection (1 Month Advance Payment)</translate>
-				<altpage>144</altpage>
+				<translate>Stimmanalyse-Lügendetektor (1 Monat Vorauszahlung)</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
@@ -16893,14 +16875,14 @@
 			<gear>
 				<id>bf4c8326-13d0-4a58-bcc6-4d8d55b591d7</id>
 				<name>Mana Compass</name>
-				<translate>Mana Compass</translate>
-				<altpage>142</altpage>
+				<translate>Manakompass</translate>
+				<altpage>144</altpage>
 			</gear>
 			<gear>
 				<id>29a3b71b-e840-4da8-8b51-379d637d7e18</id>
 				<name>Shaman Tuxedo</name>
-				<translate>Shaman Tuxedo</translate>
-				<altpage>143</altpage>
+				<translate>Schamanen-Smoking</translate>
+				<altpage>145</altpage>
 			</gear>
 			<gear>
 				<id>1e391e72-1c21-44b3-b935-7abfba2dca43</id>
@@ -16923,8 +16905,8 @@
 			<gear>
 				<id>01c28047-0446-4f3d-817d-4805317167ce</id>
 				<name>Distributed Deck</name>
-				<translate>Distributed Deck</translate>
-				<altpage>139</altpage>
+				<translate>Verteiltes Deck</translate>
+				<altpage>140</altpage>
 			</gear>
 			<gear>
 				<id>d8960057-bd49-4ed0-8dc9-75cb7262c158</id>
@@ -17148,131 +17130,131 @@
 				<translate>Matrixattribut Modifizieren (Viertes steigern, Drittes senken)</translate>
 				<altpage>74</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>c3409d3a-2284-41d2-b911-9689459cf873</id>
 				<name>Aztec Fly</name>
 				<translate>Aztec Fly</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>6393ca16-41d0-4714-b7a0-1be18a62815c</id>
 				<name>Black Panther</name>
 				<translate>Black Panther</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>1673b6fb-ead9-44bb-b6dd-5430026f2428</id>
 				<name>Lion's Roar</name>
 				<translate>Lion's Roar</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>623827ad-2707-4522-ae26-615a6fdcd3a9</id>
 				<name>Taranke Tiger</name>
 				<translate>Taranke Tiger</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>d749d44c-efbc-4d3a-9ec5-367a06af305d</id>
 				<name>Tracking Hound</name>
 				<translate>Tracking Hound</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>2fac0205-8f96-4031-ab10-f3bb35b049e4</id>
 				<name>Winter Wolf</name>
 				<translate>Winter Wolf</translate>
-				<altpage>143</altpage>
+				<altpage>144</altpage>
 			</gear>
 			<gear>
 				<id>bcbc7556-8e1d-451e-b0eb-75747513092d</id>
 				<name>Access Codes</name>
-				<translate>Access Codes</translate>
-				<altpage>148</altpage>
+				<translate>Zugangscodes</translate>
+				<altpage>152</altpage>
 			</gear>
 			<gear>
 				<id>c51b5d51-6f27-4e8b-a521-92c3f1cfdb1e</id>
 				<name>Address</name>
-				<translate>Address</translate>
-				<altpage>148</altpage>
+				<translate>Adressen</translate>
+				<altpage>150</altpage>
 			</gear>
 			<gear>
 				<id>e30bfc81-66ed-4ea3-aec9-fc80ee886a38</id>
 				<name>Blackmail Info</name>
-				<translate>Blackmail Info</translate>
-				<altpage>148</altpage>
+				<translate>Erpressungsmaterial</translate>
+				<altpage>150</altpage>
 			</gear>
 			<gear>
 				<id>89da3246-093b-4609-8ba1-7ec0a3cf93b7</id>
 				<name>Handwriting Analysis</name>
-				<translate>Handwriting Analysis</translate>
-				<altpage>148</altpage>
+				<translate>Handschriftanalysen</translate>
+				<altpage>150</altpage>
 			</gear>
 			<gear>
 				<id>453d23ce-5709-4542-a4a8-ed2221909e84</id>
 				<name>History</name>
-				<translate>History</translate>
-				<altpage>148</altpage>
+				<translate>Hintergrundinformationen</translate>
+				<altpage>150</altpage>
 			</gear>
 			<gear>
 				<id>0705fa81-ced2-4a0a-a79f-a44a9973c8b7</id>
 				<name>Hobbies</name>
-				<translate>Hobbies</translate>
-				<altpage>148</altpage>
+				<translate>Hobbys</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>4a7c6ff3-2789-4e10-a30d-546ea6eb6524</id>
 				<name>Market Scan</name>
-				<translate>Market Scan</translate>
-				<altpage>148</altpage>
+				<translate>Marktanalysen</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>af82cadb-28f4-4a81-a390-6bba487c680d</id>
 				<name>Medical Condition</name>
-				<translate>Medical Condition</translate>
-				<altpage>148</altpage>
+				<translate>Medizinische Daten</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>2381ad85-afcc-4967-b196-6fa5d04b27aa</id>
 				<name>Name</name>
-				<translate>Name</translate>
-				<altpage>149</altpage>
+				<translate>Namen</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>08d41449-fcd2-4917-b8e4-0cbd97ce5570</id>
 				<name>Pattern Recognition</name>
-				<translate>Pattern Recognition</translate>
-				<altpage>149</altpage>
+				<translate>Mustererkennung</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>e80edf87-2f37-43a1-84a4-72850431f79e</id>
 				<name>Psych Profile</name>
-				<translate>Psych Profile</translate>
-				<altpage>149</altpage>
+				<translate>Psychologische Profile</translate>
+				<altpage>151</altpage>
 			</gear>
 			<gear>
 				<id>9dede46d-6f5d-457d-b7eb-02a959b655bf</id>
 				<name>Recent Purchases</name>
-				<translate>Recent Purchases</translate>
-				<altpage>149</altpage>
+				<translate>Letzte Einkäufe</translate>
+				<altpage>151</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>b909eb31-99bd-4a42-80e6-2002668f166b</id>
 				<name>Safehouses</name>
 				<translate>Safehouses</translate>
-				<altpage>149</altpage>
+				<altpage>152</altpage>
 			</gear>
 			<gear>
 				<id>f1de35d0-7e24-4860-8caa-773d5439308b</id>
 				<name>Social Media Analysis</name>
-				<translate>Social Media Analysis</translate>
-				<altpage>149</altpage>
+				<translate>Social-Media-Analyse</translate>
+				<altpage>152</altpage>
 			</gear>
 			<gear>
 				<id>28848160-65f7-495c-a04a-218b17a9cecb</id>
 				<name>Workplace</name>
-				<translate>Workplace</translate>
-				<altpage>148</altpage>
+				<translate>Arbeitsplatz</translate>
+				<altpage>150</altpage>
 			</gear>
 			<gear>
 				<id>e6d5c030-9aa7-46da-a9cb-7db33bbfd23f</id>
@@ -17364,40 +17346,10 @@
 			<category translate="Verträge">Contracts</category>
 		</categories>
 		<lifestyles>
-			<lifestyle translated="True">
-				<id>c939f8e8-bee5-4d8a-b3c7-5be9d5f1f590</id>
-				<name>Street</name>
-				<translate>Auf der Straße</translate>
-				<altpage>372</altpage>
-			</lifestyle>
-			<lifestyle translated="True">
-				<id>b46c5d66-940f-42c4-a8cb-a055f459bbb4</id>
-				<name>Squatter</name>
-				<translate>Squatter</translate>
-				<altpage>372</altpage>
-			</lifestyle>
-			<lifestyle translated="True">
-				<id>e8e2f128-6f09-4e5f-bd7d-fce7b9766225</id>
-				<name>Low</name>
-				<translate>Unterschicht</translate>
-				<altpage>372</altpage>
-			</lifestyle>
-			<lifestyle translated="True">
-				<id>619be8b8-52a0-46b0-9566-a4102bd2040a</id>
-				<name>High</name>
-				<translate>Oberschicht</translate>
-				<altpage>372</altpage>
-			</lifestyle>
-			<lifestyle translated="True">
-				<id>ebb68d2c-a882-4356-8031-2f62d3f6d064</id>
-				<name>Luxury</name>
-				<translate>Luxus</translate>
-				<altpage>372</altpage>
-			</lifestyle>
 			<lifestyle>
 				<id>4be85958-af8f-4404-812f-0d8a426f01d6</id>
 				<name>Hospitalized, Basic</name>
-				<translate>Krankenhaus, Basic</translate>
+				<translate>Krankenhaus, Standard</translate>
 				<altpage>372</altpage>
 			</lifestyle>
 			<lifestyle>
@@ -17415,20 +17367,20 @@
 			<lifestyle>
 				<id>559653df-a9af-44e2-9e04-3044c1d1b421</id>
 				<name>Street</name>
-				<page>372</page>
 				<translate>Auf der Straße</translate>
+				<altpage>372</altpage>
 			</lifestyle>
-			<lifestyle>
+			<lifestyle translated="True">
 				<id>9367556e-f82f-4f9d-840e-24c8f824ca68</id>
 				<name>Squatter</name>
-				<page>372</page>
 				<translate>Squatter</translate>
+				<altpage>372</altpage>
 			</lifestyle>
 			<lifestyle>
 				<id>451eef87-d18e-4bee-a972-1ee165b08522</id>
 				<name>Low</name>
-				<page>372</page>
 				<translate>Unterschicht</translate>
+				<altpage>372</altpage>
 			</lifestyle>
 			<lifestyle>
 				<id>9cb0222c-14c1-4bea-bf83-055513a1f33e</id>
@@ -17439,20 +17391,20 @@
 			<lifestyle>
 				<id>4a37d519-c9be-4ecc-97bb-e9d78708c374</id>
 				<name>High</name>
-				<page>372</page>
 				<translate>Oberschicht</translate>
+				<altpage>372</altpage>
 			</lifestyle>
 			<lifestyle>
 				<id>4b513ac9-9eb3-471b-931b-839a04873b84</id>
 				<name>Luxury</name>
-				<page>372</page>
 				<translate>Luxus</translate>
+				<altpage>372</altpage>
 			</lifestyle>
 			<lifestyle>
 				<id>b7b15c35-596d-4e00-92ee-2e999f062924</id>
 				<name>Commercial</name>
 				<translate>Geschäftslokal</translate>
-				<altpage>222</altpage>
+				<altpage>223</altpage>
 			</lifestyle>
 			<lifestyle>
 				<id>1a231a81-4985-4b57-83cf-659ad920cfb7</id>
@@ -17469,55 +17421,31 @@
 		</lifestyles>
 		<qualities>
 			<quality>
-				<id>8723c3aa-c9b5-47f7-8b57-3187b9e36cc8</id>
-				<name>Special Work Area</name>
-				<translate>Spezieller Arbeitsbereich</translate>
-				<altpage>374</altpage>
-			</quality>
-			<quality>
-				<id>898a517e-2200-46a1-a1ba-fdd38a6df4af</id>
-				<name>Extra Secure</name>
-				<translate>Besonders sicher</translate>
-				<altpage>374</altpage>
-			</quality>
-			<quality>
-				<id>0d70cc29-c9c2-43eb-afc5-72c5cae5c529</id>
-				<name>Obscure/Difficult to Find</name>
-				<translate>Abgelegen oder schwer zu finden</translate>
-				<altpage>374</altpage>
-			</quality>
-			<quality>
-				<id>8f75506e-3aa9-4906-95c7-8e36f69293ac</id>
-				<name>Cramped</name>
-				<translate>Beengt</translate>
-				<altpage>374</altpage>
-			</quality>
-			<quality>
 				<id>ae63d09f-22a1-4c27-bc99-d82887fcef15</id>
 				<name>Dangerous Area</name>
 				<translate>Gefährliche Gegend</translate>
 				<altpage>374</altpage>
 			</quality>
 			<quality>
-				<id>6b28b36a-416a-4041-9561-558083158d7c</id>
+				<id>4f41448a-7d44-4a5f-a99a-e2cc1e2cc2b1</id>
 				<name>DocWagon Contract, Basic</name>
 				<translate>DocWagon-Vertrag, Standard</translate>
 				<altpage>454</altpage>
 			</quality>
 			<quality>
-				<id>c985f952-df28-4b69-a7b7-b24a291cd651</id>
+				<id>4f2d39cd-fbc7-4d02-a3eb-f8decdb9a415</id>
 				<name>DocWagon Contract, Gold</name>
 				<translate>DocWagon-Vertrag, Gold</translate>
 				<altpage>454</altpage>
 			</quality>
 			<quality>
-				<id>aabed898-177f-413b-aeb6-5b862da67c6b</id>
+				<id>26476ddb-52f6-4c31-b1f0-949d0ef95495</id>
 				<name>DocWagon Contract, Platinum</name>
 				<translate>DocWagon-Vertrag, Platin</translate>
 				<altpage>454</altpage>
 			</quality>
 			<quality>
-				<id>7c8251b6-b195-4c8f-90f0-c036f8a9146f</id>
+				<id>0a58f493-a12e-4c08-b8b8-baac4c5e6591</id>
 				<name>DocWagon Contract, Super-Platinum</name>
 				<translate>DocWagon-Vertrag, Superplatin</translate>
 				<altpage>454</altpage>
@@ -17822,7 +17750,7 @@
 				<page>229</page>
 				<translate>Besonders sicher</translate>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
 				<name>Hotel California</name>
 				<translate>Hotel California</translate>
@@ -17852,7 +17780,7 @@
 				<translate>Ein Gutes hat es ja</translate>
 				<altpage>230</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>0eee0e10-078e-4f07-ac57-14f9b83f1a36</id>
 				<name>Safehouse</name>
 				<translate>Safehouse</translate>
@@ -18083,68 +18011,68 @@
 			<quality>
 				<id>b722458f-b0af-45c4-b5c7-b3c7e2ef48f6</id>
 				<name>AR Fashion Subscription, Casual</name>
-				<translate>AR Fashion Subscription, Casual</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Freizeit</translate>
+				<altpage>140</altpage>
 			</quality>
 			<quality>
 				<id>fc4d530e-a832-4437-b022-cdf35a22fc78</id>
 				<name>AR Fashion Subscription, Business</name>
-				<translate>AR Fashion Subscription, Business</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Geschäft</translate>
+				<altpage>140</altpage>
 			</quality>
 			<quality>
 				<id>1607bf0d-1a75-4582-8496-ffd92289f2b3</id>
 				<name>AR Fashion Subscription, Formal</name>
-				<translate>AR Fashion Subscription, Formal</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Formell</translate>
+				<altpage>140</altpage>
 			</quality>
 			<quality>
 				<id>da100dfd-dcaa-4b1a-a76e-ad38539612a4</id>
 				<name>AR Fashion Subscription, Designer</name>
-				<translate>AR Fashion Subscription, Designer</translate>
-				<altpage>138</altpage>
+				<translate>AR-Modeabo, Designer</translate>
+				<altpage>140</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>190ba01c-f04e-45a8-a0d1-d6fd073d61c1</id>
 				<name>CarnivoreGold</name>
 				<translate>CarnivoreGold</translate>
-				<altpage>144</altpage>
+				<altpage>145</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>fe33b1e6-ad0f-44e4-b156-7c435f335682</id>
 				<name>MonaLisa</name>
 				<translate>MonaLisa</translate>
-				<altpage>144</altpage>
+				<altpage>145</altpage>
 			</quality>
 			<quality>
 				<id>eeb6f3b7-70b3-478b-88c6-af47bb233b44</id>
 				<name>Pheromone Detection</name>
-				<translate>Pheromone Detection</translate>
-				<altpage>144</altpage>
+				<translate>Pheromonerkennung</translate>
+				<altpage>145</altpage>
 			</quality>
 			<quality>
 				<id>7417c7e7-8940-47cf-9bd2-9f7193b5fbbf</id>
 				<name>Speech Template Comparison</name>
-				<translate>Speech Template Comparison</translate>
-				<altpage>144</altpage>
+				<translate>Sprachmustervergleich</translate>
+				<altpage>145</altpage>
 			</quality>
 			<quality>
 				<id>49b01e13-4228-4390-a0c3-ffb6c6276e49</id>
 				<name>Target Tracking Software</name>
-				<translate>Target Tracking Software</translate>
-				<altpage>144</altpage>
+				<translate>Zielverfolgungssoftware</translate>
+				<altpage>145</altpage>
 			</quality>
 			<quality>
 				<id>d5239d1e-04ef-47a6-8065-a1559559a669</id>
 				<name>Thermal Mood Reading</name>
-				<translate>Thermal Mood Reading</translate>
-				<altpage>144</altpage>
+				<translate>Thermale Stimmungserkennung</translate>
+				<altpage>145</altpage>
 			</quality>
 			<quality>
 				<id>c5eef5c6-288a-47c0-8d2a-42353a896077</id>
 				<name>Vocal Tension Lie Detection</name>
-				<translate>Vocal Tension Lie Detection</translate>
-				<altpage>144</altpage>
+				<translate>Stimmanalyse-Lügendetektor</translate>
+				<altpage>145</altpage>
 			</quality>
 		</qualities>
 	</chummer>
@@ -22622,27 +22550,27 @@
 				<name>4 (2 arms, 2 legs)</name>
 				<translate>4 (2 Arme, 2 Beine)</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
+		</limbcounts>
+		<limbcounts>
 			<limb>
 				<name>5 (2 arms, 2 legs, skull)</name>
 				<translate>5 (2 Arme, 2 Beine, Schädel)</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
+		</limbcounts>
+		<limbcounts>
 			<limb>
 				<name>5 (2 arms, 2 legs, torso)</name>
 				<translate>5 (2 Arme, 2 Beine, Torso)</translate>
 			</limb>
-    </limbcounts>
-    <limbcounts>
+		</limbcounts>
+		<limbcounts>
 			<limb>
 				<name>6 (2 arms, 2 legs, torso, skull)</name>
 				<translate>6 (2 Arme, 2 Beine, Torso, Schädel)</translate>
 			</limb>
-    </limbcounts>
+		</limbcounts>
 	</chummer>
-  <chummer file="paragons.xml">
+	<chummer file="paragons.xml">
 		<categories>
 			<category translate="Resonanz">Resonance</category>
 			<category translate="Dissonanz">Disonance</category>
@@ -23513,20 +23441,20 @@
 			<power>
 				<id>7a5084df-b4d2-4f2a-84aa-43627f43c240</id>
 				<name>Lie Detector</name>
-				<translate>Lie Detector</translate>
-				<altpage>153</altpage>
+				<translate>Lügendetektor</translate>
+				<altpage>156</altpage>
 			</power>
 			<power>
 				<id>e2b791c0-54ef-4843-ab70-12a08767699a</id>
 				<name>Osmosis</name>
-				<translate>Osmosis</translate>
-				<altpage>153</altpage>
+				<translate>Osmose</translate>
+				<altpage>156</altpage>
 			</power>
 			<power>
 				<id>93b7663e-30da-468b-83cf-dc07439bcae2</id>
 				<name>Ventriloquism</name>
-				<translate>Ventriloquism</translate>
-				<altpage>153</altpage>
+				<translate>Bauchredner</translate>
+				<altpage>156</altpage>
 			</power>
 		</powers>
 		<enhancements>
@@ -24346,15 +24274,9 @@
 				<altpage>85</altpage>
 			</quality>
 			<quality>
-				<id>5a21137b-dc82-4141-9151-84718e7485f9</id>
-				<name>Resistance to Pathogens and Toxins</name>
-				<translate>Pathogen- und Toxinresistenz</translate>
-				<altpage>85</altpage>
-			</quality>
-			<quality>
 				<id>139ca69c-e9d3-4540-a4c6-b8c778e70185</id>
 				<name>Resistance to Pathogens/Toxins</name>
-				<translate>Pathogen/Toxinresistenz</translate>
+				<translate>Pathogen- und Toxinresistenz</translate>
 				<altpage>85</altpage>
 			</quality>
 			<quality>
@@ -26215,7 +26137,7 @@
 				<altpage>89</altpage>
 			</quality>
 			<quality>
-				<id>cf429aea-85a7-4108-8fcd-9a062f3fc117</id>
+				<id>2ffd990c-ced6-4484-955c-108473df5335</id>
 				<name>Metagenetic Improvement (Body)</name>
 				<source>RF</source>
 				<translate>Metagenetische Verbesserung (Konstitution)</translate>
@@ -26537,7 +26459,7 @@
 				<altpage>98</altpage>
 			</quality>
 			<quality>
-				<id>1279503d-0bd4-43b5-930c-3f1743685dde</id>
+				<id>96911a4d-d82e-4a1e-a550-3e12b8e14a7b</id>
 				<name>Impaired Attribute (Body)</name>
 				<source>RF</source>
 				<translate>Eingeschränktes Attribut (Konstitution)</translate>
@@ -27025,7 +26947,7 @@
 				<altpage>157</altpage>
 			</quality>
 			<quality>
-				<id />
+				<id>d6ced15f-2ba7-4a02-bfb7-ddcc0a3e263e</id>
 				<name>Improved Restoration</name>
 				<translate>Verbesserte Wiederherstellung</translate>
 				<altpage>158</altpage>
@@ -27663,158 +27585,158 @@
 			<quality>
 				<id>e1662684-d100-439b-9719-ba6a9e594e95</id>
 				<name>Alibi</name>
-				<translate>Alibi</translate>
-				<altpage>150</altpage>
+				<translate>Alibi-Ass</translate>
+				<altpage>152</altpage>
 			</quality>
 			<quality>
 				<id>8c3408e1-0161-40a8-88c7-a920437bdb5e</id>
 				<name>Closer</name>
-				<translate>Closer</translate>
-				<altpage>150</altpage>
+				<translate>Positiver Stress</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>d11a5ccd-f48b-46ed-89cc-4580a62c63ad</id>
 				<name>Cynic</name>
-				<translate>Cynic</translate>
-				<altpage>150</altpage>
+				<translate>Zyniker</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>919cc565-a5b6-4eda-addb-afa2e293af24</id>
 				<name>Empathic Listener</name>
-				<translate>Empathic Listener</translate>
-				<altpage>150</altpage>
+				<translate>Einfühlsamer Zuhörer</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>42664f89-f8f1-4ccb-bd95-06ef0e451d47</id>
 				<name>Good Looking and Knows It</name>
-				<translate>Good Looking and Knows It</translate>
-				<altpage>150</altpage>
+				<translate>Gutaussehend und weiß es</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>96ab453c-6a4a-4f53-8553-1b9cf272af72</id>
 				<name>Groupthink</name>
-				<translate>Groupthink</translate>
-				<altpage>150</altpage>
+				<translate>Gruppendenken</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>2c1aff52-95e2-43f5-98ea-c653c66b7ee7</id>
 				<name>Honest Face</name>
-				<translate>Honest Face</translate>
-				<altpage>151</altpage>
+				<translate>Ehrliches Gesicht</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>bf5ea495-0b6d-4ce5-87a8-3de0c43b7be6</id>
 				<name>Innocuous</name>
-				<translate>Innocuous</translate>
-				<altpage>151</altpage>
+				<translate>Einer unter vielen</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>41416949-62eb-4638-9457-fd7e833cea58</id>
 				<name>Master Debater</name>
-				<translate>Master Debater</translate>
-				<altpage>151</altpage>
+				<translate>Meisterhafter Debattierer</translate>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>f138a414-f318-4404-a0a3-b7aaec022317</id>
 				<name>Memory Palace</name>
-				<translate>Memory Palace</translate>
-				<altpage>151</altpage>
+				<translate>Gedächtnispalast</translate>
+				<altpage>153</altpage>
 			</quality>
-			<quality>
+			<quality translated="True">
 				<id>38bb885a-0cb4-43f2-a3a0-3d46a87455d0</id>
 				<name>Method Actor</name>
 				<translate>Method Actor</translate>
-				<altpage>151</altpage>
+				<altpage>153</altpage>
 			</quality>
 			<quality>
 				<id>1ef1c539-9873-4bcb-bbb0-cff114e02375</id>
 				<name>Mnemonic Vault</name>
-				<translate>Mnemonic Vault</translate>
-				<altpage>151</altpage>
+				<translate>Mnemonischer Tresor</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>8e0dd838-dbc4-4e5c-a0f1-e3ade21338a6</id>
 				<name>Watch the Suit</name>
-				<translate>Watch the Suit</translate>
-				<altpage>151</altpage>
+				<translate>Pass auf den Anzug auf</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>74c43bb0-5eef-4100-80b4-f80bd901866a</id>
 				<name>Alpha Junkie</name>
-				<translate>Alpha Junkie</translate>
-				<altpage>151</altpage>
+				<translate>Alpha-Junkie</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>d9f0f912-fc95-4267-bed2-8d3fcc67846b</id>
 				<name>Designated Omega</name>
-				<translate>Designated Omega</translate>
-				<altpage>152</altpage>
+				<translate>Geborener Omega</translate>
+				<altpage>166</altpage>
 			</quality>
 			<quality>
 				<id>1b5acdf3-66ae-4ed7-b5fa-614668721774</id>
 				<name>Dishevelled</name>
-				<translate>Dishevelled</translate>
-				<altpage>152</altpage>
+				<translate>Ungepflegt</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>93bdc421-a7c8-44e9-9f6a-9c316638c889</id>
 				<name>Favored (Common Target, Biased)</name>
-				<translate>Favored (Common Target, Biased)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Häufige, Voreingenommen)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>4de3693d-687e-4d49-a2f9-b9f6bd21aa91</id>
 				<name>Favored (Common Target, Outspoken)</name>
-				<translate>Favored (Common Target, Outspoken)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Häufige, Offene Bevorzugung)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>3fdb7c0d-ddaa-4f70-ae04-1f5a8e4a50c5</id>
 				<name>Favored (Common Target, Fanatic)</name>
-				<translate>Favored (Common Target, Fanatic)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Häufige, Fanatiker)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>7d8b0ea0-dead-41f9-b409-9e10b9d63728</id>
 				<name>Favored (Specific Target, Biased)</name>
-				<translate>Favored (Specific Target, Biased)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Seltene, Voreingenommen)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>9920918e-dfd3-4a19-96b6-59ddebc8b286</id>
 				<name>Favored (Specific Target, Outspoken)</name>
-				<translate>Favored (Specific Target, Outspoken)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Seltene, Offene Bevorzugung)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>276403f7-ebb9-45dc-bfaf-868ddad16afa</id>
 				<name>Favored (Specific Target, Fanatic)</name>
-				<translate>Favored (Specific Target, Fanatic)</translate>
-				<altpage>152</altpage>
+				<translate>Bevorzugte Gruppierung (Seltene, Fanatiker)</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>85aeb12b-e630-4ea8-87b8-283be9d14234</id>
 				<name>One Born Every Minute</name>
-				<translate>One Born Every Minute</translate>
-				<altpage>152</altpage>
+				<translate>Idioten sterben nie aus</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>7653cadb-0092-4a94-9a17-9329fb4f6041</id>
 				<name>Social Appearance Anxiety</name>
-				<translate>Social Appearance Anxiety</translate>
-				<altpage>152</altpage>
+				<translate>Aussehen ist Alles</translate>
+				<altpage>154</altpage>
 			</quality>
 			<quality>
 				<id>c41e83a2-1a36-4b97-b286-5fbc6510d3d7</id>
 				<name>The Goat</name>
-				<translate>The Goat</translate>
-				<altpage>152</altpage>
+				<translate>Sündenbock</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>106cc6bf-ba42-457e-9451-92ea2da38fbd</id>
 				<name>Ugly And Doesn't Care</name>
-				<translate>Ugly And Doesn't Care</translate>
-				<altpage>152</altpage>
+				<translate>Hässlich und schert sich nicht drum</translate>
+				<altpage>155</altpage>
 			</quality>
 			<quality>
 				<id>dcba5a01-849b-412c-83ba-f0ac5aa46e71</id>
@@ -32412,7 +32334,7 @@
 			<spell translated="True">
 				<id>45d775c9-d12f-4416-a45a-88922ec3c2fd</id>
 				<name>Corrode [Object]</name>
-				<translate>[Objekt] verätzen</translate>
+				<translate>[Objekt] Verätzen</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell>
@@ -32424,14 +32346,14 @@
 			<spell translated="True">
 				<id>da0462d4-f068-449d-a3c3-4678dc0adade</id>
 				<name>Demolish [Object]</name>
-				<translate>[Objekt] vernichten</translate>
+				<translate>[Objekt] Vernichten</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell translated="True">
 				<id>a6f43dcf-c0cc-4da9-af25-1516f2564200</id>
 				<name>Destroy [Free Spirit]</name>
 				<source>SM</source>
-				<translate>[Freien Geist] vernichten</translate>
+				<translate>[Freien Geist] Vernichten</translate>
 				<altpage>119</altpage>
 			</spell>
 			<spell>
@@ -32479,7 +32401,7 @@
 			<spell translated="True">
 				<id>7a2101ff-6606-4b3e-b1c1-2f7ea74679dd</id>
 				<name>Melt [Object]</name>
-				<translate>[Objekt] zersetzen</translate>
+				<translate>[Objekt] Zersetzen</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell translated="True">
@@ -32515,7 +32437,7 @@
 			<spell translated="True">
 				<id>f883ce3d-a3a9-4021-b4f3-7812d6a5f7f1</id>
 				<name>Ram [Object]</name>
-				<translate>[Objekt] rammen</translate>
+				<translate>[Objekt] Rammen</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell>
@@ -32533,19 +32455,19 @@
 			<spell translated="True">
 				<id>06d5a10b-b353-44bc-936a-4d6c08ebeaf8</id>
 				<name>Slaughter [Metatype/Species]</name>
-				<translate>[Metatyp/Spezies] niedermetzeln</translate>
+				<translate>[Metatyp/Spezies] Niedermetzeln</translate>
 				<altpage>118</altpage>
 			</spell>
 			<spell translated="True">
 				<id>50f1bfce-a64d-4fac-b25d-d870e7ff312f</id>
 				<name>Slay [Metatype/Species]</name>
-				<translate>[Metatyp/Spezies] erschlagen</translate>
+				<translate>[Metatyp/Spezies] Erschlagen</translate>
 				<altpage>118</altpage>
 			</spell>
 			<spell translated="True">
 				<id>6b12c245-ab52-49df-93fe-670841cb9e3d</id>
 				<name>Sludge [Object]</name>
-				<translate>[Objekt] auflösen</translate>
+				<translate>[Objekt] Auflösen</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell>
@@ -32569,7 +32491,7 @@
 			<spell translated="True">
 				<id>f7494736-bf1f-4d2f-a137-6f43a0248d36</id>
 				<name>Wreck [Object]</name>
-				<translate>[Objekt] zertrümmern</translate>
+				<translate>[Objekt] Zertrümmern</translate>
 				<altpage>120</altpage>
 			</spell>
 			<spell>
@@ -32584,10 +32506,10 @@
 				<translate>Magie Analysieren</translate>
 				<altpage>239</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>933a534c-ad50-4c87-be65-2230d56f5fcd</id>
 				<name>Analyze Truth</name>
-				<translate>Wahrheit prüfen</translate>
+				<translate>Wahrheit Prüfen</translate>
 				<altpage>294</altpage>
 			</spell>
 			<spell>
@@ -32650,58 +32572,58 @@
 				<translate>Kampfsinn</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>e343f716-a5b6-46a7-8bff-60b6c175db60</id>
 				<name>Detect Enemies</name>
-				<translate>Feinde entdecken</translate>
+				<translate>Feinde Entdecken</translate>
 				<altpage>291</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>fff36d4c-1462-4795-80ec-fe58132e027e</id>
 				<name>Detect Enemies, Extended</name>
-				<translate>Feinde entdecken, Erweitertes</translate>
+				<translate>Feinde Entdecken, Erweitertes</translate>
 				<altpage>291</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>410dd014-d849-42d7-834b-76912579ee72</id>
 				<name>Detect Individual</name>
-				<translate>Individuum entdecken</translate>
+				<translate>Individuum Entdecken</translate>
 				<altpage>292</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>7231e696-8839-4ec8-b12e-213b79bb643d</id>
 				<name>Detect Life</name>
-				<translate>Leben entdecken</translate>
+				<translate>Leben Entdecken</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>9bcd193f-b149-4c04-bb0e-8b2d66dae241</id>
 				<name>Detect Life, Extended</name>
-				<translate>Leben entdecken, Erweitertes</translate>
+				<translate>Leben Entdecken, Erweitertes</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>f43c484c-a98a-4831-8ead-adb4216a7c30</id>
 				<name>Detect [Life Form]</name>
-				<translate>[Lebensform] entdecken</translate>
+				<translate>[Lebensform] Entdecken</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>88c5059f-8f53-4910-9873-b5a5f87850e3</id>
 				<name>Detect [Life Form], Extended</name>
-				<translate>[Lebensform] entdecken, Erweitert</translate>
+				<translate>[Lebensform] Entdecken, Erweitert</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>9d2a045b-11b6-4385-a851-30b8ba9c2e7f</id>
 				<name>Detect Magic</name>
-				<translate>Magie entdecken</translate>
+				<translate>Magie Entdecken</translate>
 				<altpage>293</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>5574e0a7-d089-4c6d-a033-a157fbe681c0</id>
 				<name>Detect [Object]</name>
-				<translate>[Objekt] entdecken</translate>
+				<translate>[Objekt] Entdecken</translate>
 				<altpage>293</altpage>
 			</spell>
 			<spell translated="True">
@@ -32713,7 +32635,7 @@
 			<spell translated="True">
 				<id>96859e68-4051-4805-8de6-4f15ea4dee66</id>
 				<name>Enhance Aim</name>
-				<translate>Zielfähigkeit steigern</translate>
+				<translate>Zielfähigkeit Steigern</translate>
 				<altpage>139</altpage>
 			</spell>
 			<spell>
@@ -32791,7 +32713,7 @@
 			<spell translated="True">
 				<id>ff90355c-5eba-4a35-8bf9-66afff9075ad</id>
 				<name>Alleviate Addiction</name>
-				<translate>Abhängigkeit lindern</translate>
+				<translate>Abhängigkeit Lindern</translate>
 				<altpage>108</altpage>
 			</spell>
 			<spell>
@@ -32812,22 +32734,22 @@
 				<translate>Aufputschen</translate>
 				<altpage>109</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>13999091-25c8-4b72-add4-bff3b97eb0a6</id>
 				<name>Cure Disease</name>
-				<translate>Krankheit heilen</translate>
+				<translate>Krankheit Heilen</translate>
 				<altpage>282</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>31e68920-f354-4d38-b008-87f843957bba</id>
 				<name>Decrease [Attribute]</name>
-				<translate>[Attribut] senken</translate>
+				<translate>[Attribut] Senken</translate>
 				<altpage>281</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>3c2d97b8-4761-4e5a-ba61-ff4b7a403ead</id>
 				<name>Decrease Reflexes</name>
-				<translate>Reflexe senken</translate>
+				<translate>Reflexe Senken</translate>
 				<altpage>111</altpage>
 			</spell>
 			<spell>
@@ -32860,16 +32782,16 @@
 				<translate>Winterschlaf</translate>
 				<altpage>112</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>c72c3fe1-61b1-4a5d-8c15-2bca2c6c904d</id>
 				<name>Increase [Attribute]</name>
-				<translate>[Attribut] steigern</translate>
+				<translate>[Attribut] Steigern</translate>
 				<altpage>281</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>37b3d6ac-624a-42d4-bd6e-a12142dc5725</id>
 				<name>Increase Reflexes</name>
-				<translate>Reflexe steigern</translate>
+				<translate>Reflexe Steigern</translate>
 				<altpage>282</altpage>
 			</spell>
 			<spell>
@@ -33016,10 +32938,10 @@
 				<translate>Massenverwirrung</translate>
 				<altpage>285</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>4dad17ac-f04c-49ce-a719-e475620028d3</id>
 				<name>Mass [Sense] Removal</name>
-				<translate>Rundum gestohlener [Sinn]</translate>
+				<translate>Rundum Gestohlener [Sinn]</translate>
 				<altpage>114</altpage>
 			</spell>
 			<spell>
@@ -33118,16 +33040,16 @@
 				<translate>Klammer</translate>
 				<altpage>127</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>f075819d-4924-4140-a5b4-fe8fdc069485</id>
 				<name>Calm Animal</name>
-				<translate>Tier beruhigen</translate>
+				<translate>Tier Beruhigen</translate>
 				<altpage>132</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>b0a9f3b0-d153-4ff3-9193-666f89aaf0c3</id>
 				<name>Calm Pack</name>
-				<translate>Meute beruhigen</translate>
+				<translate>Meute Beruhigen</translate>
 				<altpage>132</altpage>
 			</spell>
 			<spell>
@@ -33139,37 +33061,37 @@
 			<spell translated="True">
 				<id>05088798-a160-4080-90bb-fed9880435ba</id>
 				<name>Clean [Element]</name>
-				<translate>[Element] reinigen</translate>
+				<translate>[Element] Reinigen</translate>
 				<altpage>124</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>b0d02e0b-6c8f-4fef-8ca3-fe8f509218f0</id>
 				<name>Compel Truth</name>
-				<translate>Wahrheit</translate>
+				<translate>Wahrheit Erzwingen</translate>
 				<altpage>133</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>32a6a213-8c89-4efe-b56d-042814a13b9f</id>
 				<name>Control Actions</name>
-				<translate>Handlungen beherrschen</translate>
+				<translate>Handlungen Beherrschen</translate>
 				<altpage>289</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>e0578a09-8fba-424f-9288-b5e1ef810c2c</id>
 				<name>Control Animal</name>
-				<translate>Tier beherrschen</translate>
+				<translate>Tier Beherrschen</translate>
 				<altpage>132</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>7d37e3fa-d16b-4d4f-8285-629f511df0e6</id>
 				<name>Control Pack</name>
-				<translate>Meute beherrschen</translate>
+				<translate>Meute Beherrschen</translate>
 				<altpage>132</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>d97d3ece-e21b-42c7-bfeb-4ca3834587c0</id>
 				<name>Control Thoughts</name>
-				<translate>Gedanken beherrschen</translate>
+				<translate>Gedanken Beherrschen</translate>
 				<altpage>289</altpage>
 			</spell>
 			<spell>
@@ -33358,10 +33280,10 @@
 				<translate>Schatten</translate>
 				<altpage>290</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>54e25153-07a4-4f52-8cb6-de8e00e4ac91</id>
 				<name>Shape [Material]</name>
-				<translate>[Material] formen</translate>
+				<translate>[Material] Formen</translate>
 				<altpage>128</altpage>
 			</spell>
 			<spell>
@@ -33388,10 +33310,10 @@
 				<translate>Sterilisieren</translate>
 				<altpage>132</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>96fdf1da-d4e7-460c-a172-3f7a7b56ac67</id>
 				<name>Detect Magic, Extended</name>
-				<translate>Magie entdecken, erweitert</translate>
+				<translate>Magie Entdecken, erweitert</translate>
 				<altpage>293</altpage>
 			</spell>
 			<spell>
@@ -33448,16 +33370,16 @@
 				<translate>Homunkulus</translate>
 				<altpage>297</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>5c9218f6-bdb4-46a5-89ce-00b4adfe0429</id>
 				<name>Disrupt [Object]</name>
-				<translate>[Fokus] verdrängen</translate>
+				<translate>[Fokus] Verdrängen</translate>
 				<altpage>119</altpage>
 			</spell>
 			<spell translated="True">
 				<id>51f04999-1173-43da-94b6-af3749cb3156</id>
 				<name>Destroy [Vehicle]</name>
-				<translate>[Fahrzeug] zerstören</translate>
+				<translate>[Fahrzeug] Zerstören</translate>
 				<altpage>119</altpage>
 			</spell>
 			<spell>
@@ -33514,10 +33436,10 @@
 				<translate>Astrale Drachensuche</translate>
 				<altpage>134</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>4af09e0f-93a5-43f5-badb-9f070d574417</id>
 				<name>Mindnet Extended</name>
-				<translate>Erweitertes Telepathisches Netz</translate>
+				<translate>Telepathisches Netz, Erweitertes</translate>
 				<altpage>138</altpage>
 			</spell>
 			<spell>
@@ -33529,7 +33451,7 @@
 			<spell translated="True">
 				<id>fd407eeb-103e-4bef-a719-1098d8387536</id>
 				<name>Alleviate [Allergy]</name>
-				<translate>[Allergie] lindern</translate>
+				<translate>[Allergie] Lindern</translate>
 				<altpage>108</altpage>
 			</spell>
 			<spell translated="True">
@@ -33541,13 +33463,13 @@
 			<spell translated="True">
 				<id>80704822-953b-45c5-aa8e-77ca26e6cef7</id>
 				<name>Increase Inherent Limits</name>
-				<translate>Limit erhöhen</translate>
+				<translate>Limit Erhöhen</translate>
 				<altpage>111</altpage>
 			</spell>
 			<spell translated="True">
 				<id>4fbbaf9c-15fb-46ec-b899-5fc48829e52a</id>
 				<name>Decrease Inherent Limits</name>
-				<translate>Limit senken</translate>
+				<translate>Limit Senken</translate>
 				<altpage>111</altpage>
 			</spell>
 			<spell>
@@ -33598,10 +33520,10 @@
 				<translate>[Element]-Wand</translate>
 				<altpage>124</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>785b5b5e-500f-40a2-9b25-b90f3dde7c26</id>
 				<name>Increase Noise</name>
-				<translate>Rauschen erhöhen</translate>
+				<translate>Rauschen Erhöhen</translate>
 				<altpage>130</altpage>
 			</spell>
 			<spell>
@@ -33646,10 +33568,10 @@
 				<translate>Schleimverwandlung</translate>
 				<altpage>131</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
 				<name>Aspect Mana Line</name>
-				<translate>Manalinie ausrichten</translate>
+				<translate>Manalinie Ausrichten</translate>
 				<altpage>154</altpage>
 			</spell>
 			<spell>
@@ -33676,16 +33598,16 @@
 				<translate>Sühne</translate>
 				<altpage>158</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>1e518a3c-fdf9-40c7-af85-0d71a22402e2</id>
 				<name>Attune Animal</name>
-				<translate>[Tier] einstimmen</translate>
+				<translate>[Tier] Einstimmen</translate>
 				<altpage>158</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>a31197f4-c687-485b-a924-e88f2c76df76</id>
 				<name>Attune Item</name>
-				<translate>[Gegenstand] einstimmen</translate>
+				<translate>[Gegenstand] Einstimmen</translate>
 				<altpage>146</altpage>
 			</spell>
 			<spell>
@@ -33706,10 +33628,10 @@
 				<translate>Blutritus</translate>
 				<altpage>144</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>99c41c3c-5895-4a61-bb6c-184475ee7def</id>
 				<name>Calling [Spirit Type]</name>
-				<translate>[Geistart] rufen</translate>
+				<translate>[Geistart] Rufen</translate>
 				<altpage>148</altpage>
 			</spell>
 			<spell>
@@ -33766,10 +33688,10 @@
 				<translate>Gruppenbindung</translate>
 				<altpage>149</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>0f5308ee-75fc-4f46-ad85-c28d2bd0e3bc</id>
 				<name>Imbue Item</name>
-				<translate>Gegenstand erfüllen</translate>
+				<translate>Gegenstand Erfüllen</translate>
 				<altpage>147</altpage>
 			</spell>
 			<spell translated="True">
@@ -33805,19 +33727,19 @@
 			<spell translated="True">
 				<id>6b2838f7-8ecb-455a-a2cc-ae1484e48a9a</id>
 				<name>Living Vessel Preparation</name>
-				<translate>Vorbereitung eines lebenden Geistergefäßes</translate>
+				<translate>Vorbereitung eines Lebenden Geistergefäßes</translate>
 				<altpage>159</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>c7db0147-a077-423a-b617-a5cc8c0d4982</id>
 				<name>Inanimate Vessel Preparation</name>
-				<translate>Vorbereitung eines unbelebten Geistergefäßes</translate>
+				<translate>Vorbereitung eines Unbelebten Geistergefäßes</translate>
 				<altpage>225</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>9b61d871-f156-44fc-a703-e19e99933747</id>
 				<name>Manifest Sha</name>
-				<translate>Sha manifestieren</translate>
+				<translate>Sha Manifestieren</translate>
 				<altpage>157</altpage>
 			</spell>
 			<spell>
@@ -33838,10 +33760,10 @@
 				<translate>Polarisierter Hüter</translate>
 				<altpage>156</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>e45f4b5d-8969-4e03-ae55-583beee464fc</id>
 				<name>Recharge Reagents</name>
-				<translate>Reagenzien aufladen</translate>
+				<translate>Reagenzien Aufladen</translate>
 				<altpage>156</altpage>
 			</spell>
 			<spell translated="True">
@@ -33868,10 +33790,10 @@
 				<translate>Geisterpakt</translate>
 				<altpage>149</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>838a29e8-d154-41a1-a589-2e338d312a1b</id>
 				<name>Summon Great Form Spirit</name>
-				<translate>Geist in Großer Gestalt beschwören</translate>
+				<translate>Geist in Großer Gestalt Beschwören</translate>
 				<altpage>148</altpage>
 			</spell>
 			<spell>
@@ -34184,16 +34106,16 @@
 				<translate>Schlangenblut</translate>
 				<altpage>184</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>3ca36ddc-1e69-48b4-884b-b37ad86b6412</id>
 				<name>Conceal Scent</name>
-				<translate>Geruch verbergen</translate>
+				<translate>Geruch Verbergen</translate>
 				<altpage>184</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>69d35098-2786-4b84-9825-3706430cc82b</id>
 				<name>Recharge Potency</name>
-				<translate>Wirksamkeit aufladen</translate>
+				<translate>Wirksamkeit Aufladen</translate>
 				<altpage>185</altpage>
 			</spell>
 			<spell>
@@ -34478,29 +34400,29 @@
 				<translate>Mana Ebb</translate>
 				<altpage>22</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>d0f89025-7573-47d2-accf-48f2a7d7a03d</id>
 				<name>Incubus</name>
 				<translate>Incubus</translate>
-				<altpage>153</altpage>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>a2f9abc1-f4f0-4247-a9eb-5f0916212b91</id>
 				<name>Incubus Shroud</name>
-				<translate>Incubus Shroud</translate>
-				<altpage>153</altpage>
+				<translate>Schleier des Incubus</translate>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>750efc53-02df-4d67-b5df-0abf2ab7e70d</id>
 				<name>Rewind</name>
-				<translate>Rewind</translate>
-				<altpage>153</altpage>
+				<translate>Zurückspulen</translate>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>08863013-48b9-4c7f-9bb1-25951b984dc1</id>
 				<name>Consistency</name>
-				<translate>Consistency</translate>
-				<altpage>153</altpage>
+				<translate>Gruppenimpuls</translate>
+				<altpage>156</altpage>
 			</spell>
 			<spell>
 				<id>b98919cb-4e48-4839-891b-e93e9edd466c</id>
@@ -34556,10 +34478,10 @@
 				<translate>Zerfetzen</translate>
 				<altpage>50</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>2933d3c3-50ff-4fe8-8414-37f2520e39e1</id>
 				<name>Multiply Food</name>
-				<translate>Nahrung vermehren</translate>
+				<translate>Nahrung Vermehren</translate>
 				<altpage>49</altpage>
 			</spell>
 			<spell>
@@ -34586,10 +34508,10 @@
 				<translate>Böser Blick</translate>
 				<altpage>50</altpage>
 			</spell>
-			<spell>
+			<spell translated="True">
 				<id>243313e6-a9af-456a-9631-6581d869aa02</id>
 				<name>Alter Ballistics</name>
-				<translate>Ballistik verändern</translate>
+				<translate>Ballistik Verändern</translate>
 				<altpage>50</altpage>
 			</spell>
 			<spell>
@@ -37113,20 +37035,20 @@
 			<vehicle>
 				<id>d159489d-0210-45be-8629-f29e6f883e3e</id>
 				<name>Holo-Conference Drone (Small)</name>
-				<translate>Holo-Conference Drone (Small)</translate>
-				<altpage>147</altpage>
+				<translate>Holokonferenz-Drohne</translate>
+				<altpage>149</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a9077795-4ddf-498e-8ea2-a5cfadd69c37</id>
 				<name>Medusa Extensions (Mini)</name>
-				<translate>Medusa Extensions (Mini)</translate>
-				<altpage>147</altpage>
+				<translate>Medusa-Extensions</translate>
+				<altpage>149</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0a8a99f7-5cd1-43e5-b5b2-8fb1db3c77ea</id>
 				<name>Microweave Spider (Mini)</name>
-				<translate>Microweave Spider (Mini)</translate>
-				<altpage>147</altpage>
+				<translate>Microweave Spinnendrohne</translate>
+				<altpage>149</altpage>
 			</vehicle>
 			<vehicle translated="True">
 				<id>8e1a5fe3-9f13-49f0-b74a-7de82fc40dc2</id>
@@ -37425,18 +37347,6 @@
 				<altpage>142</altpage>
 			</mod>
 			<mod>
-				<id>8ce4192c-715f-47da-8bd7-a46fb9979d70</id>
-				<name>Morphing License Plate</name>
-				<translate>Smartschild</translate>
-				<altpage>112</altpage>
-			</mod>
-			<mod>
-				<id>456ed544-8ed2-442f-86ac-b053e27082bd</id>
-				<name>Rigger Interface</name>
-				<translate>Riggerinterface</translate>
-				<altpage>467</altpage>
-			</mod>
-			<mod>
 				<id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
 				<name>Weapon Mount</name>
 				<translate>Standardwaffenhalterung</translate>
@@ -37477,12 +37387,6 @@
 				<name>Smuggling Compartment (Troll)</name>
 				<translate>Smuggling Compartment (Troll)</translate>
 				<altpage>177</altpage>
-			</mod>
-			<mod>
-				<id>bd513bdc-38bb-4386-a936-d585669822fd</id>
-				<name>Spoof Chips</name>
-				<translate>Spoof Chips</translate>
-				<altpage>152</altpage>
 			</mod>
 			<!-- 2050 SR5 -->
 			<mod>
@@ -41169,68 +41073,68 @@
 			<weapon>
 				<id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
 				<name>Mortimer of London ‘Belgrave’ Sword Cane</name>
-				<translate>Mortimer of London ‘Belgrave’ Sword Cane</translate>
-				<altpage>132</altpage>
+				<translate>Mortimer of London "Belgrave" Stockschwert</translate>
+				<altpage>135</altpage>
 			</weapon>
 			<weapon>
 				<id>79cbec3d-d832-4b57-83e0-e2ffecbcdb0a</id>
 				<name>Hammerli 620S</name>
-				<translate>Hammerli 620S</translate>
-				<altpage>133</altpage>
+				<translate>Hämmerli 620S</translate>
+				<altpage>136</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>e46fce7e-a1bf-416e-86ea-2608368b44fe</id>
 				<name>Yamaha Sakura Fubuki SX</name>
 				<translate>Yamaha Sakura Fubuki SX</translate>
-				<altpage>133</altpage>
+				<altpage>136</altpage>
 			</weapon>
-			<weapon>
+			<weapon translated="True">
 				<id>daa06575-86d4-449a-ba6f-85ad736c622e</id>
 				<name>Nemesis Arms Praetorian</name>
 				<translate>Nemesis Arms Praetorian</translate>
-				<altpage>134</altpage>
+				<altpage>137</altpage>
 			</weapon>
 			<weapon>
 				<id>44802a19-05ea-4293-b234-a9d24155ce01</id>
 				<name>Stinger Pen Gun</name>
-				<translate>Stinger Pen Gun</translate>
-				<altpage>134</altpage>
+				<translate>Stinger Kugelschreiber-Pistole</translate>
+				<altpage>136</altpage>
 			</weapon>
 			<weapon>
 				<id>a5bedab8-5421-4e70-9b9c-180ad91d0c0c</id>
 				<name>Injector Pen</name>
-				<translate>Injector Pen</translate>
+				<translate>Injektionsstift</translate>
 				<altpage>134</altpage>
 			</weapon>
 			<weapon>
 				<id>97037590-5324-4ab1-acdb-b2d204cb937a</id>
 				<name>Pepper Punch Pen</name>
-				<translate>Pepper Punch Pen</translate>
-				<altpage>134</altpage>
+				<translate>Pepper-Punch-Stift</translate>
+				<altpage>137</altpage>
 			</weapon>
 			<weapon>
 				<id>06cc6008-2aa1-4d39-8a5c-884136d82fee</id>
 				<name>Modified Spray Pen</name>
-				<translate>Modified Spray Pen</translate>
-				<altpage>134</altpage>
+				<translate>Modifizierter Sprühstift</translate>
+				<altpage>137</altpage>
 			</weapon>
 			<weapon>
 				<id>bd9515ad-9d40-486e-974a-00babc4c24f9</id>
 				<name>Sap Cap</name>
-				<translate>Sap Cap</translate>
-				<altpage>135</altpage>
+				<translate>Knüppel-Basecap</translate>
+				<altpage>134</altpage>
 			</weapon>
 			<weapon>
 				<id>9ed19faa-f870-4127-ac1d-7764b164b072</id>
 				<name>Lapel Dagger</name>
-				<translate>Lapel Dagger</translate>
+				<translate>Reversdolch</translate>
 				<altpage>135</altpage>
 			</weapon>
 			<weapon>
 				<id>b84e7ffe-acae-461c-a7ce-67056976a96e</id>
 				<name>Ares Briefcase Shield</name>
-				<translate>Ares Briefcase Shield</translate>
-				<altpage>137</altpage>
+				<translate>Ares Aktentaschen-Schild</translate>
+				<altpage>138</altpage>
 			</weapon>
 			<weapon>
 				<id>50b36198-aeed-4bcb-af46-5e8c18771c47</id>
