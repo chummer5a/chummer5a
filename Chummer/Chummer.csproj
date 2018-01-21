@@ -1633,6 +1633,9 @@
     <Content Include="customdata\Rainforest Carbine Missions Errata\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\ShadowNET Rules\amend_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
