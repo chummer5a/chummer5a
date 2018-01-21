@@ -2215,7 +2215,7 @@ namespace Chummer
             this.tsVehicleAddWeaponWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponWeapon.Tag = "Menu_AddWeapon";
             this.tsVehicleAddWeaponWeapon.Text = "Add &Weapon";
-            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeaponWeapon_Click);
             // 
             // tsVehicleAddWeaponAccessory
             // 
@@ -2348,7 +2348,7 @@ namespace Chummer
             this.tsVehicleMountWeaponAdd.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleMountWeaponAdd.Tag = "Menu_AddWeapon";
             this.tsVehicleMountWeaponAdd.Text = "Add &Weapon";
-            this.tsVehicleMountWeaponAdd.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            this.tsVehicleMountWeaponAdd.Click += new System.EventHandler(this.tsVehicleAddWeaponWeapon_Click);
             // 
             // tsVehicleMountWeaponAccessory
             // 

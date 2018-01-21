@@ -6232,20 +6232,26 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void tsVehicleAddWeapon_Click(object sender, EventArgs e)
+        private void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Make sure that a Weapon Mount has been selected.
             VehicleMod objMod = null;
-            WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(objSelectedNode.Tag.ToString(), out Vehicle objVehicle);
-            if (objWeaponMount == null)
+            WeaponMount objWeaponMount = null;
+            Vehicle objVehicle = null;
+            if (objSelectedNode != null)
             {
-                objMod = CharacterObject.Vehicles.FindVehicleMod(objSelectedNode.Tag.ToString(), out objVehicle, out objWeaponMount);
-                if (objMod != null)
+                string strSelectedId = objSelectedNode.Tag.ToString();
+                objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
+                if (objWeaponMount == null)
                 {
-                    if (!objMod.Name.StartsWith("Mechanical Arm") && !objMod.Name.Contains("Drone Arm"))
+                    objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                    if (objMod != null)
                     {
-                        objMod = null;
+                        if (!objMod.Name.StartsWith("Mechanical Arm") && !objMod.Name.Contains("Drone Arm"))
+                        {
+                            objMod = null;
+                        }
                     }
                 }
             }
