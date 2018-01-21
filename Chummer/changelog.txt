@@ -47,6 +47,7 @@ Application Changes:
 - Fixed a rare crash that could happen when trying to add a weapon to a vehicle without having a node selected. Fixes #2361.
 - Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
 - Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
+- Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
 
 Data Changes:
 

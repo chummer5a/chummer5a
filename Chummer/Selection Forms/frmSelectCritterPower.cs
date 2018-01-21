@@ -152,25 +152,17 @@ namespace Chummer
                 }
             }
 
-            bool blnIsDrake = false;
-            foreach (Quality objQuality in _objCharacter.Qualities)
-            {
-                if (objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
-                    objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)")
-                {
-                    blnIsDrake = true;
-                }
-            }
+            bool blnIsDrake = _objCharacter.Qualities.Any(objQuality =>
+            objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
+            objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)");
 
             if (!blnIsDrake)
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value != "Drake")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    if (objItem.Value == "Drake") continue;
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -418,15 +410,13 @@ namespace Chummer
             foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]"))
             {
                 string strPowerName = objXmlPower["name"].InnerText;
-                if (lstPowerWhitelist?.Contains(strPowerName) != false)
+                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
+                TreeNode objNode = new TreeNode
                 {
-                    TreeNode objNode = new TreeNode
-                    {
-                        Tag = objXmlPower["id"].InnerText,
-                        Text = objXmlPower["translate"]?.InnerText ?? strPowerName
-                    };
-                    trePowers.Nodes.Add(objNode);
-                }
+                    Tag = objXmlPower["id"].InnerText,
+                    Text = objXmlPower["translate"]?.InnerText ?? strPowerName
+                };
+                trePowers.Nodes.Add(objNode);
             }
             trePowers.Sort();
         }
