@@ -65,6 +65,9 @@ namespace CrashHandler
 			{
 				throw new ArgumentException("Could not deserialize");
 			}
+		    _pretendFiles.TryGetValue("exception.txt", out string exception);
+
+            CrashLogWriter.WriteLine(exception);
 
             CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
             CrashLogWriter.Flush();

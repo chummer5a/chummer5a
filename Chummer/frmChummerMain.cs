@@ -924,16 +924,28 @@ namespace Chummer
             {
                 Timekeeper.Start("load_sum");
                 Cursor = Cursors.WaitCursor;
-                Character[] lstCharacters = new Character[openFileDialog.FileNames.Length];
-                object lstCharactersLock = new object();
-                Parallel.For(0, lstCharacters.Length, i =>
+                List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                foreach (string strFile in openFileDialog.FileNames)
                 {
-                    Character objLoopCharacter = LoadCharacter(openFileDialog.FileNames[i]);
-                    lock (lstCharactersLock)
-                        lstCharacters[i] = objLoopCharacter;
-                });
+                    Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    if (objLoopCharacter != null)
+                        SwitchToOpenCharacter(objLoopCharacter, true);
+                    else
+                        lstFilesToOpen.Add(strFile);
+                }
+                if (lstFilesToOpen.Count != 0)
+                {
+                    Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                    object lstCharactersLock = new object();
+                    Parallel.For(0, lstCharacters.Length, i =>
+                    {
+                        Character objLoopCharacter = LoadCharacter(lstFilesToOpen[i]);
+                        lock (lstCharactersLock)
+                            lstCharacters[i] = objLoopCharacter;
+                    });
+                    Program.MainForm.OpenCharacterList(lstCharacters);
+                }
                 Cursor = Cursors.Default;
-                Program.MainForm.OpenCharacterList(lstCharacters);
                 Application.DoEvents();
                 Timekeeper.Finish("load_sum");
                 Timekeeper.Log();
@@ -962,7 +974,7 @@ namespace Chummer
 
             foreach (Character objCharacter in lstCharacters)
             {
-                if (objCharacter == null)
+                if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                     continue;
                 Timekeeper.Start("load_event_time");
                 // Show the character form.

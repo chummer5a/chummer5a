@@ -292,7 +292,7 @@ namespace Chummer.UI.Powers
                 // Add any Power Point Improvements to MAG.
                 intMAG += ImprovementManager.ValueOf(ObjCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return intMAG;
+                return Math.Max(intMAG, 0);
             }
         }
 

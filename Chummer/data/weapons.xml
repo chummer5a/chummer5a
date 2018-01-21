@@ -1767,7 +1767,7 @@
       <ap>-3</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>4</ammo>
+      <ammo>4(m)</ammo>
       <avail>8R</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -1786,7 +1786,7 @@
       <ap>-1</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>4</ammo>
+      <ammo>4(m)</ammo>
       <avail>2</avail>
       <cost>300</cost>
       <source>SR5</source>
@@ -1805,7 +1805,7 @@
       <ap>-2</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>4</ammo>
+      <ammo>4(m)</ammo>
       <avail>4R</avail>
       <cost>500</cost>
       <source>SR5</source>
@@ -1814,7 +1814,7 @@
     </weapon>
     <weapon>
       <id>28072a3f-5153-444e-83e3-46129b9ff572</id>
-      <name>Ranger Silver Pistol Crossbow</name>
+      <name>Ranger Sliver Pistol Crossbow</name>
       <category>Crossbows</category>
       <type>Ranged</type>
       <conceal>-4</conceal>
@@ -1824,7 +1824,7 @@
       <ap>0</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>5(m)</ammo>
+      <ammo>1</ammo>
       <avail>6R</avail>
       <cost>300</cost>
       <source>RG</source>
@@ -11265,7 +11265,7 @@
       <damage>9P</damage>
       <ap>-2</ap>
       <mode>SA/BF/FA</mode>
-      <rc>3</rc>
+      <rc>0</rc>
       <ammo>32(c)</ammo>
       <avail>9F</avail>
       <cost>2850</cost>

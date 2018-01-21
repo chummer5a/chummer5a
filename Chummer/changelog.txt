@@ -41,6 +41,16 @@ Application Changes:
 - Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
 - Fixed an issue with assigning ratings for gear that has a higher minimum rating than maximum rating. Fixes #2348.
 - Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
+- Fixed an issue where weapon mount options with requirement nodes related to Xml data details could not be applied. Fixes #2355.
+- Fixed an issue where modifying an existing weapon mount would not properly update its node in the vehicle tree view.
+- Fixed an issue where Trust Fund III and Trust Fund IV did not properly zero the costs of the lifestyles to which they were applied.
+- Fixed a rare crash that could happen when trying to add a weapon to a vehicle without having a node selected. Fixes #2361.
+- Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
+- Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
+- Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
+- Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
+- Fixed a bug where adding a mentor spirit with Mentor's Mask enabled would not always properly update UI elements.
+- Fixed a bug where losing MAG in career mode as a mystic adept when the character had more MAG than PPs (either from initiations or from purchased PPs) would not cause the character to lose PPs.
 
 Data Changes:
 
@@ -51,6 +61,10 @@ Data Changes:
 - Fixed an issue where custom improvements for bonus street cred and street cred multiplier had incorrect names. Fixes #2338.
 - Fixed various typos in life module descriptions and skills.
 - Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
+- Added an amend entry to override Exotic Weapon skills used by the Pazrashield Dart Pistol, Rifle and Super Squirrt to use non-Exotic skills. Fixes #2359.
+- Corrected ammo capacities for the Light, Medium and Heavy Crossbow from SR5 to be 4(m).
+- Fixed a typo in the Ranger Sliver Pistol Crossbow from RG's name and reduced its ammo capacity to 1, per RAW. Added an amend file to set the Ranger Sliver to have a 4(m) ammo instead.
+- Removed extra base Recoil Compensation from the HK G12A4 from SAG.
 
 New Strings:
 

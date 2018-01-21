@@ -2231,7 +2231,7 @@
 		</string>
 		<string>
 			<key>String_SpellForce</key>
-			<text>K</text>
+			<text>KS</text>
 		</string>
 		<string>
 			<key>String_DescActive</key>
@@ -2773,7 +2773,7 @@
 		</string>
 		<string>
 			<key>Label_BondedFoci</key>
-			<text>gebundene Foci</text>
+			<text>Gebundene Foki</text>
 		</string>
 		<string>
 			<key>Checkbox_Equipped</key>

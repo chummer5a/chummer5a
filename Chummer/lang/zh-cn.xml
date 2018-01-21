@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -332,7 +332,7 @@
 		</string>
 		<string>
 			<key>String_Varies</key>
-			<text>Varies</text>
+			<text>变种</text>
 		</string>
 		<string>
 			<key>String_Qualities</key>
@@ -340,7 +340,7 @@
 		</string>
 		<string>
 			<key>Label_Metavariant</key>
-			<text>泛亚种：</text>
+			<text>泛变种：</text>
 		</string>
 		<string>
 			<key>Label_ActiveSkill</key>
@@ -769,7 +769,7 @@
 		</string>
 		<string>
 			<key>Menu_AddModification</key>
-			<text>添加改造(&amp;D)</text>
+			<text>添加改良(&amp;D)</text>
 		</string>
 		<string>
 			<key>Menu_AddUnderbarrelWeapon</key>
@@ -1305,11 +1305,11 @@
 		</string>
 		<string>
 			<key>Message_CannotRemoveVehicleMod</key>
-			<text>你不能移除载具自带的改造。</text>
+			<text>你不能移除载具自带的改良。</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotRemoveVehicleMod</key>
-			<text>无法移除改造</text>
+			<text>无法移除改良</text>
 		</string>
 		<string>
 			<key>Message_CannotSelectMetamagic</key>
@@ -1381,7 +1381,7 @@
 		</string>
 		<string>
 			<key>Message_SelectWeaponMod</key>
-			<text>你必须先选择一个要添加改造的武器。</text>
+			<text>你必须先选择一个要添加改良的武器。</text>
 		</string>
 		<string>
 			<key>Message_SelectWeaponName</key>
@@ -1409,11 +1409,11 @@
 		</string>
 		<string>
 			<key>Message_CannotModifyWeaponMod</key>
-			<text>这个武器不能添加改造。</text>
+			<text>这个武器不能添加改良。</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotModifyWeapon</key>
-			<text>无法改造武器</text>
+			<text>无法改良武器</text>
 		</string>
 		<string>
 			<key>Message_WeaponGear</key>
@@ -1437,7 +1437,7 @@
 		</string>
 		<string>
 			<key>Message_SelectArmor</key>
-			<text>你必须选择一个要改造的护甲。</text>
+			<text>你必须选择一个要改良的护甲。</text>
 		</string>
 		<string>
 			<key>Message_SelectArmorName</key>
@@ -1461,7 +1461,7 @@
 		</string>
 		<string>
 			<key>Message_SelectVehicle</key>
-			<text>你必须先选择一个要添加改造的载具。</text>
+			<text>你必须先选择一个要添加改良的载具。</text>
 		</string>
 		<string>
 			<key>Message_SelectVehicleName</key>
@@ -1493,11 +1493,11 @@
 		</string>
 		<string>
 			<key>Message_VehicleWeaponMods</key>
-			<text>武器改造只能添加给挂载武器。</text>
+			<text>武器改良只能添加给挂载武器。</text>
 		</string>
 		<string>
 			<key>MessageTitle_VehicleWeaponMods</key>
-			<text>无法添加武器改造</text>
+			<text>无法添加武器改良</text>
 		</string>
 		<string>
 			<key>Message_VehicleWeaponUnderbarrel</key>
@@ -1517,7 +1517,7 @@
 		</string>
 		<string>
 			<key>Message_ModifyVehicleGear</key>
-			<text>你必须先选择要改造的装备。</text>
+			<text>你必须先选择要改良的装备。</text>
 		</string>
 		<string>
 			<key>MessageTitle_ModifyVehicleGear</key>
@@ -1825,7 +1825,7 @@
 		</string>
 		<string>
 			<key>Message_VehicleCyberwarePlugin</key>
-			<text>这一载具改造不允许赛博改造部件。</text>
+			<text>这一载具改良不允许赛博改造部件。</text>
 		</string>
 		<string>
 			<key>Message_CloningMachineNumberRequired</key>
@@ -1845,7 +1845,7 @@
 		</string>
 		<string>
 			<key>Message_CannotMergeGear</key>
-			<text>No exact matches for this item were found.</text>
+			<text>该物品没有找到确切对应的搭配。</text>
 		</string>
 		<string>
 			<key>MessageTitle_CannotMergeGear</key>
@@ -2057,11 +2057,11 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponMod</key>
-			<text>购买武器改造</text>
+			<text>购买武器改良</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponMod</key>
-			<text>出售武器改造</text>
+			<text>出售武器改良</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseWeaponGear</key>
@@ -2069,7 +2069,7 @@
 		</string>
 		<string>
 			<key>String_ExpenseSoldWeaponGear</key>
-			<text>出售武器改造</text>
+			<text>出售武器改良</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicle</key>
@@ -2081,11 +2081,11 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleMod</key>
-			<text>购买载具改造</text>
+			<text>购买载具改良</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleMod</key>
-			<text>出售载具改造</text>
+			<text>出售载具改良</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleGear</key>
@@ -2113,11 +2113,11 @@
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleWeaponMod</key>
-			<text>购买挂载武器改造</text>
+			<text>购买挂载武器改良</text>
 		</string>
 		<string>
 			<key>String_ExpenseSoldVehicleWeaponMod</key>
-			<text>出售挂载武器改造</text>
+			<text>出售挂载武器改良</text>
 		</string>
 		<string>
 			<key>String_ExpensePurchaseVehicleCyberware</key>
@@ -3067,7 +3067,7 @@
 		</string>
 		<string>
 			<key>Label_ModSlots</key>
-			<text>改造槽：</text>
+			<text>改良槽：</text>
 		</string>
 		<string>
 			<key>Label_AmmoRemaining</key>
@@ -3083,15 +3083,15 @@
 		</string>
 		<string>
 			<key>Label_RangeShort</key>
-			<text>近距（-1）</text>
+			<text>近距（+0）</text>
 		</string>
 		<string>
 			<key>Label_RangeMedium</key>
-			<text>中距（-3）</text>
+			<text>中距（-1）</text>
 		</string>
 		<string>
 			<key>Label_RangeLong</key>
-			<text>长距（-6）</text>
+			<text>长距（-3）</text>
 		</string>
 		<string>
 			<key>Label_RangeExtreme</key>
@@ -3131,7 +3131,7 @@
 		</string>
 		<string>
 			<key>Tip_WeaponInstalled</key>
-			<text>武器配件和改造会计入武器属性</text>
+			<text>武器配件和改良会计入武器属性</text>
 		</string>
 		<string>
 			<key>String_WeaponAccessory</key>
@@ -3139,11 +3139,11 @@
 		</string>
 		<string>
 			<key>String_WeaponModification</key>
-			<text>武器改造</text>
+			<text>武器改良</text>
 		</string>
 		<string>
 			<key>String_ExternalSource</key>
-			<text>External Source</text>
+			<text>外部来源</text>
 		</string>
 		<string>
 			<key>String_SlotNumber</key>
@@ -3245,7 +3245,7 @@
 		</string>
 		<string>
 			<key>String_VehicleModification</key>
-			<text>载具改造</text>
+			<text>载具改良</text>
 		</string>
 		<string>
 			<key>String_VehicleWeapon</key>
@@ -3257,7 +3257,7 @@
 		</string>
 		<string>
 			<key>String_VehicleWeaponModification</key>
-			<text>挂载武器改造</text>
+			<text>挂载武器改良</text>
 		</string>
 		<!-- Character Info Tab -->
 		<string>
@@ -4742,7 +4742,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_AllowCustomTransgenics</key>
-			<text>允许生体改造转化为转基因</text>
+			<text>允许生体改造转化为转生物基因</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
@@ -4834,7 +4834,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Option_AllowEditPartOfBaseWeapon</key>
-			<text>允许通过武器配件和改造改变基础武器属性</text>
+			<text>允许通过武器配件和改良改变基础武器属性</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_AlternateMetatypeAttributeKarma</key>
@@ -4979,7 +4979,7 @@
 		<!-- Select Armor Mod Window -->
 		<string>
 			<key>Title_SelectArmorMod</key>
-			<text>选择一个护甲改造</text>
+			<text>选择一个护甲改良</text>
 		</string>
 		<!-- Select Attribute Window -->
 		<string>
@@ -5116,7 +5116,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Transgenic</key>
-			<text>Add as Transgenic</text>
+			<text>作为转生物基因添加</text>
 		</string>
 		<!-- Select Cyberware Suite Window -->
 		<string>
@@ -5159,7 +5159,7 @@
 		</string>
 		<string>
 			<key>Label_SelectGear_InherentProgram</key>
-			<text>Inherent Program</text>
+			<text>固有程序</text>
 		</string>
 		<string>
 			<key>Label_SelectGear_Stack</key>
@@ -5569,11 +5569,11 @@
 		<!-- Select Vehicle Mod Window -->
 		<string>
 			<key>Title_SelectVehicleMod</key>
-			<text>选择一个载具改造</text>
+			<text>选择一个载具改良</text>
 		</string>
 		<string>
 			<key>Title_SelectVehicleMod_Weapon</key>
-			<text>选择武器改造</text>
+			<text>选择武器改良</text>
 		</string>
 		<!-- Select Weapon Window -->
 		<string>
@@ -5582,7 +5582,7 @@
 		</string>
 		<string>
 			<key>Label_SelectWeapon_IncludedItems</key>
-			<text>内含武器配件和武器改造：</text>
+			<text>内含武器配件和武器改良：</text>
 		</string>
 		<!-- Select Weapon Accessory Window -->
 		<string>
@@ -6138,7 +6138,7 @@
 		</string>
 		<string>
 			<key>Label_Bonus</key>
-			<text>Bonus:</text>
+			<text>加值：</text>
 		</string>
 		<string>
 			<key>Label_Accuracy</key>
@@ -6273,6 +6273,14 @@
 			<text>You cannot have more spells than allowed by your selected Talent priority.</text>
 		</string>
 		<string>
+			<key>Message_CannotRemoveSpell</key>
+			<text>This item cannot be removed because it was acquired as an initiation bonus.</text>
+		</string>
+		<string>
+			<key>MessageTitle_CannotRemoveSpell</key>
+			<text>无法移除法术</text>
+		</string>
+		<string>
 			<key>Message_PriorityComplexFormLimit</key>
 			<text>Your number of Complex Forms cannot exceed the number defined by your selected Talent priority.</text>
 		</string>
@@ -6358,7 +6366,7 @@
 		</string>
 		<string>
 			<key>String_DescGeomancy</key>
-			<text>Geomancy</text>
+			<text>堪舆术</text>
 		</string>
 		<string>
 			<key>String_DescMaterialLink</key>
@@ -6370,7 +6378,7 @@
 		</string>
 		<string>
 			<key>String_DescOrganicLink</key>
-			<text>Organic Link</text>
+			<text>有机连接</text>
 		</string>
 		<string>
 			<key>String_DescSpell</key>
@@ -6386,7 +6394,7 @@
 		</string>
 		<string>
 			<key>Tip_OptionsUnarmedSkillImprovements</key>
-			<text>Allows weapons that use the Unarmed Combat skill to benefit from bonuses that apply to unarmed attacks including DV bonuses.</text>
+			<text>允许使用〈徒手格斗〉的武器从应用至徒手格斗的能力中获益，包括DV加值。</text>
 		</string>
 		<string>
 			<key>Tip_OptionsIgnoreArt</key>
@@ -6506,11 +6514,11 @@
 		</string>
 		<string>
 			<key>Tip_ArmorDegradationPlus</key>
-			<text>Repair Armor Rating.</text>
+			<text>修复护甲等级。</text>
 		</string>
 		<string>
 			<key>Tip_ArmorDegradationMinus</key>
-			<text>Damage Armor Rating.</text>
+			<text>伤害护甲等级。</text>
 		</string>
 		<string>
 			<key>Label_AdeptWayDiscount</key>
@@ -7160,7 +7168,7 @@
 		</string>
 		<string>
 			<key>Label_DroneModSlots</key>
-			<text>改造槽：</text>
+			<text>改良槽：</text>
 		</string>
 		<string>
 			<key>Checkbox_Option_EducationQualitiesApplyOnChargenKarma</key>
@@ -7468,7 +7476,7 @@
 		</string>
 		<string>
 			<key>Checkbox_Options_Dronemods</key>
-			<text>使用无人机改造规则 (R5 122)</text>
+			<text>使用无人机改良规则 (R5 122)</text>
 		</string>
 		<string>
 			<key>String_ActionInterrupt</key>
@@ -7536,7 +7544,7 @@
 		</string>
 		<string>
 			<key>Tip_RemainingVehicleModCapacity</key>
-			<text>所选载具安装改造后剩余的容量。</text>
+			<text>所选载具安装改良后剩余的容量。</text>
 		</string>
 		<string>
 			<key>Checkbox_Options_FreeKarmaContacts</key>
@@ -8146,7 +8154,7 @@
 		</string>
 		<string>
 			<key>Label_Bodymod</key>
-			<text>机体改造：</text>
+			<text>机体改良：</text>
 		</string>
 		<string>
 			<key>Label_Electromagnetic</key>
@@ -8278,7 +8286,7 @@
 		</string>
 		<string>
 			<key>Button_AddCustomDirectory</key>
-			<text>Add Directory</text>
+			<text>添加个性化目录</text>
 		</string>
 		<string>
 			<key>String_DealerConnection_Aircraft</key>
@@ -8342,7 +8350,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_SelectGeneric_Restriction</key>
-			<text>限制{0}</text>
+			<text>{0}数量受限</text>
 		</string>
 		<string>
 			<key>Message_SelectGeneric_Restriction</key>
@@ -8355,6 +8363,270 @@
 		<string>
 			<key>MessageTitle_SelectGeneric_PriorityRestriction</key>
 			<text>你无法选择{0}，因为你角色的创建方式不允许你购买{0}。</text>
+		</string>
+		<string>
+			<key>String_Month</key>
+			<text>月</text>
+		</string>
+		<string>
+			<key>String_Immune</key>
+			<text>免疫</text>
+		</string>
+		<string>
+			<key>String_LifeModules</key>
+			<text>生命历程模块</text>
+		</string>
+		<string>
+			<key>Label_Roster_Settings_File</key>
+			<text>设定文件：</text>
+		</string>
+		<string>
+			<key>Menu_Main_Translator</key>
+			<text>翻译程序</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_FavouriteCharacters</key>
+			<text>特别喜欢的角色</text>
+		</string>
+		<string>
+			<key>Menu_Delete</key>
+			<text>从列表中删除(&amp;D)</text>
+		</string>
+		<string>
+			<key>Treenode_Roster_WatchFolder</key>
+			<text>浏览文件夹</text>
+		</string>
+		<string>
+			<key>Menu_ToggleFavorite</key>
+			<text>切换特别喜欢的角色(&amp;T)</text>
+		</string>
+		<string>
+			<key>Menu_Close</key>
+			<text>关闭该角色(&amp;C)</text>
+		</string>
+		<string>
+			<key>Menu_Sort</key>
+			<text>依照字母表顺序排列列表(&amp;S)</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangeOptions</key>
+			<text>更改选项文件(&amp;O)</text>
+		</string>
+		<string>
+			<key>Menu_AddFromFile</key>
+			<text>自文件中添加(&amp;A)</text>
+		</string>
+		<string>
+			<key>Message_DeleteVehicleLocationBase</key>
+			<text>你确定要删除该载具位置吗？该位置的所有载具会移动到已有载具栏。</text>
+		</string>
+		<string>
+			<key>Label_CyberlimbAGI</key>
+			<text>敏捷(AGI)：</text>
+		</string>
+		<string>
+			<key>Label_CyberlimbSTR</key>
+			<text>力量(STR)：</text>
+		</string>
+		<string>
+			<key>Checkbox_PrototypeTranshuman</key>
+			<text>原型超人</text>
+		</string>
+		<string>
+			<key>Message_InvalidCyberwareGrades</key>
+			<text>以下赛博改造/生体改造的品级超过了限制：</text>
+		</string>
+		<string>
+			<key>Message_RestrictedGearUsed</key>
+			<text>「限制装备」应用于：\n{0}</text>
+		</string>
+		<string>
+			<key>Label_Size</key>
+			<text>体型：</text>
+		</string>
+		<string>
+			<key>Label_Overclocker</key>
+			<text>超频者：</text>
+		</string>
+		<string>
+			<key>Label_Visibility</key>
+			<text>能见度：</text>
+		</string>
+		<string>
+			<key>Label_Control</key>
+			<text>控制：</text>
+		</string>
+		<string>
+			<key>Message_OverPrototypeLimit</key>
+			<text>生体改造超过了「原型超人」的限制。当前：{0} 最大：{1}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesUnbalanced</key>
+			<text>负面泛基因特质没有配平。当前：{0} 应为：{1} 或 {2}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesInsufficientKarma</key>
+			<text>需要1点业力配平负面和正面泛基因特质。当前可用：{0}</text>
+		</string>
+		<string>
+			<key>Message_MetagenicQualitiesSubtractingKarma</key>
+			<text>需要1点业力配平负面和正面泛基因特质。当前可用：{0} \n可以花费这些业力吗？</text>
+		</string>
+		<string>
+			<key>MessageTitle_ExtraPoints</key>
+			<text>额外点数</text>
+		</string>
+		<string>
+			<key>String_ReduceGear</key>
+			<text>输入要移除的物品数量。</text>
+		</string>
+		<string>
+			<key>String_NotSupported</key>
+			<text>“该种族/泛亚种搭配现在还未完成，会在未来发布版本中完成。尝试以该搭配创建该角色，可能会导致预料外的结果。”</text>
+		</string>
+		<string>
+			<key>Node_SelectedQualities</key>
+			<text>已有特质</text>
+		</string>
+		<string>
+			<key>Button_ChangeMountedLocation</key>
+			<text>改变装载位置</text>
+		</string>
+		<string>
+			<key>Label_PrototypeTranshuman</key>
+			<text>原型超人：</text>
+		</string>
+		<string>
+			<key>Menu_RenameExtraText</key>
+			<text>移除额外文字(&amp;R)</text>
+		</string>
+		<string>
+			<key>Label_SelectAdvancedLifestyle_TrustFund</key>
+			<text>信托基金</text>
+		</string>
+		<string>
+			<key>Checkbox_HideBannedCyberwareGrades</key>
+			<text>隐藏被禁止的赛博改造品级</text>
+		</string>
+		<string>
+			<key>MessageTitle_BannedGrade</key>
+			<text>品级禁用！</text>
+		</string>
+		<string>
+			<key>Message_BannedGrade</key>
+			<text>你选择了一个被游戏选项禁用的品级。请选择一个可用的品级。</text>
+		</string>
+		<string>
+			<key>MessageTitle_SelectGeneric_Limit</key>
+			<text>{0}限制</text>
+		</string>
+		<string>
+			<key>Title_ListView</key>
+			<text>列表视图</text>
+		</string>
+		<string>
+			<key>Title_Browse</key>
+			<text>浏览</text>
+		</string>
+		<string>
+			<key>Button_Clean_Reinstall</key>
+			<text>清洁安装</text>
+		</string>
+		<string>
+			<key>MessageTitle_Updater_CleanReinstallPrompt</key>
+			<text>清洁安装？</text>
+		</string>
+		<string>
+			<key>Message_Updater_CleanReinstallPrompt</key>
+			<text>进行清洁安装会删除Chummer5a中所有在主要下载之外的文件。这包括个性化数据文件、自动保存、个性化表格文件、个性本地化和任何与默认不同的设置。\n\n你确定要进行清洁安装吗？</text>
+		</string>
+		<string>
+			<key>String_Loading_Characters</key>
+			<text>载入角色中……</text>
+		</string>
+		<string>
+			<key>String_Generating_Sheet</key>
+			<text>生成表格中……</text>
+		</string>
+		<string>
+			<key>Label_CreateImprovementExactly</key>
+			<text>确切值：</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_magic</key>
+			<text>魔法技能</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_resonance</key>
+			<text>共鸣技能</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_matrix</key>
+			<text>矩阵技能</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_active</key>
+			<text>主动技能</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_specific</key>
+			<text>特定技能</text>
+		</string>
+		<string>
+			<key>String_MetamagicSkillType_grouped</key>
+			<text>技能组</text>
+		</string>
+		<string>
+			<key>Button_RenameCustomDataDirectory</key>
+			<text>重命名记录</text>
+		</string>
+		<string>
+			<key>Button_RemoveCustomDirectory</key>
+			<text>移除个性化目录</text>
+		</string>
+		<string>
+			<key>Button_IncreaseCustomDirectoryLoadOrder</key>
+			<text>增加加载顺序</text>
+		</string>
+		<string>
+			<key>Button_DecreaseCustomDirectoryLoadOrder</key>
+			<text>降低加载顺序</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption_Title</key>
+			<text>游戏设定丢失</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories_Title</key>
+			<text>个性化数据目录丢失</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks_Title</key>
+			<text>扩展书丢失</text>
+		</string>
+		<string>
+			<key>Message_MissingSourceBooks</key>
+			<text>该角色创建时使用了以下未使用的扩展书：\n\n{0}\n\n这可能会造成问题。你想继续载入角色吗？</text>
+		</string>
+		<string>
+			<key>Message_MissingCustomDataDirectories</key>
+			<text>该角色创建时使用了以下未使用的个性化数据目录：\n\n{0}\n\n这可能会造成问题。你想继续载入角色吗？</text>
+		</string>
+		<string>
+			<key>Message_MissingGameplayOption</key>
+			<text>该角色创建时使用了以下游戏设定：\n\n{0}\n\n该游戏设定在现有数据文件中可能找不到。为了继续载入角色，必须为他们选择一个新的游戏设定。</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName</key>
+			<text>该名称的个性化数据目录已存在。</text>
+		</string>
+		<string>
+			<key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+			<text>个性化数据目录名称重复</text>
+		</string>
+		<string>
+			<key>Label_CustomDataDirectories</key>
+			<text>使用个性化数据目录（更改只会在重启后应用。）</text>
 		</string>
 	</strings>
 </chummer>
