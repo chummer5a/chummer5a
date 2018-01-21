@@ -9487,8 +9487,8 @@ namespace Chummer
                     _objBuildMethod = CharacterBuildMethod.Priority;
             }
 
-            XmlDocument objXmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
-            XmlNode xmlGameplayOption = objXmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
+            XmlDocument xmlDocumentGameplayOptions = XmlManager.Load("gameplayoptions.xml");
+            XmlNode xmlGameplayOption = xmlDocumentGameplayOptions.SelectSingleNode("/chummer/gameplayoptions/gameplayoption[name = \"" + GameplayOption + "\"]");
             if (xmlGameplayOption == null)
             {
                 string strMessage = LanguageManager.GetString("Message_MissingGameplayOption", GlobalOptions.Language).Replace("{0}", GameplayOption);
@@ -9515,91 +9515,95 @@ namespace Chummer
 
             if (_objBuildMethod == CharacterBuildMethod.Priority || _objBuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                objXmlCharacter.TryGetInt32FieldQuickly("metatypebp", ref _intMetatypeBP);
-                objXmlCharacter.TryGetStringFieldQuickly("prioritytalent", ref _strPriorityTalent);
-                _lstPrioritySkills.Clear();
-                XmlNodeList objXmlPrioritySkillsList = objXmlCharacter.SelectNodes("priorityskills/priorityskill");
-                if (objXmlPrioritySkillsList != null)
+                if (strRaceString == "A.I.")
+                    _strPriorityTalent = "AI";
+                XmlNode xmlPriorityTalentPick = xmlLeadsBaseNode.SelectSingleNode("container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
+                if (xmlPriorityTalentPick != null)
                 {
-                    foreach (XmlNode objXmlSkillName in objXmlPrioritySkillsList)
+                    switch (xmlPriorityTalentPick.Attributes["thing"]?.InnerText)
                     {
-                        _lstPrioritySkills.Add(objXmlSkillName.InnerText);
+                        case "quAware":
+                            _strPriorityTalent = "Aware";
+                            break;
+                        case "quEnchanter":
+                            _strPriorityTalent = "Enchanter";
+                            break;
+                        case "quExplorer":
+                            _strPriorityTalent = "Explorer";
+                            break;
+                        case "quApprentice":
+                            _strPriorityTalent = "Apprentice";
+                            break;
+                        case "quAspectedMagician":
+                            _strPriorityTalent = "Aspected Magician";
+                            break;
+                        case "quAdept":
+                            _strPriorityTalent = "Adept";
+                            break;
+                        case "quMagician":
+                            _strPriorityTalent = "Magician";
+                            break;
+                        case "quMysticAdept":
+                            _strPriorityTalent = "Mystic Adept";
+                            break;
+                        case "quTechnomancer":
+                            _strPriorityTalent = "Technomancer";
+                            break;
+                    }
+                    _lstPrioritySkills.Clear();
+                    foreach (XmlNode xmlField in xmlPriorityTalentPick.SelectNodes("field"))
+                    {
+                        string strInnerText = xmlField.InnerText;
+                        if (!string.IsNullOrEmpty(strInnerText))
+                        {
+                            _lstPrioritySkills.Add(strInnerText);
+                        }
                     }
                 }
-            }
 
-            objXmlCharacter.TryGetInt32FieldQuickly("metageneticlimit", ref _intMetageneticLimit);
+                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this)
+                {
+                    Attributes = AttributesPriority[0].ToString(),
+                    Skills = SkillsPriority[0].ToString(),
+                    Resources = ResourcesPriority[0].ToString(),
+                    Special = SpecialPriority[0].ToString(),
+                    Metatype = MetatypePriority[0].ToString(),
+                    SelectedMetatype = Metatype,
+                    SelectedMetavariant = Metavariant,
+                    SelectedMetatypeCategory = MetatypeCategory,
+                    SelectedTalent = TalentPriority,
+                };
+                frmSelectMetatype.ShowDialog();
+                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    return false;
+            }
+            else
+            {
+                frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this);
+                frmSelectMetatype.ShowDialog();
+
+                if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    return false;
+            }
             
-            objXmlCharacter.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("ainormalprogramlimit", ref _intAINormalProgramLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref _intAIAdvancedProgramLimit);
-            objXmlCharacter.TryGetInt32FieldQuickly("spelllimit", ref _intSpellLimit);
             objXmlCharacter.TryGetInt32FieldQuickly("karma", ref _intKarma);
             objXmlCharacter.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
 
-            objXmlCharacter.TryGetInt32FieldQuickly("special", ref _intSpecial);
-            objXmlCharacter.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
-            //objXmlCharacter.tryGetInt32FieldQuickly("attributes", ref _intAttributes); //wonkey
-            objXmlCharacter.TryGetInt32FieldQuickly("totalattributes", ref _intTotalAttributes);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpoints", ref _intContactPoints);
-            objXmlCharacter.TryGetInt32FieldQuickly("contactpointsused", ref _intContactPointsUsed);
-            objXmlCharacter.TryGetInt32FieldQuickly("streetcred", ref _intStreetCred);
-            objXmlCharacter.TryGetInt32FieldQuickly("notoriety", ref _intNotoriety);
-            objXmlCharacter.TryGetInt32FieldQuickly("publicawareness", ref _intPublicAwareness);
-            objXmlCharacter.TryGetInt32FieldQuickly("burntstreetcred", ref _intBurntStreetCred);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
-            objXmlCharacter.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-
-            objXmlCharacter.TryGetInt32FieldQuickly("adeptwaydiscount", ref _intAdeptWayDiscount);
-            objXmlCharacter.TryGetBoolFieldQuickly("adept", ref _blnAdeptEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("magician", ref _blnMagicianEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("technomancer", ref _blnTechnomancerEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("ai", ref _blnAdvancedProgramsEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("cyberwaredisabled", ref _blnCyberwareDisabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("initiationoverride", ref _blnInitiationEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("critter", ref _blnCritterEnabled);
-
-            objXmlCharacter.TryGetBoolFieldQuickly("friendsinhighplaces", ref _blnFriendsInHighPlaces);
-            objXmlCharacter.TryGetDecFieldQuickly("prototypetranshuman", ref _decPrototypeTranshuman);
-            objXmlCharacter.TryGetBoolFieldQuickly("blackmarketdiscount", ref _blnBlackMarketDiscount);
-            objXmlCharacter.TryGetBoolFieldQuickly("excon", ref _blnExCon);
-            objXmlCharacter.TryGetInt32FieldQuickly("trustfund", ref _intTrustFund);
-            objXmlCharacter.TryGetBoolFieldQuickly("restrictedgear", ref _blnRestrictedGear);
-            objXmlCharacter.TryGetBoolFieldQuickly("overclocker", ref _blnOverclocker);
-            objXmlCharacter.TryGetBoolFieldQuickly("mademan", ref _blnMadeMan);
-            objXmlCharacter.TryGetBoolFieldQuickly("fame", ref _blnFame);
-            objXmlCharacter.TryGetBoolFieldQuickly("ambidextrous", ref _blnAmbidextrous);
-            objXmlCharacter.TryGetBoolFieldQuickly("bornrich", ref _blnBornRich);
-            objXmlCharacter.TryGetBoolFieldQuickly("erased", ref _blnErased);
-            objXmlCharacter.TryGetBoolFieldQuickly("magenabled", ref _blnMAGEnabled);
-            objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
-            objXmlCharacter.TryGetBoolFieldQuickly("resenabled", ref _blnRESEnabled);
-            objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
-            objXmlCharacter.TryGetBoolFieldQuickly("depenabled", ref _blnDEPEnabled);
-            objXmlCharacter.TryGetBoolFieldQuickly("groupmember", ref _blnGroupMember);
-            objXmlCharacter.TryGetStringFieldQuickly("groupname", ref _strGroupName);
-            objXmlCharacter.TryGetStringFieldQuickly("groupnotes", ref _strGroupNotes);
-            Timekeeper.Finish("load_char_misc");
-
-            Timekeeper.Start("load_char_mentorspirit");
-            // Improvements.
-            XmlNodeList objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
-            foreach (XmlNode objXmlMentor in objXmlNodeList)
+            XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
+            if (xmlReputationsNode != null)
             {
-                MentorSpirit objMentor = new MentorSpirit(this);
-                objMentor.Load(objXmlMentor);
-                _lstMentorSpirits.Add(objMentor);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Street Cred\"]/@value").InnerText, out _intStreetCred);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Notoriety\"]/@value").InnerText, out _intNotoriety);
+                int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Public Awareness\"]/@value").InnerText, out _intPublicAwareness);
             }
-            Timekeeper.Finish("load_char_mentorspirit");
 
-            _lstInternalIdsNeedingReapplyImprovements.Clear();
-
-            Timekeeper.Start("load_char_imp");
-            // Improvements.
-            objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
-
-            Timekeeper.Finish("load_char_imp");
+            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
+            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
+            
+            objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
+            objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+            Timekeeper.Finish("load_char_misc");
+            
             Timekeeper.Start("load_char_quality");
 
             // Qualities
@@ -9669,26 +9673,591 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_contacts");
+            List<Weapon> lstWeapons = new List<Weapon>();
             Timekeeper.Start("load_char_armor");
 
-            // Armor.
-            objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
-            foreach (XmlNode objXmlArmor in objXmlNodeList)
+            string[] astrPluginNodeNames = { "modifications", "accessories", "ammunition", "programs", "othergear" };
+
+            XmlDocument xmlGearDocument = XmlManager.Load("gear.xml");
+            XmlNode xmlCustomGearDataNode = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
+            Gear ImportHeroLabGear(XmlNode xmlGearImportNode, XmlNode xmlParentGearNode)
             {
-                Armor objArmor = new Armor(this);
-                objArmor.Load(objXmlArmor);
-                _lstArmor.Add(objArmor);
+                Gear objReturn = null;
+                string strOriginalName = xmlGearImportNode.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strOriginalName))
+                {
+                    string strForceValue = string.Empty;
+                    XmlNode xmlGearDataNode = null;
+                    foreach (XmlNode xmlLoopNode in xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strOriginalName + "\")]"))
+                    {
+                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                        if (xmlTestNode != null)
+                        {
+                            // Assumes topmost parent is an AND node
+                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                continue;
+                            }
+                        }
+
+                        xmlGearDataNode = xmlLoopNode;
+                        break;
+                    }
+                    if (xmlGearDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            foreach (XmlNode xmlLoopNode in xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                            {
+                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                if (xmlTestNode != null)
+                                {
+                                    // Assumes topmost parent is an AND node
+                                    if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                xmlGearDataNode = xmlLoopNode;
+                                break;
+                            }
+                            if (xmlGearDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                        }
+                        if (xmlGearDataNode == null)
+                        {
+                            astrOriginalNameSplit = strOriginalName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                foreach (XmlNode xmlLoopNode in xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, \"" + strName + "\")]"))
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlGearDataNode = xmlLoopNode;
+                                    break;
+                                }
+                                if (xmlGearDataNode != null)
+                                    strForceValue = astrOriginalNameSplit[1].Trim();
+                            }
+                        }
+                    }
+                    objReturn = new Gear(this);
+                    if (xmlGearDataNode != null)
+                    {
+                        objReturn.Create(xmlGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes["rating"]?.InnerText), lstWeapons, strForceValue);
+                    }
+                    else
+                    {
+                        objReturn.Create(xmlCustomGearDataNode, Convert.ToInt32(xmlGearImportNode.Attributes["rating"]?.InnerText), lstWeapons, strOriginalName);
+                        objReturn.Cost = xmlGearImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
+                    }
+                    objReturn.Quantity = Convert.ToDecimal(xmlGearImportNode.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                    objReturn.Notes = xmlGearImportNode["description"]?.InnerText;
+
+                    ProcessHeroLabGearPlugins(objReturn, xmlGearImportNode);
+                }
+                return objReturn;
+            }
+
+            void ProcessHeroLabGearPlugins(Gear objGear, XmlNode xmlGearImportNode)
+            {
+                foreach (string strPluginNodeName in astrPluginNodeNames)
+                {
+                    foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                    {
+                        Gear objPlugin = ImportHeroLabGear(xmlPluginToAdd, objGear.GetNode());
+                        if (objPlugin != null)
+                        {
+                            objPlugin.Parent = objGear;
+                            objGear.Children.Add(objPlugin);
+                        }
+                    }
+                    foreach (XmlNode xmlPluginToAdd in xmlGearImportNode.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                    {
+                        string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            Gear objPlugin = objGear.Children.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                            if (objPlugin != null)
+                            {
+                                objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                            }
+                        }
+                    }
+                }
+                objGear.RefreshMatrixAttributeArray();
+            }
+
+            XmlDocument xmlWeaponDocument = XmlManager.Load("weapons.xml");
+            Weapon ImportHeroLabWeapon(XmlNode xmlWeaponImportNode)
+            {
+                Weapon objReturn = null;
+                string strOriginalName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strOriginalName))
+                {
+                    XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strOriginalName + "\"]");
+                    if (xmlWeaponDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strOriginalName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
+                        }
+                        if (xmlWeaponDataNode == null)
+                        {
+                            astrOriginalNameSplit = strOriginalName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strName + "\"]");
+                            }
+                        }
+                    }
+                    if (xmlWeaponDataNode != null)
+                    {
+                        objReturn = new Weapon(this);
+                        objReturn.Create(xmlWeaponDataNode, lstWeapons, true, true, true);
+                        if (objReturn.Cost.Contains("Variable"))
+                        {
+                            objReturn.Cost = xmlWeaponImportNode.SelectSingleNode("gearcost/@value")?.InnerText;
+                        }
+                        objReturn.Notes = xmlWeaponImportNode["description"]?.InnerText;
+
+                        ProcessHeroLabWeaponPlugins(objReturn, xmlWeaponImportNode);
+                    }
+                }
+                return objReturn;
+            }
+
+            void ProcessHeroLabWeaponPlugins(Weapon objWeapon, XmlNode xmlWeaponImportNode)
+            {
+                XmlNode xmlWeaponDataNode = objWeapon.GetNode();
+                foreach (string strName in astrPluginNodeNames)
+                {
+                    foreach (XmlNode xmlWeaponAccessoryToImport in xmlWeaponImportNode.SelectNodes(strName + "/item[@useradded != \"no\"]"))
+                    {
+                        Weapon objUnderbarrel = ImportHeroLabWeapon(xmlWeaponAccessoryToImport);
+                        if (objUnderbarrel != null)
+                        {
+                            objUnderbarrel.Parent = objWeapon;
+                            objWeapon.UnderbarrelWeapons.Add(objUnderbarrel);
+                        }
+                        else
+                        {
+                            string strWeaponAccessoryName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponAccessoryName))
+                            {
+                                XmlNode xmlWeaponAccessoryData = null;
+                                foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, \"" + strWeaponAccessoryName + "\")]"))
+                                {
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/weapondetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/weapondetails");
+                                    if (xmlTestNode != null)
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        if (!xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/oneof");
+                                    if (xmlTestNode != null)
+                                    {
+                                        XmlNodeList objXmlForbiddenList = xmlTestNode.SelectNodes("accessory");
+                                        //Add to set for O(N log M) runtime instead of O(N * M)
+
+                                        HashSet<string> objForbiddenAccessory = new HashSet<string>();
+                                        foreach (XmlNode node in objXmlForbiddenList)
+                                        {
+                                            objForbiddenAccessory.Add(node.InnerText);
+                                        }
+
+                                        if (objWeapon.WeaponAccessories.Any(objAccessory => objForbiddenAccessory.Contains(objAccessory.Name)))
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/oneof");
+                                    if (xmlTestNode != null)
+                                    {
+                                        XmlNodeList objXmlRequiredList = xmlTestNode.SelectNodes("accessory");
+                                        //Add to set for O(N log M) runtime instead of O(N * M)
+
+                                        HashSet<string> objRequiredAccessory = new HashSet<string>();
+                                        foreach (XmlNode node in objXmlRequiredList)
+                                        {
+                                            objRequiredAccessory.Add(node.InnerText);
+                                        }
+
+                                        if (!objWeapon.WeaponAccessories.Any(objAccessory => objRequiredAccessory.Contains(objAccessory.Name)))
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    xmlWeaponAccessoryData = xmlLoopNode;
+                                    break;
+                                }
+                                if (xmlWeaponAccessoryData != null)
+                                {
+                                    WeaponAccessory objWeaponAccessory = new WeaponAccessory(this);
+                                    string strMainMount = xmlWeaponAccessoryData["mount"]?.InnerText.Split('/').FirstOrDefault() ?? string.Empty;
+                                    string strExtraMount = xmlWeaponAccessoryData["extramount"]?.InnerText.Split('/').FirstOrDefault(x => x != strMainMount) ?? string.Empty;
+
+                                    objWeaponAccessory.Create(xmlWeaponAccessoryData, new Tuple<string, string>(strMainMount, strExtraMount), Convert.ToInt32(xmlWeaponAccessoryToImport.Attributes["rating"]?.InnerText));
+                                    objWeaponAccessory.Notes = xmlWeaponAccessoryToImport["description"]?.InnerText;
+                                    objWeaponAccessory.Parent = objWeapon;
+                                    objWeapon.WeaponAccessories.Add(objWeaponAccessory);
+
+                                    foreach (string strPluginName in astrPluginNodeNames)
+                                    {
+                                        foreach (XmlNode xmlPluginToAdd in xmlWeaponAccessoryToImport.SelectNodes(strPluginName + "/item[@useradded != \"no\"]"))
+                                        {
+                                            Gear objPlugin = ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData);
+                                            if (objPlugin != null)
+                                                objWeaponAccessory.Gear.Add(objPlugin);
+                                        }
+                                        foreach (XmlNode xmlPluginToAdd in xmlWeaponAccessoryToImport.SelectNodes(strPluginName + "/item[@useradded = \"no\"]"))
+                                        {
+                                            string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                                            if (!string.IsNullOrEmpty(strName))
+                                            {
+                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                                if (objPlugin != null)
+                                                {
+                                                    objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                                    objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                                    ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Gear objPlugin = ImportHeroLabGear(xmlWeaponAccessoryToImport, null);
+                                    if (objPlugin != null)
+                                        _lstGear.Add(objPlugin);
+                                }
+                            }
+                        }
+                    }
+                    foreach (XmlNode xmlPluginToAdd in xmlWeaponImportNode.SelectNodes(strName + "/item[@useradded = \"no\"]"))
+                    {
+                        string strPluginName = xmlWeaponImportNode.Attributes["name"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strPluginName))
+                        {
+                            Weapon objUnderbarrel = objWeapon.UnderbarrelWeapons.FirstOrDefault(x => x.IncludedInWeapon && (x.Name.Contains(strPluginName) || strPluginName.Contains(x.Name)));
+                            if (objUnderbarrel != null)
+                            {
+                                objUnderbarrel.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                ProcessHeroLabWeaponPlugins(objUnderbarrel, xmlPluginToAdd);
+                            }
+                            else
+                            {
+                                WeaponAccessory objWeaponAccessory = objWeapon.WeaponAccessories.FirstOrDefault(x => x.IncludedInWeapon && (x.Name.Contains(strPluginName) || strPluginName.Contains(x.Name)));
+                                if (objWeaponAccessory != null)
+                                {
+                                    objWeaponAccessory.Notes = xmlPluginToAdd["description"]?.InnerText;
+
+                                    foreach (string strPluginNodeName in astrPluginNodeNames)
+                                    {
+                                        foreach (XmlNode xmlSubPluginToAdd in xmlPluginToAdd.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                        {
+                                            Gear objPlugin = ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode());
+                                            if (objPlugin != null)
+                                                objWeaponAccessory.Gear.Add(objPlugin);
+                                        }
+                                        foreach (XmlNode xmlSubPluginToAdd in xmlPluginToAdd.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                        {
+                                            string strGearName = xmlSubPluginToAdd.Attributes["name"]?.InnerText;
+                                            if (!string.IsNullOrEmpty(strName))
+                                            {
+                                                Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                                if (objPlugin != null)
+                                                {
+                                                    objPlugin.Quantity = Convert.ToDecimal(xmlSubPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                                    objPlugin.Notes = xmlSubPluginToAdd["description"]?.InnerText;
+                                                    ProcessHeroLabGearPlugins(objPlugin, xmlSubPluginToAdd);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                    if (objPlugin != null)
+                                    {
+                                        objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                        ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                objWeapon.RefreshMatrixAttributeArray();
+            }
+
+            // Armor.
+            XmlDocument xmlArmorDocument = XmlManager.Load("armors.xml");
+            foreach (XmlNode xmlArmorToImport in xmlStatBlockBaseNode.SelectNodes("gear/armor/item[@useradded != \"no\"]"))
+            {
+                string strArmorName = xmlArmorToImport.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strArmorName))
+                {
+                    XmlNode xmlArmorData = xmlArmorDocument.SelectSingleNode("chummer/armors/armor[name = \"" + strArmorName + "\"]");
+                    if (xmlArmorData == null)
+                    {
+                        string[] astrOriginalNameSplit = strArmorName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlArmorData = xmlWeaponDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + strName + "\"]");
+                        }
+                        if (xmlArmorData == null)
+                        {
+                            astrOriginalNameSplit = strArmorName.Split(',');
+                            if (astrOriginalNameSplit.Length > 1)
+                            {
+                                string strName = astrOriginalNameSplit[0].Trim();
+                                xmlArmorData = xmlWeaponDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + strName + "\"]");
+                            }
+                        }
+                    }
+                    if (xmlArmorData != null)
+                    {
+                        Armor objArmor = new Armor(this);
+                        objArmor.Create(xmlArmorData, Convert.ToInt32(xmlArmorToImport.Attributes["rating"]?.InnerText), lstWeapons);
+                        objArmor.Notes = xmlArmorToImport["description"]?.InnerText;
+                        _lstArmor.Add(objArmor);
+
+                        foreach (string strName in astrPluginNodeNames)
+                        {
+                            foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(strName + "/item[@useradded != \"no\"]"))
+                            {
+                                string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strArmorModName))
+                                {
+                                    XmlNode xmlArmorModData = xmlArmorDocument.SelectSingleNode("chummer/mods/mod[name = \"" + strArmorModName + "\"]");
+                                    if (xmlArmorModData != null)
+                                    {
+                                        ArmorMod objArmorMod = new ArmorMod(this);
+                                        objArmorMod.Create(xmlArmorModData, Convert.ToInt32(xmlArmorModToImport.Attributes["rating"]?.InnerText), lstWeapons);
+                                        objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                        objArmorMod.Parent = objArmor;
+                                        objArmor.ArmorMods.Add(objArmorMod);
+
+                                        foreach (string strPluginNodeName in astrPluginNodeNames)
+                                        {
+                                            foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                            {
+                                                Gear objPlugin = ImportHeroLabGear(xmlPluginToAdd, xmlArmorModData);
+                                                if (objPlugin != null)
+                                                    objArmorMod.Gear.Add(objPlugin);
+                                            }
+                                            foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                            {
+                                                string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                                                if (!string.IsNullOrEmpty(strGearName))
+                                                {
+                                                    Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
+                                                    if (objPlugin != null)
+                                                    {
+                                                        objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                                        ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Gear objPlugin = ImportHeroLabGear(xmlArmorModToImport, xmlArmorData);
+                                        if (objPlugin != null)
+                                            objArmor.Gear.Add(objPlugin);
+                                    }
+                                }
+                            }
+                            foreach (XmlNode xmlArmorModToImport in xmlArmorToImport.SelectNodes(strName + "/item[@useradded = \"no\"]"))
+                            {
+                                string strArmorModName = xmlArmorModToImport.Attributes["name"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strArmorModName))
+                                {
+                                    ArmorMod objArmorMod = objArmor.ArmorMods.FirstOrDefault(x => x.IncludedInArmor && (x.Name.Contains(strArmorModName) || strArmorModName.Contains(x.Name)));
+                                    if (objArmorMod != null)
+                                    {
+                                        objArmorMod.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                        foreach (string strPluginNodeName in astrPluginNodeNames)
+                                        {
+                                            foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(strPluginNodeName + "/item[@useradded != \"no\"]"))
+                                            {
+                                                Gear objPlugin = ImportHeroLabGear(xmlPluginToAdd, objArmorMod.GetNode());
+                                                if (objPlugin != null)
+                                                    objArmorMod.Gear.Add(objPlugin);
+                                            }
+                                            foreach (XmlNode xmlPluginToAdd in xmlArmorModToImport.SelectNodes(strPluginNodeName + "/item[@useradded = \"no\"]"))
+                                            {
+                                                string strGearName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                                                if (!string.IsNullOrEmpty(strGearName))
+                                                {
+                                                    Gear objPlugin = objArmorMod.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
+                                                    if (objPlugin != null)
+                                                    {
+                                                        objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                                                        ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Gear objPlugin = objArmor.Gear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strArmorModName) || strArmorModName.Contains(x.Name)));
+                                        if (objPlugin != null)
+                                        {
+                                            objPlugin.Quantity = Convert.ToDecimal(xmlArmorModToImport.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                                            objPlugin.Notes = xmlArmorModToImport["description"]?.InnerText;
+                                            ProcessHeroLabGearPlugins(objPlugin, xmlArmorModToImport);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             Timekeeper.Finish("load_char_armor");
             Timekeeper.Start("load_char_weapons");
 
             // Weapons.
-            objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
-            foreach (XmlNode objXmlWeapon in objXmlNodeList)
+            foreach (XmlNode xmlWeaponToImport in xmlStatBlockBaseNode.SelectNodes("gear/weapons/item[@useradded != \"no\"]"))
             {
-                Weapon objWeapon = new Weapon(this);
-                objWeapon.Load(objXmlWeapon);
-                _lstWeapons.Add(objWeapon);
+                Weapon objWeapon = ImportHeroLabWeapon(xmlWeaponToImport);
+                if (objWeapon != null)
+                    _lstWeapons.Add(objWeapon);
+            }
+            foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes("gear/weapons/item[@useradded = \"no\"]"))
+            {
+                string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName))
+                {
+                    Weapon objWeapon = _lstWeapons.FirstOrDefault(x => !string.IsNullOrEmpty(x.ParentID) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                    if (objWeapon != null)
+                    {
+                        objWeapon.Notes = xmlPluginToAdd["description"]?.InnerText;
+                        ProcessHeroLabWeaponPlugins(objWeapon, xmlPluginToAdd);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_weapons");
@@ -9716,30 +10285,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_spells");
-            Timekeeper.Start("load_char_foci");
-
-            // Foci.
-            objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
-            foreach (XmlNode objXmlFocus in objXmlNodeList)
-            {
-                Focus objFocus = new Focus(this);
-                objFocus.Load(objXmlFocus);
-                _lstFoci.Add(objFocus);
-            }
-
-            Timekeeper.Finish("load_char_foci");
-            Timekeeper.Start("load_char_sfoci");
-
-            // Stacked Foci.
-            objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
-            foreach (XmlNode objXmlStack in objXmlNodeList)
-            {
-                StackedFocus objStack = new StackedFocus(this);
-                objStack.Load(objXmlStack);
-                _lstStackedFoci.Add(objStack);
-            }
-
-            Timekeeper.Finish("load_char_sfoci");
             Timekeeper.Start("load_char_powers");
 
             // Powers.
@@ -9824,18 +10369,6 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_mam");
-            Timekeeper.Start("load_char_mod");
-
-            // Limit Modifiers.
-            objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
-            foreach (XmlNode objXmlLimit in objXmlNodeList)
-            {
-                LimitModifier obLimitModifier = new LimitModifier(this);
-                obLimitModifier.Load(objXmlLimit);
-                _lstLimitModifiers.Add(obLimitModifier);
-            }
-
-            Timekeeper.Finish("load_char_mod");
             Timekeeper.Start("load_char_lifestyle");
 
             // Lifestyles.
@@ -9851,12 +10384,25 @@ namespace Chummer
             Timekeeper.Start("load_char_gear");
 
             // <gears>
-            objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
-            foreach (XmlNode objXmlGear in objXmlNodeList)
+            foreach (XmlNode xmlGearToImport in xmlStatBlockBaseNode.SelectNodes("gear/equipment/item[@useradded != \"no\"]"))
             {
-                Gear objGear = new Gear(this);
-                objGear.Load(objXmlGear);
-                _lstGear.Add(objGear);
+                Gear objGear = ImportHeroLabGear(xmlGearToImport, null);
+                if (objGear != null)
+                    _lstGear.Add(objGear);
+            }
+            foreach (XmlNode xmlPluginToAdd in xmlStatBlockBaseNode.SelectNodes("gear/equipment/item[@useradded = \"no\"]"))
+            {
+                string strName = xmlPluginToAdd.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName))
+                {
+                    Gear objPlugin = _lstGear.FirstOrDefault(x => x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                    if (objPlugin != null)
+                    {
+                        objPlugin.Quantity = Convert.ToDecimal(xmlPluginToAdd.Attributes["quantity"]?.InnerText ?? "1", GlobalOptions.InvariantCultureInfo);
+                        objPlugin.Notes = xmlPluginToAdd["description"]?.InnerText;
+                        ProcessHeroLabGearPlugins(objPlugin, xmlPluginToAdd);
+                    }
+                }
             }
 
             Timekeeper.Finish("load_char_gear");
@@ -9943,6 +10489,9 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_elog");
+
+            _lstWeapons.AddRange(lstWeapons);
+
             Timekeeper.Start("load_char_unarmed");
 
             // Look for the unarmed attack
@@ -9989,7 +10538,7 @@ namespace Chummer
                     _intMaxKarma = Convert.ToInt32(strKarma);
                     _decMaxNuyen = Convert.ToDecimal(strNuyen);
                     _intContactMultiplier = Convert.ToInt32(strContactMultiplier);
-                    _intContactPoints = (CHA.Base + CHA.TotalKarma) * _intContactMultiplier;
+                    _intContactPoints = (CHA.Base + CHA.Karma) * _intContactMultiplier;
                 }
             }
 
