@@ -17503,6 +17503,8 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
                     ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagReduction);
                 }
                 else
                 {
@@ -17680,8 +17682,11 @@ namespace Chummer
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
             }
 
-            if (CharacterObject.MysticAdeptPowerPoints > dicAttributeTotalValues["MAG"])
-                CharacterObject.MysticAdeptPowerPoints = dicAttributeTotalValues["MAG"];
+            if (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
+            {
+                if (CharacterObject.MysticAdeptPowerPoints > dicAttributeTotalValues["MAG"])
+                    CharacterObject.MysticAdeptPowerPoints = dicAttributeTotalValues["MAG"];
+            }
 
             // Condition Monitor.
             UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip);
