@@ -53,9 +53,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Armor information.
@@ -74,11 +71,17 @@ namespace Chummer
             {
                 chkHideOverAvailLimit.Visible = false;
                 chkHideOverAvailLimit.Checked = false;
+                lblMarkupLabel.Visible = true;
+                nudMarkup.Visible = true;
+                lblMarkupPercentLabel.Visible = true;
             }
             else
             {
                 chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                lblMarkupLabel.Visible = false;
+                nudMarkup.Visible = false;
+                lblMarkupPercentLabel.Visible = false;
             }
 
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
@@ -230,7 +233,7 @@ namespace Chummer
             {
                 if (lstArmor.SelectedIndex + 1 < lstArmor.Items.Count)
                 {
-                    lstArmor.SelectedIndex++;
+                    lstArmor.SelectedIndex += 1;
                 }
                 else if (lstArmor.Items.Count > 0)
                 {
@@ -241,7 +244,7 @@ namespace Chummer
             {
                 if (lstArmor.SelectedIndex - 1 >= 0)
                 {
-                    lstArmor.SelectedIndex--;
+                    lstArmor.SelectedIndex -= 1;
                 }
                 else if (lstArmor.Items.Count > 0)
                 {
@@ -338,9 +341,8 @@ namespace Chummer
                 string strSearchText = txtSearch.Text.ToUpper();
                 strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
             }
-
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + ']');
-            BuildArmorList(objXmlArmorList);
+            
+            BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + ']'));
         }
 
         /// <summary>
@@ -428,15 +430,21 @@ namespace Chummer
                                 }
                             }
 
-                            lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
+                            lstArmors.Add(new ListItem(objXmlArmor["id"].InnerText, strDisplayName));
                         }
                     }
                     lstArmors.Sort(CompareListItems.CompareNames);
+                    _blnLoading = true;
+                    string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.DataSource = null;
                     lstArmor.ValueMember = "Value";
                     lstArmor.DisplayMember = "Name";
                     lstArmor.DataSource = lstArmors;
+                    _blnLoading = false;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        lstArmor.SelectedValue = strOldSelected;
+                    else
+                        lstArmor.SelectedIndex = -1;
                     lstArmor.EndUpdate();
                     break;
             }

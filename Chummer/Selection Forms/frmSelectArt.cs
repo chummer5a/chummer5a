@@ -237,6 +237,8 @@ namespace Chummer
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstArt.SelectedValue = strOldSelected;
+            else
+                lstArt.SelectedIndex = -1;
             lstArt.EndUpdate();
         }
 
