@@ -9585,9 +9585,13 @@ namespace Chummer
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return false;
             }
-            
-            objXmlCharacter.TryGetInt32FieldQuickly("karma", ref _intKarma);
-            objXmlCharacter.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
+
+            XmlNode xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNode("karma");
+            if (xmlKarmaNode != null)
+            {
+                int.TryParse(xmlKarmaNode.Attributes["left"]?.InnerText, out _intKarma);
+                int.TryParse(xmlKarmaNode.Attributes["total"]?.InnerText, out _intTotalKarma);
+            }
 
             XmlNode xmlReputationsNode = xmlStatBlockBaseNode.SelectSingleNode("reputations");
             if (xmlReputationsNode != null)
@@ -9597,18 +9601,161 @@ namespace Chummer
                 int.TryParse(xmlReputationsNode.SelectSingleNode("reputation[name = \"Public Awareness\"]/@value").InnerText, out _intPublicAwareness);
             }
 
-            objXmlCharacter.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
-            objXmlCharacter.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
-            
+            if (Created)
+            {
+                decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNode("cash/@total")?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _decNuyen);
+            }
+
+            /* TODO: Initiation, Submersion Grades
             objXmlCharacter.TryGetInt32FieldQuickly("initiategrade", ref _intInitiateGrade);
             objXmlCharacter.TryGetInt32FieldQuickly("submersiongrade", ref _intSubmersionGrade);
+            */
             Timekeeper.Finish("load_char_misc");
-            
+
+            List<Weapon> lstWeapons = new List<Weapon>();
+
             Timekeeper.Start("load_char_quality");
 
             // Qualities
-            objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
             XmlDocument xmlQualitiesDocument = XmlManager.Load("qualities.xml");
+            foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes("qualities/positive/quality[traitcost/@bp != \"0\"]"))
+            {
+                string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strQualityName))
+                {
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    if (intDicepoolLabelIndex != -1)
+                    {
+                        int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
+                        if (intCullIndex != -1)
+                            strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                    }
+                    int intQuantity = 1;
+                    for (int i = 1; i <= 15; ++i)
+                    {
+                        string strLoopString = " (" + i.ToString() + ')';
+                        if (strQualityName.EndsWith(strLoopString))
+                        {
+                            strQualityName = strQualityName.TrimEnd(strLoopString, true);
+                            intQuantity = i;
+                            break;
+                        }
+                    }
+
+                    string strForcedValue = string.Empty;
+                    XmlNode xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                    if (xmlQualityDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strQualityName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strName + "\"]");
+                            if (xmlQualityDataNode != null)
+                                strForcedValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                    if (xmlQualityDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strQualityName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strName + "\"]");
+                            if (xmlQualityDataNode != null)
+                                strForcedValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                    if (xmlQualityDataNode != null)
+                    {
+                        for (int i = 0; i < intQuantity; ++i)
+                        {
+                            Quality objQuality = new Quality(this);
+                            objQuality.Create(xmlQualityDataNode, this, QualitySource.Selected, lstWeapons, strForcedValue);
+                            objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                            _lstQualities.Add(objQuality);
+                        }
+                    }
+                }
+            }
+            foreach (XmlNode xmlQualityToImport in xmlStatBlockBaseNode.SelectNodes("qualities/negative/quality[traitcost/@bp != \"0\"]"))
+            {
+                string strQualityName = xmlQualityToImport.Attributes["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strQualityName))
+                {
+                    int intDicepoolLabelIndex = strQualityName.LastIndexOf("dicepool");
+                    if (intDicepoolLabelIndex != -1)
+                    {
+                        int intCullIndex = strQualityName.LastIndexOf('(', intDicepoolLabelIndex);
+                        if (intCullIndex != -1)
+                            strQualityName = strQualityName.Substring(0, intCullIndex).Trim();
+                    }
+                    switch (strQualityName)
+                    {
+                        case "Reduced (hearing)":
+                            strQualityName = "Reduced Sense (Hearing)";
+                            break;
+                        case "Reduced (smell)":
+                            strQualityName = "Reduced Sense (Smell)";
+                            break;
+                        case "Reduced (taste)":
+                            strQualityName = "Reduced Sense (Taste)";
+                            break;
+                        case "Reduced (touch)":
+                            strQualityName = "Reduced Sense (Touch)";
+                            break;
+                        case "Reduced (sight)":
+                            strQualityName = "Reduced Sense (Sight)";
+                            break;
+                    }
+                    int intQuantity = 1;
+                    for (int i = 1; i <= 15; ++i)
+                    {
+                        string strLoopString = " (" + i.ToString() + ')';
+                        if (strQualityName.EndsWith(strLoopString))
+                        {
+                            strQualityName = strQualityName.TrimEnd(strLoopString, true);
+                            intQuantity = i;
+                            break;
+                        }
+                    }
+
+                    string strForcedValue = string.Empty;
+                    XmlNode xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strQualityName + "\"]");
+                    if (xmlQualityDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strQualityName.Split(':');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strName + "\"]");
+                            if (xmlQualityDataNode != null)
+                                strForcedValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                    if (xmlQualityDataNode == null)
+                    {
+                        string[] astrOriginalNameSplit = strQualityName.Split(',');
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            xmlQualityDataNode = xmlQualitiesDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + strName + "\"]");
+                            if (xmlQualityDataNode != null)
+                                strForcedValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                    if (xmlQualityDataNode != null)
+                    {
+                        for (int i = 0; i < intQuantity; ++i)
+                        {
+                            Quality objQuality = new Quality(this);
+                            objQuality.Create(xmlQualityDataNode, this, QualitySource.Selected, lstWeapons, strForcedValue);
+                            objQuality.Notes = xmlQualityToImport["description"]?.InnerText ?? string.Empty;
+                            _lstQualities.Add(objQuality);
+                        }
+                    }
+                }
+            }
 
             Timekeeper.Finish("load_char_quality");
             AttributeSection.Load(objXmlCharacter);
@@ -9664,16 +9811,54 @@ namespace Chummer
             Timekeeper.Start("load_char_contacts");
 
             // Contacts.
-            objXmlNodeList = objXmlCharacter.SelectNodes("contacts/contact");
-            foreach (XmlNode objXmlContact in objXmlNodeList)
+            foreach (XmlNode xmlContactToImport in xmlStatBlockBaseNode.SelectNodes("contacts/contact[@useradded != \"no\"]"))
             {
-                Contact objContact = new Contact(this);
-                objContact.Load(objXmlContact);
+                Contact objContact = new Contact(this)
+                {
+                    EntityType = ContactType.Contact
+                };
+                XmlAttributeCollection xmlImportAttributes = xmlContactToImport.Attributes;
+                objContact.Name = xmlImportAttributes["name"]?.InnerText ?? string.Empty;
+                objContact.Role = xmlImportAttributes["type"]?.InnerText ?? string.Empty;
+                objContact.Connection = Convert.ToInt32(xmlImportAttributes["connection"]?.InnerText ?? "1");
+                objContact.Loyalty = Convert.ToInt32(xmlImportAttributes["loyalty"]?.InnerText ?? "1");
+                string strDescription = xmlContactToImport["description"]?.InnerText;
+                foreach (string strLine in strDescription.Split('\n'))
+                {
+                    string[] astrLineColonSplit = strLine.Split(':');
+                    switch (astrLineColonSplit[0])
+                    {
+                        case "Metatype":
+                            objContact.Metatype = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Sex":
+                            objContact.Sex = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Age":
+                            objContact.Age = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Preferred Payment Method":
+                            objContact.PreferredPayment = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Hobbies/Vice":
+                            objContact.HobbiesVice = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Personal Life":
+                            objContact.PersonalLife = astrLineColonSplit[1].Trim();
+                            break;
+                        case "Type":
+                            objContact.Type = astrLineColonSplit[1].Trim();
+                            break;
+                        default:
+                            objContact.Notes += strLine + '\n';
+                            break;
+                    }
+                }
+                objContact.Notes = objContact.Notes.TrimEnd('\n');
                 _lstContacts.Add(objContact);
             }
 
             Timekeeper.Finish("load_char_contacts");
-            List<Weapon> lstWeapons = new List<Weapon>();
             Timekeeper.Start("load_char_armor");
 
             string[] astrPluginNodeNames = { "modifications", "accessories", "ammunition", "programs", "othergear" };
