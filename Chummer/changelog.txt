@@ -48,6 +48,7 @@ Application Changes:
 - Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
 - Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
 - Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
+- Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
 
 Data Changes:
 
