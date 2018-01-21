@@ -3648,95 +3648,90 @@ namespace Chummer
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode != null)
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0) return;
+            Cyberware objParent = null;
+            XmlDocument objXmlDocument = null;
+            // Locate the piece of Cyberware that is selected in the tree.
+            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
+            if (objCyberware != null)
             {
-                if (treCyberware.SelectedNode.Level > 0)
+                objParent = objCyberware.Parent;
+
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                 {
-                    Cyberware objParent = null;
-                    XmlDocument objXmlDocument = null;
-                    // Locate the piece of Cyberware that is selected in the tree.
-                    Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
-                    if (objCyberware != null)
-                    {
-                        objParent = objCyberware.Parent;
-
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        {
-                            objXmlDocument = XmlManager.Load("bioware.xml");
-                        }
-                        else
-                        {
-                            objXmlDocument = XmlManager.Load("cyberware.xml");
-                        }
-
-                        if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
-                        {
-                            MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                        {
-                            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
-                                return;
-                        }
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        {
-                            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
-                                return;
-                        }
-
-                        objCyberware.DeleteCyberware(treWeapons, treVehicles);
-                        // Remove the Children.
-                        objCyberware.Children.Clear();
-
-                        CharacterObject.Cyberware.Remove(objCyberware);
-
-                        if (objCyberware.Parent == null)
-                        {
-                            //Add essence hole.
-                            IncreaseEssenceHole((int) (objCyberware.CalculatedESS() * 100m));
-                        }
-
-                        // Open the Cyberware XML file and locate the selected piece.
-                        XmlNode objXmlCyberware;
-                        if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                        {
-                            objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
-                        }
-                        else
-                        {
-                            objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
-                        }
-
-                        // Fix for legacy characters with old addqualities improvements. 
-                        RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"));
-                    }
-                    else
-                    {
-                        // Find and remove the selected piece of Gear.
-                        Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), out objCyberware);
-                        if (objGear.Parent == null)
-                            objCyberware.Gear.Remove(objGear);
-                        else
-                        {
-                            objGear.Parent.Children.Remove(objGear);
-                            objGear.Parent.RefreshMatrixAttributeArray();
-                        }
-                        objGear.DeleteGear(treWeapons, treVehicles);
-                    }
-
-                    // If the Parent is populated, remove the item from its Parent.
-                    if (objParent != null)
-                        objParent.Children.Remove(objCyberware);
+                    objXmlDocument = XmlManager.Load("bioware.xml");
+                }
+                else
+                {
+                    objXmlDocument = XmlManager.Load("cyberware.xml");
                 }
 
-                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2)
+                {
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-                IsCharacterUpdateRequested = true;
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                {
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
+                        return;
+                }
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
+                        return;
+                }
 
-                IsDirty = true;
+                objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                // Remove the Children.
+                objCyberware.Children.Clear();
+
+                CharacterObject.Cyberware.Remove(objCyberware);
+
+                if (objCyberware.Parent == null)
+                {
+                    //Add essence hole.
+                    IncreaseEssenceHole((int)(objCyberware.CalculatedESS() * 100m));
+                }
+
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlNode objXmlCyberware;
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
+                }
+                else
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
+                }
+
+                // Fix for legacy characters with old addqualities improvements. 
+                RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"));
             }
+            else
+            {
+                // Find and remove the selected piece of Gear.
+                Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), out objCyberware);
+                if (objGear.Parent == null)
+                    objCyberware.Gear.Remove(objGear);
+                else
+                {
+                    objGear.Parent.Children.Remove(objGear);
+                    objGear.Parent.RefreshMatrixAttributeArray();
+                }
+                objGear.DeleteGear(treWeapons, treVehicles);
+            }
+
+            // If the Parent is populated, remove the item from its Parent.
+            if (objParent != null)
+                objParent.Children.Remove(objCyberware);
+
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         private void IncreaseEssenceHole(int intCentiessence)

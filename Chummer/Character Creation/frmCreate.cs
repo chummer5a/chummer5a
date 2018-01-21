@@ -3439,78 +3439,76 @@ namespace Chummer
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode.Level > 0)
+            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level <= 0) return;
+            XmlDocument objXmlDocument = null;
+            // Locate the piece of Cyberware that is selected in the tree.
+            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
+            if (objCyberware != null)
             {
-                XmlDocument objXmlDocument = null;
-                // Locate the piece of Cyberware that is selected in the tree.
-                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
-                if (objCyberware != null)
+                if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !CharacterObject.IgnoreRules)
                 {
-                    if (objCyberware.Capacity == "[*]" && treCyberware.SelectedNode.Level == 2 && !CharacterObject.IgnoreRules)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveCyberware", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveCyberware", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
                         return;
-                    }
-                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteBioware", GlobalOptions.Language)))
-                            return;
-                        objXmlDocument = XmlManager.Load("bioware.xml");
-                    }
-                    else
-                    {
-                        if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
-                            return;
-                        objXmlDocument = XmlManager.Load("cyberware.xml");
-                    }
-
-                    objCyberware.DeleteCyberware(treWeapons, treVehicles);
-                    // Remove the Children.
-                    objCyberware.Children.Clear();
-
-                    // Open the Cyberware XML file and locate the selected piece.
-                    XmlNode objXmlCyberware;
-                    if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                    {
-                        objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
-                    }
-                    else
-                    {
-                        objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
-                    }
-
-                    // Fix for legacy characters with old addqualities improvements.
-                    RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"));
-                    // Remove any Improvements created by the piece of Cyberware.
-                    ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
-                    CharacterObject.Cyberware.Remove(objCyberware);
-
-                    // If the Parent is populated, remove the item from its Parent.
-                    if (objCyberware.Parent != null)
-                        objCyberware.Parent.Children.Remove(objCyberware);
+                    objXmlDocument = XmlManager.Load("bioware.xml");
                 }
                 else
                 {
-                    // Find and remove the selected piece of Gear.
-                    Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), out objCyberware);
-                    if (objGear == null)
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCyberware", GlobalOptions.Language)))
                         return;
-                    if (objGear.Parent == null)
-                        objCyberware.Gear.Remove(objGear);
-                    else
-                    {
-                        objGear.Parent.Children.Remove(objGear);
-                        objGear.Parent.RefreshMatrixAttributeArray();
-                    }
-                    objGear.DeleteGear(treWeapons, treVehicles);
+                    objXmlDocument = XmlManager.Load("cyberware.xml");
                 }
 
-                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                // Remove the Children.
+                objCyberware.Children.Clear();
 
-                IsCharacterUpdateRequested = true;
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlNode objXmlCyberware;
+                if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = \"" + objCyberware.Name + "\"]");
+                }
+                else
+                {
+                    objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + objCyberware.Name + "\"]");
+                }
 
-                IsDirty = true;
+                // Fix for legacy characters with old addqualities improvements.
+                RemoveAddedQualities(objXmlCyberware?.SelectNodes("addqualities/addquality"));
+                // Remove any Improvements created by the piece of Cyberware.
+                ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
+                CharacterObject.Cyberware.Remove(objCyberware);
+
+                // If the Parent is populated, remove the item from its Parent.
+                if (objCyberware.Parent != null)
+                    objCyberware.Parent.Children.Remove(objCyberware);
             }
+            else
+            {
+                // Find and remove the selected piece of Gear.
+                Gear objGear = CharacterObject.Cyberware.FindCyberwareGear(treCyberware.SelectedNode.Tag.ToString(), out objCyberware);
+                if (objGear == null)
+                    return;
+                if (objGear.Parent == null)
+                    objCyberware.Gear.Remove(objGear);
+                else
+                {
+                    objGear.Parent.Children.Remove(objGear);
+                    objGear.Parent.RefreshMatrixAttributeArray();
+                }
+                objGear.DeleteGear(treWeapons, treVehicles);
+            }
+
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         private void cmdAddComplexForm_Click(object sender, EventArgs e)
