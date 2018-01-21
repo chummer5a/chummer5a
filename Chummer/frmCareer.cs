@@ -17516,8 +17516,20 @@ namespace Chummer
                     // If our new reduction is less than our old one, we don't actually get any new values back
                     intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intMAGValueNoCareerReduction - intOldMAGValue);
                     intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intMAGAdeptValueNoCareerReduction - intOldMAGAdeptValue);
+                    // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
+                    int intMAGDelta = intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction;
+                    if (intMAGDelta > 0 && CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                    {
+                        // First burn away PPs gained during chargen...
+                        int intPPBurn = Math.Min(CharacterObject.MysticAdeptPowerPoints, intMAGDelta);
+                        CharacterObject.MysticAdeptPowerPoints -= intPPBurn;
+                        // ... now burn away PPs gained from initiations.
+                        intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
+                        // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                    }
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction);
+                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
                     int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);

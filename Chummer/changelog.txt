@@ -49,6 +49,8 @@ Application Changes:
 - Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
 - Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
 - Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
+- Fixed a bug where adding a mentor spirit with Mentor's Mask enabled would not always properly update UI elements.
+- Fixed a bug where losing MAG in career mode as a mystic adept when the character had more MAG than PPs (either from initiations or from purchased PPs) would not cause the character to lose PPs.
 
 Data Changes:
 
