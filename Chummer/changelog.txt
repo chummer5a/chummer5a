@@ -43,6 +43,7 @@ Application Changes:
 - Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
 - Fixed an issue where weapon mount options with requirement nodes related to Xml data details could not be applied. Fixes #2355.
 - Fixed an issue where modifying an existing weapon mount would not properly update its node in the vehicle tree view.
+- Fixed an issue where Trust Fund III and Trust Fund IV did not properly zero the costs of the lifestyles to which they were applied.
 
 Data Changes:
 

@@ -4057,21 +4057,25 @@ namespace Chummer
         private void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
             // Delete the selected Vehicle.
-            if (treVehicles.SelectedNode == null)
+            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            // Delete the selected Vehicle.
+            if (objSelectedNode == null)
             {
                 return;
             }
 
-            if (treVehicles.SelectedNode.Level == 0)
+            string strSelectedId = objSelectedNode.Tag.ToString();
+
+            if (objSelectedNode.Level == 0)
             {
-                if (treVehicles.SelectedNode.Tag.ToString() == "Node_SelectedVehicles")
+                if (strSelectedId == "Node_SelectedVehicles")
                     return;
 
                 if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
                     return;
-                
+
                 List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in treVehicles.SelectedNode.Nodes)
+                foreach (TreeNode objNode in objSelectedNode.Nodes)
                 {
                     string strId = objNode.Tag.ToString();
                     Vehicle objLoopVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strId);
@@ -4090,8 +4094,8 @@ namespace Chummer
                 }
 
                 // Remove the Location from the character, then remove the selected node.
-                CharacterObject.VehicleLocations.Remove(treVehicles.SelectedNode.Text);
-                treVehicles.SelectedNode.Remove();
+                CharacterObject.VehicleLocations.Remove(objSelectedNode.Text);
+                objSelectedNode.Remove();
 
                 IsDirty = true;
                 return;
@@ -4100,7 +4104,7 @@ namespace Chummer
             // Weapons that are first-level children of vehicles cannot be removed (for some reason)
             foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
             {
-                if (objCharacterVehicle.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == treVehicles.SelectedNode.Tag.ToString()) != null)
+                if (objCharacterVehicle.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strSelectedId) != null)
                 {
                     MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -4111,7 +4115,7 @@ namespace Chummer
                 return;
 
             // Locate the Vehicle that is selected in the tree.
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
+            Vehicle objVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
 
             // Removing a Vehicle
             if (objVehicle != null)
@@ -4154,11 +4158,11 @@ namespace Chummer
                         }
                     }
                 }
-                treVehicles.SelectedNode.Remove();
+                objSelectedNode.Remove();
             }
             else
             {
-                WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(treVehicles.SelectedNode.Tag.ToString(), out objVehicle);
+                WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
                 // Removing a Weapon Mount
                 if (objWeaponMount != null)
                 {
@@ -4169,11 +4173,6 @@ namespace Chummer
                     }
                     foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
                     {
-                        // Check for Improved Sensor bonus.
-                        if (objLoopMod.Bonus?["improvesensor"] != null || (objLoopMod.WirelessOn && objLoopMod.WirelessBonus?["improvesensor"] != null))
-                        {
-                            ChangeVehicleSensor(objVehicle, false);
-                        }
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
                             objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
@@ -4183,12 +4182,12 @@ namespace Chummer
                             objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                         }
                     }
-                    treVehicles.SelectedNode.Remove();
+                    objSelectedNode.Remove();
                 }
                 else
                 {
                     // Locate the VehicleMod that is selected in the tree.
-                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), out objVehicle, out objWeaponMount);
+                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
                     // Removing a Vehicle Mod
                     if (objMod != null)
                     {
@@ -4231,7 +4230,7 @@ namespace Chummer
                             objRetrofit.Create(objXmlNode, 0, objVehicle);
                             objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
                             objVehicle.Mods.Add(objRetrofit);
-                            treVehicles.SelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
+                            objSelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
 
                             // Create an Expense Log Entry for removing the Obsolete Mod.
                             ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
@@ -4254,11 +4253,11 @@ namespace Chummer
                         {
                             objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                         }
-                        treVehicles.SelectedNode.Remove();
+                        objSelectedNode.Remove();
                     }
                     else
                     {
-                        Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), out objVehicle, out objWeaponMount, out objMod);
+                        Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out objVehicle, out objWeaponMount, out objMod);
                         // Removing a Weapon
                         if (objWeapon != null)
                         {
@@ -4272,11 +4271,11 @@ namespace Chummer
                             // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
                             else
                                 objVehicle.Weapons.Remove(objWeapon);
-                            treVehicles.SelectedNode.Remove();
+                            objSelectedNode.Remove();
                         }
                         else
                         {
-                            WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(treVehicles.SelectedNode.Tag.ToString());
+                            WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
                             // Removing a weapon accessory
                             if (objWeaponAccessory != null)
                             {
@@ -4285,44 +4284,50 @@ namespace Chummer
                                 {
                                     objLoopGear.DeleteGear(treWeapons, treVehicles);
                                 }
-                                treVehicles.SelectedNode.Remove();
+                                objSelectedNode.Remove();
                             }
                             else
                             {
-                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString(), out objMod);
+                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId, out objMod);
                                 // Removing Cyberware
                                 if (objCyberware != null)
                                 {
-                                    if (objCyberware.Parent == null)
-                                        objMod.Cyberware.Remove(objCyberware);
-                                    else
+                                    if (objCyberware.Parent != null)
                                     {
                                         objCyberware.Parent.Children.Remove(objCyberware);
+                                        objCyberware.RefreshMatrixAttributeArray();
                                     }
-                                    treVehicles.SelectedNode.Remove();
+                                    else
+                                    {
+                                        objMod.Cyberware.Remove(objCyberware);
+                                    }
+                                    objSelectedNode.Remove();
 
                                     objCyberware.DeleteCyberware(treWeapons, treVehicles);
                                 }
                                 else
                                 {
-                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString(), out objVehicle, out objWeaponAccessory, out objCyberware);
+                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objWeaponAccessory, out objCyberware);
                                     if (objGear != null)
                                     {
-                                        if (objGear.Parent == null)
-                                        {
-                                            if (objCyberware != null)
-                                                objCyberware.Gear.Remove(objGear);
-                                            else if (objWeaponAccessory != null)
-                                                objWeaponAccessory.Gear.Remove(objGear);
-                                            else
-                                                objVehicle.Gear.Remove(objGear);
-                                        }
-                                        else
+                                        if (objGear.Parent != null)
                                         {
                                             objGear.Parent.Children.Remove(objGear);
                                             objGear.Parent.RefreshMatrixAttributeArray();
                                         }
-                                        treVehicles.SelectedNode.Remove();
+                                        else if (objCyberware != null)
+                                        {
+                                            objCyberware.Gear.Remove(objGear);
+                                            objCyberware.RefreshMatrixAttributeArray();
+                                        }
+                                        else if (objWeaponAccessory != null)
+                                            objWeaponAccessory.Gear.Remove(objGear);
+                                        else
+                                        {
+                                            objVehicle.Gear.Remove(objGear);
+                                            objVehicle.RefreshMatrixAttributeArray();
+                                        }
+                                        objSelectedNode.Remove();
 
                                         objGear.DeleteGear(treWeapons, treVehicles);
                                     }

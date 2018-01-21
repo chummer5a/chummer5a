@@ -629,11 +629,11 @@ namespace Chummer.Backend.Equipment
                     switch (_objCharacter.TrustFund)
                     {
                         case 1:
-                        case 3:
+                        case 4:
                             return BaseLifestyle == "Medium";
                         case 2:
                             return BaseLifestyle == "Low";
-                        case 4:
+                        case 3:
                             return BaseLifestyle == "High";
                     }
                 }
