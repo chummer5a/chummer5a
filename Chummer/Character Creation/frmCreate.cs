@@ -4271,14 +4271,6 @@ namespace Chummer
                                 objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
                                 objVehicle.Mods.Add(objRetrofit);
                                 objSelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
-
-                                // Create an Expense Log Entry for removing the Obsolete Mod.
-                                ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                                objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit", GlobalOptions.Language).Replace("{0}", objVehicle.DisplayName(GlobalOptions.Language)), ExpenseType.Nuyen, DateTime.Now);
-                                CharacterObject.ExpenseEntries.Add(objEntry);
-
-                                // Adjust the character's Nuyen total.
-                                CharacterObject.Nuyen += decCost * -1;
                             }
 
                             if (objWeaponMount != null)
