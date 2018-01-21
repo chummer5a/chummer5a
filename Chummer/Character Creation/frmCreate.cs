@@ -4256,11 +4256,6 @@ namespace Chummer
 
                                 // Make sure the character has enough Nuyen for the expense.
                                 decimal decCost = decVehicleCost * decPercentage / 100;
-                                if (decCost > CharacterObject.Nuyen)
-                                {
-                                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    return;
-                                }
 
                                 // Create a Vehicle Mod for the Retrofit.
                                 VehicleMod objRetrofit = new VehicleMod(CharacterObject);
@@ -4269,6 +4264,7 @@ namespace Chummer
                                 XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                                 objRetrofit.Create(objXmlNode, 0, objVehicle);
                                 objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
+                                objRetrofit.IncludedInVehicle = true;
                                 objVehicle.Mods.Add(objRetrofit);
                                 objSelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
                             }
