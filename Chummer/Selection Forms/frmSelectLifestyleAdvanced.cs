@@ -161,8 +161,19 @@ namespace Chummer
             Label_SelectAdvancedLifestyle_Base_Securities.Text = LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base_Security", GlobalOptions.Language).Replace("{0}", (nudSecurity.Value).ToString(GlobalOptions.CultureInfo)).Replace("{1}", objXmlAspect["limit"].InnerText);
 
             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + strBaseLifestyle + "\"]");
-            if (objXmlAspect?["source"] != null && objXmlAspect["page"] != null)
-                lblSource.Text = objXmlAspect["source"].InnerText + ' ' + objXmlAspect["page"].InnerText;
+
+            string strSource = objXmlAspect["source"]?.InnerText ?? string.Empty;
+            string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+            {
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
 
             cboBaseLifestyle.EndUpdate();
             _blnSkipRefresh = false;
@@ -219,15 +230,23 @@ namespace Chummer
                 if (objXmlAspect != null)
                 {
                     objGridNodes = objXmlAspect.SelectNodes("freegrids/freegrid");
-                    string strSource = objXmlAspect["source"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strSource))
+                    string strSource = objXmlAspect["source"]?.InnerText ?? string.Empty;
+                    string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText ?? string.Empty;
+                    if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strPage))
-                        {
-                            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                        }
+                        lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                     }
+                    else
+                    {
+                        lblSource.Text = string.Empty;
+                        tipTooltip.SetToolTip(lblSource, string.Empty);
+                    }
+                }
+                else
+                {
+                    lblSource.Text = string.Empty;
+                    tipTooltip.SetToolTip(lblSource, string.Empty);
                 }
 
 

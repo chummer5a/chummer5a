@@ -45,6 +45,7 @@ Application Changes:
 - Fixed an issue where modifying an existing weapon mount would not properly update its node in the vehicle tree view.
 - Fixed an issue where Trust Fund III and Trust Fund IV did not properly zero the costs of the lifestyles to which they were applied.
 - Fixed a rare crash that could happen when trying to add a weapon to a vehicle without having a node selected. Fixes #2361.
+- Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
 
 Data Changes:
 
