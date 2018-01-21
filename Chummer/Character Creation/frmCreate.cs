@@ -4999,7 +4999,7 @@ namespace Chummer
                         intStage -= 1;
                         break;
                     }
-                    if (CharacterObject.Qualities.Any(x => (
+                    if (!CharacterObject.Qualities.Any(x => (
                         x.Type == QualityType.LifeModule &&
                         x.Stage == xmlStageNode.InnerText
                     )))

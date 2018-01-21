@@ -323,7 +323,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                working += ") and stage = \"" + _strWorkStage + '\"';
+                working += ") and (stage = \"" + _strWorkStage + '\"';
             }
             working += ")]";
 
