@@ -1481,6 +1481,7 @@ namespace Chummer
                 intResult = (intThreshold - intWILResult) * 10;
             }
             ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Qualities", Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
+            ImprovementManager.Commit(CharacterObject);
 
             // Convert the character.
             // Characters lose access to Resonance.

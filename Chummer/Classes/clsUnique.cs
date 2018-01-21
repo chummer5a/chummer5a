@@ -1410,6 +1410,7 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
                         ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                        ImprovementManager.Commit(CharacterObject);
                     }
                     else
                     {

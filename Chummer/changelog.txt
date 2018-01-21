@@ -51,6 +51,7 @@ Application Changes:
 - Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
 - Fixed a bug where adding a mentor spirit with Mentor's Mask enabled would not always properly update UI elements.
 - Fixed a bug where losing MAG in career mode as a mystic adept when the character had more MAG than PPs (either from initiations or from purchased PPs) would not cause the character to lose PPs.
+- Fixed possible issues where reducing an attribute in career mode, creating Condition Monitor penalties in career mode, gaining armor encumbrance penalties, and/or fettering spirits would not properly update some UI elements.
 
 Data Changes:
 

@@ -1617,7 +1617,10 @@ namespace Chummer
 
             // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
             if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
+            {
                 ImprovementManager.CreateImprovement(CharacterObject, frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "CharacterAttribute Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
+                ImprovementManager.Commit(CharacterObject);
+            }
             // Permanently reduce the CharacterAttribute's value.
             CharacterObject.GetAttribute(frmPickAttribute.SelectedAttribute).Degrade(1);
 
@@ -17787,8 +17790,11 @@ namespace Chummer
 
             // Create the new Condition Monitor penalties.
             if (intCMPenalty < 0)
+            {
                 ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.ConditionMonitor, string.Empty,
                     Improvement.ImprovementType.ConditionMonitor, string.Empty, intCMPenalty);
+                ImprovementManager.Commit(CharacterObject);
+            }
 
             UpdateArmorRating(lblArmor, tipTooltip, lblCMArmor);
 
