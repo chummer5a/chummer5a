@@ -5026,7 +5026,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objLifeModule = new Quality(CharacterObject);
 
-                objLifeModule.Create(objXmlLifeModule, CharacterObject, QualitySource.LifeModule, lstWeapons);
+                objLifeModule.Create(objXmlLifeModule, QualitySource.LifeModule, lstWeapons);
                 if (objLifeModule.InternalId.IsEmptyGuid())
                     continue;
 
@@ -5086,7 +5086,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objQuality = new Quality(CharacterObject);
 
-                objQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
                 if (objQuality.InternalId.IsEmptyGuid())
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -5301,7 +5301,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objReplaceQuality = new Quality(CharacterObject);
 
-                objReplaceQuality.Create(xmlDeleteQualityNoBonus, CharacterObject, QualitySource.Selected, lstWeapons);
+                objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.Selected, lstWeapons);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
                 if (objSelectedQuality.Type == QualityType.Positive)
@@ -9097,7 +9097,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -16889,7 +16889,7 @@ namespace Chummer
                         Quality objQuality = new Quality(CharacterObject);
                         string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
 
                         CharacterObject.Qualities.Add(objQuality);
 
@@ -16914,7 +16914,7 @@ namespace Chummer
                         Quality objQuality = new Quality(CharacterObject);
                         string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
                         CharacterObject.Qualities.Add(objQuality);
 
                         // Add any created Weapons to the character.

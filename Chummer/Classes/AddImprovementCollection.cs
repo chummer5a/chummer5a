@@ -4865,7 +4865,7 @@ namespace Chummer.Classes
                 {
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objAddQuality = new Quality(_objCharacter);
-                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
 
                     if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
                     {
@@ -4919,7 +4919,7 @@ namespace Chummer.Classes
             Quality objAddQuality = new Quality(_objCharacter);
             List<Weapon> lstWeapons = new List<Weapon>();
             strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
             if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText != bool.TrueString)
             {
                 objAddQuality.BP = 0;
@@ -4963,7 +4963,7 @@ namespace Chummer.Classes
                         BP = 0
                     };
                     strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-                    discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                    discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                     _objCharacter.Qualities.Add(discountQuality);
                     objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
                     CreateImprovement(discountQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);

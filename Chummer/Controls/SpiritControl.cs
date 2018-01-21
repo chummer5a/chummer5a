@@ -549,7 +549,7 @@ namespace Chummer
                 Quality objQuality = new Quality(objCharacter);
                 string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                 QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                objQuality.Create(objXmlQuality, objCharacter, objSource, lstWeapons, strForceValue);
+                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                 objCharacter.Qualities.Add(objQuality);
 
                 // Add any created Weapons to the character.

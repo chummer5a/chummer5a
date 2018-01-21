@@ -183,11 +183,10 @@ namespace Chummer
         /// Create a Quality from an XmlNode.
         /// </summary>
         /// <param name="objXmlQuality">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the Quality will be added to.</param>
         /// <param name="objQualitySource">Source of the Quality.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -268,7 +267,7 @@ namespace Chummer
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                         
-                        Weapon objGearWeapon = new Weapon(objCharacter);
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
                         objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
                         lstWeapons.Add(objGearWeapon);

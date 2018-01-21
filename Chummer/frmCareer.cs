@@ -6249,7 +6249,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objQuality = new Quality(CharacterObject);
 
-                objQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
                 if (objQuality.InternalId.IsEmptyGuid())
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -6424,7 +6424,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             Quality objNewQuality = new Quality(CharacterObject);
 
-            objNewQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+            objNewQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
             bool blnAddItem = true;
             int intKarmaCost = (objNewQuality.BP - objQuality.BP) * CharacterObjectOptions.KarmaQuality;
@@ -6750,7 +6750,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -10679,7 +10679,7 @@ namespace Chummer
                         Quality objAddQuality = new Quality(CharacterObject);
                         XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
                         XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objEntry.Undo.ObjectId + "\"]");
-                        objAddQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, objEntry.Undo.Extra);
+                        objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, objEntry.Undo.Extra);
 
                         CharacterObject.Qualities.Add(objAddQuality);
 
