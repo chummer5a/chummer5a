@@ -58,6 +58,9 @@ Data Changes:
 - Fixed various typos in life module descriptions and skills.
 - Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
 - Added an amend entry to override Exotic Weapon skills used by the Pazrashield Dart Pistol, Rifle and Super Squirrt to use non-Exotic skills. Fixes #2359.
+- Corrected ammo capacities for the Light, Medium and Heavy Crossbow from SR5 to be 4(m).
+- Fixed a typo in the Ranger Sliver Pistol Crossbow from RG's name and reduced its ammo capacity to 1, per RAW.
+- Removed extra base Recoil Compensation from the HK G12A4 from SAG.
 
 New Strings:
 
