@@ -4056,6 +4056,8 @@ namespace Chummer
 
         private void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
+            if (!cmdDeleteVehicle.Enabled)
+                return;
             // Delete the selected Vehicle.
             TreeNode objSelectedNode = treVehicles.SelectedNode;
             // Delete the selected Vehicle.
@@ -4066,112 +4068,108 @@ namespace Chummer
 
             string strSelectedId = objSelectedNode.Tag.ToString();
 
-            if (objSelectedNode.Level == 0)
+            // Deleting a vehicle location
+            if (!strSelectedId.IsGuid())
             {
                 if (strSelectedId == "Node_SelectedVehicles")
                     return;
 
-                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
-                    return;
-
-                List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in objSelectedNode.Nodes)
+                if (objSelectedNode.Level == 0)
                 {
-                    string strId = objNode.Tag.ToString();
-                    Vehicle objLoopVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strId);
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
+                        return;
 
-                    // Change the Location for the Vehicle.
-                    objLoopVehicle.Location = string.Empty;
-                    // Move all of the child nodes in the current parent to the Selected Vehicle parent node.
-                    lstMoveNodes.Add(objNode);
-                }
-
-                TreeNode objSelectedVehiclesNode = treVehicles.Nodes[0];
-                foreach (TreeNode objNode in lstMoveNodes)
-                {
-                    objNode.Remove();
-                    objSelectedVehiclesNode.Nodes.Add(objNode);
-                }
-
-                // Remove the Location from the character, then remove the selected node.
-                CharacterObject.VehicleLocations.Remove(objSelectedNode.Text);
-                objSelectedNode.Remove();
-
-                IsDirty = true;
-                return;
-            }
-
-            // Weapons that are first-level children of vehicles cannot be removed (for some reason)
-            foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-            {
-                if (objCharacterVehicle.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strSelectedId) != null)
-                {
-                    MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
-            if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
-                return;
-
-            // Locate the Vehicle that is selected in the tree.
-            Vehicle objVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
-
-            // Removing a Vehicle
-            if (objVehicle != null)
-            {
-                // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
-                foreach (Gear objGear in objVehicle.Gear)
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
-                CharacterObject.Vehicles.Remove(objVehicle);
-                foreach (Weapon objLoopWeapon in objVehicle.Weapons)
-                {
-                    objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
-                }
-                foreach (VehicleMod objLoopMod in objVehicle.Mods)
-                {
-                    foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                    List<TreeNode> lstMoveNodes = new List<TreeNode>();
+                    foreach (TreeNode objNode in objSelectedNode.Nodes)
                     {
-                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                        string strId = objNode.Tag.ToString();
+                        Vehicle objLoopVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strId);
+
+                        // Change the Location for the Vehicle.
+                        objLoopVehicle.Location = string.Empty;
+                        // Move all of the child nodes in the current parent to the Selected Vehicle parent node.
+                        lstMoveNodes.Add(objNode);
                     }
-                    foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+
+                    TreeNode objSelectedVehiclesNode = treVehicles.Nodes[0];
+                    foreach (TreeNode objNode in lstMoveNodes)
                     {
-                        objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                        objNode.Remove();
+                        objSelectedVehiclesNode.Nodes.Add(objNode);
                     }
+
+                    // Remove the Location from the character, then remove the selected node.
+                    CharacterObject.VehicleLocations.Remove(objSelectedNode.Text);
+                    objSelectedNode.Remove();
                 }
-                foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
+                else
                 {
-                    foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
+                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocation", GlobalOptions.Language)))
+                        return;
+
+                    TreeNode objVehicleNode = objSelectedNode;
+                    while (objVehicleNode.Level > 1)
+                        objVehicleNode = objVehicleNode.Parent;
+
+                    Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == objVehicleNode.Tag.ToString());
+
+                    if (objVehicle != null)
                     {
-                        objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
-                    }
-                    foreach (VehicleMod objLoopMod in objLoopMount.Mods)
-                    {
-                        foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                        List<TreeNode> lstMoveNodes = new List<TreeNode>();
+                        foreach (TreeNode objNode in objSelectedNode.Nodes)
                         {
-                            objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            string strId = objNode.Tag.ToString();
+                            Gear objLoopGear = objVehicle.Gear.FirstOrDefault(x => x.InternalId == strId);
+
+                            // Change the Location for the Gear.
+                            objLoopGear.Location = string.Empty;
+                            // Move all of the child nodes in the current parent to the Vehicle parent node.
+                            lstMoveNodes.Add(objNode);
                         }
-                        foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+                        
+                        foreach (TreeNode objNode in lstMoveNodes)
                         {
-                            objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            objNode.Remove();
+                            objVehicleNode.Nodes.Add(objNode);
                         }
+
+                        // Remove the Location from the vehicle, then remove the selected node.
+                        objVehicle.Locations.Remove(objSelectedNode.Text);
+                        objSelectedNode.Remove();
                     }
                 }
-                objSelectedNode.Remove();
             }
             else
             {
-                WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
-                // Removing a Weapon Mount
-                if (objWeaponMount != null)
+                // Weapons that are first-level children of vehicles cannot be removed (for some reason)
+                foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
                 {
-                    objVehicle.WeaponMounts.Remove(objWeaponMount);
-                    foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
+                    if (objCharacterVehicle.Weapons.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strSelectedId) != null)
+                    {
+                        MessageBox.Show(LanguageManager.GetString("Message_CannotRemoveGearWeaponVehicle", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                    return;
+
+                // Locate the Vehicle that is selected in the tree.
+                Vehicle objVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
+
+                // Removing a Vehicle
+                if (objVehicle != null)
+                {
+                    // Remove any Gear Improvements from the character (primarily those provided by an Emotitoy).
+                    foreach (Gear objGear in objVehicle.Gear)
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+
+                    CharacterObject.Vehicles.Remove(objVehicle);
+                    foreach (Weapon objLoopWeapon in objVehicle.Weapons)
                     {
                         objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                     }
-                    foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
+                    foreach (VehicleMod objLoopMod in objVehicle.Mods)
                     {
                         foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
                         {
@@ -4180,165 +4178,208 @@ namespace Chummer
                         foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
                         {
                             objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                        }
+                    }
+                    foreach (WeaponMount objLoopMount in objVehicle.WeaponMounts)
+                    {
+                        foreach (Weapon objLoopWeapon in objLoopMount.Weapons)
+                        {
+                            objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                        }
+                        foreach (VehicleMod objLoopMod in objLoopMount.Mods)
+                        {
+                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                            {
+                                objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            }
+                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+                            {
+                                objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            }
                         }
                     }
                     objSelectedNode.Remove();
                 }
                 else
                 {
-                    // Locate the VehicleMod that is selected in the tree.
-                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
-                    // Removing a Vehicle Mod
-                    if (objMod != null)
+                    WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
+                    // Removing a Weapon Mount
+                    if (objWeaponMount != null)
                     {
-                        // Check for Improved Sensor bonus.
-                        if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
-                        {
-                            ChangeVehicleSensor(objVehicle, false);
-                        }
-
-                        // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
-                        if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && CharacterObjectOptions.AllowObsolescentUpgrade))
-                        {
-                            frmSelectNumber frmModPercent = new frmSelectNumber(2)
-                            {
-                                Minimum = 0,
-                                Maximum = 1000000,
-                                Description = LanguageManager.GetString("String_Retrofit", GlobalOptions.Language)
-                            };
-                            frmModPercent.ShowDialog(this);
-
-                            if (frmModPercent.DialogResult == DialogResult.Cancel)
-                                return;
-
-                            decimal decPercentage = frmModPercent.SelectedValue;
-                            decimal decVehicleCost = objVehicle.OwnCost;
-
-                            // Make sure the character has enough Nuyen for the expense.
-                            decimal decCost = decVehicleCost * decPercentage / 100;
-                            if (decCost > CharacterObject.Nuyen)
-                            {
-                                MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                return;
-                            }
-
-                            // Create a Vehicle Mod for the Retrofit.
-                            VehicleMod objRetrofit = new VehicleMod(CharacterObject);
-
-                            XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml");
-                            XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                            objRetrofit.Create(objXmlNode, 0, objVehicle);
-                            objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
-                            objVehicle.Mods.Add(objRetrofit);
-                            objSelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
-
-                            // Create an Expense Log Entry for removing the Obsolete Mod.
-                            ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                            objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit", GlobalOptions.Language).Replace("{0}", objVehicle.DisplayName(GlobalOptions.Language)), ExpenseType.Nuyen, DateTime.Now);
-                            CharacterObject.ExpenseEntries.Add(objEntry);
-
-                            // Adjust the character's Nuyen total.
-                            CharacterObject.Nuyen += decCost * -1;
-                        }
-
-                        if (objWeaponMount != null)
-                            objWeaponMount.Mods.Remove(objMod);
-                        else
-                            objVehicle.Mods.Remove(objMod);
-                        foreach (Weapon objLoopWeapon in objMod.Weapons)
+                        objVehicle.WeaponMounts.Remove(objWeaponMount);
+                        foreach (Weapon objLoopWeapon in objWeaponMount.Weapons)
                         {
                             objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
                         }
-                        foreach (Cyberware objLoopCyberware in objMod.Cyberware)
+                        foreach (VehicleMod objLoopMod in objWeaponMount.Mods)
                         {
-                            objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            foreach (Weapon objLoopWeapon in objLoopMod.Weapons)
+                            {
+                                objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            }
+                            foreach (Cyberware objLoopCyberware in objLoopMod.Cyberware)
+                            {
+                                objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            }
                         }
                         objSelectedNode.Remove();
                     }
                     else
                     {
-                        Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out objVehicle, out objWeaponMount, out objMod);
-                        // Removing a Weapon
-                        if (objWeapon != null)
+                        // Locate the VehicleMod that is selected in the tree.
+                        VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                        // Removing a Vehicle Mod
+                        if (objMod != null)
                         {
-                            objWeapon.DeleteWeapon(treWeapons, treVehicles);
-                            if (objWeapon.Parent != null)
-                                objWeapon.Parent.Children.Remove(objWeapon);
-                            else if (objMod != null)
-                                objMod.Weapons.Remove(objWeapon);
-                            else if (objWeaponMount != null)
-                                objWeaponMount.Weapons.Remove(objWeapon);
-                            // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+                            // Check for Improved Sensor bonus.
+                            if (objMod.Bonus?["improvesensor"] != null || (objMod.WirelessOn && objMod.WirelessBonus?["improvesensor"] != null))
+                            {
+                                ChangeVehicleSensor(objVehicle, false);
+                            }
+
+                            // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
+                            if (objMod.Name == "Obsolete" || (objMod.Name == "Obsolescent" && CharacterObjectOptions.AllowObsolescentUpgrade))
+                            {
+                                frmSelectNumber frmModPercent = new frmSelectNumber(2)
+                                {
+                                    Minimum = 0,
+                                    Maximum = 1000000,
+                                    Description = LanguageManager.GetString("String_Retrofit", GlobalOptions.Language)
+                                };
+                                frmModPercent.ShowDialog(this);
+
+                                if (frmModPercent.DialogResult == DialogResult.Cancel)
+                                    return;
+
+                                decimal decPercentage = frmModPercent.SelectedValue;
+                                decimal decVehicleCost = objVehicle.OwnCost;
+
+                                // Make sure the character has enough Nuyen for the expense.
+                                decimal decCost = decVehicleCost * decPercentage / 100;
+                                if (decCost > CharacterObject.Nuyen)
+                                {
+                                    MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    return;
+                                }
+
+                                // Create a Vehicle Mod for the Retrofit.
+                                VehicleMod objRetrofit = new VehicleMod(CharacterObject);
+
+                                XmlDocument objVehiclesDoc = XmlManager.Load("vehicles.xml");
+                                XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
+                                objRetrofit.Create(objXmlNode, 0, objVehicle);
+                                objRetrofit.Cost = decCost.ToString(GlobalOptions.InvariantCultureInfo);
+                                objVehicle.Mods.Add(objRetrofit);
+                                objSelectedNode.Parent.Nodes.Add(objRetrofit.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
+
+                                // Create an Expense Log Entry for removing the Obsolete Mod.
+                                ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
+                                objEntry.Create(decCost * -1, LanguageManager.GetString("String_ExpenseVehicleRetrofit", GlobalOptions.Language).Replace("{0}", objVehicle.DisplayName(GlobalOptions.Language)), ExpenseType.Nuyen, DateTime.Now);
+                                CharacterObject.ExpenseEntries.Add(objEntry);
+
+                                // Adjust the character's Nuyen total.
+                                CharacterObject.Nuyen += decCost * -1;
+                            }
+
+                            if (objWeaponMount != null)
+                                objWeaponMount.Mods.Remove(objMod);
                             else
-                                objVehicle.Weapons.Remove(objWeapon);
+                                objVehicle.Mods.Remove(objMod);
+                            foreach (Weapon objLoopWeapon in objMod.Weapons)
+                            {
+                                objLoopWeapon.DeleteWeapon(treWeapons, treVehicles);
+                            }
+                            foreach (Cyberware objLoopCyberware in objMod.Cyberware)
+                            {
+                                objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
+                            }
                             objSelectedNode.Remove();
                         }
                         else
                         {
-                            WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
-                            // Removing a weapon accessory
-                            if (objWeaponAccessory != null)
+                            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out objVehicle, out objWeaponMount, out objMod);
+                            // Removing a Weapon
+                            if (objWeapon != null)
                             {
-                                objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
-                                foreach (Gear objLoopGear in objWeaponAccessory.Gear)
-                                {
-                                    objLoopGear.DeleteGear(treWeapons, treVehicles);
-                                }
+                                objWeapon.DeleteWeapon(treWeapons, treVehicles);
+                                if (objWeapon.Parent != null)
+                                    objWeapon.Parent.Children.Remove(objWeapon);
+                                else if (objMod != null)
+                                    objMod.Weapons.Remove(objWeapon);
+                                else if (objWeaponMount != null)
+                                    objWeaponMount.Weapons.Remove(objWeapon);
+                                // This bit here should never be reached, but I'm adding it for future-proofing in case we want people to be able to remove weapons attached directly to vehicles
+                                else
+                                    objVehicle.Weapons.Remove(objWeapon);
                                 objSelectedNode.Remove();
                             }
                             else
                             {
-                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId, out objMod);
-                                // Removing Cyberware
-                                if (objCyberware != null)
+                                WeaponAccessory objWeaponAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
+                                // Removing a weapon accessory
+                                if (objWeaponAccessory != null)
                                 {
-                                    if (objCyberware.Parent != null)
+                                    objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
+                                    foreach (Gear objLoopGear in objWeaponAccessory.Gear)
                                     {
-                                        objCyberware.Parent.Children.Remove(objCyberware);
-                                        objCyberware.RefreshMatrixAttributeArray();
-                                    }
-                                    else
-                                    {
-                                        objMod.Cyberware.Remove(objCyberware);
+                                        objLoopGear.DeleteGear(treWeapons, treVehicles);
                                     }
                                     objSelectedNode.Remove();
-
-                                    objCyberware.DeleteCyberware(treWeapons, treVehicles);
                                 }
                                 else
                                 {
-                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objWeaponAccessory, out objCyberware);
-                                    if (objGear != null)
+                                    Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId, out objMod);
+                                    // Removing Cyberware
+                                    if (objCyberware != null)
                                     {
-                                        if (objGear.Parent != null)
+                                        if (objCyberware.Parent != null)
                                         {
-                                            objGear.Parent.Children.Remove(objGear);
-                                            objGear.Parent.RefreshMatrixAttributeArray();
-                                        }
-                                        else if (objCyberware != null)
-                                        {
-                                            objCyberware.Gear.Remove(objGear);
+                                            objCyberware.Parent.Children.Remove(objCyberware);
                                             objCyberware.RefreshMatrixAttributeArray();
                                         }
-                                        else if (objWeaponAccessory != null)
-                                            objWeaponAccessory.Gear.Remove(objGear);
                                         else
                                         {
-                                            objVehicle.Gear.Remove(objGear);
-                                            objVehicle.RefreshMatrixAttributeArray();
+                                            objMod.Cyberware.Remove(objCyberware);
                                         }
                                         objSelectedNode.Remove();
 
-                                        objGear.DeleteGear(treWeapons, treVehicles);
+                                        objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                                    }
+                                    else
+                                    {
+                                        Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objWeaponAccessory, out objCyberware);
+                                        if (objGear != null)
+                                        {
+                                            if (objGear.Parent != null)
+                                            {
+                                                objGear.Parent.Children.Remove(objGear);
+                                                objGear.Parent.RefreshMatrixAttributeArray();
+                                            }
+                                            else if (objCyberware != null)
+                                            {
+                                                objCyberware.Gear.Remove(objGear);
+                                                objCyberware.RefreshMatrixAttributeArray();
+                                            }
+                                            else if (objWeaponAccessory != null)
+                                                objWeaponAccessory.Gear.Remove(objGear);
+                                            else
+                                            {
+                                                objVehicle.Gear.Remove(objGear);
+                                                objVehicle.RefreshMatrixAttributeArray();
+                                            }
+                                            objSelectedNode.Remove();
+
+                                            objGear.DeleteGear(treWeapons, treVehicles);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            IsCharacterUpdateRequested = true;
+                IsCharacterUpdateRequested = true;
+            }
 
             IsDirty = true;
         }
