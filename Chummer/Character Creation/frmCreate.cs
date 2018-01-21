@@ -12539,6 +12539,7 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMagReduction);
                 }
             }
+            ImprovementManager.Commit(CharacterObject);
 
             // If the character is Cyberzombie, adjust their Attributes based on their Essence.
             if (CharacterObject.MetatypeCategory == "Cyberzombie")
@@ -12553,6 +12554,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.Commit(CharacterObject);
             }
 
             // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.

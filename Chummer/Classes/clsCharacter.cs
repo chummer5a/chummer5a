@@ -9165,8 +9165,8 @@ namespace Chummer
         {
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
-                AttributeImprovementEvent?.Invoke(_lstTransaction);
                 _decCachedEssence = decimal.MinValue;
+                AttributeImprovementEvent?.Invoke(_lstTransaction);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
             else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))

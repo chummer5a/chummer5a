@@ -1483,9 +1483,7 @@ namespace Chummer.Backend.Attributes
             }
             if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.Attribute && (imp.ImprovedName == Abbrev || imp.ImprovedName == Abbrev + "Base") && imp.AugmentedMaximum != 0 || imp.Maximum != 0 || imp.Minimum != 0))
             {
-                OnPropertyChanged(nameof(TotalAugmentedMaximum));
-                OnPropertyChanged(nameof(TotalMaximum));
-                OnPropertyChanged(nameof(TotalMinimum));
+                OnPropertyChanged(nameof(AugmentedMetatypeLimits));
             }
             else if (improvements.Any(imp => imp.ImproveType == Improvement.ImprovementType.ReplaceAttribute && imp.ImprovedName == Abbrev))
             {

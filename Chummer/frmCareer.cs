@@ -17528,6 +17528,7 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
                 }
             }
+            ImprovementManager.Commit(CharacterObject);
 
             // If the CharacterAttribute reaches 0, the character has burned out.
             if (CharacterObject.MAGEnabled)
@@ -17648,6 +17649,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.Commit(CharacterObject);
             }
 
             if (CharacterObject.AdeptEnabled)
