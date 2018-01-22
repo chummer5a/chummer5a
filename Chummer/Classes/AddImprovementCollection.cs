@@ -495,7 +495,8 @@ namespace Chummer.Classes
                             _strUnique);
                     }
 
-                    if (!strNodeInnerXml.Contains("max")) return;
+                    if (!strNodeInnerXml.Contains("max"))
+                        throw new AbortedException();
                     Log.Info("Calling CreateImprovement");
                     CreateImprovement(k.Name, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.Skill,
@@ -1250,7 +1251,7 @@ namespace Chummer.Classes
             }
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 
@@ -1279,7 +1280,8 @@ namespace Chummer.Classes
 
             XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = \"" + bonusNode.InnerText + "\"]");
 
-            if (node == null) return;
+            if (node == null)
+                throw new AbortedException();
             // Check for SelectText.
             string strExtra = string.Empty;
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
@@ -1303,7 +1305,7 @@ namespace Chummer.Classes
             Spell spell = new Spell(_objCharacter);
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 
@@ -1368,7 +1370,7 @@ namespace Chummer.Classes
             }
             objComplexform.Create(node, strExtra);
             if (objComplexform.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
@@ -1398,7 +1400,8 @@ namespace Chummer.Classes
 
             XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + bonusNode.InnerText + "\"]");
 
-            if (node == null) return;
+            if (node == null)
+                throw new AbortedException();
             // Check for SelectText.
             string strExtra = string.Empty;
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
@@ -1422,7 +1425,7 @@ namespace Chummer.Classes
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node, strExtra);
             if (objComplexform.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
@@ -1453,7 +1456,7 @@ namespace Chummer.Classes
             XmlNode node = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[name = \"" + strName + "\" and category = \"" + strCategory + "\"]");
 
             if (node == null)
-                return;
+                throw new AbortedException();
             int intRating = 1;
             if (bonusNode["rating"] != null)
                 intRating = Convert.ToInt32(bonusNode["rating"].InnerText);
@@ -1468,7 +1471,7 @@ namespace Chummer.Classes
             objNewGear.Create(node, intRating, lstWeapons, ForcedValue);
 
             if (objNewGear.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
 
             objNewGear.Quantity = decQty;
 
@@ -1555,7 +1558,7 @@ namespace Chummer.Classes
                 AIProgram objProgram = new AIProgram(_objCharacter);
                 objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
-                    return;
+                    throw new AbortedException();
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
@@ -1628,7 +1631,7 @@ namespace Chummer.Classes
                 AIProgram objProgram = new AIProgram(_objCharacter);
                 objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
-                    return;
+                    throw new AbortedException();
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
@@ -3554,7 +3557,7 @@ namespace Chummer.Classes
                 objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
                 objAddMetamagic.Grade = -1;
                 if (objAddMetamagic.InternalId.IsEmptyGuid())
-                    return;
+                    throw new AbortedException();
 
                 _objCharacter.Metamagics.Add(objAddMetamagic);
                 CreateImprovement(objAddMetamagic.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Metamagic, _strUnique);
@@ -3642,7 +3645,7 @@ namespace Chummer.Classes
                 objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
                 objAddEcho.Grade = -1;
                 if (objAddEcho.InternalId.IsEmptyGuid())
-                    return;
+                    throw new AbortedException();
 
                 _objCharacter.Metamagics.Add(objAddEcho);
                 CreateImprovement(objAddEcho.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Echo, _strUnique);
@@ -4588,7 +4591,8 @@ namespace Chummer.Classes
                 list.Add(new ListItem(strName, objNode.Attributes?["translate"]?.InnerText ?? strName));
             }
 
-            if (list.Count <= 0) return;
+            if (list.Count <= 0)
+                throw new AbortedException();
             frmSelectItem frmPickItem = new frmSelectItem
             {
                 Description = LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
@@ -5057,39 +5061,40 @@ namespace Chummer.Classes
 
         public void addskillspecializationoption(XmlNode bonusNode)
         {
-            if (!_objCharacter.Options.FreeMartialArtSpecialization || _objImprovementSource != Improvement.ImprovementSource.MartialArt)
-                return;
-            List<Skill> lstSkills = new List<Skill>();
-            if (bonusNode["skills"] != null)
+            if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
             {
-                foreach (XmlNode objNode in bonusNode["skills"])
+                List<Skill> lstSkills = new List<Skill>();
+                if (bonusNode["skills"] != null)
                 {
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
+                    foreach (XmlNode objNode in bonusNode["skills"])
+                    {
+                        Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(objNode.InnerText);
+                        if (objSkill != null)
+                        {
+                            lstSkills.Add(objSkill);
+                        }
+                    }
+                }
+                else
+                {
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
                     if (objSkill != null)
                     {
                         lstSkills.Add(objSkill);
                     }
                 }
-            }
-            else
-            {
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(bonusNode["skill"]?.InnerText ?? string.Empty);
-                if (objSkill != null)
-                {
-                    lstSkills.Add(objSkill);
-                }
-            }
 
-            if (lstSkills.Count > 0)
-            {
-                foreach (Skill objSkill in lstSkills)
+                if (lstSkills.Count > 0)
                 {
-                    // Create the Improvement.
-                    Log.Info("Calling CreateImprovement");
-                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
-                        Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
-                    SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true, objSkill);
-                    objSkill.Specializations.Add(nspec);
+                    foreach (Skill objSkill in lstSkills)
+                    {
+                        // Create the Improvement.
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.SkillSpecialization, bonusNode["spec"].InnerText);
+                        SkillSpecialization nspec = new SkillSpecialization(bonusNode["spec"].InnerText, true, objSkill);
+                        objSkill.Specializations.Add(nspec);
+                    }
                 }
             }
         }
@@ -5691,12 +5696,21 @@ namespace Chummer.Classes
             Log.Info("SourceName = " + SourceName);
 
             Log.Info("Adding ware");
-            XmlNode node = bonusNode["type"].InnerText == "bioware"
-                ? XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"" + bonusNode["name"].InnerText + "\"]")
-                : XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + bonusNode["name"].InnerText + "\"]");
+            XmlNode node;
+            Improvement.ImprovementSource eSource;
+            if (bonusNode["type"].InnerText == "bioware")
+            {
+                node = XmlManager.Load("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[name = \"" + bonusNode["name"].InnerText + "\"]");
+                eSource = Improvement.ImprovementSource.Bioware;
+            }
+            else
+            {
+                node = XmlManager.Load("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[name = \"" + bonusNode["name"].InnerText + "\"]");
+                eSource = Improvement.ImprovementSource.Cyberware;
+            }
 
             if (node == null)
-                return;
+                throw new AbortedException();
             int intRating = 1;
             if (bonusNode["rating"] != null)
                 intRating = Convert.ToInt32(bonusNode["rating"].InnerText);
@@ -5707,10 +5721,10 @@ namespace Chummer.Classes
             List<Vehicle> lstVehicles = new List<Vehicle>();
 
             Grade objGrade = Cyberware.ConvertToCyberwareGrade(bonusNode["grade"].InnerText, _objImprovementSource, _objCharacter);
-            objCyberware.Create(node, _objCharacter, objGrade, bonusNode["type"].InnerText == "bioware" ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware, intRating, lstWeapons, lstVehicles, true, true, string.Empty);
+            objCyberware.Create(node, _objCharacter, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true, ForcedValue);
 
             if (objCyberware.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
 
             objCyberware.Cost = "0";
             // Create any Weapons that came with this ware.
