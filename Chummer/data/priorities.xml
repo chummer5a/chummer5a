@@ -4263,13 +4263,13 @@
           </forbidden>
         </talent>
         <talent>
-          <name>Technomancer - 4 Resonance/5 Complex Forms</name>
+          <name>Technomancer - 4 Resonance/4 Complex Forms</name>
           <value>Technomancer</value>
           <qualities>
             <quality>Technomancer</quality>
           </qualities>
           <resonance>4</resonance>
-          <cfp>5</cfp>
+          <cfp>4</cfp>
           <skillqty>3</skillqty>
           <skillval>4</skillval>
           <skilltype>resonance</skilltype>
