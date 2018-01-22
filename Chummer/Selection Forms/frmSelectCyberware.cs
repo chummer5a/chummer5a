@@ -139,7 +139,7 @@ namespace Chummer
             PopulateGrades(false, true, _forcedGrade?.SourceId.ToString("D") ?? string.Empty, chkHideBannedGrades.Checked);
 
             if (_forcedGrade != null)
-                cboGrade.SelectedValue = _forcedGrade.SourceId;
+                cboGrade.SelectedValue = _forcedGrade.SourceId.ToString();
             else if (!string.IsNullOrEmpty(_sStrSelectGrade))
                 cboGrade.SelectedValue = _sStrSelectGrade;
             if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
