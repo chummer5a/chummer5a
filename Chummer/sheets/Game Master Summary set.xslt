@@ -410,9 +410,9 @@
                 <xsl:for-each select="martialarts/martialart">
                   <xsl:sort select="name" />
                   <xsl:value-of select="name" />
-                  <xsl:if test="martialartadvantages/martialartadvantage">
+                  <xsl:if test="martialarttechniques/martialarttechnique">
                   (
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:value-of select="." /><xsl:if test="position() != last()">, </xsl:if>
                   </xsl:for-each>
                   )

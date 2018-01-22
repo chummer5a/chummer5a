@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -1188,14 +1188,6 @@
 			<text>异能等级</text>
 		</string>
 		<string>
-			<key>Message_MartialArtAdvantageLimit</key>
-			<text>每级{0}你只能有一个武技。</text>
-		</string>
-		<string>
-			<key>MessageTitle_MartialArtAdvantageLimit</key>
-			<text>武技上限</text>
-		</string>
-		<string>
 			<key>Message_MartialArtManeuverLimit</key>
 			<text>You may only have 2 Maneuvers per Martial Art Rating.</text>
 		</string>
@@ -1204,11 +1196,11 @@
 			<text>Maximum Number of Maneuvers</text>
 		</string>
 		<string>
-			<key>Message_SelectMartialArtAdvantage</key>
+			<key>Message_SelectMartialArtTechnique</key>
 			<text>你必须选择一个武术流派才能添加武技。</text>
 		</string>
 		<string>
-			<key>MessageTitle_SelectMartialArtAdvantage</key>
+			<key>MessageTitle_SelectMartialArtTechnique</key>
 			<text>选择武术流派</text>
 		</string>
 		<string>
@@ -5214,7 +5206,7 @@
 		</string>
 		<!-- Select Martial Art Advantage Window -->
 		<string>
-			<key>Title_SelectMartialArtAdvantage</key>
+			<key>Title_SelectMartialArtTechnique</key>
 			<text>选择一个武技</text>
 		</string>
 		<!-- Select Martial Art Maneuver Window -->

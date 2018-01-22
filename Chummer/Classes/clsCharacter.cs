@@ -3257,10 +3257,10 @@ namespace Chummer
                         }
                     }
                     break;
-                case Improvement.ImprovementSource.MartialArtAdvantage:
+                case Improvement.ImprovementSource.MartialArtTechnique:
                     foreach (MartialArt objMartialArt in MartialArts)
                     {
-                        foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {

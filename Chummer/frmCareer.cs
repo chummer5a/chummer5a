@@ -1699,7 +1699,7 @@ namespace Chummer
                                                                         x.ImproveSource == Improvement.ImprovementSource.Echo ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Gear ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Power ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Quality ||
@@ -1717,7 +1717,7 @@ namespace Chummer
                                                                         x.ImproveSource == Improvement.ImprovementSource.Echo ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Gear ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtAdvantage ||
+                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Power ||
                                                                         x.ImproveSource == Improvement.ImprovementSource.Quality ||
@@ -1802,13 +1802,13 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], false, 1, objMartialArt.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
-                    foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
+                    foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques.Where(x => lstInternalIdFilter == null || !lstInternalIdFilter.Contains(x.InternalId)))
                     {
                         XmlNode objNode = objMartialArtNode.SelectSingleNode("techniques/technique[name = \"" + objAdvantage.Name + "\"]");
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName(GlobalOptions.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId, objNode["bonus"], false, 1, objAdvantage.DisplayName(GlobalOptions.Language));
                         }
                         else
                         {
@@ -3366,7 +3366,7 @@ namespace Chummer
                 else
                 {
                     // Display the Martial Art Advantage information.
-                    MartialArtAdvantage objAdvantage = CharacterObject.MartialArts.FindMartialArtAdvantage(strSelectedId, out objMartialArt);
+                    MartialArtTechnique objAdvantage = CharacterObject.MartialArts.FindMartialArtTechnique(strSelectedId, out objMartialArt);
                     if (objAdvantage != null)
                     {
                         cmdDeleteMartialArt.Enabled = true;
@@ -4774,9 +4774,9 @@ namespace Chummer
 
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                     // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                    foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                    foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                     {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
                     }
 
                     CharacterObject.MartialArts.Remove(objMartialArt);
@@ -4790,16 +4790,16 @@ namespace Chummer
                 else
                 {
                     // Find the selected Advantage object.
-                    MartialArtAdvantage objSelectedAdvantage = CharacterObject.MartialArts.FindMartialArtAdvantage(strSelectedId, out objMartialArt);
+                    MartialArtTechnique objSelectedAdvantage = CharacterObject.MartialArts.FindMartialArtTechnique(strSelectedId, out objMartialArt);
 
                     if (objSelectedAdvantage != null)
                     {
                         if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt", GlobalOptions.Language)))
                             return;
 
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtAdvantage, objSelectedAdvantage.InternalId);
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objSelectedAdvantage.InternalId);
 
-                        objMartialArt.Advantages.Remove(objSelectedAdvantage);
+                        objMartialArt.Techniques.Remove(objSelectedAdvantage);
 
                         RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
@@ -8703,36 +8703,33 @@ namespace Chummer
 
                 if (objMartialArt != null)
                 {
-                    frmSelectMartialArtAdvantage frmPickMartialArtAdvantage = new frmSelectMartialArtAdvantage(CharacterObject)
-                    {
-                        MartialArt = objMartialArt.Name
-                    };
-                    frmPickMartialArtAdvantage.ShowDialog(this);
+                    frmSelectMartialArtTechnique frmPickMartialArtTechnique = new frmSelectMartialArtTechnique(CharacterObject, objMartialArt);
+                    frmPickMartialArtTechnique.ShowDialog(this);
 
-                    if (frmPickMartialArtAdvantage.DialogResult == DialogResult.Cancel)
+                    if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
                         return;
 
                     // Open the Martial Arts XML file and locate the selected piece.
-                    XmlNode objXmlAdvantage = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[name = \"" + frmPickMartialArtAdvantage.SelectedAdvantage + "\"]");
+                    XmlNode xmlTechnique = XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[id = \"" + frmPickMartialArtTechnique.SelectedTechnique + "\"]");
 
-                    if (objXmlAdvantage != null)
+                    if (xmlTechnique != null)
                     {
                         // Create the Improvements for the Advantage if there are any.
-                        MartialArtAdvantage objAdvantage = new MartialArtAdvantage(CharacterObject);
-                        objAdvantage.Create(objXmlAdvantage);
+                        MartialArtTechnique objAdvantage = new MartialArtTechnique(CharacterObject);
+                        objAdvantage.Create(xmlTechnique);
                         if (objAdvantage.InternalId.IsEmptyGuid())
                             return;
 
-                        objMartialArt.Advantages.Add(objAdvantage);
+                        objMartialArt.Techniques.Add(objAdvantage);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                        objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + frmPickMartialArtAdvantage.SelectedAdvantage, ExpenseType.Karma, DateTime.Now);
+                        objEntry.Create(CharacterObjectOptions.KarmaManeuver * -1, LanguageManager.GetString("String_ExpenseLearnTechnique", GlobalOptions.Language) + ' ' + objAdvantage.DisplayName(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objEntry);
                         CharacterObject.Karma -= CharacterObjectOptions.KarmaManeuver;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, frmPickMartialArtAdvantage.SelectedAdvantage);
+                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArtManeuver, objAdvantage.InternalId);
                         objEntry.Undo = objUndo;
 
                         RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
@@ -8749,7 +8746,7 @@ namespace Chummer
             }
             else
             {
-                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtAdvantage", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtAdvantage", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageManager.GetString("Message_SelectMartialArtTechnique", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_SelectMartialArtTechnique", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -10604,7 +10601,7 @@ namespace Chummer
                         foreach (MartialArtManeuver objManeuver in CharacterObject.MartialArtManeuvers.Where(x => x.InternalId == objEntry.Undo.ObjectId).ToList())
                         {
                             // Remove any Improvements created by the Maneuver.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtAdvantage, objManeuver.InternalId);
+                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objManeuver.InternalId);
 
                             // Remove the Maneuver from the character.
                             CharacterObject.MartialArtManeuvers.Remove(objManeuver);
@@ -11685,7 +11682,7 @@ namespace Chummer
             }
             else
             {
-                MartialArtAdvantage objTechnique = CharacterObject.MartialArts.FindMartialArtAdvantage(treMartialArts.SelectedNode?.Tag.ToString());
+                MartialArtTechnique objTechnique = CharacterObject.MartialArts.FindMartialArtTechnique(treMartialArts.SelectedNode?.Tag.ToString());
                 if (objTechnique != null)
                 {
                     string strOldValue = objTechnique.Notes;
@@ -22755,34 +22752,26 @@ namespace Chummer
                 return;
             }
 
-            string strMetamagic = frmPickMetamagic.SelectedMetamagic;
-
-            XmlDocument objXmlDocument = null;
-            XmlNode objXmlMetamagic;
-            
             Metamagic objNewMetamagic = new Metamagic(CharacterObject);
-            Improvement.ImprovementSource objSource;
 
-            if (CharacterObject.MAGEnabled)
+            XmlNode objXmlMetamagic;
+            Improvement.ImprovementSource objSource;
+            if (CharacterObject.RESEnabled)
             {
-                objXmlDocument = XmlManager.Load("metamagic.xml");
-                objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Metamagic;
+                objXmlMetamagic = XmlManager.Load("echoes.xml").SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                objSource = Improvement.ImprovementSource.Echo;
             }
             else
             {
-                objXmlDocument = XmlManager.Load("echoes.xml");
-                objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strMetamagic + "\"]");
-                objSource = Improvement.ImprovementSource.Echo;
+                objXmlMetamagic = XmlManager.Load("metamagic.xml").SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                objSource = Improvement.ImprovementSource.Metamagic;
             }
+            frmPickMetamagic.Dispose();
 
             objNewMetamagic.Create(objXmlMetamagic, objSource);
             objNewMetamagic.Grade = intGrade;
             if (objNewMetamagic.InternalId.IsEmptyGuid())
-            {
-                frmPickMetamagic.Dispose();
                 return;
-            }
 
             CharacterObject.Metamagics.Add(objNewMetamagic);
 
@@ -22805,8 +22794,6 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-
-            frmPickMetamagic.Dispose();
         }
 
         private void tsMetamagicAddArt_Click(object sender, EventArgs e)
@@ -23255,7 +23242,7 @@ namespace Chummer
         {
             if (treMartialArts.SelectedNode != null)
             {
-                MartialArtAdvantage objTechnique = CharacterObject.MartialArts.FindMartialArtAdvantage(treMartialArts.SelectedNode.Tag.ToString());
+                MartialArtTechnique objTechnique = CharacterObject.MartialArts.FindMartialArtTechnique(treMartialArts.SelectedNode.Tag.ToString());
                 if (objTechnique != null)
                 {
                     string strOldValue = objTechnique.Notes;

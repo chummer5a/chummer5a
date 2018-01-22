@@ -1042,7 +1042,7 @@
     <xsl:for-each select="martialarts/martialart">
       <xsl:sort select="name"/>
       <br/><xsl:value-of select="name"/>
-      <xsl:for-each select="martialartadvantages/martialartadvantage">
+      <xsl:for-each select="martialarttechniques/martialarttechnique">
         <xsl:sort select="."/>
         <br/>&#160;&#160;&#160;+ <xsl:value-of select="."/>
       </xsl:for-each>

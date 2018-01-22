@@ -1199,14 +1199,6 @@
       <text>パワーレベル</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>{0} のレーティング1につき選択できる利点は1つのみです.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>利点の最大数</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>「格闘技」のレーティング1につき習得できる格闘動作は2つまでです.</text>
     </string>
@@ -1215,11 +1207,11 @@
       <text>格闘動作の最大数</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>利点を追加する格闘技を先に選択してください.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>格闘技の選択</text>
     </string>
     <string>
@@ -5842,7 +5834,7 @@
     </string>
     <!-- Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>利点を選択</text>
     </string>
     <!-- Select Martial Art Maneuver Window -->

@@ -57,6 +57,11 @@ Application Changes:
 - Fixed a bug where adding arts, enhancements, enchantments, or rituals to metamagics would not generate a properly named expense entry.
 - Fixed a bug where Working for the Man and Working for the People would always use the default 2000 nuyen-per-karma exchange rate instead of the one defined in the character's options.
 - Fixed an issue with Life Modules not loading properly, and defaulting to the Real Life stage instead of Nationality.
+- Added a label to view the PDF source of a martial arts technique when selecting one.
+- Fixed issues with the martial arts technique selection screen not properly using translations.
+- Fixed an issue where bonuses that allow a user to select a metamagic or echo but force its value did not properly work.
+- Fixed an issue where characters were allowed to choose adept powers for which they were not eligible as long as the power did not require certain qualities.
+- Fixed issues where clicking the source label in the cyberware/bioware selection screen would not properly open the PDF associated with the selected piece of 'ware.
 
 Data Changes:
 
@@ -75,6 +80,10 @@ Data Changes:
 New Strings:
 
 - Message_DeleteVehicleLocationBase
+- Message_SelectMartialArtTechnique
+- MessageTitle_SelectMartialArtTechnique
+- Title_SelectMartialArtTechnique
+- String_Power
 
 Changed Strings:
 
@@ -100,6 +109,11 @@ Removed Strings:
 - String_LimbCount5Skull
 - Message_CannotRemoveSpell
 - MessageTitle_CannotRemoveSpell
+- Message_MartialArtAdvantageLimit
+- MessageTitle_MartialArtAdvantageLimit
+- Message_SelectMartialArtAdvantage
+- MessageTitle_SelectMartialArtAdvantage
+- Title_SelectMartialArtAdvantage
 
 Build 197
 

@@ -1741,14 +1741,6 @@
       <text>Não Foi Possível Excluir</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>Você só pode ter 1 Vantagem por Nível de {0}.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>Número Máximo de Vantagens</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>Você só pode ter 2 Manobras por Nível de Arte Marcial.</text>
     </string>
@@ -1757,7 +1749,7 @@
       <text>Número Máximo de Manobras</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>Você deve selecionar uma Arte Marcial para adicionar uma Vantagem.</text>
     </string>
     <string>
@@ -1765,7 +1757,7 @@
       <text>Você deve selecionar um Limite para adicionar um Modificador.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Selecione Arte Marcial</text>
     </string>
     <string>
@@ -7379,7 +7371,7 @@
     <!-- End Region-->
     <!-- Region Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>Selecione uma Vantagem</text>
     </string>
     <!-- End Region-->

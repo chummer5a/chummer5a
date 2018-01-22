@@ -3509,22 +3509,19 @@ namespace Chummer.Classes
         {
             XmlDocument objXmlDocument = XmlManager.Load("metamagic.xml");
             string strForceValue = string.Empty;
-            string strSelectedItem = string.Empty;
+            XmlNode objXmlSelectedMetamagic;
             if (bonusNode.SelectNodes("metamagic").Count > 0)
             {
                 List<ListItem> lstMetamagics = new List<ListItem>();
                 frmSelectItem frmPickItem = new frmSelectItem();
                 foreach (XmlNode objXmlAddMetamagic in bonusNode.SelectNodes("metamagic"))
                 {
-                    if (objXmlAddMetamagic.Attributes["select"] != null)
-                        strForceValue = objXmlAddMetamagic.Attributes["select"].InnerText;
-
+                    string strLoopName = objXmlAddMetamagic.InnerText;
+                    XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
                     // Makes sure we aren't over our limits for this particular metamagic from this overall source
                     if (objXmlAddMetamagic.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                     {
-                        XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + objXmlAddMetamagic.InnerText + "\"]");
-                        string strName = objXmlMetamagic["name"].InnerText;
-                        lstMetamagics.Add(new ListItem(strName, objXmlMetamagic["translate"]?.InnerText ?? strName));
+                        lstMetamagics.Add(new ListItem(objXmlMetamagic["id"].InnerText, objXmlMetamagic["translate"]?.InnerText ?? strLoopName));
                     }
                 }
                 if (lstMetamagics.Count == 0)
@@ -3537,8 +3534,8 @@ namespace Chummer.Classes
                 // Don't do anything else if the form was canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
-
-                strSelectedItem = frmPickItem.SelectedItem;
+                
+                objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickItem.SelectedItem + "\"]");
             }
             else
             {
@@ -3548,15 +3545,25 @@ namespace Chummer.Classes
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
 
-                strSelectedItem = frmPickMetamagic.SelectedMetamagic;
+                objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
+                string strSelectedName = objXmlSelectedMetamagic["name"].InnerText;
+                foreach (XmlNode objXmlAddEcho in bonusNode.SelectNodes("metamagic"))
+                {
+                    if (strSelectedName == objXmlAddEcho.InnerText)
+                    {
+                        strForceValue = objXmlAddEcho.Attributes["select"]?.InnerText ?? string.Empty;
+                        break;
+                    }
+                }
             }
 
-            XmlNode objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strSelectedItem + "\"]");
             Metamagic objAddMetamagic = new Metamagic(_objCharacter);
             objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
             objAddMetamagic.Grade = -1;
             if (objAddMetamagic.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
+
+            SelectedValue = objAddMetamagic.DisplayName(GlobalOptions.Language);
 
             _objCharacter.Metamagics.Add(objAddMetamagic);
             CreateImprovement(objAddMetamagic.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Metamagic, _strUnique);
@@ -3572,7 +3579,7 @@ namespace Chummer.Classes
             if (objXmlSelectedEcho.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Echo", GlobalOptions.Language), string.Empty, _strFriendlyName))
             {
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
-                objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
+                objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
                 objAddEcho.Grade = -1;
                 if (objAddEcho.InternalId.IsEmptyGuid())
                     return;
@@ -3590,22 +3597,19 @@ namespace Chummer.Classes
         {
             XmlDocument objXmlDocument = XmlManager.Load("echoes.xml");
             string strForceValue = string.Empty;
-            string strSelectedItem = string.Empty;
+            XmlNode xmlSelectedEcho;
             if (bonusNode.SelectNodes("echo").Count > 0)
             {
                 List<ListItem> lstEchoes = new List<ListItem>();
                 frmSelectItem frmPickItem = new frmSelectItem();
                 foreach (XmlNode objXmlAddEcho in bonusNode.SelectNodes("echo"))
                 {
-                    if (objXmlAddEcho.Attributes["select"] != null)
-                        strForceValue = objXmlAddEcho.Attributes["select"].InnerText;
-
-                    // Makes sure we aren't over our limits for this particular echo from this overall source
+                    string strLoopName = objXmlAddEcho.InnerText;
+                    XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strLoopName + "\"]");
+                    // Makes sure we aren't over our limits for this particular metamagic from this overall source
                     if (objXmlAddEcho.RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                     {
-                        XmlNode objXmlEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + objXmlAddEcho.InnerText + "\"]");
-                        string strName = objXmlEcho["name"].InnerText;
-                        lstEchoes.Add(new ListItem(strName, objXmlEcho["translate"]?.InnerText ?? strName));
+                        lstEchoes.Add(new ListItem(objXmlEcho["id"].InnerText, objXmlEcho["translate"]?.InnerText ?? strLoopName));
                     }
                 }
                 if (lstEchoes.Count == 0)
@@ -3618,8 +3622,17 @@ namespace Chummer.Classes
                 // Don't do anything else if the form was canceled.
                 if (frmPickItem.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
-
-                strSelectedItem = frmPickItem.SelectedItem;
+                
+                xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickItem.SelectedItem + "\"]");
+                string strSelectedName = xmlSelectedEcho["name"].InnerText;
+                foreach (XmlNode objXmlAddEcho in bonusNode.SelectNodes("echo"))
+                {
+                    if (strSelectedName == objXmlAddEcho.InnerText)
+                    {
+                        strForceValue = objXmlAddEcho.Attributes["select"]?.InnerText ?? string.Empty;
+                        break;
+                    }
+                }
             }
             else
             {
@@ -3629,15 +3642,16 @@ namespace Chummer.Classes
                 if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
                     throw new AbortedException();
 
-                strSelectedItem = frmPickMetamagic.SelectedMetamagic;
+                xmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[id = \"" + frmPickMetamagic.SelectedMetamagic + "\"]");
             }
-
-            XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strSelectedItem + "\"]");
+            
             Metamagic objAddEcho = new Metamagic(_objCharacter);
-            objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
+            objAddEcho.Create(xmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue);
             objAddEcho.Grade = -1;
             if (objAddEcho.InternalId.IsEmptyGuid())
-                return;
+                throw new AbortedException();
+
+            SelectedValue = objAddEcho.DisplayName(GlobalOptions.Language);
 
             _objCharacter.Metamagics.Add(objAddEcho);
             CreateImprovement(objAddEcho.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Echo, _strUnique);
