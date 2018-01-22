@@ -25,19 +25,19 @@ namespace Chummer
     public sealed partial class frmExpense : Form
     {
         private ExpenseType _objMode = ExpenseType.Karma;
+        private readonly CharacterOptions _objCharacterOptions;
 
         #region Control Events
-        public frmExpense()
+        public frmExpense(CharacterOptions objCharacterOptions)
         {
+            _objCharacterOptions = objCharacterOptions;
+
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
             DateTimeFormatInfo objDateTimeInfo = GlobalOptions.CultureInfo.DateTimeFormat;
-            string strDatePattern = objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty);
-            if (!GlobalOptions.DatesIncludeTime)
-                strDatePattern = objDateTimeInfo.LongDatePattern;
-            datDate.CustomFormat = strDatePattern;
+            datDate.CustomFormat = GlobalOptions.DatesIncludeTime ? objDateTimeInfo.FullDateTimePattern.Replace(":ss", string.Empty) : objDateTimeInfo.LongDatePattern;
             datDate.Value = DateTime.Now;
 
             txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault", GlobalOptions.Language);
@@ -45,7 +45,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % 2000 != 0)
+            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_KarmaNuyenExchange", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -183,8 +183,8 @@ namespace Chummer
             }
             if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
             {
-                nudAmount.Increment = 2000;
-                nudAmount.Value = 2000;
+                nudAmount.Increment = _objCharacterOptions.NuyenPerBP;
+                nudAmount.Value = _objCharacterOptions.NuyenPerBP;
             }
             else
             {

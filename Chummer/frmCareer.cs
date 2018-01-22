@@ -3825,7 +3825,7 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickProgram.AddAgain;
 
-                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedComplexForm + "\"]");
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
@@ -5165,7 +5165,7 @@ namespace Chummer
 
         private void cmdKarmaGained_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople", GlobalOptions.Language)
             };
@@ -5208,7 +5208,7 @@ namespace Chummer
 
         private void cmdKarmaSpent_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan", GlobalOptions.Language)
             };
@@ -5264,7 +5264,7 @@ namespace Chummer
 
         private void cmdNuyenGained_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan", GlobalOptions.Language)
@@ -5309,7 +5309,7 @@ namespace Chummer
 
         private void cmdNuyenSpent_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople", GlobalOptions.Language)
@@ -16203,7 +16203,7 @@ namespace Chummer
                     blnAllowEdit = true;
             }
 
-            frmExpense frmEditExpense = new frmExpense
+            frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
                 Reason = objEntry.Reason,
                 Amount = objEntry.Amount,
@@ -16266,7 +16266,7 @@ namespace Chummer
                     blnAllowEdit = true;
             }
 
-            frmExpense frmEditExpense = new frmExpense
+            frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 Reason = objEntry.Reason,
@@ -22694,7 +22694,6 @@ namespace Chummer
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             int intGrade = 0;
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
@@ -22789,9 +22788,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + frmPickMetamagic.SelectedMetamagic, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objNewMetamagic.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -22858,7 +22858,7 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = string.Empty;
+                string strType = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
@@ -22944,7 +22944,7 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = string.Empty;
+                string strType = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
@@ -23030,7 +23030,7 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = string.Empty;
+                string strType = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
@@ -23222,7 +23222,7 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
-                string strType = string.Empty;
+                string strType = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
                 objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + ' ' + objEnhancement.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);

@@ -69,9 +69,9 @@ namespace Chummer
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
             // Update the window title if needed.
-            string s = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
-            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", s);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", s);
+            string strType = LanguageManager.GetString(_strNode == "echo" ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
+            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", strType);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", strType);
 
             foreach (Label objLabel in Controls.OfType<Label>())
             {

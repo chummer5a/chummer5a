@@ -250,7 +250,7 @@ namespace Chummer.UI.Powers
 
                 Power objPower = new Power(ObjCharacter);
 
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
                 frmPickPower.Dispose();
                 if (objPower.Create(objXmlPower))
                 {
