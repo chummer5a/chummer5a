@@ -21867,7 +21867,6 @@ namespace Chummer
             lblWeaponCostLabel.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponCost.Left = lblWeaponCostLabel.Left + intWidth + 6;
             chkIncludedInWeapon.Left = lblWeaponDamageLabel.Left + 176;
-            cmdWeaponMoveToVehicle.Left = lblWeaponDamageLabel.Left + 176;
             lblWeaponAccuracy.Left = lblWeaponAccuracyLabel.Left + lblWeaponAccuracyLabel.Width + 6;
 
             intWidth = Math.Max(lblWeaponAPLabel.Width, lblWeaponAmmoLabel.Width);
@@ -21880,6 +21879,7 @@ namespace Chummer
             lblWeaponConcealLabel.Left = lblWeaponRC.Left + 95;
             lblWeaponConceal.Left = lblWeaponConcealLabel.Left + intWidth + 6;
             chkWeaponAccessoryInstalled.Left = lblWeaponRC.Left + 95;
+            cmdWeaponMoveToVehicle.Left = chkWeaponAccessoryInstalled.Left + chkWeaponAccessoryInstalled.Width + 6;
 
             intWidth = Math.Max(lblWeaponAmmoRemainingLabel.Width, lblWeaponAmmoTypeLabel.Width);
             intWidth = Math.Max(intWidth, lblWeaponDicePoolLabel.Width);

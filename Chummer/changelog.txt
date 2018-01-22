@@ -65,6 +65,7 @@ Application Changes:
 - Fixed a bug where the "Buy with Karma" checkbox in the specialization selection screen was visible outside of priority-based chargen.
 - Fixed a bug where weapon strings in the specialization selection screen were not translated properly.
 - Fixed a bug where players could accidentally add blank specializations from the specialization selection screen.
+- Fixed a bug where the button to move a weapon to a vehicle in Career mode was obscured by labels.
 
 Data Changes:
 
