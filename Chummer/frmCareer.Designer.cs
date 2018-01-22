@@ -33,35 +33,35 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCareer));
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Physical");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Mental");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Social");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Selected Qualities");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Selected Health Spells");
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
-            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Selected Rituals");
-            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Selected Enchantments");
-            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
-            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
-            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Critter Powers");
-            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Weaknesses");
-            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Selected Cyberware");
-            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Selected Bioware");
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Selected Gear");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Selected Armor");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Weapons");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Selected Vehicles");
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Selected Improvements");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Selected Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Selected Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Physical");
+            System.Windows.Forms.TreeNode treeNode31 = new System.Windows.Forms.TreeNode("Mental");
+            System.Windows.Forms.TreeNode treeNode32 = new System.Windows.Forms.TreeNode("Social");
+            System.Windows.Forms.TreeNode treeNode33 = new System.Windows.Forms.TreeNode("Selected Martial Arts");
+            System.Windows.Forms.TreeNode treeNode34 = new System.Windows.Forms.TreeNode("Selected Qualities");
+            System.Windows.Forms.TreeNode treeNode35 = new System.Windows.Forms.TreeNode("Selected Combat Spells");
+            System.Windows.Forms.TreeNode treeNode36 = new System.Windows.Forms.TreeNode("Selected Detection Spells");
+            System.Windows.Forms.TreeNode treeNode37 = new System.Windows.Forms.TreeNode("Selected Health Spells");
+            System.Windows.Forms.TreeNode treeNode38 = new System.Windows.Forms.TreeNode("Selected Illusion Spells");
+            System.Windows.Forms.TreeNode treeNode39 = new System.Windows.Forms.TreeNode("Selected Manipulation Spells");
+            System.Windows.Forms.TreeNode treeNode40 = new System.Windows.Forms.TreeNode("Selected Rituals");
+            System.Windows.Forms.TreeNode treeNode41 = new System.Windows.Forms.TreeNode("Selected Enchantments");
+            System.Windows.Forms.TreeNode treeNode42 = new System.Windows.Forms.TreeNode("Selected Complex Forms");
+            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Selected AI Programs and Advanced Programs");
+            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Critter Powers");
+            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("Weaknesses");
+            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Selected Cyberware");
+            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Selected Bioware");
+            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Unequipped Modular Cyberware");
+            System.Windows.Forms.TreeNode treeNode49 = new System.Windows.Forms.TreeNode("Selected Gear");
+            System.Windows.Forms.TreeNode treeNode50 = new System.Windows.Forms.TreeNode("Selected Armor");
+            System.Windows.Forms.TreeNode treeNode51 = new System.Windows.Forms.TreeNode("Selected Weapons");
+            System.Windows.Forms.TreeNode treeNode52 = new System.Windows.Forms.TreeNode("Selected Lifestyles");
+            System.Windows.Forms.TreeNode treeNode53 = new System.Windows.Forms.TreeNode("Selected Vehicles");
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.TreeNode treeNode54 = new System.Windows.Forms.TreeNode("Selected Improvements");
             this.lblTraditionSource = new System.Windows.Forms.Label();
             this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
             this.tabPowerUc = new Chummer.UI.Powers.PowersTabUserControl();
@@ -735,6 +735,32 @@ namespace Chummer
             this.cmdAddArmor = new SplitButton();
             this.cmdDeleteArmor = new SplitButton();
             this.tabWeapons = new System.Windows.Forms.TabPage();
+            this.tabWeaponMatrixCM = new System.Windows.Forms.TabControl();
+            this.tabWeaponMatrixCMPage = new System.Windows.Forms.TabPage();
+            this.chkWeaponMatrixCM1 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM2 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM3 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM4 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM5 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM6 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM7 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM8 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM9 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM10 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM11 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM12 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM13 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM14 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM15 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM16 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM17 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM18 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM19 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM20 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM21 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM22 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM23 = new System.Windows.Forms.CheckBox();
+            this.chkWeaponMatrixCM24 = new System.Windows.Forms.CheckBox();
             this.lblWeaponRangeAlternate = new System.Windows.Forms.Label();
             this.lblWeaponRangeMain = new System.Windows.Forms.Label();
             this.lblWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
@@ -1230,6 +1256,8 @@ namespace Chummer
             this.tabMatrixCM.SuspendLayout();
             this.tabArmor.SuspendLayout();
             this.tabWeapons.SuspendLayout();
+            this.tabWeaponMatrixCM.SuspendLayout();
+            this.tabWeaponMatrixCMPage.SuspendLayout();
             this.tabLifestyle.SuspendLayout();
             this.tabVehicles.SuspendLayout();
             this.panVehicleCM.SuspendLayout();
@@ -1285,7 +1313,6 @@ namespace Chummer
             this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
             this.lblTraditionSource.TabIndex = 168;
             this.lblTraditionSource.Text = "[Source]";
-            this.lblTraditionSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblTraditionSourceLabel
             // 
@@ -3332,7 +3359,6 @@ namespace Chummer
             this.tabInfo.SelectedIndex = 0;
             this.tabInfo.Size = new System.Drawing.Size(193, 695);
             this.tabInfo.TabIndex = 50;
-            this.tabInfo.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabOtherInfo
             // 
@@ -3690,8 +3716,8 @@ namespace Chummer
             this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
             this.tabDefences.Size = new System.Drawing.Size(185, 669);
             this.tabDefences.TabIndex = 4;
-            this.tabDefences.Text = "Spell Defence";
             this.tabDefences.Tag = "String_SpellDefense";
+            this.tabDefences.Text = "Spell Defence";
             // 
             // nudCounterspellingDice
             // 
@@ -4603,7 +4629,6 @@ namespace Chummer
             this.tabCharacterTabs.TabIndex = 33;
             this.tabCharacterTabs.Tag = "";
             this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
-            this.tabCharacterTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabCommon
             // 
@@ -4736,7 +4761,6 @@ namespace Chummer
             this.lblMetatypeSource.Size = new System.Drawing.Size(33, 13);
             this.lblMetatypeSource.TabIndex = 87;
             this.lblMetatypeSource.Text = "None";
-            this.lblMetatypeSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetatypeSourceLabel
             // 
@@ -4790,7 +4814,6 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 68;
             this.lblQualitySource.Text = "[Source]";
-            this.lblQualitySource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblQualitySourceLabel
             // 
@@ -4835,15 +4858,15 @@ namespace Chummer
             this.treQualities.Indent = 15;
             this.treQualities.Location = new System.Drawing.Point(6, 63);
             this.treQualities.Name = "treQualities";
-            treeNode1.Name = "nodPositiveQualityRoot";
-            treeNode1.Tag = "Node_SelectedPositiveQualities";
-            treeNode1.Text = "Selected Positive Qualities";
-            treeNode2.Name = "nodNegativeQualityRoot";
-            treeNode2.Tag = "Node_SelectedNegativeQualities";
-            treeNode2.Text = "Selected Negative Qualities";
+            treeNode28.Name = "nodPositiveQualityRoot";
+            treeNode28.Tag = "Node_SelectedPositiveQualities";
+            treeNode28.Text = "Selected Positive Qualities";
+            treeNode29.Name = "nodNegativeQualityRoot";
+            treeNode29.Tag = "Node_SelectedNegativeQualities";
+            treeNode29.Text = "Selected Negative Qualities";
             this.treQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
+            treeNode28,
+            treeNode29});
             this.treQualities.ShowNodeToolTips = true;
             this.treQualities.ShowPlusMinus = false;
             this.treQualities.ShowRootLines = false;
@@ -5028,19 +5051,19 @@ namespace Chummer
             this.treLimit.HideSelection = false;
             this.treLimit.Location = new System.Drawing.Point(3, 35);
             this.treLimit.Name = "treLimit";
-            treeNode3.Name = "trePhysicalRoot";
-            treeNode3.Tag = "Node_Physical";
-            treeNode3.Text = "Physical";
-            treeNode4.Name = "treMentalRoot";
-            treeNode4.Tag = "Node_Mental";
-            treeNode4.Text = "Mental";
-            treeNode5.Name = "treSocialRoot";
-            treeNode5.Tag = "Node_Social";
-            treeNode5.Text = "Social";
+            treeNode30.Name = "trePhysicalRoot";
+            treeNode30.Tag = "Node_Physical";
+            treeNode30.Text = "Physical";
+            treeNode31.Name = "treMentalRoot";
+            treeNode31.Tag = "Node_Mental";
+            treeNode31.Text = "Mental";
+            treeNode32.Name = "treSocialRoot";
+            treeNode32.Tag = "Node_Social";
+            treeNode32.Text = "Social";
             this.treLimit.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4,
-            treeNode5});
+            treeNode30,
+            treeNode31,
+            treeNode32});
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
@@ -5097,7 +5120,6 @@ namespace Chummer
             this.lblMartialArtSource.Size = new System.Drawing.Size(47, 13);
             this.lblMartialArtSource.TabIndex = 25;
             this.lblMartialArtSource.Text = "[Source]";
-            this.lblMartialArtSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMartialArtSourceLabel
             // 
@@ -5116,15 +5138,15 @@ namespace Chummer
             this.treMartialArts.HideSelection = false;
             this.treMartialArts.Location = new System.Drawing.Point(8, 35);
             this.treMartialArts.Name = "treMartialArts";
-            treeNode6.Name = "treMartialArtsRoot";
-            treeNode6.Tag = "Node_SelectedMartialArts";
-            treeNode6.Text = "Selected Martial Arts";
-            treeNode7.Name = "nodQualities";
-            treeNode7.Tag = "Node_SelectedQualities";
-            treeNode7.Text = "Selected Qualities";
+            treeNode33.Name = "treMartialArtsRoot";
+            treeNode33.Tag = "Node_SelectedMartialArts";
+            treeNode33.Text = "Selected Martial Arts";
+            treeNode34.Name = "nodQualities";
+            treeNode34.Tag = "Node_SelectedQualities";
+            treeNode34.Text = "Selected Qualities";
             this.treMartialArts.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7});
+            treeNode33,
+            treeNode34});
             this.treMartialArts.ShowNodeToolTips = true;
             this.treMartialArts.ShowPlusMinus = false;
             this.treMartialArts.ShowRootLines = false;
@@ -5467,7 +5489,6 @@ namespace Chummer
             this.lblSpellSource.Size = new System.Drawing.Size(47, 13);
             this.lblSpellSource.TabIndex = 88;
             this.lblSpellSource.Text = "[Source]";
-            this.lblSpellSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSpellSourceLabel
             // 
@@ -5617,35 +5638,35 @@ namespace Chummer
             this.treSpells.HideSelection = false;
             this.treSpells.Location = new System.Drawing.Point(8, 55);
             this.treSpells.Name = "treSpells";
-            treeNode8.Name = "nodSpellCombatRoot";
-            treeNode8.Tag = "Node_SelectedCombatSpells";
-            treeNode8.Text = "Selected Combat Spells";
-            treeNode9.Name = "nodSpellDetectionRoot";
-            treeNode9.Tag = "Node_SelectedDetectionSpells";
-            treeNode9.Text = "Selected Detection Spells";
-            treeNode10.Name = "nodSpellHealthRoot";
-            treeNode10.Tag = "Node_SelectedHealthSpells";
-            treeNode10.Text = "Selected Health Spells";
-            treeNode11.Name = "nodSpellIllusionRoot";
-            treeNode11.Tag = "Node_SelectedIllusionSpells";
-            treeNode11.Text = "Selected Illusion Spells";
-            treeNode12.Name = "nodSpellManipulationRoot";
-            treeNode12.Tag = "Node_SelectedManipulationSpells";
-            treeNode12.Text = "Selected Manipulation Spells";
-            treeNode13.Name = "nodSpellGeomancyRoot";
-            treeNode13.Tag = "Node_SelectedGeomancyRituals";
-            treeNode13.Text = "Selected Rituals";
-            treeNode14.Name = "nodSpellEnchantmentRoot";
-            treeNode14.Tag = "Node_SelectedEnchantments";
-            treeNode14.Text = "Selected Enchantments";
+            treeNode35.Name = "nodSpellCombatRoot";
+            treeNode35.Tag = "Node_SelectedCombatSpells";
+            treeNode35.Text = "Selected Combat Spells";
+            treeNode36.Name = "nodSpellDetectionRoot";
+            treeNode36.Tag = "Node_SelectedDetectionSpells";
+            treeNode36.Text = "Selected Detection Spells";
+            treeNode37.Name = "nodSpellHealthRoot";
+            treeNode37.Tag = "Node_SelectedHealthSpells";
+            treeNode37.Text = "Selected Health Spells";
+            treeNode38.Name = "nodSpellIllusionRoot";
+            treeNode38.Tag = "Node_SelectedIllusionSpells";
+            treeNode38.Text = "Selected Illusion Spells";
+            treeNode39.Name = "nodSpellManipulationRoot";
+            treeNode39.Tag = "Node_SelectedManipulationSpells";
+            treeNode39.Text = "Selected Manipulation Spells";
+            treeNode40.Name = "nodSpellGeomancyRoot";
+            treeNode40.Tag = "Node_SelectedGeomancyRituals";
+            treeNode40.Text = "Selected Rituals";
+            treeNode41.Name = "nodSpellEnchantmentRoot";
+            treeNode41.Tag = "Node_SelectedEnchantments";
+            treeNode41.Text = "Selected Enchantments";
             this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11,
-            treeNode12,
-            treeNode13,
-            treeNode14});
+            treeNode35,
+            treeNode36,
+            treeNode37,
+            treeNode38,
+            treeNode39,
+            treeNode40,
+            treeNode41});
             this.treSpells.ShowNodeToolTips = true;
             this.treSpells.ShowRootLines = false;
             this.treSpells.Size = new System.Drawing.Size(295, 333);
@@ -5854,7 +5875,6 @@ namespace Chummer
             this.lblComplexFormSource.Size = new System.Drawing.Size(47, 13);
             this.lblComplexFormSource.TabIndex = 174;
             this.lblComplexFormSource.Text = "[Source]";
-            this.lblComplexFormSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblComplexFormSourceLabel
             // 
@@ -5935,11 +5955,11 @@ namespace Chummer
             this.treComplexForms.HideSelection = false;
             this.treComplexForms.Location = new System.Drawing.Point(8, 54);
             this.treComplexForms.Name = "treComplexForms";
-            treeNode15.Name = "nodProgramAdvancedRoot";
-            treeNode15.Tag = "Node_SelectedAdvancedComplexForms";
-            treeNode15.Text = "Selected Complex Forms";
+            treeNode42.Name = "nodProgramAdvancedRoot";
+            treeNode42.Tag = "Node_SelectedAdvancedComplexForms";
+            treeNode42.Text = "Selected Complex Forms";
             this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode15});
+            treeNode42});
             this.treComplexForms.ShowNodeToolTips = true;
             this.treComplexForms.ShowRootLines = false;
             this.treComplexForms.Size = new System.Drawing.Size(295, 333);
@@ -6088,11 +6108,11 @@ namespace Chummer
             this.treAIPrograms.HideSelection = false;
             this.treAIPrograms.Location = new System.Drawing.Point(8, 54);
             this.treAIPrograms.Name = "treAIPrograms";
-            treeNode16.Name = "nodAIProgramsRoot";
-            treeNode16.Tag = "Node_SelectedAIPrograms";
-            treeNode16.Text = "Selected AI Programs and Advanced Programs";
+            treeNode43.Name = "nodAIProgramsRoot";
+            treeNode43.Tag = "Node_SelectedAIPrograms";
+            treeNode43.Text = "Selected AI Programs and Advanced Programs";
             this.treAIPrograms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode16});
+            treeNode43});
             this.treAIPrograms.ShowNodeToolTips = true;
             this.treAIPrograms.ShowRootLines = false;
             this.treAIPrograms.Size = new System.Drawing.Size(295, 554);
@@ -6240,7 +6260,6 @@ namespace Chummer
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
             this.lblCritterPowerSource.TabIndex = 29;
             this.lblCritterPowerSource.Text = "[Source]";
-            this.lblCritterPowerSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCritterPowerSourceLabel
             // 
@@ -6373,15 +6392,15 @@ namespace Chummer
             this.treCritterPowers.HideSelection = false;
             this.treCritterPowers.Location = new System.Drawing.Point(8, 32);
             this.treCritterPowers.Name = "treCritterPowers";
-            treeNode17.Name = "nodCritterPowerRoot";
-            treeNode17.Tag = "Node_CritterPowers";
-            treeNode17.Text = "Critter Powers";
-            treeNode18.Name = "nodCritterWeaknessRoot";
-            treeNode18.Tag = "Node_CritterWeaknesses";
-            treeNode18.Text = "Weaknesses";
+            treeNode44.Name = "nodCritterPowerRoot";
+            treeNode44.Tag = "Node_CritterPowers";
+            treeNode44.Text = "Critter Powers";
+            treeNode45.Name = "nodCritterWeaknessRoot";
+            treeNode45.Tag = "Node_CritterWeaknesses";
+            treeNode45.Text = "Weaknesses";
             this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode17,
-            treeNode18});
+            treeNode44,
+            treeNode45});
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
@@ -6513,7 +6532,6 @@ namespace Chummer
             this.lblMetamagicSource.Size = new System.Drawing.Size(47, 13);
             this.lblMetamagicSource.TabIndex = 111;
             this.lblMetamagicSource.Text = "[Source]";
-            this.lblMetamagicSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetamagicSourceLabel
             // 
@@ -7454,7 +7472,6 @@ namespace Chummer
             this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
             this.lblCyberwareSource.TabIndex = 48;
             this.lblCyberwareSource.Text = "[Source]";
-            this.lblCyberwareSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCyberwareSourceLabel
             // 
@@ -7619,19 +7636,19 @@ namespace Chummer
             this.treCyberware.HideSelection = false;
             this.treCyberware.Location = new System.Drawing.Point(8, 36);
             this.treCyberware.Name = "treCyberware";
-            treeNode19.Name = "nodCyberwareRoot";
-            treeNode19.Tag = "Node_SelectedCyberware";
-            treeNode19.Text = "Selected Cyberware";
-            treeNode20.Name = "nodBioware";
-            treeNode20.Tag = "Node_SelectedBioware";
-            treeNode20.Text = "Selected Bioware";
-            treeNode21.Name = "nodUnequippedModularCyberware";
-            treeNode21.Tag = "Node_UnequippedModularCyberware";
-            treeNode21.Text = "Unequipped Modular Cyberware";
+            treeNode46.Name = "nodCyberwareRoot";
+            treeNode46.Tag = "Node_SelectedCyberware";
+            treeNode46.Text = "Selected Cyberware";
+            treeNode47.Name = "nodBioware";
+            treeNode47.Tag = "Node_SelectedBioware";
+            treeNode47.Text = "Selected Bioware";
+            treeNode48.Name = "nodUnequippedModularCyberware";
+            treeNode48.Tag = "Node_UnequippedModularCyberware";
+            treeNode48.Text = "Unequipped Modular Cyberware";
             this.treCyberware.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode19,
-            treeNode20,
-            treeNode21});
+            treeNode46,
+            treeNode47,
+            treeNode48});
             this.treCyberware.ShowNodeToolTips = true;
             this.treCyberware.ShowRootLines = false;
             this.treCyberware.Size = new System.Drawing.Size(295, 630);
@@ -7694,7 +7711,6 @@ namespace Chummer
             this.tabStreetGearTabs.Size = new System.Drawing.Size(859, 663);
             this.tabStreetGearTabs.TabIndex = 87;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
-            this.tabStreetGearTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabGear
             // 
@@ -8365,7 +8381,6 @@ namespace Chummer
             this.lblGearSource.Size = new System.Drawing.Size(47, 13);
             this.lblGearSource.TabIndex = 74;
             this.lblGearSource.Text = "[Source]";
-            this.lblGearSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblGearSourceLabel
             // 
@@ -8500,11 +8515,11 @@ namespace Chummer
             this.treGear.HideSelection = false;
             this.treGear.Location = new System.Drawing.Point(6, 36);
             this.treGear.Name = "treGear";
-            treeNode22.Name = "nodGearRoot";
-            treeNode22.Tag = "Node_SelectedGear";
-            treeNode22.Text = "Selected Gear";
+            treeNode49.Name = "nodGearRoot";
+            treeNode49.Tag = "Node_SelectedGear";
+            treeNode49.Text = "Selected Gear";
             this.treGear.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode22});
+            treeNode49});
             this.treGear.ShowNodeToolTips = true;
             this.treGear.Size = new System.Drawing.Size(295, 598);
             this.treGear.TabIndex = 49;
@@ -8817,7 +8832,6 @@ namespace Chummer
             this.lblArmorSource.Size = new System.Drawing.Size(47, 13);
             this.lblArmorSource.TabIndex = 80;
             this.lblArmorSource.Text = "[Source]";
-            this.lblArmorSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblArmorSourceLabel
             // 
@@ -8865,13 +8879,13 @@ namespace Chummer
             this.treArmor.HideSelection = false;
             this.treArmor.Location = new System.Drawing.Point(6, 36);
             this.treArmor.Name = "treArmor";
-            treeNode23.Name = "nodArmorRoot";
-            treeNode23.Tag = "Node_SelectedArmor";
-            treeNode23.Text = "Selected Armor";
+            treeNode50.Name = "nodArmorRoot";
+            treeNode50.Tag = "Node_SelectedArmor";
+            treeNode50.Text = "Selected Armor";
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode23});
+            treeNode50});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(295, 537);
+            this.treArmor.Size = new System.Drawing.Size(295, 595);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -8919,6 +8933,7 @@ namespace Chummer
             // tabWeapons
             // 
             this.tabWeapons.BackColor = System.Drawing.SystemColors.Control;
+            this.tabWeapons.Controls.Add(this.tabWeaponMatrixCM);
             this.tabWeapons.Controls.Add(this.lblWeaponRangeAlternate);
             this.tabWeapons.Controls.Add(this.lblWeaponRangeMain);
             this.tabWeapons.Controls.Add(this.lblWeaponAlternateRangeExtreme);
@@ -8997,6 +9012,317 @@ namespace Chummer
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
+            // 
+            // tabWeaponMatrixCM
+            // 
+            this.tabWeaponMatrixCM.Controls.Add(this.tabWeaponMatrixCMPage);
+            this.tabWeaponMatrixCM.ItemSize = new System.Drawing.Size(176, 18);
+            this.tabWeaponMatrixCM.Location = new System.Drawing.Point(310, 430);
+            this.tabWeaponMatrixCM.Name = "tabWeaponMatrixCM";
+            this.tabWeaponMatrixCM.SelectedIndex = 0;
+            this.tabWeaponMatrixCM.Size = new System.Drawing.Size(213, 113);
+            this.tabWeaponMatrixCM.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabWeaponMatrixCM.TabIndex = 217;
+            this.tabWeaponMatrixCM.Visible = false;
+            // 
+            // tabWeaponMatrixCMPage
+            // 
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM1);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM2);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM3);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM4);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM5);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM6);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM7);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM8);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM9);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM10);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM11);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM12);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM13);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM14);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM15);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM16);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM17);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM18);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM19);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM20);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM21);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM22);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM23);
+            this.tabWeaponMatrixCMPage.Controls.Add(this.chkWeaponMatrixCM24);
+            this.tabWeaponMatrixCMPage.Location = new System.Drawing.Point(4, 22);
+            this.tabWeaponMatrixCMPage.Name = "tabWeaponMatrixCMPage";
+            this.tabWeaponMatrixCMPage.Padding = new System.Windows.Forms.Padding(3);
+            this.tabWeaponMatrixCMPage.Size = new System.Drawing.Size(205, 87);
+            this.tabWeaponMatrixCMPage.TabIndex = 1;
+            this.tabWeaponMatrixCMPage.Text = "Matrix Condition Monitor";
+            this.tabWeaponMatrixCMPage.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM1
+            // 
+            this.chkWeaponMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM1.Location = new System.Drawing.Point(5, 6);
+            this.chkWeaponMatrixCM1.Name = "chkWeaponMatrixCM1";
+            this.chkWeaponMatrixCM1.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM1.TabIndex = 49;
+            this.chkWeaponMatrixCM1.Tag = "1";
+            this.chkWeaponMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM1.UseVisualStyleBackColor = true;
+            this.chkWeaponMatrixCM1.CheckedChanged += new System.EventHandler(this.chkGearCM_CheckedChanged);
+            // 
+            // chkWeaponMatrixCM2
+            // 
+            this.chkWeaponMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM2.Location = new System.Drawing.Point(29, 6);
+            this.chkWeaponMatrixCM2.Name = "chkWeaponMatrixCM2";
+            this.chkWeaponMatrixCM2.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM2.TabIndex = 50;
+            this.chkWeaponMatrixCM2.Tag = "2";
+            this.chkWeaponMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM2.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM3
+            // 
+            this.chkWeaponMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM3.Location = new System.Drawing.Point(53, 6);
+            this.chkWeaponMatrixCM3.Name = "chkWeaponMatrixCM3";
+            this.chkWeaponMatrixCM3.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM3.TabIndex = 51;
+            this.chkWeaponMatrixCM3.Tag = "3";
+            this.chkWeaponMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM3.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM4
+            // 
+            this.chkWeaponMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM4.Location = new System.Drawing.Point(77, 6);
+            this.chkWeaponMatrixCM4.Name = "chkWeaponMatrixCM4";
+            this.chkWeaponMatrixCM4.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM4.TabIndex = 52;
+            this.chkWeaponMatrixCM4.Tag = "4";
+            this.chkWeaponMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM4.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM5
+            // 
+            this.chkWeaponMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM5.Location = new System.Drawing.Point(101, 6);
+            this.chkWeaponMatrixCM5.Name = "chkWeaponMatrixCM5";
+            this.chkWeaponMatrixCM5.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM5.TabIndex = 53;
+            this.chkWeaponMatrixCM5.Tag = "5";
+            this.chkWeaponMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM5.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM6
+            // 
+            this.chkWeaponMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM6.Location = new System.Drawing.Point(125, 6);
+            this.chkWeaponMatrixCM6.Name = "chkWeaponMatrixCM6";
+            this.chkWeaponMatrixCM6.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM6.TabIndex = 54;
+            this.chkWeaponMatrixCM6.Tag = "6";
+            this.chkWeaponMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM6.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM7
+            // 
+            this.chkWeaponMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM7.Location = new System.Drawing.Point(149, 6);
+            this.chkWeaponMatrixCM7.Name = "chkWeaponMatrixCM7";
+            this.chkWeaponMatrixCM7.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM7.TabIndex = 55;
+            this.chkWeaponMatrixCM7.Tag = "7";
+            this.chkWeaponMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM7.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM8
+            // 
+            this.chkWeaponMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM8.Location = new System.Drawing.Point(173, 6);
+            this.chkWeaponMatrixCM8.Name = "chkWeaponMatrixCM8";
+            this.chkWeaponMatrixCM8.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM8.TabIndex = 56;
+            this.chkWeaponMatrixCM8.Tag = "8";
+            this.chkWeaponMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM8.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM9
+            // 
+            this.chkWeaponMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM9.Location = new System.Drawing.Point(5, 31);
+            this.chkWeaponMatrixCM9.Name = "chkWeaponMatrixCM9";
+            this.chkWeaponMatrixCM9.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM9.TabIndex = 57;
+            this.chkWeaponMatrixCM9.Tag = "9";
+            this.chkWeaponMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM9.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM10
+            // 
+            this.chkWeaponMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM10.Location = new System.Drawing.Point(29, 31);
+            this.chkWeaponMatrixCM10.Name = "chkWeaponMatrixCM10";
+            this.chkWeaponMatrixCM10.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM10.TabIndex = 58;
+            this.chkWeaponMatrixCM10.Tag = "10";
+            this.chkWeaponMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM10.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM11
+            // 
+            this.chkWeaponMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM11.Location = new System.Drawing.Point(53, 31);
+            this.chkWeaponMatrixCM11.Name = "chkWeaponMatrixCM11";
+            this.chkWeaponMatrixCM11.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM11.TabIndex = 59;
+            this.chkWeaponMatrixCM11.Tag = "11";
+            this.chkWeaponMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM11.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM12
+            // 
+            this.chkWeaponMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM12.Location = new System.Drawing.Point(77, 31);
+            this.chkWeaponMatrixCM12.Name = "chkWeaponMatrixCM12";
+            this.chkWeaponMatrixCM12.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM12.TabIndex = 60;
+            this.chkWeaponMatrixCM12.Tag = "12";
+            this.chkWeaponMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM12.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM13
+            // 
+            this.chkWeaponMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM13.Location = new System.Drawing.Point(101, 31);
+            this.chkWeaponMatrixCM13.Name = "chkWeaponMatrixCM13";
+            this.chkWeaponMatrixCM13.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM13.TabIndex = 63;
+            this.chkWeaponMatrixCM13.Tag = "13";
+            this.chkWeaponMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM13.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM14
+            // 
+            this.chkWeaponMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM14.Location = new System.Drawing.Point(125, 31);
+            this.chkWeaponMatrixCM14.Name = "chkWeaponMatrixCM14";
+            this.chkWeaponMatrixCM14.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM14.TabIndex = 64;
+            this.chkWeaponMatrixCM14.Tag = "14";
+            this.chkWeaponMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM14.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM15
+            // 
+            this.chkWeaponMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM15.Location = new System.Drawing.Point(149, 31);
+            this.chkWeaponMatrixCM15.Name = "chkWeaponMatrixCM15";
+            this.chkWeaponMatrixCM15.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM15.TabIndex = 65;
+            this.chkWeaponMatrixCM15.Tag = "15";
+            this.chkWeaponMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM15.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM16
+            // 
+            this.chkWeaponMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM16.Location = new System.Drawing.Point(173, 31);
+            this.chkWeaponMatrixCM16.Name = "chkWeaponMatrixCM16";
+            this.chkWeaponMatrixCM16.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM16.TabIndex = 66;
+            this.chkWeaponMatrixCM16.Tag = "16";
+            this.chkWeaponMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM16.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM17
+            // 
+            this.chkWeaponMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM17.Location = new System.Drawing.Point(5, 57);
+            this.chkWeaponMatrixCM17.Name = "chkWeaponMatrixCM17";
+            this.chkWeaponMatrixCM17.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM17.TabIndex = 67;
+            this.chkWeaponMatrixCM17.Tag = "17";
+            this.chkWeaponMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM17.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM18
+            // 
+            this.chkWeaponMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM18.Location = new System.Drawing.Point(29, 57);
+            this.chkWeaponMatrixCM18.Name = "chkWeaponMatrixCM18";
+            this.chkWeaponMatrixCM18.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM18.TabIndex = 68;
+            this.chkWeaponMatrixCM18.Tag = "18";
+            this.chkWeaponMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM18.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM19
+            // 
+            this.chkWeaponMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM19.Location = new System.Drawing.Point(53, 57);
+            this.chkWeaponMatrixCM19.Name = "chkWeaponMatrixCM19";
+            this.chkWeaponMatrixCM19.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM19.TabIndex = 69;
+            this.chkWeaponMatrixCM19.Tag = "19";
+            this.chkWeaponMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM19.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM20
+            // 
+            this.chkWeaponMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM20.Location = new System.Drawing.Point(77, 57);
+            this.chkWeaponMatrixCM20.Name = "chkWeaponMatrixCM20";
+            this.chkWeaponMatrixCM20.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM20.TabIndex = 70;
+            this.chkWeaponMatrixCM20.Tag = "20";
+            this.chkWeaponMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM20.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM21
+            // 
+            this.chkWeaponMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM21.Location = new System.Drawing.Point(101, 57);
+            this.chkWeaponMatrixCM21.Name = "chkWeaponMatrixCM21";
+            this.chkWeaponMatrixCM21.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM21.TabIndex = 71;
+            this.chkWeaponMatrixCM21.Tag = "21";
+            this.chkWeaponMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM21.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM22
+            // 
+            this.chkWeaponMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM22.Location = new System.Drawing.Point(125, 57);
+            this.chkWeaponMatrixCM22.Name = "chkWeaponMatrixCM22";
+            this.chkWeaponMatrixCM22.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM22.TabIndex = 72;
+            this.chkWeaponMatrixCM22.Tag = "22";
+            this.chkWeaponMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM22.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM23
+            // 
+            this.chkWeaponMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM23.Location = new System.Drawing.Point(149, 57);
+            this.chkWeaponMatrixCM23.Name = "chkWeaponMatrixCM23";
+            this.chkWeaponMatrixCM23.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM23.TabIndex = 73;
+            this.chkWeaponMatrixCM23.Tag = "23";
+            this.chkWeaponMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM23.UseVisualStyleBackColor = true;
+            // 
+            // chkWeaponMatrixCM24
+            // 
+            this.chkWeaponMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkWeaponMatrixCM24.Location = new System.Drawing.Point(173, 57);
+            this.chkWeaponMatrixCM24.Name = "chkWeaponMatrixCM24";
+            this.chkWeaponMatrixCM24.Size = new System.Drawing.Size(24, 24);
+            this.chkWeaponMatrixCM24.TabIndex = 74;
+            this.chkWeaponMatrixCM24.Tag = "24";
+            this.chkWeaponMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkWeaponMatrixCM24.UseVisualStyleBackColor = true;
             // 
             // lblWeaponRangeAlternate
             // 
@@ -9426,7 +9752,6 @@ namespace Chummer
             this.lblWeaponSource.Size = new System.Drawing.Size(47, 13);
             this.lblWeaponSource.TabIndex = 69;
             this.lblWeaponSource.Text = "[Source]";
-            this.lblWeaponSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblWeaponSourceLabel
             // 
@@ -9465,13 +9790,13 @@ namespace Chummer
             this.treWeapons.HideSelection = false;
             this.treWeapons.Location = new System.Drawing.Point(6, 36);
             this.treWeapons.Name = "treWeapons";
-            treeNode24.Name = "nodWeaponsRoot";
-            treeNode24.Tag = "Node_SelectedWeapons";
-            treeNode24.Text = "Selected Weapons";
+            treeNode51.Name = "nodWeaponsRoot";
+            treeNode51.Tag = "Node_SelectedWeapons";
+            treeNode51.Text = "Selected Weapons";
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode24});
+            treeNode51});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(295, 515);
+            this.treWeapons.Size = new System.Drawing.Size(295, 598);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -9800,7 +10125,6 @@ namespace Chummer
             this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
-            this.lblLifestyleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblLifestyleSourceLabel
             // 
@@ -9830,11 +10154,11 @@ namespace Chummer
             this.treLifestyles.HideSelection = false;
             this.treLifestyles.Location = new System.Drawing.Point(6, 36);
             this.treLifestyles.Name = "treLifestyles";
-            treeNode25.Name = "nodLifestylesRoot";
-            treeNode25.Tag = "Node_SelectedLifestyles";
-            treeNode25.Text = "Selected Lifestyles";
+            treeNode52.Name = "nodLifestylesRoot";
+            treeNode52.Tag = "Node_SelectedLifestyles";
+            treeNode52.Text = "Selected Lifestyles";
             this.treLifestyles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode25});
+            treeNode52});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
             this.treLifestyles.Size = new System.Drawing.Size(295, 537);
@@ -11794,7 +12118,6 @@ namespace Chummer
             this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
             this.lblVehicleSource.TabIndex = 60;
             this.lblVehicleSource.Text = "[Source]";
-            this.lblVehicleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblVehicleSourceLabel
             // 
@@ -12052,11 +12375,11 @@ namespace Chummer
             this.treVehicles.HideSelection = false;
             this.treVehicles.Location = new System.Drawing.Point(8, 36);
             this.treVehicles.Name = "treVehicles";
-            treeNode26.Name = "nodVehiclesRoot";
-            treeNode26.Tag = "Node_SelectedVehicles";
-            treeNode26.Text = "Selected Vehicles";
+            treeNode53.Name = "nodVehiclesRoot";
+            treeNode53.Tag = "Node_SelectedVehicles";
+            treeNode53.Text = "Selected Vehicles";
             this.treVehicles.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode26});
+            treeNode53});
             this.treVehicles.ShowNodeToolTips = true;
             this.treVehicles.ShowRootLines = false;
             this.treVehicles.Size = new System.Drawing.Size(403, 630);
@@ -12205,8 +12528,8 @@ namespace Chummer
             this.chkIsMainMugshot.Name = "chkIsMainMugshot";
             this.chkIsMainMugshot.Size = new System.Drawing.Size(104, 17);
             this.chkIsMainMugshot.TabIndex = 97;
-            this.chkIsMainMugshot.Text = "Is Main Mugshot";
             this.chkIsMainMugshot.Tag = "Checkbox_IsMainMugshot";
+            this.chkIsMainMugshot.Text = "Is Main Mugshot";
             this.chkIsMainMugshot.UseVisualStyleBackColor = true;
             this.chkIsMainMugshot.CheckedChanged += new System.EventHandler(this.chkIsMainMugshot_CheckedChanged);
             // 
@@ -12645,8 +12968,8 @@ namespace Chummer
             // chtKarma
             // 
             this.chtKarma.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea1.Name = "ChartArea1";
-            this.chtKarma.ChartAreas.Add(chartArea1);
+            chartArea3.Name = "ChartArea1";
+            this.chtKarma.ChartAreas.Add(chartArea3);
             this.chtKarma.Location = new System.Drawing.Point(0, 449);
             this.chtKarma.Name = "chtKarma";
             this.chtKarma.Size = new System.Drawing.Size(409, 208);
@@ -12744,8 +13067,8 @@ namespace Chummer
             // chtNuyen
             // 
             this.chtNuyen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            chartArea2.Name = "ChartArea1";
-            this.chtNuyen.ChartAreas.Add(chartArea2);
+            chartArea4.Name = "ChartArea1";
+            this.chtNuyen.ChartAreas.Add(chartArea4);
             this.chtNuyen.Location = new System.Drawing.Point(0, 449);
             this.chtNuyen.Name = "chtNuyen";
             this.chtNuyen.Size = new System.Drawing.Size(410, 208);
@@ -13082,11 +13405,11 @@ namespace Chummer
             this.treImprovements.HideSelection = false;
             this.treImprovements.Location = new System.Drawing.Point(8, 35);
             this.treImprovements.Name = "treImprovements";
-            treeNode27.Name = "nodImprovementsRoot";
-            treeNode27.Tag = "Node_SelectedImprovements";
-            treeNode27.Text = "Selected Improvements";
+            treeNode54.Name = "nodImprovementsRoot";
+            treeNode54.Tag = "Node_SelectedImprovements";
+            treeNode54.Text = "Selected Improvements";
             this.treImprovements.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode27});
+            treeNode54});
             this.treImprovements.ShowNodeToolTips = true;
             this.treImprovements.Size = new System.Drawing.Size(295, 631);
             this.treImprovements.TabIndex = 81;
@@ -13116,8 +13439,8 @@ namespace Chummer
             this.tabRelationships.Padding = new System.Windows.Forms.Padding(3);
             this.tabRelationships.Size = new System.Drawing.Size(861, 669);
             this.tabRelationships.TabIndex = 20;
-            this.tabRelationships.Text = "Relationships";
             this.tabRelationships.Tag = "String_Relationships";
+            this.tabRelationships.Text = "Relationships";
             this.tabRelationships.UseVisualStyleBackColor = true;
             // 
             // tabPeople
@@ -13131,7 +13454,6 @@ namespace Chummer
             this.tabPeople.SelectedIndex = 0;
             this.tabPeople.Size = new System.Drawing.Size(855, 663);
             this.tabPeople.TabIndex = 94;
-            this.tabPeople.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
             // 
             // tabContacts
             // 
@@ -13148,13 +13470,13 @@ namespace Chummer
             this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
             this.tabContacts.Size = new System.Drawing.Size(847, 637);
             this.tabContacts.TabIndex = 0;
-            this.tabContacts.Text = "Contacts";
             this.tabContacts.Tag = "Label_Contacts";
+            this.tabContacts.Text = "Contacts";
             // 
             // cmdSwapContactOrder
             // 
             this.cmdSwapContactOrder.AutoSize = true;
-            this.cmdSwapContactOrder.Location = new System.Drawing.Point(206, 6);
+            this.cmdSwapContactOrder.Location = new System.Drawing.Point(224, 6);
             this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
             this.cmdSwapContactOrder.Size = new System.Drawing.Size(87, 23);
             this.cmdSwapContactOrder.TabIndex = 51;
@@ -13166,7 +13488,7 @@ namespace Chummer
             // cmdContactsExpansionToggle
             // 
             this.cmdContactsExpansionToggle.AutoSize = true;
-            this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(88, 6);
+            this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(106, 6);
             this.cmdContactsExpansionToggle.Name = "cmdContactsExpansionToggle";
             this.cmdContactsExpansionToggle.Size = new System.Drawing.Size(112, 23);
             this.cmdContactsExpansionToggle.TabIndex = 50;
@@ -13193,9 +13515,11 @@ namespace Chummer
             // cmdAddContact
             // 
             this.cmdAddContact.AutoSize = true;
+            this.cmdAddContact.ContextMenuStrip = this.cmsAddContact;
             this.cmdAddContact.Location = new System.Drawing.Point(6, 6);
             this.cmdAddContact.Name = "cmdAddContact";
-            this.cmdAddContact.Size = new System.Drawing.Size(76, 23);
+            this.cmdAddContact.Size = new System.Drawing.Size(94, 23);
+            this.cmdAddContact.SplitMenuStrip = this.cmsAddContact;
             this.cmdAddContact.TabIndex = 24;
             this.cmdAddContact.Tag = "Button_AddContact";
             this.cmdAddContact.Text = "&Add Contact";
@@ -13245,8 +13569,8 @@ namespace Chummer
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
             this.tabEnemies.Size = new System.Drawing.Size(847, 637);
             this.tabEnemies.TabIndex = 1;
-            this.tabEnemies.Text = "Enemies";
             this.tabEnemies.Tag = "Label_Enemies";
+            this.tabEnemies.Text = "Enemies";
             // 
             // label10
             // 
@@ -13765,12 +14089,12 @@ namespace Chummer
             this.cmsAddContact.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddFromFile});
             this.cmsAddContact.Name = "cmsAddContact";
-            this.cmsAddContact.Size = new System.Drawing.Size(153, 48);
+            this.cmsAddContact.Size = new System.Drawing.Size(149, 26);
             // 
             // tsAddFromFile
             // 
             this.tsAddFromFile.Name = "tsAddFromFile";
-            this.tsAddFromFile.Size = new System.Drawing.Size(152, 22);
+            this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
             this.tsAddFromFile.Text = "&Add From File";
             this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
@@ -13882,6 +14206,8 @@ namespace Chummer
             this.tabArmor.PerformLayout();
             this.tabWeapons.ResumeLayout(false);
             this.tabWeapons.PerformLayout();
+            this.tabWeaponMatrixCM.ResumeLayout(false);
+            this.tabWeaponMatrixCMPage.ResumeLayout(false);
             this.tabLifestyle.ResumeLayout(false);
             this.tabLifestyle.PerformLayout();
             this.tabVehicles.ResumeLayout(false);
@@ -15045,5 +15371,31 @@ namespace Chummer
         private Label lblFiringModeLabel;
         private ContextMenuStrip cmsAddContact;
         private ToolStripMenuItem tsAddFromFile;
+        private TabControl tabWeaponMatrixCM;
+        private TabPage tabWeaponMatrixCMPage;
+        private CheckBox chkWeaponMatrixCM1;
+        private CheckBox chkWeaponMatrixCM2;
+        private CheckBox chkWeaponMatrixCM3;
+        private CheckBox chkWeaponMatrixCM4;
+        private CheckBox chkWeaponMatrixCM5;
+        private CheckBox chkWeaponMatrixCM6;
+        private CheckBox chkWeaponMatrixCM7;
+        private CheckBox chkWeaponMatrixCM8;
+        private CheckBox chkWeaponMatrixCM9;
+        private CheckBox chkWeaponMatrixCM10;
+        private CheckBox chkWeaponMatrixCM11;
+        private CheckBox chkWeaponMatrixCM12;
+        private CheckBox chkWeaponMatrixCM13;
+        private CheckBox chkWeaponMatrixCM14;
+        private CheckBox chkWeaponMatrixCM15;
+        private CheckBox chkWeaponMatrixCM16;
+        private CheckBox chkWeaponMatrixCM17;
+        private CheckBox chkWeaponMatrixCM18;
+        private CheckBox chkWeaponMatrixCM19;
+        private CheckBox chkWeaponMatrixCM20;
+        private CheckBox chkWeaponMatrixCM21;
+        private CheckBox chkWeaponMatrixCM22;
+        private CheckBox chkWeaponMatrixCM23;
+        private CheckBox chkWeaponMatrixCM24;
     }
 }

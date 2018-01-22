@@ -172,7 +172,7 @@
       <bonus>
         <selectskill skillcategory="Combat Active">
           <val>0</val>
-          <applytoaccuracy>yes</applytoaccuracy>
+          <applytoaccuracy>True</applytoaccuracy>
         </selectskill>
       </bonus>
     </power>
@@ -200,7 +200,7 @@
       <bonus>
         <selectskill minimumrating="1">
           <val>Rating</val>
-          <!-- Hero Lab says this is not RAW <applytorating>yes</applytorating> -->
+          <!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
           <skillcategories>
             <category>Combat Active</category>
             <category>Physical Active</category>
@@ -323,7 +323,7 @@
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <doublecost>no</doublecost>
+      <doublecost>False</doublecost>
       <extrapointcost>0.5</extrapointcost>
       <maxlevels>3</maxlevels>
     </power>

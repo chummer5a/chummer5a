@@ -145,7 +145,7 @@ namespace Codaxy.WkHtmlToPdf
             if (document.Html != null)
                 document.Url = "-";
 
-            String outputPdfFilePath;
+            string outputPdfFilePath;
             bool delete;
             if (woutput.OutputFilePath != null)
             {
@@ -154,12 +154,12 @@ namespace Codaxy.WkHtmlToPdf
             }
             else
             {
-                outputPdfFilePath = Path.Combine(environment.TempFolderPath, String.Format("{0}.pdf", Guid.NewGuid()));
+                outputPdfFilePath = Path.Combine(environment.TempFolderPath, string.Format("{0}.pdf", Guid.NewGuid()));
                 delete = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
-                throw new PdfConvertException(String.Format("File '{0}' not found. Check if wkhtmltopdf application is installed.", environment.WkHtmlToPdfPath));
+                throw new PdfConvertException(string.Format("File '{0}' not found. Check if wkhtmltopdf application is installed.", environment.WkHtmlToPdfPath));
 
             StringBuilder paramsBuilder = new StringBuilder();
             paramsBuilder.Append("--page-size A4 ");
@@ -280,7 +280,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
                                 {
-                                    throw new PdfConvertException(String.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output: \r\n{1}", document.Url, error));
+                                    throw new PdfConvertException(string.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output: \r\n{1}", document.Url, error));
                                 }
                             }
                             else
@@ -336,7 +336,7 @@ namespace Codaxy.WkHtmlToPdf
     //{
     //    public static string GetProgramFilesx86Path()
     //    {
-    //        if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+    //        if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
     //        {
     //            return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
     //        }
@@ -364,7 +364,7 @@ namespace Codaxy.WkHtmlToPdf
     //    {
     //        FileInfo fi = new FileInfo(filename);
     //        response.ContentType = "application/force-download";
-    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + "\"");
+    //        response.AddHeader("Content-Disposition", "attachment; filename=\"" + fi.Name + '\"');
     //    }
     //}
 }

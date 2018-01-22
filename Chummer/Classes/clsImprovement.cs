@@ -38,7 +38,7 @@ namespace Chummer
     {
         private string DisplayDebug()
         {
-            return $"{_objImprovementType} ({_intVal}, {_intRating}) <- {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
+            return $"{_objImprovementType} ({_intVal}, {_intRating}) 🡐 {_objImprovementSource}, {_strSourceName}, {_strImprovedName}";
         }
 
         public enum ImprovementType
@@ -299,7 +299,7 @@ namespace Chummer
             ContactForceLoyalty,
             FreeWare,
             WeaponAccuracy,
-            NumImprovementTypes // <- This one should always be the last defined enum
+            NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
         public enum ImprovementSource
@@ -315,7 +315,6 @@ namespace Chummer
             ArmorEncumbrance,
             Gear,
             Spell,
-            MartialArtAdvantage,
             Initiation,
             Submersion,
             Metamagic,
@@ -323,6 +322,7 @@ namespace Chummer
             Armor,
             ArmorMod,
             EssenceLoss,
+            EssenceLossChargen,
             ConditionMonitor,
             CritterPower,
             ComplexForm,
@@ -336,10 +336,11 @@ namespace Chummer
             Custom,
             Heritage,
             MartialArt,
+            MartialArtTechnique,
             AIProgram,
             SpiritFettering,
             MentorSpirit,
-            NumImprovementSources // <- This one should always be the last defined enum
+            NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 
         private readonly Character _objCharacter = null;
@@ -387,6 +388,8 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
+            if (strValue == "MartialArtAdvantage")
+                strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
 
@@ -1056,7 +1059,7 @@ namespace Chummer
                         s_StrSelectedValue = frmPickText.SelectedValue;
                     }
                     if (blnConcatSelectedValue)
-                        strSourceName += " (" + SelectedValue + ")";
+                        strSourceName += " (" + SelectedValue + ')';
                     Log.Info("_strSelectedValue = " + SelectedValue);
                     Log.Info("strSourceName = " + strSourceName);
 
@@ -1237,9 +1240,8 @@ namespace Chummer
                         objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(objCharacter.SkillsSection.KnowsoftSkills.Contains);
                         break;
                     case Improvement.ImprovementType.SkillKnowledgeForced:
-                        Guid guid = Guid.Parse(objImprovement.ImprovedName);
-                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.Id == guid);
-                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.Id == guid);
+                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
+                        ((List<KnowledgeSkill>)objCharacter.SkillsSection.KnowsoftSkills).RemoveAll(skill => skill.InternalId == objImprovement.ImprovedName);
                         break;
                     case Improvement.ImprovementType.Attribute:
                         // Determine if access to any Special Attributes have been lost.
@@ -1432,9 +1434,9 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                            foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                             {
-                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }
@@ -1624,9 +1626,6 @@ namespace Chummer
         }
 
         #endregion
-
-
-
 }
 
     public static class ImprovementExtensions

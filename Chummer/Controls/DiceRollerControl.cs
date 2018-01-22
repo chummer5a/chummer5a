@@ -212,7 +212,7 @@ namespace Chummer
                 }
                 while (_intModuloTemp >= int.MaxValue - 1); // Modulo bias removal for 1d6
                 int intBubbleDieResult = 1 + _intModuloTemp % 6;
-                sb.Append(", " + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + " (" + intBubbleDieResult.ToString() + ")");
+                sb.Append(", " + LanguageManager.GetString("String_BubbleDie", GlobalOptions.Language) + " (" + intBubbleDieResult.ToString() + ')');
                 if (intBubbleDieResult == 1 || (chkRushJob.Checked && intBubbleDieResult == 2))
                 {
                     glitches++;

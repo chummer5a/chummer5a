@@ -28,18 +28,18 @@ namespace Chummer
     /// </summary>
     public struct ListItem
     {
-        public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
+        public static readonly ListItem Blank = new ListItem(null, string.Empty);
 
-        public ListItem(string strValue, string strName)
+        public ListItem(object objValue, string strName)
         {
-            Value = strValue;
+            Value = objValue;
             Name = strName;
         }
 
         /// <summary>
         /// Value.
         /// </summary>
-        public string Value { get; }
+        public object Value { get; }
 
         /// <summary>
         /// Name.
@@ -48,7 +48,7 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            return Value.Equals(obj.ToString());
+            return Value.Equals(obj);
         }
 
         public override int GetHashCode()
@@ -58,7 +58,27 @@ namespace Chummer
 
         public override string ToString()
         {
-            return Value;
+            return Value.ToString();
+        }
+        
+        public static bool operator ==(ListItem x, object y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ListItem x, object y)
+        {
+            return !x.Equals(y);
+        }
+
+        public static bool operator ==(object x, ListItem y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(object x, ListItem y)
+        {
+            return !x.Equals(y);
         }
     }
 
@@ -79,7 +99,7 @@ namespace Chummer
             }
             else if (ty == null)
                 return 1;
-            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'));
+            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
         }
 
         public class TextComparer : IComparer
@@ -118,7 +138,7 @@ namespace Chummer
         /// </summary>
         public static int CompareNames(ListItem objX, ListItem objY)
         {
-            return string.Compare(objX.Name, objY.Name);
+            return string.Compare(objX.Name, objY.Name, false, GlobalOptions.CultureInfo);
         }
     }
 
@@ -129,33 +149,116 @@ namespace Chummer
     {
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
-        private readonly CaseInsensitiveComparer _objObjectCompare = new CaseInsensitiveComparer();
         
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
                 return 0;
 
-            int compareResult;
+            int intCompareResult;
 
             // Cast the objects to be compared to ListViewItem objects
             ListViewItem listviewX = (ListViewItem)x;
             ListViewItem listviewY = (ListViewItem)y;
 
             // Compare the two items
-            string strX = listviewX.SubItems[_intColumnToSort].Text;
-            string strY = listviewY.SubItems[_intColumnToSort].Text;
+            string strX = listviewX.SubItems[_intColumnToSort].Text.FastEscape('¥');
+            string strY = listviewY.SubItems[_intColumnToSort].Text.FastEscape('¥');
             if (_intColumnToSort == 0)
-                compareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
-            else if (_intColumnToSort == 1)
-                compareResult = _objObjectCompare.Compare(Convert.ToInt32(strX.FastEscape('¥', ',', ' ')), Convert.ToInt32(strY.FastEscape('¥', ',', ' ')));
+                intCompareResult = DateTime.Compare(DateTime.Parse(strX, GlobalOptions.CultureInfo), DateTime.Parse(strY, GlobalOptions.CultureInfo));
             else
-                compareResult = _objObjectCompare.Compare(strX, strY);
+            {
+                if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
+                    decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+                    intCompareResult = decimal.Compare(decX, decY);
+                else
+                    intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+            }
+            
+            // Calculate correct return value based on object comparison
+            if (_objOrderOfSort == SortOrder.Ascending)
+                return intCompareResult;
+            return (-intCompareResult);
+        }
+
+        /// <summary>
+        /// Column number to sort on.
+        /// </summary>
+        public int SortColumn
+        {
+            get
+            {
+                return _intColumnToSort;
+            }
+            set
+            {
+                _intColumnToSort = value;
+            }
+        }
+
+        /// <summary>
+        /// SortOrder to be used.
+        /// </summary>
+        public SortOrder Order
+        {
+            get
+            {
+                return _objOrderOfSort;
+            }
+            set
+            {
+                _objOrderOfSort = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Sort DataGridView Columns.
+    /// </summary>
+    public class DataGridViewColumnSorter : IComparer
+    {
+        private int _intColumnToSort;
+        private SortOrder _objOrderOfSort;
+
+        public int Compare(object x, object y)
+        {
+            if (_objOrderOfSort == SortOrder.None)
+                return 0;
+
+            int intCompareResult;
+
+            // Cast the objects to be compared to ListViewItem objects
+            DataGridViewRow datagridviewrowX = (DataGridViewRow)x;
+            DataGridViewRow datagridviewrowY = (DataGridViewRow)y;
+
+            // Compare the two items
+            string strX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString();
+            string strY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString();
+            string strNumberX = datagridviewrowX.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
+                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
+                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
+            string strNumberY = datagridviewrowY.Cells[_intColumnToSort].Value.ToString().FastEscape('¥')
+                .Replace(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language), string.Empty)
+                .Replace(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language), string.Empty);
+            if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX))
+            {
+                if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+
+                    intCompareResult = decimal.Compare(decX, decY);
+                else
+                    intCompareResult = -1;
+            }
+            else if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
+            {
+                intCompareResult = 1;
+            }
+            else
+                intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
 
             // Calculate correct return value based on object comparison
             if (_objOrderOfSort == SortOrder.Ascending)
-                return compareResult;
-            return (-compareResult);
+                return intCompareResult;
+            return (-intCompareResult);
         }
 
         /// <summary>

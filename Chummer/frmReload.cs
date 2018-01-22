@@ -52,11 +52,11 @@ namespace Chummer
                         strName += " (" + objGear.Parent.DisplayNameShort(GlobalOptions.Language);
                         if (!string.IsNullOrEmpty(objGear.Parent.Location))
                             strName += " @ " + objGear.Parent.Location;
-                        strName += ")";
+                        strName += ')';
                     }
                 }
                 else if (!string.IsNullOrEmpty(objGear.Location))
-                    strName += " (" + objGear.Location + ")";
+                    strName += " (" + objGear.Location + ')';
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {

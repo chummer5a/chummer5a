@@ -138,7 +138,8 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlAccessory.TryGetStringFieldQuickly("page", ref _strPage);
             _nodAllowGear = objXmlAccessory["allowgear"];
-            objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (!objXmlAccessory.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlAccessory.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlAccessory.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objXmlAccessory.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
@@ -172,24 +173,16 @@ namespace Chummer.Backend.Equipment
                     XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName.Attributes;
                     int intGearRating = 0;
                     decimal decGearQty = 1;
-                    string strChildForceSource = string.Empty;
-                    string strChildForcePage = string.Empty;
-                    string strChildForceValue = string.Empty;
-                    bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == "yes";
-                    bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != "no";
-                    bool blnAddChildImprovements = blnCreateImprovements;
-                    if (objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == "no")
-                        blnAddChildImprovements = false;
+                    string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
+                    string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
+                    string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
+                    bool blnStartCollapsed = objXmlAccessoryGearNameAttributes?["startcollapsed"]?.InnerText == bool.TrueString;
+                    bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
+                    bool blnAddChildImprovements = objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText == bool.FalseString ? false : blnCreateImprovements;
                     if (objXmlAccessoryGear["rating"] != null)
                         intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText);
                     if (objXmlAccessoryGearNameAttributes?["qty"] != null)
                         decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalOptions.InvariantCultureInfo);
-                    if (objXmlAccessoryGearNameAttributes?["select"] != null)
-                        strChildForceValue = objXmlAccessoryGearNameAttributes["select"].InnerText;
-                    if (objXmlAccessoryGear["source"] != null)
-                        strChildForceSource = objXmlAccessoryGear["source"].InnerText;
-                    if (objXmlAccessoryGear["page"] != null)
-                        strChildForcePage = objXmlAccessoryGear["page"].InnerText;
 
                     XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = \"" + objXmlAccessoryGearName.InnerText + "\" and category = \"" + objXmlAccessoryGear["category"].InnerText + "\"]");
                     Gear objGear = new Gear(_objCharacter);
@@ -211,7 +204,7 @@ namespace Chummer.Backend.Equipment
 
                     // Change the Capacity of the child if necessary.
                     if (objXmlAccessoryGear["capacity"] != null)
-                        objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerText + "]";
+                        objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
                 }
             }
         }
@@ -223,7 +216,7 @@ namespace Chummer.Backend.Equipment
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("accessory");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
@@ -347,28 +340,28 @@ namespace Chummer.Backend.Equipment
         {
             objWriter.WriteStartElement("accessory");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("mount", _strMount);
-            objWriter.WriteElementString("extramount", _strExtraMount);
-            objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("conceal", _strConceal);
+            objWriter.WriteElementString("mount", Mount);
+            objWriter.WriteElementString("extramount", ExtraMount);
+            objWriter.WriteElementString("rc", RC);
+            objWriter.WriteElementString("conceal", Concealability.ToString());
             objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString());
+            objWriter.WriteElementString("included", IncludedInWeapon.ToString());
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(objCulture));
-            if (_lstGear.Count > 0)
+            objWriter.WriteElementString("accuracy", Accuracy.ToString(objCulture));
+            if (Gear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                 {
                     objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
                 objWriter.WriteEndElement();
             }
             if (_objCharacter.Options.PrintNotes)
-                objWriter.WriteElementString("notes", _strNotes);
+                objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
         #endregion
@@ -381,7 +374,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
         }
 
@@ -566,7 +559,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += " (" + LanguageManager.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -1103,6 +1096,7 @@ namespace Chummer.Backend.Equipment
         {
             TreeNode objNode = new TreeNode
             {
+                Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
                 ContextMenuStrip = cmsWeaponAccessory

@@ -1,4 +1,127 @@
-Future Build 197
+Future Build 198
+
+Application Changes:
+
+- Fixed an issue with skill groups not loading properly.
+- Fixed an issue that prevented the note grabber for qualities from working properly. Fixes #2322.
+- Fixed an issue where special attribute loss from Essence loss was calculated (and saved) incorrectly in career mode.
+- Fixed an issue where condition monitor boxes would display their numerical tags (which should only be used for internal code) as text. Fixes #2323.
+- Fixed a bug where Armor Mods and Weapon Accessories whose costs relied on their parent armor's or weapon's costs would not consider any discounts applied to their parent armor or weapon.
+- Fixed a bug where the Browse tab in the armor selection screen would display all costs as "0¥". Fixes #2324.
+- Fixed a bug where changing an armor's rating after purchase would not reflect the change on its cost if its cost relied on its rating.
+- Fixed a bug where the armor selection screen would not properly account for Rating-based capacities, Rating-based armor values, and Rating-based names.
+- Migrated all instances of use of "yes" and "no" strings in data to use "True" and "False" instead respectively. Any custom content that relies on strings like these will need to be altered, and any items reliant on improvements that use these strings will need to be fixed with Reapply Improvements.
+- Toggling the "Show" attribute of a block in the Shadowrun 5 character sheet set to "No" will now immediately hide the block instead of it only getting applied when the sheet is printed. Fixes #2327.
+- If Chummer5a fails to export a character sheet to a PDF format, it will now display a message detailing the issue instead of crashing. Fixes #2325.
+- Fixed a crash that occurred when trying to add qualities to an advanced lifestyle.
+- Fixed various bugs related the adding gear that comes with vehicles. Fixes #2328.
+- Fixed a bug where characters who had Burnout's Way were locked out of taking 'ware at any grade other than Standard (Burnout's Way).
+- Fixed an issue where the Updater would delete "old" files in the current Chummer5a directory that are not normally a part of Chummer5a. Fixes #2331.
+- Fixed an issue where vehicles could not be moved into or out of vehicle locations.
+- Fixed an issue where selecting cyberware that comes pre-installed with a vehicle mod will grey out the "Delete Cyberware" button in the cyberware tab.
+- Fixed an issue with some Martial Arts information not getting translated in the UI.
+- Root nodes for Qualities, Martial Arts, Spells, Cyberware, Critter Powers, and Limit Modifiers will now be hidden if they have no children attached. For example, if a character does not have any Negative Qualities, the "Negative Qualities" root node will no longer be displayed, or if the character does not know any Combat spells, the "Combat Spells" root node will no longer be displayed.
+- Fixed an issue where Credsticks from Shadowrun 2050 were not properly printed as SINs.
+- Fixed an issue where limit modifiers to Astral limit would not be displayed in the list of active limit modifiers.
+- Fixed an issue where Sprites could be fettered. Fixes #2333.
+- Fixed an issue where Composure modifiers were not properly displayed in the tooltip when hovering over a character's Composure value.
+- Fixed an issue where items other than qualities that could add a mentor spirit would not end up resulting in mentor spirit information getting updated in the UI.
+- Fixed an issue where changing the name of a knowledge skill would not cause Chummer5a to recalculate what free levels, if any, the knowledge skill should receive.
+- Fixed an issue where translations for priority talents did not load properly.
+- Shifted the translation method for options so that they all use the method associated with translating data entries (i.e. via `translate` element for items with element children and via `translate` attribute for items without them).
+- Added support for processing of options.xml to the Translator tool.
+- Added support for translation of notes that come with an item, via the `altnotes` element.
+- Fixed an issue with bioware grades not populating if the character has Adapsin.
+- Fixed bugs where complex Forms and critter Powers added by bonuses could be removed, and one where spells added by bonuses could be removed in create mode.
+- Fixed a bug where removing a metatype-removable quality in create mode would cause the affected quality to no longer apply any bonuses when added to other characters until Chummer5 was restarted.
+- Fixed a bug where removing a metatype-removable quality in create mode would not remove any weapons added by the quality.
+- Fixed incorrect behaviour in the Crash Handler preventing it from running properly.
+- Corrected issues related to the deleting of bonus-granted Martial Arts from sources other than the version of One Trick Pony that is RAW.
+- Fixed issues related to sorting by nuyen, sourcebook, and/or availability in the Browse tabs of the armor and weapon selection screens. Fixes #2350.
+- Fixed an issue where talent entries that relied on unavailable content could be selected in the priority selection screen. Fixes #2352.
+- Fixed an issue with assigning ratings for gear that has a higher minimum rating than maximum rating. Fixes #2348.
+- Fixed a crash when attempting to change priorities in a non-English localization. Fixes #2353.
+- Fixed an issue where weapon mount options with requirement nodes related to Xml data details could not be applied. Fixes #2355.
+- Fixed an issue where modifying an existing weapon mount would not properly update its node in the vehicle tree view.
+- Fixed an issue where Trust Fund III and Trust Fund IV did not properly zero the costs of the lifestyles to which they were applied.
+- Fixed a rare crash that could happen when trying to add a weapon to a vehicle without having a node selected. Fixes #2361.
+- Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
+- Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
+- Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
+- Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
+- Fixed a bug where adding a mentor spirit with Mentor's Mask enabled would not always properly update UI elements.
+- Fixed a bug where losing MAG in career mode as a mystic adept when the character had more MAG than PPs (either from initiations or from purchased PPs) would not cause the character to lose PPs.
+- Fixed possible issues where reducing an attribute in career mode, creating Condition Monitor penalties in career mode, gaining armor encumbrance penalties, and/or fettering spirits would not properly update some UI elements.
+- Fixed a bug where items that force particular mentor spirits did not end up doing so in non-English localizations.
+- The Mentor's Mask option will now only appear in the mentor spirit selection menu if the character has Forbidden Arcana enabled.
+- Fixed a bug where adding arts, enhancements, enchantments, or rituals to metamagics would not generate a properly named expense entry.
+- Fixed a bug where Working for the Man and Working for the People would always use the default 2000 nuyen-per-karma exchange rate instead of the one defined in the character's options.
+- Fixed an issue with Life Modules not loading properly, and defaulting to the Real Life stage instead of Nationality.
+- Added a label to view the PDF source of a martial arts technique when selecting one.
+- Fixed issues with the martial arts technique selection screen not properly using translations.
+- Fixed an issue where bonuses that allow a user to select a metamagic or echo but force its value did not properly work.
+- Fixed an issue where characters were allowed to choose adept powers for which they were not eligible as long as the power did not require certain qualities.
+- Fixed issues where clicking the source label in the cyberware/bioware selection screen would not properly open the PDF associated with the selected piece of 'ware.
+- Fixed a bug where the "Buy with Karma" checkbox in the specialization selection screen was visible outside of priority-based chargen.
+- Fixed a bug where weapon strings in the specialization selection screen were not translated properly.
+- Fixed a bug where players could accidentally add blank specializations from the specialization selection screen.
+- Fixed a bug where the button to move a weapon to a vehicle in Career mode was obscured by labels.
+- Fixed various issues where cancelling out of a dialog for a bonus added by a newly created item would not also cancel out of adding the underlying item.
+- Fixed an issue where selection screens for optional critter powers would not end up translating displayed items.
+
+Data Changes:
+
+- Added new items to allow for translation of certain extras, special equipment, and non-standard form factors that come with certain vehicles, weapons, and gear. Fixes #2309.
+- Dodge General Trailer now properly contains an Aeronautics Mechanic Workshop (it's "Aircraft Repair" in the sourcebook, but this would not line up with the skill associated with repairing aircraft for which said workshop would be used).
+- Basic Razorboi and Advanced Razorboi Packs now properly come with Cybertechnology Toolkits (it's "Cybernetics" in the sourceboo, but this would not line up with the skill associated with cybernetics for which said toolkit would be used).
+- Removed the ".RF" identifier from the name of Run Faster's College Education and Inspired qualities. Removed the "(SASS)" identifier from the name of Sail Away Sweet Sister's Great Mother mentor spirit. Data that targets these items will need to rely on their id nodes.
+- Fixed an issue where custom improvements for bonus street cred and street cred multiplier had incorrect names. Fixes #2338.
+- Fixed various typos in life module descriptions and skills.
+- Fixed incorrect cost of Mercedes Paladin. Fixes #2351.
+- Added an amend entry to override Exotic Weapon skills used by the Pazrashield Dart Pistol, Rifle and Super Squirrt to use non-Exotic skills. Fixes #2359.
+- Corrected ammo capacities for the Light, Medium and Heavy Crossbow from SR5 to be 4(m).
+- Fixed a typo in the Ranger Sliver Pistol Crossbow from RG's name and reduced its ammo capacity to 1, per RAW. Added an amend file to set the Ranger Sliver to have a 4(m) ammo instead.
+- Removed extra base Recoil Compensation from the HK G12A4 from SAG.
+
+New Strings:
+
+- Message_DeleteVehicleLocationBase
+- Message_SelectMartialArtTechnique
+- MessageTitle_SelectMartialArtTechnique
+- Title_SelectMartialArtTechnique
+- String_Power
+
+Changed Strings:
+
+- Node_SelectedPositiveQualities
+- Node_SelectedNegativeQualities
+- Node_SelectedCombatSpells
+- Node_SelectedDetectionSpells
+- Node_SelectedHealthSpells
+- Node_SelectedIllusionSpells
+- Node_SelectedManipulationSpells
+- Node_SelectedGeomancyRituals
+- Node_SelectedEnchantments
+- Node_CritterPowers
+- Node_CritterWeaknesses
+- Node_SelectedCyberware
+- Node_SelectedBioware
+
+Removed Strings:
+
+- String_LimbCount4
+- String_LimbCount6
+- String_LimbCount5Torso
+- String_LimbCount5Skull
+- Message_CannotRemoveSpell
+- MessageTitle_CannotRemoveSpell
+- Message_MartialArtAdvantageLimit
+- MessageTitle_MartialArtAdvantageLimit
+- Message_SelectMartialArtAdvantage
+- MessageTitle_SelectMartialArtAdvantage
+- Title_SelectMartialArtAdvantage
+
+Build 197
 
 Application Changes:
 
@@ -127,6 +250,11 @@ Application Changes:
 - Fixed a crash when selecting a character with a 'None' metavariant in the roster. Shouldn't happen, but just in case.
 - Fixed an issue where the Life Modules root node would not get translated.
 - Added a warning prompt about Life Modules not being fully supported when enabling the relevant option.
+- Fixed an issue where clicking on a cell under the "Browse" tab in the armor selection screen would result in that armor getting added to the character. Fixes #2303.
+- Fixed a bug where restoring essence to a character would also restore lost special attribute values.
+- Chummer5a will now use the number localization of the currently loaded language (if possible) instead of that of the user's system.
+- Added the option to remove a quantity of gear other than 1 in Career mode.
+- Added a Matrix Condition Monitor to the Weapons tab.
 
 Data Changes:
 
@@ -159,6 +287,9 @@ Data Changes:
 - Fixed an issue where players could add audio and vision enhancement gear to cyberears and cybereyes respectively (they should be restricted to 'ware plugins only), but could not add sensors or custom gear item plugins. Existing characters with cyberears and cybereyes will need to re-add the affected 'ware in order to benefit from this fix.
 - Added missing id nodes to vessels in vessels.xml.
 - Fixed an issue where characters were limited to only one active hardwire and one knowledge hardwire. Fixes #2289.
+- Fixed the Growth spell having "Special" as its drain code instead of F+3.
+- Added an amend entry to convert the Growth spell to the version used by the German version of Forbidden Arcana.
+- Corrected "The Seattle Gauntlet" to "The Seattle Gambit".
 
 New Strings:
 
@@ -196,6 +327,12 @@ New Strings:
 - Menu_Main_ChummerDiscord
 - String_LifeModules
 - Tip_LifeModule_Warning
+- String_Month
+- String_ReduceGear
+
+Changed Strings:
+
+- Message_ReduceQty
 
 Build 196
 

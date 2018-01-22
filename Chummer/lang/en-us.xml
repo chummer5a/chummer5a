@@ -792,6 +792,10 @@
       <text>hours</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>month</text>
+    </string>
+    <string>
       <key>String_ArmorEncumbrance</key>
       <text>Armor Encumbrance</text>
     </string>
@@ -1700,6 +1704,10 @@
       <text>Are you sure you want to delete this Gear location? All of the Gear in this location will be moved to the Selected Gear container.</text>
     </string>
     <string>
+      <key>Message_DeleteVehicleLocationBase</key>
+      <text>Are you sure you want to delete this Vehicle location? All of the Vehicles in this location will be moved to the Selected Vehicle container.</text>
+    </string>
+    <string>
       <key>Message_DeleteVehicle</key>
       <text>Are you sure you want to delete this Vehicle/Plugin?</text>
     </string>
@@ -1762,6 +1770,10 @@
     <string>
       <key>Message_DeleteMetatypeQuality</key>
       <text>Are you sure you want to remove this Metatype Quality for {0}?</text>
+    </string>
+    <string>
+      <key>Message_LowerMetatypeQualityLevel</key>
+      <text>Are you sure you want to remove a level from this Metatype Quality for {0}?</text>
     </string>
     <string>
       <key>Message_DeleteKnowledgeSkill</key>
@@ -1828,14 +1840,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>You may only have 1 Advantage per Rating of {0}.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>Maximum Number of Advantages</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>You may only have 2 Maneuvers per Martial Art Rating.</text>
     </string>
@@ -1844,15 +1848,15 @@
       <text>Maximum Number of Maneuvers</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
-      <text>You must select a Martial Art to add an Advantage to.</text>
+      <key>Message_SelectMartialArtTechnique</key>
+      <text>You must select a Martial Art to which to add a Technique.</text>
     </string>
     <string>
       <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
+      <text>You must select a Limit to which to add a Modifier.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Select Martial Art</text>
     </string>
     <string>
@@ -1926,14 +1930,6 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Cannot Remove Cyberware</text>
-    </string>
-    <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>This item cannot be removed because it was acquired as an initiation bonus.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Cannot Remove Spell</text>
     </string>
     <string>
       <key>Message_ComplexFormLimitCareer</key>
@@ -2665,7 +2661,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>Are you sure you want to reduce this quantity by 1?</text>
+      <text>Are you sure you want to reduce this quantity by {0}?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>
@@ -3213,6 +3209,10 @@
       <text>Retrofitting a Vehicle will cost a percentage of the Vehicle's base cost. Please select a percentage.</text>
     </string>
     <string>
+      <key>String_ReduceGear</key>
+      <text>Enter the number of items to remove.</text>
+    </string>
+    <string>
       <key>String_SplitGear</key>
       <text>Enter the number of items to place in the new stack.</text>
     </string>
@@ -3724,11 +3724,11 @@
     </string>
     <string>
       <key>Node_SelectedPositiveQualities</key>
-      <text>Selected Positive Qualities</text>
+      <text>Positive Qualities</text>
     </string>
     <string>
       <key>Node_SelectedNegativeQualities</key>
-      <text>Selected Negative Qualities</text>
+      <text>Negative Qualities</text>
     </string>
     <string>
       <key>Tip_CommonAttributes</key>
@@ -4011,31 +4011,31 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_SelectedCombatSpells</key>
-      <text>Selected Combat Spells</text>
+      <text>Combat Spells</text>
     </string>
     <string>
       <key>Node_SelectedDetectionSpells</key>
-      <text>Selected Detection Spells</text>
+      <text>Detection Spells</text>
     </string>
     <string>
       <key>Node_SelectedHealthSpells</key>
-      <text>Selected Health Spells</text>
+      <text>Health Spells</text>
     </string>
     <string>
       <key>Node_SelectedIllusionSpells</key>
-      <text>Selected Illusion Spells</text>
+      <text>Illusion Spells</text>
     </string>
     <string>
       <key>Node_SelectedManipulationSpells</key>
-      <text>Selected Manipulation Spells</text>
+      <text>Manipulation Spells</text>
     </string>
     <string>
       <key>Node_SelectedGeomancyRituals</key>
-      <text>Selected Rituals</text>
+      <text>Rituals</text>
     </string>
     <string>
       <key>Node_SelectedEnchantments</key>
-      <text>Selected Enchantments</text>
+      <text>Enchantments</text>
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
@@ -4207,11 +4207,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_CritterPowers</key>
-      <text>Selected Critter Powers</text>
+      <text>Critter Powers</text>
     </string>
     <string>
       <key>Node_CritterWeaknesses</key>
-      <text>Selected Weaknesses</text>
+      <text>Weaknesses</text>
     </string>
     <string>
       <key>Checkbox_CritterPowerCount</key>
@@ -4295,11 +4295,11 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Node_SelectedCyberware</key>
-      <text>Selected Cyberware</text>
+      <text>Cyberware</text>
     </string>
     <string>
       <key>Node_SelectedBioware</key>
-      <text>Selected Bioware</text>
+      <text>Bioware</text>
     </string>
     <string>
       <key>Node_UnequippedModularCyberware</key>
@@ -5571,6 +5571,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Adept Powers -->
     <string>
+      <key>String_Power</key>
+      <text>Power</text>
+    </string>
+    <string>
       <key>Label_Power_PowerRating</key>
       <text>Power Rating:</text>
     </string>
@@ -6583,22 +6587,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_Options_CyberlimbCount</key>
       <text>Limbs for Standard Characters:</text>
-    </string>
-    <string>
-      <key>String_LimbCount4</key>
-      <text>4 (2 arms, 2 legs)</text>
-    </string>
-    <string>
-      <key>String_LimbCount6</key>
-      <text>6 (2 arms, 2 legs, torso, skull)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Torso</key>
-      <text>5 (2 arms, 2 legs, torso)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Skull</key>
-      <text>5 (2 arms, 2 legs, skull)</text>
     </string>
     <string>
       <key>Label_Options_NuyenPerBP</key>
@@ -7740,10 +7728,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Select a Martial Art</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Martial Art Advantage Window -->
+    <!-- Region Select Martial Art Technique Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
-      <text>Select an Advantage</text>
+      <key>Title_SelectMartialArtTechnique</key>
+      <text>Select a Technique</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Martial Art Maneuver Window -->

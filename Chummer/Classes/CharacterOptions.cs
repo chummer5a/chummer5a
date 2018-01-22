@@ -250,8 +250,6 @@ namespace Chummer
             }
             else
                 Load("default.xml");
-            // Load the language file.
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
         }
 
         /// <summary>
@@ -275,7 +273,7 @@ namespace Chummer
             // <name />
             objWriter.WriteElementString("name", _strName);
             // <recentimagefolder />
-            if (!String.IsNullOrEmpty(_strImageFolder))
+            if (!string.IsNullOrEmpty(_strImageFolder))
             {
                 objWriter.WriteElementString("recentimagefolder", _strImageFolder);
             }
@@ -1130,10 +1128,10 @@ namespace Chummer
 
             foreach (string strBookCode in strBooks)
             {
-                XmlNode objXmlBook = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\"]");
-                if (objXmlBook?["code"] != null && objXmlBook["hide"] == null)
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\" and not(hide)]/code")?.ToString();
+                if (!string.IsNullOrEmpty(strCode))
                 {
-                    _lstBooks.Add(objXmlBook["code"].InnerText);
+                    _lstBooks.Add(strCode);
                 }
             }
             RecalculateBookXPath();
@@ -1180,15 +1178,24 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath()
         {
-            _strBookXPath = "(";
+            StringBuilder strBookXPath = new StringBuilder("(");
+            _strBookXPath = string.Empty;
 
             foreach (string strBook in _lstBooks)
             {
                 if (!string.IsNullOrWhiteSpace(strBook))
-                    _strBookXPath += "source = \"" + strBook + "\" or ";
+                {
+                    strBookXPath.Append("source = \"");
+                    strBookXPath.Append(strBook);
+                    strBookXPath.Append("\" or ");
+                }
             }
             if (_strBookXPath.Length >= 4)
-                _strBookXPath = _strBookXPath.Substring(0, _strBookXPath.Length - 4) + ")";
+            {
+                strBookXPath.Length -= 4;
+                strBookXPath.Append(')');
+                _strBookXPath = strBookXPath.ToString();
+            }
             else
                 _strBookXPath = string.Empty;
         }
@@ -1517,8 +1524,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Debugger.IsAttached)
-                        Debugger.Break();
+                    Utils.BreakIfDebug();
                 }
             }
         }

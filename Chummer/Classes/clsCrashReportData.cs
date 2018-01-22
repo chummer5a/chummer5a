@@ -84,7 +84,7 @@ namespace Chummer
             get
             {
                 if (_subject == null)
-                    return Id.ToString();
+                    return Id.ToString("D");
 
                 return _subject;
             }

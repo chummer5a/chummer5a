@@ -203,8 +203,6 @@ namespace Chummer
             this.dgvArmor.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvArmor.Size = new System.Drawing.Size(545, 272);
             this.dgvArmor.TabIndex = 37;
-            this.dgvArmor.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvArmor_CellContentClick);
-            this.dgvArmor.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.dgvArmor_SortCompare);
             this.dgvArmor.DoubleClick += new System.EventHandler(this.dgvArmor_DoubleClick);
             // 
             // Guid

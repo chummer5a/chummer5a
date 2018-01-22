@@ -164,20 +164,25 @@ namespace Chummer
             {
                 case "SelectAttribute":
                     {
-                        var frmPickAttribute = new frmSelectAttribute
+                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+
+                        lstAbbrevs.Remove("ESS");
+                        if (!_objCharacter.MAGEnabled)
+                        {
+                            lstAbbrevs.Remove("MAG");
+                            lstAbbrevs.Remove("MAGAdept");
+                        }
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                            lstAbbrevs.Remove("MAGAdept");
+
+                        if (!_objCharacter.RESEnabled)
+                            lstAbbrevs.Remove("RES");
+                        if (!_objCharacter.DEPEnabled)
+                            lstAbbrevs.Remove("DEP");
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };
-                        if (_objCharacter.MAGEnabled)
-                        {
-                            frmPickAttribute.AddMAG();
-                            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                frmPickAttribute.AddMAGAdept();
-                        }
-                        if (_objCharacter.RESEnabled)
-                            frmPickAttribute.AddRES();
-                        if (_objCharacter.DEPEnabled)
-                            frmPickAttribute.AddDEP();
                         frmPickAttribute.ShowDialog(this);
 
                         if (frmPickAttribute.DialogResult == DialogResult.OK)
@@ -186,13 +191,10 @@ namespace Chummer
                     break;
                 case "SelectMentalAttribute":
                     {
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };
-
-                        List<string> strValue = new List<string> {"LOG", "WIL", "INT", "CHA", "EDG", "MAG", "MAGAdept", "RES"};
-                        frmPickAttribute.RemoveFromList(strValue);
 
                         frmPickAttribute.ShowDialog(this);
 
@@ -202,23 +204,10 @@ namespace Chummer
                     break;
                 case "SelectPhysicalAttribute":
                     {
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };
-
-                        List<string> strValue = new List<string>
-                        {
-                            "BOD",
-                            "AGI",
-                            "REA",
-                            "STR",
-                            "EDG",
-                            "MAG",
-                            "MAGAdept",
-                            "RES"
-                        };
-                        frmPickAttribute.RemoveFromList(strValue);
 
                         frmPickAttribute.ShowDialog(this);
 
@@ -228,19 +217,26 @@ namespace Chummer
                     break;
                 case "SelectSpecialAttribute":
                     {
-                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute
+                        List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
+                        lstAbbrevs.RemoveAll(x => Backend.Attributes.AttributeSection.PhysicalAttributes.Contains(x) || Backend.Attributes.AttributeSection.MentalAttributes.Contains(x));
+                        lstAbbrevs.Remove("ESS");
+                        if (!_objCharacter.MAGEnabled)
+                        {
+                            lstAbbrevs.Remove("MAG");
+                            lstAbbrevs.Remove("MAGAdept");
+                        }
+                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                            lstAbbrevs.Remove("MAGAdept");
+
+                        if (!_objCharacter.RESEnabled)
+                            lstAbbrevs.Remove("RES");
+                        if (!_objCharacter.DEPEnabled)
+                            lstAbbrevs.Remove("DEP");
+
+                        frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
                         {
                             Description = LanguageManager.GetString("Title_SelectAttribute", GlobalOptions.Language)
                         };
-
-                        List<string> strValue = new List<string>
-                        {
-                            "MAG",
-                            "MAGAdept",
-                            "RES",
-                            "DEP"
-                        };
-                        frmPickAttribute.RemoveFromList(strValue);
 
                         frmPickAttribute.ShowDialog(this);
 
@@ -318,7 +314,7 @@ namespace Chummer
                     frmPickPower.ShowDialog(this);
 
                     if (frmPickPower.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickPower.SelectedPower;
+                        txtSelect.Text = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
                     break;
             }
         }
@@ -359,7 +355,7 @@ namespace Chummer
 
             string strRating = string.Empty;
             if (chkApplyToRating.Checked)
-                strRating = "<applytorating>yes</applytorating>";
+                strRating = "<applytorating>True</applytorating>";
 
             // Retrieve the XML data from the document and replace the values as necessary.
             // ReSharper disable once PossibleNullReferenceException
@@ -395,7 +391,7 @@ namespace Chummer
             XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
 
             // Pass it to the Improvement Manager so that it can be added to the character.
-            string strGuid = Guid.NewGuid().ToString();
+            string strGuid = Guid.NewGuid().ToString("D");
             ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, false, 1, txtName.Text);
 
             // If an Improvement was passed in, remove it from the character.

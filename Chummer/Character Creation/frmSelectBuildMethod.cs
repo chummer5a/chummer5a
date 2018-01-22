@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ namespace Chummer
             foreach (XmlNode objXmlGameplayOption in objXmlGameplayOptionList)
             {
                 string strName = objXmlGameplayOption["name"].InnerText;
-                if (objXmlGameplayOption["default"]?.InnerText == "yes")
+                if (objXmlGameplayOption["default"]?.InnerText == bool.TrueString)
                     _strDefaultOption = strName;
                 lstGameplayOptions.Add(new ListItem(strName, objXmlGameplayOption["translate"]?.InnerText ?? strName));
             }
@@ -183,7 +183,7 @@ namespace Chummer
                         nudKarma.Value = _objOptions.BuildPoints;
                     else
                         nudKarma.Value = 800;
-                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_KarmaSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
                     lblStartingKarma.Visible = true;
@@ -191,7 +191,7 @@ namespace Chummer
                     break;
                 case "LifeModule":
                     nudKarma.Value = 750;
-                    lblDescription.Text = String.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    lblDescription.Text = string.Format(LanguageManager.GetString("String_SelectBP_LifeModuleSummary", GlobalOptions.Language), nudKarma.Value.ToString(GlobalOptions.InvariantCultureInfo));
                     nudKarma.Visible = true;
                     nudMaxNuyen.Visible = true;
                     lblStartingKarma.Visible = true;

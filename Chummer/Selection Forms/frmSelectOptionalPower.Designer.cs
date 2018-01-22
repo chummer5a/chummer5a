@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectOptionalPower
     {
@@ -95,7 +95,6 @@
             this.Tag = "Title_SelectPower";
             this.Text = "Choose an Power";
             this.Load += new System.EventHandler(this.frmSelectOptionalPower_Load);
-            this.Shown += new System.EventHandler(this.frmSelectOptionalPower_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
         }

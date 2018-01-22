@@ -58,7 +58,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost()
         {
-            return Math.Max(RangeCost(Base + FreeKarma(), TotalBaseRating), 0);
+            return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
         }
 
         public override bool IsExoticSkill

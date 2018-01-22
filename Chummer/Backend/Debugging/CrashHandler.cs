@@ -47,16 +47,20 @@ namespace Chummer.Backend
                 AddDefaultInfo();
             }
 
-            private List<string> capturefiles = new List<string>();
-            private Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
-            private Dictionary<string, string> attributes = new Dictionary<string, string>();
-            private int processid = Process.GetCurrentProcess().Id;
-            private uint threadId = NativeMethods.GetCurrentThreadId();
+            // JavaScriptSerializer requires that all properties it accesses be public.
+            // ReSharper disable once MemberCanBePrivate.Local 
+            public List<string> capturefiles = new List<string>();
+            // ReSharper disable once MemberCanBePrivate.Local 
+            public Dictionary<string, string> pretendfiles = new Dictionary<string, string>();
+            // ReSharper disable once MemberCanBePrivate.Local 
+            public Dictionary<string, string> attributes = new Dictionary<string, string>();
+            public int processid = Process.GetCurrentProcess().Id;
+            public uint threadId = NativeMethods.GetCurrentThreadId();
 
             void AddDefaultInfo()
             {
                 //Crash handler will make visible-{whatever} visible in the upload while the rest will exists in a file named attributes.txt
-                attributes.Add("visible-crash-id", Guid.NewGuid().ToString());
+                attributes.Add("visible-crash-id", Guid.NewGuid().ToString("D"));
 
                 attributes.Add("visible-build-type",
                     #if DEBUG
@@ -110,7 +114,8 @@ namespace Chummer.Backend
             public string SerializeBase64()
             {
                 string altson = new JavaScriptSerializer().Serialize(this);
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                string sReturn = Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                return sReturn;
             }
 
             public void AddFile(string file)
@@ -134,7 +139,11 @@ namespace Chummer.Backend
                 dump.AddFile(Path.Combine(Application.StartupPath, "settings", "default.xml"));
                 dump.AddFile(Path.Combine(Application.StartupPath, "chummerlog.txt"));
 
-                Process crashHandler = Process.Start("crashhandler", "crash " + dump.SerializeBase64());
+                Byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                File.WriteAllBytes(Path.Combine(Application.StartupPath, "json.txt"), info);
+
+                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt") + " --debug");
+                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Application.StartupPath, "json.txt"));
 
                 crashHandler.WaitForExit();
             }

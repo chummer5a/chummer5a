@@ -597,7 +597,7 @@ namespace Chummer
                 {
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objTemp = new Quality(objCharacter);
-                    objTemp.Create(objXmlGear, objCharacter, QualitySource.Selected, lstWeapons);
+                    objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
                 }
                 catch
                 {

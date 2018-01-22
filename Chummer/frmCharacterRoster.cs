@@ -256,8 +256,8 @@ namespace Chummer
                 objCache.CharacterAlias = objXmlSourceNode["alias"]?.InnerText;
                 objCache.Created = objXmlSourceNode["created"]?.InnerText == System.Boolean.TrueString;
                 objCache.Essence = objXmlSourceNode["totaless"]?.InnerText;
-                var s = objXmlSourceNode["settings"]?.InnerText;
-                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", s)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : s;
+                string strSettings = objXmlSourceNode["settings"]?.InnerText;
+                objCache.SettingsFile = !File.Exists(Path.Combine(Application.StartupPath, "settings", strSettings)) ? LanguageManager.GetString("MessageTitle_FileNotFound", GlobalOptions.Language) : strSettings;
                 string strMugshotBase64 = objXmlSourceNode["mugshot"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMugshotBase64))
                 {
@@ -281,7 +281,7 @@ namespace Chummer
             {
                 ContextMenuStrip = cmsRoster,
                 Text = CalculatedName(objCache),
-                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">")
+                ToolTipText = objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>')
             };
 
             lock (_lstCharacterCacheLock)
@@ -336,7 +336,7 @@ namespace Chummer
                 lblEssence.Text = objCache.Essence;
                 lblFilePath.Text = objCache.FileName;
                 lblSettings.Text = objCache.SettingsFile;
-                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">"));
+                tipTooltip.SetToolTip(lblFilePath, objCache.FilePath.CheapReplace(Application.StartupPath, () => '<' + Application.ProductName + '>'));
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
@@ -349,19 +349,12 @@ namespace Chummer
                 }
 
                 string strMetatype = objMetatypeNode["translate"]?.InnerText ?? objCache.Metatype;
-                string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
                     objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + objCache.Metavariant + "\"]");
 
-                    strMetatype += objMetatypeNode["translate"] != null
-                        ? " (" + objMetatypeNode["translate"].InnerText + ")"
-                        : " (" + objCache.Metavariant + ")";
-
-                    strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
             }
@@ -380,10 +373,10 @@ namespace Chummer
                 lblEssence.Text = string.Empty;
                 lblFilePath.Text = string.Empty;
                 tipTooltip.SetToolTip(lblFilePath, string.Empty);
-                lblSettings.Text = String.Empty;;
+                lblSettings.Text = string.Empty;
                 picMugshot.Image = null;
             }
-            picMugshot_SizeChanged(null, EventArgs.Empty);
+            ProcessMugshotSizeMode();
         }
 
         #region Form Methods
@@ -596,6 +589,11 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
+            ProcessMugshotSizeMode();
+        }
+
+        private void ProcessMugshotSizeMode()
+        {
             if (picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width)
                 picMugshot.SizeMode = PictureBoxSizeMode.CenterImage;
             else
@@ -649,7 +647,7 @@ namespace Chummer
             TreeNode t = treCharacterList.SelectedNode;
 
             if (t == null) return;
-            if (int.TryParse(t.Tag.ToString(), out var intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
+            if (int.TryParse(t.Tag.ToString(), out int intCharacterIndex) && intCharacterIndex >= 0 && intCharacterIndex < _lstCharacterCache.Count)
             {
                 CharacterCache objCache = _lstCharacterCache[intCharacterIndex];
 
@@ -702,13 +700,16 @@ namespace Chummer
 
         private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
-            var objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode == null || objSelectedNode.Level <= 0) return;
-            var intIndex = Convert.ToInt32(objSelectedNode.Tag);
-            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count) return;
-            var strFile = _lstCharacterCache[intIndex]?.FilePath;
-            if (string.IsNullOrEmpty(strFile)) return;
-            var objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            int intIndex = Convert.ToInt32(objSelectedNode.Tag);
+            if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
+                return;
+            string strFile = _lstCharacterCache[intIndex]?.FilePath;
+            if (string.IsNullOrEmpty(strFile))
+                return;
+            Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
             Cursor = Cursors.WaitCursor;
             if (objOpenCharacter != null)
             {

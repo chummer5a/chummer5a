@@ -217,8 +217,8 @@ namespace Chummer
                 foreach (XmlNode objXmlMetavariantNode in xmlMetatypeNode.SelectNodes("metavariants/metavariant"))
                 {
                     string strMetavariantName = objXmlMetavariantNode["name"].InnerText;
-                    if (lstMetatypes.All(x => x.Value != strMetavariantName))
-                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ")"));
+                    if (lstMetatypes.All(x => x.Value.ToString() != strMetavariantName))
+                        lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                 }
             }
 

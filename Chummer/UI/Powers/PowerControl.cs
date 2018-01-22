@@ -186,7 +186,7 @@ namespace Chummer
         #region Methods
         private void lblPowerName_Click(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPDF(_objPower.Source + " " + _objPower.Page(GlobalOptions.Language));
+            CommonFunctions.OpenPDF(_objPower.Source + ' ' + _objPower.Page(GlobalOptions.Language));
         }
 
         private void MoveControls()

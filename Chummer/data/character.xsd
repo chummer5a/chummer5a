@@ -619,10 +619,10 @@
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="rating" type="xs:integer" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="martialartadvantages" minOccurs="1" maxOccurs="1">
+                    <xs:element name="martialarttechniques" minOccurs="1" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="martialartadvantage" minOccurs="0" maxOccurs="unbounded">
+                          <xs:element name="martialarttechnique" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:sequence>
                                 <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />

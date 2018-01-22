@@ -20,6 +20,7 @@
 using System.Collections.Generic;
  using System.Globalization;
  using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -94,22 +95,21 @@ namespace Chummer
 
             // Populate the Accessory list.
             string[] strAllowed = _strAllowedMounts.Split('/');
-            string strMount = string.Empty;
+            StringBuilder strMount = new StringBuilder("contains(mount, \"Internal\") or contains(mount, \"None\") or mount = \"\"");
             foreach (string strAllowedMount in strAllowed)
             {
                 if (!string.IsNullOrEmpty(strAllowedMount))
-                    strMount += "contains(mount, \"" + strAllowedMount + "\") or ";
+                    strMount.Append(" or contains(mount, \"" + strAllowedMount + "\")");
             }
-            strMount += "contains(mount, \"Internal\") or contains(mount, \"None\") or ";
-            strMount += "mount = \"\"";
-            XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount + ") and (" + _objCharacter.Options.BookXPath() + ")]");
+            XmlNodeList objXmlAccessoryList = _objXmlDocument.SelectNodes("/chummer/accessories/accessory[(" + strMount.ToString() + ") and (" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlAccessory in objXmlAccessoryList)
             {
-                if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+                XmlNode xmlExtraMountNode = objXmlAccessory["extramount"];
+                if (xmlExtraMountNode != null)
                 {
                     if (strAllowed.Length > 1)
                     {
-                        foreach (string strItem in (objXmlAccessory["extramount"].InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
+                        foreach (string strItem in (xmlExtraMountNode.InnerText.Split('/')).Where(strItem => !string.IsNullOrEmpty(strItem)))
                         {
                             if (strAllowed.All(strAllowedMount => strAllowedMount != strItem))
                             {
@@ -119,26 +119,29 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlAccessory["forbidden"]?["weapondetails"] != null)
+                XmlNode xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["forbidden"]["weapondetails"], false))
+                    if (objXmlWeaponNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
-                if (objXmlAccessory["required"]?["weapondetails"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
+                if (xmlTestNode != null)
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlWeaponNode.ProcessFilterOperationNode(objXmlAccessory["required"]["weapondetails"], false))
+                    if (!objXmlWeaponNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         continue;
                     }
                 }
 
-                if (objXmlAccessory["forbidden"]?["oneof"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlForbiddenList = objXmlAccessory.SelectNodes("forbidden/oneof/accessory");
+                    XmlNodeList objXmlForbiddenList = xmlTestNode.SelectNodes("accessory");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objForbiddenAccessory = new HashSet<string>();
@@ -153,9 +156,10 @@ namespace Chummer
                     }
                 }
 
-                if (objXmlAccessory["required"]?["oneof"] != null)
+                xmlTestNode = objXmlAccessory.SelectSingleNode("required/oneof");
+                if (xmlTestNode != null)
                 {
-                    XmlNodeList objXmlRequiredList = objXmlAccessory.SelectNodes("required/oneof/accessory");
+                    XmlNodeList objXmlRequiredList = xmlTestNode.SelectNodes("accessory");
                     //Add to set for O(N log M) runtime instead of O(N * M)
 
                     HashSet<string> objRequiredAccessory = new HashSet<string>();
@@ -610,11 +614,10 @@ namespace Chummer
             */
             string strBookCode = objXmlAccessory["source"]?.InnerText;
             string strBook = CommonFunctions.LanguageBookShort(strBookCode, GlobalOptions.Language);
-            string strPage = objXmlAccessory["page"]?.InnerText;
-            objXmlAccessory.TryGetStringFieldQuickly("altpage", ref strPage);
-            lblSource.Text = strBook + " " + strPage;
+            string strPage = objXmlAccessory["altpage"]?.InnerText ?? objXmlAccessory["page"]?.InnerText;
+            lblSource.Text = strBook + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.

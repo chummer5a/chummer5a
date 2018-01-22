@@ -25,6 +25,5 @@
     {
         Zero = 0,
         Standard = 1,
-        PerRating = 2,
     }
 }

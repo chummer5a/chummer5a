@@ -26,6 +26,7 @@ namespace Chummer
 {
     public partial class frmSelectMentorSpirit : Form
     {
+        private bool _blnSkipRefresh = true;
         private XmlNode _nodBonus;
         private XmlNode _nodChoice1Bonus;
         private XmlNode _nodChoice2Bonus;
@@ -58,32 +59,33 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
+            string strForceId = string.Empty;
+            List<string> lstMentorNames = new List<string>();
             List<ListItem> lstMentors = new List<ListItem>();
 
             // Populate the Mentor list.
             XmlNodeList objXmlMentorList = _objXmlDocument.SelectNodes("/chummer/mentors/mentor[(" + _objCharacter.Options.BookXPath() + ")]");
             foreach (XmlNode objXmlMentor in objXmlMentorList)
             {
-                lstMentors.Add(new ListItem(objXmlMentor["id"].InnerText, objXmlMentor["translate"]?.InnerText ?? objXmlMentor["name"].InnerText));
+                string strName = objXmlMentor["name"].InnerText;
+                string strId = objXmlMentor["id"].InnerText;
+                if (strName == _strForceMentor)
+                    strForceId = strId;
+                lstMentors.Add(new ListItem(strId, objXmlMentor["translate"]?.InnerText ?? strName));
             }
             lstMentors.Sort(CompareListItems.CompareNames);
             lstMentor.BeginUpdate();
-            lstMentor.DataSource = null;
             lstMentor.ValueMember = "Value";
             lstMentor.DisplayMember = "Name";
             lstMentor.DataSource = lstMentors;
             lstMentor.EndUpdate();
-
-            if (!string.IsNullOrEmpty(_strForceMentor))
+            _blnSkipRefresh = false;
+            if (!string.IsNullOrEmpty(strForceId))
             {
-                int intForceMentorIndex = lstMentor.FindStringExact(_strForceMentor);
-                if (intForceMentorIndex != -1)
-                {
-                    lstMentor.SelectedIndex = intForceMentorIndex;
-                    lstMentor.Enabled = false;
-                }
+                lstMentor.SelectedValue = strForceId;
+                lstMentor.Enabled = false;
             }
-            chkMentorMask.Visible = _strXmlFile == "mentors.xml";
+            chkMentorMask.Visible = _strXmlFile == "mentors.xml" && _objCharacter.Options.Books.Contains("FA");
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -98,85 +100,103 @@ namespace Chummer
 
         private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(lstMentor.Text))
-                return;
-
-            // Get the information for the selected Mentor.
-            XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
-
-            lblAdvantage.Text = objXmlMentor["altadvantage"]?.InnerText ?? objXmlMentor["advantage"].InnerText;
-            lblDisadvantage.Text = objXmlMentor["altdisadvantage"]?.InnerText ?? objXmlMentor["disadvantage"].InnerText;
-
-            cboChoice1.BeginUpdate();
-            cboChoice2.BeginUpdate();
-            cboChoice1.DataSource = null;
-            cboChoice2.DataSource = null;
-
-            // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-            if (objXmlMentor["choices"] != null)
+            string strSelectedId = lstMentor.SelectedValue?.ToString();
+            if (!_blnSkipRefresh && !string.IsNullOrEmpty(strSelectedId))
             {
-                List<ListItem> lstChoice1 = new List<ListItem>();
-                List<ListItem> lstChoice2 = new List<ListItem>();
+                // Get the information for the selected Mentor.
+                XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
 
-                foreach (XmlNode objChoice in objXmlMentor["choices"].SelectNodes("choice"))
+                lblAdvantage.Text = objXmlMentor["altadvantage"]?.InnerText ?? objXmlMentor["advantage"].InnerText;
+                lblDisadvantage.Text = objXmlMentor["altdisadvantage"]?.InnerText ?? objXmlMentor["disadvantage"].InnerText;
+
+                cboChoice1.BeginUpdate();
+                cboChoice2.BeginUpdate();
+                cboChoice1.DataSource = null;
+                cboChoice2.DataSource = null;
+
+                // If the Mentor offers a choice of bonuses, build the list and let the user select one.
+                if (objXmlMentor["choices"] != null)
                 {
-                    string strName = objChoice["name"].InnerText;
-                    if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
+                    List<ListItem> lstChoice1 = new List<ListItem>();
+                    List<ListItem> lstChoice2 = new List<ListItem>();
+
+                    foreach (XmlNode objChoice in objXmlMentor.SelectNodes("choices/choice"))
                     {
-                        if (objChoice.Attributes["set"]?.InnerText == "2")
-                            lstChoice2.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
-                        else
-                            lstChoice1.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
+                        string strName = objChoice["name"].InnerText;
+                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:")) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:")))
+                        {
+                            if (objChoice.Attributes["set"]?.InnerText == "2")
+                                lstChoice2.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
+                            else
+                                lstChoice1.Add(new ListItem(strName, objChoice["translate"]?.InnerText ?? strName));
+                        }
                     }
+
+                    lblChoice1.Visible = true;
+                    cboChoice1.Visible = true;
+                    cboChoice1.ValueMember = "Value";
+                    cboChoice1.DisplayMember = "Name";
+                    cboChoice1.DataSource = lstChoice1;
+
+                    lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
+                    cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
+                    lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
+                    cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
+
+                    if (lstChoice2.Count > 0)
+                    {
+                        lblChoice2.Visible = true;
+                        cboChoice2.Visible = true;
+                        cboChoice2.ValueMember = "Value";
+                        cboChoice2.DisplayMember = "Name";
+                        cboChoice2.DataSource = lstChoice2;
+                        chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;
+                    }
+                    else
+                    {
+                        lblChoice2.Visible = false;
+                        cboChoice2.Visible = false;
+                        chkMentorMask.Top = cboChoice1.Top + cboChoice1.Height + 6;
+                    }
+
+                    lblDisadvantageLabel.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
+                    lblDisadvantage.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
                 }
-
-                lblChoice1.Visible = true;
-                cboChoice1.Visible = true;
-                cboChoice1.ValueMember = "Value";
-                cboChoice1.DisplayMember = "Name";
-                cboChoice1.DataSource = lstChoice1;
-
-                lblChoice1.Top = lblAdvantage.Top + lblAdvantage.Height + 6;
-                cboChoice1.Top = lblChoice1.Top + lblChoice1.Height + 3;
-                lblChoice2.Top = cboChoice1.Top + cboChoice1.Height + 6;
-                cboChoice2.Top = lblChoice2.Top + lblChoice2.Height + 3;
-
-                if (lstChoice2.Count > 0)
+                else
                 {
-                    lblChoice2.Visible = true;
-                    cboChoice2.Visible = true;
-                    cboChoice2.ValueMember = "Value";
-                    cboChoice2.DisplayMember = "Name";
-                    cboChoice2.DataSource = lstChoice2;
-                    chkMentorMask.Top = cboChoice2.Top + cboChoice2.Height + 6;                    
-                }
-                else 
-                {
+                    lblChoice1.Visible = false;
+                    cboChoice1.Visible = false;
                     lblChoice2.Visible = false;
                     cboChoice2.Visible = false;
-                    chkMentorMask.Top = cboChoice1.Top + cboChoice1.Height + 6;
                 }
+                cboChoice1.EndUpdate();
+                cboChoice2.EndUpdate();
 
-                lblDisadvantageLabel.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
-                lblDisadvantage.Top = Math.Max(chkMentorMask.Top + chkMentorMask.Height + 6, 133);
+                string strSource = objXmlMentor["source"].InnerText;
+                string strPage = objXmlMentor["altpage"]?.InnerText ?? objXmlMentor["page"].InnerText;
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                cmdOK.Enabled = true;
             }
             else
             {
+                lblAdvantage.Text = string.Empty;
+                lblDisadvantage.Text = string.Empty;
                 lblChoice1.Visible = false;
-                cboChoice1.Visible = false;
                 lblChoice2.Visible = false;
+                cboChoice1.BeginUpdate();
+                cboChoice1.Visible = false;
+                cboChoice1.DataSource = null;
+                cboChoice1.EndUpdate();
+                cboChoice2.BeginUpdate();
                 cboChoice2.Visible = false;
+                cboChoice2.DataSource = null;
+                cboChoice2.EndUpdate();
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+                cmdOK.Enabled = false;
             }
-            cboChoice1.EndUpdate();
-            cboChoice2.EndUpdate();
-
-            string strBook = CommonFunctions.LanguageBookShort(objXmlMentor["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlMentor["page"].InnerText;
-            if (objXmlMentor["altpage"] != null)
-                strPage = objXmlMentor["altpage"].InnerText;
-            lblSource.Text = strBook + " " + strPage;
-
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMentor["source"].InnerText, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
         }
         #endregion
 
@@ -245,29 +265,28 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            if (string.IsNullOrEmpty(lstMentor.Text)) return;
-            XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + lstMentor.SelectedValue + "\"]");
-
-            SelectedMentor = objXmlMentor["id"].InnerText;
-
-            if (objXmlMentor.InnerXml.Contains("<bonus>"))
-                _nodBonus = objXmlMentor.SelectSingleNode("bonus");
-
-            if (cboChoice1.SelectedValue != null)
+            string strSelectedId = lstMentor.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice1.SelectedValue + "\"]");
-                if (objChoice.InnerXml.Contains("<bonus>"))
-                    _nodChoice1Bonus = objChoice.SelectSingleNode("bonus");
-            }
+                XmlNode objXmlMentor = _objXmlDocument.SelectSingleNode("/chummer/mentors/mentor[id = \"" + strSelectedId + "\"]");
 
-            if (cboChoice2.SelectedValue != null)
-            {
-                XmlNode objChoice = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + cboChoice2.SelectedValue + "\"]");
-                if (objChoice.InnerXml.Contains("<bonus>"))
-                    _nodChoice2Bonus = objChoice.SelectSingleNode("bonus");
-            }
+                SelectedMentor = strSelectedId;
 
-            DialogResult = DialogResult.OK;
+                _nodBonus = objXmlMentor["bonus"];
+
+                string strChoice1 = cboChoice1.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strChoice1))
+                {
+                    _nodChoice1Bonus = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + strChoice1 + "\"]/bonus");
+                }
+                string strChoice2 = cboChoice2.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strChoice2))
+                {
+                    _nodChoice2Bonus = objXmlMentor.SelectSingleNode("choices/choice[name = \"" + strChoice2 + "\"]/bonus");
+                }
+
+                DialogResult = DialogResult.OK;
+            }
         }
         #endregion
     }

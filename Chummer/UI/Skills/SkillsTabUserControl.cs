@@ -485,7 +485,7 @@ namespace Chummer.UI.Skills
             };
             skill.Upgrade();
             ObjCharacter.SkillsSection.Skills.Add(skill);
-            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ")", skill);
+            ObjCharacter.SkillsSection.SkillsDictionary.Add(skill.Name + " (" + skill.DisplaySpecializationMethod(GlobalOptions.DefaultLanguage) + ')', skill);
         }
 
         private void UpdateKnoSkillRemaining()
@@ -497,10 +497,12 @@ namespace Chummer.UI.Skills
         {
             if (_character.Created)
             {
+                List<ListItem> lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language).ToList();
+                lstDefaultKnowledgeSkills.Sort(CompareListItems.CompareNames);
                 frmSelectItem form = new frmSelectItem
                 {
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill", GlobalOptions.Language),
-                    DropdownItems = KnowledgeSkill.DefaultKnowledgeSkills(GlobalOptions.Language)
+                    DropdownItems = lstDefaultKnowledgeSkills
                 };
 
                 if (form.ShowDialog() == DialogResult.OK)

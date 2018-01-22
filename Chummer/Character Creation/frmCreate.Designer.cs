@@ -2215,7 +2215,7 @@ namespace Chummer
             this.tsVehicleAddWeaponWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponWeapon.Tag = "Menu_AddWeapon";
             this.tsVehicleAddWeaponWeapon.Text = "Add &Weapon";
-            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            this.tsVehicleAddWeaponWeapon.Click += new System.EventHandler(this.tsVehicleAddWeaponWeapon_Click);
             // 
             // tsVehicleAddWeaponAccessory
             // 
@@ -2348,7 +2348,7 @@ namespace Chummer
             this.tsVehicleMountWeaponAdd.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleMountWeaponAdd.Tag = "Menu_AddWeapon";
             this.tsVehicleMountWeaponAdd.Text = "Add &Weapon";
-            this.tsVehicleMountWeaponAdd.Click += new System.EventHandler(this.tsVehicleAddWeapon_Click);
+            this.tsVehicleMountWeaponAdd.Click += new System.EventHandler(this.tsVehicleAddWeaponWeapon_Click);
             // 
             // tsVehicleMountWeaponAccessory
             // 
@@ -3309,7 +3309,7 @@ namespace Chummer
             this.tabCharacterTabs.Size = new System.Drawing.Size(868, 637);
             this.tabCharacterTabs.TabIndex = 33;
             this.tabCharacterTabs.SelectedIndexChanged += new System.EventHandler(this.tabCharacterTabs_SelectedIndexChanged);
-            this.tabCharacterTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
+            this.tabCharacterTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ShiftTabsOnMouseScroll);
             // 
             // tabCommon
             // 
@@ -5664,7 +5664,7 @@ namespace Chummer
             this.tabStreetGearTabs.Size = new System.Drawing.Size(858, 605);
             this.tabStreetGearTabs.TabIndex = 87;
             this.tabStreetGearTabs.SelectedIndexChanged += new System.EventHandler(this.tabStreetGearTabs_SelectedIndexChanged);
-            this.tabStreetGearTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
+            this.tabStreetGearTabs.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ShiftTabsOnMouseScroll);
             // 
             // tabGear
             // 
@@ -9010,7 +9010,7 @@ namespace Chummer
             this.tabPeople.SelectedIndex = 0;
             this.tabPeople.Size = new System.Drawing.Size(854, 605);
             this.tabPeople.TabIndex = 94;
-            this.tabPeople.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
+            this.tabPeople.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ShiftTabsOnMouseScroll);
             // 
             // tabContacts
             // 
@@ -9272,7 +9272,7 @@ namespace Chummer
             this.tabInfo.SelectedIndex = 0;
             this.tabInfo.Size = new System.Drawing.Size(193, 637);
             this.tabInfo.TabIndex = 50;
-            this.tabInfo.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.tabControl_MouseWheel);
+            this.tabInfo.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.ShiftTabsOnMouseScroll);
             // 
             // tabBPSummary
             // 

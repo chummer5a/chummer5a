@@ -63,8 +63,6 @@ namespace Chummer
                 DataSourceUpdateMode.OnPropertyChanged);
             txtCritterName.DataBindings.Add("Enabled", _objSpirit, nameof(_objSpirit.NoLinkedCharacter), false,
                 DataSourceUpdateMode.OnPropertyChanged);
-            chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
-                DataSourceUpdateMode.OnPropertyChanged);
             if (_objSpirit.EntityType == SpiritType.Spirit)
                 nudForce.DataBindings.Add("Maximum", _objSpirit.CharacterObject, nameof(Character.MaxSpiritForce), false,
                     DataSourceUpdateMode.OnPropertyChanged);
@@ -79,6 +77,8 @@ namespace Chummer
 
             if (_objSpirit.EntityType == SpiritType.Spirit)
             {
+                chkFettered.DataBindings.Add("Checked", _objSpirit, nameof(_objSpirit.Fettered), false,
+                    DataSourceUpdateMode.OnPropertyChanged);
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Checkbox_Spirit_Bound", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.FileName))
@@ -93,6 +93,7 @@ namespace Chummer
             }
             else
             {
+                chkFettered.Visible = false;
                 lblForce.Text = LanguageManager.GetString("Label_Sprite_Rating", GlobalOptions.Language);
                 chkBound.Text = LanguageManager.GetString("Label_Sprite_Registered", GlobalOptions.Language);
                 if (!string.IsNullOrEmpty(_objSpirit.FileName))
@@ -454,7 +455,7 @@ namespace Chummer
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "Chummer5 Files (*.chum5)|*.chum5|All Files (*.*)|*.*",
-                FileName = strCritterName + " (" + strForce + " " + _objSpirit.Force.ToString() + ").chum5"
+                FileName = strCritterName + " (" + strForce + ' ' + _objSpirit.Force.ToString() + ").chum5"
             };
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -548,7 +549,7 @@ namespace Chummer
                 Quality objQuality = new Quality(objCharacter);
                 string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                 QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                objQuality.Create(objXmlQuality, objCharacter, objSource, lstWeapons, strForceValue);
+                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                 objCharacter.Qualities.Add(objQuality);
 
                 // Add any created Weapons to the character.
@@ -620,7 +621,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Weapon objWeapon = new Weapon(objCharacter);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.ParentID = Guid.NewGuid().ToString(); // Unarmed Attack can never be removed
+                objWeapon.ParentID = Guid.NewGuid().ToString("D"); // Unarmed Attack can never be removed
                 objCharacter.Weapons.Add(objWeapon);
                 foreach (Weapon objLoopWeapon in lstWeapons)
                     objCharacter.Weapons.Add(objLoopWeapon);

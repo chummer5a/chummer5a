@@ -250,7 +250,7 @@ namespace Chummer.UI.Powers
 
                 Power objPower = new Power(ObjCharacter);
 
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
                 frmPickPower.Dispose();
                 if (objPower.Create(objXmlPower))
                 {
@@ -266,7 +266,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public void CalculatePowerPoints()
         {
-            lblPowerPoints.Text = String.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ")", PowerPointsRemaining, PowerPointsTotal);
+            lblPowerPoints.Text = string.Format("{1} ({0} " + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')', PowerPointsRemaining, PowerPointsTotal);
             ValidateVisibility();
         }
 
@@ -292,7 +292,7 @@ namespace Chummer.UI.Powers
                 // Add any Power Point Improvements to MAG.
                 intMAG += ImprovementManager.ValueOf(ObjCharacter, Improvement.ImprovementType.AdeptPowerPoints);
 
-                return intMAG;
+                return Math.Max(intMAG, 0);
             }
         }
 

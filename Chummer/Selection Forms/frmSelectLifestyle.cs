@@ -91,7 +91,7 @@ namespace Chummer
                 if (nodMultiplier == null)
                 {
                     nodMultiplier = objXmlOption["multiplierbaseonly"];
-                    strBaseString = " " + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
+                    strBaseString = ' ' + LanguageManager.GetString("Label_Base", GlobalOptions.Language);
                 }
                 nodOption.Tag = objXmlOption["id"]?.InnerText;
                 if (nodMultiplier != null && int.TryParse(nodMultiplier.InnerText, out int intCost))
@@ -186,20 +186,23 @@ namespace Chummer
 
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            string strSource = string.Empty;
+            string strPage = string.Empty;
             string strQualityId = treQualities.SelectedNode?.Tag.ToString();
-            if (string.IsNullOrEmpty(strQualityId))
+            if (!string.IsNullOrEmpty(strQualityId))
             {
                 XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strQualityId + "\"]");
-                if (objXmlQuality == null)
+                if (objXmlQuality != null)
                 {
-                    lblSource.Text = string.Empty;
-                    tipTooltip.SetToolTip(lblSource, string.Empty);
-                    return;
+                    strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;
+                    strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? string.Empty;
                 }
-                string strBook = CommonFunctions.LanguageBookShort(objXmlQuality["altsource"]?.InnerText ?? objXmlQuality["source"].InnerText, GlobalOptions.Language);
-                string strPage = CommonFunctions.LanguageBookShort(objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"].InnerText, GlobalOptions.Language);
-                lblSource.Text = $"{strBook} {strPage}";
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBook, GlobalOptions.Language) + " " + LanguageManager.GetString("String_Page", GlobalOptions.Language) + " " + strPage);
+            }
+
+            if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+            {
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
             else
             {
@@ -275,10 +278,7 @@ namespace Chummer
             else
             {
                 Log.Warning(new object[] { "Missing id field for lifestyle xmlnode", objXmlLifestyle });
-                if (System.Diagnostics.Debugger.IsAttached)
-                {
-                    System.Diagnostics.Debugger.Break();
-                }
+                Utils.BreakIfDebug();
             }
             foreach (TreeNode objNode in treQualities.Nodes)
             {
@@ -307,8 +307,19 @@ namespace Chummer
             // Get the base cost of the lifestyle
             XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + cboLifestyle.SelectedValue + "\"]");
             decBaseCost += Convert.ToDecimal(objXmlAspect["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
-            lblSource.Text = objXmlAspect["source"].InnerText + " " + objXmlAspect["page"].InnerText;
 
+            string strSource = objXmlAspect["source"]?.InnerText ?? string.Empty;
+            string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText ?? string.Empty;
+            if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
+            {
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
             // Add the flat costs from qualities
             foreach (TreeNode objNode in treQualities.Nodes)
             {
@@ -359,7 +370,7 @@ namespace Chummer
             {
                 decimal decDiscount = decNuyen;
                 decDiscount = decDiscount * (nudPercentage.Value / 100);
-                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥' + ")";
+                lblCost.Text += " (" + decDiscount.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥)";
             }
             return decNuyen;
         }

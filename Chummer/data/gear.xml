@@ -1638,24 +1638,18 @@
       <avail>0</avail>
       <cost>0</cost>
       <hide />
-      <gears startcollapsed="yes">
+      <gears startcollapsed="True">
         <usegear>
-          <name select="Music Player">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Music Player</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
-          <name select="Micro Trid-Projector">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Micro Trid-Projector</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
-          <name select="Touchscreen Display">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Touchscreen Display</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
           <name>Camera, Micro</name>
@@ -1663,28 +1657,20 @@
           <capacity>0</capacity>
         </usegear>
         <usegear>
-          <name select="RFID Tag Scanner">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>RFID Tag Scanner</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
-          <name select="GPS Guidance System">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>GPS Guidance System</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
-          <name select="Chip Player">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Chip Player</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
-          <name select="Credstick Reader">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Credstick Reader</name>
+          <category>Electronics Accessories</category>
         </usegear>
         <usegear>
           <name>Earbuds</name>
@@ -1692,12 +1678,106 @@
           <capacity>0</capacity>
         </usegear>
         <usegear>
-          <name select="Shock- and Water-Resistant Case">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>438</page>
+          <name>Shock- and Water-Resistant Case</name>
+          <category>Commlink Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>9cd0bf83-3cfa-4c61-bfb0-ae6c01ac8f8d</id>
+      <name>Music Player</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>5db9c4b8-4d7a-4728-aff0-617102c57fc5</id>
+      <name>Micro Trid-Projector</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>b19f022c-c854-4a3f-8b7a-d2a2532a2680</id>
+      <name>Touchscreen Display</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>5146abd2-6ab2-4aee-b523-a63d5c5ab93b</id>
+      <name>RFID Tag Scanner</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>82946de2-876c-46d8-a6ec-744a38257668</id>
+      <name>GPS Guidance System</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>f9995732-7d00-496c-8407-a3dc0e1a82ff</id>
+      <name>Chip Player</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>1d6f985e-5cf0-463d-a445-fafdd387f301</id>
+      <name>Credstick Reader</name>
+      <category>Electronics Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>786682fb-cbd5-4ee8-969a-233484004df7</id>
+      <name>Shock- and Water-Resistant Case</name>
+      <category>Commlink Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>438</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>73b55822-dfb8-48f5-8ff8-37ef498ab9ef</id>
@@ -2162,6 +2242,18 @@
       </gears>
     </gear>
     <gear>
+      <id>74680c75-67a1-41d2-8a78-3238161f85a0</id>
+      <name>Broken Sony CIY-720</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>RF</source>
+      <page>249</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
       <id>c3f15a4a-1987-4879-ba74-5b93d602ca8c</id>
       <name>Shiawase Cyber-5</name>
       <category>Cyberdecks</category>
@@ -2593,16 +2685,37 @@
           <category>Commlink/Cyberdeck Form Factors</category>
         </usegear>
         <usegear>
-          <name select="Secret Compartment with Faraday Cage">Custom Item</name>
-          <category>Custom</category>
-          <source>DT</source>
-          <page>61</page>
+          <name>Secret Compartment with Faraday Cage</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>20424a16-ebec-4676-8b2f-51a388ef37d3</id>
+      <name>Lunchbox</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>DT</source>
+      <page>61</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>3a88452b-a427-408e-9128-a43c5f372cce</id>
+      <name>Secret Compartment with Faraday Cage</name>
+      <category>Commlink Accessories</category>
+      <rating>0</rating>
+      <source>DT</source>
+      <page>61</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>c441375b-dd1e-4a66-a8f4-42bdd51255d5</id>
@@ -2629,6 +2742,17 @@
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>3a9b0eed-6b2e-411a-8220-a4e996df9fdd</id>
+      <name>Bracelet</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>DT</source>
+      <page>61</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
     </gear>
     <gear>
       <id>4055ed01-a419-4b69-bbac-00260bfa653f</id>
@@ -2678,10 +2802,8 @@
           <category>Software</category>
           <rating>3</rating>
           <usegear>
-            <name select="Love Life Management">Custom Item</name>
-            <category>Custom</category>
-            <source>DT</source>
-            <page>61</page>
+            <name>Love Life Management</name>
+            <category>Software</category>
           </usegear>
         </usegear>
         <usegear>
@@ -2689,6 +2811,18 @@
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>fd6188fc-d6ad-4ab3-82f8-fc7f53f49281</id>
+      <name>Love Life Management</name>
+      <category>Software</category>
+      <rating>0</rating>
+      <source>DT</source>
+      <page>61</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>de794f9c-505f-4a09-8be9-f43749240799</id>
@@ -3346,7 +3480,7 @@
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
-          <name select="Urban Brawl News">Datasoft</name>
+          <name>Datasoft</name>
           <category>Software</category>
         </usegear>
         <usegear>
@@ -3354,6 +3488,17 @@
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>db03eec4-aa3b-4393-bf86-f8e3e6652264</id>
+      <name>Urban Brawl News</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
     </gear>
     <gear>
       <id>69c65b09-ac94-4032-a491-3610a464d168</id>
@@ -3376,22 +3521,53 @@
           <category>Commlink/Cyberdeck Form Factors</category>
         </usegear>
         <usegear>
-          <name select="Hardened Casing">Custom Item</name>
-          <category>Custom</category>
-          <source>SAG</source>
-          <page>86</page>
+          <name>Hardened Casing</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name select="Blood Alcohol Biosensor">Custom Item</name>
-          <category>Custom</category>
-          <source>SAG</source>
-          <page>86</page>
+          <name>Blood Alcohol Biosensor</name>
+          <category>Sensors</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>33f9d60d-740f-4e99-8a15-e08ba8ed53ac</id>
+      <name>Wristband</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
+      <id>403f8001-71a4-49c5-9ff3-00abd67e2e7a</id>
+      <name>Hardened Casing</name>
+      <category>Commlink Accessories</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>314a9040-1f18-4b1e-aece-36be00ad7aa9</id>
+      <name>Blood Alcohol Biosensor</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>bcbda097-2e5e-4ac5-bcf3-7beadb62f3d3</id>
@@ -3437,10 +3613,8 @@
           <category>Tools</category>
         </usegear>
         <usegear>
-          <name select="Waterproof Casing">Custom Item</name>
-          <category>Custom</category>
-          <source>SAG</source>
-          <page>86</page>
+          <name>Waterproof Casing</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3449,6 +3623,18 @@
       </gears>
       <source>SAG</source>
       <page>86</page>
+    </gear>
+    <gear>
+      <id>632d1901-a2b4-42ff-a7b2-48c6e748dd1c</id>
+      <name>Waterproof Casing</name>
+      <category>Commlink Accessories</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>3c1eab12-59bc-490a-8260-63a0ec2b727a</id>
@@ -3472,10 +3658,8 @@
           <category>Tools</category>
         </usegear>
         <usegear>
-          <name select="Hardened Casing">Custom Item</name>
-          <category>Custom</category>
-          <source>SAG</source>
-          <page>86</page>
+          <name>Hardened Casing</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -6833,42 +7017,186 @@
       <addweapon>Knife (Survival Kit)</addweapon>
       <gears>
         <usegear>
-          <name select="Lighter">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Lighter</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Compass">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Compass</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Matches">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Matches</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Lightweight Thermal Blanket">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Lightweight Thermal Blanket</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Several Days' Worth of Ration Bars">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Several Days' Worth of Ration Bars</name>
+          <category>Survival Gear</category>
         </usegear>
         <usegear>
-          <name select="Water Purification Unit">Custom Item</name>
-          <category>Custom</category>
-          <source>SR5</source>
-          <page>449</page>
+          <name>Water Purification Unit</name>
+          <category>Survival Gear</category>
         </usegear>
       </gears>
+    </gear>
+    <gear>
+      <id>9f0d5d35-43f3-4877-b384-cf4188b5bca7</id>
+      <name>Lighter</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>d61cb088-eeda-4251-bc5b-1f4b367b9001</id>
+      <name>Compass</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>0a897bb2-6260-42d3-ad2f-27345230a133</id>
+      <name>Matches</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>3975e539-010d-4ffa-b163-17b5e300d336</id>
+      <name>Lightweight Thermal Blanket</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>c0cf0e8f-386e-4b6d-8f7d-971a4cd0b56b</id>
+      <name>Several Days' Worth of Ration Bars</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>1bec7c2a-2c90-43d2-99ac-610f02e38148</id>
+      <name>Water Purification Unit</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>449</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>de50bb02-7f90-4c76-9984-e7d2b3248726</id>
+      <name>GPS Monitor</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>3fc588dc-ec8b-4483-8796-f8a068698ea4</id>
+      <name>Mini-Multitool</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>a75fb825-dc62-46ff-8e8a-454b7a9442ba</id>
+      <name>Micro-Lighter</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>4d08fb85-0756-4f99-9dfe-6e2592ee22b4</id>
+      <name>Hidden Compartment</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>63a4180e-97bc-4954-b5c2-a1029d834638</id>
+      <name>Phosphorescent Blade Coating</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>09ed9d86-59a2-4ac9-ac3f-70816f3485fb</id>
+      <name>ARO of Local Maps</name>
+      <category>Software</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
+      <name>Can Make Commcalls</name>
+      <category>Electronic Accessories</category>
+      <rating>0</rating>
+      <source>SR5</source>
+      <page>422</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <gear>
       <id>dcecc477-92eb-427e-ae90-7f4465f1ebbc</id>
@@ -6899,6 +7227,18 @@
         <toxininhalationresist>Rating</toxininhalationresist>
         <pathogeninhalationresist>Rating</pathogeninhalationresist>
       </bonus>
+    </gear>
+    <gear>
+      <id>8e4e5c33-63f4-437a-ae64-1e54276bd13d</id>
+      <name>Generator</name>
+      <category>Survival Gear</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>74</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
     </gear>
     <!-- End Region -->
     <!-- Region Grapple Gun -->

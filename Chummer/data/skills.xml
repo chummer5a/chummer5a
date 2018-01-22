@@ -59,7 +59,7 @@
       <name>Aeronautics Mechanic</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Engineering</skillgroup>
       <specs>
         <spec>Aerospace</spec>
@@ -77,7 +77,7 @@
       <name>Alchemy</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Enchanting</skillgroup>
       <specs>
         <spec>Combat</spec>
@@ -98,7 +98,7 @@
       <name>Animal Handling</name>
       <attribute>CHA</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Herding</spec>
@@ -114,7 +114,7 @@
       <name>Arcana</name>
       <attribute>LOG</attribute>
       <category>Pseudo-Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Focus Design</spec>
@@ -131,7 +131,7 @@
       <name>Archery</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Bow</spec>
@@ -147,7 +147,7 @@
       <name>Armorer</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Armor</spec>
@@ -166,7 +166,7 @@
       <name>Artificing</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Enchanting</skillgroup>
       <specs>
         <spec>Focus Analysis</spec>
@@ -180,7 +180,7 @@
       <name>Artisan</name>
       <attribute>INT</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Carpentry</spec>
@@ -199,7 +199,7 @@
       <name>Assensing</name>
       <attribute>INT</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Aura Reading</spec>
@@ -215,7 +215,7 @@
       <name>Astral Combat</name>
       <attribute>WIL</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Magicians</spec>
@@ -232,7 +232,7 @@
       <name>Automatics</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Firearms</skillgroup>
       <specs>
         <spec>Assault Rifles</spec>
@@ -248,7 +248,7 @@
       <name>Automotive Mechanic</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Engineering</skillgroup>
       <specs>
         <spec>Hover</spec>
@@ -264,7 +264,7 @@
       <name>Banishing</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Conjuring</skillgroup>
       <specs>
         <spec>Spirits of Air</spec>
@@ -286,7 +286,7 @@
       <name>Binding</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Conjuring</skillgroup>
       <specs>
         <spec>Spirits of Air</spec>
@@ -308,7 +308,7 @@
       <name>Biotechnology</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Biotech</skillgroup>
       <specs>
         <spec>Bioinformatics</spec>
@@ -325,7 +325,7 @@
       <name>Blades</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Close Combat</skillgroup>
       <specs>
         <spec>Axes</spec>
@@ -341,7 +341,7 @@
       <name>Chemistry</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Analytical</spec>
@@ -360,7 +360,7 @@
       <name>Clubs</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Close Combat</skillgroup>
       <specs>
         <spec>Batons</spec>
@@ -377,7 +377,7 @@
       <name>Compiling</name>
       <attribute>RES</attribute>
       <category>Resonance Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Tasking</skillgroup>
       <specs>
         <spec>[Sprite Type]</spec>
@@ -390,7 +390,7 @@
       <name>Computer</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Electronics</skillgroup>
       <specs>
         <spec>Edit File</spec>
@@ -406,7 +406,7 @@
       <name>Con</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Acting</skillgroup>
       <specs>
         <spec>Fast Talk</spec>
@@ -420,7 +420,7 @@
       <name>Counterspelling</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Sorcery</skillgroup>
       <specs>
         <spec>Combat</spec>
@@ -437,7 +437,7 @@
       <name>Cybercombat</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Cracking</skillgroup>
       <specs>
         <spec>Devices</spec>
@@ -455,7 +455,7 @@
       <name>Cybertechnology</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Biotech</skillgroup>
       <specs>
         <spec>Bodyware</spec>
@@ -472,7 +472,7 @@
       <name>Decompiling</name>
       <attribute>RES</attribute>
       <category>Resonance Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Tasking</skillgroup>
       <specs>
         <spec>[Sprite Type]</spec>
@@ -485,7 +485,7 @@
       <name>Demolitions</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Commercial Explosives</spec>
@@ -501,7 +501,7 @@
       <name>Disenchanting</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Enchanting</skillgroup>
       <specs>
         <spec>[Type]</spec>
@@ -514,7 +514,7 @@
       <name>Disguise</name>
       <attribute>INT</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Stealth</skillgroup>
       <specs>
         <spec>Camouflage</spec>
@@ -530,7 +530,7 @@
       <name>Diving</name>
       <attribute>BOD</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Arctic</spec>
@@ -553,7 +553,7 @@
       <name>Electronic Warfare</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Cracking</skillgroup>
       <specs>
         <spec>Communications</spec>
@@ -570,7 +570,7 @@
       <name>Escape Artist</name>
       <attribute>AGI</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Contortionism</spec>
@@ -587,7 +587,7 @@
       <name>Etiquette</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Influence</skillgroup>
       <specs>
         <spec>Catholic Church</spec>
@@ -610,8 +610,8 @@
       <name>Exotic Melee Weapon</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>No</default>
-      <exotic>Yes</exotic>
+      <default>False</default>
+      <exotic>True</exotic>
       <skillgroup />
       <specs />
       <source>SR5</source>
@@ -622,8 +622,8 @@
       <name>Exotic Ranged Weapon</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>No</default>
-      <exotic>Yes</exotic>
+      <default>False</default>
+      <exotic>True</exotic>
       <skillgroup />
       <specs>
         <spec>Blowguns</spec>
@@ -639,8 +639,8 @@
       <name>Pilot Exotic Vehicle</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>No</default>
-      <exotic>Yes</exotic>
+      <default>False</default>
+      <exotic>True</exotic>
       <skillgroup />
       <specs>
         <spec>Festo Pigeon 2.0</spec>
@@ -653,7 +653,7 @@
       <name>First Aid</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Biotech</skillgroup>
       <specs>
         <spec>Broken Bones</spec>
@@ -670,7 +670,7 @@
       <name>Flight</name>
       <attribute>AGI</attribute>
       <category>Physical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Athletics</skillgroup>
       <specs>
         <spec>Desert</spec>
@@ -688,7 +688,7 @@
       <name>Forgery</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Counterfeiting</spec>
@@ -705,7 +705,7 @@
       <name>Free-Fall</name>
       <attribute>BOD</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>BASE Jumping</spec>
@@ -727,7 +727,7 @@
       <name>Gunnery</name>
       <attribute>AGI</attribute>
       <category>Vehicle Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Artillery</spec>
@@ -744,7 +744,7 @@
       <name>Gymnastics</name>
       <attribute>AGI</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Athletics</skillgroup>
       <specs>
         <spec>Balance</spec>
@@ -763,7 +763,7 @@
       <name>Hacking</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Cracking</skillgroup>
       <specs>
         <spec>Devices</spec>
@@ -779,7 +779,7 @@
       <name>Hardware</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Electronics</skillgroup>
       <specs>
         <spec>Commlinks</spec>
@@ -797,7 +797,7 @@
       <name>Heavy Weapons</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Assault Cannons</spec>
@@ -814,7 +814,7 @@
       <name>Impersonation</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Acting</skillgroup>
       <specs>
         <spec>Dwarf</spec>
@@ -831,7 +831,7 @@
       <name>Industrial Mechanic</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Engineering</skillgroup>
       <specs>
         <spec>Electrical Power Systems</spec>
@@ -849,7 +849,7 @@
       <name>Instruction</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>[Active or Knowledge Skill Category]</spec>
@@ -862,7 +862,7 @@
       <name>Intimidation</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Interrogation</spec>
@@ -878,7 +878,7 @@
       <name>Leadership</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Influence</skillgroup>
       <specs>
         <spec>Command</spec>
@@ -894,7 +894,7 @@
       <name>Locksmith</name>
       <attribute>AGI</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Combination</spec>
@@ -912,7 +912,7 @@
       <name>Longarms</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Firearms</skillgroup>
       <specs>
         <spec>Extended-Range Shots</spec>
@@ -929,7 +929,7 @@
       <name>Medicine</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Biotech</skillgroup>
       <specs>
         <spec>Cosmetic Surgery</spec>
@@ -947,7 +947,7 @@
       <name>Nautical Mechanic</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Engineering</skillgroup>
       <specs>
         <spec>Motorboat</spec>
@@ -963,7 +963,7 @@
       <name>Navigation</name>
       <attribute>INT</attribute>
       <category>Technical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Outdoors</skillgroup>
       <specs>
         <spec>Augmented Reality Markers</spec>
@@ -980,7 +980,7 @@
       <name>Negotiation</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Influence</skillgroup>
       <specs>
         <spec>Bargaining</spec>
@@ -995,7 +995,7 @@
       <name>Palming</name>
       <attribute>AGI</attribute>
       <category>Physical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Stealth</skillgroup>
       <specs>
         <spec>Legerdemain</spec>
@@ -1010,7 +1010,7 @@
       <name>Perception</name>
       <attribute>INT</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Hearing</spec>
@@ -1028,7 +1028,7 @@
       <name>Performance</name>
       <attribute>CHA</attribute>
       <category>Social Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Acting</skillgroup>
       <specs>
         <spec>Acting</spec>
@@ -1045,7 +1045,7 @@
       <name>Pilot Aerospace</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Deep Space</spec>
@@ -1062,7 +1062,7 @@
       <name>Pilot Aircraft</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Fixed-Wing</spec>
@@ -1080,7 +1080,7 @@
       <name>Pilot Ground Craft</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Bike</spec>
@@ -1097,7 +1097,7 @@
       <name>Pilot Walker</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Biped</spec>
@@ -1113,7 +1113,7 @@
       <name>Pilot Watercraft</name>
       <attribute>REA</attribute>
       <category>Vehicle Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Hydrofoil</spec>
@@ -1131,7 +1131,7 @@
       <name>Pistols</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Firearms</skillgroup>
       <specs>
         <spec>Holdouts</spec>
@@ -1147,7 +1147,7 @@
       <name>Registering</name>
       <attribute>RES</attribute>
       <category>Resonance Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Tasking</skillgroup>
       <specs>
         <spec>[Sprite Type]</spec>
@@ -1160,7 +1160,7 @@
       <name>Ritual Spellcasting</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Sorcery</skillgroup>
       <specs>
         <spec>[Keyword]</spec>
@@ -1173,7 +1173,7 @@
       <name>Running</name>
       <attribute>STR</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Athletics</skillgroup>
       <specs>
         <spec>Desert</spec>
@@ -1191,7 +1191,7 @@
       <name>Sneaking</name>
       <attribute>AGI</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Stealth</skillgroup>
       <specs>
         <spec>Desert</spec>
@@ -1209,7 +1209,7 @@
       <name>Software</name>
       <attribute>LOG</attribute>
       <category>Technical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Electronics</skillgroup>
       <specs>
         <spec>Data Bombs</spec>
@@ -1225,7 +1225,7 @@
       <name>Spellcasting</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Sorcery</skillgroup>
       <specs>
         <spec>Combat</spec>
@@ -1242,7 +1242,7 @@
       <name>Summoning</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup>Conjuring</skillgroup>
       <specs>
         <spec>Spirits of Air</spec>
@@ -1264,7 +1264,7 @@
       <name>Survival</name>
       <attribute>WIL</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Outdoors</skillgroup>
       <specs>
         <spec>Desert</spec>
@@ -1283,7 +1283,7 @@
       <name>Swimming</name>
       <attribute>STR</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Athletics</skillgroup>
       <specs>
         <spec>Dash</spec>
@@ -1297,7 +1297,7 @@
       <name>Throwing Weapons</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup />
       <specs>
         <spec>Aerodynamic</spec>
@@ -1312,7 +1312,7 @@
       <name>Tracking</name>
       <attribute>INT</attribute>
       <category>Physical Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Outdoors</skillgroup>
       <specs>
         <spec>Desert</spec>
@@ -1331,7 +1331,7 @@
       <name>Unarmed Combat</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
-      <default>Yes</default>
+      <default>True</default>
       <skillgroup>Close Combat</skillgroup>
       <specs>
         <spec>Blocking</spec>
@@ -1349,7 +1349,7 @@
       <name>Administration</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Corporate</spec>
@@ -1362,7 +1362,7 @@
       <name>Alchemy</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Combat</spec>
@@ -1381,7 +1381,7 @@
       <name>Alcohol</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Beers</spec>
@@ -1435,7 +1435,7 @@
       <name>Anishinaabe</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1449,7 +1449,7 @@
       <name>Anatomy</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs></specs>
     </skill>
@@ -1458,7 +1458,7 @@
       <name>Arabic</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1472,7 +1472,7 @@
       <name>Architecture</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Art Nouveau</spec>
@@ -1496,7 +1496,7 @@
       <name>Area Knowledge: Atlanta</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1505,7 +1505,7 @@
       <name>Area Knowledge: Cheyenne</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1514,7 +1514,7 @@
       <name>Area Knowledge: Chicago</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Chicago Matrix</spec>
@@ -1528,7 +1528,7 @@
       <name>Area Knowledge: Denver</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1537,7 +1537,7 @@
       <name>Area Knowledge: FDC</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1546,7 +1546,7 @@
       <name>Area Knowledge: Hong-Kong</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1555,7 +1555,7 @@
       <name>Area Knowledge: LA</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1564,7 +1564,7 @@
       <name>Area Knowledge: Manhattan</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1573,7 +1573,7 @@
       <name>Area Knowledge: Portland</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -1582,7 +1582,7 @@
       <name>Area Knowledge: Seattle</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Auburn</spec>
@@ -1608,7 +1608,7 @@
       <name>Art</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Da Vinci</spec>
@@ -1637,7 +1637,7 @@
       <name>Athabaskan</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1651,7 +1651,7 @@
       <name>Bars and Clubs</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -1696,7 +1696,7 @@
       <name>Bengali</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1710,7 +1710,7 @@
       <name>Biology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Anatomy</spec>
@@ -1724,7 +1724,7 @@
       <name>Black Markets</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -1762,7 +1762,7 @@
       <name>BTLs</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Bunraku</spec>
@@ -1786,7 +1786,7 @@
       <name>Bulgarian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1800,7 +1800,7 @@
       <name>Business</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Budgeting</spec>
@@ -1824,7 +1824,7 @@
       <name>Cantonese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1838,7 +1838,7 @@
       <name>Charity Shelters</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -1861,7 +1861,7 @@
       <name>Chemistry</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Industrial</spec>
@@ -1875,7 +1875,7 @@
       <name>Combat Tactics</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Ambush</spec>
@@ -1896,7 +1896,7 @@
       <name>Critters</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Alligators</spec>
@@ -1932,7 +1932,7 @@
       <name>Croatian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1946,7 +1946,7 @@
       <name>Crook Hangouts</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -1970,7 +1970,7 @@
       <name>Danish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -1984,7 +1984,7 @@
       <name>Data Havens</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Hacking</spec>
@@ -2010,7 +2010,7 @@
       <name>DIY</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Electronics</spec>
@@ -2024,7 +2024,7 @@
       <name>Disease</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs></specs>
     </skill>
@@ -2033,7 +2033,7 @@
       <name>Drones</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Wheeled</spec>
@@ -2047,7 +2047,7 @@
       <name>Economics</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Micro-economics</spec>
@@ -2102,7 +2102,7 @@
       <name>Engineering</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Chemical</spec>
@@ -2117,7 +2117,7 @@
       <name>English</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2131,7 +2131,7 @@
       <name>Eskimo-Aleut</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2145,7 +2145,7 @@
       <name>Fashion</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Harajuku Scene</spec>
@@ -2159,7 +2159,7 @@
       <name>Fashion Design</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Harajuku Scene</spec>
@@ -2173,7 +2173,7 @@
       <name>Firearms</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Accessories</spec>
@@ -2192,7 +2192,7 @@
       <name>Blade Design</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Accessories</spec>
@@ -2209,7 +2209,7 @@
       <name>Gun Trivia</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Accessories</spec>
@@ -2228,7 +2228,7 @@
       <name>French</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2242,7 +2242,7 @@
       <name>Gaming</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Dawn of Atlantis</spec>
@@ -2263,7 +2263,7 @@
       <name>Gangs</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Ancients</spec>
@@ -2324,7 +2324,7 @@
       <name>German</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2338,7 +2338,7 @@
       <name>Ghost Cartels</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -2354,7 +2354,7 @@
       <name>Hebrew</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2368,7 +2368,7 @@
       <name>Hindi-Urdu</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2382,7 +2382,7 @@
       <name>History</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Ancient</spec>
@@ -2443,7 +2443,7 @@
       <name>Indonesian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2457,7 +2457,7 @@
       <name>Infected</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs></specs>
     </skill>
@@ -2466,7 +2466,7 @@
       <name>Iroquoian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2480,7 +2480,7 @@
       <name>Italian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2494,7 +2494,7 @@
       <name>Japanese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2508,7 +2508,7 @@
       <name>Korean</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2522,7 +2522,7 @@
       <name>Latin</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2536,7 +2536,7 @@
       <name>Literature</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Japanese</spec>
@@ -2564,7 +2564,7 @@
       <name>Mafia</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -2580,7 +2580,7 @@
       <name>Magic Traditions</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Adepts</spec>
@@ -2594,7 +2594,7 @@
       <name>Magical Theory (Academic)</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Sorcery</spec>
@@ -2612,7 +2612,7 @@
       <name>Magical Theory (Street)</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Sorcery</spec>
@@ -2630,7 +2630,7 @@
       <name>Magical Security</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -2645,7 +2645,7 @@
       <name>Magical Threats</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Blood Magic</spec>
@@ -2659,7 +2659,7 @@
       <name>Mandarin</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2673,7 +2673,7 @@
       <name>Mathematics</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Arithmetic</spec>
@@ -2693,7 +2693,7 @@
       <name>Matrix Games</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Astral Dreams: Legend of Tenku</spec>
@@ -2718,7 +2718,7 @@
       <name>Mechanics</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Automotive</spec>
@@ -2732,7 +2732,7 @@
       <name>Military</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2749,7 +2749,7 @@
       <name>Foreign Military</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2766,7 +2766,7 @@
       <name>Military Vehicles</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2782,7 +2782,7 @@
       <name>NAN Military</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2799,7 +2799,7 @@
       <name>Peacekeepers</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2816,7 +2816,7 @@
       <name>Tir Military Vehicles</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Air Force</spec>
@@ -2832,7 +2832,7 @@
       <name>Club Music</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Astral Rock</spec>
@@ -2854,7 +2854,7 @@
       <name>National Threats</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Denver</spec>
@@ -2882,7 +2882,7 @@
       <name>News</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Business</spec>
@@ -2939,7 +2939,7 @@
       <name>Or'zet</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2953,7 +2953,7 @@
       <name>Parazoology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Spirits</spec>
@@ -2976,7 +2976,7 @@
       <name>Persian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -2990,7 +2990,7 @@
       <name>Polish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3004,7 +3004,7 @@
       <name>Politics</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Corporate</spec>
@@ -3059,7 +3059,7 @@
       <name>Portuguese</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3073,7 +3073,7 @@
       <name>Punjabi</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3087,7 +3087,7 @@
       <name>Religion</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Islam</spec>
@@ -3106,7 +3106,7 @@
       <name>Russian</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3120,7 +3120,7 @@
       <name>Security Companies</name>
       <attribute>LOG</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Lone Star</spec>
@@ -3135,7 +3135,7 @@
       <name>Security Design</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Bank</spec>
@@ -3152,7 +3152,7 @@
       <name>Security Tactics</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Corporate</spec>
@@ -3171,7 +3171,7 @@
       <name>Sioux</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3185,7 +3185,7 @@
       <name>Small Unit Tactics</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Arctic</spec>
@@ -3202,7 +3202,7 @@
       <name>Spanish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3216,7 +3216,7 @@
       <name>Sperethiel</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3230,7 +3230,7 @@
       <name>Spirits</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Beast</spec>
@@ -3250,7 +3250,7 @@
       <name>Sports</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Baseball</spec>
@@ -3274,7 +3274,7 @@
       <name>Sprawl Life</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Scavenging</spec>
@@ -3289,7 +3289,7 @@
       <name>Smuggler Routes</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -3327,7 +3327,7 @@
       <name>Smuggler Safe Houses</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -3365,7 +3365,7 @@
       <name>Street Drugs</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Betel</spec>
@@ -3383,7 +3383,7 @@
       <name>Strategy</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Logistics</spec>
@@ -3397,7 +3397,7 @@
       <name>Syndicates</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Personalities</spec>
@@ -3441,7 +3441,7 @@
       <name>Thai</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3455,7 +3455,7 @@
       <name>Triads</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -3471,7 +3471,7 @@
       <name>Trids</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Action</spec>
@@ -3491,7 +3491,7 @@
       <name>Trideo Shows</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Action</spec>
@@ -3513,7 +3513,7 @@
       <name>Turkish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3527,7 +3527,7 @@
       <name>Undead</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs></specs>
     </skill>
@@ -3536,7 +3536,7 @@
       <name>Underworld</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Arson</spec>
@@ -3579,7 +3579,7 @@
       <name>Vory</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -3595,7 +3595,7 @@
       <name>Wu</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3609,7 +3609,7 @@
       <name>Xiang</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3623,7 +3623,7 @@
       <name>Yakuza</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -3639,7 +3639,7 @@
       <name>Astronomy</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Comets</spec>
@@ -3654,7 +3654,7 @@
       <name>Awakened Hangouts</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -3692,7 +3692,7 @@
       <name>City Speak</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -3706,7 +3706,7 @@
       <name>Classical Music</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Ballet</spec>
@@ -3724,7 +3724,7 @@
       <name>Codes</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Magical</spec>
@@ -3738,7 +3738,7 @@
       <name>Connoisseur</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Fine Arts</spec>
@@ -3758,7 +3758,7 @@
       <name>Corporation: Ares Macrotechnology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Damien Knight</spec>
@@ -3776,7 +3776,7 @@
       <name>Corporation: Aztechnology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3791,7 +3791,7 @@
       <name>Corporation: Evo</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>CrashCart Medical Services</spec>
@@ -3808,7 +3808,7 @@
       <name>Corporation: Horizon Group</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3823,7 +3823,7 @@
       <name>Corporation: Mitsuhama Computer Technologies</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3839,7 +3839,7 @@
       <name>Corporation: NeoNET</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3854,7 +3854,7 @@
       <name>Corporation: Renraku Computer Systems</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Haruhiko Nakada</spec>
@@ -3870,7 +3870,7 @@
       <name>Corporation: Saeder-Krupp</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Saeder-Krupp Heavy Industries</spec>
@@ -3887,7 +3887,7 @@
       <name>Corporation: Shiawase</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3902,7 +3902,7 @@
       <name>Corporation: Wuxing, Inc.</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3918,7 +3918,7 @@
       <name>Corporation: Brackhaven Investments</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Kenneth Brackhaven</spec>
@@ -3934,7 +3934,7 @@
       <name>Corporation: DocWagon</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Denny Coleman</spec>
@@ -3950,7 +3950,7 @@
       <name>Corporation: Federated-Boeing</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3965,7 +3965,7 @@
       <name>Corporation: Gaeatronics</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3980,7 +3980,7 @@
       <name>Corporation: Global Technologies</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -3995,7 +3995,7 @@
       <name>Corporation: Knight Errant</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Damien Knight</spec>
@@ -4011,7 +4011,7 @@
       <name>Corporation: Kong-Walmart</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -4026,7 +4026,7 @@
       <name>Corporation: Lone Star Security Services</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Chicago Operations</spec>
@@ -4041,7 +4041,7 @@
       <name>Corporation: Regency MegaMedia</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -4056,7 +4056,7 @@
       <name>Corporation: Stuffer Shack</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -4071,7 +4071,7 @@
       <name>Corporation: Telestrian Industries Corporation</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Seattle Operations</spec>
@@ -4086,7 +4086,7 @@
       <name>Corporation: Universal Omnitech</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Ingersoll and Berkley</spec>
@@ -4102,7 +4102,7 @@
       <name>Corporation: Zurich-Orbit Gemeinschaft Bank (ZOG)</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Corporate Finances</spec>
@@ -4116,7 +4116,7 @@
       <name>Cybertechnology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Cyberware</spec>
@@ -4129,7 +4129,7 @@
       <name>Entertainment</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Classical Music</spec>
@@ -4146,7 +4146,7 @@
       <name>Fight Clubs</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -4184,7 +4184,7 @@
       <name>Farming</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Organic</spec>
@@ -4197,7 +4197,7 @@
       <name>Forensics</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Cleaning</spec>
@@ -4209,7 +4209,7 @@
       <name>Foster System</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>UCAS</spec>
@@ -4222,7 +4222,7 @@
       <name>Journalism</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Investigative</spec>
@@ -4236,7 +4236,7 @@
       <name>Megacorp Law (Street)</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Contracts</spec>
@@ -4247,7 +4247,7 @@
       <name>Law</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Contracts</spec>
@@ -4258,7 +4258,7 @@
       <name>Matrix</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Host Design</spec>
@@ -4270,7 +4270,7 @@
       <name>Matrix Threats</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Protosapients</spec>
@@ -4284,7 +4284,7 @@
       <name>Magical Law</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Contracts</spec>
@@ -4295,7 +4295,7 @@
       <name>Metahumans</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Dwarves</spec>
@@ -4310,7 +4310,7 @@
       <name>Medicine</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Field Medicine</spec>
@@ -4323,7 +4323,7 @@
       <name>Psychology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Mental Illnesses</spec>
@@ -4336,7 +4336,7 @@
       <name>Sociology</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Cultural</spec>
@@ -4351,7 +4351,7 @@
       <name>Philosophy</name>
       <attribute>LOG</attribute>
       <category>Academic</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Christian</spec>
@@ -4372,7 +4372,7 @@
       <name>Neo-Classical Music</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Rock n Roll</spec>
@@ -4388,7 +4388,7 @@
       <name>Organized Crime: Chicago</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -4404,7 +4404,7 @@
       <name>Police Procedures (Professional)</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4423,7 +4423,7 @@
       <name>Police Procedures (Street)</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4442,7 +4442,7 @@
       <name>Security Procedures</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4461,7 +4461,7 @@
       <name>Law Enforcement Procedures (Professional)</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4478,7 +4478,7 @@
       <name>Law Enforcement Procedures (Street)</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4495,7 +4495,7 @@
       <name>Government Procedures</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Magical</spec>
@@ -4509,7 +4509,7 @@
       <name>Lone Star Procedures</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Government</spec>
@@ -4524,7 +4524,7 @@
       <name>Politics: UCAS</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Presidential</spec>
@@ -4537,7 +4537,7 @@
       <name>Popular Culture</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs />
     </skill>
@@ -4546,7 +4546,7 @@
       <name>Popular Music</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Dwarven Punkbilly</spec>
@@ -4559,7 +4559,7 @@
       <name>Radical Groups</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Alamos 20K</spec>
@@ -4577,7 +4577,7 @@
       <name>Runner Hangouts</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Atlanta</spec>
@@ -4601,7 +4601,7 @@
       <name>Salish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4615,7 +4615,7 @@
       <name>Shadow Community</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Turf</spec>
@@ -4634,7 +4634,7 @@
       <name>Spanish: Aztlaner</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4648,7 +4648,7 @@
       <name>Street Gangs: Seattle</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>405 Hellhounds</spec>
@@ -4684,7 +4684,7 @@
       <name>Telesma</name>
       <attribute>LOG</attribute>
       <category>Professional</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>[Focus Type]</spec>
@@ -4695,7 +4695,7 @@
       <name>Tlingit</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4709,7 +4709,7 @@
       <name>Triads: Hong Kong</name>
       <attribute>INT</attribute>
       <category>Street</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Black Chrysanthemums</spec>
@@ -4722,7 +4722,7 @@
       <name>Tsimshianic</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4736,7 +4736,7 @@
       <name>Uto-Aztecan</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4750,7 +4750,7 @@
       <name>Vehicles</name>
       <attribute>INT</attribute>
       <category>Interest</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Military</spec>
@@ -4769,7 +4769,7 @@
       <name>Yiddish</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>
@@ -4783,7 +4783,7 @@
       <name>Zuni</name>
       <attribute>INT</attribute>
       <category>Language</category>
-      <default>No</default>
+      <default>False</default>
       <skillgroup />
       <specs>
         <spec>Read/Write</spec>

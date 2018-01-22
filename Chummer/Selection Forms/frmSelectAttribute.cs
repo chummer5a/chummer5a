@@ -30,29 +30,29 @@ namespace Chummer
         private readonly List<ListItem> _lstAttributes = null;
 
         #region Control Events
-        public frmSelectAttribute()
+        public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
 
             // Build the list of Attributes.
-            _lstAttributes = new List<ListItem>
+            _lstAttributes = new List<ListItem>(lstAttributeAbbrevs.Length);
+            foreach (string strAbbrev in lstAttributeAbbrevs)
             {
-                new ListItem("BOD", LanguageManager.GetString("String_AttributeBODShort", GlobalOptions.Language)),
-                new ListItem("AGI", LanguageManager.GetString("String_AttributeAGIShort", GlobalOptions.Language)),
-                new ListItem("REA", LanguageManager.GetString("String_AttributeREAShort", GlobalOptions.Language)),
-                new ListItem("STR", LanguageManager.GetString("String_AttributeSTRShort", GlobalOptions.Language)),
-                new ListItem("CHA", LanguageManager.GetString("String_AttributeCHAShort", GlobalOptions.Language)),
-                new ListItem("INT", LanguageManager.GetString("String_AttributeINTShort", GlobalOptions.Language)),
-                new ListItem("LOG", LanguageManager.GetString("String_AttributeLOGShort", GlobalOptions.Language)),
-                new ListItem("WIL", LanguageManager.GetString("String_AttributeWILShort", GlobalOptions.Language)),
-                new ListItem("EDG", LanguageManager.GetString("String_AttributeEDGShort", GlobalOptions.Language))
-            };
+                string strAttributeDisplayName = strAbbrev == "MAGAdept"
+                    ? LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ')'
+                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short", GlobalOptions.Language);
+                _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
+            }
 
             cboAttribute.BeginUpdate();
             cboAttribute.ValueMember = "Value";
             cboAttribute.DisplayMember = "Name";
             cboAttribute.DataSource = _lstAttributes;
+            if (_lstAttributes.Count >= 1)
+                cboAttribute.SelectedIndex = 0;
+            else
+                cmdOK.Enabled = false;
             cboAttribute.EndUpdate();
         }
 
@@ -64,21 +64,15 @@ namespace Chummer
 
         private void frmSelectAttribute_Load(object sender, EventArgs e)
         {
-            // Select the first Attribute in the list.
-            cboAttribute.SelectedIndex = 0;
+            if (_lstAttributes.Count == 1)
+            {
+                cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-        }
-
-        private void frmSelectAttribute_Shown(object sender, EventArgs e)
-        {
-            // If only a single Attribute is in the list when the form is shown,
-            // click the OK button since the user really doesn't have a choice.
-            if (cboAttribute.Items.Count == 1)
-                cmdOK_Click(sender, e);
         }
         #endregion
 
@@ -125,140 +119,6 @@ namespace Chummer
             {
                 return chkDoNotAffectMetatypeMaximum.Checked;
             }
-        }
-        #endregion
-
-        #region Methods
-        /// <summary>
-        /// Add MAG to the list of selectable Attributes.
-        /// </summary>
-        public void AddMAG()
-        {
-            _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language)));
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Add Adept MAG to the list of selectable Attributes.
-        /// </summary>
-        public void AddMAGAdept()
-        {
-            _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Add RES to the list of selectable Attributes.
-        /// </summary>
-        public void AddRES()
-        {
-            _lstAttributes.Add(new ListItem("RES", LanguageManager.GetString("String_AttributeRESShort", GlobalOptions.Language)));
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Add DEP to the list of selectable Attributes.
-        /// </summary>
-        public void AddDEP()
-        {
-            _lstAttributes.Add(new ListItem("DEP", LanguageManager.GetString("String_AttributeDEPShort", GlobalOptions.Language)));
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Limit the list to a single Attribute.
-        /// </summary>
-        /// <param name="strValue">Single Attribute to display.</param>
-        public void SingleAttribute(string strValue)
-        {
-            List<ListItem> lstItems = new List<ListItem>
-            {
-                new ListItem(strValue, strValue)
-            };
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = lstItems;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Limit the list to a few Attributes.
-        /// </summary>
-        /// <param name="strValue">List of Attributes.</param>
-        public void LimitToList(IEnumerable<string> strValue, Character objCharacter)
-        {
-            _lstAttributes.Clear();
-            foreach (string strAttribute in strValue)
-            {
-                if (strAttribute == "MAGAdept")
-                {
-                    if (objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
-                    {
-                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
-                    }
-                    if (!_lstAttributes.Any(x => x.Value == "MAG"))
-                        _lstAttributes.Add(new ListItem("MAG", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language)));
-                }
-                else
-                {
-                    _lstAttributes.Add(new ListItem(strAttribute, LanguageManager.GetString("String_Attribute" + strAttribute + "Short", GlobalOptions.Language)));
-                    if (strAttribute == "MAG" && objCharacter.Options.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept && !_lstAttributes.Any(x => x.Value == "MAGAdept"))
-                        _lstAttributes.Add(new ListItem("MAGAdept", LanguageManager.GetString("String_AttributeMAGShort", GlobalOptions.Language) + " (" + LanguageManager.GetString("String_DescAdept", GlobalOptions.Language) + ")"));
-                }
-            }
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
-        }
-
-        /// <summary>
-        /// Exclude the list of Attributes.
-        /// </summary>
-        /// <param name="strValue">List of Attributes.</param>
-        public void RemoveFromList(IEnumerable<string> strValue)
-        {
-            foreach (string strAttribute in strValue)
-            {
-                foreach (ListItem objItem in _lstAttributes)
-                {
-                    if (objItem.Value == strAttribute)
-                    {
-                        _lstAttributes.Remove(objItem);
-                        break;
-                    }
-                }
-            }
-            cboAttribute.BeginUpdate();
-            cboAttribute.DataSource = null;
-            cboAttribute.ValueMember = "Value";
-            cboAttribute.DisplayMember = "Name";
-            cboAttribute.DataSource = _lstAttributes;
-            cboAttribute.EndUpdate();
         }
         #endregion
     }

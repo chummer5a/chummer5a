@@ -54,8 +54,8 @@ namespace Chummer
 
             List<ListItem> lstDVBase = new List<ListItem>
             {
-                new ListItem("(STR/2)", "(" + _objCharacter.STR.DisplayAbbrev + "/2)"),
-                new ListItem("(STR)", "(" + _objCharacter.STR.DisplayAbbrev + ")")
+                new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"),
+                new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')')
             };
             for (int i = 1; i <= 20; ++i)
             {
@@ -128,7 +128,7 @@ namespace Chummer
                 if (nudDVMod.Value < 0)
                     strDamage += nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
                 else
-                    strDamage += "+" + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                    strDamage += '+' + nudDVMod.Value.ToString(GlobalOptions.InvariantCultureInfo);
             }
             strDamage += cboDVType.SelectedValue.ToString();
 
@@ -137,7 +137,7 @@ namespace Chummer
             if (nudAP.Value == 0)
                 strAP = "0";
             else if (nudAP.Value > 0)
-                strAP = "+" + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
+                strAP = '+' + nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
             else
                 strAP = nudAP.Value.ToString(GlobalOptions.InvariantCultureInfo);
 
@@ -157,7 +157,7 @@ namespace Chummer
                 RC = "0",
                 Concealability = 0,
                 Avail = "0",
-                Cost = 0,
+                Cost = "0",
                 UseSkill = cboSkill.SelectedValue.ToString(),
                 Source = objPower["source"].InnerText,
                 Page = objPower["page"].InnerText

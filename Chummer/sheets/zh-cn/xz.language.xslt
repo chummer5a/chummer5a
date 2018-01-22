@@ -13,8 +13,8 @@
   <xsl:variable name="lang.Acid"      select="'Acid'"/>
   <xsl:variable name="lang.Addiction"  select="'Addiction'"/>
   <xsl:variable name="lang.Age"      select="'年龄'"/>
-  <xsl:variable name="lang.Agility"    select="'敏捷'"/>
   <xsl:variable name="lang.AGI"      select="'AGI'"/>
+  <xsl:variable name="lang.Agility"    select="'敏捷'"/>
   <xsl:variable name="lang.AI"      select="'AI'"/>
   <xsl:variable name="lang.Alias"      select="'绰号'"/>
   <xsl:variable name="lang.Ammo"      select="'弹药'"/>
@@ -36,15 +36,15 @@
   <xsl:variable name="lang.Background"  select="'背景'"/>
   <xsl:variable name="lang.Base"      select="'基础'"/>
   <xsl:variable name="lang.Bioware"    select="'生体改造'"/>
-  <xsl:variable name="lang.Body"      select="'体质'"/>
   <xsl:variable name="lang.BOD"      select="'BOD'"/>
+  <xsl:variable name="lang.Body"      select="'体质'"/>
   <xsl:variable name="lang.Bonus"      select="'Bonus'"/>
   <xsl:variable name="lang.Bound"      select="'被缚精魂'"/>
   <xsl:variable name="lang.Calendar"    select="'日程表'"/>
   <xsl:variable name="lang.Career"    select="'职业'"/>
   <xsl:variable name="lang.Category"    select="'类别'"/>
-  <xsl:variable name="lang.Charisma"    select="'魅力'"/>
   <xsl:variable name="lang.CHA"      select="'CHA'"/>
+  <xsl:variable name="lang.Charisma"    select="'魅力'"/>
   <xsl:variable name="lang.CM"      select="'CM'"/>
   <xsl:variable name="lang.Cold"      select="'Cold'"/>
   <xsl:variable name="lang.Combat"    select="'战斗法术'"/>
@@ -64,29 +64,30 @@
   <xsl:variable name="lang.Date"      select="'日期'"/>
   <xsl:variable name="lang.Dead"      select="'死亡'"/>
   <xsl:variable name="lang.Defense"      select="'Defense'"/>
-  <xsl:variable name="lang.Depth"  select="'深度'"/>
   <xsl:variable name="lang.DEP"  select="'DEP'"/>
+  <xsl:variable name="lang.Depth"  select="'深度'"/>
   <xsl:variable name="lang.Description"  select="'形象描述'"/>
   <xsl:variable name="lang.Detection"    select="'侦测法术'"/>
   <xsl:variable name="lang.Device"    select="'设备'"/>
   <xsl:variable name="lang.Devices"    select="'设备'"/>
   <xsl:variable name="lang.Direct"      select="'Direct'"/>
   <xsl:variable name="lang.Down"      select="'倒'"/>
+  <xsl:variable name="lang.DP"        select="'DP'"/>
   <xsl:variable name="lang.Drain"      select="'耗竭'"/>
   <xsl:variable name="lang.Drone"      select="'无人机'"/>
   <xsl:variable name="lang.Duration"    select="'持续'"/>
   <xsl:variable name="lang.DV"      select="'DV'"/>
   <xsl:variable name="lang.E"        select="'E'"/>
   <xsl:variable name="lang.Echoes"    select="'回声'"/>
-  <xsl:variable name="lang.Edge"      select="'极限'"/>
   <xsl:variable name="lang.EDG"      select="'EDG'"/>
+  <xsl:variable name="lang.Edge"      select="'极限'"/>
   <xsl:variable name="lang.Electricity"    select="'Electricity'"/>
   <xsl:variable name="lang.Enemies"    select="'敌人'"/>
   <xsl:variable name="lang.Enhancements"  select="'增强'"/>
   <xsl:variable name="lang.Entries"    select="'记录'"/>
   <xsl:variable name="lang.Equipped"    select="'已装备'"/>
-  <xsl:variable name="lang.Essence"    select="'精华'"/>
   <xsl:variable name="lang.ESS"      select="'ESS'"/>
+  <xsl:variable name="lang.Essence"    select="'精华'"/>
   <xsl:variable name="lang.Expenses"    select="'花销'"/>
   <xsl:variable name="lang.Eyes"      select="'瞳色'"/>
   <xsl:variable name="lang.Falling"    select="'Falling'"/>
@@ -110,13 +111,13 @@
   <xsl:variable name="lang.Info"      select="'信息'"/>
   <xsl:variable name="lang.Ingestion"      select="'Ingestion'"/>
   <xsl:variable name="lang.Inhalation"      select="'Inhalation'"/>
+  <xsl:variable name="lang.Init"      select="'Init'"/>
   <xsl:variable name="lang.Initiation"  select="'启蒙'"/>
   <xsl:variable name="lang.Initiative"  select="'主动性'"/>
-  <xsl:variable name="lang.Init"      select="'Init'"/>
   <xsl:variable name="lang.Injection"      select="'Injection'"/>
+  <xsl:variable name="lang.INT"      select="'INT'"/>
   <xsl:variable name="lang.Intentions"  select="'察言观色'"/>
   <xsl:variable name="lang.Intuition"    select="'直觉'"/>
-  <xsl:variable name="lang.INT"      select="'INT'"/>
   <xsl:variable name="lang.Instantaneous"  select="'即时法术'"/>
   <xsl:variable name="lang.Karma"      select="'业力'"/>
   <xsl:variable name="lang.L"        select="'L'"/>
@@ -126,12 +127,12 @@
   <xsl:variable name="lang.Limits"    select="'界限'"/>
   <xsl:variable name="lang.Loaded"    select="'已装'"/>
   <xsl:variable name="lang.Location"    select="'位置'"/>
-  <xsl:variable name="lang.Logic"      select="'逻辑'"/>
   <xsl:variable name="lang.LOG"      select="'LOG'"/>
+  <xsl:variable name="lang.Logic"      select="'逻辑'"/>
   <xsl:variable name="lang.Loyalty"    select="'忠诚'"/>
   <xsl:variable name="lang.M"        select="'M'"/>
-  <xsl:variable name="lang.Magic"      select="'魔法'"/>
   <xsl:variable name="lang.MAG"      select="'MAG'"/>
+  <xsl:variable name="lang.Magic"      select="'魔法'"/>
   <xsl:variable name="lang.Mana"    select="'Mana'"/>
   <xsl:variable name="lang.Maneuvers"    select="'战术'"/>
   <xsl:variable name="lang.Manipulation"  select="'操纵法术'"/>
@@ -147,6 +148,7 @@
   <xsl:variable name="lang.Month"      select="'月'"/>
   <xsl:variable name="lang.Months"    select="'月'"/>
   <xsl:variable name="lang.Movement"    select="'移动速度'"/>
+  <xsl:variable name="lang.Mugshot"    select="'肖像'"/>
   <xsl:variable name="lang.Name"      select="'姓名'"/>
   <xsl:variable name="lang.Native"    select="'母语'"/>
   <xsl:variable name="lang.No"      select="'不'"/>
@@ -184,10 +186,10 @@
   <xsl:variable name="lang.Reason"    select="'原因'"/>
   <xsl:variable name="lang.Registered"  select="'注册网精'"/>
   <xsl:variable name="lang.Requires"    select="'要求'"/>
+  <xsl:variable name="lang.RES"      select="'RES'"/>
   <xsl:variable name="lang.Resistance"    select="'Resistance'"/>
   <xsl:variable name="lang.Resistances"    select="'Resistances'"/>
   <xsl:variable name="lang.Resonance"    select="'共鸣'"/>
-  <xsl:variable name="lang.RES"      select="'RES'"/>
   <xsl:variable name="lang.Resources"    select="'资金'"/>
   <xsl:variable name="lang.Rigger"    select="'机师'"/>
   <xsl:variable name="lang.Rtg"      select="'等级'"/>
@@ -215,8 +217,8 @@
   <xsl:variable name="lang.Sprite"    select="'网精'"/>
   <xsl:variable name="lang.Sprites"    select="'网精'"/>
   <xsl:variable name="lang.Stream"    select="'Stream'"/>
-  <xsl:variable name="lang.Strength"    select="'力量'"/>
   <xsl:variable name="lang.STR"      select="'STR'"/>
+  <xsl:variable name="lang.Strength"    select="'力量'"/>
   <xsl:variable name="lang.Stun"      select="'晕眩'"/>
   <xsl:variable name="lang.Sustained"    select="'持续法术'"/>
   <xsl:variable name="lang.Swim"      select="'游泳'"/>
@@ -225,7 +227,6 @@
   <xsl:variable name="lang.Touch"      select="'接触法术'"/>
   <xsl:variable name="lang.Toxin"      select="'Toxin'"/>
   <xsl:variable name="lang.Tradition"    select="'法术流派'"/>
-  <xsl:variable name="lang.Track"      select="'追踪'"/>
   <xsl:variable name="lang.Type"      select="'类别'"/>
   <xsl:variable name="lang.Unbound"    select="'无拘精魂'"/>
   <xsl:variable name="lang.Unknown"    select="'未知'"/>
@@ -240,8 +241,8 @@
   <xsl:variable name="lang.Weapons"    select="'武器'"/>
   <xsl:variable name="lang.Week"      select="'周'"/>
   <xsl:variable name="lang.Weight"    select="'重量'"/>
-  <xsl:variable name="lang.Willpower"    select="'意志'"/>
   <xsl:variable name="lang.WIL"      select="'WIL'"/>
+  <xsl:variable name="lang.Willpower"    select="'意志'"/>
   <xsl:variable name="lang.with"      select="'和'"/>
   <xsl:variable name="lang.Yes"      select="'是'"/>
 
@@ -259,10 +260,9 @@
   <xsl:variable name="lang.ContactList"    select="'人脉表'"/>
   <xsl:variable name="lang.CritterPowers"    select="'怪物能力'"/>
   <xsl:variable name="lang.CurrentEdge"    select="'当前极限点'"/>
-  <xsl:variable name="lang.DataProcessing"  select="'数据处理'"/>
-  <xsl:variable name="lang.DP"        select="'DP'"/>
-  <xsl:variable name="lang.DataProc"      select="'数据处理'"/>
   <xsl:variable name="lang.DamageType"  select="'Damage Type'"/>
+  <xsl:variable name="lang.DataProc"      select="'数据处理'"/>
+  <xsl:variable name="lang.DataProcessing"  select="'数据处理'"/>
   <xsl:variable name="lang.DecreaseAttribute"    select="'Decrease Attribute'"/>
   <xsl:variable name="lang.DerivedAttributes"  select="'Derived Attributes'"/>
   <xsl:variable name="lang.DeviceRating"    select="'DR'"/>
@@ -281,15 +281,17 @@
   <xsl:variable name="lang.MatrixHot"      select="'矩阵（热模）'"/>
   <xsl:variable name="lang.MatrixTrack"    select="'矩阵伤害'"/>
   <xsl:variable name="lang.MeleeWeapons"    select="'近战武器'"/>
-  <xsl:variable name="lang.Mugshot"    select="'肖像'"/>
   <xsl:variable name="lang.NotAddictedYet"  select="'Not Addicted Yet'"/>
+  <xsl:variable name="lang.Nothing2Show4Devices"    select="'No Devices to list'"/>
+  <xsl:variable name="lang.Nothing2Show4Notes"    select="'No Notes to list'"/>
+  <xsl:variable name="lang.Nothing2Show4Vehicles"    select="'No Vehicles to list'"/>
   <xsl:variable name="lang.OtherMugshots"    select="'其他肖像'"/>
   <xsl:variable name="lang.PageBreak"      select="'Page Break: '"/>
   <xsl:variable name="lang.ToxinsAndPathogens"  select="'Toxins and Pathogens'"/>
   <xsl:variable name="lang.PersonalData"    select="'个人信息'"/>
   <xsl:variable name="lang.PersonalLife"    select="'Personal Life'"/>
-  <xsl:variable name="lang.PhysicalTrack"  select="'物理伤害'"/>
   <xsl:variable name="lang.PhysicalNaturalRecovery"  select="'Natural Recovery Pool (1 day)'"/>
+  <xsl:variable name="lang.PhysicalTrack"  select="'物理伤害'"/>
   <xsl:variable name="lang.PreferredPayment"    select="'Preferred Payment Method'"/>
   <xsl:variable name="lang.PrimaryArm"    select="'利手'"/>
   <xsl:variable name="lang.PublicAwareness"  select="'名气'"/>
@@ -302,8 +304,8 @@
   <xsl:variable name="lang.SkillGroups"    select="'技能组'"/>
   <xsl:variable name="lang.StreetCred"    select="'信誉'"/>
   <xsl:variable name="lang.StreetName"    select="'Street Name'"/>
-  <xsl:variable name="lang.StunTrack"    select="'&#160;&#160;晕眩伤害'"/>
   <xsl:variable name="lang.StunNaturalRecovery"  select="'Natural Recovery Pool (1 hour)'"/>
+  <xsl:variable name="lang.StunTrack"    select="'&#160;&#160;晕眩伤害'"/>
   <xsl:variable name="lang.SubmersionGrade"  select="'深潜阶层'"/>
   <xsl:variable name="lang.UnnamedCharacter"  select="'未命名角色'"/>
   <xsl:variable name="lang.VehicleBody"    select="'机体'"/>

@@ -410,7 +410,7 @@ namespace Chummer
                 cmdUpdate.Text = LanguageManager.GetString("Button_Redownload", GlobalOptions.Language);
             }
             if (_blnPreferNightly)
-                lblUpdaterStatus.Text += " " + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
+                lblUpdaterStatus.Text += ' ' + LanguageManager.GetString("String_Nightly_Changelog_Warning", GlobalOptions.Language);
         }
 
         private void cmdDownload_Click(object sender, EventArgs e)
@@ -443,13 +443,11 @@ namespace Chummer
                     string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
                     int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                     string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if (strFileName.EndsWith(".old") ||
+                    if ((!strFilePath.StartsWith("data") && !strFilePath.StartsWith("export") && !strFilePath.StartsWith("lang") && !strFilePath.StartsWith("sheets") && !strFilePath.StartsWith("Utils") && !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
+                        strFileName.EndsWith(".old") ||
                         strFileName.StartsWith("custom") ||
                         strFileName.StartsWith("override") ||
                         strFileName.StartsWith("amend") ||
-                        strFilePath.Contains("customdata") ||
-                        strFilePath.Contains("saves") ||
-                        strFilePath.Contains("settings") ||
                         (strFilePath.Contains("sheets") && strTopLevelFolder != "de" && strTopLevelFolder != "fr" && strTopLevelFolder != "jp" && strTopLevelFolder != "zh") ||
                         (strTopLevelFolder == "lang" && strFileName != "de.xml" && strFileName != "fr.xml" && strFileName != "jp.xml" && strFileName != "zh.xml" && strFileName != "de_data.xml" && strFileName != "fr_data.xml" && strFileName != "jp_data.xml" && strFileName != "zh_data.xml"))
                         lstFilesToNotDelete.Add(strFileToDelete);
@@ -486,7 +484,15 @@ namespace Chummer
                     string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStart(_strAppPath);
                     int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                     string strTopLevelFolder = intSeparatorIndex != -1 ? strFilePath.Substring(intSeparatorIndex + 1) : string.Empty;
-                    if (strFileName.EndsWith(".old") || strFilePath.Contains("saves"))
+                    if ((!strFilePath.StartsWith("customdata") &&
+                        !strFilePath.StartsWith("data") &&
+                        !strFilePath.StartsWith("export") &&
+                        !strFilePath.StartsWith("lang") &&
+                        !strFilePath.StartsWith("settings") &&
+                        !strFilePath.StartsWith("sheets") &&
+                        !strFilePath.StartsWith("Utils") &&
+                        !string.IsNullOrEmpty(strFilePath.TrimEnd(strFileName))) ||
+                        strFileName.EndsWith(".old"))
                         lstFilesToNotDelete.Add(strFileToDelete);
                 }
                 lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));

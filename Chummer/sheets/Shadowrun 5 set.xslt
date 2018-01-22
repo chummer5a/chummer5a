@@ -1432,7 +1432,7 @@
           <xsl:call-template name="notes"/>
         </xsl:if>
 
-        <xsl:if test="hasothermugshots = 'yes'">
+        <xsl:if test="hasothermugshots = 'True'">
           <div class="block" id="OtherMugshotsBlock">
             <xsl:call-template name="othermugshots"/>
           </div>
@@ -2480,7 +2480,7 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td class="indent">
-          <xsl:for-each select="martialartadvantages/martialartadvantage">
+          <xsl:for-each select="martialarttechniques/martialarttechnique">
             <xsl:sort select="."/>
             <xsl:value-of select="name"/><xsl:if test="notes != ''"> - <xsl:value-of select="notes"/></xsl:if>
             <xsl:if test="position() != last()"><br /></xsl:if>

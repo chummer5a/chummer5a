@@ -349,7 +349,7 @@ namespace Chummer
         public void Save(XmlTextWriter objWriter)
         {
             objWriter.WriteStartElement("expense");
-            objWriter.WriteElementString("guid", _guiID.ToString());
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
@@ -370,7 +370,7 @@ namespace Chummer
             _datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
-                _strReason.TrimEnd(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ")");
+                _strReason.TrimEnd(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')');
             if (objNode["type"] != null)
                 _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
@@ -409,7 +409,7 @@ namespace Chummer
         {
             get
             {
-                return _guiID.ToString();
+                return _guiID.ToString("D");
             }
             set
             {
@@ -469,7 +469,7 @@ namespace Chummer
         {
             string strReturn = _strReason;
             if (_blnRefund)
-                strReturn += " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ")";
+                strReturn += " (" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
             return strReturn;
         }
 

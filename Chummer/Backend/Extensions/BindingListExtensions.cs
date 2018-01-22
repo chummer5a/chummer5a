@@ -36,10 +36,10 @@ namespace Chummer.Backend
             }
         }
 
-        internal static void MergeInto<T>(this BindingList<T> list, T item, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
+        internal static void MergeInto<T>(this BindingList<T> list, T objNewItem, Comparison<T> comparison, Action<T,T> funcMergeIfEquals = null)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
-            if (item == null) throw new ArgumentNullException(nameof(item));
+            if (objNewItem == null) throw new ArgumentNullException(nameof(objNewItem));
             if (comparison == null) throw new ArgumentNullException(nameof(comparison));
             //if (list.Count == 0)
             //{
@@ -47,23 +47,22 @@ namespace Chummer.Backend
             //    return;
             //}
 
-            int mergeIndex = -1;
-            for (int i = 0; i < list.Count; ++i)
+            int intCount = list.Count;
+            int intMergeIndex = intCount;
+            for (int i = 0; i < intCount; ++i)
             {
                 T objLoopExistingItem = list[i];
-                int intCompareResult = comparison(objLoopExistingItem, item);
+                int intCompareResult = comparison(objLoopExistingItem, objNewItem);
                 if (intCompareResult == 0)
                 {
-                    funcMergeIfEquals?.Invoke(objLoopExistingItem, item);
+                    funcMergeIfEquals?.Invoke(objLoopExistingItem, objNewItem);
                     return;
                 }
-                else if (intCompareResult > 0 && mergeIndex < 0)
-                    mergeIndex = i - 1;
+                else if (intCompareResult > 0 && intMergeIndex == intCount)
+                    intMergeIndex = i;
             }
-            if (mergeIndex < 0)
-                mergeIndex = 0;
 
-            list.Insert(mergeIndex, item);
+            list.Insert(intMergeIndex, objNewItem);
         }
 
         internal static void RemoveAll<T>(this BindingList<T> list, Predicate<T> predicate)

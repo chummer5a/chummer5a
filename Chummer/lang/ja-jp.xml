@@ -1199,14 +1199,6 @@
       <text>パワーレベル</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>{0} のレーティング1につき選択できる利点は1つのみです.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>利点の最大数</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>「格闘技」のレーティング1につき習得できる格闘動作は2つまでです.</text>
     </string>
@@ -1215,11 +1207,11 @@
       <text>格闘動作の最大数</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>利点を追加する格闘技を先に選択してください.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>格闘技の選択</text>
     </string>
     <string>
@@ -1848,7 +1840,7 @@
     </string>
     <string>
       <key>Message_ReduceQty</key>
-      <text>このアイテムの数を1減らしてもよろしいですか?</text>
+      <text>このアイテムの数を{0}減らしてもよろしいですか?</text>
     </string>
     <string>
       <key>Message_VehicleCyberwarePlugin</key>
@@ -4993,18 +4985,6 @@
       <text>通常のキャラクターの四肢:</text>
     </string>
     <string>
-      <key>String_LimbCount6</key>
-      <text>6 (腕2本, 脚2本, 胴体, 頭蓋)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Torso</key>
-      <text>5 (腕2本, 脚2本, 胴体)</text>
-    </string>
-    <string>
-      <key>String_LimbCount5Skull</key>
-      <text>5 (腕2本, 脚2本, 頭蓋)</text>
-    </string>
-    <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>1BPあたりの新円:</text>
     </string>
@@ -5854,7 +5834,7 @@
     </string>
     <!-- Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>利点を選択</text>
     </string>
     <!-- Select Martial Art Maneuver Window -->
@@ -6903,14 +6883,6 @@
     <string>
       <key>Message_PrioritySpellLimit</key>
       <text>You cannot have more spells than allowed by your selected Talent priority.</text>
-    </string>
-    <string>
-      <key>Message_CannotRemoveSpell</key>
-      <text>This item cannot be removed because it was acquired as an initiation bonus.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotRemoveSpell</key>
-      <text>Cannot Remove Spell</text>
     </string>
     <string>
       <key>Message_PriorityComplexFormLimit</key>

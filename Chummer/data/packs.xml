@@ -1745,7 +1745,7 @@
       </weapons>
       <gears>
         <gear>
-          <name select="Cybernetics">Tool Kit</name>
+          <name select="Cybertechnology">Tool Kit</name>
           <category>Tools</category>
         </gear>
       </gears>
@@ -1777,7 +1777,7 @@
       </weapons>
       <gears>
         <gear>
-          <name select="Cybernetics">Tool Kit</name>
+          <name select="Cybertechnology">Tool Kit</name>
           <category>Tools</category>
         </gear>
         <gear>
@@ -1965,7 +1965,7 @@
       </weapons>
       <gears>
         <gear>
-          <name select="Cybernetics">Tool Kit</name>
+          <name select="Cybertechnology">Tool Kit</name>
           <category>Tools</category>
         </gear>
         <gear>
@@ -2044,8 +2044,8 @@
           <category>Tools</category>
         </gear>
         <gear>
-          <name select="Broken Sony CIY-720 cyberdeck">Custom Item</name>
-          <category>Custom</category>
+          <name>Broken Sony CIY-720</name>
+          <category>Cyberdecks</category>
         </gear>
       </gears>
     </pack>
@@ -2186,11 +2186,11 @@
           <category>Tools</category>
         </gear>
         <gear>
-          <name select="car parts">Shopsoft</name>
+          <name select="Car Parts">Shopsoft</name>
           <category>Software</category>
         </gear>
         <gear>
-          <name select="car makes and models">Knowsoft</name>
+          <name select="Car Makes and Models">Knowsoft</name>
           <category>Skillsofts</category>
           <rating>1</rating>
         </gear>
@@ -2555,7 +2555,7 @@
       </armors>
       <gears>
         <gear>
-          <name select="City streets">Mapsoft</name>
+          <name select="City Streets">Mapsoft</name>
           <category>Software</category>
         </gear>
         <gear>

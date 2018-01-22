@@ -1193,7 +1193,7 @@
                 <xsl:call-template name="print_source_page" />
                 <xsl:call-template name="print_notes" />
                 <ul>
-                  <xsl:for-each select="martialartadvantages/martialartadvantage">
+                  <xsl:for-each select="martialarttechniques/martialarttechnique">
                     <xsl:sort select="name" />
                     <li>
                       <xsl:value-of select="name" />
@@ -2052,7 +2052,7 @@
       <br />
     </xsl:if>
 
-    <xsl:if test="hasothermugshots = 'yes'">
+    <xsl:if test="hasothermugshots = 'True'">
       <table class="stats description">
         <tr><td>
           <div class="bigheader">[<xsl:value-of select="$lang.OtherMugshots"/>]</div>

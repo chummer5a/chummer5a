@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,12 +15,16 @@ namespace CrashHandler
 			{"crash", ShowCrashReport }
 		};
 
-		private static void ShowCrashReport(string[] obj)
+		private static void ShowCrashReport(string[] args)
 		{
+            if (args.Contains("--debug") && Debugger.IsAttached == false)
+		    {
+		        Debugger.Launch();
+		    }
 			CrashDumper dmper = null;
 			try
 			{
-				dmper = new CrashDumper(obj[0]);
+				dmper = new CrashDumper(args[0]);
 				frmCrashReporter reporter = new frmCrashReporter(dmper);
 
 				Application.Run(reporter);

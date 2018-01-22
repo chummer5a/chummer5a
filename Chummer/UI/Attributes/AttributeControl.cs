@@ -73,7 +73,7 @@ namespace Chummer.UI.Attributes
 
                 nudKarma.Minimum = 0;
                 nudKarma.DataBindings.Add("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum), false, DataSourceUpdateMode.OnPropertyChanged);
-                nudKarma.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.CreateKarma), false, DataSourceUpdateMode.OnPropertyChanged);
+                nudKarma.DataBindings.Add("Value", _dataSource, nameof(CharacterAttrib.Karma), false, DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.DataBindings.Add("InterceptMouseWheel", _objCharacter.Options, nameof(CharacterOptions.InterceptMode), false,
                     DataSourceUpdateMode.OnPropertyChanged);
                 nudKarma.Visible = true;

@@ -4493,7 +4493,7 @@
       <damage>0</damage>
       <descriptor>Physical</descriptor>
       <duration>S</duration>
-      <dv>Special</dv>
+      <dv>F+3</dv>
       <range>LOS</range>
       <type>P</type>
     </spell>

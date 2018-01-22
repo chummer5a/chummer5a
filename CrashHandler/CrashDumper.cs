@@ -42,6 +42,10 @@ namespace CrashHandler
 	    
 	    private TextWriter CrashLogWriter;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="b64Json">String path of the text file that contains our JSON package.</param>
 		public CrashDumper(string b64Json)
 		{
 		    CrashLogWriter = new StreamWriter(
@@ -61,6 +65,9 @@ namespace CrashHandler
 			{
 				throw new ArgumentException("Could not deserialize");
 			}
+		    _pretendFiles.TryGetValue("exception.txt", out string exception);
+
+            CrashLogWriter.WriteLine(exception);
 
             CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
             CrashLogWriter.Flush();
@@ -259,7 +266,7 @@ namespace CrashHandler
 			StringBuilder sb = new StringBuilder();
 			foreach (KeyValuePair<string, string> keyValuePair in Attributes)
 			{
-				sb.Append("\"");
+				sb.Append('\"');
 				sb.Append(keyValuePair.Key);
 				sb.Append("\"-\"");
 				sb.Append(keyValuePair.Value);
@@ -375,7 +382,7 @@ namespace CrashHandler
 
 		private void UploadToAws()
 		{
-			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace("-","_"), x => x.Value);
+			Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-")).ToDictionary(x => x.Key.Replace("visible-","").Replace('-', '_'), x => x.Value);
 			string payload = new JavaScriptSerializer().Serialize(upload);
 
 			HttpClient client = new HttpClient();
@@ -432,9 +439,10 @@ namespace CrashHandler
 			out uint threadId,
 			out IntPtr exceptionPrt)
 		{
-			string json = Encoding.UTF8.GetString(Convert.FromBase64String(base64json));
 
-			object obj = new JavaScriptSerializer().DeserializeObject(json);
+            string json = Encoding.UTF8.GetString(File.ReadAllBytes(base64json));
+		    byte[] tempBytes = Convert.FromBase64String(json);
+            object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
 
 			Dictionary<string, object> parts = obj as Dictionary<string, object>;
 			if (parts?["processid"] is int)
@@ -446,8 +454,11 @@ namespace CrashHandler
 				pretendFiles = ((Dictionary<string, object>)parts["pretendfiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
 
 				processId = (short) pid;
-
-				string s = parts["exceptionPrt"]?.ToString() ?? "0";
+			    string s = "0";
+                if (parts.ContainsKey("exceptionPrt"))
+			    {
+			        s = parts["exceptionPrt"]?.ToString() ?? "0";
+                }
 
 				exceptionPrt = new IntPtr(int.Parse(s));
 

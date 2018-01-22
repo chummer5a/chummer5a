@@ -83,7 +83,7 @@ namespace Chummer
                                 strFilter += "category = \"" + strSkillCategory.Trim() + "\" or ";
                             // Remove the trailing " or ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
@@ -93,7 +93,7 @@ namespace Chummer
                                 strFilter += "category != \"" + strSkillCategory.Trim() + "\" and ";
                             // Remove the trailing " and ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 5);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
                         {
@@ -103,7 +103,7 @@ namespace Chummer
                                 strFilter += "skillgroup = \"" + strSkillGroup.Trim() + "\" or ";
                             // Remove the trailing " or ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
                         {
@@ -113,7 +113,7 @@ namespace Chummer
                                 strFilter += "skillgroup != \"" + strSkillGroup.Trim() + "\" and ";
                             // Remove the trailing " and ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 5);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         if (!string.IsNullOrEmpty(LinkedAttribute))
                         {
@@ -123,7 +123,7 @@ namespace Chummer
                                 strFilter += "attribute = \"" + strAttribute.Trim() + "\" or ";
                             // Remove the trailing " or ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         if (!string.IsNullOrEmpty(_strLimitToSkill))
                         {
@@ -133,7 +133,7 @@ namespace Chummer
                                 strFilter += "name = \"" + strSkill.Trim() + "\" or ";
                             // Remove the trailing " or ".
                             strFilter = strFilter.Substring(0, strFilter.Length - 4);
-                            strFilter += ")";
+                            strFilter += ')';
                         }
                         objXmlSkillList = _objXmlDocument.SelectNodes("/chummer/skills/skill[" + strFilter + " and (" + _objCharacter.Options.BookXPath() + ")]");
                     }
@@ -168,7 +168,7 @@ namespace Chummer
                         if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
                             blnAddSkill = false;
                         else if (!string.IsNullOrEmpty(_strForceSkill))
-                            blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ")";
+                            blnAddSkill = _strForceSkill == objExoticSkill.Name + " (" + objExoticSkill.Specific + ')';
                         else
                         {
                             if (!string.IsNullOrEmpty(_strIncludeCategory))
@@ -186,9 +186,9 @@ namespace Chummer
                         if (blnAddSkill)
                         {
                             // Use the translated Exotic Skill name if available.
-                            XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"Yes\" and name = \"" + objExoticSkill.Name + "\"]");
-                            lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ")",
-                                (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + " (" + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ")"));
+                            XmlNode objXmlSkill = _objXmlDocument.SelectSingleNode("/chummer/skills/skill[exotic = \"True\" and name = \"" + objExoticSkill.Name + "\"]");
+                            lstSkills.Add(new ListItem(objExoticSkill.Name + " (" + objExoticSkill.Specific + ')',
+                                (objXmlSkill["translate"]?.InnerText ?? objExoticSkill.Name) + " (" + objExoticSkill.DisplaySpecializationMethod(GlobalOptions.Language) + ')'));
                         }
                     }
                 }
@@ -303,7 +303,7 @@ namespace Chummer
                 foreach (XmlNode objNode in value?.SelectNodes("category"))
                 {
                     objLimitToCategories.Append("category = ");
-                    objLimitToCategories.Append("\"" + objNode.InnerText + "\"");
+                    objLimitToCategories.Append('\"' + objNode.InnerText + '\"');
                     objLimitToCategories.Append(" or ");
                 }
                 // Remove the last " or "

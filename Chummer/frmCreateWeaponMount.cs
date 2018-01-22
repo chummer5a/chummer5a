@@ -133,11 +133,11 @@ namespace Chummer
                 foreach (WeaponMountOption objExistingOption in _objMount.WeaponMountOptions)
                 {
                     string strLoopId = objExistingOption.SourceId;
-                    if (_lstVisibility.Any(x => x.Value == strLoopId))
+                    if (_lstVisibility.Any(x => x.Value.ToString() == strLoopId))
                         cboVisibility.SelectedValue = strLoopId;
-                    else if (_lstFlexibility.Any(x => x.Value == strLoopId))
+                    else if (_lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
                         cboFlexibility.SelectedValue = strLoopId;
-                    else if (_lstControl.Any(x => x.Value == strLoopId))
+                    else if (_lstControl.Any(x => x.Value.ToString() == strLoopId))
                         cboControl.SelectedValue = strLoopId;
                 }
 
@@ -175,17 +175,17 @@ namespace Chummer
             if (xmlSelectedMount == null)
                 return;
             XmlNode xmlSelectedControl = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedControl + "\"]");
-            if (xmlSelectedMount == null)
+            if (xmlSelectedControl == null)
                 return;
             XmlNode xmlSelectedFlexibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedFlexibility + "\"]");
-            if (xmlSelectedMount == null)
+            if (xmlSelectedFlexibility == null)
                 return;
             XmlNode xmlSelectedVisibility = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedVisibility + "\"]");
-            if (xmlSelectedMount == null)
+            if (xmlSelectedVisibility == null)
                 return;
 
             XmlNode xmlForbiddenNode = xmlSelectedMount["forbidden"];
-            if (xmlSelectedMount["forbidden"] != null)
+            if (xmlForbiddenNode != null)
             {
                 string strStringToCheck = xmlSelectedControl["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
@@ -208,52 +208,55 @@ namespace Chummer
             XmlNode xmlRequiredNode = xmlSelectedMount["required"];
             if (xmlRequiredNode != null)
             {
-                bool requirementsMet = false;
+                bool blnRequirementsMet = true;
                 string strStringToCheck = xmlSelectedControl["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
                     foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("control"))
                     {
+                        blnRequirementsMet = false;
                         if (xmlLoopNode.InnerText == strStringToCheck)
                         {
-                            requirementsMet = true;
+                            blnRequirementsMet = true;
                             break;
                         }
                     }
                 }
-                if (!requirementsMet)
+                if (!blnRequirementsMet)
                     return;
 
-                requirementsMet = false;
+                blnRequirementsMet = true;
                 strStringToCheck = xmlSelectedFlexibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
                     foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("flexibility"))
                     {
+                        blnRequirementsMet = false;
                         if (xmlLoopNode.InnerText == strStringToCheck)
                         {
-                            requirementsMet = true;
+                            blnRequirementsMet = true;
                             break;
                         }
                     }
                 }
-                if (!requirementsMet)
+                if (!blnRequirementsMet)
                     return;
 
-                requirementsMet = false;
+                blnRequirementsMet = true;
                 strStringToCheck = xmlSelectedVisibility["name"]?.InnerText;
                 if (!string.IsNullOrEmpty(strStringToCheck))
                 {
                     foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("visibility"))
                     {
+                        blnRequirementsMet = false;
                         if (xmlLoopNode.InnerText == strStringToCheck)
                         {
-                            requirementsMet = true;
+                            blnRequirementsMet = true;
                             break;
                         }
                     }
                 }
-                if (!requirementsMet)
+                if (!blnRequirementsMet)
                     return;
             }
 		    if (_objMount == null)
@@ -261,6 +264,10 @@ namespace Chummer
 		        _objMount = new WeaponMount(_objCharacter, _objVehicle);
 		        _objMount.Create(xmlSelectedMount);
 		    }
+            else if (_objMount.SourceId != strSelectedMount)
+            {
+                _objMount.Create(xmlSelectedMount);
+            }
 
             WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
             WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
@@ -369,7 +376,7 @@ namespace Chummer
                 }
 	        }
 
-            string strAvailText = intAvail.ToString(GlobalOptions.Language);
+            string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
             if (chrAvailSuffix == 'F')
                 strAvailText += LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
             else if (chrAvailSuffix == 'R')
@@ -475,7 +482,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decCost * -1,
                         LanguageManager.GetString("String_ExpensePurchaseVehicleMod", GlobalOptions.Language) +
-                        " " + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        ' ' + objMod.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                     _objCharacter.ExpenseEntries.Add(objExpense);
                     _objCharacter.Nuyen -= decCost;
 

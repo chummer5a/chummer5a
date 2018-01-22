@@ -1,4 +1,4 @@
-﻿namespace Chummer
+namespace Chummer
 {
     partial class frmSelectSpec
     {
@@ -30,7 +30,7 @@
         {
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cboSpec = new System.Windows.Forms.ComboBox();
+            this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.chkKarma = new System.Windows.Forms.CheckBox();
@@ -74,7 +74,6 @@
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(276, 21);
             this.cboSpec.TabIndex = 2;
-            this.cboSpec.DropDown += new System.EventHandler(this.cboSpec_DropDown);
             this.cboSpec.SelectedIndexChanged += new System.EventHandler(this.cboSpec_SelectedIndexChanged);
             // 
             // lblAmmoLabel
@@ -140,7 +139,7 @@
 
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.ComboBox cboSpec;
+        private Chummer.ElasticComboBox cboSpec;
         private System.Windows.Forms.Label lblAmmoLabel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.CheckBox chkKarma;
