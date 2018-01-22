@@ -62,6 +62,9 @@ Application Changes:
 - Fixed an issue where bonuses that allow a user to select a metamagic or echo but force its value did not properly work.
 - Fixed an issue where characters were allowed to choose adept powers for which they were not eligible as long as the power did not require certain qualities.
 - Fixed issues where clicking the source label in the cyberware/bioware selection screen would not properly open the PDF associated with the selected piece of 'ware.
+- Fixed a bug where the "Buy with Karma" checkbox in the specialization selection screen was visible outside of priority-based chargen.
+- Fixed a bug where weapon strings in the specialization selection screen were not translated properly.
+- Fixed a bug where players could accidentally add blank specializations from the specialization selection screen.
 
 Data Changes:
 
