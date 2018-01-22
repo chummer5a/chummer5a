@@ -1652,10 +1652,10 @@ namespace Chummer.Classes
 
             String strMode = nodSelect["type"]?.InnerText ?? "all";
 
-            List<Contact> selectedContactsList;
+            List<Contact> lstSelectedContacts;
             if (strMode == "all")
             {
-                selectedContactsList = new List<Contact>(_objCharacter.Contacts);
+                lstSelectedContacts = new List<Contact>(_objCharacter.Contacts);
             }
             else if (strMode == "group" || strMode == "nongroup")
             {
@@ -1664,7 +1664,7 @@ namespace Chummer.Classes
 
                 //Select any contact where IsGroup equals blnGroup
                 //and add to a list
-                selectedContactsList =
+                lstSelectedContacts =
                     new List<Contact>(from contact in _objCharacter.Contacts
                                       where contact.IsGroup == blnGroup
                                       select contact);
@@ -1674,7 +1674,7 @@ namespace Chummer.Classes
                 throw new AbortedException();
             }
 
-            if (selectedContactsList.Count == 0)
+            if (lstSelectedContacts.Count == 0)
             {
                 MessageBox.Show(LanguageManager.GetString("Message_NoContactFound", GlobalOptions.Language),
                     LanguageManager.GetString("MessageTitle_NoContactFound", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1683,40 +1683,36 @@ namespace Chummer.Classes
 
             int count = 0;
             //Black magic LINQ to cast content of list to another type
-            List<ListItem> contacts = new List<ListItem>(from x in selectedContactsList select new ListItem(count++.ToString(), x.Name));
+            List<ListItem> contacts = new List<ListItem>(from x in lstSelectedContacts select new ListItem(count++.ToString(), x.Name));
 
             String strPrice = nodSelect?.InnerText ?? string.Empty;
 
             frmSelect.GeneralItems = contacts;
             frmSelect.ShowDialog();
+            
+            if (frmSelect.DialogResult == DialogResult.Cancel)
+                throw new AbortedException();
+            
+            int.TryParse(frmSelect.SelectedItem, out int intIndex);
+            Contact objSelectedContact = lstSelectedContacts[intIndex];
 
-            int index = int.Parse(frmSelect.SelectedItem);
-            if (frmSelect.DialogResult != DialogResult.Cancel)
+            if (nodSelect["forceloyalty"] != null)
             {
-                Contact selectedContact = selectedContactsList[index];
-
-                if (nodSelect["forceloyalty"] != null)
-                {
-                    selectedContact.ForceLoyalty = true;
-                    CreateImprovement(selectedContact.GUID, Improvement.ImprovementSource.Quality, SourceName,
-                        Improvement.ImprovementType.ContactForceLoyalty, selectedContact.GUID);
-                }
-                if (nodSelect["loyalty"] != null)
-                {
-                    selectedContact.Loyalty = Convert.ToInt32(nodSelect["loyalty"].InnerText);
-                }
-                if (String.IsNullOrWhiteSpace(SelectedValue))
-                {
-                    SelectedValue = selectedContact.Name;
-                }
-                else
-                {
-                    SelectedValue += (", " + selectedContact.Name);
-                }
+                objSelectedContact.ForceLoyalty = true;
+                CreateImprovement(objSelectedContact.GUID, Improvement.ImprovementSource.Quality, SourceName,
+                    Improvement.ImprovementType.ContactForceLoyalty, objSelectedContact.GUID);
+            }
+            if (nodSelect["loyalty"] != null)
+            {
+                objSelectedContact.Loyalty = Convert.ToInt32(nodSelect["loyalty"].InnerText);
+            }
+            if (String.IsNullOrWhiteSpace(SelectedValue))
+            {
+                SelectedValue = objSelectedContact.Name;
             }
             else
             {
-                throw new AbortedException();
+                SelectedValue += (", " + objSelectedContact.Name);
             }
         }
 
@@ -4722,28 +4718,8 @@ namespace Chummer.Classes
         // Select an Optional Power.
         public void optionalpowers(XmlNode bonusNode)
         {
-            XmlNodeList objXmlPowerList = bonusNode.SelectNodes("optionalpower");
             Log.Info("selectoptionalpower");
-            // Display the Select Attribute window and record which Skill was selected.
-            frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower
-            {
-                Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower", GlobalOptions.Language)
-            };
-            string strForcedValue = string.Empty;
-
-            List<KeyValuePair<string, string>> lstValue = new List<KeyValuePair<string, string>>();
-            foreach (XmlNode objXmlOptionalPower in objXmlPowerList)
-            {
-                string strQuality = objXmlOptionalPower.InnerText;
-                if (objXmlOptionalPower.Attributes["select"] != null)
-                {
-                    strForcedValue = objXmlOptionalPower.Attributes["select"].InnerText;
-                }
-                lstValue.Add(new KeyValuePair<string, string>(strQuality, strForcedValue));
-            }
-            frmPickPower.LimitToList(lstValue);
-
-
+            
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
@@ -4751,11 +4727,23 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
 
-            if (!string.IsNullOrEmpty(LimitSelection))
+            string strForcePower = !string.IsNullOrEmpty(LimitSelection) ? LimitSelection : string.Empty;
+
+            List<Tuple<string, string>> lstPowerExtraPairs = new List<Tuple<string, string>>();
+            foreach (XmlNode objXmlOptionalPower in bonusNode.SelectNodes("optionalpower"))
             {
-                frmPickPower.SinglePower(LimitSelection);
-                frmPickPower.Opacity = 0;
+                string strPower = objXmlOptionalPower.InnerText;
+                if (string.IsNullOrEmpty(strForcePower) || strForcePower == strPower)
+                {
+                    lstPowerExtraPairs.Add(new Tuple<string, string>(strPower, objXmlOptionalPower.Attributes["select"]?.InnerText));
+                }
             }
+
+            // Display the Select Critter Power window and record which power was selected.
+            frmSelectOptionalPower frmPickPower = new frmSelectOptionalPower(lstPowerExtraPairs.ToArray())
+            {
+                Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower", GlobalOptions.Language)
+            };
 
             frmPickPower.ShowDialog();
 
@@ -4764,15 +4752,14 @@ namespace Chummer.Classes
             {
                 throw new AbortedException();
             }
-
-            strForcedValue = frmPickPower.SelectedPowerExtra;
+            
             // Record the improvement.
-            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
-            XmlNode objXmlPowerNode =
-                objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
+            XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"" + frmPickPower.SelectedPower + "\"]");
             CritterPower objPower = new CritterPower(_objCharacter);
+            objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
+            if (objPower.InternalId.IsEmptyGuid())
+                throw new AbortedException();
 
-            objPower.Create(objXmlPowerNode, 0, strForcedValue);
             objPower.Grade = -1;
             _objCharacter.CritterPowers.Add(objPower);
             CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);

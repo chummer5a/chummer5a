@@ -67,6 +67,7 @@ Application Changes:
 - Fixed a bug where players could accidentally add blank specializations from the specialization selection screen.
 - Fixed a bug where the button to move a weapon to a vehicle in Career mode was obscured by labels.
 - Fixed various issues where cancelling out of a dialog for a bonus added by a newly created item would not also cancel out of adding the underlying item.
+- Fixed an issue where selection screens for optional critter powers would not end up translating displayed items.
 
 Data Changes:
 
