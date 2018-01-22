@@ -29,6 +29,7 @@ namespace Chummer
     {
         private string _strSelectedMartialArt = string.Empty;
 
+        private bool _blnLoading = true;
         private bool _blnAddAgain = false;
         private string _strForcedValue = string.Empty;
         private bool _blnShowQualities = false;
@@ -56,8 +57,6 @@ namespace Chummer
             }
 
             XmlNodeList objArtList = null;
-            List<ListItem> lstMartialArt = new List<ListItem>();
-
             // Populate the Martial Arts list.
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
@@ -65,17 +64,17 @@ namespace Chummer
             }
             if (objArtList == null || objArtList.Count == 0)
                 objArtList = _objXmlDocument.SelectNodes("/chummer/martialarts/martialart[" + _objCharacter.Options.BookXPath() + "]");
+
+            List<ListItem> lstMartialArt = new List<ListItem>();
             foreach (XmlNode objXmlArt in objArtList)
             {
                 if (_blnShowQualities == (objXmlArt["quality"] != null) && objXmlArt.RequirementsMet(_objCharacter))
                 {
-                    string strName = objXmlArt["name"].InnerText;
-                    lstMartialArt.Add(new ListItem(strName, objXmlArt["translate"]?.InnerText ?? strName));
+                    lstMartialArt.Add(new ListItem(objXmlArt["id"].InnerText, objXmlArt["translate"]?.InnerText ?? objXmlArt["name"].InnerText));
                 }
             }
             lstMartialArt.Sort(CompareListItems.CompareNames);
             lstMartialArts.BeginUpdate();
-            lstMartialArts.DataSource = null;
             lstMartialArts.ValueMember = "Value";
             lstMartialArts.DisplayMember = "Name";
             lstMartialArts.DataSource = lstMartialArt;
@@ -86,12 +85,13 @@ namespace Chummer
                 AcceptForm();
             }
             lstMartialArts.EndUpdate();
+
+            _blnLoading = false;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstMartialArts.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -106,14 +106,34 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Populate the Martial Arts list.
-            XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + lstMartialArts.SelectedValue + "\"]");
+            if (_blnLoading)
+                return;
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlArt["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlArt["altpage"]?.InnerText ?? objXmlArt["page"].InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            string strSelectedId = lstMartialArts.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                // Populate the Martial Arts list.
+                XmlNode objXmlArt = _objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + strSelectedId + "\"]");
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlArt["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                if (objXmlArt != null)
+                {
+                    string strSource = objXmlArt["source"].InnerText;
+                    string strPage = objXmlArt["altpage"]?.InnerText ?? objXmlArt["page"].InnerText;
+                    lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+
+                    tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                }
+                else
+                {
+                    lblSource.Text = string.Empty;
+                    tipTooltip.SetToolTip(lblSource, string.Empty);
+                }
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -179,8 +199,12 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedMartialArt = lstMartialArts.SelectedValue.ToString();
-            DialogResult = DialogResult.OK;
+            string strSelectedId = lstMartialArts.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                _strSelectedMartialArt = lstMartialArts.SelectedValue.ToString();
+                DialogResult = DialogResult.OK;
+            }
         }
         #endregion
     }
