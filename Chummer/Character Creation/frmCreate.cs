@@ -1481,6 +1481,7 @@ namespace Chummer
                 intResult = (intThreshold - intWILResult) * 10;
             }
             ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Qualities", Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
+            ImprovementManager.Commit(CharacterObject);
 
             // Convert the character.
             // Characters lose access to Resonance.
@@ -3537,7 +3538,7 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickProgram.AddAgain;
 
-                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedComplexForm + "\"]");
                 frmPickProgram.Dispose();
 
                 // Check for SelectText.
@@ -4381,7 +4382,7 @@ namespace Chummer
             // Open the Martial Arts XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
 
-            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
             
             MartialArt objMartialArt = new MartialArt(CharacterObject);
             objMartialArt.Create(objXmlArt);
@@ -5025,7 +5026,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objLifeModule = new Quality(CharacterObject);
 
-                objLifeModule.Create(objXmlLifeModule, CharacterObject, QualitySource.LifeModule, lstWeapons);
+                objLifeModule.Create(objXmlLifeModule, QualitySource.LifeModule, lstWeapons);
                 if (objLifeModule.InternalId.IsEmptyGuid())
                     continue;
 
@@ -5085,7 +5086,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objQuality = new Quality(CharacterObject);
 
-                objQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
                 if (objQuality.InternalId.IsEmptyGuid())
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -5300,7 +5301,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objReplaceQuality = new Quality(CharacterObject);
 
-                objReplaceQuality.Create(xmlDeleteQualityNoBonus, CharacterObject, QualitySource.Selected, lstWeapons);
+                objReplaceQuality.Create(xmlDeleteQualityNoBonus, QualitySource.Selected, lstWeapons);
                 objReplaceQuality.BP *= -1;
                 // If a Negative Quality is being bought off, the replacement one is Positive.
                 if (objSelectedQuality.Type == QualityType.Positive)
@@ -5628,7 +5629,7 @@ namespace Chummer
             // Open the Armor XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
 
-            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
+            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + frmPickArmor.SelectedArmor + "\"]");
 
             List<Weapon> lstWeapons = new List<Weapon>();
             Armor objArmor = new Armor(CharacterObject);
@@ -6032,7 +6033,7 @@ namespace Chummer
                 blnAddAgain = frmPickArmorMod.AddAgain;
 
                 // Locate the selected piece.
-                objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+                objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
                 
                 ArmorMod objMod = new ArmorMod(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
@@ -9096,7 +9097,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -12539,6 +12540,7 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMagReduction);
                 }
             }
+            ImprovementManager.Commit(CharacterObject);
 
             // If the character is Cyberzombie, adjust their Attributes based on their Essence.
             if (CharacterObject.MetatypeCategory == "Cyberzombie")
@@ -12553,6 +12555,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.Commit(CharacterObject);
             }
 
             // If the character is an A.I., set the Edge MetatypeMaximum to their Rating.
@@ -16886,7 +16889,7 @@ namespace Chummer
                         Quality objQuality = new Quality(CharacterObject);
                         string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
 
                         CharacterObject.Qualities.Add(objQuality);
 
@@ -16911,7 +16914,7 @@ namespace Chummer
                         Quality objQuality = new Quality(CharacterObject);
                         string strForceValue = objXmlQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                        objQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
                         CharacterObject.Qualities.Add(objQuality);
 
                         // Add any created Weapons to the character.
@@ -16945,7 +16948,7 @@ namespace Chummer
                     // Open the Martial Arts XML file and locate the selected piece.
                     XmlDocument objXmlMartialArtDocument = XmlManager.Load("martialarts.xml");
 
-                    XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+                    XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
                     
                     MartialArt objMartialArt = new MartialArt(CharacterObject);
                     objMartialArt.Create(objXmlArt);

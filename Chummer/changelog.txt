@@ -48,6 +48,14 @@ Application Changes:
 - Fixed an issue where the sources for basic lifestyle qualities would not be displayed in the selection screen, and where sources in general related to lifestyles would not get translated properly. Fixes #2365.
 - Fixed a bug where locations within vehicles could not get properly deleted. Fixes #2364.
 - Fixed the Critter Power selection form not displaying properly for characters that don't have a power whitelist.
+- Opening a character file of an already-open character from something other than the character roster, a pet control, a contact control, or a spirit control will now also switch to the already-open character instead of creating a new form for them.
+- Fixed a bug where adding a mentor spirit with Mentor's Mask enabled would not always properly update UI elements.
+- Fixed a bug where losing MAG in career mode as a mystic adept when the character had more MAG than PPs (either from initiations or from purchased PPs) would not cause the character to lose PPs.
+- Fixed possible issues where reducing an attribute in career mode, creating Condition Monitor penalties in career mode, gaining armor encumbrance penalties, and/or fettering spirits would not properly update some UI elements.
+- Fixed a bug where items that force particular mentor spirits did not end up doing so in non-English localizations.
+- The Mentor's Mask option will now only appear in the mentor spirit selection menu if the character has Forbidden Arcana enabled.
+- Fixed a bug where adding arts, enhancements, enchantments, or rituals to metamagics would not generate a properly named expense entry.
+- Fixed a bug where Working for the Man and Working for the People would always use the default 2000 nuyen-per-karma exchange rate instead of the one defined in the character's options.
 - Fixed an issue with Life Modules not loading properly, and defaulting to the Real Life stage instead of Nationality.
 
 Data Changes:

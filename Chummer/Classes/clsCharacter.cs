@@ -1947,7 +1947,7 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objQuality = new Quality(this);
 
-                            objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, lstWeapons);
+                            objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
                             foreach (Weapon objWeapon in lstWeapons)
                                 _lstWeapons.Add(objWeapon);
                             _lstQualities.Add(objQuality);
@@ -8207,7 +8207,7 @@ namespace Chummer
 
                     // Convert the item to the new Quality class.
                     Quality objQuality = new Quality(this);
-                    objQuality.Create(objXmlQualityNode, this, QualitySource.Selected, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8244,7 +8244,7 @@ namespace Chummer
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8273,7 +8273,7 @@ namespace Chummer
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8307,7 +8307,7 @@ namespace Chummer
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
                     }
                 }
@@ -8336,7 +8336,7 @@ namespace Chummer
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
                     }
                 }
@@ -8795,7 +8795,7 @@ namespace Chummer
                     if (i == 0 && Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
-                    objQuality.Create(objXmlNewQuality, this, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
+                    objQuality.Create(objXmlNewQuality, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
                     if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 
@@ -9165,8 +9165,8 @@ namespace Chummer
         {
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
-                AttributeImprovementEvent?.Invoke(_lstTransaction);
                 _decCachedEssence = decimal.MinValue;
+                AttributeImprovementEvent?.Invoke(_lstTransaction);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
             else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))

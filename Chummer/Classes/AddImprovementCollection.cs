@@ -1262,31 +1262,33 @@ namespace Chummer.Classes
         public void selectcomplexform(XmlNode bonusNode)
         {
             Log.Info("selectcomplexform");
-            // Display the Select ComplexForm window.
-            frmSelectProgram frmPickComplexForm = new frmSelectProgram(_objCharacter);
-
+            
             Log.Info("selectcomplexform = " + bonusNode.OuterXml);
             Log.Info("_strForcedValue = " + ForcedValue);
             Log.Info("_strLimitSelection = " + LimitSelection);
 
-            if (!string.IsNullOrEmpty(ForcedValue))
+            string strSelectedComplexForm = ForcedValue;
+
+            if (string.IsNullOrEmpty(strSelectedComplexForm))
             {
-                frmPickComplexForm.ForceComplexFormName = ForcedValue;
-                frmPickComplexForm.Opacity = 0;
+                // Display the Select ComplexForm window.
+                frmSelectProgram frmPickComplexForm = new frmSelectProgram(_objCharacter);
+                frmPickComplexForm.ShowDialog();
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
+
+                strSelectedComplexForm = frmPickComplexForm.SelectedComplexForm;
             }
 
-            frmPickComplexForm.ShowDialog();
-
-            // Make sure the dialogue window was not canceled.
-            if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
-            }
             // Open the ComplexForms XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("complexforms.xml");
 
-            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickComplexForm.SelectedProgram + "\"]") ??
-                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + frmPickComplexForm.SelectedProgram + "\"]");
+            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + strSelectedComplexForm + "\"]") ??
+                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = \"" + strSelectedComplexForm + "\"]");
             SelectedValue = node["name"].InnerText;
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
@@ -3393,16 +3395,17 @@ namespace Chummer.Classes
                     frmSelectPower frmPickPower = new frmSelectPower(_objCharacter);
                     Log.Info("selectpower = " + objNode.OuterXml);
 
-                    int intLevels = 0;
+                    int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString()));
                     frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == System.Boolean.TrueString;
-                    if (objNode["val"] != null)
-                        intLevels = Convert.ToInt32(objNode["val"].InnerText.Replace("Rating", _intRating.ToString()));
-                    if (objNode["pointsperlevel"] != null)
-                        frmPickPower.PointsPerLevel = Convert.ToDecimal(objNode["pointsperlevel"].InnerText, GlobalOptions.InvariantCultureInfo);
-                    if (objNode["limit"] != null)
-                        frmPickPower.LimitToRating = Convert.ToInt32(objNode["limit"].InnerText.Replace("Rating", _intRating.ToString()));
-                    if (objNode.OuterXml.Contains("limittopowers"))
-                        frmPickPower.LimitToPowers = objNode.Attributes["limittopowers"].InnerText;
+                    string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strPointsPerLevel))
+                        frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalOptions.InvariantCultureInfo);
+                    string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString());
+                    if (!string.IsNullOrEmpty(strLimit))
+                        frmPickPower.LimitToRating = Convert.ToInt32(strLimit);
+                    string strLimitToPowers = objNode.Attributes["limittopowers"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLimitToPowers))
+                        frmPickPower.LimitToPowers = strLimitToPowers;
                     frmPickPower.ShowDialog();
 
                     // Make sure the dialogue window was not canceled.
@@ -3412,26 +3415,22 @@ namespace Chummer.Classes
                     }
                     else
                     {
-                        SelectedValue = frmPickPower.SelectedPower;
-                        if (_blnConcatSelectedValue)
-                            SourceName += " (" + SelectedValue + ')';
-
-                        XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                        XmlNode objXmlPower =
-                            objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + SelectedValue + "\"]");
+                        XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]");
 
                         // If no, add the power and mark it free or give it free levels
                         Power objNewPower = new Power(_objCharacter);
                         if (!objNewPower.Create(objXmlPower))
                             throw new AbortedException();
 
-                        if (!string.IsNullOrEmpty(objNewPower.Extra))
-                            SelectedValue += " (" + objNewPower.Extra + ')';
-                        bool blnHasPower = _objCharacter.Powers.Any(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
+                        SelectedValue = objNewPower.DisplayName;
+                        if (_blnConcatSelectedValue)
+                            SourceName += " (" + SelectedValue + ')';
 
-                        Log.Info("blnHasPower = " + blnHasPower);
+                        List<Power> lstExistingPowersList = _objCharacter.Powers.Where(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra).ToList();
 
-                        if (!blnHasPower)
+                        Log.Info("blnHasPower = " + (lstExistingPowersList.Count > 0).ToString());
+
+                        if (lstExistingPowersList.Count == 0)
                         {
                             _objCharacter.Powers.Add(objNewPower);
                         }
@@ -3439,15 +3438,9 @@ namespace Chummer.Classes
                         Log.Info("Calling CreateImprovement");
                         CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerFreePoints, objNewPower.Extra, 0, intLevels);
 
-                        if (blnHasPower)
+                        foreach (Power objPower in lstExistingPowersList)
                         {
-                            foreach (
-                                Power objPower in
-                                _objCharacter.Powers.Where(
-                                    objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra))
-                            {
-                                objPower.ForceEvent(nameof(Power.FreeLevels));
-                            }
+                            objPower.ForceEvent(nameof(Power.FreeLevels));
                         }
                     }
                 }
@@ -3559,7 +3552,6 @@ namespace Chummer.Classes
             }
 
             XmlNode objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + strSelectedItem + "\"]");
-            XmlNode objXmlBonusMetamagic = bonusNode.SelectSingleNode("metamagic[name = \"" + strSelectedItem + "\"]");
             Metamagic objAddMetamagic = new Metamagic(_objCharacter);
             objAddMetamagic.Create(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic);
             objAddMetamagic.Grade = -1;
@@ -3641,7 +3633,6 @@ namespace Chummer.Classes
             }
 
             XmlNode objXmlSelectedEcho = objXmlDocument.SelectSingleNode("/chummer/echoes/echo[name = \"" + strSelectedItem + "\"]");
-            XmlNode objXmlBonusEcho = bonusNode.SelectSingleNode("echo[name = \"" + strSelectedItem + "\"]");
             Metamagic objAddEcho = new Metamagic(_objCharacter);
             objAddEcho.Create(objXmlSelectedEcho, Improvement.ImprovementSource.Echo);
             objAddEcho.Grade = -1;
@@ -4865,7 +4856,7 @@ namespace Chummer.Classes
                 {
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objAddQuality = new Quality(_objCharacter);
-                    objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
 
                     if (objXmlAddQuality?.Attributes?["contributetobp"]?.InnerText.ToLower() != bool.TrueString)
                     {
@@ -4919,7 +4910,7 @@ namespace Chummer.Classes
             Quality objAddQuality = new Quality(_objCharacter);
             List<Weapon> lstWeapons = new List<Weapon>();
             strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-            objAddQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
             if (objXmlBonusQuality?.Attributes?["contributetobp"]?.InnerText != bool.TrueString)
             {
                 objAddQuality.BP = 0;
@@ -4963,7 +4954,7 @@ namespace Chummer.Classes
                         BP = 0
                     };
                     strForceValue = objXmlBonusQuality?.Attributes?["select"]?.InnerText;
-                    discountQuality.Create(objXmlSelectedQuality, _objCharacter, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
+                    discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
                     _objCharacter.Qualities.Add(discountQuality);
                     objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
                     CreateImprovement(discountQuality.InternalId, Improvement.ImprovementSource.Quality, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);

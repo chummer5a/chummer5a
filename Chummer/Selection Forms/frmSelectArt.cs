@@ -33,6 +33,7 @@ namespace Chummer
     {
         private string _strSelectedItem = string.Empty;
 
+        private bool _blnLoading = true;
         private Mode _objMode = Mode.Art;
         private string _strNode = "art";
         private string _strRoot = "arts";
@@ -41,10 +42,6 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly XmlDocument _objXmlDocument = null;
-
-        private readonly XmlDocument _objMetamagicDocument = null;
-        private readonly XmlDocument _objSpellDocument = null;
-        private readonly XmlDocument _objPowerDocument = null;
 
         public enum Mode
         {
@@ -59,47 +56,32 @@ namespace Chummer
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
-
-            _objMetamagicDocument = XmlManager.Load("metamagic.xml");
-            _objSpellDocument = XmlManager.Load("spells.xml");
-            _objPowerDocument = XmlManager.Load("powers.xml");
-
+            
             // Load the Metamagic information.
             WindowMode = objWindowMode;
-            _objXmlDocument = _objSpellDocument;
             switch (_objMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = _objMetamagicDocument;
+                    _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    _strLocalName = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                     break;
                 case Mode.Enhancement:
-                    _objXmlDocument = _objPowerDocument;
+                    _objXmlDocument = XmlManager.Load("powers.xml");
+                    _strLocalName = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
+                    break;
+                case Mode.Enchantment:
+                    _strLocalName = LanguageManager.GetString("String_Enchantment", GlobalOptions.Language);
+                    _objXmlDocument = XmlManager.Load("spells.xml");
+                    break;
+                case Mode.Ritual:
+                    _strLocalName = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
+                    _objXmlDocument = XmlManager.Load("spells.xml");
                     break;
             }
         }
 
         private void frmSelectArt_Load(object sender, EventArgs e)
         {
-            // Update the window title if needed.
-            
-            switch (_objMode)
-            {
-                case Mode.Enhancement:
-                    _strLocalName = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
-                    break;
-                case Mode.Enchantment:
-                    _strLocalName = LanguageManager.GetString("String_Enchantment", GlobalOptions.Language);
-                    break;
-                case Mode.Ritual:
-                    _strLocalName = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
-                    break;
-                case Mode.Art:
-                    _strLocalName = LanguageManager.GetString("String_Art", GlobalOptions.Language);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            
             Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", _strLocalName);
             chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", _strLocalName);
 
@@ -109,11 +91,16 @@ namespace Chummer
                     objLabel.Text = string.Empty;
             }
 
+            _blnLoading = false;
+
             BuildList();
         }
 
         private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             string strSelected = lstArt.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelected))
             {
@@ -132,11 +119,10 @@ namespace Chummer
                 return;
             }
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlMetamagic["source"]?.InnerText, GlobalOptions.Language);
+            string strSource = objXmlMetamagic["source"].InnerText;
             string strPage = objXmlMetamagic["altpage"]?.InnerText ?? objXmlMetamagic["page"]?.InnerText;
-            lblSource.Text = $"{strBook} {strBook}";
-
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlMetamagic["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -151,8 +137,7 @@ namespace Chummer
 
         private void lstArt_DoubleClick(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstArt.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -215,6 +200,9 @@ namespace Chummer
         /// </summary>
         private void BuildList()
         {
+            if (_blnLoading)
+                return;
+
             XmlNodeList objXmlMetamagicList;
             List<ListItem> lstArts = new List<ListItem>();
 
@@ -239,11 +227,18 @@ namespace Chummer
                 }
             }
             lstArts.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstArt.SelectedValue?.ToString();
+            _blnLoading = true;
+
             lstArt.BeginUpdate();
-            lstArt.DataSource = null;
             lstArt.ValueMember = "Value";
             lstArt.DisplayMember = "Name";
             lstArt.DataSource = lstArts;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstArt.SelectedValue = strOldSelected;
+            else
+                lstArt.SelectedIndex = -1;
             lstArt.EndUpdate();
         }
 
@@ -255,8 +250,6 @@ namespace Chummer
             string strSelectedItem = lstArt.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedItem))
                 return;
-
-            _strSelectedItem = strSelectedItem;
 
             // Make sure the selected Metamagic or Echo meets its requirements.
             XmlNode objXmlMetamagic;
@@ -271,6 +264,8 @@ namespace Chummer
 
             if (!objXmlMetamagic.RequirementsMet(_objCharacter))
                 return;
+
+            _strSelectedItem = strSelectedItem;
 
             DialogResult = DialogResult.OK;
         }

@@ -178,7 +178,7 @@ namespace Chummer.Backend.Equipment
                         return;
 
                     // Locate the selected piece.
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
 
                     if (objXmlMod != null)
                     {

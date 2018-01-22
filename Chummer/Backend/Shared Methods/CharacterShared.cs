@@ -192,6 +192,7 @@ namespace Chummer
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
                 ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
+                ImprovementManager.Commit(_objCharacter);
             }
         }
 

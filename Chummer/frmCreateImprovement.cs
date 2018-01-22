@@ -318,7 +318,7 @@ namespace Chummer
                     frmPickPower.ShowDialog(this);
 
                     if (frmPickPower.DialogResult == DialogResult.OK)
-                        txtSelect.Text = frmPickPower.SelectedPower;
+                        txtSelect.Text = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[id = \"" + frmPickPower.SelectedPower + "\"]/name")?.InnerText;
                     break;
             }
         }

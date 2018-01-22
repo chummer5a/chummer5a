@@ -1109,7 +1109,7 @@ namespace Chummer
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                     objQuality.ContributeToLimit = false;
                     _objCharacter.Qualities.Add(objQuality);
                 }
@@ -1208,7 +1208,7 @@ namespace Chummer
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                                 QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                                objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
+                                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                                 _objCharacter.Qualities.Add(objQuality);
                             }
 

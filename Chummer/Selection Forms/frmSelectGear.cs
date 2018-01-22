@@ -353,7 +353,7 @@ namespace Chummer
             {
                 if (lstGear.SelectedIndex + 1 < lstGear.Items.Count)
                 {
-                    lstGear.SelectedIndex++;
+                    lstGear.SelectedIndex += 1;
                 }
                 else if (lstGear.Items.Count > 0)
                 {
@@ -364,7 +364,7 @@ namespace Chummer
             {
                 if (lstGear.SelectedIndex - 1 >= 0)
                 {
-                    lstGear.SelectedIndex--;
+                    lstGear.SelectedIndex -= 1;
                 }
                 else if (lstGear.Items.Count > 0)
                 {
@@ -590,7 +590,6 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private static readonly char[] lstBracketChars = { '[', ']' };
         /// <summary>
         /// Update the Gear's information based on the Gear selected and current Rating.
         /// </summary>
@@ -635,9 +634,10 @@ namespace Chummer
             // Retrieve the information for the selected piece of Cyberware.
             lblGearDeviceRating.Text = objXmlGear["devicerating"]?.InnerText ?? string.Empty;
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlGear["source"].InnerText, GlobalOptions.Language);
+            string strSource = objXmlGear["source"].InnerText;
             string strPage = objXmlGear["altpage"]?.InnerText ?? objXmlGear["page"].InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             // Extract the Avil and Cost values from the Gear info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
@@ -645,7 +645,6 @@ namespace Chummer
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = string.Empty;
-            string strAvailExpr = string.Empty;
             string strPrefix = string.Empty;
             XmlNode objAvailNode = objXmlGear["avail"];
             if (objAvailNode == null)
@@ -673,7 +672,7 @@ namespace Chummer
                     }
                 }
             }
-            strAvailExpr = objAvailNode.InnerText;
+            string strAvailExpr = objAvailNode.InnerText;
 
             if (!string.IsNullOrEmpty(strAvailExpr))
             {
@@ -772,7 +771,7 @@ namespace Chummer
                         string[] strValues = objCostNode.InnerText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
                         string strCost = "0";
                         if (nudRating.Value > 0)
-                            strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim(lstBracketChars);
+                            strCost = strValues[decimal.ToInt32(nudRating.Value) - 1].Trim('[', ']');
                         decimal decCost = Convert.ToDecimal(strCost, GlobalOptions.InvariantCultureInfo) * decMultiplier;
                         decCost *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked)
@@ -972,8 +971,6 @@ namespace Chummer
                 nudRating.Maximum = 0;
                 nudRating.Enabled = false;
             }
-
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlGear["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private IList<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
@@ -1053,6 +1050,11 @@ namespace Chummer
                         continue;
                     }
                 }
+                
+                if (!blnDoUIUpdate && blnTerminateAfterFirst)
+                {
+                    lstGears.Add(new ListItem(string.Empty, string.Empty));
+                }
 
                 decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
                 if (chkDoItYourself.Checked)
@@ -1079,6 +1081,7 @@ namespace Chummer
                     }
                     // When searching, Category needs to be added to the Value so we can identify the English Category name.
                     lstGears.Add(new ListItem(objXmlGear["id"].InnerText, strDisplayName));
+
                     if (blnTerminateAfterFirst)
                         break;
                 }
@@ -1131,19 +1134,14 @@ namespace Chummer
             string strSelectedId = lstGear.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + strSelectedId + "\"]");
+                _strSelectedGear = strSelectedId;
+                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = \"" + strSelectedId + "\"]/category")?.InnerText;
+                _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                _intSelectedRating = decimal.ToInt32(nudRating.Value);
+                _decSelectedQty = nudGearQty.Value;
+                _decMarkup = nudMarkup.Value;
 
-                if (objNode != null)
-                {
-                    _strSelectedGear = strSelectedId;
-                    s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"].InnerText;
-                    _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    _intSelectedRating = decimal.ToInt32(nudRating.Value);
-                    _decSelectedQty = nudGearQty.Value;
-                    _decMarkup = nudMarkup.Value;
-
-                    DialogResult = DialogResult.OK;
-                }
+                DialogResult = DialogResult.OK;
             }
         }
 

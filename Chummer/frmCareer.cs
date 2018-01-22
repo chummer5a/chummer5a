@@ -1617,7 +1617,10 @@ namespace Chummer
 
             // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
             if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
+            {
                 ImprovementManager.CreateImprovement(CharacterObject, frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "CharacterAttribute Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
+                ImprovementManager.Commit(CharacterObject);
+            }
             // Permanently reduce the CharacterAttribute's value.
             CharacterObject.GetAttribute(frmPickAttribute.SelectedAttribute).Degrade(1);
 
@@ -3822,7 +3825,7 @@ namespace Chummer
                 }
                 blnAddAgain = frmPickProgram.AddAgain;
 
-                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedProgram + "\"]");
+                XmlNode objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = \"" + frmPickProgram.SelectedComplexForm + "\"]");
 
                 // Check for SelectText.
                 string strExtra = string.Empty;
@@ -4726,7 +4729,7 @@ namespace Chummer
             // Open the Martial Arts XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("martialarts.xml");
 
-            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[name = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
+            XmlNode objXmlArt = objXmlDocument.SelectSingleNode("/chummer/martialarts/martialart[id = \"" + frmPickMartialArt.SelectedMartialArt + "\"]");
             
             MartialArt objMartialArt = new MartialArt(CharacterObject);
             objMartialArt.Create(objXmlArt);
@@ -4743,7 +4746,7 @@ namespace Chummer
 
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + frmPickMartialArt.SelectedMartialArt, ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt", GlobalOptions.Language) + ' ' + objMartialArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.Add(objExpense);
             CharacterObject.Karma -= intKarmaCost;
 
@@ -5162,7 +5165,7 @@ namespace Chummer
 
         private void cmdKarmaGained_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople", GlobalOptions.Language)
             };
@@ -5205,7 +5208,7 @@ namespace Chummer
 
         private void cmdKarmaSpent_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan", GlobalOptions.Language)
             };
@@ -5261,7 +5264,7 @@ namespace Chummer
 
         private void cmdNuyenGained_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForTheMan", GlobalOptions.Language)
@@ -5306,7 +5309,7 @@ namespace Chummer
 
         private void cmdNuyenSpent_Click(object sender, EventArgs e)
         {
-            frmExpense frmNewExpense = new frmExpense
+            frmExpense frmNewExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 KarmaNuyenExchangeString = LanguageManager.GetString("String_WorkingForThePeople", GlobalOptions.Language)
@@ -6246,7 +6249,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>();
                 Quality objQuality = new Quality(CharacterObject);
 
-                objQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
                 if (objQuality.InternalId.IsEmptyGuid())
                 {
                     // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -6421,7 +6424,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>();
             Quality objNewQuality = new Quality(CharacterObject);
 
-            objNewQuality.Create(objXmlQuality, CharacterObject, QualitySource.Selected, lstWeapons);
+            objNewQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
             bool blnAddItem = true;
             int intKarmaCost = (objNewQuality.BP - objQuality.BP) * CharacterObjectOptions.KarmaQuality;
@@ -6747,7 +6750,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>();
                     Quality objQuality = new Quality(CharacterObject);
 
-                    objQuality.Create(objXmlSelectedQuality, CharacterObject, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    objQuality.Create(objXmlSelectedQuality, QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
@@ -7837,7 +7840,7 @@ namespace Chummer
             // Open the Armor XML file and locate the selected piece.
             XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
 
-            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[name = \"" + frmPickArmor.SelectedArmor + "\"]");
+            XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + frmPickArmor.SelectedArmor + "\"]");
             
             Armor objArmor = new Armor(CharacterObject);
             List<Weapon> lstWeapons = new List<Weapon>();
@@ -7962,7 +7965,7 @@ namespace Chummer
                 blnAddAgain = frmPickArmorMod.AddAgain;
 
                 // Locate the selected piece.
-                objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
+                objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = \"" + frmPickArmorMod.SelectedArmorMod + "\"]");
                 
                 ArmorMod objMod = new ArmorMod(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
@@ -10676,7 +10679,7 @@ namespace Chummer
                         Quality objAddQuality = new Quality(CharacterObject);
                         XmlDocument objXmlQualityDocument = XmlManager.Load("qualities.xml");
                         XmlNode objXmlQualityNode = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + objEntry.Undo.ObjectId + "\"]");
-                        objAddQuality.Create(objXmlQualityNode, CharacterObject, QualitySource.Selected, lstWeapons, objEntry.Undo.Extra);
+                        objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, objEntry.Undo.Extra);
 
                         CharacterObject.Qualities.Add(objAddQuality);
 
@@ -16200,7 +16203,7 @@ namespace Chummer
                     blnAllowEdit = true;
             }
 
-            frmExpense frmEditExpense = new frmExpense
+            frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
                 Reason = objEntry.Reason,
                 Amount = objEntry.Amount,
@@ -16263,7 +16266,7 @@ namespace Chummer
                     blnAllowEdit = true;
             }
 
-            frmExpense frmEditExpense = new frmExpense
+            frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
                 Mode = ExpenseType.Nuyen,
                 Reason = objEntry.Reason,
@@ -17503,6 +17506,8 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
                     ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagReduction);
                 }
                 else
                 {
@@ -17516,8 +17521,20 @@ namespace Chummer
                     // If our new reduction is less than our old one, we don't actually get any new values back
                     intMAGMinimumReduction = Math.Max(intMAGMinimumReduction, intMAGValueNoCareerReduction - intOldMAGValue);
                     intMAGAdeptMinimumReduction = Math.Max(intMAGAdeptMinimumReduction, intMAGAdeptValueNoCareerReduction - intOldMAGAdeptValue);
+                    // We may need to burn away Mystic Adept PPs based on the change of our MAG attribute
+                    int intMAGDelta = intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction;
+                    if (intMAGDelta > 0 && CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                    {
+                        // First burn away PPs gained during chargen...
+                        int intPPBurn = Math.Min(CharacterObject.MysticAdeptPowerPoints, intMAGDelta);
+                        CharacterObject.MysticAdeptPowerPoints -= intPPBurn;
+                        // ... now burn away PPs gained from initiations.
+                        intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
+                        // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                    }
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intOldMAGValue + intMAGMinimumReduction - intMAGValueNoCareerReduction);
+                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
                     int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
@@ -17528,6 +17545,7 @@ namespace Chummer
                     ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
                 }
             }
+            ImprovementManager.Commit(CharacterObject);
 
             // If the CharacterAttribute reaches 0, the character has burned out.
             if (CharacterObject.MAGEnabled)
@@ -17648,6 +17666,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.Commit(CharacterObject);
             }
 
             if (CharacterObject.AdeptEnabled)
@@ -17666,8 +17685,11 @@ namespace Chummer
                 dicAttributeTotalValues.Add(strAttribute, CharacterObject.GetAttribute(strAttribute).TotalValue);
             }
 
-            if (CharacterObject.MysticAdeptPowerPoints > dicAttributeTotalValues["MAG"])
-                CharacterObject.MysticAdeptPowerPoints = dicAttributeTotalValues["MAG"];
+            if (!CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
+            {
+                if (CharacterObject.MysticAdeptPowerPoints > dicAttributeTotalValues["MAG"])
+                    CharacterObject.MysticAdeptPowerPoints = dicAttributeTotalValues["MAG"];
+            }
 
             // Condition Monitor.
             UpdateConditionMonitor(lblCMPhysical, lblCMStun, tipTooltip);
@@ -17768,8 +17790,11 @@ namespace Chummer
 
             // Create the new Condition Monitor penalties.
             if (intCMPenalty < 0)
+            {
                 ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.ConditionMonitor, string.Empty,
                     Improvement.ImprovementType.ConditionMonitor, string.Empty, intCMPenalty);
+                ImprovementManager.Commit(CharacterObject);
+            }
 
             UpdateArmorRating(lblArmor, tipTooltip, lblCMArmor);
 
@@ -22669,7 +22694,6 @@ namespace Chummer
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             int intGrade = 0;
             foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
@@ -22764,9 +22788,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + frmPickMetamagic.SelectedMetamagic, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objNewMetamagic.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -22788,7 +22813,6 @@ namespace Chummer
         {
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
@@ -22834,9 +22858,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString("String_Art", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaMetamagic * -1, strType + ' ' + objArt.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -22856,7 +22881,6 @@ namespace Chummer
         {
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
@@ -22920,9 +22944,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(-intSpellKarmaCost, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -22942,7 +22967,6 @@ namespace Chummer
         {
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
@@ -23006,9 +23030,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString("String_Ritual", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(-intSpellKarmaCost, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(-intSpellKarmaCost, strType + ' ' + objNewSpell.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -23128,7 +23153,6 @@ namespace Chummer
         private void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
             bool blnPayWithKarma = false;
-            string strType = string.Empty;
 
             if (treMetamagic.SelectedNode.Level != 0)
                 return;
@@ -23198,9 +23222,10 @@ namespace Chummer
 
             if (blnPayWithKarma)
             {
+                string strType = LanguageManager.GetString("String_Enhancement", GlobalOptions.Language);
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objEntry = new ExpenseLogEntry(CharacterObject);
-                objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + ' ' + frmPickArt.SelectedItem, ExpenseType.Karma, DateTime.Now);
+                objEntry.Create(CharacterObjectOptions.KarmaEnhancement * -1, strType + ' ' + objEnhancement.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.Add(objEntry);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
