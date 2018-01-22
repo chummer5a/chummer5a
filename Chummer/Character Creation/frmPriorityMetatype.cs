@@ -1713,7 +1713,7 @@ namespace Chummer
                 // Make sure the Category isn't in the exclusion list.
                 if (!lstRemoveCategory.Contains(strInnerText) &&
                     // Also make sure it is not already in the Category list.
-                    !_lstCategory.Any(objItem => objItem.Value == strInnerText))
+                    !_lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }

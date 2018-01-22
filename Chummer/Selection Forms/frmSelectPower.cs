@@ -245,7 +245,7 @@ namespace Chummer
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
-                lstPower.Add(new ListItem(strName, objXmlPower["translate"]?.InnerText ?? strName));
+                lstPower.Add(new ListItem(objXmlPower["id"].InnerText, objXmlPower["translate"]?.InnerText ?? strName));
             }
             lstPower.Sort(CompareListItems.CompareNames);
             _blnLoading = true;

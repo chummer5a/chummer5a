@@ -906,7 +906,7 @@ namespace Chummer
                 StringBuilder objCategoryFilter = new StringBuilder();
                 foreach (ListItem objItem in cboCategory.Items)
                 {
-                    string strItem = objItem.Value;
+                    string strItem = objItem.Value.ToString();
                     if (!string.IsNullOrEmpty(strItem))
                         objCategoryFilter.Append("category = \"" + strItem + "\" or ");
                 }
@@ -1248,7 +1248,7 @@ namespace Chummer
                 
                 string strOldSelected = cboGrade.SelectedValue?.ToString();
                 bool blnOldSkipListRefresh = _blnSkipListRefresh;
-                if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId || lstGrade.Any(x => x.Value == strOldSelected))
+                if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
                     _blnSkipListRefresh = true;
 
                 cboGrade.BeginUpdate();

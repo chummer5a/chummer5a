@@ -1589,7 +1589,7 @@ namespace Chummer
             foreach (ListItem objItem in lstPowerOrder)
             {
                 Power objPower = new Power(this);
-                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value) + "]");
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value.ToString()) + "]");
                 if (objNode != null)
                 {
                     objPower.Load(objNode);

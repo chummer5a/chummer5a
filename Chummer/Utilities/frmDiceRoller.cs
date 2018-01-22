@@ -220,7 +220,7 @@ namespace Chummer
             // Remove everything that is not a hit
             for (int i = _lstResults.Count - 1; i >= 0; --i)
             {
-                if (!int.TryParse(_lstResults[i].Value, out intResult) || intResult < intKeepThreshold)
+                if (!int.TryParse(_lstResults[i].Value.ToString(), out intResult) || intResult < intKeepThreshold)
                 {
                     _lstResults.RemoveAt(i);
                 }

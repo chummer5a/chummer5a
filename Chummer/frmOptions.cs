@@ -270,10 +270,10 @@ namespace Chummer
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListItem objItem = (ListItem)cboSetting.SelectedItem;
-            if (!objItem.Value.Contains(".xml"))
+            if (!objItem.Value.ToString().Contains(".xml"))
                 return;
 
-            _characterOptions.Load(objItem.Value);
+            _characterOptions.Load(objItem.Value.ToString());
             PopulateOptions();
         }
 

@@ -1917,15 +1917,15 @@ namespace Chummer.Classes
                 string[] lstTypes;
                 if (bonusNode["group"] != null)
                 {
-                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).Select(x => x.Value).ToArray();
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"group[. = '{x.Value}']").Count > 0).Select(x => x.Value.ToString()).ToArray();
                 }
                 else if (bonusNode["notgroup"] != null)
                 {
-                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).Select(x => x.Value).ToArray();
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Where(x => bonusNode.SelectNodes($"notgroup[. = '{x.Value}']").Count == 0).Select(x => x.Value.ToString()).ToArray();
                 }
                 else
                 {
-                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Select(x => x.Value).ToArray();
+                    lstTypes = KnowledgeSkill.KnowledgeTypes(GlobalOptions.Language).Select(x => x.Value.ToString()).ToArray();
                 }
 
                 List<ListItem> lstDropdownItems = KnowledgeSkill.KnowledgeSkillsWithCategory(GlobalOptions.Language, lstTypes).ToList();

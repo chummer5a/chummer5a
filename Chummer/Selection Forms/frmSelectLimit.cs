@@ -150,7 +150,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstLimits)
                 {
-                    if (objItem.Value == strLimit)
+                    if (objItem.Value.ToString() == strLimit)
                     {
                         _lstLimits.Remove(objItem);
                         break;

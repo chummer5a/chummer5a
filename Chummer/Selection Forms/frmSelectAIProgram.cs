@@ -70,7 +70,7 @@ namespace Chummer
                 if (!_blnAdvancedProgramAllowed && strInnerText == "Advanced Programs")
                     continue;
                 // Make sure it is not already in the Category list.
-                if (!_lstCategory.Any(objItem => objItem.Value == strInnerText))
+                if (!_lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
@@ -361,7 +361,7 @@ namespace Chummer
                     string strCategory = objXmlProgram["category"]?.InnerText;
                     if (!string.IsNullOrEmpty(strCategory))
                     {
-                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
                             strDisplayName += " [" + objFoundItem.Name + "]";
