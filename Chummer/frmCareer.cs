@@ -1598,18 +1598,28 @@ namespace Chummer
 
         private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
         {
+            List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings);
+
+            lstAbbrevs.Remove("ESS");
+            if (!CharacterObject.MAGEnabled)
+            {
+                lstAbbrevs.Remove("MAG");
+                lstAbbrevs.Remove("MAGAdept");
+            }
+            else if (!CharacterObject.IsMysticAdept || !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                lstAbbrevs.Remove("MAGAdept");
+
+            if (!CharacterObject.RESEnabled)
+                lstAbbrevs.Remove("RES");
+            if (!CharacterObject.DEPEnabled)
+                lstAbbrevs.Remove("DEP");
+
             // Display the Select CharacterAttribute window and record which Skill was selected.
-            frmSelectAttribute frmPickAttribute = new frmSelectAttribute
+            frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray())
             {
                 Description = LanguageManager.GetString("String_CyberzombieReduceAttribute", GlobalOptions.Language),
                 ShowMetatypeMaximum = true
             };
-            if (CharacterObject.MAGEnabled)
-                frmPickAttribute.AddMAG();
-            if (CharacterObject.RESEnabled)
-                frmPickAttribute.AddRES();
-            if (CharacterObject.DEPEnabled)
-                frmPickAttribute.AddDEP();
             frmPickAttribute.ShowDialog(this);
 
             if (frmPickAttribute.DialogResult == DialogResult.Cancel)

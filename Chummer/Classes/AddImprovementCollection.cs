@@ -641,52 +641,57 @@ namespace Chummer.Classes
             foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("selectattribute"))
             {
                 Log.Info("selectattribute");
-                // Display the Select Attribute window and record which Skill was selected.
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
-                if (!string.IsNullOrEmpty(_strFriendlyName))
-                    frmPickAttribute.Description =
-                        LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
-                else
-                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
-
-                // Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-                if (_objCharacter.MAGEnabled)
-                    frmPickAttribute.AddMAG();
-                if (_objCharacter.RESEnabled)
-                    frmPickAttribute.AddRES();
-                if (_objCharacter.DEPEnabled)
-                    frmPickAttribute.AddDEP();
 
                 Log.Info("selectattribute = " + bonusNode.OuterXml);
 
+                List<string> lstAbbrevs = new List<string>();
                 if (objXmlAttribute.InnerXml.Contains("<attribute>"))
                 {
-                    List<string> strValue = new List<string>();
                     foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("attribute"))
-                        strValue.Add(objSubNode.InnerText);
-                    frmPickAttribute.LimitToList(strValue, _objCharacter);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    if (bonusNode.InnerXml.Contains("<excludeattribute>"))
+                    {
+                        foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("excludeattribute"))
+                            lstAbbrevs.Remove(objSubNode.InnerText);
+                    }
                 }
 
-                if (bonusNode.InnerXml.Contains("<excludeattribute>"))
+                lstAbbrevs.Remove("ESS");
+                if (!_objCharacter.MAGEnabled)
                 {
-                    List<string> strValue = new List<string>();
-                    foreach (XmlNode objSubNode in objXmlAttribute.SelectNodes("excludeattribute"))
-                        strValue.Add(objSubNode.InnerText);
-                    frmPickAttribute.RemoveFromList(strValue);
+                    lstAbbrevs.Remove("MAG");
+                    lstAbbrevs.Remove("MAGAdept");
                 }
+                else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                    lstAbbrevs.Remove("MAGAdept");
+
+                if (!_objCharacter.RESEnabled)
+                    lstAbbrevs.Remove("RES");
+                if (!_objCharacter.DEPEnabled)
+                    lstAbbrevs.Remove("DEP");
+
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
 
                 // Check to see if there is only one possible selection because of _strLimitSelection.
                 if (!string.IsNullOrEmpty(ForcedValue))
                     LimitSelection = ForcedValue;
 
-                Log.Info("_strForcedValue = " + ForcedValue);
-                Log.Info("_strLimitSelection = " + LimitSelection);
-
                 if (!string.IsNullOrEmpty(LimitSelection))
                 {
-                    frmPickAttribute.SingleAttribute(LimitSelection);
-                    frmPickAttribute.Opacity = 0;
+                    lstAbbrevs.RemoveAll(x => x != LimitSelection);
                 }
+
+                // Display the Select Attribute window and record which Skill was selected.
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
+                if (!string.IsNullOrEmpty(_strFriendlyName))
+                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
+                else
+                    frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
                 frmPickAttribute.ShowDialog();
 
@@ -735,53 +740,59 @@ namespace Chummer.Classes
         public void selectattribute(XmlNode bonusNode)
         {
             Log.Info("selectattribute");
+
+            string strNodeInnerXml = bonusNode.InnerXml;
+            List<string> lstAbbrevs = new List<string>();
+            if (strNodeInnerXml.Contains("<attribute>"))
+            {
+                foreach (XmlNode objSubNode in bonusNode.SelectNodes("attribute"))
+                    lstAbbrevs.Add(objSubNode.InnerText);
+            }
+            else
+            {
+                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                if (strNodeInnerXml.Contains("<excludeattribute>"))
+                {
+                    foreach (XmlNode objSubNode in bonusNode.SelectNodes("excludeattribute"))
+                        lstAbbrevs.Remove(objSubNode.InnerText);
+                }
+            }
+
+            lstAbbrevs.Remove("ESS");
+            if (!_objCharacter.MAGEnabled)
+            {
+                lstAbbrevs.Remove("MAG");
+                lstAbbrevs.Remove("MAGAdept");
+            }
+            else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                lstAbbrevs.Remove("MAGAdept");
+
+            if (!_objCharacter.RESEnabled)
+                lstAbbrevs.Remove("RES");
+            if (!_objCharacter.DEPEnabled)
+                lstAbbrevs.Remove("DEP");
+
+            Log.Info("_strForcedValue = " + ForcedValue);
+            Log.Info("_strLimitSelection = " + LimitSelection);
+
+            // Check to see if there is only one possible selection because of _strLimitSelection.
+            if (!string.IsNullOrEmpty(ForcedValue))
+                LimitSelection = ForcedValue;
+
+            if (!string.IsNullOrEmpty(LimitSelection))
+            {
+                lstAbbrevs.RemoveAll(x => x != LimitSelection);
+            }
+
             // Display the Select Attribute window and record which Skill was selected.
-            frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+            frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
             if (!string.IsNullOrEmpty(_strFriendlyName))
                 frmPickAttribute.Description =
                     LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
             else
                 frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
-            // Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-            if (_objCharacter.MAGEnabled)
-                frmPickAttribute.AddMAG();
-            if (_objCharacter.RESEnabled)
-                frmPickAttribute.AddRES();
-            if (_objCharacter.DEPEnabled)
-                frmPickAttribute.AddDEP();
-
             Log.Info("selectattribute = " + bonusNode.OuterXml);
-
-            string strNodeInnerXml = bonusNode.InnerXml;
-            if (strNodeInnerXml.Contains("<attribute>"))
-            {
-                List<string> strValue = new List<string>();
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-                    strValue.Add(objXmlAttribute.InnerText);
-                frmPickAttribute.LimitToList(strValue, _objCharacter);
-            }
-
-            if (strNodeInnerXml.Contains("<excludeattribute>"))
-            {
-                List<string> strValue = new List<string>();
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludeattribute"))
-                    strValue.Add(objXmlAttribute.InnerText);
-                frmPickAttribute.RemoveFromList(strValue);
-            }
-
-            // Check to see if there is only one possible selection because of _strLimitSelection.
-            if (!string.IsNullOrEmpty(ForcedValue))
-                LimitSelection = ForcedValue;
-
-            Log.Info("_strForcedValue = " + ForcedValue);
-            Log.Info("_strLimitSelection = " + LimitSelection);
-
-            if (!string.IsNullOrEmpty(LimitSelection))
-            {
-                frmPickAttribute.SingleAttribute(LimitSelection);
-                frmPickAttribute.Opacity = 0;
-            }
 
             frmPickAttribute.ShowDialog();
 
@@ -940,14 +951,40 @@ namespace Chummer.Classes
         public void swapskillattribute(XmlNode bonusNode)
         {
             Log.Info("swapskillattribute");
-            List<string> strLimitValue = new List<string>();
-            if (bonusNode.InnerXml.Contains("<attribute>"))
+
+            string strNodeInnerXml = bonusNode.InnerXml;
+            List<string> lstAbbrevs = new List<string>();
+            if (strNodeInnerXml.Contains("<attribute>"))
             {
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-                    strLimitValue.Add(objXmlAttribute.InnerText);
+                foreach (XmlNode objSubNode in bonusNode.SelectNodes("attribute"))
+                    lstAbbrevs.Add(objSubNode.InnerText);
             }
-            if (strLimitValue.Count == 1)
-                LimitSelection = strLimitValue.First();
+            else
+            {
+                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                if (strNodeInnerXml.Contains("<excludeattribute>"))
+                {
+                    foreach (XmlNode objSubNode in bonusNode.SelectNodes("excludeattribute"))
+                        lstAbbrevs.Remove(objSubNode.InnerText);
+                }
+            }
+
+            lstAbbrevs.Remove("ESS");
+            if (!_objCharacter.MAGEnabled)
+            {
+                lstAbbrevs.Remove("MAG");
+                lstAbbrevs.Remove("MAGAdept");
+            }
+            else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                lstAbbrevs.Remove("MAGAdept");
+
+            if (!_objCharacter.RESEnabled)
+                lstAbbrevs.Remove("RES");
+            if (!_objCharacter.DEPEnabled)
+                lstAbbrevs.Remove("DEP");
+
+            if (lstAbbrevs.Count == 1)
+                LimitSelection = lstAbbrevs[0];
 
             Log.Info("swapskillattribute = " + bonusNode.OuterXml);
 
@@ -965,15 +1002,12 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
                 if (!string.IsNullOrEmpty(_strFriendlyName))
                     frmPickAttribute.Description =
                         LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
                 else
                     frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
-
-                if (strLimitValue.Count > 0)
-                    frmPickAttribute.LimitToList(strLimitValue, _objCharacter);
 
                 frmPickAttribute.ShowDialog();
 
@@ -988,8 +1022,7 @@ namespace Chummer.Classes
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + SelectedValue + ')';
             }
-
-            strLimitValue.Clear();
+            
             if (bonusNode.InnerXml.Contains("<limittoskill>"))
             {
                 SelectedTarget = bonusNode.SelectSingleNode("limittoskill").InnerText;
@@ -1039,14 +1072,40 @@ namespace Chummer.Classes
         public void swapskillspecattribute(XmlNode bonusNode)
         {
             Log.Info("swapskillspecattribute");
-            List<string> strLimitValue = new List<string>();
-            if (bonusNode.InnerXml.Contains("<attribute>"))
+
+            string strNodeInnerXml = bonusNode.InnerXml;
+            List<string> lstAbbrevs = new List<string>();
+            if (strNodeInnerXml.Contains("<attribute>"))
             {
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("attribute"))
-                    strLimitValue.Add(objXmlAttribute.InnerText);
+                foreach (XmlNode objSubNode in bonusNode.SelectNodes("attribute"))
+                    lstAbbrevs.Add(objSubNode.InnerText);
             }
-            if (strLimitValue.Count == 1)
-                LimitSelection = strLimitValue.First();
+            else
+            {
+                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                if (strNodeInnerXml.Contains("<excludeattribute>"))
+                {
+                    foreach (XmlNode objSubNode in bonusNode.SelectNodes("excludeattribute"))
+                        lstAbbrevs.Remove(objSubNode.InnerText);
+                }
+            }
+
+            lstAbbrevs.Remove("ESS");
+            if (!_objCharacter.MAGEnabled)
+            {
+                lstAbbrevs.Remove("MAG");
+                lstAbbrevs.Remove("MAGAdept");
+            }
+            else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                lstAbbrevs.Remove("MAGAdept");
+
+            if (!_objCharacter.RESEnabled)
+                lstAbbrevs.Remove("RES");
+            if (!_objCharacter.DEPEnabled)
+                lstAbbrevs.Remove("DEP");
+
+            if (lstAbbrevs.Count == 1)
+                LimitSelection = lstAbbrevs[0];
 
             Log.Info("swapskillspecattribute = " + bonusNode.OuterXml);
 
@@ -1064,15 +1123,12 @@ namespace Chummer.Classes
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
                 if (!string.IsNullOrEmpty(_strFriendlyName))
                     frmPickAttribute.Description =
                         LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
                 else
                     frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
-
-                if (strLimitValue.Count > 0)
-                    frmPickAttribute.LimitToList(strLimitValue, _objCharacter);
 
                 frmPickAttribute.ShowDialog();
 
@@ -1087,8 +1143,7 @@ namespace Chummer.Classes
                 if (_blnConcatSelectedValue)
                     SourceName += " (" + SelectedValue + ')';
             }
-
-            strLimitValue.Clear();
+            
             if (bonusNode.InnerXml.Contains("<limittoskill>"))
             {
                 SelectedTarget = bonusNode.SelectSingleNode("limittoskill").InnerText;
@@ -1757,40 +1812,45 @@ namespace Chummer.Classes
             }
             else if (bonusNode["options"] != null)
             {
-                frmSelectAttribute frmPickAttribute = new frmSelectAttribute();
+                string strNodeInnerXml = bonusNode.InnerXml;
+                List<string> lstAbbrevs = new List<string>();
+                foreach (XmlNode objSubNode in bonusNode["options"])
+                    lstAbbrevs.Add(objSubNode.InnerText);
+
+                lstAbbrevs.Remove("ESS");
+                if (!_objCharacter.MAGEnabled)
+                {
+                    lstAbbrevs.Remove("MAG");
+                    lstAbbrevs.Remove("MAGAdept");
+                }
+                else if (!_objCharacter.IsMysticAdept || !_objCharacter.Options.MysAdeptSecondMAGAttribute)
+                    lstAbbrevs.Remove("MAGAdept");
+
+                if (!_objCharacter.RESEnabled)
+                    lstAbbrevs.Remove("RES");
+                if (!_objCharacter.DEPEnabled)
+                    lstAbbrevs.Remove("DEP");
+
+                Log.Info("_strForcedValue = " + ForcedValue);
+                Log.Info("_strLimitSelection = " + LimitSelection);
+
+                // Check to see if there is only one possible selection because of _strLimitSelection.
+                if (!string.IsNullOrEmpty(ForcedValue))
+                    LimitSelection = ForcedValue;
+
+                if (!string.IsNullOrEmpty(LimitSelection))
+                {
+                    lstAbbrevs.RemoveAll(x => x != LimitSelection);
+                }
+
+                frmSelectAttribute frmPickAttribute = new frmSelectAttribute(lstAbbrevs.ToArray());
                 if (!string.IsNullOrEmpty(_strFriendlyName))
                     frmPickAttribute.Description =
                         LanguageManager.GetString("String_Improvement_SelectAttributeNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
                 else
                     frmPickAttribute.Description = LanguageManager.GetString("String_Improvement_SelectAttribute", GlobalOptions.Language);
 
-                // Add MAG and/or RES to the list of Attributes if they are enabled on the form.
-                if (_objCharacter.MAGEnabled)
-                    frmPickAttribute.AddMAG();
-                if (_objCharacter.RESEnabled)
-                    frmPickAttribute.AddRES();
-                if (_objCharacter.DEPEnabled)
-                    frmPickAttribute.AddDEP();
-
                 Log.Info("attributelevel = " + bonusNode.OuterXml);
-
-                List<string> strValue = new List<string>();
-                foreach (XmlNode objSubNode in bonusNode["options"])
-                    strValue.Add(objSubNode.InnerText);
-                frmPickAttribute.LimitToList(strValue, _objCharacter);
-
-                // Check to see if there is only one possible selection because of _strLimitSelection.
-                if (!string.IsNullOrEmpty(ForcedValue))
-                    LimitSelection = ForcedValue;
-
-                Log.Info("_strForcedValue = " + ForcedValue);
-                Log.Info("_strLimitSelection = " + LimitSelection);
-
-                if (!string.IsNullOrEmpty(LimitSelection))
-                {
-                    frmPickAttribute.SingleAttribute(LimitSelection);
-                    frmPickAttribute.Opacity = 0;
-                }
 
                 frmPickAttribute.ShowDialog();
 

@@ -39,6 +39,9 @@ namespace Chummer.Backend.Attributes
         private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
         public static ReadOnlyCollection<string> PhysicalAttributes { get { return Array.AsReadOnly(s_LstPhysicalAttributes); } }
 
+        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
+        public static ReadOnlyCollection<string> MentalAttributes { get { return Array.AsReadOnly(s_LstMentalAttributes); } }
+
         private Dictionary<string, BindingSource> _dicBindings = new Dictionary<string, BindingSource>(AttributeStrings.Count);
 		private readonly Character _objCharacter;
 		private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
