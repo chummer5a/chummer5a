@@ -6022,10 +6022,8 @@ namespace Chummer
         /// </summary>
         public List<CalendarItem> Calendar
         {
-            get
-            {
-                return _lstCalendar;
-            }
+            get => _lstCalendar;
+            set => _lstCalendar = value;
         }
 
         /// <summary>

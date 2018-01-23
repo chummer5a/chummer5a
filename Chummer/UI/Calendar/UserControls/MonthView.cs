@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -69,6 +70,8 @@ namespace Chummer
         private bool _forwardButtonSelected;
         private Rectangle _backwardButtonBounds;
         private bool _backwardButtonSelected;
+        private List<CalendarItem> _items = new List<CalendarItem>();
+
         #endregion
 
         #region Events
@@ -475,6 +478,29 @@ namespace Chummer
             set { _todayBorderColor = value; }
         }
 
+        public List<CalendarItem> Items
+        {
+            get { return _items; }
+            set { _items = value; }
+        }
+
+        #endregion
+
+        #region Static
+
+        /// <summary>
+        /// Returns a value indicating if two date ranges intersect.
+        /// </summary>
+        /// <param name="startA">The start A.</param>
+        /// <param name="endA">The end A.</param>
+        /// <param name="startB">The start B.</param>
+        /// <param name="endB">The end B.</param>
+        /// <returns></returns>
+        public static bool DateIntersects(DateTime startA, DateTime endA, DateTime startB, DateTime endB)
+        {
+            return startB <= endA && startA <= endB;
+        }
+
         #endregion
 
         /// <summary>
@@ -513,6 +539,28 @@ namespace Chummer
         }
 
         #region Public Methods
+
+
+        /// <summary>
+        /// Returns a value indicating if the view range intersects the specified date range.
+        /// </summary>
+        /// <param name="startDate">The start date.</param>
+        /// <param name="endDate">The end date.</param>
+        /// <returns></returns>
+        public bool ViewIntersects(DateTime startDate, DateTime endDate)
+        {
+            return DateIntersects(ViewStart, ViewEnd, startDate, endDate);
+        }
+
+        /// <summary>
+        /// Returns a value indicating if the view range intersect the date range of the specified item
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public bool ViewIntersects(CalendarItem item)
+        {
+            return ViewIntersects(item.StartDate, item.EndDate);
+        }
 
         /// <summary>
         /// Checks if a day is hitted on the specified point
@@ -954,7 +1002,7 @@ namespace Chummer
                             day.Grayed ? DayGrayedText : (day.Selected ? DaySelectedTextColor : ForeColor),
                             day.Selected ? DaySelectedBackgroundColor : DayBackgroundColor);
 
-                        if (day.Date.Equals(DateTime.Now.Date))
+                        if (Items != null && Items.Any(days => days.Date == day.Date))
                         {
                             evtDay.BorderColor = TodayBorderColor;
                         }
@@ -1012,10 +1060,7 @@ namespace Chummer
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected void OnSelectionChanged(EventArgs e)
         {
-            if (SelectionChanged != null)
-            {
-                SelectionChanged(this, e);
-            }
+            SelectionChanged?.Invoke(this, e);
         }
 
         #endregion
