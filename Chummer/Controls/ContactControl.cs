@@ -29,8 +29,8 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private bool _blnLoading = true;
-        private readonly int _intLowHeight = 25;
-        private readonly int _intFullHeight = 156;
+        //private readonly int _intLowHeight = 25;
+        //private readonly int _intFullHeight = 156;
 
         // Events.
         public EventHandler ContactDetailChanged { get; set; }

@@ -32,9 +32,6 @@ namespace Chummer
 	    private readonly Vehicle _objVehicle;
 	    private readonly Character _objCharacter;
 	    private WeaponMount _objMount;
-        private string _strExistingVisibilityId;
-        private string _strExistingFlexibilityId;
-        private string _strExistingControlId;
         private XmlDocument _xmlDoc;
 
         public WeaponMount WeaponMount
