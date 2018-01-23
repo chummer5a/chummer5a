@@ -287,6 +287,7 @@ namespace Chummer
             this.cmdDeleteMod.TabIndex = 67;
             this.cmdDeleteMod.Text = "Delete Mod";
             this.cmdDeleteMod.UseVisualStyleBackColor = true;
+            this.cmdDeleteMod.Click += new System.EventHandler(this.cmdDeleteMod_Click);
             // 
             // cmdAddMod
             // 

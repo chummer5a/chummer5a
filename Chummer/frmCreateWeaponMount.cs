@@ -376,6 +376,12 @@ namespace Chummer
                 }
 	        }
 
+	        foreach (VehicleMod mod in _lstMods)
+	        {
+	            decCost += mod.TotalCost;
+	            intSlots += mod.CalculatedSlots;
+	        }
+
             string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
             if (chrAvailSuffix == 'F')
                 strAvailText += LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
@@ -509,6 +515,17 @@ namespace Chummer
                 frmPickVehicleMod.Dispose();
             }
             while (blnAddAgain);
+            UpdateInfo();
+        }
+
+        private void cmdDeleteMod_Click(object sender, EventArgs e)
+        {
+            if (treMods.SelectedNode == null) return;
+            VehicleMod vm = _lstMods.FirstOrDefault(objMod => objMod.InternalId == treMods.SelectedNode.Tag.ToString());
+            if (vm == null) return;
+            _lstMods.Remove(vm);
+            treMods.SelectedNode.Remove();
+            UpdateInfo();
         }
     }
 }

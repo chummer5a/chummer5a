@@ -57,6 +57,9 @@ Application Changes:
 - Fixed a bug where adding arts, enhancements, enchantments, or rituals to metamagics would not generate a properly named expense entry.
 - Fixed a bug where Working for the Man and Working for the People would always use the default 2000 nuyen-per-karma exchange rate instead of the one defined in the character's options.
 - Fixed an issue with Life Modules not loading properly, and defaulting to the Real Life stage instead of Nationality.
+- Fixed layout issues with the vehicles tab that caused crashes when selecting various types of child item.
+- Properly allowed mods to be removed from weapon mounts in the weapon mount creation window. 
+- Weapon Mount creation window properly updates price and slot labels when adding ot removing mods.
 
 Data Changes:
 
