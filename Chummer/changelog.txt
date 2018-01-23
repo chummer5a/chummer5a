@@ -71,6 +71,9 @@ Application Changes:
 - Fixed an issue where clicking on the source labels for various items in the main character screen would not open the PDF associated with the given item. Fixes #2378.
 - The button for deleting contacts has been changed from being text-based to being icon-based, relieving issues with localization and label overlap. Fixes #2377.
 - Fixed a bug where special priorities where skills are chosen from a specific list would not display those skills in the priority selection screen. Fixes #2379.
+- Fixed layout issues with the vehicles tab that caused crashes when selecting various types of child item.
+- Properly allowed mods to be removed from weapon mounts in the weapon mount creation window. 
+- Weapon Mount creation window properly updates price and slot labels when adding to removing mods.
 - Fixed various issues with the weapon mount selection/creation screen.
 
 Data Changes:
