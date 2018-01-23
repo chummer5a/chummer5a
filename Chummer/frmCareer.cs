@@ -290,32 +290,30 @@ namespace Chummer
             lblNumMugshots.Text = "/ " + CharacterObject.Mugshots.Count.ToString();
 
             // Populate character information fields.
-            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
-            XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-            if (objMetatypeNode == null)
-            {
-                objMetatypeDoc = XmlManager.Load("critters.xml");
-                objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-            }
+            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
+                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+
             string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+            string strSource = objMetatypeNode["source"].InnerText;
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
+            if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
             {
                 objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-                strMetatype += $" ({objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant})";
 
-                strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
+
+                strSource = objMetatypeNode["source"].InnerText;
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = strBook + ' ' + strPage;
+            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
             if (CharacterObject.Possessed)
                 lblPossessed.Text = LanguageManager.GetString("String_Possessed", GlobalOptions.Language);
             else
                 lblPossessed.Visible = false;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(objMetatypeNode["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             
             nudStreetCred.Value = CharacterObject.StreetCred;
             nudNotoriety.Value = CharacterObject.Notoriety;
@@ -17332,31 +17330,25 @@ namespace Chummer
             CharacterObject.Load();
 
             // Update character information fields.
-            XmlDocument objMetatypeDoc = XmlManager.Load("metatypes.xml");
-            XmlNode objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-            if (objMetatypeNode == null)
-            {
-                objMetatypeDoc = XmlManager.Load("critters.xml");
-                objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-            }
+            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
+                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
             string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+            string strSource = objMetatypeNode["source"].InnerText;
             string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
 
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
             {
                 objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
 
-                strMetatype += objMetatypeNode["translate"] != null
-                    ? " (" + objMetatypeNode["translate"].InnerText + ')'
-                    : " (" + CharacterObject.Metavariant + ')';
-
-                strBook = CommonFunctions.LanguageBookShort(objMetatypeNode["source"].InnerText, GlobalOptions.Language);
+                strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
+                
+                strSource = objMetatypeNode["source"].InnerText;
                 strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
             }
             lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = strBook + ' ' + strPage;
+            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
@@ -17399,7 +17391,6 @@ namespace Chummer
                 return;
             
             _blnSkipUpdate = true;
-            string strTip = string.Empty;
 
             CharacterObject.RefreshRedliner();
 
@@ -17520,9 +17511,9 @@ namespace Chummer
                     }
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
                     int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
+                    int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
-                    int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
                     if (CharacterObject.IsMysticAdept && CharacterObjectOptions.MysAdeptSecondMAGAttribute)
                         CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
                     intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
@@ -17947,14 +17938,12 @@ namespace Chummer
 
             // Movement.
             lblMovement.Text = CharacterObject.GetMovement(GlobalOptions.CultureInfo, GlobalOptions.Language);
-            //strTip = _objCharacter.CalculatedMovementSpeed;
-            //tipTooltip.SetToolTip(lblMovement, strTip);
             lblSwim.Text = CharacterObject.GetSwim(GlobalOptions.CultureInfo, GlobalOptions.Language);
             lblFly.Text = CharacterObject.GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
             // Special CharacterAttribute-Only Test.
             lblComposure.Text = CharacterObject.Composure.ToString();
-            strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
+            string strTip = $"{CharacterObject.WIL.DisplayAbbrev} ({dicAttributeTotalValues["WIL"]}) + {CharacterObject.CHA.DisplayAbbrev} ({dicAttributeTotalValues["CHA"]})";
             int intLoopModifier = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Composure);
             if (intLoopModifier != 0)
                 strTip += " + " + LanguageManager.GetString("Tip_Modifiers", GlobalOptions.Language) + " (" + intLoopModifier.ToString() + ')';

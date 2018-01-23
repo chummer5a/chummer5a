@@ -84,6 +84,7 @@ Application Changes:
 - Fixed a crash that would occur if Chummer5 cannot find the pre-installed children of a piece of 'ware. Fixes #2385.
 - Users can now pick their default sheet to be one that is in a language different from their UI language. This also indirectly fixes issues regarding loading translations that do not have sheets attached to them.
 - Fixed issues with searching for items whose names or translated names contain certain Latin diacritics with a case different from the one in the search text.
+- Fixed some issues where a character's metatype and/or metavariant would change, but the tooltip for their metatype's sourcebook reference would not get updated.
 
 Data Changes:
 
