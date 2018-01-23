@@ -17446,10 +17446,10 @@ namespace Chummer
             int intMAGValueNoCareerReduction = CharacterObject.MAG.Value;
             int intMAGAdeptValueNoCareerReduction = CharacterObject.MAGAdept.Value;
             // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen
-            int intRESMaximumReduction = intReduction + intRESValueNoCareerReduction - CharacterObject.RES.ValueNoEssenceLoss;
-            int intDEPMaximumReduction = intReduction + intDEPValueNoCareerReduction - CharacterObject.DEP.ValueNoEssenceLoss;
-            int intMAGMaximumReduction = intMagReduction + intMAGValueNoCareerReduction - CharacterObject.MAG.ValueNoEssenceLoss;
-            int intMAGAdeptMaximumReduction = intMagReduction + intMAGAdeptValueNoCareerReduction - CharacterObject.MAGAdept.ValueNoEssenceLoss;
+            int intRESMaximumReduction = intReduction + CharacterObject.RES.TotalMaximum - CharacterObject.RES.MaximumNoEssenceLoss;
+            int intDEPMaximumReduction = intReduction + CharacterObject.DEP.TotalMaximum - CharacterObject.DEP.MaximumNoEssenceLoss;
+            int intMAGMaximumReduction = intMagReduction + CharacterObject.MAG.TotalMaximum - CharacterObject.MAG.MaximumNoEssenceLoss;
+            int intMAGAdeptMaximumReduction = intMagReduction + CharacterObject.MAGAdept.TotalMaximum - CharacterObject.MAGAdept.MaximumNoEssenceLoss;
 
             // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
             if (intReduction > 0 || intRESMaximumReduction != 0 || intDEPMaximumReduction != 0)

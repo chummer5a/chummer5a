@@ -324,12 +324,18 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Current value of the CharacterAttribute before modifiers are applied.
+        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied.
         /// </summary>
-        public int ValueNoEssenceLoss
+        public int MaximumNoEssenceLoss
         {
             get
             {
+                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                {
+                    return 1;
+                }
+
                 int intRawMinimum = MetatypeMinimum;
                 int intRawMaximum = MetatypeMaximum;
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
@@ -343,28 +349,21 @@ namespace Chummer.Backend.Attributes
                         intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
                     }
                 }
+
                 int intTotalMinimum = intRawMinimum;
                 int intTotalMaximum = intRawMaximum;
-                // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
-                if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+
+                if (intTotalMinimum < 1)
                 {
-                    intTotalMinimum = 1;
-                    intTotalMaximum = 1;
+                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                        intTotalMinimum = 0;
+                    else
+                        intTotalMinimum = 1;
                 }
-                else
-                {
-                    if (intTotalMinimum < 1)
-                    {
-                        if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
-                            intTotalMinimum = 0;
-                        else
-                            intTotalMinimum = 1;
-                    }
-                    if (intTotalMaximum < intTotalMinimum)
-                        intTotalMaximum = intTotalMinimum;
-                }
-                
-                return Math.Min(Math.Max(Base + FreeBase + intRawMinimum + AttributeValueModifiers, intTotalMinimum) + Karma, intTotalMaximum);
+                if (intTotalMaximum < intTotalMinimum)
+                    intTotalMaximum = intTotalMinimum;
+
+                return intTotalMaximum;
             }
         }
 
