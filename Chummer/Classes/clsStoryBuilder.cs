@@ -152,13 +152,12 @@ namespace Chummer
                 }
             }
         }
-
-        private static readonly char[] lstPunctuationChars = ",.".ToCharArray();
+        
         public string Macro(string innerText, XmlDocument xmlDoc)
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLower().Substring(1).TrimEnd(lstPunctuationChars);
+            string endString = innerText.ToLower().Substring(1).TrimEnd(',', '.');
             string macroName, macroPool;
             if (endString.Contains('_'))
             {

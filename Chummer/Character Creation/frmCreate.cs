@@ -17222,7 +17222,7 @@ namespace Chummer
             }
 
             // Remove any Improvements the character received from their Metatype.
-            ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement);
+            ImprovementManager.RemoveImprovements(CharacterObject, lstImprovement, false, true);
 
             // Remove any Qualities the character received from their Metatype, then remove the Quality.
             foreach (Quality objQuality in lstRemoveQualities)
@@ -18845,7 +18845,8 @@ namespace Chummer
 
         private void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            if (_objStoryBuilder == null) _objStoryBuilder = new StoryBuilder(CharacterObject);
+            if (_objStoryBuilder == null)
+                _objStoryBuilder = new StoryBuilder(CharacterObject);
             txtBackground.Text = _objStoryBuilder.GetStory(GlobalOptions.Language);
         }
 

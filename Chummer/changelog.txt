@@ -80,6 +80,7 @@ Application Changes:
 - Fixed a bug where weapons could not be moved out of weapon mounts in career mode.
 - Fixed a bug where moving gear out of a weapon accessory attached in some way to a vehicle, gear parent attached in some way to a vehicle, or cyberware attached in some way to a vehicle would result in the gear getting duplicated.
 - Fixed bugs where merging or reducing gear to the point where it would get deleted would not properly remove bonuses granted by that gear's children.
+- Fixed a bug where bonuses granted by metatypes that toggle a particular feature (e.g. enabling an attribute, enabling fame, etc.) would get lost when changing priorities in create mode. Fixes #2375.
 
 Data Changes:
 
