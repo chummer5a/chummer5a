@@ -820,7 +820,7 @@ namespace Chummer
             this.lblNuyenBP = new System.Windows.Forms.Label();
             this.lblEnemiesBP = new System.Windows.Forms.Label();
             this.lblKarmaMetatypeBP = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
+            this.lblSummaryMetatype = new System.Windows.Forms.Label();
             this.lblComplexFormsBP = new System.Windows.Forms.Label();
             this.lblSpiritsBP = new System.Windows.Forms.Label();
             this.lblSpritesBP = new System.Windows.Forms.Label();
@@ -1101,7 +1101,7 @@ namespace Chummer
             this.lblAttributesBase.AutoSize = true;
             this.lblAttributesBase.Location = new System.Drawing.Point(413, 32);
             this.lblAttributesBase.Name = "lblAttributesBase";
-            this.lblAttributesBase.Size = new System.Drawing.Size(31, 13);
+            this.lblAttributesBase.Size = new System.Drawing.Size(36, 13);
             this.lblAttributesBase.TabIndex = 54;
             this.lblAttributesBase.Tag = "String_Points";
             this.lblAttributesBase.Text = "Points";
@@ -2590,7 +2590,7 @@ namespace Chummer
             // mnuSpecialChangeOptions
             // 
             this.mnuSpecialChangeOptions.Image = global::Chummer.Properties.Resources.user_go;
-            this.mnuSpecialChangeOptions.Name = "mnuSpecialChangeMetatype";
+            this.mnuSpecialChangeOptions.Name = "mnuSpecialChangeOptions";
             this.mnuSpecialChangeOptions.Size = new System.Drawing.Size(213, 22);
             this.mnuSpecialChangeOptions.Tag = "Menu_SpecialChangeOptions";
             this.mnuSpecialChangeOptions.Text = "Change &Options File";
@@ -3418,10 +3418,9 @@ namespace Chummer
             this.lblMetatypeSource.AutoSize = true;
             this.lblMetatypeSource.Location = new System.Drawing.Point(710, 32);
             this.lblMetatypeSource.Name = "lblMetatypeSource";
-            this.lblMetatypeSource.Size = new System.Drawing.Size(33, 13);
+            this.lblMetatypeSource.Size = new System.Drawing.Size(47, 13);
             this.lblMetatypeSource.TabIndex = 89;
             this.lblMetatypeSource.Text = "[Source]";
-            this.lblMetatypeSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetatypeSourceLabel
             // 
@@ -3463,7 +3462,6 @@ namespace Chummer
             this.lblQualitySource.Size = new System.Drawing.Size(47, 13);
             this.lblQualitySource.TabIndex = 65;
             this.lblQualitySource.Text = "[Source]";
-            this.lblQualitySource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblQualitySourceLabel
             // 
@@ -3756,7 +3754,6 @@ namespace Chummer
             this.lblMartialArtSource.Size = new System.Drawing.Size(47, 13);
             this.lblMartialArtSource.TabIndex = 25;
             this.lblMartialArtSource.Text = "[Source]";
-            this.lblMartialArtSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMartialArtSourceLabel
             // 
@@ -3871,7 +3868,6 @@ namespace Chummer
             this.lblTraditionSource.Size = new System.Drawing.Size(47, 13);
             this.lblTraditionSource.TabIndex = 155;
             this.lblTraditionSource.Text = "[Source]";
-            this.lblTraditionSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblTraditionSourceLabel
             // 
@@ -4129,7 +4125,6 @@ namespace Chummer
             this.lblSpellSource.Size = new System.Drawing.Size(47, 13);
             this.lblSpellSource.TabIndex = 88;
             this.lblSpellSource.Text = "[Source]";
-            this.lblSpellSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblSpellSourceLabel
             // 
@@ -4502,7 +4497,6 @@ namespace Chummer
             this.lblComplexFormSource.Size = new System.Drawing.Size(47, 13);
             this.lblComplexFormSource.TabIndex = 90;
             this.lblComplexFormSource.Text = "[Source]";
-            this.lblComplexFormSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblComplexFormSourceLabel
             // 
@@ -4636,7 +4630,6 @@ namespace Chummer
             this.lblAIProgramsSource.Size = new System.Drawing.Size(47, 13);
             this.lblAIProgramsSource.TabIndex = 90;
             this.lblAIProgramsSource.Text = "[Source]";
-            this.lblAIProgramsSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblAIProgramsSourceLabel
             // 
@@ -4795,7 +4788,6 @@ namespace Chummer
             this.lblCritterPowerSource.Size = new System.Drawing.Size(47, 13);
             this.lblCritterPowerSource.TabIndex = 14;
             this.lblCritterPowerSource.Text = "[Source]";
-            this.lblCritterPowerSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCritterPowerSourceLabel
             // 
@@ -4984,7 +4976,6 @@ namespace Chummer
             this.lblMetamagicSource.Size = new System.Drawing.Size(47, 13);
             this.lblMetamagicSource.TabIndex = 109;
             this.lblMetamagicSource.Text = "[Source]";
-            this.lblMetamagicSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblMetamagicSourceLabel
             // 
@@ -5400,7 +5391,6 @@ namespace Chummer
             this.lblCyberwareSource.Size = new System.Drawing.Size(47, 13);
             this.lblCyberwareSource.TabIndex = 48;
             this.lblCyberwareSource.Text = "[Source]";
-            this.lblCyberwareSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblCyberwareSourceLabel
             // 
@@ -5937,7 +5927,6 @@ namespace Chummer
             this.lblGearSource.Size = new System.Drawing.Size(47, 13);
             this.lblGearSource.TabIndex = 74;
             this.lblGearSource.Text = "[Source]";
-            this.lblGearSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblGearSourceLabel
             // 
@@ -6457,7 +6446,6 @@ namespace Chummer
             this.lblArmorSource.Size = new System.Drawing.Size(47, 13);
             this.lblArmorSource.TabIndex = 80;
             this.lblArmorSource.Text = "[Source]";
-            this.lblArmorSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblArmorSourceLabel
             // 
@@ -6996,7 +6984,6 @@ namespace Chummer
             this.lblWeaponSource.Size = new System.Drawing.Size(47, 13);
             this.lblWeaponSource.TabIndex = 69;
             this.lblWeaponSource.Text = "[Source]";
-            this.lblWeaponSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblWeaponSourceLabel
             // 
@@ -7350,7 +7337,6 @@ namespace Chummer
             this.lblLifestyleSource.Size = new System.Drawing.Size(47, 13);
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
-            this.lblLifestyleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblLifestyleSourceLabel
             // 
@@ -8210,7 +8196,6 @@ namespace Chummer
             this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
             this.lblVehicleSource.TabIndex = 60;
             this.lblVehicleSource.Text = "[Source]";
-            this.lblVehicleSource.Click += new System.EventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblVehicleSourceLabel
             // 
@@ -8604,8 +8589,8 @@ namespace Chummer
             this.chkIsMainMugshot.Name = "chkIsMainMugshot";
             this.chkIsMainMugshot.Size = new System.Drawing.Size(104, 17);
             this.chkIsMainMugshot.TabIndex = 95;
-            this.chkIsMainMugshot.Text = "Is Main Mugshot";
             this.chkIsMainMugshot.Tag = "Checkbox_IsMainMugshot";
+            this.chkIsMainMugshot.Text = "Is Main Mugshot";
             this.chkIsMainMugshot.UseVisualStyleBackColor = true;
             this.chkIsMainMugshot.CheckedChanged += new System.EventHandler(this.chkIsMainMugshot_CheckedChanged);
             // 
@@ -8993,8 +8978,8 @@ namespace Chummer
             this.tabRelationships.Padding = new System.Windows.Forms.Padding(3);
             this.tabRelationships.Size = new System.Drawing.Size(860, 611);
             this.tabRelationships.TabIndex = 16;
-            this.tabRelationships.Text = "Relationships";
             this.tabRelationships.Tag = "String_Relationships";
+            this.tabRelationships.Text = "Relationships";
             this.tabRelationships.UseVisualStyleBackColor = true;
             // 
             // tabPeople
@@ -9026,8 +9011,8 @@ namespace Chummer
             this.tabContacts.Padding = new System.Windows.Forms.Padding(3);
             this.tabContacts.Size = new System.Drawing.Size(846, 579);
             this.tabContacts.TabIndex = 0;
-            this.tabContacts.Text = "Contacts";
             this.tabContacts.Tag = "Label_Contacts";
+            this.tabContacts.Text = "Contacts";
             // 
             // cmdSwapContactOrder
             // 
@@ -9121,12 +9106,12 @@ namespace Chummer
             this.cmsAddContact.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddFromFile});
             this.cmsAddContact.Name = "cmsAddContact";
-            this.cmsAddContact.Size = new System.Drawing.Size(153, 48);
+            this.cmsAddContact.Size = new System.Drawing.Size(149, 26);
             // 
             // tsAddFromFile
             // 
             this.tsAddFromFile.Name = "tsAddFromFile";
-            this.tsAddFromFile.Size = new System.Drawing.Size(152, 22);
+            this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
             this.tsAddFromFile.Text = "&Add From File";
             this.tsAddFromFile.Click += new System.EventHandler(this.tsAddFromFile_Click);
@@ -9160,8 +9145,8 @@ namespace Chummer
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
             this.tabEnemies.Size = new System.Drawing.Size(846, 579);
             this.tabEnemies.TabIndex = 1;
-            this.tabEnemies.Text = "Enemies";
             this.tabEnemies.Tag = "Label_Enemies";
+            this.tabEnemies.Text = "Enemies";
             // 
             // label6
             // 
@@ -9294,7 +9279,7 @@ namespace Chummer
             this.tabBPSummary.Controls.Add(this.lblEnemiesBP);
             this.tabBPSummary.Controls.Add(this.lblBuildEnemies);
             this.tabBPSummary.Controls.Add(this.lblKarmaMetatypeBP);
-            this.tabBPSummary.Controls.Add(this.label12);
+            this.tabBPSummary.Controls.Add(this.lblSummaryMetatype);
             this.tabBPSummary.Controls.Add(this.lblComplexFormsBP);
             this.tabBPSummary.Controls.Add(this.lblBuildComplexForms);
             this.tabBPSummary.Controls.Add(this.lblBuildSprites);
@@ -9454,15 +9439,15 @@ namespace Chummer
             this.lblKarmaMetatypeBP.TabIndex = 74;
             this.lblKarmaMetatypeBP.Text = "0 BP";
             // 
-            // label12
+            // lblSummaryMetatype
             // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(10, 9);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(51, 13);
-            this.label12.TabIndex = 73;
-            this.label12.Tag = "Label_SummaryMetatype";
-            this.label12.Text = "Metatype";
+            this.lblSummaryMetatype.AutoSize = true;
+            this.lblSummaryMetatype.Location = new System.Drawing.Point(10, 9);
+            this.lblSummaryMetatype.Name = "lblSummaryMetatype";
+            this.lblSummaryMetatype.Size = new System.Drawing.Size(51, 13);
+            this.lblSummaryMetatype.TabIndex = 73;
+            this.lblSummaryMetatype.Tag = "Label_SummaryMetatype";
+            this.lblSummaryMetatype.Text = "Metatype";
             // 
             // lblComplexFormsBP
             // 
@@ -9846,8 +9831,8 @@ namespace Chummer
             this.tabDefences.Padding = new System.Windows.Forms.Padding(3);
             this.tabDefences.Size = new System.Drawing.Size(185, 611);
             this.tabDefences.TabIndex = 3;
-            this.tabDefences.Text = "Spell Defence";
             this.tabDefences.Tag = "String_SpellDefense";
+            this.tabDefences.Text = "Spell Defence";
             // 
             // nudCounterspellingDice
             // 
@@ -10374,7 +10359,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblEnemiesBP;
         private System.Windows.Forms.Label lblBuildEnemies;
         private System.Windows.Forms.Label lblKarmaMetatypeBP;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label lblSummaryMetatype;
         private System.Windows.Forms.Label lblComplexFormsBP;
         private System.Windows.Forms.Label lblBuildComplexForms;
         private System.Windows.Forms.Label lblBuildSprites;

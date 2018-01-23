@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+using System;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -123,7 +123,7 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
-        
+
         private void cmdExpand_Click(object sender, EventArgs e)
         {
             Expanded = !Expanded;
@@ -341,19 +341,11 @@ namespace Chummer
 
         public bool Expanded
         {
-            get => Height > _intLowHeight;
+            get => tlpStatBlock.Visible;
             set
             {
-                if (value)
-                {
-                    Height = _intFullHeight;
-                    cmdExpand.Image = Properties.Resources.Expand;
-                }
-                else
-                {
-                    Height = _intLowHeight;
-                    cmdExpand.Image = Properties.Resources.Collapse;
-                }
+                tlpStatHeader.Visible = tlpStatBlock.Visible = value;
+                cmdExpand.Image = value ? Properties.Resources.Collapse : cmdExpand.Image = Properties.Resources.Expand;
             }
         }
         #endregion
@@ -460,7 +452,7 @@ namespace Chummer
                         lstMetatypes.Add(new ListItem(strMetavariantName, strMetatypeDisplay + " (" + (objXmlMetavariantNode["translate"]?.InnerText ?? strMetavariantName) + ')'));
                 }
             }
-            
+
             lstCategories.Sort(CompareListItems.CompareNames);
             lstMetatypes.Sort(CompareListItems.CompareNames);
             lstSexes.Sort(CompareListItems.CompareNames);
@@ -581,25 +573,28 @@ namespace Chummer
 
         private void MoveControls()
         {
-            lblConnection.Left = txtContactName.Left;
-            nudConnection.Left = lblConnection.Right + 2;
-            lblLoyalty.Left = nudConnection.Right + 2;
-            nudLoyalty.Left = lblLoyalty.Right + 2;
-            imgLink.Left = nudLoyalty.Right + 4; 
-            imgNotes.Left = imgLink.Right + 4;
-            chkGroup.Left = imgNotes.Right + 4;
-            chkFree.Left = chkGroup.Right + 2;
-            chkBlackmail.Left = chkFree.Right + 2;
-            chkFamily.Left = chkBlackmail.Right + 2;
+            // no need to do anything here using TableLayoutPanels
+            //lblConnection.Left = txtContactName.Left;
+            //nudConnection.Left = lblConnection.Right + 2;
+            //lblLoyalty.Left = nudConnection.Right + 2;
+            //nudLoyalty.Left = lblLoyalty.Right + 2;
+            //imgLink.Left = nudLoyalty.Right + 4;
+            //imgNotes.Left = imgLink.Right + 4;
+            //chkGroup.Left = imgNotes.Right + 4;
+            //chkFree.Left = chkGroup.Right + 2;
+            //chkBlackmail.Left = chkFree.Right + 2;
+            //chkFamily.Left = chkBlackmail.Right + 2;
 
-            lblMetatype.Left = cboMetatype.Left - 7 - lblMetatype.Width;
-            lblAge.Left = cboAge.Left - 7 - lblAge.Width;
-            lblSex.Left = cboSex.Left - 7 - lblSex.Width;
-            lblPersonalLife.Left = cboPersonalLife.Left - 7 - lblPersonalLife.Width;
-            lblType.Left = cboType.Left - 7 - lblType.Width;
-            lblPreferredPayment.Left = cboPreferredPayment.Left - 7 - lblPreferredPayment.Width;
-            lblHobbiesVice.Left = cboHobbiesVice.Left - 7 - lblHobbiesVice.Width;
+            //lblmetatype.left = cbometatype.left - 7 - lblmetatype.width;
+            //lblage.left = cboage.left - 7 - lblage.width;
+            //lblsex.left = cbosex.left - 7 - lblsex.width;
+            //lbltype.left = cbotype.left - 7 - lbltype.width;
+
+            //lblpersonallife.left = cbopersonallife.left - 7 - lblpersonallife.width;
+            //lblpreferredpayment.left = cbopreferredpayment.left - 7 - lblpreferredpayment.width;
+            //lblhobbiesvice.left = cbohobbiesvice.left - 7 - lblhobbiesvice.width;
         }
         #endregion
+
     }
 }
