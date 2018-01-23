@@ -730,8 +730,8 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             string strOldVisibility = cboVisibility.SelectedValue?.ToString();
-            string strOldFlexibility = cboVisibility.SelectedValue?.ToString();
-            string strOldControl = cboVisibility.SelectedValue?.ToString();
+            string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
+            string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
             cboVisibility.ValueMember = "Value";
             cboVisibility.DisplayMember = "Name";
