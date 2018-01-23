@@ -1691,7 +1691,7 @@ namespace Chummer
                 Improvement objImprovement = null;
                 foreach (Improvement objCharacterImprovement in CharacterObject.Improvements)
                 {
-                    if (objCharacterImprovement.SourceName == objItem.Value)
+                    if (objCharacterImprovement.SourceName == objItem.Value.ToString())
                     {
                         objImprovement = objCharacterImprovement;
                         break;

@@ -3179,7 +3179,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
+                    TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
                     objLoopNode?.Remove();
                 }
             }
@@ -3231,7 +3231,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    treVehicles.FindNode(strNodeId)?.Remove();
+                    treVehicles?.FindNode(strNodeId)?.Remove();
                 }
             }
 

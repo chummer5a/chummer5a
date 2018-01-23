@@ -4567,7 +4567,10 @@ namespace Chummer
                                 objLoopCyberware.DeleteCyberware(treWeapons, treVehicles);
                             }
                         }
+                        TreeNode objWeaponMountsNode = objSelectedNode.Parent;
                         objSelectedNode.Remove();
+                        if (objWeaponMountsNode.Nodes.Count == 0)
+                            objWeaponMountsNode.Remove();
                     }
                     else
                     {
@@ -8457,6 +8460,10 @@ namespace Chummer
                 }
                 objNode.Nodes.Add(objWeaponMount.CreateTreeNode(cmsWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicle));
                 objNode.Expand();
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -20294,28 +20301,28 @@ namespace Chummer
         private void RefreshSelectedVehicle()
         {
             _blnSkipRefresh = true;
-            cboVehicleGearAttack.Visible = false;
-            cboVehicleGearDataProcessing.Visible = false;
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            cmdDeleteVehicle.Enabled = !string.IsNullOrEmpty(strSelectedId) && strSelectedId != "Node_SelectedVehicles" && strSelectedId != "String_WeaponMounts";
+            cmdVehicleCyberwareChangeMount.Visible = false;
 
             lblVehicleGearQty.Text = string.Empty;
             cmdVehicleGearReduceQty.Enabled = false;
+            cmdVehicleMoveToInventory.Enabled = false;
             cboVehicleWeaponAmmo.Enabled = false;
             cboVehicleWeaponFiringMode.Enabled = false;
 
-            lblVehicleSeatsLabel.Visible = false;
-            lblVehicleSeats.Visible = false;
-            cmdDeleteVehicle.Enabled = treVehicles.SelectedNode != null && treVehicles.SelectedNode.Tag.ToString() != "Node_SelectedVehicles" && treVehicles.SelectedNode.Tag.ToString() != "String_WeaponMounts";
-            cmdVehicleCyberwareChangeMount.Visible = false;
-
             chkVehicleHomeNode.Visible = false;
-            cmdVehicleMoveToInventory.Enabled = false;
             chkVehicleActiveCommlink.Visible = false;
+            lblVehicleSlotsLabel.Visible = false;
+            lblVehicleSlots.Visible = false;
 
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
             {
+                panVehicleCM.Visible = false;
                 DisplayVehicleWeaponStats(false);
                 DisplayVehicleCommlinkStats(false);
                 DisplayVehicleStats(false);
+
                 lblVehicleCategory.Text = string.Empty;
                 lblVehicleName.Text = string.Empty;
                 lblVehicleAvail.Text = string.Empty;
@@ -20327,20 +20334,463 @@ namespace Chummer
                 return;
             }
 
-            if (treVehicles.SelectedNode.Level != 0)
+            // Locate the selected Vehicle.
+            Vehicle objVehicle = CharacterObject.Vehicles.FindById(strSelectedId);
+            if (objVehicle != null)
             {
-                // Locate the selected Vehicle.
-                TreeNode objVehicleNode = treVehicles.SelectedNode;
-                while (objVehicleNode.Level > 1)
-                    objVehicleNode = objVehicleNode.Parent;
+                if (!string.IsNullOrEmpty(objVehicle.ParentID))
+                    cmdDeleteVehicle.Enabled = false;
+                lblVehicleRatingLabel.Visible = false;
+                lblVehicleRating.Visible = false;
 
-                Vehicle objVehicle = CharacterObject.Vehicles.FindById(objVehicleNode.Tag.ToString());
-                if (objVehicle == null)
+                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Language);
+                lblVehicleNameLabel.Visible = true;
+                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
+                lblVehicleCategoryLabel.Visible = true;
+                lblVehicleAvailLabel.Visible = true;
+                lblVehicleAvail.Text = objVehicle.CalculatedAvail(GlobalOptions.Language);
+                lblVehicleCostLabel.Visible = true;
+                lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleHandling.Text = objVehicle.TotalHandling;
+                lblVehicleAccel.Text = objVehicle.TotalAccel;
+                lblVehicleSpeed.Text = objVehicle.TotalSpeed;
+                lblVehicleDevice.Text = objVehicle.GetTotalMatrixAttribute("Device Rating").ToString();
+                lblVehiclePilot.Text = objVehicle.Pilot.ToString();
+                lblVehicleBody.Text = objVehicle.TotalBody.ToString();
+                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
+                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
+
+                // Update the vehicle mod slots
+                if (objVehicle.IsDrone && GlobalOptions.Dronemods)
                 {
-                    _blnSkipRefresh = false;
-                    return;
+                    lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots.ToString();
+                }
+                else
+                {
+                    lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
+                    lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
+                    lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
+                    lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
+                    lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
+                    lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
+
+                    tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                    tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
+                }
+                
+                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
+                UpdateSensor(objVehicle);
+
+                string strBook = CommonFunctions.LanguageBookShort(objVehicle.Source, GlobalOptions.Language);
+                string strPage = objVehicle.Page(GlobalOptions.Language);
+                lblVehicleSource.Text = strBook + ' ' + strPage;
+                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                chkVehicleWeaponAccessoryInstalled.Enabled = false;
+                chkVehicleIncludedInWeapon.Checked = false;
+
+                objVehicle.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
+                chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
+                if (CharacterObject.Metatype.Contains("A.I.") || CharacterObject.MetatypeCategory == "Protosapients")
+                {
+                    chkVehicleHomeNode.Visible = true;
+                    chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(CharacterObject);
+                    chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objVehicle.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
                 }
 
+                DisplayVehicleWeaponStats(false);
+                DisplayVehicleCommlinkStats(true);
+                DisplayVehicleStats(true);
+                if (CharacterObjectOptions.BookEnabled("R5"))
+                {
+                    DisplayVehicleDroneMods(objVehicle.IsDrone && GlobalOptions.Dronemods);
+                    DisplayVehicleMods(!(objVehicle.IsDrone && GlobalOptions.Dronemods));
+                }
+                else
+                {
+                    DisplayVehicleMods(false);
+                    DisplayVehicleDroneMods(false);
+                    lblVehicleSlotsLabel.Visible = true;
+                    lblVehicleSlots.Visible = true;
+                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                }
+            }
+            else
+            {
+                WeaponMount objWeaponMount = CharacterObject.Vehicles.FindVehicleWeaponMount(strSelectedId, out objVehicle);
+                if (objWeaponMount != null)
+                {
+                    lblVehicleRatingLabel.Visible = false;
+                    lblVehicleRating.Visible = false;
+
+                    DisplayVehicleWeaponStats(false);
+                    DisplayVehicleCommlinkStats(false);
+                    DisplayVehicleStats(false);
+
+                    lblVehicleCategoryLabel.Visible = true;
+                    lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalOptions.Language);
+                    lblVehicleNameLabel.Visible = true;
+                    lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
+                    lblVehicleAvailLabel.Visible = true;
+                    lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.Language);
+                    lblVehicleCostLabel.Visible = true;
+                    lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
+
+                    chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Installed;
+                    chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
+                    chkVehicleIncludedInWeapon.Checked = false;
+
+                    lblVehicleSlotsLabel.Visible = true;
+                    lblVehicleSlots.Visible = true;
+                    lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString();
+
+                    string strBook = CommonFunctions.LanguageBookShort(objWeaponMount.Source, GlobalOptions.Language);
+                    string strPage = objWeaponMount.Page(GlobalOptions.Language);
+                    lblVehicleSource.Text = strBook + ' ' + strPage;
+                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeaponMount.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                }
+                else
+                {
+                    // Locate the selected VehicleMod.
+                    VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(strSelectedId, out objVehicle, out objWeaponMount);
+                    if (objMod != null)
+                    {
+                        if (objMod.IncludedInVehicle)
+                            cmdDeleteVehicle.Enabled = false;
+                        if (objMod.MaxRating != "qty")
+                        {
+                            if (objMod.MaxRating == "Seats")
+                            {
+                                objMod.MaxRating = objVehicle.Seats.ToString();
+                            }
+                            if (objMod.MaxRating == "body")
+                            {
+                                objMod.MaxRating = objVehicle.Body.ToString();
+                            }
+                            if (Convert.ToInt32(objMod.MaxRating) > 0)
+                            {
+                                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                                lblVehicleRating.Text = objMod.Rating.ToString();
+                            }
+                            else
+                            {
+                                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                                lblVehicleRating.Text = string.Empty;
+                            }
+                        }
+                        else
+                        {
+                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
+                            lblVehicleRating.Text = objMod.Rating.ToString();
+                        }
+                        DisplayVehicleStats(false);
+                        DisplayVehicleWeaponStats(false);
+                        DisplayVehicleCommlinkStats(false);
+
+                        lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
+                        lblVehicleNameLabel.Visible = true;
+                        lblVehicleCategoryLabel.Visible = true;
+                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
+                        lblVehicleAvailLabel.Visible = true;
+                        lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
+                        lblVehicleCostLabel.Visible = true;
+                        lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                        chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
+                        chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
+                        chkVehicleIncludedInWeapon.Checked = false;
+
+                        lblVehicleSlotsLabel.Visible = true;
+                        lblVehicleSlots.Visible = true;
+                        lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
+
+                        string strBook = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language);
+                        string strPage = objMod.Page(GlobalOptions.Language);
+                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    }
+                    else
+                    {
+                        // Look for the selected Vehicle Weapon.
+                        Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out objVehicle);
+                        if (objWeapon != null)
+                        {
+                            if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
+                                cmdDeleteVehicle.Enabled = false;
+                            DisplayVehicleWeaponStats(true);
+                            lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                            lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
+                            lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
+                            lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
+                            lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+
+                            lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
+                            lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
+                            IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
+                            lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
+                            lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
+                            lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
+                            lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
+                            lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
+                            lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
+                            lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
+                            lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+
+                            lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                            lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
+                            lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
+                            lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            DisplayVehicleStats(false);
+                            string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
+                            string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
+                            lblVehicleSource.Text = strBook + ' ' + strPage;
+                            tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                            
+                            cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
+                            lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
+                            lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
+                            lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
+                            lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
+                            lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                            lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
+                            if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
+                            {
+                                cmdFireVehicleWeapon.Enabled = true;
+                                cmdReloadVehicleWeapon.Enabled = true;
+                                lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
+
+                                cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
+                                cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                                cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                                cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+                                cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
+
+                                // Melee Weapons with Ammo are considered to be Single Shot.
+                                if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
+                                    cmsVehicleAmmoSingleShot.Enabled = true;
+
+                                if (cmsVehicleAmmoFullBurst.Enabled)
+                                    cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst", GlobalOptions.Language).Replace("{0}", objWeapon.FullBurst.ToString());
+                                if (cmsVehicleAmmoSuppressiveFire.Enabled)
+                                    cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language).Replace("{0}", objWeapon.Suppressive.ToString());
+
+                                List<ListItem> lstAmmo = new List<ListItem>();
+                                int intCurrentSlot = objWeapon.ActiveAmmoSlot;
+                                for (int i = 1; i <= objWeapon.AmmoSlots; i++)
+                                {
+                                    objWeapon.ActiveAmmoSlot = i;
+                                    Gear objVehicleGear = objVehicle.Gear.DeepFindById(objWeapon.AmmoLoaded);
+
+                                    string strPlugins = string.Empty;
+                                    foreach (Gear objCurrentAmmo in objVehicle.Gear)
+                                    {
+                                        if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
+                                        {
+                                            foreach (Gear objChild in objCurrentAmmo.Children)
+                                            {
+                                                strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
+                                            }
+                                        }
+                                    }
+                                    // Remove the trailing comma.
+                                    if (!string.IsNullOrEmpty(strPlugins))
+                                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
+
+                                    string strAmmoName = string.Empty;
+                                    if (objVehicleGear == null)
+                                    {
+                                        if (objWeapon.AmmoRemaining == 0)
+                                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                                        else
+                                            strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
+                                    }
+                                    else
+                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
+
+                                    if (!string.IsNullOrEmpty(strPlugins))
+                                        strAmmoName += " [" + strPlugins + "]";
+                                    lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
+                                }
+                                objWeapon.ActiveAmmoSlot = intCurrentSlot;
+                                cboVehicleWeaponAmmo.BeginUpdate();
+                                cboVehicleWeaponAmmo.Enabled = true;
+                                cboVehicleWeaponAmmo.ValueMember = "Value";
+                                cboVehicleWeaponAmmo.DisplayMember = "Name";
+                                cboVehicleWeaponAmmo.DataSource = lstAmmo;
+                                cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
+                                if (cboVehicleWeaponAmmo.SelectedIndex == -1)
+                                    cboVehicleWeaponAmmo.SelectedIndex = 0;
+                                cboVehicleWeaponAmmo.EndUpdate();
+                            }
+                            lblVehicleWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
+                            cmdVehicleMoveToInventory.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objVehicle?.InternalId;
+                        }
+                        else
+                        {
+                            WeaponAccessory objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(strSelectedId);
+                            if (objAccessory != null)
+                            {
+                                objVehicle = objAccessory.Parent.ParentVehicle;
+                                if (objAccessory.IncludedInWeapon)
+                                    cmdDeleteVehicle.Enabled = false;
+                                lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
+                                lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
+                                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.Language);
+                                lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+                                DisplayVehicleWeaponStats(false);
+                                DisplayVehicleStats(false);
+
+                                string[] strMounts = objAccessory.Mount.Split('/');
+                                string strMount = string.Empty;
+                                foreach (string strCurrentMount in strMounts)
+                                {
+                                    if (!string.IsNullOrEmpty(strCurrentMount))
+                                        strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
+                                }
+                                // Remove the trailing /
+                                if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
+                                    strMount = strMount.Substring(0, strMount.Length - 1);
+                                if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && (objAccessory.ExtraMount != "None"))
+                                {
+                                    bool boolHaveAddedItem = false;
+                                    string[] strExtraMounts = objAccessory.ExtraMount.Split('/');
+                                    foreach (string strCurrentExtraMount in strExtraMounts)
+                                    {
+                                        if (!string.IsNullOrEmpty(strCurrentExtraMount))
+                                        {
+                                            if (!boolHaveAddedItem)
+                                            {
+                                                strMount += " + ";
+                                                boolHaveAddedItem = true;
+                                            }
+                                            strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
+                                        }
+                                    }
+                                    // Remove the trailing /
+                                    if (boolHaveAddedItem)
+                                        strMount = strMount.Substring(0, strMount.Length - 1);
+                                }
+
+                                lblVehicleSlotsLabel.Visible = true;
+                                lblVehicleSlots.Visible = true;
+                                lblVehicleSlots.Text = strMount;
+                                string strBook = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
+                                string strPage = objAccessory.Page(GlobalOptions.Language);
+                                lblVehicleSource.Text = strBook + ' ' + strPage;
+                                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                                chkVehicleWeaponAccessoryInstalled.Enabled = true;
+                                chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
+                                chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
+                            }
+                            else
+                            {
+                                // See if this is a piece of Cyberware.
+                                Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(strSelectedId);
+                                if (objCyberware != null)
+                                {
+                                    objVehicle = objCyberware.ParentVehicle;
+                                    if (!string.IsNullOrEmpty(objCyberware.ParentID))
+                                        cmdDeleteVehicle.Enabled = false;
+                                    lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                                    lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                                    lblVehicleRating.Visible = true;
+                                    lblVehicleRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
+                                    cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+
+                                    lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
+                                    lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
+                                    lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
+                                    lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                                    string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
+                                    string strPage = objCyberware.Page(GlobalOptions.Language);
+                                    lblVehicleSource.Text = strBook + ' ' + strPage;
+                                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
+                                    lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
+                                    objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                                    DisplayVehicleWeaponStats(false);
+                                    DisplayVehicleStats(false);
+                                    DisplayVehicleCommlinkStats(true);
+
+                                    chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
+                                    chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                                    if (CharacterObject.Metatype == "A.I.")
+                                    {
+                                        chkVehicleHomeNode.Visible = true;
+                                        chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
+                                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                                    }
+                                }
+                                else
+                                {
+                                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out objAccessory, out objCyberware);
+                                    if (objGear != null)
+                                    {
+                                        if (objGear.IncludedInParent)
+                                            cmdDeleteVehicle.Enabled = false;
+
+                                        lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
+                                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
+                                        cmdVehicleMoveToInventory.Enabled = objGear.ParentID != objGear.Parent?.InternalId && objGear.ParentID != objVehicle?.InternalId && objGear.ParentID != objAccessory?.InternalId && objGear.ParentID != objCyberware?.InternalId;
+                                        
+                                        lblVehicleGearQtyLabel.Visible = true;
+                                        lblVehicleGearQty.Visible = true;
+                                        lblVehicleGearQty.Text = objGear.Quantity.ToString(objGear.Name.StartsWith("Nuyen") ? CharacterObjectOptions.NuyenFormat : (objGear.Category == "Currency" ? "#,0.00" : "#,0"), GlobalOptions.CultureInfo);
+
+                                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
+                                        lblVehicleRating.Visible = true;
+                                        lblVehicleRating.Text = objGear.Rating.ToString(GlobalOptions.CultureInfo);
+
+                                        lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
+                                        lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
+                                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                                        lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                                        lblVehicleSlotsLabel.Visible = true;
+                                        lblVehicleSlots.Visible = true;
+                                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
+                                        string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
+                                        string strPage = objGear.DisplayPage(GlobalOptions.Language);
+                                        lblVehicleSource.Text = strBook + ' ' + strPage;
+                                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
+                                        objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
+
+                                        DisplayVehicleStats(false);
+                                        DisplayVehicleWeaponStats(false);
+                                        DisplayVehicleCommlinkStats(true);
+
+                                        chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
+                                        chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                                        if (CharacterObject.Metatype == "A.I.")
+                                        {
+                                            chkVehicleHomeNode.Visible = true;
+                                            chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objGear.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
+                                        }
+
+                                        chkVehicleWeaponAccessoryInstalled.Checked = objGear.Equipped;
+                                        chkVehicleWeaponAccessoryInstalled.Enabled = !objGear.IncludedInParent;
+                                        chkVehicleIncludedInWeapon.Checked = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (objVehicle != null)
+            {
                 // Hide any unused Physical CM boxes.
                 panVehicleCM.Visible = true;
                 if (!string.IsNullOrEmpty(objVehicle.ParentID))
@@ -20382,909 +20832,6 @@ namespace Chummer
                     }
                 }
             }
-
-            // Locate the selected Vehicle.
-            if (treVehicles.SelectedNode.Level == 1)
-            {
-                Vehicle objVehicle = CharacterObject.Vehicles.FindById(treVehicles.SelectedNode.Tag.ToString());
-                if (objVehicle == null)
-                {
-                    _blnSkipRefresh = false;
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(objVehicle.ParentID))
-                    cmdDeleteVehicle.Enabled = false;
-                lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                lblVehicleRating.Text = string.Empty;
-
-                lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalOptions.Language);
-                lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
-                lblVehicleAvail.Text = objVehicle.CalculatedAvail(GlobalOptions.Language);
-                lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblVehicleHandling.Text = objVehicle.TotalHandling;
-                lblVehicleAccel.Text = objVehicle.TotalAccel;
-                lblVehicleSpeed.Text = objVehicle.TotalSpeed;
-                lblVehicleDevice.Text = objVehicle.GetTotalMatrixAttribute("Device Rating").ToString();
-                lblVehiclePilot.Text = objVehicle.Pilot.ToString();
-                lblVehicleBody.Text = objVehicle.TotalBody.ToString();
-                lblVehicleArmor.Text = objVehicle.TotalArmor.ToString();
-                lblVehicleSeats.Text = objVehicle.TotalSeats.ToString();
-
-                lblVehicleSeatsLabel.Visible = true;
-                lblVehicleSeats.Visible = true;
-
-                // Update the vehicle mod slots
-                if (CharacterObjectOptions.BookEnabled("R5"))
-                {
-                    lblVehicleSlots.Text = string.Empty;
-                    lblVehicleSlotsLabel.Visible = false;
-
-                    if (objVehicle.IsDrone && GlobalOptions.Dronemods)
-                    {
-                        lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString() + '/' + objVehicle.DroneModSlots.ToString();
-                        lblVehicleDroneModSlots.Visible = true;
-                        lblVehicleDroneModSlotsLabel.Visible = true;
-                        lblVehiclePowertrain.Visible = false;
-                        lblVehicleCosmetic.Visible = false;
-                        lblVehicleElectromagnetic.Visible = false;
-                        lblVehicleBodymod.Visible = false;
-                        lblVehicleWeaponsmod.Visible = false;
-                        lblVehicleProtection.Visible = false;
-                        lblVehiclePowertrainLabel.Visible = false;
-                        lblVehicleCosmeticLabel.Visible = false;
-                        lblVehicleElectromagneticLabel.Visible = false;
-                        lblVehicleBodymodLabel.Visible = false;
-                        lblVehicleWeaponsmodLabel.Visible = false;
-                        lblVehicleProtectionLabel.Visible = false;
-                    }
-                    else
-                    {
-                        lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
-                        lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
-                        lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
-                        lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
-                        lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
-                        lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
-
-                        tipTooltip.SetToolTip(lblVehiclePowertrainLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                        tipTooltip.SetToolTip(lblVehicleCosmeticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                        tipTooltip.SetToolTip(lblVehicleElectromagneticLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                        tipTooltip.SetToolTip(lblVehicleBodymodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                        tipTooltip.SetToolTip(lblVehicleWeaponsmodLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-                        tipTooltip.SetToolTip(lblVehicleProtectionLabel, LanguageManager.GetString("Tip_TotalVehicleModCapacity", GlobalOptions.Language));
-
-                        lblVehicleDroneModSlots.Visible = false;
-                        lblVehicleDroneModSlotsLabel.Visible = false;
-                        lblVehiclePowertrain.Visible = true;
-                        lblVehicleCosmetic.Visible = true;
-                        lblVehicleElectromagnetic.Visible = true;
-                        lblVehicleBodymod.Visible = true;
-                        lblVehicleWeaponsmod.Visible = true;
-                        lblVehicleProtection.Visible = true;
-                        lblVehiclePowertrainLabel.Visible = true;
-                        lblVehicleCosmeticLabel.Visible = true;
-                        lblVehicleElectromagneticLabel.Visible = true;
-                        lblVehicleBodymodLabel.Visible = true;
-                        lblVehicleWeaponsmodLabel.Visible = true;
-                        lblVehicleProtectionLabel.Visible = true;
-                    }
-                }
-                else
-                {
-                    lblVehicleDroneModSlots.Text = string.Empty;
-                    lblVehicleDroneModSlots.Visible = false;
-                    lblVehicleDroneModSlotsLabel.Visible = false;
-                    lblVehiclePowertrain.Visible = false;
-                    lblVehicleCosmetic.Visible = false;
-                    lblVehicleElectromagnetic.Visible = false;
-                    lblVehicleBodymod.Visible = false;
-                    lblVehicleWeaponsmod.Visible = false;
-                    lblVehicleProtection.Visible = false;
-                    lblVehiclePowertrainLabel.Visible = false;
-                    lblVehicleCosmeticLabel.Visible = false;
-                    lblVehicleElectromagneticLabel.Visible = false;
-                    lblVehicleBodymodLabel.Visible = false;
-                    lblVehicleWeaponsmodLabel.Visible = false;
-                    lblVehicleProtectionLabel.Visible = false;
-                    lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Text = objVehicle.Slots.ToString() + " (" + (objVehicle.Slots - objVehicle.SlotsUsed).ToString() + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                }
-
-                lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString();
-                UpdateSensor(objVehicle);
-                string strBook = CommonFunctions.LanguageBookShort(objVehicle.Source, GlobalOptions.Language);
-                string strPage = objVehicle.Page(GlobalOptions.Language);
-                lblVehicleSource.Text = strBook + ' ' + strPage;
-                tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objVehicle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-                chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                chkVehicleIncludedInWeapon.Checked = false;
-                
-                objVehicle.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
-                chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.Metatype.Contains("A.I.") || CharacterObject.MetatypeCategory == "Protosapients")
-                {
-                    chkVehicleHomeNode.Visible = true;
-                    chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(CharacterObject);
-                    chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objVehicle.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
-                }
-            }
-            else if (treVehicles.SelectedNode.Level == 2)
-            {
-                panVehicleCM.Visible = true;
-                bool blnVehicleMod = false;
-
-                // If this is a Vehicle Location, don't do anything.
-                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                {
-                    if (objVehicle.InternalId == treVehicles.SelectedNode.Parent.Tag.ToString())
-                    {
-                        foreach (string strLocation in objVehicle.Locations)
-                        {
-                            if (strLocation == treVehicles.SelectedNode.Tag.ToString())
-                            {
-                                lblVehicleName.Text = string.Empty;
-                                lblVehicleCategory.Text = string.Empty;
-                                lblVehicleSource.Text = string.Empty;
-                                lblVehicleHandling.Text = string.Empty;
-                                lblVehicleAccel.Text = string.Empty;
-                                lblVehicleSpeed.Text = string.Empty;
-                                lblVehicleDevice.Text = string.Empty;
-                                lblVehiclePilot.Text = string.Empty;
-                                lblVehicleBody.Text = string.Empty;
-                                lblVehicleArmor.Text = string.Empty;
-                                lblVehicleSensor.Text = string.Empty;
-                                lblVehicleAvail.Text = string.Empty;
-                                lblVehicleCost.Text = string.Empty;
-                                lblVehicleSlots.Text = string.Empty;
-                                _blnSkipRefresh = false;
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // Locate the selected VehicleMod.
-                VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objSelectedVehicle, out WeaponMount objWeaponMount);
-                if (objMod != null)
-                {
-                    blnVehicleMod = true;
-                    if (objMod.IncludedInVehicle)
-                        cmdDeleteVehicle.Enabled = false;
-                    if (objMod.MaxRating != "qty")
-                    {
-                        if (objMod.MaxRating == "Seats")
-                        {
-                            objMod.MaxRating = objSelectedVehicle.Seats.ToString();
-                        }
-                        if (objMod.MaxRating == "body")
-                        {
-                            objMod.MaxRating = objSelectedVehicle.Body.ToString();
-                        }
-                        if (Convert.ToInt32(objMod.MaxRating) > 0)
-                        {
-                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                            lblVehicleRating.Text = objMod.Rating.ToString();
-                        }
-                        else
-                        {
-                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                            lblVehicleRating.Text = string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Qty", GlobalOptions.Language);
-                        lblVehicleRating.Text = objMod.Rating.ToString();
-                    }
-
-                    lblVehicleName.Text = objMod.DisplayNameShort(GlobalOptions.Language);
-                    lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
-                    lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.Language);
-                    lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblVehicleHandling.Text = string.Empty;
-                    lblVehicleAccel.Text = string.Empty;
-                    lblVehicleSpeed.Text = string.Empty;
-                    lblVehicleDevice.Text = string.Empty;
-                    lblVehiclePilot.Text = string.Empty;
-                    lblVehicleBody.Text = string.Empty;
-                    lblVehicleArmor.Text = string.Empty;
-                    lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objMod.CalculatedSlots.ToString();
-                    string strBook = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language);
-                    string strPage = objMod.Page(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + ' ' + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-                }
-                else
-                {
-                    // If it's not a Vehicle Mod then it must be a Sensor.
-                    Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-                    if (objGear != null)
-                    {
-                        if (objGear.IncludedInParent)
-                            cmdDeleteVehicle.Enabled = false;
-                        lblVehicleRating.Text = string.Empty;
-                        if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                        {
-                            lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                            cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-
-                            if (objGear.Rating > 0)
-                                lblVehicleRating.Text = objGear.Rating.ToString();
-                        }
-
-                        lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                        lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblVehicleHandling.Text = string.Empty;
-                        lblVehicleAccel.Text = string.Empty;
-                        lblVehicleSpeed.Text = string.Empty;
-                        lblVehicleDevice.Text = string.Empty;
-                        lblVehiclePilot.Text = string.Empty;
-                        lblVehicleBody.Text = string.Empty;
-                        lblVehicleArmor.Text = string.Empty;
-                        lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                        string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
-                        string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + ' ' + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-                        cmdVehicleMoveToInventory.Enabled = true;
-
-                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString();
-                        objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                        chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-
-                        if (CharacterObject.Metatype == "A.I.")
-                        {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                        }
-                    }
-                    else
-                    {
-                        // Look for the selected Vehicle Weapon.
-                        Weapon objWeapon = null;
-                        Vehicle objCurrentVehicle = null;
-
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                        {
-                            objWeapon = objVehicle.Weapons.DeepFindById(treVehicles.SelectedNode.Tag.ToString());
-                            if (objWeapon != null)
-                            {
-                                objCurrentVehicle = objVehicle;
-                                break;
-                            }
-                        }
-
-                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
-                            cmdDeleteVehicle.Enabled = false;
-                        cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-                        lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                        lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-                        lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
-                        if (objWeapon.WeaponType == "Ranged" || (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0"))
-                        {
-                            cmdFireVehicleWeapon.Enabled = true;
-                            cmdReloadVehicleWeapon.Enabled = true;
-                            lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-
-                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-
-                            // Melee Weapons with Ammo are considered to be Single Shot.
-                            if (objWeapon.WeaponType == "Melee" && objWeapon.Ammo != "0")
-                                cmsVehicleAmmoSingleShot.Enabled = true;
-
-                            if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst", GlobalOptions.Language).Replace("{0}", objWeapon.FullBurst.ToString());
-                            if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language).Replace("{0}", objWeapon.Suppressive.ToString());
-
-                            List<ListItem> lstAmmo = new List<ListItem>();
-                            int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-                            for (int i = 1; i <= objWeapon.AmmoSlots; i++)
-                            {
-                                objWeapon.ActiveAmmoSlot = i;
-                                Gear objVehicleGear = objCurrentVehicle.Gear.DeepFindById(objWeapon.AmmoLoaded);
-
-                                string strPlugins = string.Empty;
-                                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                                {
-                                    foreach (Gear objCurrentAmmo in objVehicle.Gear)
-                                    {
-                                        if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
-                                        {
-                                            foreach (Gear objChild in objCurrentAmmo.Children)
-                                            {
-                                                strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
-                                            }
-                                        }
-                                    }
-                                }
-                                // Remove the trailing comma.
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
-                                
-                                string strAmmoName = string.Empty;
-                                if (objVehicleGear == null)
-                                {
-                                    if (objWeapon.AmmoRemaining == 0)
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
-                                    else
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
-                                }
-                                else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
-
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strAmmoName += " [" + strPlugins + "]";
-                                lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
-                            }
-                            objWeapon.ActiveAmmoSlot = intCurrentSlot;
-                            cboVehicleWeaponAmmo.BeginUpdate();
-                            cboVehicleWeaponAmmo.Enabled = true;
-                            cboVehicleWeaponAmmo.ValueMember = "Value";
-                            cboVehicleWeaponAmmo.DisplayMember = "Name";
-                            cboVehicleWeaponAmmo.DataSource = lstAmmo;
-                            cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
-                            if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-                                cboVehicleWeaponAmmo.SelectedIndex = 0;
-                            cboVehicleWeaponAmmo.EndUpdate();
-                        }
-                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
-
-                        lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                        lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
-                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblVehicleHandling.Text = string.Empty;
-                        lblVehicleAccel.Text = string.Empty;
-                        lblVehicleSpeed.Text = string.Empty;
-                        lblVehicleDevice.Text = string.Empty;
-                        lblVehiclePilot.Text = string.Empty;
-                        lblVehicleBody.Text = string.Empty;
-                        lblVehicleArmor.Text = string.Empty;
-                        lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = string.Empty;
-                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
-                        string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + ' ' + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-                        cmdVehicleMoveToInventory.Enabled = true;
-
-                        // Determine the Dice Pool size.
-                        int intPilot = objCurrentVehicle.Pilot;
-                        int intAutosoft = 0;
-                        foreach (Gear objAutosoft in objCurrentVehicle.Gear)
-                        {
-                            if (objAutosoft.Extra == objWeapon.DisplayCategory(GlobalOptions.DefaultLanguage) && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
-                            {
-                                if (objAutosoft.Rating > intAutosoft)
-                                {
-                                    intAutosoft = objAutosoft.Rating;
-                                }
-                            }
-                        }
-                        if (intAutosoft == 0)
-                            intPilot -= 1;
-                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
-                    }
-                }
-                if (blnVehicleMod)
-                {
-                    chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                    chkVehicleWeaponAccessoryInstalled.Checked = objMod.Installed;
-                }
-                else
-                    chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                chkVehicleIncludedInWeapon.Checked = false;
-            }
-            else if (treVehicles.SelectedNode.Level == 3)
-            {
-                panVehicleCM.Visible = true;
-                Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-                if (objGear != null)
-                {
-                    if (objGear.IncludedInParent)
-                        cmdDeleteVehicle.Enabled = false;
-                    lblVehicleRating.Text = string.Empty;
-                    if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                    {
-                        lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-
-                        if (objGear.Rating > 0)
-                            lblVehicleRating.Text = objGear.Rating.ToString();
-                    }
-
-                    lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
-                    lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                    lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                    lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblVehicleHandling.Text = string.Empty;
-                    lblVehicleAccel.Text = string.Empty;
-                    lblVehicleSpeed.Text = string.Empty;
-                    lblVehiclePilot.Text = string.Empty;
-                    lblVehicleBody.Text = string.Empty;
-                    lblVehicleArmor.Text = string.Empty;
-                    lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                    string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
-                    string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + ' ' + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + objGear.DisplayPage(strPage));
-
-                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                    lblVehicleDevice.Text = intDeviceRating.ToString();
-                    objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                    chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
-                    chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-
-                    if (CharacterObject.Metatype == "A.I.")
-                    {
-                        chkVehicleHomeNode.Visible = true;
-                        chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                    }
-                }
-                else
-                {
-                    // Look for the selected Vehicle Weapon.
-                    Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objCurrentVehicle);
-                    if (objWeapon != null)
-                    {
-                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
-                            cmdDeleteVehicle.Enabled = false;
-                        lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                        lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-                        lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
-                        if (objWeapon.WeaponType == "Ranged")
-                        {
-                            cmdFireVehicleWeapon.Enabled = true;
-                            cmdReloadVehicleWeapon.Enabled = true;
-                            lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-
-                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode("SS") || objWeapon.AllowMode("SA");
-                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode("BF");
-                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode("FA");
-                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode("FA");
-                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode("FA");
-                            if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst", GlobalOptions.Language).Replace("{0}", objWeapon.FullBurst.ToString());
-                            if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language).Replace("{0}", objWeapon.Suppressive.ToString());
-
-                            List<ListItem> lstAmmo = new List<ListItem>();
-                            int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-                            for (int i = 1; i <= objWeapon.AmmoSlots; i++)
-                            {
-                                objWeapon.ActiveAmmoSlot = i;
-                                Gear objVehicleGear = objCurrentVehicle.Gear.DeepFindById(objWeapon.AmmoLoaded);
-
-                                string strPlugins = string.Empty;
-                                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                                {
-                                    foreach (Gear objCurrentAmmo in objVehicle.Gear)
-                                    {
-                                        if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
-                                        {
-                                            foreach (Gear objChild in objCurrentAmmo.Children)
-                                            {
-                                                strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
-                                            }
-                                        }
-                                    }
-                                }
-                                // Remove the trailing comma.
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
-                                
-                                string strAmmoName = string.Empty;
-                                if (objVehicleGear == null)
-                                {
-                                    if (objWeapon.AmmoRemaining == 0)
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
-                                    else
-                                        strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
-                                }
-                                else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strAmmoName += " [" + strPlugins + "]";
-                                lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
-                            }
-                            objWeapon.ActiveAmmoSlot = intCurrentSlot;
-                            cboVehicleWeaponAmmo.BeginUpdate();
-                            cboVehicleWeaponAmmo.Enabled = true;
-                            cboVehicleWeaponAmmo.ValueMember = "Value";
-                            cboVehicleWeaponAmmo.DisplayMember = "Name";
-                            cboVehicleWeaponAmmo.DataSource = lstAmmo;
-                            cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
-                            if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-                                cboVehicleWeaponAmmo.SelectedIndex = 0;
-                            cboVehicleWeaponAmmo.EndUpdate();
-                        }
-                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
-
-                        lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                        lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
-                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblVehicleHandling.Text = string.Empty;
-                        lblVehicleAccel.Text = string.Empty;
-                        lblVehicleSpeed.Text = string.Empty;
-                        lblVehicleDevice.Text = string.Empty;
-                        lblVehiclePilot.Text = string.Empty;
-                        lblVehicleBody.Text = string.Empty;
-                        lblVehicleArmor.Text = string.Empty;
-                        lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = string.Empty;
-                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
-                        string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + ' ' + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-                        cmdVehicleMoveToInventory.Enabled = true;
-
-                        // Determine the Dice Pool size.
-                        int intPilot = objCurrentVehicle.Pilot;
-                        int intAutosoft = 0;
-                        foreach (Gear objAutosoft in objCurrentVehicle.Gear)
-                        {
-                            if (objAutosoft.Extra == objWeapon.DisplayCategory(GlobalOptions.DefaultLanguage) && (objAutosoft.Name == "[Weapon] Targeting Autosoft" || objAutosoft.Name == "[Weapon] Melee Autosoft"))
-                            {
-                                if (objAutosoft.Rating > intAutosoft)
-                                {
-                                    intAutosoft = objAutosoft.Rating;
-                                }
-                            }
-                        }
-                        if (intAutosoft == 0)
-                            intPilot -= 1;
-                        lblVehicleWeaponDicePool.Text = (intPilot + intAutosoft).ToString();
-                    }
-                    else
-                    {
-                        // See if this is a piece of Cyberware.
-                        Cyberware objCyberware = CharacterObject.Vehicles.FindVehicleCyberware(treVehicles.SelectedNode.Tag.ToString());
-                        if (objCyberware != null)
-                        {
-                            if (!string.IsNullOrEmpty(objCyberware.ParentID))
-                                cmdDeleteVehicle.Enabled = false;
-                            lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
-                            lblVehicleRatingLabel.Text = LanguageManager.GetString("Label_Rating", GlobalOptions.Language);
-                            lblVehicleRating.Text = objCyberware.Rating.ToString();
-
-                            cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
-                            lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
-                            lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
-                            lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
-                            lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                            lblVehicleHandling.Text = string.Empty;
-                            lblVehicleAccel.Text = string.Empty;
-                            lblVehicleSpeed.Text = string.Empty;
-                            lblVehicleDevice.Text = string.Empty;
-                            lblVehiclePilot.Text = string.Empty;
-                            lblVehicleBody.Text = string.Empty;
-                            lblVehicleArmor.Text = string.Empty;
-                            lblVehicleSensor.Text = string.Empty;
-                            lblVehicleSlots.Text = string.Empty;
-
-                            lblVehicleDevice.Text = objCyberware.GetTotalMatrixAttribute("Device Rating").ToString();
-                            objCyberware.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                            chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
-                            chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
-
-                            if (CharacterObject.Metatype == "A.I.")
-                            {
-                                chkVehicleHomeNode.Visible = true;
-                                chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                                chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > objCyberware.GetTotalMatrixAttribute("Device Rating") ? 2 : 1);
-                            }
-
-                            string strBook = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language);
-                            string strPage = objCyberware.Page(GlobalOptions.Language);
-                            lblVehicleSource.Text = strBook + ' ' + strPage;
-                            tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objCyberware.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-                        }
-                    }
-                }
-                chkVehicleWeaponAccessoryInstalled.Enabled = false;
-                chkVehicleIncludedInWeapon.Checked = false;
-            }
-            else if (treVehicles.SelectedNode.Level >= 4)
-            {
-                panVehicleCM.Visible = true;
-                Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
-                if (objGear != null)
-                {
-                    if (objGear.IncludedInParent)
-                        cmdDeleteVehicle.Enabled = false;
-                    lblVehicleRating.Text = string.Empty;
-                    if (objGear.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                    {
-                        lblVehicleGearQty.Text = objGear.Quantity.ToString(GlobalOptions.CultureInfo);
-                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-
-                        if (objGear.Rating > 0)
-                            lblVehicleRating.Text = objGear.Rating.ToString();
-                    }
-
-                    lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
-                    lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                    lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-                    lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblVehicleHandling.Text = string.Empty;
-                    lblVehicleAccel.Text = string.Empty;
-                    lblVehicleSpeed.Text = string.Empty;
-                    lblVehicleDevice.Text = string.Empty;
-                    lblVehiclePilot.Text = string.Empty;
-                    lblVehicleBody.Text = string.Empty;
-                    lblVehicleArmor.Text = string.Empty;
-                    lblVehicleSensor.Text = string.Empty;
-                    lblVehicleSlots.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
-                    string strBook = CommonFunctions.LanguageBookShort(objGear.Source, GlobalOptions.Language);
-                    string strPage = objGear.DisplayPage(GlobalOptions.Language);
-                    lblVehicleSource.Text = strBook + ' ' + strPage;
-                    tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objGear.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                    lblVehicleDevice.Text = intDeviceRating.ToString();
-                    objGear.RefreshMatrixAttributeCBOs(cboVehicleGearAttack, cboVehicleGearSleaze, cboVehicleGearDataProcessing, cboVehicleGearFirewall);
-
-                    chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
-                    chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-
-                    if (CharacterObject.Metatype == "A.I.")
-                    {
-                        chkVehicleHomeNode.Visible = true;
-                        chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                        chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                    }
-                }
-                else
-                {
-                    // Locate the the Selected Vehicle Weapon Accessory of Modification.
-                    Weapon objWeapon = null;
-                    WeaponAccessory objAccessory = CharacterObject.Vehicles.FindVehicleWeaponAccessory(treVehicles.SelectedNode.Tag.ToString());
-                    if (objAccessory != null)
-                    {
-                        objWeapon = objAccessory.Parent;
-                        if (objAccessory.IncludedInWeapon)
-                            cmdDeleteVehicle.Enabled = false;
-                        lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
-                        lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.Language);
-                        lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblVehicleHandling.Text = string.Empty;
-                        lblVehicleAccel.Text = string.Empty;
-                        lblVehicleSpeed.Text = string.Empty;
-                        lblVehicleDevice.Text = string.Empty;
-                        lblVehiclePilot.Text = string.Empty;
-                        lblVehicleBody.Text = string.Empty;
-                        lblVehicleArmor.Text = string.Empty;
-                        lblVehicleSensor.Text = string.Empty;
-
-                        string[] strMounts = objAccessory.Mount.Split('/');
-                        string strMount = string.Empty;
-                        foreach (string strCurrentMount in strMounts)
-                        {
-                            if (!string.IsNullOrEmpty(strCurrentMount))
-                                strMount += LanguageManager.GetString("String_Mount" + strCurrentMount, GlobalOptions.Language) + '/';
-                        }
-                        // Remove the trailing /
-                        if (!string.IsNullOrEmpty(strMount) && strMount.Contains('/'))
-                            strMount = strMount.Substring(0, strMount.Length - 1);
-                        if (!string.IsNullOrEmpty(objAccessory.ExtraMount) && (objAccessory.ExtraMount != "None"))
-                        {
-                            bool boolHaveAddedItem = false;
-                            string[] strExtraMounts = objAccessory.ExtraMount.Split('/');
-                            foreach (string strCurrentExtraMount in strExtraMounts)
-                            {
-                                if (!string.IsNullOrEmpty(strCurrentExtraMount))
-                                {
-                                    if (!boolHaveAddedItem)
-                                    {
-                                        strMount += " + ";
-                                        boolHaveAddedItem = true;
-                                    }
-                                    strMount += LanguageManager.GetString("String_Mount" + strCurrentExtraMount, GlobalOptions.Language) + '/';
-                                }
-                            }
-                            // Remove the trailing /
-                            if (boolHaveAddedItem)
-                            strMount = strMount.Substring(0, strMount.Length - 1);
-                        }
-
-                        lblVehicleSlots.Text = strMount;
-                        string strBook = CommonFunctions.LanguageBookShort(objAccessory.Source, GlobalOptions.Language);
-                        string strPage = objAccessory.Page(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + ' ' + strPage;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objAccessory.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-                        chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Installed;
-                        chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
-                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
-
-                        cmdFireVehicleWeapon.Enabled = false;
-                        cmdReloadVehicleWeapon.Enabled = false;
-                        cboVehicleWeaponAmmo.Enabled = false;
-                    }
-                    else
-                    {
-                        // If it's none of these, it must be an Underbarrel Weapon.
-                        objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(treVehicles.SelectedNode.Tag.ToString(), out Vehicle objCurrentVehicle);
-
-                        if (objWeapon.Cyberware || objWeapon.Category == "Gear" || objWeapon.Category.StartsWith("Quality") || objWeapon.IncludedInWeapon || !string.IsNullOrEmpty(objWeapon.ParentID))
-                            cmdDeleteVehicle.Enabled = false;
-                        cboVehicleWeaponFiringMode.Enabled = true;
-                        lblVehicleWeaponName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleWeaponCategory.Text = objWeapon.DisplayCategory(GlobalOptions.Language);
-                        lblVehicleWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
-                        lblVehicleWeaponAP.Text = objWeapon.TotalAP(GlobalOptions.Language);
-                        lblVehicleWeaponAmmo.Text = objWeapon.CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                        lblVehicleWeaponMode.Text = objWeapon.CalculatedMode(GlobalOptions.Language);
-                        if (objWeapon.WeaponType == "Ranged")
-                        {
-                            cmdFireVehicleWeapon.Enabled = true;
-                            cmdReloadVehicleWeapon.Enabled = true;
-                            lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString();
-
-                            cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeSingleShot", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeSemiAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeBurstFire", GlobalOptions.Language)) || objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-                            cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowMode(LanguageManager.GetString("String_ModeFullAutomatic", GlobalOptions.Language));
-
-                            if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = LanguageManager.GetString("String_FullBurst", GlobalOptions.Language).Replace("{0}", objWeapon.FullBurst.ToString());
-                            if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = LanguageManager.GetString("String_SuppressiveFire", GlobalOptions.Language).Replace("{0}", objWeapon.Suppressive.ToString());
-                        }
-
-                        List<ListItem> lstAmmo = new List<ListItem>();
-                        int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-                        for (int i = 1; i <= objWeapon.AmmoSlots; i++)
-                        {
-                            objWeapon.ActiveAmmoSlot = i;
-                            Gear objVehicleGear = objCurrentVehicle.Gear.DeepFindById(objWeapon.AmmoLoaded);
-
-                            string strPlugins = string.Empty;
-                            foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                            {
-                                foreach (Gear objCurrentAmmo in objVehicle.Gear)
-                                {
-                                    if (objCurrentAmmo.InternalId == objWeapon.AmmoLoaded)
-                                    {
-                                        foreach (Gear objChild in objCurrentAmmo.Children)
-                                        {
-                                            strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ", ";
-                                        }
-                                    }
-                                }
-                            }
-                            // Remove the trailing comma.
-                            if (!string.IsNullOrEmpty(strPlugins))
-                                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 2);
-
-                            string strAmmoName = string.Empty;
-                            if (objVehicleGear == null)
-                            {
-                                if (objWeapon.AmmoRemaining == 0)
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_Empty", GlobalOptions.Language);
-                                else
-                                    strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + LanguageManager.GetString("String_ExternalSource", GlobalOptions.Language);
-                            }
-                            else
-                                strAmmoName = LanguageManager.GetString("String_SlotNumber", GlobalOptions.Language).Replace("{0}", i.ToString()) + ' ' + objVehicleGear.DisplayNameShort(GlobalOptions.Language);
-
-                            if (!string.IsNullOrEmpty(strPlugins))
-                                strAmmoName += " [" + strPlugins + "]";
-                            lstAmmo.Add(new ListItem(i.ToString(), strAmmoName));
-                        }
-                        objWeapon.ActiveAmmoSlot = intCurrentSlot;
-                        cboVehicleWeaponAmmo.BeginUpdate();
-                        cboVehicleWeaponAmmo.Enabled = true;
-                        cboVehicleWeaponAmmo.ValueMember = "Value";
-                        cboVehicleWeaponAmmo.DisplayMember = "Name";
-                        cboVehicleWeaponAmmo.DataSource = lstAmmo;
-                        cboVehicleWeaponAmmo.SelectedValue = objWeapon.ActiveAmmoSlot.ToString();
-                        if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-                            cboVehicleWeaponAmmo.SelectedIndex = 0;
-                        cboVehicleWeaponAmmo.EndUpdate();
-
-                        lblVehicleWeaponRangeMain.Text = objWeapon.DisplayRange(GlobalOptions.Language);
-                        lblVehicleWeaponRangeAlternate.Text = objWeapon.DisplayAlternateRange(GlobalOptions.Language);
-                        IDictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalOptions.CultureInfo);
-                        lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                        lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                        lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                        lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                        lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                        lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                        lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                        lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
-
-                        lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
-                        lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                        lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
-                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        lblVehicleHandling.Text = string.Empty;
-                        lblVehicleAccel.Text = string.Empty;
-                        lblVehicleSpeed.Text = string.Empty;
-                        lblVehicleDevice.Text = string.Empty;
-                        lblVehiclePilot.Text = string.Empty;
-                        lblVehicleBody.Text = string.Empty;
-                        lblVehicleArmor.Text = string.Empty;
-                        lblVehicleSensor.Text = string.Empty;
-                        lblVehicleSlots.Text = string.Empty;
-                        string strBook = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language);
-                        string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
-                        lblVehicleSource.Text = strBook + ' ' + strPage;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Installed;
-                        tipTooltip.SetToolTip(lblVehicleSource, CommonFunctions.LanguageBookLong(objWeapon.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-                        lblVehicleWeaponDicePool.Text = objWeapon.GetDicePool(GlobalOptions.CultureInfo);
-                    }
-                }
-            }
-            else
-                panVehicleCM.Visible = false;
             _blnSkipRefresh = false;
         }
 
