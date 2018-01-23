@@ -17523,7 +17523,8 @@ namespace Chummer
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
                     int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
-                    CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
+                    if (CharacterObject.IsMysticAdept && CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                        CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
                     intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
                     // Create Improvements
                     ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);
