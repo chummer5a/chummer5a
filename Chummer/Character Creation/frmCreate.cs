@@ -66,6 +66,13 @@ namespace Chummer
         public frmCreate(Character objCharacter) : base(objCharacter)
         {
             InitializeComponent();
+
+            nudMysticAdeptMAGMagician.ValueChanged += new EventHandler(MakeDirtyWithCharacterUpdate);
+            tabStreetGearTabs.MouseWheel += new MouseEventHandler(ShiftTabsOnMouseScroll);
+            tabPeople.MouseWheel += new MouseEventHandler(ShiftTabsOnMouseScroll);
+            tabInfo.MouseWheel += new MouseEventHandler(ShiftTabsOnMouseScroll);
+            tabCharacterTabs.MouseWheel += new MouseEventHandler(ShiftTabsOnMouseScroll);
+
             Program.MainForm.OpenCharacterForms.Add(this);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
