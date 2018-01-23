@@ -60,7 +60,7 @@ namespace Chummer
                 strSizeFilter += " and not(optionaldrone)";
             foreach (XmlNode node in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
             {
-                lstSize.Add(new ListItem(node["id"].InnerText, node.Attributes?["translate"]?.InnerText ?? node["name"].InnerText));
+                lstSize.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? node["name"].InnerText));
             }
 
             cboSize.BeginUpdate();
@@ -665,7 +665,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstVisibility.Add(new ListItem(node["id"].InnerText, node.Attributes?["translate"]?.InnerText ?? strName));
+                            lstVisibility.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
                         break;
                     case "Flexibility":
                         if (xmlForbiddenNode != null)
@@ -682,7 +682,7 @@ namespace Chummer
                         if (xmlRequiredNode != null)
                         {
                             blnAddItem = false;
-                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("visibility"))
+                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("flexibility"))
                             {
                                 if (xmlLoopNode.InnerText == strName)
                                 {
@@ -692,7 +692,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstFlexibility.Add(new ListItem(node["id"].InnerText, node.Attributes?["translate"]?.InnerText ?? strName));
+                            lstFlexibility.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
                         break;
                     case "Control":
                         if (xmlForbiddenNode != null)
@@ -709,7 +709,7 @@ namespace Chummer
                         if (xmlRequiredNode != null)
                         {
                             blnAddItem = false;
-                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("visibility"))
+                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("control"))
                             {
                                 if (xmlLoopNode.InnerText == strName)
                                 {
@@ -719,7 +719,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstControl.Add(new ListItem(node["id"].InnerText, node.Attributes?["translate"]?.InnerText ?? strName));
+                            lstControl.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
                         break;
                     default:
                         Utils.BreakIfDebug();
@@ -750,7 +750,7 @@ namespace Chummer
             cboFlexibility.Enabled = lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
                 cboFlexibility.SelectedValue = strOldFlexibility;
-            if (cboVisibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
+            if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
                 cboFlexibility.SelectedIndex = 0;
             cboFlexibility.EndUpdate();
 
