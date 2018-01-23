@@ -916,13 +916,7 @@ namespace Chummer
                 }
             }
             strFilter += " and " + strCategoryFilter + " or category = \"None\")";
-            if (txtSearch.TextLength != 0)
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = txtSearch.Text.ToUpper();
-                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
-            }
-
+            
             if (_objCharacter.DEPEnabled && ParentVehicle == null)
                 strFilter += " and (name = \"Essence Hole\" or name = \"Essence Antihole\" or mountsto)";
             else if (_objParentNode != null)
@@ -937,6 +931,8 @@ namespace Chummer
                 if (objCurrentGrade.SecondHand)
                     strFilter += " and not(nosecondhand)";
             }
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             return BuildCyberwareList(_objXmlDocument.SelectNodes(_strNodeXPath + '[' + strFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }

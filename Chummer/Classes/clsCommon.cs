@@ -1193,6 +1193,34 @@ namespace Chummer
             return string.Empty;
         }
 
+        /// <summary>
+        /// Returns an XPath Expression's string that searches an item's name for a string.
+        /// </summary>
+        /// <param name="strNeedle">String to look for</param>
+        /// <param name="strNameElement">Name of the element that corresponds to the item's untranslated name.</param>
+        /// <param name="strTranslateElement">Name of the element that corresponds to the item's translated name.</param>
+        /// <param name="blnAddAnd">Whether to add " and " to the beginning of the search XPath</param>
+        /// <returns></returns>
+        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate", bool blnAddAnd = true)
+        {
+            if (string.IsNullOrEmpty(strNeedle))
+                return string.Empty;
+            string strSearchText = strNeedle.ToUpper();
+            // Treat everything as being uppercase so the search is case-insensitive.
+            return string.Concat(
+                blnAddAnd ? " and ((not(" : "((not(",
+                strTranslateElement,
+                ") and contains(translate(",
+                strNameElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\")) or contains(translate(",
+                strTranslateElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\"))");
+        }
+
         #region PDF Functions
         /// <summary>
         /// Opens a PDF file using the provided source information.

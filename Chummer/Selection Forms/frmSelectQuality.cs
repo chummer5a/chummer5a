@@ -365,17 +365,6 @@ namespace Chummer
                     strFilter.Append(')');
                 }
             }
-            string strSearch = txtSearch.Text;
-            if (!string.IsNullOrWhiteSpace(strSearch))
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = strSearch.ToUpper();
-                strFilter.Append(" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"");
-                strFilter.Append(strSearchText);
-                strFilter.Append("\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"");
-                strFilter.Append(strSearchText);
-                strFilter.Append("\"))");
-            }
             if (chkMetagenetic.Checked)
             {
                 strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
@@ -403,7 +392,12 @@ namespace Chummer
                     strFilter.Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
-            
+            string strSearch = CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrWhiteSpace(strSearch))
+            {
+                strFilter.Append(strSearch);
+            }
+
             string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
             if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
             {
