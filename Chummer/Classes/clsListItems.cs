@@ -28,7 +28,7 @@ namespace Chummer
     /// </summary>
     public struct ListItem
     {
-        public static readonly ListItem Blank = new ListItem(null, string.Empty);
+        public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
         public ListItem(object objValue, string strName)
         {

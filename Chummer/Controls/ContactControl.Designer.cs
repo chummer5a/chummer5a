@@ -119,13 +119,12 @@ namespace Chummer
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(437, 2);
-            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
+            this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.Location = new System.Drawing.Point(468, 2);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(49, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(22, 22);
             this.cmdDelete.TabIndex = 7;
-            this.cmdDelete.Tag = "String_Delete";
-            this.cmdDelete.Text = "Delete";
+            this.cmdDelete.Tag = "";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
@@ -183,7 +182,6 @@ namespace Chummer
             // 
             this.cboContactRole.FormattingEnabled = true;
             this.cboContactRole.Location = new System.Drawing.Point(279, 4);
-            this.cboContactRole.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(120, 21);
             this.cboContactRole.TabIndex = 2;
@@ -192,7 +190,6 @@ namespace Chummer
             // txtContactName
             // 
             this.txtContactName.Location = new System.Drawing.Point(27, 4);
-            this.txtContactName.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.txtContactName.Name = "txtContactName";
             this.txtContactName.Size = new System.Drawing.Size(120, 20);
             this.txtContactName.TabIndex = 0;
@@ -201,7 +198,6 @@ namespace Chummer
             // txtContactLocation
             // 
             this.txtContactLocation.Location = new System.Drawing.Point(153, 4);
-            this.txtContactLocation.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.txtContactLocation.Name = "txtContactLocation";
             this.txtContactLocation.Size = new System.Drawing.Size(120, 20);
             this.txtContactLocation.TabIndex = 1;
@@ -213,7 +209,6 @@ namespace Chummer
             this.cmdExpand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdExpand.Image = global::Chummer.Properties.Resources.Collapse;
             this.cmdExpand.Location = new System.Drawing.Point(3, 3);
-            this.cmdExpand.Margin = new System.Windows.Forms.Padding(0);
             this.cmdExpand.Name = "cmdExpand";
             this.cmdExpand.Size = new System.Drawing.Size(21, 21);
             this.cmdExpand.TabIndex = 11;
@@ -330,7 +325,6 @@ namespace Chummer
             // 
             this.cboMetatype.FormattingEnabled = true;
             this.cboMetatype.Location = new System.Drawing.Point(73, 55);
-            this.cboMetatype.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboMetatype.Name = "cboMetatype";
             this.cboMetatype.Size = new System.Drawing.Size(153, 21);
             this.cboMetatype.TabIndex = 20;
@@ -340,7 +334,6 @@ namespace Chummer
             // 
             this.cboSex.FormattingEnabled = true;
             this.cboSex.Location = new System.Drawing.Point(73, 80);
-            this.cboSex.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboSex.Name = "cboSex";
             this.cboSex.Size = new System.Drawing.Size(153, 21);
             this.cboSex.TabIndex = 21;
@@ -350,7 +343,6 @@ namespace Chummer
             // 
             this.cboType.FormattingEnabled = true;
             this.cboType.Location = new System.Drawing.Point(73, 130);
-            this.cboType.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(153, 21);
             this.cboType.TabIndex = 22;
@@ -360,7 +352,6 @@ namespace Chummer
             // 
             this.cboPreferredPayment.FormattingEnabled = true;
             this.cboPreferredPayment.Location = new System.Drawing.Point(336, 80);
-            this.cboPreferredPayment.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboPreferredPayment.Name = "cboPreferredPayment";
             this.cboPreferredPayment.Size = new System.Drawing.Size(144, 21);
             this.cboPreferredPayment.TabIndex = 23;
@@ -370,7 +361,6 @@ namespace Chummer
             // 
             this.cboAge.FormattingEnabled = true;
             this.cboAge.Location = new System.Drawing.Point(73, 105);
-            this.cboAge.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboAge.Name = "cboAge";
             this.cboAge.Size = new System.Drawing.Size(153, 21);
             this.cboAge.TabIndex = 24;
@@ -380,7 +370,6 @@ namespace Chummer
             // 
             this.cboHobbiesVice.FormattingEnabled = true;
             this.cboHobbiesVice.Location = new System.Drawing.Point(336, 105);
-            this.cboHobbiesVice.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboHobbiesVice.Name = "cboHobbiesVice";
             this.cboHobbiesVice.Size = new System.Drawing.Size(144, 21);
             this.cboHobbiesVice.TabIndex = 25;
@@ -390,7 +379,6 @@ namespace Chummer
             // 
             this.cboPersonalLife.FormattingEnabled = true;
             this.cboPersonalLife.Location = new System.Drawing.Point(336, 55);
-            this.cboPersonalLife.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
             this.cboPersonalLife.Name = "cboPersonalLife";
             this.cboPersonalLife.Size = new System.Drawing.Size(144, 21);
             this.cboPersonalLife.TabIndex = 26;
