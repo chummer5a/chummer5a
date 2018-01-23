@@ -292,7 +292,7 @@ namespace Chummer
         {
             set
             {
-                if (_lstCategory.Any(x => x.Value == value))
+                if (_lstCategory.Any(x => x.Value.ToString() == value))
                 {
                     cboCategory.BeginUpdate();
                     cboCategory.SelectedValue = value;

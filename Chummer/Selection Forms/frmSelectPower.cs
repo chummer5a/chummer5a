@@ -245,7 +245,7 @@ namespace Chummer
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
-                lstPower.Add(new ListItem(strName, objXmlPower["translate"]?.InnerText ?? strName));
+                lstPower.Add(new ListItem(objXmlPower["id"].InnerText, objXmlPower["translate"]?.InnerText ?? strName));
             }
             lstPower.Sort(CompareListItems.CompareNames);
             _blnLoading = true;
@@ -273,47 +273,11 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedId + "\"]");
 
-                // Make sure the character meets the Quality requirements if any.
-                XmlNode xmlRequiredNode = objXmlPower["required"];
-                if (xmlRequiredNode != null)
+                if (objXmlPower.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Power", GlobalOptions.Language), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
-                    string strRequirement = string.Empty;
-                    bool blnRequirementMet = true;
-
-                    // Quality requirements.
-                    foreach (XmlNode objXmlQuality in xmlRequiredNode.SelectNodes("allof/quality"))
-                    {
-                        bool blnFound = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
-
-                        if (!blnFound)
-                        {
-                            blnRequirementMet = false;
-                            strRequirement += "\n\t" + objXmlQuality.InnerText;
-                        }
-                    }
-
-                    foreach (XmlNode objXmlQuality in xmlRequiredNode.SelectNodes("oneof/quality"))
-                    {
-                        blnRequirementMet = _objCharacter.Qualities.Any(objQuality => objQuality.Name == objXmlQuality.InnerText);
-
-                        if (!blnRequirementMet)
-                            strRequirement += "\n\t" + objXmlQuality.InnerText;
-                        else
-                            break;
-                    }
-
-                    if (!blnRequirementMet)
-                    {
-                        string strMessage = LanguageManager.GetString("Message_SelectPower_PowerRequirement", GlobalOptions.Language);
-                        strMessage += strRequirement;
-
-                        MessageBox.Show(strMessage, LanguageManager.GetString("MessageTitle_SelectPower_PowerRequirement", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    SelectedPower = strSelectedId;
+                    DialogResult = DialogResult.OK;
                 }
-
-                SelectedPower = strSelectedId;
-                DialogResult = DialogResult.OK;
             }
         }
 

@@ -4579,7 +4579,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (Weapon objLoopWeapon in Children)
             {
-                if (objLoopWeapon.Installed)
+                if (objLoopWeapon.Installed && objLoopWeapon.ParentID != InternalId)
                 {
                     intReturn += objLoopWeapon.GetTotalMatrixAttribute(strAttributeName);
                 }

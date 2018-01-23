@@ -53,7 +53,7 @@ namespace Chummer
             // Remove the items that cannot actually be uploaded through this window.
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "4")
+                if (objItem.Value.ToString() == "4")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -61,7 +61,7 @@ namespace Chummer
             }
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "data")
+                if (objItem.Value.ToString() == "data")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -69,7 +69,7 @@ namespace Chummer
             }
             foreach (ListItem objItem in lstCharacterTypes)
             {
-                if (objItem.Value == "sheets")
+                if (objItem.Value.ToString() == "sheets")
                 {
                     lstCharacterTypes.Remove(objItem);
                     break;
@@ -97,9 +97,9 @@ namespace Chummer
             string strName = string.Empty;
             foreach (ListItem objItem in _lstCharacterTypes)
             {
-                if (objItem.Value == _intCharacterType.ToString())
+                if (objItem.Value.ToString() == _intCharacterType.ToString())
                 {
-                    strName = objItem.Value;
+                    strName = objItem.Value.ToString();
                     break;
                 }
             }

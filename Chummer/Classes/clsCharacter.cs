@@ -1589,7 +1589,7 @@ namespace Chummer
             foreach (ListItem objItem in lstPowerOrder)
             {
                 Power objPower = new Power(this);
-                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value) + "]");
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value.ToString()) + "]");
                 if (objNode != null)
                 {
                     objPower.Load(objNode);
@@ -3257,10 +3257,10 @@ namespace Chummer
                         }
                     }
                     break;
-                case Improvement.ImprovementSource.MartialArtAdvantage:
+                case Improvement.ImprovementSource.MartialArtTechnique:
                     foreach (MartialArt objMartialArt in MartialArts)
                     {
-                        foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {

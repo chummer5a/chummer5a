@@ -442,7 +442,7 @@ namespace Chummer
                 {
                     if (!string.IsNullOrEmpty(strSpellCategory))
                     {
-                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strSpellCategory);
+                        ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                         {
                             strDisplayName += " [" + objFoundItem.Name + "]";

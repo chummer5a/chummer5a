@@ -595,11 +595,11 @@
     <Compile Include="Selection Forms\frmSelectMartialArt.Designer.cs">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.cs">
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.Designer.cs">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
@@ -1043,8 +1043,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArt.resx">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtAdvantage.resx">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArtManeuver.resx">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>

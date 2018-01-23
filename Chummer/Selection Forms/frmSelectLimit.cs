@@ -116,7 +116,6 @@ namespace Chummer
                 new ListItem(strValue, LanguageManager.GetString("String_Limit" + strValue + "Short", GlobalOptions.Language))
             };
             cboLimit.BeginUpdate();
-            cboLimit.DataSource = null;
             cboLimit.ValueMember = "Value";
             cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = lstItems;
@@ -135,7 +134,6 @@ namespace Chummer
                 _lstLimits.Add(new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short", GlobalOptions.Language)));
             }
             cboLimit.BeginUpdate();
-            cboLimit.DataSource = null;
             cboLimit.ValueMember = "Value";
             cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = _lstLimits;
@@ -152,7 +150,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstLimits)
                 {
-                    if (objItem.Value == strLimit)
+                    if (objItem.Value.ToString() == strLimit)
                     {
                         _lstLimits.Remove(objItem);
                         break;
@@ -160,7 +158,6 @@ namespace Chummer
                 }
             }
             cboLimit.BeginUpdate();
-            cboLimit.DataSource = null;
             cboLimit.ValueMember = "Value";
             cboLimit.DisplayMember = "Name";
             cboLimit.DataSource = _lstLimits;

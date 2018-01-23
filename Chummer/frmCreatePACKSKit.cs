@@ -301,11 +301,11 @@ namespace Chummer
                     objWriter.WriteStartElement("martialart");
                     objWriter.WriteElementString("name", objArt.Name);
                     objWriter.WriteElementString("rating", objArt.Rating.ToString());
-                    if (objArt.Advantages.Count > 0)
+                    if (objArt.Techniques.Count > 0)
                     {
                         // <advantages>
                         objWriter.WriteStartElement("advantages");
-                        foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objArt.Techniques)
                             objWriter.WriteElementString("advantage", objAdvantage.Name);
                         // </advantages>
                         objWriter.WriteEndElement();

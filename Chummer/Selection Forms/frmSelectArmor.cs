@@ -422,7 +422,7 @@ namespace Chummer
                                 string strCategory = objXmlArmor["category"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strCategory))
                                 {
-                                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
                                         strDisplayName += " [" + objFoundItem.Name + "]";

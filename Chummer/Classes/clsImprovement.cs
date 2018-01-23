@@ -315,7 +315,6 @@ namespace Chummer
             ArmorEncumbrance,
             Gear,
             Spell,
-            MartialArtAdvantage,
             Initiation,
             Submersion,
             Metamagic,
@@ -337,6 +336,7 @@ namespace Chummer
             Custom,
             Heritage,
             MartialArt,
+            MartialArtTechnique,
             AIProgram,
             SpiritFettering,
             MentorSpirit,
@@ -388,6 +388,8 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
+            if (strValue == "MartialArtAdvantage")
+                strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
 
@@ -1432,9 +1434,9 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                            foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                             {
-                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }

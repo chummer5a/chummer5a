@@ -133,11 +133,11 @@ namespace Chummer
                 foreach (WeaponMountOption objExistingOption in _objMount.WeaponMountOptions)
                 {
                     string strLoopId = objExistingOption.SourceId;
-                    if (_lstVisibility.Any(x => x.Value == strLoopId))
+                    if (_lstVisibility.Any(x => x.Value.ToString() == strLoopId))
                         cboVisibility.SelectedValue = strLoopId;
-                    else if (_lstFlexibility.Any(x => x.Value == strLoopId))
+                    else if (_lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
                         cboFlexibility.SelectedValue = strLoopId;
-                    else if (_lstControl.Any(x => x.Value == strLoopId))
+                    else if (_lstControl.Any(x => x.Value.ToString() == strLoopId))
                         cboControl.SelectedValue = strLoopId;
                 }
 

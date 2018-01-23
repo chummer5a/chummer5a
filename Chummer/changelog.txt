@@ -57,6 +57,20 @@ Application Changes:
 - Fixed a bug where adding arts, enhancements, enchantments, or rituals to metamagics would not generate a properly named expense entry.
 - Fixed a bug where Working for the Man and Working for the People would always use the default 2000 nuyen-per-karma exchange rate instead of the one defined in the character's options.
 - Fixed an issue with Life Modules not loading properly, and defaulting to the Real Life stage instead of Nationality.
+- Added a label to view the PDF source of a martial arts technique when selecting one.
+- Fixed issues with the martial arts technique selection screen not properly using translations.
+- Fixed an issue where bonuses that allow a user to select a metamagic or echo but force its value did not properly work.
+- Fixed an issue where characters were allowed to choose adept powers for which they were not eligible as long as the power did not require certain qualities.
+- Fixed issues where clicking the source label in the cyberware/bioware selection screen would not properly open the PDF associated with the selected piece of 'ware.
+- Fixed a bug where the "Buy with Karma" checkbox in the specialization selection screen was visible outside of priority-based chargen.
+- Fixed a bug where weapon strings in the specialization selection screen were not translated properly.
+- Fixed a bug where players could accidentally add blank specializations from the specialization selection screen.
+- Fixed a bug where the button to move a weapon to a vehicle in Career mode was obscured by labels.
+- Fixed various issues where cancelling out of a dialog for a bonus added by a newly created item would not also cancel out of adding the underlying item.
+- Fixed an issue where selection screens for optional critter powers would not end up translating displayed items.
+- Fixed an issue where clicking on the source labels for various items in the main character screen would not open the PDF associated with the given item. Fixes #2378.
+- The button for deleting contacts has been changed from being text-based to being icon-based, relieving issues with localization and label overlap. Fixes #2377.
+- Fixed a bug where special priorities where skills are chosen from a specific list would not display those skills in the priority selection screen. Fixes  #2379.
 - Fixed layout issues with the vehicles tab that caused crashes when selecting various types of child item.
 - Properly allowed mods to be removed from weapon mounts in the weapon mount creation window. 
 - Weapon Mount creation window properly updates price and slot labels when adding ot removing mods.
@@ -78,6 +92,10 @@ Data Changes:
 New Strings:
 
 - Message_DeleteVehicleLocationBase
+- Message_SelectMartialArtTechnique
+- MessageTitle_SelectMartialArtTechnique
+- Title_SelectMartialArtTechnique
+- String_Power
 
 Changed Strings:
 
@@ -103,6 +121,11 @@ Removed Strings:
 - String_LimbCount5Skull
 - Message_CannotRemoveSpell
 - MessageTitle_CannotRemoveSpell
+- Message_MartialArtAdvantageLimit
+- MessageTitle_MartialArtAdvantageLimit
+- Message_SelectMartialArtAdvantage
+- MessageTitle_SelectMartialArtAdvantage
+- Title_SelectMartialArtAdvantage
 
 Build 197
 

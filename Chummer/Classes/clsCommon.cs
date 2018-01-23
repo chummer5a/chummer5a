@@ -604,33 +604,33 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
+        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
         {
-            return lstMartialArts.FindMartialArtAdvantage(strGuid, out MartialArt objFoundMartialArt);
+            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt objFoundMartialArt);
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
         /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        /// <param name="objFoundMartialArt">MartialArt the Advantage was found in.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
+        /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (MartialArt objArt in lstMartialArts)
                 {
-                    foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                    foreach (MartialArtTechnique objTechnique in objArt.Techniques)
                     {
-                        if (objAdvantage.InternalId == strGuid)
+                        if (objTechnique.InternalId == strGuid)
                         {
                             objFoundMartialArt = objArt;
-                            return objAdvantage;
+                            return objTechnique;
                         }
                     }
                 }

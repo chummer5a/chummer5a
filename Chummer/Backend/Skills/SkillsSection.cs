@@ -657,7 +657,7 @@ namespace Chummer.Backend.Skills
             // Second pass, retrieve the Skills in the order they're presented in the list.
             foreach (ListItem objItem in lstSkillOrder)
             {
-                yield return dicSkills[objItem.Value];
+                yield return dicSkills[objItem.Value.ToString()];
             }
         }
 

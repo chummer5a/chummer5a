@@ -1190,7 +1190,7 @@ namespace Chummer
                     strBookXPath.Append("\" or ");
                 }
             }
-            if (_strBookXPath.Length >= 4)
+            if (strBookXPath.Length >= 4)
             {
                 strBookXPath.Length -= 4;
                 strBookXPath.Append(')');
