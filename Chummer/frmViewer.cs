@@ -69,7 +69,7 @@ namespace Chummer
             else
             {
                 int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
-                if (intLastIndexDirectorySeparator != -1)
+                if (intLastIndexDirectorySeparator != -1 && _strSelectedSheet.Contains(GlobalOptions.Language.Substring(0, 2)))
                     _strSelectedSheet = _strSelectedSheet.Substring(intLastIndexDirectorySeparator + 1);
             }
 
@@ -602,11 +602,20 @@ namespace Chummer
             
             lstLanguages.Sort(CompareListItems.CompareNames);
 
+            string strDefaultSheetLanguage = GlobalOptions.Language;
+            int intLastIndexDirectorySeparator = _strSelectedSheet.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = _strSelectedSheet.Substring(0, intLastIndexDirectorySeparator);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
             cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";
             cboLanguage.DisplayMember = "Name";
             cboLanguage.DataSource = lstLanguages;
-            cboLanguage.SelectedValue = GlobalOptions.Language;
+            cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
                 cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();

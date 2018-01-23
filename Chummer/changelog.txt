@@ -82,6 +82,7 @@ Application Changes:
 - Fixed bugs where merging or reducing gear to the point where it would get deleted would not properly remove bonuses granted by that gear's children.
 - Fixed a bug where bonuses granted by metatypes that toggle a particular feature (e.g. enabling an attribute, enabling fame, etc.) would get lost when changing priorities in create mode. Fixes #2375.
 - Fixed a crash that would occur if Chummer5 cannot find the pre-installed children of a piece of 'ware. Fixes #2385.
+- Users can now pick their default sheet to be one that is in a language different from their UI language. This also indirectly fixes issues regarding loading translations that do not have sheets attached to them.
 
 Data Changes:
 
