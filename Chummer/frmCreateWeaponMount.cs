@@ -27,16 +27,15 @@ namespace Chummer
 {
 	public partial class frmCreateWeaponMount : Form
 	{
-		private readonly List<ListItem> _lstVisibility = new List<ListItem>();
-        private readonly List<ListItem> _lstFlexibility = new List<ListItem>();
-        private readonly List<ListItem> _lstControl = new List<ListItem>();
-        private readonly List<ListItem> _lstSize = new List<ListItem>();
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 		private bool _blnLoading = true;
 	    private readonly Vehicle _objVehicle;
 	    private readonly Character _objCharacter;
 	    private WeaponMount _objMount;
-		private XmlDocument _xmlDoc;
+        private string _strExistingVisibilityId;
+        private string _strExistingFlexibilityId;
+        private string _strExistingControlId;
+        private XmlDocument _xmlDoc;
 
         public WeaponMount WeaponMount
         {
@@ -48,108 +47,93 @@ namespace Chummer
             _xmlDoc = XmlManager.Load("vehicles.xml");
 		    _objVehicle = objVehicle;
 		    _objMount = objWeaponMount;
-		    if (_objMount != null)
-		    {
-		        _lstMods.AddRange(_objMount.Mods);
-		    }
 		    _objCharacter = objCharacter;
 			InitializeComponent();
 		}
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
+            XmlNode xmlVehicleNode = _objVehicle.GetNode();
+            List<ListItem> lstSize = new List<ListItem>();
             // Populate the Weapon Mount Category list.
-            foreach (XmlNode node in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount"))
+            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
+            if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
+                strSizeFilter += " and not(optionaldrone)";
+            foreach (XmlNode xmlSizeNode in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
             {
-                if (node["optionaldrone"] != null && !_objVehicle.IsDrone)
-                    continue;
-                ListItem objItem = new ListItem(node["id"]?.InnerText, node.Attributes?["translate"]?.InnerText ?? node["name"]?.InnerText ?? string.Empty);
-                switch (node["category"]?.InnerText)
+                XmlNode xmlTestNode = xmlSizeNode.SelectSingleNode("forbidden/vehicledetails");
+                if (xmlTestNode != null)
                 {
-                    case "Visibility":
-                        _lstVisibility.Add(objItem);
-                        break;
-                    case "Flexibility":
-                        _lstFlexibility.Add(objItem);
-                        break;
-                    case "Control":
-                        _lstControl.Add(objItem);
-                        break;
-                    case "Size":
-                        _lstSize.Add(objItem);
-                        break;
-                    default:
-                        Utils.BreakIfDebug();
-                        break;
+                    // Assumes topmost parent is an AND node
+                    if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
                 }
+                xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+
+                lstSize.Add(new ListItem(xmlSizeNode["id"].InnerText, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"].InnerText));
             }
 
             cboSize.BeginUpdate();
             cboSize.ValueMember = "Value";
             cboSize.DisplayMember = "Name";
-            cboSize.DataSource = _lstSize;
-            cboSize.Enabled = _lstSize.Count > 1;
+            cboSize.DataSource = lstSize;
+            cboSize.Enabled = lstSize.Count > 1;
             cboSize.EndUpdate();
 
-            cboVisibility.BeginUpdate();
-            cboVisibility.ValueMember = "Value";
-            cboVisibility.DisplayMember = "Name";
-            cboVisibility.DataSource = _lstVisibility;
-            cboVisibility.Enabled = _lstVisibility.Count > 1;
-            cboVisibility.EndUpdate();
+            if (_objMount != null)
+            {
+                TreeNode objModsParentNode = new TreeNode
+                {
+                    Tag = "Node_AdditionalMods",
+                    Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Language)
+                };
+                treMods.Nodes.Add(objModsParentNode);
+                objModsParentNode.Expand();
+                foreach (VehicleMod objMod in _objMount.Mods)
+                {
+                    objModsParentNode.Nodes.Add(objMod.CreateTreeNode(null, null, null, null, null, null));
+                }
+                _lstMods.AddRange(_objMount.Mods);
 
-            cboFlexibility.BeginUpdate();
-            cboFlexibility.ValueMember = "Value";
-            cboFlexibility.DisplayMember = "Name";
-            cboFlexibility.DataSource = _lstFlexibility;
-            cboFlexibility.Enabled = _lstFlexibility.Count > 1;
-            cboFlexibility.EndUpdate();
-
-            cboControl.BeginUpdate();
-            cboControl.ValueMember = "Value";
-            cboControl.DisplayMember = "Name";
-            cboControl.DataSource = _lstControl;
-            cboControl.Enabled = _lstControl.Count > 1;
-            cboControl.EndUpdate();
-
+                cboSize.SelectedValue = _objMount.SourceId;
+            }
+            if (cboSize.SelectedIndex == -1)
+                if (lstSize.Count > 0)
+                    cboSize.SelectedIndex = 0;
+            else
+                RefreshCBOs();
+            
             nudMarkup.Visible = AllowDiscounts;
             lblMarkupLabel.Visible = AllowDiscounts;
             lblMarkupPercentLabel.Visible = AllowDiscounts;
 
             if (_objMount != null)
             {
-                foreach (VehicleMod objMod in _objMount.Mods)
-                {
-                    TreeNode objModNode = new TreeNode
-                    {
-                        Text = objMod.DisplayName(GlobalOptions.Language),
-                        Tag = objMod
-                    };
-                    treMods.Nodes[0].Nodes.Add(objModNode);
-                }
-                _lstMods.AddRange(_objMount.Mods);
-
-                cboSize.SelectedValue = _objMount.SourceId;
+                List<ListItem> lstVisibility = cboVisibility.Items.Cast<ListItem>().ToList();
+                List<ListItem> lstFlexibility = cboFlexibility.Items.Cast<ListItem>().ToList();
+                List<ListItem> lstControl = cboControl.Items.Cast<ListItem>().ToList();
                 foreach (WeaponMountOption objExistingOption in _objMount.WeaponMountOptions)
                 {
                     string strLoopId = objExistingOption.SourceId;
-                    if (_lstVisibility.Any(x => x.Value.ToString() == strLoopId))
+                    if (lstVisibility.Any(x => x.Value.ToString() == strLoopId))
                         cboVisibility.SelectedValue = strLoopId;
-                    else if (_lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
+                    else if (lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
                         cboFlexibility.SelectedValue = strLoopId;
-                    else if (_lstControl.Any(x => x.Value.ToString() == strLoopId))
+                    else if (lstControl.Any(x => x.Value.ToString() == strLoopId))
                         cboControl.SelectedValue = strLoopId;
                 }
-
-                if (cboSize.SelectedIndex == -1 && _lstSize.Count > 0)
-                    cboSize.SelectedIndex = 0;
-                if (cboVisibility.SelectedIndex == -1 && _lstVisibility.Count > 0)
-                    cboVisibility.SelectedIndex = 0;
-                if (cboFlexibility.SelectedIndex == -1 && _lstFlexibility.Count > 0)
-                    cboFlexibility.SelectedIndex = 0;
-                if (cboControl.SelectedIndex == -1 && _lstControl.Count > 0)
-                    cboControl.SelectedIndex = 0;
             }
+
             _blnLoading = false;
             UpdateInfo();
         }
@@ -295,8 +279,16 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
+        private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshCBOs();
+            treMods.SelectedNode = null;
+            UpdateInfo();
+        }
+
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            treMods.SelectedNode = null;
             UpdateInfo();
         }
 
@@ -320,23 +312,76 @@ namespace Chummer
 	        if (_blnLoading)
                 return;
 
-            XmlNode xmlMountNode = null;
-            string strSelectedMountId = cboSize.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedMountId))
+            XmlNode xmlSelectedMount = null;
+            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(strSelectedMount))
+                cmdOK.Enabled = false;
+            else
             {
-                xmlMountNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMountId + "\"]");
+                xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+                if (xmlSelectedMount == null)
+                    cmdOK.Enabled = false;
+                else
+                {
+                    string strSelectedControl = cboControl.SelectedValue?.ToString();
+                    if (string.IsNullOrEmpty(strSelectedControl))
+                        cmdOK.Enabled = false;
+                    else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedControl + "\"]") == null)
+                        cmdOK.Enabled = false;
+                    else
+                    {
+                        string strSelectedFlexibility = cboFlexibility.SelectedValue?.ToString();
+                        if (string.IsNullOrEmpty(strSelectedFlexibility))
+                            cmdOK.Enabled = false;
+                        else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedFlexibility + "\"]") == null)
+                            cmdOK.Enabled = false;
+                        else
+                        {
+                            string strSelectedVisibility = cboVisibility.SelectedValue?.ToString();
+                            if (string.IsNullOrEmpty(strSelectedVisibility))
+                                cmdOK.Enabled = false;
+                            else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedVisibility + "\"]") == null)
+                                cmdOK.Enabled = false;
+                            else
+                                cmdOK.Enabled = true;
+                        }
+                    }
+                }
             }
-            if (xmlMountNode == null)
+
+            cmdDeleteMod.Enabled = false;
+            string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
+            {
+                VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedModId);
+                if (objMod != null)
+                {
+                    cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
+                    lblCost.Text = (objMod.TotalCost * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblSlots.Text = objMod.CalculatedSlots.ToString();
+                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.Language);
+
+                    string strModPage = objMod.Page(GlobalOptions.Language);
+                    lblSource.Text = CommonFunctions.LanguageBookShort(objMod.Source, GlobalOptions.Language) + ' ' + strModPage;
+
+                    tipTooltip.SetToolTip(lblSource,
+                        CommonFunctions.LanguageBookLong(objMod.Source, GlobalOptions.Language) + ' ' +
+                        LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strModPage);
+                    return;
+                }
+            }
+            
+            if (xmlSelectedMount == null)
             {
                 lblCost.Text = string.Empty;
                 lblSlots.Text = string.Empty;
                 lblAvailability.Text = string.Empty;
                 return;
             }
-	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlMountNode["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
-            int intSlots = Convert.ToInt32(xmlMountNode["slots"]?.InnerText);
+	        decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
+            int intSlots = Convert.ToInt32(xmlSelectedMount["slots"]?.InnerText);
 
-            string strAvail = xmlMountNode["avail"]?.InnerText ?? string.Empty;
+            string strAvail = xmlSelectedMount["avail"]?.InnerText ?? string.Empty;
             char chrAvailSuffix = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
             if (chrAvailSuffix == 'F' || chrAvailSuffix == 'R')
                 strAvail = strAvail.Substring(0, strAvail.Length - 1);
@@ -375,12 +420,27 @@ namespace Chummer
                     }
                 }
 	        }
+            foreach (VehicleMod objMod in _lstMods)
+            {
+                if (!chkFreeItem.Checked)
+                    decCost += objMod.TotalCost;
 
-	        foreach (VehicleMod mod in _lstMods)
-	        {
-	            decCost += mod.TotalCost;
-	            intSlots += mod.CalculatedSlots;
-	        }
+                intSlots += objMod.CalculatedSlots;
+                string strLoopAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
+                char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
+                if (chrLoopAvailSuffix == 'F')
+                {
+                    strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                    chrAvailSuffix = 'F';
+                }
+                else if (chrLoopAvailSuffix == 'R')
+                {
+                    strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                    if (chrAvailSuffix == ' ')
+                        chrAvailSuffix = 'R';
+                }
+                intAvail += Convert.ToInt32(strLoopAvail);
+            }
 
             string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
             if (chrAvailSuffix == 'F')
@@ -392,12 +452,21 @@ namespace Chummer
 	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 	        lblSlots.Text = intSlots.ToString();
 	        lblAvailability.Text = strAvailText;
+
+            string strSource = xmlSelectedMount["source"].InnerText;
+            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"].InnerText;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+
+            tipTooltip.SetToolTip(lblSource,
+                CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
+                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdAddMod_Click(object sender, EventArgs e)
         {
             bool blnAddAgain;
 
+            TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
             do
             {
                 frmSelectVehicleMod frmPickVehicleMod = new frmSelectVehicleMod(_objCharacter)
@@ -429,6 +498,7 @@ namespace Chummer
                 decimal decOriginalCost = _objVehicle.TotalCost;
                 if (frmPickVehicleMod.FreeCost)
                     objMod.Cost = "0";
+                frmPickVehicleMod.Dispose();
 
                 // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
                 if (_objCharacter.Options.EnforceCapacity)
@@ -457,8 +527,6 @@ namespace Chummer
                     if (blnOverCapacity)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_CapacityReached", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CapacityReached", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        _lstMods.Remove(objMod);
-                        frmPickVehicleMod.Dispose();
                         continue;
                     }
                 }
@@ -477,11 +545,9 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        _lstMods.Remove(objMod);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language),
                             LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        frmPickVehicleMod.Dispose();
                         continue;
                     }
                     // Create the Expense Log Entry.
@@ -510,22 +576,236 @@ namespace Chummer
                     frmPickText.Dispose();
                 }
 
-                treMods.Nodes[0].Nodes.Add(objMod.CreateTreeNode(null, null, null, null, null, null));
-                treMods.Nodes[0].Expand();
-                frmPickVehicleMod.Dispose();
+                TreeNode objNewNode = objMod.CreateTreeNode(null, null, null, null, null, null);
+
+                if (objModsParentNode == null)
+                {
+                    objModsParentNode = new TreeNode
+                    {
+                        Tag = "Node_AdditionalMods",
+                        Text = LanguageManager.GetString("Node_AdditionalMods", GlobalOptions.Language)
+                    };
+                    treMods.Nodes.Add(objModsParentNode);
+                    objModsParentNode.Expand();
+                }
+
+                objModsParentNode.Nodes.Add(objNewNode);
+                treMods.SelectedNode = objNewNode;
             }
             while (blnAddAgain);
-            UpdateInfo();
         }
 
         private void cmdDeleteMod_Click(object sender, EventArgs e)
         {
-            if (treMods.SelectedNode == null) return;
-            VehicleMod vm = _lstMods.FirstOrDefault(objMod => objMod.InternalId == treMods.SelectedNode.Tag.ToString());
-            if (vm == null) return;
-            _lstMods.Remove(vm);
-            treMods.SelectedNode.Remove();
+            TreeNode objSelectedNode = treMods.SelectedNode;
+            if (objSelectedNode != null)
+            {
+                string strSelectedId = objSelectedNode.Tag.ToString();
+                if (!string.IsNullOrEmpty(strSelectedId) && strSelectedId.IsGuid())
+                {
+                    VehicleMod objMod = _lstMods.FirstOrDefault(x => x.InternalId == strSelectedId);
+                    if (objMod != null && !objMod.IncludedInVehicle)
+                    {
+                        if (!_objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle", GlobalOptions.Language)))
+                            return;
+
+                        _lstMods.Remove(objMod);
+                        foreach (Weapon objLoopWeapon in objMod.Weapons)
+                        {
+                            objLoopWeapon.DeleteWeapon(null, null);
+                        }
+                        foreach (Cyberware objLoopCyberware in objMod.Cyberware)
+                        {
+                            objLoopCyberware.DeleteCyberware(null, null);
+                        }
+                        TreeNode objParentNode = objSelectedNode.Parent;
+                        objSelectedNode.Remove();
+                        if (objParentNode.Nodes.Count == 0)
+                            objParentNode.Remove();
+                    }
+                }
+            }
+        }
+
+        private void treMods_AfterSelect(object sender, TreeViewEventArgs e)
+        {
             UpdateInfo();
+        }
+
+        private void RefreshCBOs()
+        {
+            XmlNode xmlRequiredNode = null;
+            XmlNode xmlForbiddenNode = null;
+            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedMount))
+            {
+                XmlNode xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + strSelectedMount + "\"]");
+                if (xmlSelectedMount != null)
+                {
+                    xmlForbiddenNode = xmlSelectedMount["forbidden"];
+                    xmlRequiredNode = xmlSelectedMount["required"];
+                }
+            }
+
+            XmlNode xmlVehicleNode = _objVehicle.GetNode();
+            List<ListItem> lstVisibility = new List<ListItem>();
+            List<ListItem> lstFlexibility = new List<ListItem>();
+            List<ListItem> lstControl = new List<ListItem>();
+            // Populate the Weapon Mount Category list.
+            string strFilter = "category != \"Size\" and not(hide)";
+            if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
+                strFilter += " and not(optionaldrone)";
+            foreach (XmlNode xmlWeaponMountOptionNode in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
+            {
+                XmlNode xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("forbidden/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+                xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+
+                string strName = xmlWeaponMountOptionNode["name"].InnerText;
+                bool blnAddItem = true;
+                switch (xmlWeaponMountOptionNode["category"]?.InnerText)
+                {
+                    case "Visibility":
+                        if (xmlForbiddenNode != null)
+                        {
+                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("visibility"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (xmlRequiredNode != null)
+                        {
+                            blnAddItem = false;
+                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("visibility"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnAddItem)
+                            lstVisibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                        break;
+                    case "Flexibility":
+                        if (xmlForbiddenNode != null)
+                        {
+                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("flexibility"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (xmlRequiredNode != null)
+                        {
+                            blnAddItem = false;
+                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("flexibility"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnAddItem)
+                            lstFlexibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                        break;
+                    case "Control":
+                        if (xmlForbiddenNode != null)
+                        {
+                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("control"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (xmlRequiredNode != null)
+                        {
+                            blnAddItem = false;
+                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("control"))
+                            {
+                                if (xmlLoopNode.InnerText == strName)
+                                {
+                                    blnAddItem = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (blnAddItem)
+                            lstControl.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
+                        break;
+                    default:
+                        Utils.BreakIfDebug();
+                        break;
+                }
+            }
+
+            bool blnOldLoading = _blnLoading;
+            _blnLoading = true;
+            string strOldVisibility = cboVisibility.SelectedValue?.ToString();
+            string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
+            string strOldControl = cboControl.SelectedValue?.ToString();
+            cboVisibility.BeginUpdate();
+            cboVisibility.ValueMember = "Value";
+            cboVisibility.DisplayMember = "Name";
+            cboVisibility.DataSource = lstVisibility;
+            cboVisibility.Enabled = lstVisibility.Count > 1;
+            if (!string.IsNullOrEmpty(strOldVisibility))
+                cboVisibility.SelectedValue = strOldVisibility;
+            if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
+                cboVisibility.SelectedIndex = 0;
+            cboVisibility.EndUpdate();
+
+            cboFlexibility.BeginUpdate();
+            cboFlexibility.ValueMember = "Value";
+            cboFlexibility.DisplayMember = "Name";
+            cboFlexibility.DataSource = lstFlexibility;
+            cboFlexibility.Enabled = lstFlexibility.Count > 1;
+            if (!string.IsNullOrEmpty(strOldFlexibility))
+                cboFlexibility.SelectedValue = strOldFlexibility;
+            if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
+                cboFlexibility.SelectedIndex = 0;
+            cboFlexibility.EndUpdate();
+
+            cboControl.BeginUpdate();
+            cboControl.ValueMember = "Value";
+            cboControl.DisplayMember = "Name";
+            cboControl.DataSource = lstControl;
+            cboControl.Enabled = lstControl.Count > 1;
+            if (!string.IsNullOrEmpty(strOldControl))
+                cboControl.SelectedValue = strOldControl;
+            if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
+                cboControl.SelectedIndex = 0;
+            cboControl.EndUpdate();
+
+            _blnLoading = blnOldLoading;
         }
     }
 }

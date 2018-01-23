@@ -441,8 +441,6 @@ namespace Chummer
             List<ListItem> lstMods = new List<ListItem>();
             foreach (XmlNode objXmlMod in objXmlModList)
             {
-                if (objXmlMod["hide"] != null)
-                    continue;
                 XmlNode xmlTestNode = objXmlMod.SelectSingleNode("forbidden/vehicledetails");
                 if (xmlTestNode != null)
                 {

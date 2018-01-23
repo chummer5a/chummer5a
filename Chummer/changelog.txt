@@ -70,10 +70,17 @@ Application Changes:
 - Fixed an issue where selection screens for optional critter powers would not end up translating displayed items.
 - Fixed an issue where clicking on the source labels for various items in the main character screen would not open the PDF associated with the given item. Fixes #2378.
 - The button for deleting contacts has been changed from being text-based to being icon-based, relieving issues with localization and label overlap. Fixes #2377.
-- Fixed a bug where special priorities where skills are chosen from a specific list would not display those skills in the priority selection screen. Fixes  #2379.
+- Fixed a bug where special priorities where skills are chosen from a specific list would not display those skills in the priority selection screen. Fixes #2379.
 - Fixed layout issues with the vehicles tab that caused crashes when selecting various types of child item.
 - Properly allowed mods to be removed from weapon mounts in the weapon mount creation window. 
-- Weapon Mount creation window properly updates price and slot labels when adding ot removing mods.
+- Weapon Mount creation window properly updates price and slot labels when adding to removing mods.
+- Fixed various issues with the weapon mount selection/creation screen.
+- Fixed a bug where characters using core rulebook weapon mounts could add more weapon mounts than dictated by the core rulebook.
+- Fixed a bug where manual operation of core rulebook weapon mounts increased the mount's slots and was allowed on drones.
+- Fixed a bug where weapons could not be moved out of weapon mounts in career mode.
+- Fixed a bug where moving gear out of a weapon accessory attached in some way to a vehicle, gear parent attached in some way to a vehicle, or cyberware attached in some way to a vehicle would result in the gear getting duplicated.
+- Fixed bugs where merging or reducing gear to the point where it would get deleted would not properly remove bonuses granted by that gear's children.
+- Fixed a bug where bonuses granted by metatypes that toggle a particular feature (e.g. enabling an attribute, enabling fame, etc.) would get lost when changing priorities in create mode. Fixes #2375.
 
 Data Changes:
 
@@ -96,6 +103,11 @@ New Strings:
 - MessageTitle_SelectMartialArtTechnique
 - Title_SelectMartialArtTechnique
 - String_Power
+- Label_Flexibility
+- Button_AddMod
+- Button_DeleteMod
+- Node_AdditionalMods
+- Title_CreateWeaponMount
 
 Changed Strings:
 

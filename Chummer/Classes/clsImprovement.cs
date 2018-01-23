@@ -1176,8 +1176,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
-        /// <param name="reapplyImprovements">Whether we're reapplying Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool reapplyImprovements = false)
+        /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
+        /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
         {
             Log.Enter("RemoveImprovements");
 
@@ -1203,7 +1204,7 @@ namespace Chummer
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate = objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && objLoopImprovement.SourceName != objImprovement.SourceName);
+                bool blnHasDuplicate = objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && (blnAllowDuplicatesFromSameSource || objLoopImprovement.SourceName != objImprovement.SourceName));
 
                 switch (objImprovement.ImproveType)
                 {
@@ -1443,7 +1444,7 @@ namespace Chummer
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !reapplyImprovements);
+                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);

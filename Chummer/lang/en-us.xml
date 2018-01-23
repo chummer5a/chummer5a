@@ -2352,6 +2352,26 @@
       <text>Size:</text>
     </string>
     <string>
+      <key>Label_Flexibility</key>
+      <text>Flexibility:</text>
+    </string>
+    <string>
+      <key>Button_AddMod</key>
+      <text>Add Mod</text>
+    </string>
+    <string>
+      <key>Button_DeleteMod</key>
+      <text>Delete Mod</text>
+    </string>
+    <string>
+      <key>Node_AdditionalMods</key>
+      <text>Additional Mods</text>
+    </string>
+    <string>
+      <key>Title_CreateWeaponMount</key>
+      <text>Create Weapon Mount</text>
+    </string>
+    <string>
       <key>Message_OverPrototypeLimit</key>
       <text>Bioware limit exceeded for Prototype Transhuman. Current: {0} Maximum: {1}</text>
     </string>

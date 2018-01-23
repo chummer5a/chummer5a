@@ -2834,7 +2834,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return Gear.Cast<IHasMatrixAttributes>().ToList();
+                return Gear.Cast<IHasMatrixAttributes>().Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
             }
         }
         #endregion
