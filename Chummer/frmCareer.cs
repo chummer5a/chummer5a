@@ -5616,39 +5616,21 @@ namespace Chummer
             }
             else
             {
+                treGear.SelectedNode.Remove();
                 // Remove the Gear if its quantity has been reduced to 0.
-                if (objParent == null)
+                if (objParent != null)
                 {
-                    CharacterObject.Gear.Remove(objGear);
-                    treGear.SelectedNode.Remove();
+                    objParent.Children.Remove(objGear);
+                    objParent.RefreshMatrixAttributeArray();
+                    objGear.Parent = null;
                 }
                 else
                 {
-                    objParent.Children.Remove(objGear);
-                    treGear.SelectedNode.Remove();
+                    CharacterObject.Gear.Remove(objGear);
                 }
 
                 // Remove any Weapons that came with it.
-                if (!objGear.WeaponID.IsEmptyGuid())
-                {
-                    List<string> lstNodesToRemoveIds = new List<string>();
-                    List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId).ToList();
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
-                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                        if (objWeapon.Parent != null)
-                            objWeapon.Parent.Children.Remove(objWeapon);
-                        else
-                            CharacterObject.Weapons.Remove(objWeapon);
-                    }
-                    foreach (string strNodeId in lstNodesToRemoveIds)
-                    {
-                        // Remove the Weapons from the TreeView.
-                        treWeapons.FindNode(strNodeId)?.Remove();
-                    }
-                }
+                objGear.DeleteGear(treWeapons, treVehicles);
             }
 
             IsCharacterUpdateRequested = true;
@@ -5823,33 +5805,20 @@ namespace Chummer
             // If the quantity has reached 0, delete the item and any Weapons it created.
             if (objGear.Quantity <= 0)
             {
-                // Remove the Gear Weapon created by the Gear if applicable.
-                if (!objGear.WeaponID.IsEmptyGuid())
-                {
-                    List<string> lstNodesToRemoveIds = new List<string>();
-                    List<Weapon> lstWeapons = CharacterObject.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objGear.InternalId).ToList();
-                    foreach (Weapon objWeapon in lstWeapons)
-                    {
-                        lstNodesToRemoveIds.Add(objWeapon.InternalId);
-                        objWeapon.DeleteWeapon(treWeapons, treVehicles);
-                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
-                        if (objWeapon.Parent != null)
-                            objWeapon.Parent.Children.Remove(objWeapon);
-                        else
-                            CharacterObject.Weapons.Remove(objWeapon);
-                    }
-                    foreach (string strNodeId in lstNodesToRemoveIds)
-                    {
-                        // Remove the Weapons from the TreeView.
-                        treWeapons.FindNode(strNodeId)?.Remove();
-                    }
-                }
-
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-
-                // Remove the Gear from the character.
-                CharacterObject.Gear.Remove(objGear);
                 treGear.SelectedNode.Remove();
+                Gear objParent = objGear.Parent;
+                // Remove the Gear if its quantity has been reduced to 0.
+                if (objParent != null)
+                {
+                    objParent.Children.Remove(objGear);
+                    objParent.RefreshMatrixAttributeArray();
+                    objGear.Parent = null;
+                }
+                else
+                {
+                    CharacterObject.Gear.Remove(objGear);
+                }
+                objGear.DeleteGear(treWeapons, treVehicles);
             }
             else
                 treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
