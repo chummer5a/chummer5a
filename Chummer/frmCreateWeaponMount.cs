@@ -55,7 +55,7 @@ namespace Chummer
         {
             List<ListItem> lstSize = new List<ListItem>();
             // Populate the Weapon Mount Category list.
-            string strSizeFilter = "category = \"Size\"" + _objCharacter.Options.BookXPath();
+            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
             if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
                 strSizeFilter += " and not(optionaldrone)";
             foreach (XmlNode node in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
