@@ -273,13 +273,16 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeapon = strLoopID.IsGuid()
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-                    
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
-                    objGearWeapon.ParentID = InternalId;
-                    lstWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    if (objXmlWeapon != null)
+                    {
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
+                        objGearWeapon.ParentID = InternalId;
+                        lstWeapons.Add(objGearWeapon);
+
+                        _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    }
                 }
             }
 

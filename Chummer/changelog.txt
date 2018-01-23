@@ -81,6 +81,7 @@ Application Changes:
 - Fixed a bug where moving gear out of a weapon accessory attached in some way to a vehicle, gear parent attached in some way to a vehicle, or cyberware attached in some way to a vehicle would result in the gear getting duplicated.
 - Fixed bugs where merging or reducing gear to the point where it would get deleted would not properly remove bonuses granted by that gear's children.
 - Fixed a bug where bonuses granted by metatypes that toggle a particular feature (e.g. enabling an attribute, enabling fame, etc.) would get lost when changing priorities in create mode. Fixes #2375.
+- Fixed a crash that would occur if Chummer5 cannot find the pre-installed children of a piece of 'ware. Fixes #2385.
 
 Data Changes:
 
@@ -95,6 +96,7 @@ Data Changes:
 - Corrected ammo capacities for the Light, Medium and Heavy Crossbow from SR5 to be 4(m).
 - Fixed a typo in the Ranger Sliver Pistol Crossbow from RG's name and reduced its ammo capacity to 1, per RAW. Added an amend file to set the Ranger Sliver to have a 4(m) ammo instead.
 - Removed extra base Recoil Compensation from the HK G12A4 from SAG.
+- Fixed a bug where the Evo Atlantis was granting two cyberfins instead of cyberfins on both hands and both feet.
 
 New Strings:
 
