@@ -53,14 +53,34 @@ namespace Chummer
 
         private void frmCreateWeaponMount_Load(object sender, EventArgs e)
         {
+            XmlNode xmlVehicleNode = _objVehicle.GetNode();
             List<ListItem> lstSize = new List<ListItem>();
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Options.BookXPath();
             if (!_objVehicle.IsDrone && GlobalOptions.Dronemods)
                 strSizeFilter += " and not(optionaldrone)";
-            foreach (XmlNode node in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
+            foreach (XmlNode xmlSizeNode in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strSizeFilter + "]"))
             {
-                lstSize.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? node["name"].InnerText));
+                XmlNode xmlTestNode = xmlSizeNode.SelectSingleNode("forbidden/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+                xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+
+                lstSize.Add(new ListItem(xmlSizeNode["id"].InnerText, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"].InnerText));
             }
 
             cboSize.BeginUpdate();
@@ -627,6 +647,7 @@ namespace Chummer
                 }
             }
 
+            XmlNode xmlVehicleNode = _objVehicle.GetNode();
             List<ListItem> lstVisibility = new List<ListItem>();
             List<ListItem> lstFlexibility = new List<ListItem>();
             List<ListItem> lstControl = new List<ListItem>();
@@ -634,11 +655,30 @@ namespace Chummer
             string strFilter = "category != \"Size\" and not(hide)";
             if (!_objVehicle.IsDrone || !GlobalOptions.Dronemods)
                 strFilter += " and not(optionaldrone)";
-            foreach (XmlNode node in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
+            foreach (XmlNode xmlWeaponMountOptionNode in _xmlDoc.SelectNodes("/chummer/weaponmounts/weaponmount[" + strFilter + "]"))
             {
-                string strName = node["name"].InnerText;
+                XmlNode xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("forbidden/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+                xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNode("required/vehicledetails");
+                if (xmlTestNode != null)
+                {
+                    // Assumes topmost parent is an AND node
+                    if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    {
+                        continue;
+                    }
+                }
+
+                string strName = xmlWeaponMountOptionNode["name"].InnerText;
                 bool blnAddItem = true;
-                switch (node["category"]?.InnerText)
+                switch (xmlWeaponMountOptionNode["category"]?.InnerText)
                 {
                     case "Visibility":
                         if (xmlForbiddenNode != null)
@@ -665,7 +705,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstVisibility.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
+                            lstVisibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                         break;
                     case "Flexibility":
                         if (xmlForbiddenNode != null)
@@ -692,7 +732,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstFlexibility.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
+                            lstFlexibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                         break;
                     case "Control":
                         if (xmlForbiddenNode != null)
@@ -719,7 +759,7 @@ namespace Chummer
                             }
                         }
                         if (blnAddItem)
-                            lstControl.Add(new ListItem(node["id"].InnerText, node["translate"]?.InnerText ?? strName));
+                            lstControl.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
                         break;
                     default:
                         Utils.BreakIfDebug();

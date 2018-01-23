@@ -75,6 +75,8 @@ Application Changes:
 - Properly allowed mods to be removed from weapon mounts in the weapon mount creation window. 
 - Weapon Mount creation window properly updates price and slot labels when adding to removing mods.
 - Fixed various issues with the weapon mount selection/creation screen.
+- Fixed a bug where characters using core rulebook weapon mounts could add more weapon mounts than dictated by the core rulebook.
+- Fixed a bug where manual operation of core rulebook weapon mounts increased the mount's slots and was allowed on drones.
 
 Data Changes:
 
