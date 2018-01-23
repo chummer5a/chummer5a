@@ -77,6 +77,8 @@ Application Changes:
 - Fixed various issues with the weapon mount selection/creation screen.
 - Fixed a bug where characters using core rulebook weapon mounts could add more weapon mounts than dictated by the core rulebook.
 - Fixed a bug where manual operation of core rulebook weapon mounts increased the mount's slots and was allowed on drones.
+- Fixed a bug where weapons could not be moved out of weapon mounts in career mode.
+- Fixed a bug where moving gear out of a weapon accessory attached in some way to a vehicle, gear parent attached in some way to a vehicle, or cyberware attached in some way to a vehicle would result in the gear getting duplicated.
 
 Data Changes:
 

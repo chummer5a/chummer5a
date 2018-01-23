@@ -6008,47 +6008,28 @@ namespace Chummer
 
         private void cmdVehicleMoveToInventory_Click(object sender, EventArgs e)
         {
+            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
             // Locate the selected Weapon.
-            bool blnFound = false;
-            Weapon objWeapon = null;
-            Vehicle objVehicle = null;
-            VehicleMod objMod = null;
-
-            foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-            {
-                foreach (Weapon objVehicleWeapon in objCharacterVehicle.Weapons)
-                {
-                    if (objVehicleWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                    {
-                        objWeapon = objVehicleWeapon;
-                        objVehicle = objCharacterVehicle;
-                        blnFound = true;
-                        break;
-                    }
-                }
-                foreach (VehicleMod objVehicleMod in objCharacterVehicle.Mods)
-                {
-                    foreach (Weapon objVehicleWeapon in objVehicleMod.Weapons)
-                    {
-                        if (objVehicleWeapon.InternalId == treVehicles.SelectedNode.Tag.ToString())
-                        {
-                            objWeapon = objVehicleWeapon;
-                            objVehicle = objCharacterVehicle;
-                            objMod = objVehicleMod;
-                            blnFound = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (blnFound)
+            Weapon objWeapon = CharacterObject.Vehicles.FindVehicleWeapon(strSelectedId, out Vehicle objVehicle, out WeaponMount objMount, out VehicleMod objMod);
+            if (objWeapon != null)
             {
                 // Move the Weapons from the Vehicle Mod (or Vehicle) to the character.
-                if (objMod != null)
+                if (objWeapon.Parent != null)
+                {
+                    objWeapon.Parent.Children.Remove(objWeapon);
+                    objWeapon.RefreshMatrixAttributeArray();
+                }
+                else if (objMount != null)
+                    objMount.Weapons.Remove(objWeapon);
+                else if (objMod != null)
                     objMod.Weapons.Remove(objWeapon);
                 else
+                {
                     objVehicle.Weapons.Remove(objWeapon);
+                    objVehicle.RefreshMatrixAttributeArray();
+                }
 
                 CharacterObject.Weapons.Add(objWeapon);
 
@@ -6058,100 +6039,125 @@ namespace Chummer
                 treWeapons.Nodes[0].Nodes.Add(objNode);
                 objWeapon.ParentVehicle = null;
                 objNode.Expand();
+
+                IsDirty = true;
             }
             else
             {
                 // Locate the selected Gear.
-                Gear objSelectedGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
+                Gear objSelectedGear = CharacterObject.Vehicles.FindVehicleGear(strSelectedId, out objVehicle, out WeaponAccessory objWeaponAccessory, out Cyberware objCyberware);
 
-                decimal decMinimumAmount = 1.0m;
-                int intDecimalPlaces = 0;
-                if (objSelectedGear.Name.StartsWith("Nuyen"))
+                if (objSelectedGear != null)
                 {
-                    intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
-                    // Need a for loop instead of a power system to maintain exact precision
-                    for (int i = 0; i < intDecimalPlaces; ++i)
-                        decMinimumAmount /= 10.0m;
-                }
-                else if (objSelectedGear.Category == "Currency")
-                {
-                    intDecimalPlaces = 2;
-                    decMinimumAmount = 0.01m;
-                }
-
-                decimal decMove = 0;
-                if (objSelectedGear.Quantity == decMinimumAmount)
-                    decMove = decMinimumAmount;
-                else
-                {
-                    frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
+                    decimal decMinimumAmount = 1.0m;
+                    int intDecimalPlaces = 0;
+                    if (objSelectedGear.Name.StartsWith("Nuyen"))
                     {
-                        Minimum = decMinimumAmount,
-                        Maximum = objSelectedGear.Quantity,
-                        Description = LanguageManager.GetString("String_MoveGear", GlobalOptions.Language)
-                    };
-                    frmPickNumber.ShowDialog(this);
-
-                    if (frmPickNumber.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    decMove = frmPickNumber.SelectedValue;
-                }
-
-                // See if the character already has a matching piece of Gear.
-                Gear objFoundGear = CharacterObject.Gear.FirstOrDefault(x => objSelectedGear.IsIdenticalToOtherGear(x));
-
-                if (objFoundGear == null)
-                {
-                    // Create a new piece of Gear.
-                    List<Weapon> lstWeapons = new List<Weapon>();
-                    Gear objGear = new Gear(CharacterObject);
-
-                    objGear.Copy(objSelectedGear, lstWeapons);
-
-                    objGear.Parent = null;
-                    objGear.Quantity = decMove;
-
-                    treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
-                    CharacterObject.Gear.Add(objGear);
-
-                    // Create any Weapons that came with this Gear.
-                    foreach (Weapon objGearWeapon in lstWeapons)
+                        intDecimalPlaces = Math.Max(0, CharacterObjectOptions.NuyenFormat.Length - 1 - CharacterObjectOptions.NuyenFormat.LastIndexOf('.'));
+                        // Need a for loop instead of a power system to maintain exact precision
+                        for (int i = 0; i < intDecimalPlaces; ++i)
+                            decMinimumAmount /= 10.0m;
+                    }
+                    else if (objSelectedGear.Category == "Currency")
                     {
-                        CharacterObject.Weapons.Add(objGearWeapon);
-                        treWeapons.Nodes[0].Nodes.Add(objGearWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        treWeapons.Nodes[0].Expand();
+                        intDecimalPlaces = 2;
+                        decMinimumAmount = 0.01m;
                     }
 
-                    AddGearImprovements(objGear);
-                    IsCharacterUpdateRequested = true;
-                }
-                else
-                {
-                    // Everything matches up, so just increase the quantity.
-                    objFoundGear.Quantity += decMove;
-                    TreeNode nodGear = treGear.FindNode(objFoundGear.InternalId);
-                    if (nodGear != null)
+                    decimal decMove = 0;
+                    if (objSelectedGear.Quantity == decMinimumAmount)
+                        decMove = decMinimumAmount;
+                    else
                     {
-                        nodGear.Text = objFoundGear.DisplayName(GlobalOptions.Language);
-                        treGear.SelectedNode = nodGear;
-                    }
-                }
+                        frmSelectNumber frmPickNumber = new frmSelectNumber(intDecimalPlaces)
+                        {
+                            Minimum = decMinimumAmount,
+                            Maximum = objSelectedGear.Quantity,
+                            Description = LanguageManager.GetString("String_MoveGear", GlobalOptions.Language)
+                        };
+                        frmPickNumber.ShowDialog(this);
 
-                // Update the selected item.
-                objSelectedGear.Quantity -= decMove;
-                if (objSelectedGear.Quantity <= 0)
-                {
-                    // The quantity has reached 0, so remove it entirely.
-                    treVehicles.SelectedNode.Remove();
-                    foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
-                        objCharacterVehicle.Gear.Remove(objSelectedGear);
+                        if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                            return;
+
+                        decMove = frmPickNumber.SelectedValue;
+                    }
+
+                    // See if the character already has a matching piece of Gear.
+                    Gear objFoundGear = CharacterObject.Gear.FirstOrDefault(x => objSelectedGear.IsIdenticalToOtherGear(x));
+
+                    if (objFoundGear == null)
+                    {
+                        // Create a new piece of Gear.
+                        List<Weapon> lstWeapons = new List<Weapon>();
+                        Gear objGear = new Gear(CharacterObject);
+
+                        objGear.Copy(objSelectedGear, lstWeapons);
+
+                        objGear.Parent = null;
+                        objGear.Quantity = decMove;
+
+                        treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
+                        CharacterObject.Gear.Add(objGear);
+
+                        // Create any Weapons that came with this Gear.
+                        foreach (Weapon objGearWeapon in lstWeapons)
+                        {
+                            CharacterObject.Weapons.Add(objGearWeapon);
+                            treWeapons.Nodes[0].Nodes.Add(objGearWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+                            treWeapons.Nodes[0].Expand();
+                        }
+
+                        AddGearImprovements(objGear);
+                        IsCharacterUpdateRequested = true;
+                    }
+                    else
+                    {
+                        // Everything matches up, so just increase the quantity.
+                        objFoundGear.Quantity += decMove;
+                        TreeNode nodGear = treGear.FindNode(objFoundGear.InternalId);
+                        if (nodGear != null)
+                        {
+                            nodGear.Text = objFoundGear.DisplayName(GlobalOptions.Language);
+                            treGear.SelectedNode = nodGear;
+                        }
+                    }
+
+                    // Update the selected item.
+                    objSelectedGear.Quantity -= decMove;
+                    if (objSelectedGear.Quantity <= 0)
+                    {
+                        Gear objParent = objSelectedGear.Parent;
+                        // The quantity has reached 0, so remove it entirely.
+                        treVehicles.SelectedNode.Remove();
+                        if (objParent != null)
+                        {
+                            objParent.Children.Remove(objSelectedGear);
+                            objParent.RefreshMatrixAttributeArray();
+                            objSelectedGear.Parent = null;
+                        }
+                        else if (objWeaponAccessory != null)
+                        {
+                            objWeaponAccessory.Gear.Remove(objSelectedGear);
+                        }
+                        else if (objCyberware != null)
+                        {
+                            objCyberware.Gear.Remove(objSelectedGear);
+                            objCyberware.RefreshMatrixAttributeArray();
+                        }
+                        else if (objVehicle != null)
+                        {
+                            objVehicle.Gear.Remove(objSelectedGear);
+                            objVehicle.RefreshMatrixAttributeArray();
+                        }
+                        objSelectedGear.DeleteGear(treWeapons, treVehicles);
+                    }
+                    else
+                        treVehicles.SelectedNode.Text = objSelectedGear.DisplayName(GlobalOptions.Language);
+
+                    IsDirty = true;
                 }
-                else
-                    treVehicles.SelectedNode.Text = objSelectedGear.DisplayName(GlobalOptions.Language);
             }
-
-            IsDirty = true;
         }
         
         private void cmdGearIncreaseQty_Click(object sender, EventArgs e)
@@ -6214,24 +6220,26 @@ namespace Chummer
             else
             {
                 // Remove the Gear if its quantity has been reduced to 0.
-                if (objParent == null)
-                {
-                    if (objWeaponAccessory != null)
-                        objWeaponAccessory.Gear.Remove(objGear);
-                    else if (objCyberware != null)
-                        objCyberware.Gear.Remove(objGear);
-                    else
-                        objVehicle.Gear.Remove(objGear);
-                    treVehicles.SelectedNode.Remove();
-                    objGear.DeleteGear(treWeapons, treVehicles);
-                }
-                else
+                if (objParent != null)
                 {
                     objParent.Children.Remove(objGear);
                     objParent.RefreshMatrixAttributeArray();
-                    treVehicles.SelectedNode.Remove();
-                    objGear.DeleteGear(treWeapons, treVehicles);
+                    objGear.Parent = null;
                 }
+                else if (objWeaponAccessory != null)
+                    objWeaponAccessory.Gear.Remove(objGear);
+                else if (objCyberware != null)
+                {
+                    objCyberware.Gear.Remove(objGear);
+                    objCyberware.RefreshMatrixAttributeArray();
+                }
+                else
+                {
+                    objVehicle.Gear.Remove(objGear);
+                    objVehicle.RefreshMatrixAttributeArray();
+                }
+                treVehicles.SelectedNode.Remove();
+                objGear.DeleteGear(treWeapons, treVehicles);
             }
 
             IsCharacterUpdateRequested = true;
@@ -6333,12 +6341,6 @@ namespace Chummer
                     foreach (Weapon objWeapon in lstWeapons)
                     {
                         CharacterObject.Weapons.Add(objWeapon);
-                    }
-                    
-                    // Add any additional Qualities that are forced on the character.
-                    if (objXmlQuality.SelectNodes("addqualities/addquality").Count > 0)
-                    {
-
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -20316,7 +20318,7 @@ namespace Chummer
             lblVehicleSlotsLabel.Visible = false;
             lblVehicleSlots.Visible = false;
 
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || treVehicles.SelectedNode.Tag.ToString() == "String_WeaponMounts")
+            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || strSelectedId == "String_WeaponMounts")
             {
                 panVehicleCM.Visible = false;
                 DisplayVehicleWeaponStats(false);
