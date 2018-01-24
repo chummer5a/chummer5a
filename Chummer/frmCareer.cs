@@ -17389,6 +17389,11 @@ namespace Chummer
             int intOldDEPValue = CharacterObject.DEP.Value;
             int intOldMAGValue = CharacterObject.MAG.Value;
             int intOldMAGAdeptValue = CharacterObject.MAGAdept.Value;
+            // This extra code is needed for legacy shims, to convert proper attribute values for characters who would end up having a higher level than their total attribute maxima
+            int intExtraRESBurn = Math.Max(0, Math.Max(CharacterObject.RES.Base + CharacterObject.RES.FreeBase + CharacterObject.RES.RawMinimum + CharacterObject.RES.AttributeValueModifiers, CharacterObject.RES.TotalMinimum) + CharacterObject.RES.Karma - CharacterObject.RES.TotalMaximum);
+            int intExtraDEPBurn = Math.Max(0, Math.Max(CharacterObject.DEP.Base + CharacterObject.DEP.FreeBase + CharacterObject.DEP.RawMinimum + CharacterObject.DEP.AttributeValueModifiers, CharacterObject.DEP.TotalMinimum) + CharacterObject.DEP.Karma - CharacterObject.DEP.TotalMaximum);
+            int intExtraMAGBurn = Math.Max(0, Math.Max(CharacterObject.MAG.Base + CharacterObject.MAG.FreeBase + CharacterObject.MAG.RawMinimum + CharacterObject.MAG.AttributeValueModifiers, CharacterObject.MAG.TotalMinimum) + CharacterObject.MAG.Karma - CharacterObject.MAG.TotalMaximum);
+            int intExtraMAGAdeptBurn = Math.Max(0, Math.Max(CharacterObject.MAGAdept.Base + CharacterObject.MAGAdept.FreeBase + CharacterObject.MAGAdept.RawMinimum + CharacterObject.MAGAdept.AttributeValueModifiers, CharacterObject.MAGAdept.TotalMinimum) + CharacterObject.MAGAdept.Karma - CharacterObject.MAGAdept.TotalMaximum);
             // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
 
@@ -17425,10 +17430,10 @@ namespace Chummer
                     intRESMinimumReduction = Math.Max(intRESMinimumReduction, intRESValueNoCareerReduction - intOldRESValue);
                     intDEPMinimumReduction = Math.Max(intDEPMinimumReduction, intDEPValueNoCareerReduction - intOldDEPValue);
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    int intExtraRESBurn = Math.Min(CharacterObject.RES.Karma, intOldRESValue + intRESMinimumReduction - intRESValueNoCareerReduction);
+                    intExtraRESBurn += Math.Min(CharacterObject.RES.Karma, intOldRESValue + intRESMinimumReduction - intRESValueNoCareerReduction);
                     CharacterObject.RES.Karma -= intExtraRESBurn;
                     intRESMinimumReduction -= intExtraRESBurn;
-                    int intExtraDEPBurn = Math.Min(CharacterObject.DEP.Karma, intOldDEPValue + intDEPMinimumReduction - intDEPValueNoCareerReduction);
+                    intExtraDEPBurn += Math.Min(CharacterObject.DEP.Karma, intOldDEPValue + intDEPMinimumReduction - intDEPValueNoCareerReduction);
                     CharacterObject.DEP.Karma -= intExtraDEPBurn;
                     intDEPMinimumReduction -= intExtraDEPBurn;
                     // Create Improvements
@@ -17471,8 +17476,8 @@ namespace Chummer
                         ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
                     }
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
-                    int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
-                    int intExtraMAGAdeptBurn = Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
+                    intExtraMAGBurn += Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
+                    intExtraMAGAdeptBurn += Math.Min(CharacterObject.MAGAdept.Karma, intOldMAGAdeptValue + intMAGAdeptMinimumReduction - intMAGAdeptValueNoCareerReduction);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
                     if (CharacterObject.IsMysticAdept && CharacterObjectOptions.MysAdeptSecondMAGAttribute)
