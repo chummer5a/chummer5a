@@ -608,7 +608,7 @@ namespace Chummer
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
                     int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = -1;
+                    int intTargetIndex = 0;
                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                     {
                         if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
@@ -1848,7 +1848,7 @@ namespace Chummer
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
                     int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = -1;
+                    int intTargetIndex = 0;
                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                     {
                         if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
