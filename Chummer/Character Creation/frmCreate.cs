@@ -332,11 +332,13 @@ namespace Chummer
             if (!string.IsNullOrEmpty(CharacterObject.Metavariant))
             {
                 objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+                if (objMetatypeNode != null)
+                {
+                    strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
 
-                strMetatype += " (" + (objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                strSource = objMetatypeNode["source"].InnerText;
-                strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                    strSource = objMetatypeNode["source"].InnerText;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+                }
             }
             lblMetatype.Text = strMetatype;
             lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
