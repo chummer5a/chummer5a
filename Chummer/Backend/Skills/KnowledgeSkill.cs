@@ -55,7 +55,7 @@ namespace Chummer.Backend.Skills
 
         static KnowledgeSkill()
         {
-            XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml")?.SelectNodes("/chummer/knowledgeskills/skill");
+            XmlNodeList objXmlSkillList = XmlManager.Load("skills.xml").SelectNodes("/chummer/knowledgeskills/skill");
 
             foreach (XmlNode objXmlSkill in objXmlSkillList)
             {
@@ -442,7 +442,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language)?.SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
+                XmlNode objDataNode = XmlManager.Load("skills.xml", GlobalOptions.Language).SelectSingleNode("/chummer/knowledgeskills/skill[name = \"" + Name + "\"]");
                 if (objDataNode?["id"] != null && Guid.TryParse(objDataNode["id"].InnerText, out Guid guidTemp))
                     SkillId = guidTemp;
             }

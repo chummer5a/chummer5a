@@ -440,7 +440,7 @@ namespace Chummer
                 string strName = objXmlNode.InnerText;
                 lstHobbiesVices.Add(new ListItem(strName, objXmlNode.Attributes?["translate"]?.InnerText ?? strName));
             }
-            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("metatypes.xml")?.SelectNodes("/chummer/metatypes/metatype"))
+            foreach (XmlNode xmlMetatypeNode in XmlManager.Load("metatypes.xml").SelectNodes("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatypeNode["name"].InnerText;
                 string strMetatypeDisplay = xmlMetatypeNode["translate"]?.InnerText ?? strName;

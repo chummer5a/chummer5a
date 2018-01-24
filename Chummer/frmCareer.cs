@@ -515,13 +515,7 @@ namespace Chummer
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
             mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
-            // Populate Lifestyles.
-            foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
-            {
-                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-            }
-            treLifestyles.Nodes[0].Expand();
+            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
 
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -638,9 +632,11 @@ namespace Chummer
             treGear.DragEnter += treGear_DragEnter;
             treGear.DragDrop += treGear_DragDrop;
 
+            /*
             treLifestyles.ItemDrag += treLifestyles_ItemDrag;
             treLifestyles.DragEnter += treLifestyles_DragEnter;
             treLifestyles.DragDrop += treLifestyles_DragDrop;
+            */
 
             treArmor.ItemDrag += treArmor_ItemDrag;
             treArmor.DragEnter += treArmor_DragEnter;
@@ -681,6 +677,7 @@ namespace Chummer
             CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
             CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+            CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
             BuildAttributePanel();
 
             // Hacky, but necessary
@@ -751,6 +748,11 @@ namespace Chummer
             RefreshQualities(treQualities, cmsQuality, notifyCollectionChangedEventArgs);
         }
 
+        private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
+        }
+
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
@@ -776,6 +778,13 @@ namespace Chummer
                             }
                         }
                     }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                    {
+                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                    }
+                    pnlAttributes.Controls.Clear();
                     break;
             }
         }
@@ -819,6 +828,7 @@ namespace Chummer
                 CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
+                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -836,9 +846,11 @@ namespace Chummer
                 treGear.DragEnter -= treGear_DragEnter;
                 treGear.DragDrop -= treGear_DragDrop;
 
+                /*
                 treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
                 treLifestyles.DragEnter -= treLifestyles_DragEnter;
                 treLifestyles.DragDrop -= treLifestyles_DragDrop;
+                */
 
                 treArmor.ItemDrag -= treArmor_ItemDrag;
                 treArmor.DragEnter -= treArmor_DragEnter;
@@ -1475,7 +1487,10 @@ namespace Chummer
             foreach (Cyberware objCyberware in CharacterObject.Cyberware)
             {
                 if (objCyberware.Name == "Invoked Memory Stimulator")
+                {
                     blnCyberware = true;
+                    break;
+                }
             }
 
             if (!blnCyberware)
@@ -1489,7 +1504,7 @@ namespace Chummer
 
             if (MessageBox.Show(LanguageManager.GetString("Message_CyberzombieConfirm", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CyberzombieConfirm", GlobalOptions.Language), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
-
+            
             // Convert the character.
             // Characters lose access to Resonance.
             CharacterObject.RESEnabled = false;
@@ -1500,23 +1515,17 @@ namespace Chummer
             CharacterObject.MAG.MetatypeMaximum = 1;
 
             // Add the Cyberzombie Lifestyle if it is not already taken.
-            bool blnHasLifestyle = false;
-            foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
-            {
-                if (objLifestyle.Name == "Cyberzombie Lifestyle Addition")
-                    blnHasLifestyle = true;
-            }
-            if (!blnHasLifestyle)
+            if (!CharacterObject.Lifestyles.Any(x => x.BaseLifestyle == "Cyberzombie Lifestyle Addition"))
             {
                 XmlDocument objXmlLifestyleDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
-                
-                Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                objLifestyle.Create(objXmlLifestyle);
-                CharacterObject.Lifestyles.Add(objLifestyle);
 
-                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-                treLifestyles.Nodes[0].Expand();
+                if (objXmlLifestyle != null)
+                {
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                    objLifestyle.Create(objXmlLifestyle);
+                    CharacterObject.Lifestyles.Add(objLifestyle);
+                }
             }
 
             // Change the MetatypeCategory to Cyberzombie.
@@ -1528,23 +1537,27 @@ namespace Chummer
             // Gain the Dual Natured Critter Power if it does not yet exist.
             if (!CharacterObject.CritterPowers.Any(x => x.Name == "Dual Natured"))
             {
-                XmlDocument objXmlPowerDocument = XmlManager.Load("critterpowers.xml");
-                XmlNode objXmlPowerNode = objXmlPowerDocument.SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
-                
-                CritterPower objCritterPower = new CritterPower(CharacterObject);
-                objCritterPower.Create(objXmlPowerNode);
-                CharacterObject.CritterPowers.Add(objCritterPower);
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
+
+                if (objXmlPowerNode != null)
+                {
+                    CritterPower objCritterPower = new CritterPower(CharacterObject);
+                    objCritterPower.Create(objXmlPowerNode);
+                    CharacterObject.CritterPowers.Add(objCritterPower);
+                }
             }
 
             // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
             if (!CharacterObject.CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
             {
-                XmlDocument objXmlPowerDocument = XmlManager.Load("critterpowers.xml");
-                XmlNode objXmlPowerNode = objXmlPowerDocument.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                XmlNode objXmlPowerNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
-                CritterPower objCritterPower = new CritterPower(CharacterObject);
-                objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
-                CharacterObject.CritterPowers.Add(objCritterPower);
+                if (objXmlPowerNode != null)
+                {
+                    CritterPower objCritterPower = new CritterPower(CharacterObject);
+                    objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
+                    CharacterObject.CritterPowers.Add(objCritterPower);
+                }
             }
 
             RefreshMetatypeFields();
@@ -1586,7 +1599,7 @@ namespace Chummer
             // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
             if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
             {
-                ImprovementManager.CreateImprovement(CharacterObject, frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, "CharacterAttribute Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
+                ImprovementManager.CreateImprovement(CharacterObject, frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
                 ImprovementManager.Commit(CharacterObject);
             }
             // Permanently reduce the CharacterAttribute's value.
@@ -4159,11 +4172,6 @@ namespace Chummer
                 objLifestyle.Months = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
 
-                TreeNode objNode = objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle);
-                treLifestyles.Nodes[0].Nodes.Add(objNode);
-                treLifestyles.Nodes[0].Expand();
-                treLifestyles.SelectedNode = objNode;
-
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -4186,7 +4194,6 @@ namespace Chummer
                         return;
 
                     CharacterObject.Lifestyles.Remove(objLifestyle);
-                    treLifestyles.SelectedNode.Remove();
                 }
                 IsCharacterUpdateRequested = true;
 
@@ -5001,11 +5008,11 @@ namespace Chummer
                 CharacterObject.InitiateGrade += 1;
 
                 // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation, "Initiation");
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
 
                 // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
                 ImprovementManager.Commit(CharacterObject);
 
                 // Update any Metamagic Improvements the character might have.
@@ -5072,10 +5079,10 @@ namespace Chummer
                 CharacterObject.SubmersionGrade += 1;
 
                 // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion, "Submersion");
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
 
                 // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, "Submersion", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
                 ImprovementManager.Commit(CharacterObject);
 
                 // Update any Echo Improvements the character might have.
@@ -9970,9 +9977,6 @@ namespace Chummer
 
                 CharacterObject.Lifestyles.Add(objNewLifestyle);
 
-                treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-                treLifestyles.Nodes[0].Expand();
-
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -10004,9 +10008,6 @@ namespace Chummer
                 objNewLifestyle.Months = 0;
                 CharacterObject.Lifestyles.Add(objNewLifestyle);
 
-                treLifestyles.Nodes[0].Nodes.Add(objNewLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-                treLifestyles.Nodes[0].Expand();
-
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -10031,18 +10032,13 @@ namespace Chummer
                     frmPickLifestyle.Dispose();
                     break;
                 }
+                blnAddAgain = frmPickLifestyle.AddAgain;
 
                 Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
                 frmPickLifestyle.Dispose();
                 objLifestyle.Months = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
-
-                treLifestyles.Nodes[0].Nodes.Add(objLifestyle.CreateTreeNode(cmsLifestyleNotes, cmsAdvancedLifestyle));
-                treLifestyles.Nodes[0].Expand();
-
-                if (frmPickLifestyle.AddAgain)
-                    tsAdvancedLifestyle_Click(sender, e);
-
+                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -11931,14 +11927,14 @@ namespace Chummer
                         if (objLifestyle.Notes != strOldValue)
                         {
                             IsDirty = true;
+
+                            if (!string.IsNullOrEmpty(objLifestyle.Notes))
+                                treLifestyles.SelectedNode.ForeColor = Color.SaddleBrown;
+                            else
+                                treLifestyles.SelectedNode.ForeColor = SystemColors.WindowText;
+                            treLifestyles.SelectedNode.ToolTipText = objLifestyle.Notes.WordWrap(100);
                         }
                     }
-
-                    if (!string.IsNullOrEmpty(objLifestyle.Notes))
-                        treLifestyles.SelectedNode.ForeColor = Color.SaddleBrown;
-                    else
-                        treLifestyles.SelectedNode.ForeColor = SystemColors.WindowText;
-                    treLifestyles.SelectedNode.ToolTipText = objLifestyle.Notes.WordWrap(100);
                 }
             }
         }
@@ -12282,10 +12278,16 @@ namespace Chummer
             if (frmPickText.DialogResult == DialogResult.Cancel)
                 return;
 
-            objLifestyle.Name = frmPickText.SelectedValue;
-            treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
+            if (objLifestyle.Name != frmPickText.SelectedValue)
+            {
+                objLifestyle.Name = frmPickText.SelectedValue;
 
-            IsDirty = true;
+                treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
+
+                treLifestyles.SortCustom(strSelectedId);
+
+                IsDirty = true;
+            }
         }
 
         private void tsGearRenameLocation_Click(object sender, EventArgs e)
@@ -13531,7 +13533,7 @@ namespace Chummer
                 }
             }
 
-            if (objLifestyle == null)
+            if (string.IsNullOrEmpty(strGuid))
                 return;
 
             if (objLifestyle.StyleType != LifestyleType.Standard)
@@ -13563,12 +13565,13 @@ namespace Chummer
             objLifestyle.SetInternalId(strGuid);
             objLifestyle.Months = intMonths;
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
-            treLifestyles.SelectedNode.Text = objLifestyle.DisplayName(GlobalOptions.Language);
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
         }
 
+        /*
         private void treLifestyles_ItemDrag(object sender, ItemDragEventArgs e)
         {
             if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level != 1)
@@ -13607,6 +13610,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+        */
 
         private void treLifestyles_DragOver(object sender, DragEventArgs e)
         {
@@ -15603,11 +15607,11 @@ namespace Chummer
                 CharacterObject.InitiateGrade += 1;
 
                 // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation, "Initiation");
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
 
                 // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, "Initiation", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
                 ImprovementManager.Commit(CharacterObject);
 
                 // Update any Metamagic Improvements the character might have.
@@ -15671,10 +15675,10 @@ namespace Chummer
                 CharacterObject.SubmersionGrade += 1;
 
                 // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion, "Submersion");
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
 
                 // Create the replacement Improvement.
-                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, "Submersion", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
+                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
                 ImprovementManager.Commit(CharacterObject);
 
                 // Update any Echo Improvements the character might have.
@@ -16796,10 +16800,10 @@ namespace Chummer
                 return;
             }
 
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse, "edgeuse");
+            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse);
             intEdgeUsed -= 1;
 
-            ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, "edgeuse", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
+            ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
             ImprovementManager.Commit(CharacterObject);
             IsCharacterUpdateRequested = true;
 
@@ -16821,12 +16825,12 @@ namespace Chummer
                 return;
             }
 
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse, "edgeuse");
+            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EdgeUse);
             intEdgeUsed += 1;
 
             if (intEdgeUsed < 0)
             {
-                ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, "edgeuse", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
+                ImprovementManager.CreateImprovement(CharacterObject, "EDG", Improvement.ImprovementSource.EdgeUse, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, intEdgeUsed);
                 ImprovementManager.Commit(CharacterObject);
             }
             IsCharacterUpdateRequested = true;
@@ -17386,7 +17390,7 @@ namespace Chummer
             int intOldMAGValue = CharacterObject.MAG.Value;
             int intOldMAGAdeptValue = CharacterObject.MAGAdept.Value;
             // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss, "Essence Loss");
+            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLoss);
 
             // Attribute values without any essence loss modifiers. These are used to determine if any karma needs to get burned.
             int intRESValueNoCareerReduction = CharacterObject.RES.Value;
@@ -17404,9 +17408,9 @@ namespace Chummer
             {
                 if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
+                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intReduction);
                 }
                 else
                 {
@@ -17428,19 +17432,19 @@ namespace Chummer
                     CharacterObject.DEP.Karma -= intExtraDEPBurn;
                     intDEPMinimumReduction -= intExtraDEPBurn;
                     // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intRESMaximumReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intDEPMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intRESMinimumReduction, -intRESMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "DEP", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intDEPMinimumReduction, -intDEPMaximumReduction);
                 }
             }
             if (intMagReduction > 0 || intMAGMaximumReduction != 0 || intMAGAdeptMaximumReduction != 0)
             {
                 if (CharacterObjectOptions.SpecialKarmaCostBasedOnShownValue)
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss");
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.EssenceLossChargen);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMagReduction);
                     if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
-                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagReduction);
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagReduction);
                 }
                 else
                 {
@@ -17464,7 +17468,7 @@ namespace Chummer
                         // ... now burn away PPs gained from initiations.
                         intPPBurn = Math.Min(intMAGDelta - intPPBurn, ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.AdeptPowerPoints));
                         // We need the source to be EssenceLossChargen so that it doesn't get wiped in career mode.
-                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, "Essence Loss", Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
+                        ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.EssenceLossChargen, string.Empty, Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intPPBurn);
                     }
                     // If our new reduction is greater than our old one and we have karma to burn, do so instead of reducing minima.
                     int intExtraMAGBurn = Math.Min(CharacterObject.MAG.Karma, intMAGDelta);
@@ -17475,8 +17479,8 @@ namespace Chummer
                         CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
                     intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
                     // Create Improvements
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, "Essence Loss", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGMinimumReduction, -intMAGMaximumReduction);
+                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.EssenceLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction, -intMAGAdeptMaximumReduction);
                 }
             }
             ImprovementManager.Commit(CharacterObject);
@@ -17591,15 +17595,15 @@ namespace Chummer
             if (CharacterObject.MetatypeCategory == "Cyberzombie")
             {
                 int intESSModifier = CharacterObject.EssencePenalty - decimal.ToInt32(CharacterObject.EssenceMaximum);
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes");
-                ImprovementManager.CreateImprovement(CharacterObject, "BOD", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "AGI", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "REA", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "STR", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "CHA", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
-                ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, "Cyberzombie Attributes", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Cyberzombie && x.ImproveType == Improvement.ImprovementType.Attribute).ToList());
+                ImprovementManager.CreateImprovement(CharacterObject, "BOD", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "AGI", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "REA", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "STR", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "CHA", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "INT", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "LOG", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
+                ImprovementManager.CreateImprovement(CharacterObject, "WIL", Improvement.ImprovementSource.Cyberzombie, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, intESSModifier);
                 ImprovementManager.Commit(CharacterObject);
             }
 
@@ -17720,13 +17724,12 @@ namespace Chummer
             lblCMPenalty.Text = intCMPenalty.ToString();
 
             // Discard any old Condition Monitor penalties.
-            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ConditionMonitor, string.Empty);
+            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ConditionMonitor);
 
             // Create the new Condition Monitor penalties.
             if (intCMPenalty < 0)
             {
-                ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.ConditionMonitor, string.Empty,
-                    Improvement.ImprovementType.ConditionMonitor, string.Empty, intCMPenalty);
+                ImprovementManager.CreateImprovement(CharacterObject, string.Empty, Improvement.ImprovementSource.ConditionMonitor, string.Empty, Improvement.ImprovementType.ConditionMonitor, string.Empty, intCMPenalty);
                 ImprovementManager.Commit(CharacterObject);
             }
 

@@ -1344,7 +1344,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }
@@ -1355,7 +1355,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }
@@ -1366,7 +1366,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }

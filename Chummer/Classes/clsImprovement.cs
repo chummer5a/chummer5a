@@ -1156,7 +1156,7 @@ namespace Chummer
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName)
+        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "")
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -1167,7 +1167,9 @@ namespace Chummer
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
             Log.Info("strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
+                ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
+                : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
             RemoveImprovements(objCharacter, objImprovementList);
         }
 
