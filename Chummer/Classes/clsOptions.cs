@@ -43,7 +43,7 @@ namespace Chummer
         Lifestyle,
     }
 
-    public class SourcebookInfo
+    public class SourcebookInfo : IDisposable
     {
         string _strCode = string.Empty;
         string _strPath = string.Empty;
@@ -107,6 +107,30 @@ namespace Chummer
                 return _objPdfReader;
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _objPdfReader?.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
         #endregion
     }
 
@@ -756,44 +780,38 @@ namespace Chummer
                 {
                     _lstSourcebookInfo = new HashSet<SourcebookInfo>();
                     // Retrieve the SourcebookInfo objects.
-                    foreach (XmlNode objXmlBook in XmlManager.Load("books.xml")?.SelectNodes("/chummer/books/book"))
+                    foreach (XmlNode objXmlBook in XmlManager.Load("books.xml").SelectNodes("/chummer/books/book[not(hide)]"))
                     {
-                        if (objXmlBook["hide"] == null)
+                        string strCode = objXmlBook["code"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strCode))
                         {
-                            string strCode = objXmlBook["code"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strCode))
+                            SourcebookInfo objSource = new SourcebookInfo
                             {
-                                SourcebookInfo objSource = new SourcebookInfo
-                                {
-                                    Code = strCode
-                                };
+                                Code = strCode
+                            };
+                            
+                            try
+                            {
                                 string strTemp = string.Empty;
-
-                                try
+                                if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                                 {
-                                    LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook");
-                                    if (!string.IsNullOrEmpty(strTemp))
+                                    string[] strParts = strTemp.Split('|');
+                                    objSource.Path = strParts[0];
+                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
                                     {
-
-                                        string[] strParts = strTemp.Split('|');
-                                        objSource.Path = strParts[0];
-                                        if (strParts.Length > 1)
-                                        {
-                                            if (int.TryParse(strParts[1], out int intTmp))
-                                                objSource.Offset = intTmp;
-                                        }
+                                        objSource.Offset = intTmp;
                                     }
                                 }
-                                catch (System.Security.SecurityException)
-                                {
-
-                                }
-                                catch (UnauthorizedAccessException)
-                                {
-
-                                }
-                                _lstSourcebookInfo.Add(objSource);
                             }
+                            catch (System.Security.SecurityException)
+                            {
+
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+
+                            }
+                            _lstSourcebookInfo.Add(objSource);
                         }
                     }
                 }

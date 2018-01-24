@@ -590,7 +590,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID) || _sourceID.Equals(Guid.Empty))
             {
-                XmlNode sourceNode = XmlManager.Load("vehicles.xml")?.SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
+                XmlNode sourceNode = XmlManager.Load("vehicles.xml").SelectSingleNode("/chummer/vehicles/vehicle[name = \"" + Name + "\"]");
                 if (sourceNode?.TryGetField("id", Guid.TryParse, out _sourceID) == true)
                     _objCachedMyXmlNode = null;
             }
@@ -2569,7 +2569,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/vehicles/vehicle[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -729,7 +729,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Shim
             if (_intMaxRating != 0 && _strName.Contains("Certified Credstick"))
             {
-                XmlNode objNuyenNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
+                XmlNode objNuyenNode = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
                     if (Rating > 0)
@@ -1066,7 +1066,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>

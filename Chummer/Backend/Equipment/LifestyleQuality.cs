@@ -646,7 +646,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)?.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

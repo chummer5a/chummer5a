@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             if (!objNode.TryGetField("id", Guid.TryParse, out _guidSourceId))
             {
-                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language)?.SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
+                XmlNode xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", GlobalOptions.Language).SelectSingleNode("/chummer/grades/grade[name = \"" + Name + "\"]");
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guidSourceId) != true)
                     _guidSourceId = Guid.NewGuid();
             }
@@ -87,7 +87,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage)?.SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml", strLanguage).SelectSingleNode("/chummer/grades/grade[id = \"" + SourceId.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

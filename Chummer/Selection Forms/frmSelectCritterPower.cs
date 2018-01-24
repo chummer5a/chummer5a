@@ -79,7 +79,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Allowed Optional Powers")
+                    if (objItem.Value.ToString() == "Allowed Optional Powers")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -92,7 +92,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Free Spirit")
+                    if (objItem.Value.ToString() == "Free Spirit")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -105,7 +105,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Toxic Critter Powers")
+                    if (objItem.Value.ToString() == "Toxic Critter Powers")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -118,7 +118,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Emergent")
+                    if (objItem.Value.ToString() == "Emergent")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -131,7 +131,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Echoes")
+                    if (objItem.Value.ToString() == "Echoes")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -144,7 +144,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Shapeshifter")
+                    if (objItem.Value.ToString() == "Shapeshifter")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -160,7 +160,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Drake") continue;
+                    if (objItem.Value.ToString() == "Drake") continue;
                     _lstCategory.Remove(objItem);
                     break;
                 }
