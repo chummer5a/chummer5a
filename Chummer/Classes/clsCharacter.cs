@@ -281,7 +281,7 @@ namespace Chummer
 			AttributeSection.Reset();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
+            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 
 	    public AttributeSection AttributeSection { get; set; }
@@ -2985,7 +2985,7 @@ namespace Chummer
             _lstCalendar.Clear();
 
             SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
+            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 #endregion
 
@@ -5552,6 +5552,10 @@ namespace Chummer
         }
 
         private decimal _decCachedEssence = decimal.MinValue;
+        public void ResetCachedEssence()
+        {
+            _decCachedEssence = decimal.MinValue;
+        }
         /// <summary>
         /// Character's Essence.
         /// </summary>
@@ -9173,7 +9177,7 @@ namespace Chummer
         {
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
-                _decCachedEssence = decimal.MinValue;
+                ResetCachedEssence();
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }

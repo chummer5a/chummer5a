@@ -1584,7 +1584,15 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _objGrade = value;
+                if (_objGrade != value)
+                {
+                    _objGrade = value;
+                    // Run through all of the child pieces and make sure their Grade matches.
+                    foreach (Cyberware objChild in Children)
+                    {
+                        objChild.Grade = value;
+                    }
+                }
             }
         }
 

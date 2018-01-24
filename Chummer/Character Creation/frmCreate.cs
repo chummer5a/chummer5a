@@ -9228,25 +9228,25 @@ namespace Chummer
         {
             if (!_blnSkipRefresh && !_blnLoading)
             {
-                // Locate the selected piece of Cyberware.
-                Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode.Tag.ToString());
-                if (objCyberware == null)
-                    return;
-
-                IList<Grade> objGradeList = CharacterObject.GetGradeList(objCyberware.SourceType);
-
-                // Updated the selected Cyberware Grade.
-                objCyberware.Grade = objGradeList.FirstOrDefault(x => x.Name == cboCyberwareGrade.SelectedValue.ToString());
-
-                // Run through all of the child pieces and make sure their Grade matches.
-                foreach (Cyberware objChildCyberware in objCyberware.Children)
+                string strSelectedGrade = cboCyberwareGrade.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strSelectedGrade))
                 {
-                    objChildCyberware.Grade = objCyberware.Grade;
+                    // Locate the selected piece of Cyberware.
+                    Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(treCyberware.SelectedNode?.Tag.ToString());
+                    if (objCyberware != null)
+                    {
+                        Grade objNewGrade = CharacterObject.GetGradeList(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
+                        if (objNewGrade != null)
+                        {
+                            // Updated the selected Cyberware Grade.
+                            objCyberware.Grade = objNewGrade;
+
+                            IsCharacterUpdateRequested = true;
+
+                            IsDirty = true;
+                        }
+                    }
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
         }
 
@@ -12426,6 +12426,7 @@ namespace Chummer
             }
             string strESSFormat = objESSFormat.ToString();
 
+            CharacterObject.ResetCachedEssence();
             decimal decESS = CharacterObject.Essence;
             decimal decRoundedESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
             if (!CharacterObjectOptions.DontRoundEssenceInternally)

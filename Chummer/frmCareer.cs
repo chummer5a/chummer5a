@@ -17365,6 +17365,7 @@ namespace Chummer
             }
             string strESSFormat = objESSFormat.ToString();
 
+            CharacterObject.ResetCachedEssence();
             decimal decESS = CharacterObject.Essence;
             decimal decRoundedESS = decimal.Round(decESS, intESSDecimals, MidpointRounding.AwayFromZero);
             if (!CharacterObjectOptions.DontRoundEssenceInternally)
