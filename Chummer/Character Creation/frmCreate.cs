@@ -17760,14 +17760,13 @@ namespace Chummer
 
             // Improvements tab.
 
-            // Karma Summary tab.
-            MoveControlsTwoColumns(tabBPSummary);
-
-            // Other Info tab.
-            MoveControlsTwoColumns(tabOtherInfo);
-
-            // Spell Defence tab.
-            MoveControlsTwoColumns(tabDefences);
+            // It is not needed to work on those due to TableLayoutPanel
+            //// Karma Summary tab.
+            //MoveControlsTwoColumns(tabBPSummary);
+            //// Other Info tab.
+            //MoveControlsTwoColumns(tabOtherInfo);
+            //// Spell Defence tab.
+            //MoveControlsTwoColumns(tabDefences);
 
             lblCMPhysical.Left = lblCMPhysicalLabel.Left + intWidth + 6;
             lblCMStun.Left = lblCMPhysical.Left;
@@ -17792,6 +17791,13 @@ namespace Chummer
             lblContactPoints.Left = lblContactPoints_Label.Right + 6;
         }
 
+        /// <summary>
+        /// Rearranges controls in two columns to fit.
+        /// The first column should all have the same .Left value,
+        /// everything else is considered the second (right) column.
+        /// </summary>
+        /// <param name="ctrContainer">The container that holds the controls.</param>
+        /// <param name="intMinSpace">Space between the two columns.</param>
         private static void MoveControlsTwoColumns(Control ctrContainer, int intMinSpace = 6)
         {
             int intLeft = int.MaxValue;

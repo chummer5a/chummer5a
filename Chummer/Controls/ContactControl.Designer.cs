@@ -126,7 +126,7 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdDelete.Location = new System.Drawing.Point(441, 2);
+            this.cmdDelete.Location = new System.Drawing.Point(444, 2);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(22, 22);
             this.cmdDelete.TabIndex = 7;
@@ -337,64 +337,71 @@ namespace Chummer
             // 
             // cboMetatype
             // 
+            this.cboMetatype.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboMetatype.FormattingEnabled = true;
             this.cboMetatype.Location = new System.Drawing.Point(63, 3);
             this.cboMetatype.Name = "cboMetatype";
-            this.cboMetatype.Size = new System.Drawing.Size(153, 21);
+            this.cboMetatype.Size = new System.Drawing.Size(164, 21);
             this.cboMetatype.TabIndex = 20;
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // cboSex
             // 
+            this.cboSex.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboSex.FormattingEnabled = true;
             this.cboSex.Location = new System.Drawing.Point(63, 30);
             this.cboSex.Name = "cboSex";
-            this.cboSex.Size = new System.Drawing.Size(153, 21);
+            this.cboSex.Size = new System.Drawing.Size(164, 21);
             this.cboSex.TabIndex = 21;
             this.cboSex.TextChanged += new System.EventHandler(this.cboSex_TextChanged);
             // 
             // cboType
             // 
+            this.cboType.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboType.FormattingEnabled = true;
             this.cboType.Location = new System.Drawing.Point(63, 84);
             this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(153, 21);
+            this.cboType.Size = new System.Drawing.Size(164, 21);
             this.cboType.TabIndex = 22;
             this.cboType.TextChanged += new System.EventHandler(this.cboType_TextChanged);
             // 
             // cboPreferredPayment
             // 
+            this.cboPreferredPayment.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboPreferredPayment.FormattingEnabled = true;
-            this.cboPreferredPayment.Location = new System.Drawing.Point(325, 30);
+            this.cboPreferredPayment.Location = new System.Drawing.Point(336, 30);
             this.cboPreferredPayment.Name = "cboPreferredPayment";
-            this.cboPreferredPayment.Size = new System.Drawing.Size(144, 21);
+            this.cboPreferredPayment.Size = new System.Drawing.Size(165, 21);
             this.cboPreferredPayment.TabIndex = 23;
             this.cboPreferredPayment.TextChanged += new System.EventHandler(this.cboPreferredPayment_TextChanged);
             // 
             // cboAge
             // 
+            this.cboAge.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboAge.FormattingEnabled = true;
             this.cboAge.Location = new System.Drawing.Point(63, 57);
             this.cboAge.Name = "cboAge";
-            this.cboAge.Size = new System.Drawing.Size(153, 21);
+            this.cboAge.Size = new System.Drawing.Size(164, 21);
             this.cboAge.TabIndex = 24;
             this.cboAge.TextChanged += new System.EventHandler(this.cboAge_TextChanged);
             // 
             // cboHobbiesVice
             // 
+            this.cboHobbiesVice.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboHobbiesVice.FormattingEnabled = true;
-            this.cboHobbiesVice.Location = new System.Drawing.Point(325, 57);
+            this.cboHobbiesVice.Location = new System.Drawing.Point(336, 57);
             this.cboHobbiesVice.Name = "cboHobbiesVice";
-            this.cboHobbiesVice.Size = new System.Drawing.Size(144, 21);
+            this.cboHobbiesVice.Size = new System.Drawing.Size(165, 21);
             this.cboHobbiesVice.TabIndex = 25;
             this.cboHobbiesVice.TextChanged += new System.EventHandler(this.cboHobbiesVice_TextChanged);
             // 
             // cboPersonalLife
             // 
+            this.cboPersonalLife.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboPersonalLife.FormattingEnabled = true;
-            this.cboPersonalLife.Location = new System.Drawing.Point(325, 3);
+            this.cboPersonalLife.Location = new System.Drawing.Point(336, 3);
             this.cboPersonalLife.Name = "cboPersonalLife";
-            this.cboPersonalLife.Size = new System.Drawing.Size(144, 21);
+            this.cboPersonalLife.Size = new System.Drawing.Size(165, 21);
             this.cboPersonalLife.TabIndex = 26;
             this.cboPersonalLife.TextChanged += new System.EventHandler(this.cboPersonalLife_TextChanged);
             // 
@@ -438,7 +445,7 @@ namespace Chummer
             // 
             this.lblPersonalLife.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPersonalLife.AutoSize = true;
-            this.lblPersonalLife.Location = new System.Drawing.Point(248, 7);
+            this.lblPersonalLife.Location = new System.Drawing.Point(259, 7);
             this.lblPersonalLife.Name = "lblPersonalLife";
             this.lblPersonalLife.Size = new System.Drawing.Size(71, 13);
             this.lblPersonalLife.TabIndex = 30;
@@ -462,7 +469,7 @@ namespace Chummer
             // 
             this.lblPreferredPayment.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPreferredPayment.AutoSize = true;
-            this.lblPreferredPayment.Location = new System.Drawing.Point(222, 34);
+            this.lblPreferredPayment.Location = new System.Drawing.Point(233, 34);
             this.lblPreferredPayment.Name = "lblPreferredPayment";
             this.lblPreferredPayment.Size = new System.Drawing.Size(97, 13);
             this.lblPreferredPayment.TabIndex = 32;
@@ -474,7 +481,7 @@ namespace Chummer
             // 
             this.lblHobbiesVice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblHobbiesVice.AutoSize = true;
-            this.lblHobbiesVice.Location = new System.Drawing.Point(244, 61);
+            this.lblHobbiesVice.Location = new System.Drawing.Point(255, 61);
             this.lblHobbiesVice.Name = "lblHobbiesVice";
             this.lblHobbiesVice.Size = new System.Drawing.Size(75, 13);
             this.lblHobbiesVice.TabIndex = 33;
@@ -484,13 +491,14 @@ namespace Chummer
             // 
             // tlpStatBlock
             // 
-            this.tlpStatBlock.AutoSize = true;
+            this.tlpStatBlock.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpStatBlock.BackColor = System.Drawing.Color.Transparent;
             this.tlpStatBlock.ColumnCount = 4;
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpStatBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpStatBlock.Controls.Add(this.cboMetatype, 1, 1);
             this.tlpStatBlock.Controls.Add(this.cboSex, 1, 2);
             this.tlpStatBlock.Controls.Add(this.cboHobbiesVice, 3, 3);
@@ -516,12 +524,13 @@ namespace Chummer
             this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpStatBlock.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpStatBlock.Size = new System.Drawing.Size(472, 113);
+            this.tlpStatBlock.Size = new System.Drawing.Size(504, 113);
             this.tlpStatBlock.TabIndex = 34;
             // 
             // tlpStatHeader
             // 
             this.tlpStatHeader.AutoSize = true;
+            this.tlpStatHeader.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpStatHeader.ColumnCount = 10;
             this.tlpStatHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpStatHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -567,7 +576,7 @@ namespace Chummer
             this.Controls.Add(this.cmdDelete);
             this.Controls.Add(this.cboContactRole);
             this.Controls.Add(this.tlpStatHeader);
-            this.MinimumSize = new System.Drawing.Size(492, 22);
+            this.MinimumSize = new System.Drawing.Size(480, 22);
             this.Name = "ContactControl";
             this.Size = new System.Drawing.Size(516, 168);
             this.Load += new System.EventHandler(this.ContactControl_Load);

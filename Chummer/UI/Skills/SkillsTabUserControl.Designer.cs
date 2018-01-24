@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Chummer.UI.Skills
 {
@@ -42,6 +42,8 @@ namespace Chummer.UI.Skills
             this.btnExotic = new System.Windows.Forms.Button();
             this.cboDisplayFilter = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.cboSortKnowledge = new System.Windows.Forms.ComboBox();
+            this.cboDisplayFilterKnowledge = new System.Windows.Forms.ComboBox();
             this.lblCustomKnowledgeSkillsReminder = new System.Windows.Forms.Label();
             this.lblKnoBwk = new System.Windows.Forms.Label();
             this.lblKnoKarma = new System.Windows.Forms.Label();
@@ -50,12 +52,12 @@ namespace Chummer.UI.Skills
             this.lblKnowledgeSkillPointsTitle = new System.Windows.Forms.Label();
             this.lblKnowledgeSkills = new System.Windows.Forms.Label();
             this.btnKnowledge = new System.Windows.Forms.Button();
-            this.cboSortKnowledge = new System.Windows.Forms.ComboBox();
-            this.cboDisplayFilterKnowledge = new System.Windows.Forms.ComboBox();
+            this.tlpKnoweldgeSkillsHeader = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitSkills)).BeginInit();
             this.splitSkills.Panel1.SuspendLayout();
             this.splitSkills.Panel2.SuspendLayout();
             this.splitSkills.SuspendLayout();
+            this.tlpKnoweldgeSkillsHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitSkills
@@ -87,15 +89,12 @@ namespace Chummer.UI.Skills
             // splitSkills.Panel2
             // 
             this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.splitSkills.Panel2.Controls.Add(this.tlpKnoweldgeSkillsHeader);
             this.splitSkills.Panel2.Controls.Add(this.cboSortKnowledge);
             this.splitSkills.Panel2.Controls.Add(this.cboDisplayFilterKnowledge);
-            this.splitSkills.Panel2.Controls.Add(this.lblCustomKnowledgeSkillsReminder);
             this.splitSkills.Panel2.Controls.Add(this.lblKnoBwk);
             this.splitSkills.Panel2.Controls.Add(this.lblKnoKarma);
             this.splitSkills.Panel2.Controls.Add(this.lblKnoSp);
-            this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPoints);
-            this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkillPointsTitle);
-            this.splitSkills.Panel2.Controls.Add(this.lblKnowledgeSkills);
             this.splitSkills.Panel2.Controls.Add(this.btnKnowledge);
             this.splitSkills.Panel2.Resize += new System.EventHandler(this.Panel2_Resize);
             this.splitSkills.Size = new System.Drawing.Size(830, 611);
@@ -232,13 +231,16 @@ namespace Chummer.UI.Skills
             // lblCustomKnowledgeSkillsReminder
             // 
             this.lblCustomKnowledgeSkillsReminder.AutoSize = true;
+            this.lblCustomKnowledgeSkillsReminder.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblCustomKnowledgeSkillsReminder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCustomKnowledgeSkillsReminder.Location = new System.Drawing.Point(365, 5);
+            this.lblCustomKnowledgeSkillsReminder.Location = new System.Drawing.Point(348, 0);
             this.lblCustomKnowledgeSkillsReminder.Name = "lblCustomKnowledgeSkillsReminder";
-            this.lblCustomKnowledgeSkillsReminder.Size = new System.Drawing.Size(398, 13);
+            this.lblCustomKnowledgeSkillsReminder.Padding = new System.Windows.Forms.Padding(12, 0, 0, 0);
+            this.lblCustomKnowledgeSkillsReminder.Size = new System.Drawing.Size(410, 13);
             this.lblCustomKnowledgeSkillsReminder.TabIndex = 55;
             this.lblCustomKnowledgeSkillsReminder.Tag = "Label_CustomKnowledgeSkillsReminder";
             this.lblCustomKnowledgeSkillsReminder.Text = "Remember, you can always write in custom skills and specializations!";
+            this.lblCustomKnowledgeSkillsReminder.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblKnoBwk
             // 
@@ -277,7 +279,7 @@ namespace Chummer.UI.Skills
             // lblKnowledgeSkillPoints
             // 
             this.lblKnowledgeSkillPoints.AutoSize = true;
-            this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(310, 5);
+            this.lblKnowledgeSkillPoints.Location = new System.Drawing.Point(308, 0);
             this.lblKnowledgeSkillPoints.Name = "lblKnowledgeSkillPoints";
             this.lblKnowledgeSkillPoints.Size = new System.Drawing.Size(34, 13);
             this.lblKnowledgeSkillPoints.TabIndex = 38;
@@ -286,7 +288,7 @@ namespace Chummer.UI.Skills
             // lblKnowledgeSkillPointsTitle
             // 
             this.lblKnowledgeSkillPointsTitle.AutoSize = true;
-            this.lblKnowledgeSkillPointsTitle.Location = new System.Drawing.Point(110, 5);
+            this.lblKnowledgeSkillPointsTitle.Location = new System.Drawing.Point(108, 0);
             this.lblKnowledgeSkillPointsTitle.Name = "lblKnowledgeSkillPointsTitle";
             this.lblKnowledgeSkillPointsTitle.Size = new System.Drawing.Size(194, 13);
             this.lblKnowledgeSkillPointsTitle.TabIndex = 37;
@@ -296,9 +298,10 @@ namespace Chummer.UI.Skills
             // lblKnowledgeSkills
             // 
             this.lblKnowledgeSkills.AutoSize = true;
-            this.lblKnowledgeSkills.Location = new System.Drawing.Point(0, 5);
+            this.lblKnowledgeSkills.Location = new System.Drawing.Point(3, 0);
             this.lblKnowledgeSkills.Name = "lblKnowledgeSkills";
-            this.lblKnowledgeSkills.Size = new System.Drawing.Size(87, 13);
+            this.lblKnowledgeSkills.Padding = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.lblKnowledgeSkills.Size = new System.Drawing.Size(99, 13);
             this.lblKnowledgeSkills.TabIndex = 4;
             this.lblKnowledgeSkills.Tag = "Label_KnowledgeSkills";
             this.lblKnowledgeSkills.Text = "Knowledge Skills";
@@ -337,7 +340,26 @@ namespace Chummer.UI.Skills
             this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(201, 21);
             this.cboDisplayFilterKnowledge.TabIndex = 54;
             this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
-            this.cboDisplayFilterKnowledge.TextUpdate += new EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
+            this.cboDisplayFilterKnowledge.TextUpdate += new System.EventHandler(this.cboDisplayFilterKnowledge_TextUpdate);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tlpKnoweldgeSkillsHeader.AutoSize = true;
+            this.tlpKnoweldgeSkillsHeader.ColumnCount = 4;
+            this.tlpKnoweldgeSkillsHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKnoweldgeSkillsHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKnoweldgeSkillsHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKnoweldgeSkillsHeader.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpKnoweldgeSkillsHeader.Controls.Add(this.lblKnowledgeSkills, 0, 0);
+            this.tlpKnoweldgeSkillsHeader.Controls.Add(this.lblKnowledgeSkillPointsTitle, 1, 0);
+            this.tlpKnoweldgeSkillsHeader.Controls.Add(this.lblKnowledgeSkillPoints, 2, 0);
+            this.tlpKnoweldgeSkillsHeader.Controls.Add(this.lblCustomKnowledgeSkillsReminder, 3, 0);
+            this.tlpKnoweldgeSkillsHeader.Location = new System.Drawing.Point(0, 5);
+            this.tlpKnoweldgeSkillsHeader.Name = "tableLayoutPanel1";
+            this.tlpKnoweldgeSkillsHeader.RowCount = 1;
+            this.tlpKnoweldgeSkillsHeader.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpKnoweldgeSkillsHeader.Size = new System.Drawing.Size(761, 13);
+            this.tlpKnoweldgeSkillsHeader.TabIndex = 56;
             // 
             // SkillsTabUserControl
             // 
@@ -353,6 +375,8 @@ namespace Chummer.UI.Skills
             this.splitSkills.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitSkills)).EndInit();
             this.splitSkills.ResumeLayout(false);
+            this.tlpKnoweldgeSkillsHeader.ResumeLayout(false);
+            this.tlpKnoweldgeSkillsHeader.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -381,5 +405,6 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
         private System.Windows.Forms.ComboBox cboSortKnowledge;
         private System.Windows.Forms.ComboBox cboDisplayFilterKnowledge;
+        private System.Windows.Forms.TableLayoutPanel tlpKnoweldgeSkillsHeader;
     }
 }
