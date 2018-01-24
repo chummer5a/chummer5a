@@ -526,7 +526,7 @@ namespace Chummer
                 _objCharacter.Metatype = strSelectedMetatype;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblBP.Text);
-                _objCharacter.Metavariant = strSelectedMetavariant;
+                _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
 
                 string strMovement = objXmlMetatype["movement"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMovement))
