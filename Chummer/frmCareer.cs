@@ -290,33 +290,7 @@ namespace Chummer
             lblNumMugshots.Text = "/ " + CharacterObject.Mugshots.Count.ToString();
 
             // Populate character information fields.
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? string.Empty;
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-            if (CharacterObject.Possessed)
-                lblPossessed.Text = LanguageManager.GetString("String_Possessed", GlobalOptions.Language);
-            else
-                lblPossessed.Visible = false;
+            RefreshMetatypeFields();
             
             nudStreetCred.Value = CharacterObject.StreetCred;
             nudNotoriety.Value = CharacterObject.Notoriety;
@@ -514,10 +488,6 @@ namespace Chummer
                     panPets.Controls.Add(objPetControl);
                 }
             }
-
-            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             
             // Populate Magician Spirits and Technomancer Sprites.
             for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
@@ -543,6 +513,7 @@ namespace Chummer
             RefreshComplexForms(treComplexForms, cmsComplexForm);
             RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+            mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
             // Populate Lifestyles.
@@ -552,6 +523,9 @@ namespace Chummer
             }
             treLifestyles.Nodes[0].Expand();
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
@@ -688,23 +662,6 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
-
-            if (CharacterObject.MetatypeCategory == "Cyberzombie")
-                mnuSpecialCyberzombie.Visible = false;
-
-            // Determine if the Critter should have access to the Possession menu item.
-            bool blnAllowPossession = false;
-            foreach (CritterPower objCritterPower in CharacterObject.CritterPowers)
-            {
-                if (objCritterPower.Name == "Inhabitation" || objCritterPower.Name == "Possession")
-                {
-                    blnAllowPossession = true;
-                    break;
-                }
-            }
-            mnuSpecialPossess.Visible = blnAllowPossession;
-
             tabSkillsUc.ObjCharacter = CharacterObject;
 
             // Set the visibility of the Armor Degradation buttons.
@@ -733,8 +690,7 @@ namespace Chummer
 
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
-            if (GlobalOptions.LiveUpdateCleanCharacterFiles)
-                Application.Idle += LiveUpdateFromCharacterFile;
+            Application.Idle += LiveUpdateFromCharacterFile;
 
             // Clear the Dirty flag which gets set when creating a new Character.
             IsDirty = false;
@@ -787,6 +743,7 @@ namespace Chummer
         private void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers, notifyCollectionChangedEventArgs);
+            mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
         }
 
         private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -1590,11 +1547,11 @@ namespace Chummer
                 CharacterObject.CritterPowers.Add(objCritterPower);
             }
 
-            mnuSpecialCyberzombie.Visible = false;
-
-            IsDirty = true;
+            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         private void mnuSpecialReduceAttribute_Click(object sender, EventArgs e)
@@ -3071,7 +3028,8 @@ namespace Chummer
             CharacterObject.CritterPowers.Add(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
-            mnuSpecialConvertToFreeSprite.Visible = false;
+
+            RefreshMetatypeFields();
             
             IsCharacterUpdateRequested = true;
 
@@ -5469,17 +5427,6 @@ namespace Chummer
                     objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
                     objExpense.Undo = objUndo;
                 }
-                // Determine if the Critter should have access to the Possession menu item.
-                bool blnAllowPossession = false;
-                foreach (CritterPower objCritterPower in CharacterObject.CritterPowers)
-                {
-                    if (objCritterPower.Name == "Inhabitation" || objCritterPower.Name == "Possession")
-                    {
-                        blnAllowPossession = true;
-                        break;
-                    }
-                }
-                mnuSpecialPossess.Visible = blnAllowPossession;
                 
                 IsCharacterUpdateRequested = true;
 
@@ -5503,19 +5450,6 @@ namespace Chummer
 
                 CharacterObject.CritterPowers.Remove(objPower);
 
-                // Determine if the Critter should have access to the Possession menu item.
-                bool blnAllowPossession = false;
-                foreach (CritterPower objCritterPower in CharacterObject.CritterPowers)
-                {
-                    if (objCritterPower.Name == "Inhabitation" || objCritterPower.Name == "Possession")
-                    {
-                        blnAllowPossession = true;
-                        break;
-                    }
-                }
-
-                mnuSpecialPossess.Visible = blnAllowPossession;
-                
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
@@ -17279,9 +17213,47 @@ namespace Chummer
 
             IsDirty = true;
         }
-#endregion
+        #endregion
 
-#region Custom Methods
+        #region Custom Methods
+        /// <summary>
+        /// Refresh the fields related to the character's metatype.
+        /// </summary>
+        public void RefreshMetatypeFields()
+        {
+            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
+               XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+
+            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
+            string strSource = objMetatypeNode["source"].InnerText;
+            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+
+            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
+            {
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+
+                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
+
+                if (objMetatypeNode != null)
+                {
+                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
+                }
+            }
+            lblMetatype.Text = strMetatype;
+            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
+            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+
+            mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
+
+            if (CharacterObject.Possessed)
+                lblPossessed.Text = LanguageManager.GetString("String_Possessed", GlobalOptions.Language);
+            else
+                lblPossessed.Visible = false;
+        }
+
         public void RefreshContacts()
         {
             HashSet<Contact> existing = new HashSet<Contact>();
@@ -17313,9 +17285,9 @@ namespace Chummer
             }
         }
 
-        private void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
+        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -17333,28 +17305,7 @@ namespace Chummer
             CharacterObject.Load();
 
             // Update character information fields.
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? string.Empty;
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            RefreshMetatypeFields();
 
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);

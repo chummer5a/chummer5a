@@ -322,28 +322,7 @@ namespace Chummer
             lblNumMugshots.Text = "/ " + CharacterObject.Mugshots.Count.ToString();
 
             // Populate character information fields.
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-
-            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode["source"].InnerText;
-            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            RefreshMetatypeFields();
 
             objCharacter_AmbidextrousChanged(null);
 
@@ -452,10 +431,6 @@ namespace Chummer
             cboSpiritManipulation.DataSource = lstManip;
             cboSpiritManipulation.EndUpdate();
 
-            // Load the Metatype information before going anywhere else. Doing this later causes the Attributes to get messed up because of calls
-            // to UpdateCharacterInformation();
-            MetatypeSelected();
-
             // If the character is a Mystic Adept, set the values for the Mystic Adept NUD.
             if (CharacterObject.IsMysticAdept && !CharacterObjectOptions.MysAdeptSecondMAGAttribute)
             {
@@ -521,10 +496,6 @@ namespace Chummer
                 }
             }
 
-            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
-
             // Populate Magician Spirits and Technomancer Sprites.
             for (int i = 0; i < CharacterObject.Spirits.Count; ++i)
             {
@@ -558,6 +529,9 @@ namespace Chummer
             }
             treLifestyles.Nodes[0].Expand();
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
@@ -617,11 +591,6 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(toolStrip, "toolStrip");
 
-            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
-
-            if (CharacterObject.MetatypeCategory == "Cyberzombie")
-                mnuSpecialCyberzombie.Visible = false;
-
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
@@ -642,8 +611,7 @@ namespace Chummer
 
             // Now we can start checking for character updates
             Application.Idle += UpdateCharacterInfo;
-            if (GlobalOptions.LiveUpdateCleanCharacterFiles)
-                Application.Idle += LiveUpdateFromCharacterFile;
+            Application.Idle += LiveUpdateFromCharacterFile;
 
             // Clear the Dirty flag which gets set when creating a new Character.
             IsDirty = false;
@@ -1547,11 +1515,11 @@ namespace Chummer
                 CharacterObject.CritterPowers.Add(objCritterPower);
             }
 
-            mnuSpecialCyberzombie.Visible = false;
-
-            IsDirty = true;
+            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         private void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
@@ -2933,7 +2901,8 @@ namespace Chummer
             CharacterObject.CritterPowers.Add(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
-            mnuSpecialConvertToFreeSprite.Visible = false;
+
+            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
 
@@ -11553,13 +11522,33 @@ namespace Chummer
 
         #region Custom Methods
         /// <summary>
-        /// Let the application know that a Metatype has been selected.
+        /// Refresh the fields related to the character's metatype.
         /// </summary>
-        public void MetatypeSelected()
+        public void RefreshMetatypeFields()
         {
-            // Set the Minimum and Maximum values for each CharacterAttribute based on the selected MetaType.
-            // Also update the Maximum and Augmented Maximum values displayed.
-            // Metatypes cost Karma.
+            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
+               XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
+
+            string strMetatype = objMetatypeNode["translate"]?.InnerText ?? CharacterObject.Metatype;
+            string strSource = objMetatypeNode["source"].InnerText;
+            string strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"].InnerText;
+
+            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
+            {
+                objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
+
+                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
+
+                if (objMetatypeNode != null)
+                {
+                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
+                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
+                }
+            }
+            lblMetatype.Text = strMetatype;
+            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
             if (CharacterObjectOptions.MetatypeCostsKarma)
             {
                 lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString() + ' ' +
@@ -11570,16 +11559,12 @@ namespace Chummer
                 lblKarmaMetatypeBP.Text = "0 " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
 
-            string strToolTip = CharacterObject.Metatype;
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                strToolTip += " (" + CharacterObject.Metavariant + ')';
-            }
-            strToolTip += " (" + CharacterObject.MetatypeBP.ToString() + ')';
+            string strToolTip = strMetatype + " (" + CharacterObject.MetatypeBP.ToString() + ')';
             tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+
+            mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
         }
 
         /// <summary>
@@ -12352,9 +12337,9 @@ namespace Chummer
             lblSkillGroupsBP.Text = s;
         }
 
-        private void LiveUpdateFromCharacterFile(object sender = null, EventArgs e = null)
+        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || _blnLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -12372,28 +12357,7 @@ namespace Chummer
             CharacterObject.Load();
 
             // Update character information fields.
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                 XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
-
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? string.Empty;
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            RefreshMetatypeFields();
 
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
@@ -17228,46 +17192,8 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                 CharacterObject.Qualities.Remove(objQuality);
             }
-            
-            XmlNode objMetatypeNode = XmlManager.Load("metatypes.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]") ??
-                XmlManager.Load("critters.xml").SelectSingleNode("/chummer/metatypes/metatype[name = \"" + CharacterObject.Metatype + "\"]");
 
-            string strMetatype = objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metatype;
-            string strSource = objMetatypeNode?["source"]?.InnerText ?? string.Empty;
-            string strPage = objMetatypeNode?["altpage"]?.InnerText ?? objMetatypeNode?["page"]?.InnerText ?? string.Empty;
-
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-            {
-                objMetatypeNode = objMetatypeNode.SelectSingleNode("metavariants/metavariant[name = \"" + CharacterObject.Metavariant + "\"]");
-
-                strMetatype += " (" + (objMetatypeNode?["translate"]?.InnerText ?? CharacterObject.Metavariant) + ')';
-
-                if (objMetatypeNode != null)
-                {
-                    strSource = objMetatypeNode["source"]?.InnerText ?? strSource;
-                    strPage = objMetatypeNode["altpage"]?.InnerText ?? objMetatypeNode["page"]?.InnerText ?? strPage;
-                }
-            }
-            lblMetatype.Text = strMetatype;
-            lblMetatypeSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-            tipTooltip.SetToolTip(lblMetatypeSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-            // If we're working with Karma, the Metatype doesn't cost anything.
-            if (CharacterObjectOptions.MetatypeCostsKarma)
-            {
-                lblKarmaMetatypeBP.Text = (CharacterObject.MetatypeBP * CharacterObjectOptions.MetatypeCostsKarmaMultiplier).ToString() + ' ' +
-                                          LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-            else
-            {
-                lblKarmaMetatypeBP.Text = "0 " + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
-            }
-
-            string strToolTip = CharacterObject.Metatype;
-            if (!string.IsNullOrEmpty(CharacterObject.Metavariant) && CharacterObject.Metavariant != "None")
-                strToolTip += " (" + CharacterObject.Metavariant + ')';
-            strToolTip += " (" + CharacterObject.MetatypeBP.ToString() + ')';
-            tipTooltip.SetToolTip(lblKarmaMetatypeBP, strToolTip);
+            RefreshMetatypeFields();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
