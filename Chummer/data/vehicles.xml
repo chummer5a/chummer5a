@@ -12206,6 +12206,11 @@
       <cost>0</cost>
       <optionaldrone />
       <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
     </weaponmount>
     <weaponmount>
       <id>c6939caa-e94d-4db3-94f6-a46fbcc4df07</id>
@@ -12217,6 +12222,11 @@
       <cost>0</cost>
       <optionaldrone />
       <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
     </weaponmount>
     <weaponmount>
       <id>b7333366-24bf-4f47-bb68-b1cfe8f450fd</id>
@@ -12228,6 +12238,11 @@
       <cost>0</cost>
       <optionaldrone />
       <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <category operation="contains">Drones</category>
+        </vehicledetails>
+      </required>
     </weaponmount>
     <!-- End Region -->
   </weaponmounts>
