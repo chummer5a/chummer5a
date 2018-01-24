@@ -11843,10 +11843,12 @@
       <cost>2500</cost>
       <slots>3</slots>
       <required>
-        <control>Manual [SR5]</control>
-        <control>Remote</control>
-        <flexibility>Fixed</flexibility>
-        <visibility>External</visibility>
+        <weaponmountdetails>
+          <control>Manual [SR5]</control>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <visibility>External</visibility>
+        </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponcategories>
     </weaponmount>
@@ -11860,10 +11862,12 @@
       <cost>5000</cost>
       <slots>6</slots>
       <required>
-        <control>Manual [SR5]</control>
-        <control>Remote</control>
-        <flexibility>Fixed</flexibility>
-        <visibility>External</visibility>
+        <weaponmountdetails>
+          <control>Manual [SR5]</control>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <visibility>External</visibility>
+        </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponcategories>
     </weaponmount>
@@ -11877,7 +11881,12 @@
       <cost>750</cost>
       <slots>1</slots>
       <forbidden>
-        <control>Manual [SR5]</control>
+        <weaponmountdetails>
+          <control>Manual [SR5]</control>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
       </forbidden>
       <weaponcategories>Melee,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponcategories>
     </weaponmount>
@@ -11891,7 +11900,12 @@
       <cost>1500</cost>
       <slots>2</slots>
       <forbidden>
-        <control>Manual [SR5]</control>
+        <weaponmountdetails>
+          <control>Manual [SR5]</control>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
       </forbidden>
       <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponcategories>
     </weaponmount>
@@ -11905,7 +11919,12 @@
       <cost>4000</cost>
       <slots>4</slots>
       <forbidden>
-        <control>Manual [SR5]</control>
+        <weaponmountdetails>
+          <control>Manual [SR5]</control>
+          <control>None</control>
+          <flexibility>None</flexibility>
+          <visibility>None</visibility>
+        </weaponmountdetails>
       </forbidden>
       <weaponcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponcategories>
     </weaponmount>
@@ -12240,8 +12259,8 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Rating * 100</cost>
-      <rating>7</rating>
+      <cost>Slots * 100</cost>
+      <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
       <required>

@@ -88,6 +88,7 @@ Application Changes:
 - Fixed an issue with Karmagen causing a crash if not using a metavariant.
 - Fixed a bug where receiving a live update from an open character file would wreck havoc with events that trigger off of collections changing.
 - Fixed issues where certain bonuses, e.g. ones related to extra negative quality karma for being a cyberzombie, would not properly load.
+- Fixed an issue where users would have to manually set the cost of a pop-out mounts addon to a drone weapon mount, instead of it being automatically set based on the drone mount's modified slot count.
 
 Data Changes:
 

@@ -30,6 +30,7 @@ namespace Chummer
     public partial class frmSelectVehicleMod : Form
     {
         private Vehicle _objVehicle;
+        private int _intWeaponMountSlots = 0;
         private string _strSelectedMod = string.Empty;
         private int _intSelectedRating = 0;
         private int _intWeaponCost = 0;
@@ -246,6 +247,17 @@ namespace Chummer
             set
             {
                 _objVehicle = value;
+            }
+        }
+
+        /// <summary>
+        /// The slots taken up by a weapon mount to which the vehicle mod might be being added
+        /// </summary>
+        public int WeaponMountSlots
+        {
+            set
+            {
+                _intWeaponMountSlots = value;
             }
         }
 
@@ -613,6 +625,26 @@ namespace Chummer
                         nudRating.Enabled = true;
                     }
 
+                    // Slots.
+
+                    string strSlots = objXmlMod["slots"]?.InnerText ?? string.Empty;
+                    if (strSlots.StartsWith("FixedValues("))
+                    {
+                        string[] strValues = strSlots.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                        strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
+                    }
+                    int.TryParse(strSlots, out int intExtraSlots);
+                    strSlots = ReplaceStrings(strSlots, intExtraSlots);
+                    try
+                    {
+                        lblSlots.Text = CommonFunctions.EvaluateInvariantXPath(strSlots).ToString();
+                    }
+                    catch (XPathException)
+                    {
+                        lblSlots.Text = strSlots;
+                    }
+                    int.TryParse(lblSlots.Text, out intExtraSlots);
+
                     // Avail.
                     string strAvailExpr = objXmlMod["avail"]?.InnerText ?? string.Empty;
                     if (strAvailExpr.StartsWith("FixedValues("))
@@ -648,7 +680,7 @@ namespace Chummer
                     {
                         lblAvail.Text = strAvailExpr + strSuffix;
                     }
-
+                    
                     // Cost.
                     chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
 
@@ -690,7 +722,7 @@ namespace Chummer
                             }
                             strCost = strValues[intRating];
                         }
-                        strCost = ReplaceStrings(strCost);
+                        strCost = ReplaceStrings(strCost, intExtraSlots);
 
                         decItemCost = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
                         decItemCost *= _intModMultiplier;
@@ -708,24 +740,6 @@ namespace Chummer
 
                     // Update the Avail Test Label.
                     lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
-
-                    // Slots.
-
-                    string strSlots = objXmlMod["slots"]?.InnerText ?? string.Empty;
-                    if (strSlots.StartsWith("FixedValues("))
-                    {
-                        string[] strValues = strSlots.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        strSlots = strValues[decimal.ToInt32(nudRating.Value) - 1];
-                    }
-                    strSlots = ReplaceStrings(strSlots);
-                    try
-                    {
-                        lblSlots.Text = CommonFunctions.EvaluateInvariantXPath(strSlots).ToString();
-                    }
-                    catch (XPathException)
-                    {
-                        lblSlots.Text = strSlots;
-                    }
 
                     string strCategory = objXmlMod["category"]?.InnerText ?? string.Empty;
                     if (!string.IsNullOrEmpty(strCategory))
@@ -831,7 +845,7 @@ namespace Chummer
 
             lblSearchLabel.Left = txtSearch.Left - 6 - lblSearchLabel.Width;
         }
-        private string ReplaceStrings(string strInput)
+        private string ReplaceStrings(string strInput, int intExtraSlots = 0)
         {
             StringBuilder objInputBuilder = new StringBuilder(strInput);
             objInputBuilder.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
@@ -847,6 +861,7 @@ namespace Chummer
             objInputBuilder.Replace("Offroad Acceleration", _objVehicle.OffroadAccel.ToString());
             objInputBuilder.Replace("Sensor", _objVehicle.BaseSensor.ToString());
             objInputBuilder.Replace("Armor", _objVehicle.Armor.ToString());
+            objInputBuilder.Replace("Slots", (_intWeaponMountSlots + intExtraSlots).ToString());
 
             return objInputBuilder.ToString();
         }
