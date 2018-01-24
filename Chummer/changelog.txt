@@ -89,6 +89,7 @@ Application Changes:
 - Fixed a bug where receiving a live update from an open character file would wreck havoc with events that trigger off of collections changing.
 - Fixed issues where certain bonuses, e.g. ones related to extra negative quality karma for being a cyberzombie, would not properly load.
 - Fixed an issue where users would have to manually set the cost of a pop-out mounts addon to a drone weapon mount, instead of it being automatically set based on the drone mount's modified slot count.
+- Fixed an issue where having a language file that fails to load causes an endless stream of identical "Cannot load" warning dialogs that would all need to be closed one-at-a-time before Chummer5 loads. Fixes #2390.
 
 Data Changes:
 
