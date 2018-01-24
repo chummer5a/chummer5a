@@ -304,9 +304,9 @@ namespace Chummer
             UpdateInfo();
         }
 
-	    private void UpdateInfo()
-	    {
-	        if (_blnLoading)
+        private void UpdateInfo()
+        {
+            if (_blnLoading)
                 return;
 
             XmlNode xmlSelectedMount = null;
@@ -680,26 +680,11 @@ namespace Chummer
                     case "Visibility":
                         if (xmlForbiddenNode != null)
                         {
-                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("visibility"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = false;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlForbiddenNode.SelectNodes("weaponmountdetails/visibility").Cast<XmlNode>().All(xmlLoopNode => xmlLoopNode.InnerText != strName);
                         }
                         if (xmlRequiredNode != null)
                         {
-                            blnAddItem = false;
-                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("visibility"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = true;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlRequiredNode.SelectNodes("weaponmountdetails/visibility").Cast<XmlNode>().Any(xmlLoopNode => xmlLoopNode.InnerText == strName);
                         }
                         if (blnAddItem)
                             lstVisibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
@@ -707,26 +692,11 @@ namespace Chummer
                     case "Flexibility":
                         if (xmlForbiddenNode != null)
                         {
-                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("flexibility"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = false;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlForbiddenNode.SelectNodes("weaponmountdetails/flexibility").Cast<XmlNode>().All(xmlLoopNode => xmlLoopNode.InnerText != strName);
                         }
                         if (xmlRequiredNode != null)
                         {
-                            blnAddItem = false;
-                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("flexibility"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = true;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlRequiredNode.SelectNodes("weaponmountdetails/flexibility").Cast<XmlNode>().Any(xmlLoopNode => xmlLoopNode.InnerText == strName);
                         }
                         if (blnAddItem)
                             lstFlexibility.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
@@ -734,26 +704,11 @@ namespace Chummer
                     case "Control":
                         if (xmlForbiddenNode != null)
                         {
-                            foreach (XmlNode xmlLoopNode in xmlForbiddenNode.SelectNodes("control"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = false;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlForbiddenNode.SelectNodes("weaponmountdetails/control").Cast<XmlNode>().All(xmlLoopNode => xmlLoopNode.InnerText != strName);
                         }
                         if (xmlRequiredNode != null)
                         {
-                            blnAddItem = false;
-                            foreach (XmlNode xmlLoopNode in xmlRequiredNode.SelectNodes("control"))
-                            {
-                                if (xmlLoopNode.InnerText == strName)
-                                {
-                                    blnAddItem = true;
-                                    break;
-                                }
-                            }
+                            blnAddItem = xmlRequiredNode.SelectNodes("weaponmountdetails/control").Cast<XmlNode>().Any(xmlLoopNode => xmlLoopNode.InnerText == strName);
                         }
                         if (blnAddItem)
                             lstControl.Add(new ListItem(xmlWeaponMountOptionNode["id"].InnerText, xmlWeaponMountOptionNode["translate"]?.InnerText ?? strName));
