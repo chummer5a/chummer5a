@@ -65,6 +65,7 @@ namespace Chummer
             this.tsCloseOpenCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
+            this.tlpCharacterBlock = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -73,6 +74,7 @@ namespace Chummer
             this.panCharacterNotes.SuspendLayout();
             this.panGameNotes.SuspendLayout();
             this.cmsRoster.SuspendLayout();
+            this.tlpCharacterBlock.SuspendLayout();
             this.SuspendLayout();
             // 
             // picMugshot
@@ -236,7 +238,7 @@ namespace Chummer
             // lblCharacterName
             // 
             this.lblCharacterName.AutoSize = true;
-            this.lblCharacterName.Location = new System.Drawing.Point(304, 8);
+            this.lblCharacterName.Location = new System.Drawing.Point(96, 0);
             this.lblCharacterName.Name = "lblCharacterName";
             this.lblCharacterName.Size = new System.Drawing.Size(33, 13);
             this.lblCharacterName.TabIndex = 24;
@@ -245,7 +247,7 @@ namespace Chummer
             // lblCharacterNameLabel
             // 
             this.lblCharacterNameLabel.AutoSize = true;
-            this.lblCharacterNameLabel.Location = new System.Drawing.Point(208, 8);
+            this.lblCharacterNameLabel.Location = new System.Drawing.Point(3, 0);
             this.lblCharacterNameLabel.Name = "lblCharacterNameLabel";
             this.lblCharacterNameLabel.Size = new System.Drawing.Size(87, 13);
             this.lblCharacterNameLabel.TabIndex = 23;
@@ -255,7 +257,7 @@ namespace Chummer
             // lblMetatype
             // 
             this.lblMetatype.AutoSize = true;
-            this.lblMetatype.Location = new System.Drawing.Point(304, 86);
+            this.lblMetatype.Location = new System.Drawing.Point(96, 60);
             this.lblMetatype.Name = "lblMetatype";
             this.lblMetatype.Size = new System.Drawing.Size(33, 13);
             this.lblMetatype.TabIndex = 26;
@@ -264,7 +266,7 @@ namespace Chummer
             // lblMetatypeLabel
             // 
             this.lblMetatypeLabel.AutoSize = true;
-            this.lblMetatypeLabel.Location = new System.Drawing.Point(208, 86);
+            this.lblMetatypeLabel.Location = new System.Drawing.Point(3, 60);
             this.lblMetatypeLabel.Name = "lblMetatypeLabel";
             this.lblMetatypeLabel.Size = new System.Drawing.Size(54, 13);
             this.lblMetatypeLabel.TabIndex = 25;
@@ -274,7 +276,7 @@ namespace Chummer
             // lblCareerKarma
             // 
             this.lblCareerKarma.AutoSize = true;
-            this.lblCareerKarma.Location = new System.Drawing.Point(304, 112);
+            this.lblCareerKarma.Location = new System.Drawing.Point(96, 80);
             this.lblCareerKarma.Name = "lblCareerKarma";
             this.lblCareerKarma.Size = new System.Drawing.Size(33, 13);
             this.lblCareerKarma.TabIndex = 28;
@@ -283,7 +285,7 @@ namespace Chummer
             // lblCareerKarmaLabel
             // 
             this.lblCareerKarmaLabel.AutoSize = true;
-            this.lblCareerKarmaLabel.Location = new System.Drawing.Point(208, 112);
+            this.lblCareerKarmaLabel.Location = new System.Drawing.Point(3, 80);
             this.lblCareerKarmaLabel.Name = "lblCareerKarmaLabel";
             this.lblCareerKarmaLabel.Size = new System.Drawing.Size(74, 13);
             this.lblCareerKarmaLabel.TabIndex = 27;
@@ -293,7 +295,7 @@ namespace Chummer
             // lblPlayerName
             // 
             this.lblPlayerName.AutoSize = true;
-            this.lblPlayerName.Location = new System.Drawing.Point(304, 60);
+            this.lblPlayerName.Location = new System.Drawing.Point(96, 40);
             this.lblPlayerName.Name = "lblPlayerName";
             this.lblPlayerName.Size = new System.Drawing.Size(33, 13);
             this.lblPlayerName.TabIndex = 32;
@@ -302,7 +304,7 @@ namespace Chummer
             // lblPlayerNameLabel
             // 
             this.lblPlayerNameLabel.AutoSize = true;
-            this.lblPlayerNameLabel.Location = new System.Drawing.Point(208, 60);
+            this.lblPlayerNameLabel.Location = new System.Drawing.Point(3, 40);
             this.lblPlayerNameLabel.Name = "lblPlayerNameLabel";
             this.lblPlayerNameLabel.Size = new System.Drawing.Size(39, 13);
             this.lblPlayerNameLabel.TabIndex = 31;
@@ -312,7 +314,7 @@ namespace Chummer
             // lblCharacterAlias
             // 
             this.lblCharacterAlias.AutoSize = true;
-            this.lblCharacterAlias.Location = new System.Drawing.Point(304, 34);
+            this.lblCharacterAlias.Location = new System.Drawing.Point(96, 20);
             this.lblCharacterAlias.Name = "lblCharacterAlias";
             this.lblCharacterAlias.Size = new System.Drawing.Size(33, 13);
             this.lblCharacterAlias.TabIndex = 34;
@@ -321,7 +323,7 @@ namespace Chummer
             // lblCharacterAliasLabel
             // 
             this.lblCharacterAliasLabel.AutoSize = true;
-            this.lblCharacterAliasLabel.Location = new System.Drawing.Point(208, 34);
+            this.lblCharacterAliasLabel.Location = new System.Drawing.Point(3, 20);
             this.lblCharacterAliasLabel.Name = "lblCharacterAliasLabel";
             this.lblCharacterAliasLabel.Size = new System.Drawing.Size(32, 13);
             this.lblCharacterAliasLabel.TabIndex = 33;
@@ -331,7 +333,7 @@ namespace Chummer
             // lblEssence
             // 
             this.lblEssence.AutoSize = true;
-            this.lblEssence.Location = new System.Drawing.Point(304, 138);
+            this.lblEssence.Location = new System.Drawing.Point(96, 100);
             this.lblEssence.Name = "lblEssence";
             this.lblEssence.Size = new System.Drawing.Size(33, 13);
             this.lblEssence.TabIndex = 36;
@@ -340,7 +342,7 @@ namespace Chummer
             // lblEssenceLabel
             // 
             this.lblEssenceLabel.AutoSize = true;
-            this.lblEssenceLabel.Location = new System.Drawing.Point(208, 138);
+            this.lblEssenceLabel.Location = new System.Drawing.Point(3, 100);
             this.lblEssenceLabel.Name = "lblEssenceLabel";
             this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
             this.lblEssenceLabel.TabIndex = 35;
@@ -350,7 +352,7 @@ namespace Chummer
             // lblFilePath
             // 
             this.lblFilePath.AutoSize = true;
-            this.lblFilePath.Location = new System.Drawing.Point(304, 164);
+            this.lblFilePath.Location = new System.Drawing.Point(96, 120);
             this.lblFilePath.Name = "lblFilePath";
             this.lblFilePath.Size = new System.Drawing.Size(33, 13);
             this.lblFilePath.TabIndex = 38;
@@ -359,7 +361,7 @@ namespace Chummer
             // lblFilePathLabel
             // 
             this.lblFilePathLabel.AutoSize = true;
-            this.lblFilePathLabel.Location = new System.Drawing.Point(208, 164);
+            this.lblFilePathLabel.Location = new System.Drawing.Point(3, 120);
             this.lblFilePathLabel.Name = "lblFilePathLabel";
             this.lblFilePathLabel.Size = new System.Drawing.Size(54, 13);
             this.lblFilePathLabel.TabIndex = 37;
@@ -424,14 +426,14 @@ namespace Chummer
             this.tsCloseOpenCharacter.Image = global::Chummer.Properties.Resources.door_out;
             this.tsCloseOpenCharacter.Name = "tsCloseOpenCharacter";
             this.tsCloseOpenCharacter.Size = new System.Drawing.Size(177, 22);
-            this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Tag = "Menu_Close";
+            this.tsCloseOpenCharacter.Text = "&Close this character";
             this.tsCloseOpenCharacter.Click += new System.EventHandler(this.tsCloseOpenCharacter_Click);
             // 
             // lblSettings
             // 
             this.lblSettings.AutoSize = true;
-            this.lblSettings.Location = new System.Drawing.Point(304, 190);
+            this.lblSettings.Location = new System.Drawing.Point(96, 140);
             this.lblSettings.Name = "lblSettings";
             this.lblSettings.Size = new System.Drawing.Size(33, 13);
             this.lblSettings.TabIndex = 40;
@@ -440,34 +442,56 @@ namespace Chummer
             // lblSettingsLabel
             // 
             this.lblSettingsLabel.AutoSize = true;
-            this.lblSettingsLabel.Location = new System.Drawing.Point(208, 190);
+            this.lblSettingsLabel.Location = new System.Drawing.Point(3, 140);
             this.lblSettingsLabel.Name = "lblSettingsLabel";
             this.lblSettingsLabel.Size = new System.Drawing.Size(67, 13);
             this.lblSettingsLabel.TabIndex = 39;
             this.lblSettingsLabel.Tag = "Label_Roster_Settings_File";
             this.lblSettingsLabel.Text = "Settings File:";
             // 
+            // tlpCharacterBlock
+            // 
+            this.tlpCharacterBlock.AutoSize = true;
+            this.tlpCharacterBlock.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpCharacterBlock.ColumnCount = 2;
+            this.tlpCharacterBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCharacterBlock.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpCharacterBlock.Controls.Add(this.lblSettings, 1, 7);
+            this.tlpCharacterBlock.Controls.Add(this.lblCharacterAliasLabel, 0, 1);
+            this.tlpCharacterBlock.Controls.Add(this.lblSettingsLabel, 0, 7);
+            this.tlpCharacterBlock.Controls.Add(this.lblCharacterAlias, 1, 1);
+            this.tlpCharacterBlock.Controls.Add(this.lblFilePath, 1, 6);
+            this.tlpCharacterBlock.Controls.Add(this.lblPlayerNameLabel, 0, 2);
+            this.tlpCharacterBlock.Controls.Add(this.lblFilePathLabel, 0, 6);
+            this.tlpCharacterBlock.Controls.Add(this.lblPlayerName, 1, 2);
+            this.tlpCharacterBlock.Controls.Add(this.lblEssence, 1, 5);
+            this.tlpCharacterBlock.Controls.Add(this.lblMetatypeLabel, 0, 3);
+            this.tlpCharacterBlock.Controls.Add(this.lblEssenceLabel, 0, 5);
+            this.tlpCharacterBlock.Controls.Add(this.lblMetatype, 1, 3);
+            this.tlpCharacterBlock.Controls.Add(this.lblCareerKarma, 1, 4);
+            this.tlpCharacterBlock.Controls.Add(this.lblCareerKarmaLabel, 0, 4);
+            this.tlpCharacterBlock.Controls.Add(this.lblCharacterNameLabel, 0, 0);
+            this.tlpCharacterBlock.Controls.Add(this.lblCharacterName, 1, 0);
+            this.tlpCharacterBlock.Location = new System.Drawing.Point(208, 8);
+            this.tlpCharacterBlock.Name = "tlpCharacterBlock";
+            this.tlpCharacterBlock.RowCount = 8;
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpCharacterBlock.Size = new System.Drawing.Size(132, 160);
+            this.tlpCharacterBlock.TabIndex = 41;
+            // 
             // frmCharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 552);
-            this.Controls.Add(this.lblSettings);
-            this.Controls.Add(this.lblSettingsLabel);
-            this.Controls.Add(this.lblFilePath);
-            this.Controls.Add(this.lblFilePathLabel);
-            this.Controls.Add(this.lblEssence);
-            this.Controls.Add(this.lblEssenceLabel);
-            this.Controls.Add(this.lblCharacterAlias);
-            this.Controls.Add(this.lblCharacterAliasLabel);
-            this.Controls.Add(this.lblPlayerName);
-            this.Controls.Add(this.lblPlayerNameLabel);
-            this.Controls.Add(this.lblCareerKarma);
-            this.Controls.Add(this.lblCareerKarmaLabel);
-            this.Controls.Add(this.lblMetatype);
-            this.Controls.Add(this.lblMetatypeLabel);
-            this.Controls.Add(this.lblCharacterName);
-            this.Controls.Add(this.lblCharacterNameLabel);
+            this.Controls.Add(this.tlpCharacterBlock);
             this.Controls.Add(this.tabCharacterText);
             this.Controls.Add(this.picMugshot);
             this.Controls.Add(this.treCharacterList);
@@ -489,6 +513,8 @@ namespace Chummer
             this.panGameNotes.ResumeLayout(false);
             this.panGameNotes.PerformLayout();
             this.cmsRoster.ResumeLayout(false);
+            this.tlpCharacterBlock.ResumeLayout(false);
+            this.tlpCharacterBlock.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -528,6 +554,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem tsSort;
         private System.Windows.Forms.ToolStripMenuItem tsDelete;
         private System.Windows.Forms.ToolStripMenuItem tsCloseOpenCharacter;
+        private System.Windows.Forms.TableLayoutPanel tlpCharacterBlock;
         private System.Windows.Forms.Label lblSettings;
         private System.Windows.Forms.Label lblSettingsLabel;
     }

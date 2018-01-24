@@ -398,49 +398,9 @@ namespace Chummer
             treCharacterList.Width = intWidth;
             tabCharacterText.Left = treCharacterList.Width + 12;
             tabCharacterText.Width -= intDifference;
+            tlpCharacterBlock.Left = tabCharacterText.Left;
 
-            lblPlayerNameLabel.Left = tabCharacterText.Left;
-            lblCharacterNameLabel.Left = tabCharacterText.Left;
-            lblCareerKarmaLabel.Left = tabCharacterText.Left;
-            lblMetatypeLabel.Left = tabCharacterText.Left;
-            lblCharacterAliasLabel.Left = tabCharacterText.Left;
-            lblEssenceLabel.Left = tabCharacterText.Left;
-            lblFilePathLabel.Left = tabCharacterText.Left;
-            lblSettingsLabel.Left = tabCharacterText.Left;
-            intWidth = lblPlayerNameLabel.Right;
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblCareerKarmaLabel.Right > intWidth)
-            {
-                intWidth = lblCareerKarmaLabel.Right;
-            }
-            if (lblMetatypeLabel.Right > intWidth)
-            {
-                intWidth = lblMetatypeLabel.Right;
-            }
-            if (lblCharacterAliasLabel.Right > intWidth)
-            {
-                intWidth = lblCharacterAliasLabel.Right;
-            }
-            if (lblEssenceLabel.Right > intWidth)
-            {
-                intWidth = lblEssenceLabel.Right;
-            }
-            if (lblFilePathLabel.Right > intWidth)
-            {
-                intWidth = lblFilePathLabel.Right;
-            }
-            intWidth += 12;
-            lblEssence.Left = intWidth;
-            lblPlayerName.Left = intWidth;
-            lblCareerKarma.Left = intWidth;
-            lblCharacterAlias.Left = intWidth;
-            lblMetatype.Left = intWidth;
-            lblCharacterName.Left = intWidth;
-            lblFilePath.Left = intWidth;
-            lblSettings.Left = intWidth;
+
         }
 
         private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
