@@ -526,7 +526,7 @@ namespace Chummer
                 _objCharacter.Metatype = strSelectedMetatype;
                 _objCharacter.MetatypeCategory = strSelectedMetatypeCategory;
                 _objCharacter.MetatypeBP = Convert.ToInt32(lblBP.Text);
-                _objCharacter.Metavariant = strSelectedMetavariant;
+                _objCharacter.Metavariant = strSelectedMetavariant == "None" ? string.Empty : strSelectedMetavariant;
 
                 string strMovement = objXmlMetatype["movement"]?.InnerText;
                 if (!string.IsNullOrEmpty(strMovement))
@@ -548,7 +548,7 @@ namespace Chummer
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                     objQuality.ContributeToLimit = false;
                     _objCharacter.Qualities.Add(objQuality);
                 }

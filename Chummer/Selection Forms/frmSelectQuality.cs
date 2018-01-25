@@ -111,62 +111,68 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
+
+            XmlNode xmlQuality = null;
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedQuality))
+            if (!string.IsNullOrEmpty(strSelectedQuality))
+            {
+                xmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQuality + "\"]");
+            }
+
+            if (xmlQuality != null)
+            {
+                if (chkFree.Checked)
+                    lblBP.Text = "0";
+                else
+                {
+                    string strKarma = xmlQuality["karma"]?.InnerText ?? string.Empty;
+                    if (strKarma.StartsWith("Variable("))
+                    {
+                        int intMin = 0;
+                        int intMax = int.MaxValue;
+                        string strCost = strKarma.TrimStart("Variable(", true).TrimEnd(')');
+                        if (strCost.Contains('-'))
+                        {
+                            string[] strValues = strCost.Split('-');
+                            int.TryParse(strValues[0], out intMin);
+                            int.TryParse(strValues[1], out intMax);
+                        }
+                        else
+                            int.TryParse(strCost.FastEscape('+'), out intMin);
+
+                        if (intMax == int.MaxValue)
+                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
+                        else
+                            lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
+                    }
+                    else
+                    {
+                        int.TryParse(strKarma, out int intBP);
+
+                        if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
+                        {
+                            string strDoubleCostCareer = xmlQuality["doublecareer"]?.InnerText;
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || bool.Parse(strDoubleCostCareer))
+                            {
+                                intBP *= 2;
+                            }
+                        }
+                        lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
+                    }
+                }
+
+                string strSource = xmlQuality["source"].InnerText;
+                string strPage = xmlQuality["altpage"]?.InnerText ?? xmlQuality["page"].InnerText;
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
             {
                 lblBP.Text = string.Empty;
                 lblSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblSource, string.Empty);
-                return;
             }
-
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + strSelectedQuality + "\"]");
-            if (chkFree.Checked)
-                lblBP.Text = "0";
-            else
-            {
-                string strKarma = objXmlQuality["karma"]?.InnerText ?? string.Empty;
-                if (strKarma.StartsWith("Variable("))
-                {
-                    int intMin = 0;
-                    int intMax = int.MaxValue;
-                    string strCost = strKarma.TrimStart("Variable(", true).TrimEnd(')');
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        int.TryParse(strValues[0], out intMin);
-                        int.TryParse(strValues[1], out intMax);
-                    }
-                    else
-                        int.TryParse(strCost.FastEscape('+'), out intMin);
-
-                    if (intMax == int.MaxValue)
-                        lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo);
-                    else
-                        lblBP.Text = intMin.ToString(GlobalOptions.CultureInfo) + " - " + intMax.ToString(GlobalOptions.CultureInfo);
-                }
-                else
-                {
-                    int.TryParse(strKarma, out int intBP);
-
-                    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
-                    {
-                        string strDoubleCostCareer = objXmlQuality["doublecareer"]?.InnerText;
-                        if (string.IsNullOrEmpty(strDoubleCostCareer) || bool.Parse(strDoubleCostCareer))
-                        {
-                            intBP *= 2;
-                        }
-                    }
-                    lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString();
-                }
-            }
-
-            string strSource = objXmlQuality["source"]?.InnerText;
-            string strBook = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language);
-            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? string.Empty;
-            lblSource.Text = strBook + ' ' + strPage;
-
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -292,7 +298,7 @@ namespace Chummer
         {
             set
             {
-                if (_lstCategory.Any(x => x.Value == value))
+                if (_lstCategory.Any(x => x.Value.ToString() == value))
                 {
                     cboCategory.BeginUpdate();
                     cboCategory.SelectedValue = value;
@@ -365,17 +371,6 @@ namespace Chummer
                     strFilter.Append(')');
                 }
             }
-            string strSearch = txtSearch.Text;
-            if (!string.IsNullOrWhiteSpace(strSearch))
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = strSearch.ToUpper();
-                strFilter.Append(" and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"");
-                strFilter.Append(strSearchText);
-                strFilter.Append("\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"");
-                strFilter.Append(strSearchText);
-                strFilter.Append("\"))");
-            }
             if (chkMetagenetic.Checked)
             {
                 strFilter.Append(" and (metagenetic = 'True' or required/oneof[contains(., 'Changeling')])");
@@ -403,7 +398,12 @@ namespace Chummer
                     strFilter.Append(nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
                 }
             }
-            
+            string strSearch = CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            if (!string.IsNullOrWhiteSpace(strSearch))
+            {
+                strFilter.Append(strSearch);
+            }
+
             string strMetatypeXPath = "/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype;
             if (!string.IsNullOrEmpty(_objCharacter.Metavariant) && _objCharacter.Metavariant != "None")
             {

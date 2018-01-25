@@ -604,33 +604,33 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
-        /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
+        /// <param name="strGuid">InternalId of the Martial Art Technique to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid)
         {
-            return lstMartialArts.FindMartialArtAdvantage(strGuid, out MartialArt objFoundMartialArt);
+            return lstMartialArts.FindMartialArtTechnique(strGuid, out MartialArt objFoundMartialArt);
         }
 
         /// <summary>
-        /// Locate a Martial Art Advantage within the character's Martial Arts.
+        /// Locate a Martial Art Technique within the character's Martial Arts.
         /// </summary>
         /// <param name="strGuid">InternalId of the Martial Art Advantage to find.</param>
         /// <param name="lstMartialArts">List of Martial Arts to search.</param>
-        /// <param name="objFoundMartialArt">MartialArt the Advantage was found in.</param>
-        public static MartialArtAdvantage FindMartialArtAdvantage(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
+        /// <param name="objFoundMartialArt">MartialArt the Technique was found in.</param>
+        public static MartialArtTechnique FindMartialArtTechnique(this IEnumerable<MartialArt> lstMartialArts, string strGuid, out MartialArt objFoundMartialArt)
         {
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (MartialArt objArt in lstMartialArts)
                 {
-                    foreach (MartialArtAdvantage objAdvantage in objArt.Advantages)
+                    foreach (MartialArtTechnique objTechnique in objArt.Techniques)
                     {
-                        if (objAdvantage.InternalId == strGuid)
+                        if (objTechnique.InternalId == strGuid)
                         {
                             objFoundMartialArt = objArt;
-                            return objAdvantage;
+                            return objTechnique;
                         }
                     }
                 }
@@ -1159,7 +1159,21 @@ namespace Chummer
             treImprovements.Nodes.Insert(intNewIndex, nodOldNode);
         }
         #endregion
-        
+
+        /// <summary>
+        /// Book code (using the translated version if applicable).
+        /// </summary>
+        /// <param name="strCode">Book code to search for.</param>
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage)
+        {
+            if (!string.IsNullOrWhiteSpace(strAltCode))
+            {
+                XmlNode xmlOriginalCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[altcode = \"" + strAltCode + "\"]/code");
+                return xmlOriginalCode?.InnerText ?? strAltCode;
+            }
+            return string.Empty;
+        }
+
         /// <summary>
         /// Book code (using the translated version if applicable).
         /// </summary>
@@ -1168,8 +1182,8 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
-                return objXmlBook?.InnerText ?? strCode;
+                XmlNode xmlAltCode = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]/altcode");
+                return xmlAltCode?.InnerText ?? strCode;
             }
             return string.Empty;
         }
@@ -1182,15 +1196,43 @@ namespace Chummer
         {
             if (!string.IsNullOrWhiteSpace(strCode))
             {
-                XmlNode objXmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
-                if (objXmlBook != null)
+                XmlNode xmlBook = XmlManager.Load("books.xml", strLanguage).SelectSingleNode("/chummer/books/book[code = \"" + strCode + "\"]");
+                if (xmlBook != null)
                 {
-                    string strReturn = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"]?.InnerText;
+                    string strReturn = xmlBook["translate"]?.InnerText ?? xmlBook["name"]?.InnerText;
                     if (!string.IsNullOrWhiteSpace(strReturn))
                         return strReturn;
                 }
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns an XPath Expression's string that searches an item's name for a string.
+        /// </summary>
+        /// <param name="strNeedle">String to look for</param>
+        /// <param name="strNameElement">Name of the element that corresponds to the item's untranslated name.</param>
+        /// <param name="strTranslateElement">Name of the element that corresponds to the item's translated name.</param>
+        /// <param name="blnAddAnd">Whether to add " and " to the beginning of the search XPath</param>
+        /// <returns></returns>
+        public static string GenerateSearchXPath(string strNeedle, string strNameElement = "name", string strTranslateElement = "translate", bool blnAddAnd = true)
+        {
+            if (string.IsNullOrEmpty(strNeedle))
+                return string.Empty;
+            string strSearchText = strNeedle.ToUpper();
+            // Treat everything as being uppercase so the search is case-insensitive.
+            return string.Concat(
+                blnAddAnd ? " and ((not(" : "((not(",
+                strTranslateElement,
+                ") and contains(translate(",
+                strNameElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\")) or contains(translate(",
+                strTranslateElement,
+                ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), \"",
+                strSearchText,
+                "\"))");
         }
 
         #region PDF Functions
@@ -1232,7 +1274,7 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));
@@ -1280,7 +1322,7 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookShort(strTemp[0], GlobalOptions.Language);
+            string strBook = LanguageBookCodeFromAltCode(strTemp[0], GlobalOptions.Language);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalOptions.SourcebookInfo.FirstOrDefault(objInfo => objInfo.Code == strBook && !string.IsNullOrEmpty(objInfo.Path));

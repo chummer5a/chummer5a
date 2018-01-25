@@ -65,6 +65,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnDowngrade;
         private string _strCapacity = string.Empty;
+        private WeaponMount _objWeaponMountParent = null;
 
         private XmlNode _objCachedMyXmlNode = null;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -369,6 +370,12 @@ namespace Chummer.Backend.Equipment
         public IList<Weapon> Weapons => _lstVehicleWeapons;
 
         public IList<Cyberware> Cyberware => _lstCyberware;
+
+        public WeaponMount WeaponMountParent
+        {
+            get => _objWeaponMountParent;
+            set => _objWeaponMountParent = value;
+        }
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
@@ -956,6 +963,45 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the VehicleMod.
         /// </summary>
+        public decimal TotalCostInMountCreation(int intSlots)
+        {
+            // If the cost is determined by the Rating, evaluate the expression.
+            string strCostExpression = _strCost;
+            if (strCostExpression.StartsWith("FixedValues("))
+            {
+                string[] strValues = strCostExpression.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
+                if (_intRating > 0)
+                    strCostExpression = (strValues[Math.Min(_intRating, strValues.Length) - 1]);
+            }
+            string strCost = strCostExpression.Replace("Rating", _intRating.ToString());
+            if (Parent != null)
+            {
+                strCost = strCost.CheapReplace("Vehicle Cost",
+                    () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
+                strCost = strCost.Replace("Speed", Parent.Speed.ToString());
+                strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
+                strCost = strCost.Replace("Handling", Parent.Handling.ToString());
+            }
+            strCost = strCost.CheapReplace("Slots", () => intSlots.ToString());
+            decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+
+            // Apply a markup if applicable.
+            if (_decMarkup != 0)
+            {
+                decReturn *= 1 + (_decMarkup / 100.0m);
+            }
+
+            return decReturn + _lstVehicleWeapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + _lstCyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+        }
+
+        /// <summary>
+        /// Total cost of the VehicleMod.
+        /// </summary>
         public decimal TotalCost
         {
             get
@@ -990,6 +1036,7 @@ namespace Chummer.Backend.Equipment
                     strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
                     strCost = strCost.Replace("Handling", Parent.Handling.ToString());
                 }
+                strCost = strCost.CheapReplace("Slots", () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
                 decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)

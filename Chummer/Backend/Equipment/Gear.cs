@@ -273,13 +273,16 @@ namespace Chummer.Backend.Equipment
                     XmlNode objXmlWeapon = strLoopID.IsGuid()
                         ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                         : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-                    
-                    Weapon objGearWeapon = new Weapon(_objCharacter);
-                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
-                    objGearWeapon.ParentID = InternalId;
-                    lstWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    if (objXmlWeapon != null)
+                    {
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
+                        objGearWeapon.Create(objXmlWeapon, lstWeapons, true, blnAddImprovements, !blnAddImprovements);
+                        objGearWeapon.ParentID = InternalId;
+                        lstWeapons.Add(objGearWeapon);
+
+                        _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    }
                 }
             }
 
@@ -726,7 +729,7 @@ namespace Chummer.Backend.Equipment
             // Legacy Shim
             if (_intMaxRating != 0 && _strName.Contains("Certified Credstick"))
             {
-                XmlNode objNuyenNode = XmlManager.Load("gear.xml")?.SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
+                XmlNode objNuyenNode = XmlManager.Load("gear.xml").SelectSingleNode("/chummer/gears/gear[contains(name, \"Nuyen\") and category = \"Currency\"]");
                 if (objNuyenNode != null)
                 {
                     if (Rating > 0)
@@ -1063,7 +1066,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("gear.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("gear.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -2703,7 +2706,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strNodeId in lstNodesToRemoveIds)
                 {
                     // Remove the Weapons from the TreeView.
-                    TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
+                    TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
                     objLoopNode?.Remove();
                 }
             }

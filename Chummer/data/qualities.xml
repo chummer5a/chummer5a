@@ -965,7 +965,6 @@
       <karma>15</karma>
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
-      <hide />
       <onlyprioritygiven />
       <bonus>
         <enableattribute>

@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Additional Mods");
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblVisbility = new System.Windows.Forms.Label();
@@ -52,13 +51,17 @@ namespace Chummer
             this.treMods = new System.Windows.Forms.TreeView();
             this.cmdDeleteMod = new System.Windows.Forms.Button();
             this.cmdAddMod = new System.Windows.Forms.Button();
+            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSourceLabel = new System.Windows.Forms.Label();
+            this.tipTooltip = new TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(434, 153);
+            this.cmdCancel.Location = new System.Drawing.Point(434, 223);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 19;
@@ -69,7 +72,8 @@ namespace Chummer
             // 
             // cmdOK
             // 
-            this.cmdOK.Location = new System.Drawing.Point(515, 153);
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdOK.Location = new System.Drawing.Point(515, 223);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 20;
@@ -81,7 +85,7 @@ namespace Chummer
             // lblVisbility
             // 
             this.lblVisbility.AutoSize = true;
-            this.lblVisbility.Location = new System.Drawing.Point(267, 66);
+            this.lblVisbility.Location = new System.Drawing.Point(267, 64);
             this.lblVisbility.Name = "lblVisbility";
             this.lblVisbility.Size = new System.Drawing.Size(44, 13);
             this.lblVisbility.TabIndex = 21;
@@ -94,14 +98,14 @@ namespace Chummer
             this.cboVisibility.FormattingEnabled = true;
             this.cboVisibility.Location = new System.Drawing.Point(344, 61);
             this.cboVisibility.Name = "cboVisibility";
-            this.cboVisibility.Size = new System.Drawing.Size(182, 21);
+            this.cboVisibility.Size = new System.Drawing.Size(241, 21);
             this.cboVisibility.TabIndex = 22;
             this.cboVisibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblControl
             // 
             this.lblControl.AutoSize = true;
-            this.lblControl.Location = new System.Drawing.Point(267, 39);
+            this.lblControl.Location = new System.Drawing.Point(267, 38);
             this.lblControl.Name = "lblControl";
             this.lblControl.Size = new System.Drawing.Size(43, 13);
             this.lblControl.TabIndex = 23;
@@ -114,7 +118,7 @@ namespace Chummer
             this.cboControl.FormattingEnabled = true;
             this.cboControl.Location = new System.Drawing.Point(344, 35);
             this.cboControl.Name = "cboControl";
-            this.cboControl.Size = new System.Drawing.Size(182, 21);
+            this.cboControl.Size = new System.Drawing.Size(241, 21);
             this.cboControl.TabIndex = 24;
             this.cboControl.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
@@ -134,9 +138,9 @@ namespace Chummer
             this.cboSize.FormattingEnabled = true;
             this.cboSize.Location = new System.Drawing.Point(344, 9);
             this.cboSize.Name = "cboSize";
-            this.cboSize.Size = new System.Drawing.Size(182, 21);
+            this.cboSize.Size = new System.Drawing.Size(241, 21);
             this.cboSize.TabIndex = 26;
-            this.cboSize.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
+            this.cboSize.SelectedIndexChanged += new System.EventHandler(this.cboSize_SelectedIndexChanged);
             // 
             // lblFlexibility
             // 
@@ -145,7 +149,7 @@ namespace Chummer
             this.lblFlexibility.Name = "lblFlexibility";
             this.lblFlexibility.Size = new System.Drawing.Size(51, 13);
             this.lblFlexibility.TabIndex = 27;
-            this.lblFlexibility.Tag = "Label_Range";
+            this.lblFlexibility.Tag = "Label_Flexibility";
             this.lblFlexibility.Text = "Flexibility:";
             // 
             // cboFlexibility
@@ -154,14 +158,14 @@ namespace Chummer
             this.cboFlexibility.FormattingEnabled = true;
             this.cboFlexibility.Location = new System.Drawing.Point(344, 87);
             this.cboFlexibility.Name = "cboFlexibility";
-            this.cboFlexibility.Size = new System.Drawing.Size(182, 21);
+            this.cboFlexibility.Size = new System.Drawing.Size(241, 21);
             this.cboFlexibility.TabIndex = 28;
             this.cboFlexibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblAvailabilityLabel
             // 
             this.lblAvailabilityLabel.AutoSize = true;
-            this.lblAvailabilityLabel.Location = new System.Drawing.Point(532, 9);
+            this.lblAvailabilityLabel.Location = new System.Drawing.Point(267, 116);
             this.lblAvailabilityLabel.Name = "lblAvailabilityLabel";
             this.lblAvailabilityLabel.Size = new System.Drawing.Size(33, 13);
             this.lblAvailabilityLabel.TabIndex = 30;
@@ -171,7 +175,7 @@ namespace Chummer
             // lblCostLabel
             // 
             this.lblCostLabel.AutoSize = true;
-            this.lblCostLabel.Location = new System.Drawing.Point(532, 36);
+            this.lblCostLabel.Location = new System.Drawing.Point(267, 142);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
             this.lblCostLabel.TabIndex = 29;
@@ -181,7 +185,7 @@ namespace Chummer
             // lblAvailability
             // 
             this.lblAvailability.AutoSize = true;
-            this.lblAvailability.Location = new System.Drawing.Point(571, 9);
+            this.lblAvailability.Location = new System.Drawing.Point(341, 116);
             this.lblAvailability.Name = "lblAvailability";
             this.lblAvailability.Size = new System.Drawing.Size(19, 13);
             this.lblAvailability.TabIndex = 32;
@@ -191,7 +195,7 @@ namespace Chummer
             // lblCost
             // 
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(569, 36);
+            this.lblCost.Location = new System.Drawing.Point(341, 142);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(19, 13);
             this.lblCost.TabIndex = 31;
@@ -201,7 +205,7 @@ namespace Chummer
             // lblSlots
             // 
             this.lblSlots.AutoSize = true;
-            this.lblSlots.Location = new System.Drawing.Point(569, 63);
+            this.lblSlots.Location = new System.Drawing.Point(341, 168);
             this.lblSlots.Name = "lblSlots";
             this.lblSlots.Size = new System.Drawing.Size(13, 13);
             this.lblSlots.TabIndex = 34;
@@ -211,7 +215,7 @@ namespace Chummer
             // lblSlotsLabel
             // 
             this.lblSlotsLabel.AutoSize = true;
-            this.lblSlotsLabel.Location = new System.Drawing.Point(532, 63);
+            this.lblSlotsLabel.Location = new System.Drawing.Point(267, 168);
             this.lblSlotsLabel.Name = "lblSlotsLabel";
             this.lblSlotsLabel.Size = new System.Drawing.Size(33, 13);
             this.lblSlotsLabel.TabIndex = 33;
@@ -221,7 +225,7 @@ namespace Chummer
             // chkFreeItem
             // 
             this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(535, 89);
+            this.chkFreeItem.Location = new System.Drawing.Point(515, 141);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
             this.chkFreeItem.TabIndex = 59;
@@ -233,7 +237,7 @@ namespace Chummer
             // nudMarkup
             // 
             this.nudMarkup.DecimalPlaces = 2;
-            this.nudMarkup.Location = new System.Drawing.Point(332, 156);
+            this.nudMarkup.Location = new System.Drawing.Point(344, 226);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -252,7 +256,7 @@ namespace Chummer
             // lblMarkupPercentLabel
             // 
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(387, 158);
+            this.lblMarkupPercentLabel.Location = new System.Drawing.Point(399, 228);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
             this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 64;
@@ -261,7 +265,7 @@ namespace Chummer
             // lblMarkupLabel
             // 
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(272, 158);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(267, 228);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
             this.lblMarkupLabel.TabIndex = 62;
@@ -270,14 +274,13 @@ namespace Chummer
             // 
             // treMods
             // 
+            this.treMods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treMods.Location = new System.Drawing.Point(12, 35);
             this.treMods.Name = "treMods";
-            treeNode1.Name = "nodMods";
-            treeNode1.Text = "Additional Mods";
-            this.treMods.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1});
-            this.treMods.Size = new System.Drawing.Size(249, 141);
+            this.treMods.Size = new System.Drawing.Size(249, 211);
             this.treMods.TabIndex = 65;
+            this.treMods.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMods_AfterSelect);
             // 
             // cmdDeleteMod
             // 
@@ -285,8 +288,10 @@ namespace Chummer
             this.cmdDeleteMod.Name = "cmdDeleteMod";
             this.cmdDeleteMod.Size = new System.Drawing.Size(122, 23);
             this.cmdDeleteMod.TabIndex = 67;
+            this.cmdDeleteMod.Tag = "Button_AddMod";
             this.cmdDeleteMod.Text = "Delete Mod";
             this.cmdDeleteMod.UseVisualStyleBackColor = true;
+            this.cmdDeleteMod.Click += new System.EventHandler(this.cmdDeleteMod_Click);
             // 
             // cmdAddMod
             // 
@@ -298,11 +303,46 @@ namespace Chummer
             this.cmdAddMod.UseVisualStyleBackColor = true;
             this.cmdAddMod.Click += new System.EventHandler(this.cmdAddMod_Click);
             // 
+            // lblSource
+            // 
+            this.lblSource.AutoSize = true;
+            this.lblSource.Location = new System.Drawing.Point(341, 194);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSource.TabIndex = 69;
+            this.lblSource.Text = "[Source]";
+            // 
+            // lblSourceLabel
+            // 
+            this.lblSourceLabel.AutoSize = true;
+            this.lblSourceLabel.Location = new System.Drawing.Point(267, 194);
+            this.lblSourceLabel.Name = "lblSourceLabel";
+            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSourceLabel.TabIndex = 68;
+            this.lblSourceLabel.Tag = "Label_Source";
+            this.lblSourceLabel.Text = "Source:";
+            // 
+            // tipTooltip
+            // 
+            this.tipTooltip.AllowLinksHandling = true;
+            this.tipTooltip.AutoPopDelay = 10000;
+            this.tipTooltip.BaseStylesheet = null;
+            this.tipTooltip.InitialDelay = 250;
+            this.tipTooltip.IsBalloon = true;
+            this.tipTooltip.MaximumSize = new System.Drawing.Size(0, 0);
+            this.tipTooltip.OwnerDraw = true;
+            this.tipTooltip.ReshowDelay = 100;
+            this.tipTooltip.TooltipCssClass = "htmltooltip";
+            this.tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.tipTooltip.ToolTipTitle = "Chummer Help";
+            // 
             // frmCreateWeaponMount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(597, 188);
+            this.ClientSize = new System.Drawing.Size(597, 258);
+            this.Controls.Add(this.lblSource);
+            this.Controls.Add(this.lblSourceLabel);
             this.Controls.Add(this.cmdDeleteMod);
             this.Controls.Add(this.cmdAddMod);
             this.Controls.Add(this.treMods);
@@ -326,7 +366,10 @@ namespace Chummer
             this.Controls.Add(this.cboVisibility);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
+            this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "frmCreateWeaponMount";
+            this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
             this.Load += new System.EventHandler(this.frmCreateWeaponMount_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
@@ -360,5 +403,8 @@ namespace Chummer
         private System.Windows.Forms.TreeView treMods;
         private System.Windows.Forms.Button cmdDeleteMod;
         private System.Windows.Forms.Button cmdAddMod;
+        private System.Windows.Forms.Label lblSource;
+        private System.Windows.Forms.Label lblSourceLabel;
+        private TheArtOfDev.HtmlRenderer.WinForms.HtmlToolTip tipTooltip;
     }
 }

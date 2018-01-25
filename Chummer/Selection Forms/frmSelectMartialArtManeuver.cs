@@ -87,14 +87,25 @@ namespace Chummer
 
         private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Populate the Maneuvers list.
-            XmlNode objXmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + lstManeuvers.SelectedValue + "\"]");
+            string strSelectedId = lstManeuvers.SelectedValue?.ToString();
+            XmlNode xmlManeuver = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlManeuver = _objXmlDocument.SelectSingleNode("/chummer/maneuvers/maneuver[name = \"" + strSelectedId + "\"]");
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlManeuver["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlManeuver["altpage"]?.InnerText ?? objXmlManeuver["page"].InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            if (xmlManeuver != null)
+            {
+                string strSource = xmlManeuver["source"].InnerText;
+                string strPage = xmlManeuver["altpage"]?.InnerText ?? xmlManeuver["page"].InnerText;
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlManeuver["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

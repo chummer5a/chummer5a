@@ -72,7 +72,8 @@ namespace Chummer
         {
             public IDictionary<string, string> TranslatedStrings { get; } = new Dictionary<string, string>();
             public XmlDocument DataDocument { get; } = new XmlDocument();
-            public bool IsLoaded { get; private set; } = true;
+            public string ErrorMessage { get; private set; } = string.Empty;
+            public bool ErrorAlreadyShown { get; set; } = false;
 
             public LanguageData(string strLanguage)
             {
@@ -80,38 +81,62 @@ namespace Chummer
                 if (File.Exists(strFilePath))
                 {
                     XmlDocument objLanguageDocument = new XmlDocument();
-                    objLanguageDocument.Load(strFilePath);
-                    if (objLanguageDocument != null)
+                    try
                     {
-                        foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
+                        objLanguageDocument.Load(strFilePath);
+                        if (objLanguageDocument != null)
                         {
-                            // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
-                            // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
-                            string strKey = objNode["key"]?.InnerText;
-                            string strText = objNode["text"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                            foreach (XmlNode objNode in objLanguageDocument.SelectNodes("/chummer/strings/string"))
                             {
-                                if (TranslatedStrings.ContainsKey(strKey))
-                                    TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
-                                else
-                                    TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                string strKey = objNode["key"]?.InnerText;
+                                string strText = objNode["text"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                {
+                                    if (TranslatedStrings.ContainsKey(strKey))
+                                        TranslatedStrings[strKey] = strText.Replace("\\n", "\n");
+                                    else
+                                        TranslatedStrings.Add(strKey, strText.Replace("\\n", "\n"));
+                                }
                             }
                         }
+                        else
+                        {
+                            ErrorMessage += "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument.\n";
+                        }
                     }
-                    else
-                        IsLoaded = false;
+                    catch (Exception ex)
+                    {
+                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex.ToString() + ".\n";
+                    }
                 }
                 else
-                    IsLoaded = false;
+                {
+                    ErrorMessage += "Could not find the strings file " + strLanguage + ".xml.\n";
+                }
 
                 // Check to see if the data translation file for the selected language exists.
                 string strDataPath = Path.Combine(Application.StartupPath, "lang", strLanguage + "_data.xml");
                 if (File.Exists(strDataPath))
                 {
-                    DataDocument.Load(strDataPath);
+                    try
+                    {
+                        DataDocument.Load(strDataPath);
+                        if (DataDocument == null)
+                        {
+                            ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument.\n";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex.ToString() + ".\n";
+                    }
                 }
                 else
-                    IsLoaded = false;
+                {
+                    ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.\n";
+                }
             }
         }
         
@@ -162,17 +187,24 @@ namespace Chummer
 
         private static bool LoadLanguage(string strLanguage)
         {
-            if (strLanguage != GlobalOptions.DefaultLanguage && !s_DictionaryLanguages.ContainsKey(strLanguage))
+            if (strLanguage != GlobalOptions.DefaultLanguage)
             {
-                LanguageData objNewLanguage = new LanguageData(strLanguage);
-                if (!objNewLanguage.IsLoaded)
+                if (!s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objNewLanguage))
                 {
-                    MessageBox.Show("Language with code " + strLanguage + " could not be loaded.", "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    objNewLanguage = new LanguageData(strLanguage);
+                    s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
+                }
+                if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
+                {
+                    if (!objNewLanguage.ErrorAlreadyShown)
+                    {
+                        MessageBox.Show("Language with code " + strLanguage + " could not be loaded for the following reasons:\n\n" + objNewLanguage.ErrorMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        objNewLanguage.ErrorAlreadyShown = true;
+                    }
                     return false;
                 }
-                else
-                    s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
             }
+
             return true;
         }
 

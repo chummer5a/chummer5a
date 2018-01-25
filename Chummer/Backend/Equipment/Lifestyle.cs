@@ -629,11 +629,11 @@ namespace Chummer.Backend.Equipment
                     switch (_objCharacter.TrustFund)
                     {
                         case 1:
-                        case 3:
+                        case 4:
                             return BaseLifestyle == "Medium";
                         case 2:
                             return BaseLifestyle == "Low";
-                        case 4:
+                        case 3:
                             return BaseLifestyle == "High";
                     }
                 }
@@ -690,7 +690,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage)?.SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/lifestyles/lifestyle[id = \"" + SourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

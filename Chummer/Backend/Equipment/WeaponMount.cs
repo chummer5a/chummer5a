@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -239,7 +240,8 @@ namespace Chummer.Backend.Equipment
 		        {
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        Parent = Parent
+                        Parent = Parent,
+                        WeaponMountParent = this
                     };
                     objMod.Load(xmlModNode);
 		            _lstMods.Add(objMod);
@@ -738,14 +740,25 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
 		{
-            string strReturn = DisplayNameShort(strLanguage);
-
+            StringBuilder strReturn = new StringBuilder(DisplayNameShort(strLanguage));
+            
             if (WeaponMountOptions.Count > 0)
             {
-                strReturn += $" ({string.Join(", ", WeaponMountOptions.Select(wm => wm.DisplayName(strLanguage)).ToArray())})";
+                strReturn.Append(" (");
+                foreach (WeaponMountOption objOption in WeaponMountOptions)
+                {
+                    if (objOption.Name != "None")
+                    {
+                        strReturn.Append(objOption.DisplayName(strLanguage));
+                        strReturn.Append(", ");
+                    }
+                }
+                strReturn.Length -= 2;
+                if (strReturn.Length > 0)
+                    strReturn.Append(')');
             }
 
-            return strReturn;
+            return strReturn.ToString();
         }
 
         public XmlNode GetNode()
@@ -757,7 +770,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage)?.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _strSourceId + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("vehicles.xml", strLanguage).SelectSingleNode("/chummer/weaponmounts/weaponmount[id = \"" + _strSourceId + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

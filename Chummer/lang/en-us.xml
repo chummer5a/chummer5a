@@ -1840,14 +1840,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>You may only have 1 Advantage per Rating of {0}.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>Maximum Number of Advantages</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>You may only have 2 Maneuvers per Martial Art Rating.</text>
     </string>
@@ -1856,15 +1848,15 @@
       <text>Maximum Number of Maneuvers</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
-      <text>You must select a Martial Art to add an Advantage to.</text>
+      <key>Message_SelectMartialArtTechnique</key>
+      <text>You must select a Martial Art to which to add a Technique.</text>
     </string>
     <string>
       <key>Message_SelectLimitModifier</key>
-      <text>You must select a Limit to add a Modifier to.</text>
+      <text>You must select a Limit to which to add a Modifier.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Select Martial Art</text>
     </string>
     <string>
@@ -2358,6 +2350,26 @@
     <string>
       <key>Label_Size</key>
       <text>Size:</text>
+    </string>
+    <string>
+      <key>Label_Flexibility</key>
+      <text>Flexibility:</text>
+    </string>
+    <string>
+      <key>Button_AddMod</key>
+      <text>Add Mod</text>
+    </string>
+    <string>
+      <key>Button_DeleteMod</key>
+      <text>Delete Mod</text>
+    </string>
+    <string>
+      <key>Node_AdditionalMods</key>
+      <text>Additional Mods</text>
+    </string>
+    <string>
+      <key>Title_CreateWeaponMount</key>
+      <text>Create Weapon Mount</text>
     </string>
     <string>
       <key>Message_OverPrototypeLimit</key>
@@ -5579,6 +5591,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Adept Powers -->
     <string>
+      <key>String_Power</key>
+      <text>Power</text>
+    </string>
+    <string>
       <key>Label_Power_PowerRating</key>
       <text>Power Rating:</text>
     </string>
@@ -7732,10 +7748,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
       <text>Select a Martial Art</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Martial Art Advantage Window -->
+    <!-- Region Select Martial Art Technique Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
-      <text>Select an Advantage</text>
+      <key>Title_SelectMartialArtTechnique</key>
+      <text>Select a Technique</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Martial Art Maneuver Window -->

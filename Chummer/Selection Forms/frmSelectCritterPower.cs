@@ -48,13 +48,15 @@ namespace Chummer
             MoveControls();
             _objXmlDocument = XmlManager.Load("critterpowers.xml");
             if (_objCharacter.IsCritter)
+            {
                 _objXmlCritterDocument = XmlManager.Load("critters.xml");
+                if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") == null)
+                {
+                    _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
+                }
+            }
             else
                 _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
-            if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") == null)
-            {
-                _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
-            }
         }
 
         private void frmSelectCritterPower_Load(object sender, EventArgs e)
@@ -74,12 +76,11 @@ namespace Chummer
             }
 
             // Remove Optional Powers if the Critter does not have access to them.
-            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-            if (objXmlCritter["optionalpowers"] == null)
+            if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers") == null)
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Allowed Optional Powers")
+                    if (objItem.Value.ToString() == "Allowed Optional Powers")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -92,7 +93,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Free Spirit")
+                    if (objItem.Value.ToString() == "Free Spirit")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -105,7 +106,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Toxic Critter Powers")
+                    if (objItem.Value.ToString() == "Toxic Critter Powers")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -118,7 +119,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Emergent")
+                    if (objItem.Value.ToString() == "Emergent")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -131,7 +132,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Echoes")
+                    if (objItem.Value.ToString() == "Echoes")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -144,7 +145,7 @@ namespace Chummer
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value == "Shapeshifter")
+                    if (objItem.Value.ToString() == "Shapeshifter")
                     {
                         _lstCategory.Remove(objItem);
                         break;
@@ -152,25 +153,17 @@ namespace Chummer
                 }
             }
 
-            bool blnIsDrake = false;
-            foreach (Quality objQuality in _objCharacter.Qualities)
-            {
-                if (objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
-                    objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)")
-                {
-                    blnIsDrake = true;
-                }
-            }
+            bool blnIsDrake = _objCharacter.Qualities.Any(objQuality =>
+            objQuality.Name == "Dracoform (Eastern Drake)" || objQuality.Name == "Dracoform (Western Drake)" ||
+            objQuality.Name == "Dracoform (Sea Drake)" || objQuality.Name == "Dracoform (Feathered Drake)");
 
             if (!blnIsDrake)
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
-                    if (objItem.Value != "Drake")
-                    {
-                        _lstCategory.Remove(objItem);
-                        break;
-                    }
+                    if (objItem.Value.ToString() == "Drake") continue;
+                    _lstCategory.Remove(objItem);
+                    break;
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -289,11 +282,10 @@ namespace Chummer
                             break;
                     }
 
-                    string strSource = objXmlPower["altsource"]?.InnerText ?? objXmlPower["source"]?.InnerText ?? string.Empty;
+                    string strSource = objXmlPower["source"]?.InnerText ?? string.Empty;
                     string strPage = objXmlPower["altpage"]?.InnerText ?? objXmlPower["page"]?.InnerText ?? string.Empty;
                     lblCritterPowerSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                    if (!string.IsNullOrEmpty(strSource))
-                        tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                    tipTooltip.SetToolTip(lblCritterPowerSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
                     nudCritterPowerRating.Enabled = objXmlPower["rating"] != null;
 
@@ -302,11 +294,13 @@ namespace Chummer
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                        XmlNode objXmlCritterPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]");
-                        lblPowerPoints.Text = objXmlCritterPower.Attributes["cost"].InnerText;
-                        lblPowerPoints.Visible = true;
-                        lblPowerPointsLabel.Visible = true;
+                        XmlNode xmlOptionalPowerCostNode = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]/@cost");
+                        if (xmlOptionalPowerCostNode != null)
+                        {
+                            lblPowerPoints.Text = xmlOptionalPowerCostNode.InnerText;
+                            lblPowerPoints.Visible = true;
+                            lblPowerPointsLabel.Visible = true;
+                        }
                     }
                 }
             }
@@ -419,15 +413,13 @@ namespace Chummer
             foreach (XmlNode objXmlPower in _objXmlDocument.SelectNodes("/chummer/powers/power[" + strFilter + "]"))
             {
                 string strPowerName = objXmlPower["name"].InnerText;
-                if (lstPowerWhitelist?.Contains(strPowerName) != false)
+                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
+                TreeNode objNode = new TreeNode
                 {
-                    TreeNode objNode = new TreeNode
-                    {
-                        Tag = objXmlPower["id"].InnerText,
-                        Text = objXmlPower["translate"]?.InnerText ?? strPowerName
-                    };
-                    trePowers.Nodes.Add(objNode);
-                }
+                    Tag = objXmlPower["id"].InnerText,
+                    Text = objXmlPower["translate"]?.InnerText ?? strPowerName
+                };
+                trePowers.Nodes.Add(objNode);
             }
             trePowers.Sort();
         }
@@ -456,15 +448,18 @@ namespace Chummer
 
             if (nudCritterPowerRating.Enabled)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
+
+            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedPower + "\"]");
+
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
             if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
             {
-                XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
-                _decPowerPoints = Convert.ToDecimal(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+                XmlNode objXmlOptionalPowerCost = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]/@cost");
+                if (objXmlOptionalPowerCost != null)
+                    _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             DialogResult = DialogResult.OK;

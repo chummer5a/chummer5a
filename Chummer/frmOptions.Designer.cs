@@ -101,6 +101,7 @@ namespace Chummer
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
+            this.cboSheetLanguage = new Chummer.ElasticComboBox();
             this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
             this.nudNuyenDecimalsMaximum = new System.Windows.Forms.NumericUpDown();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
@@ -1061,8 +1062,8 @@ namespace Chummer
             // 
             // cmdEnableSourcebooks
             // 
-            this.cmdEnableSourcebooks.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(11, 542);
+            this.cmdEnableSourcebooks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cmdEnableSourcebooks.Location = new System.Drawing.Point(11, 547);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(226, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -1073,6 +1074,9 @@ namespace Chummer
             // 
             // tabControl2
             // 
+            this.tabControl2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl2.Controls.Add(this.tabGlobal);
             this.tabControl2.Controls.Add(this.tabPage2);
             this.tabControl2.Controls.Add(this.tabPage1);
@@ -1080,12 +1084,13 @@ namespace Chummer
             this.tabControl2.Location = new System.Drawing.Point(243, 6);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(556, 564);
+            this.tabControl2.Size = new System.Drawing.Size(561, 564);
             this.tabControl2.TabIndex = 2;
             // 
             // tabGlobal
             // 
             this.tabGlobal.BackColor = System.Drawing.SystemColors.Control;
+            this.tabGlobal.Controls.Add(this.cboSheetLanguage);
             this.tabGlobal.Controls.Add(this.chkLiveUpdateCleanCharacterFiles);
             this.tabGlobal.Controls.Add(this.nudNuyenDecimalsMaximum);
             this.tabGlobal.Controls.Add(this.lblNuyenDecimalsMaximumLabel);
@@ -1115,10 +1120,21 @@ namespace Chummer
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGlobal.Size = new System.Drawing.Size(548, 538);
+            this.tabGlobal.Size = new System.Drawing.Size(553, 538);
             this.tabGlobal.TabIndex = 0;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global";
+            // 
+            // cboSheetLanguage
+            // 
+            this.cboSheetLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSheetLanguage.FormattingEnabled = true;
+            this.cboSheetLanguage.Location = new System.Drawing.Point(136, 33);
+            this.cboSheetLanguage.Name = "cboSheetLanguage";
+            this.cboSheetLanguage.Size = new System.Drawing.Size(162, 21);
+            this.cboSheetLanguage.TabIndex = 34;
+            this.cboSheetLanguage.TooltipText = "";
+            this.cboSheetLanguage.SelectedIndexChanged += new System.EventHandler(this.cboSheetLanguage_SelectedIndexChanged);
             // 
             // chkLiveUpdateCleanCharacterFiles
             // 
@@ -1395,9 +1411,9 @@ namespace Chummer
             // 
             this.cboXSLT.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboXSLT.FormattingEnabled = true;
-            this.cboXSLT.Location = new System.Drawing.Point(136, 33);
+            this.cboXSLT.Location = new System.Drawing.Point(304, 33);
             this.cboXSLT.Name = "cboXSLT";
-            this.cboXSLT.Size = new System.Drawing.Size(266, 21);
+            this.cboXSLT.Size = new System.Drawing.Size(238, 21);
             this.cboXSLT.TabIndex = 8;
             this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
@@ -1497,7 +1513,7 @@ namespace Chummer
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(548, 538);
+            this.tabPage2.Size = new System.Drawing.Size(553, 544);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Tag = "Tab_Options_Character";
             this.tabPage2.Text = "Character and Printing";
@@ -1732,7 +1748,7 @@ namespace Chummer
             this.tabPage1.Controls.Add(this.chkEnforceSkillMaximumModifiedRating);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(548, 538);
+            this.tabPage1.Size = new System.Drawing.Size(553, 544);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Tag = "Tab_Options_Miscellaneous";
             this.tabPage1.Text = "Miscellaneous";
@@ -1898,7 +1914,7 @@ namespace Chummer
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(548, 538);
+            this.tabPage3.Size = new System.Drawing.Size(553, 544);
             this.tabPage3.TabIndex = 3;
             this.tabPage3.Text = "Github Issues";
             // 
@@ -1921,7 +1937,7 @@ namespace Chummer
             this.treSourcebook.ShowLines = false;
             this.treSourcebook.ShowPlusMinus = false;
             this.treSourcebook.ShowRootLines = false;
-            this.treSourcebook.Size = new System.Drawing.Size(226, 498);
+            this.treSourcebook.Size = new System.Drawing.Size(226, 519);
             this.treSourcebook.TabIndex = 1;
             this.treSourcebook.BeforeCheck += new System.Windows.Forms.TreeViewCancelEventHandler(this.treSourcebook_BeforeCheck);
             this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.OptionsChanged);
@@ -3781,5 +3797,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkCompensateSkillGroupKarmaDifference;
         private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
         private System.Windows.Forms.CheckBox chkEnemyKarmaQualityLimit;
+        private ElasticComboBox cboSheetLanguage;
     }
 }

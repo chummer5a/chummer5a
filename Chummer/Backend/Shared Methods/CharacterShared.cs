@@ -52,7 +52,7 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _objOptions = _objCharacter.Options;
-            _objCharacter.CharacterNameChanged += objCharacter_CharacterNameChanged;
+            _objCharacter.CharacterNameChanged += ForceUpdateWindowTitle;
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -75,6 +75,26 @@ namespace Chummer
             public override bool Equals(object obj)
             {
                 return Control.Equals(obj);
+            }
+
+            public static bool operator ==(TransportWrapper objX, object objY)
+            {
+                return objX.Equals(objY);
+            }
+
+            public static bool operator !=(TransportWrapper objX, object objY)
+            {
+                return !objX.Equals(objY);
+            }
+
+            public static bool operator ==(object objX, TransportWrapper objY)
+            {
+                return objX.Equals(objY);
+            }
+
+            public static bool operator !=(object objX, TransportWrapper objY)
+            {
+                return !objX.Equals(objY);
             }
 
             public override int GetHashCode()
@@ -183,15 +203,16 @@ namespace Chummer
             }
 
             // Remove any Improvements from Armor Encumbrance.
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance");
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ArmorEncumbrance);
             // Create the Armor Encumbrance Improvements.
             int intEncumbrance = _objCharacter.ArmorEncumbrance;
             if (intEncumbrance < 0)
             {
-                ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "AGI", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
-                ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, "Armor Encumbrance",
+                ImprovementManager.CreateImprovement(_objCharacter, "REA", Improvement.ImprovementSource.ArmorEncumbrance, string.Empty,
                     Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0, intEncumbrance);
+                ImprovementManager.Commit(_objCharacter);
             }
         }
 
@@ -587,7 +608,7 @@ namespace Chummer
                 {
                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
                     int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = -1;
+                    int intTargetIndex = 0;
                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                     {
                         if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
@@ -1525,7 +1546,7 @@ namespace Chummer
             bool blnWarned = false;
 
             int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-            if (_objCharacter.Options.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+            if (_objOptions.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                 intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
             foreach (Gear objGear in _objCharacter.Gear.Where(objGear => objGear.Category == "Foci" || objGear.Category == "Metamagic Foci"))
             {
@@ -1690,7 +1711,7 @@ namespace Chummer
                 Improvement objImprovement = null;
                 foreach (Improvement objCharacterImprovement in CharacterObject.Improvements)
                 {
-                    if (objCharacterImprovement.SourceName == objItem.Value)
+                    if (objCharacterImprovement.SourceName == objItem.Value.ToString())
                     {
                         objImprovement = objCharacterImprovement;
                         break;
@@ -1735,6 +1756,112 @@ namespace Chummer
 
             // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
             treImprovements.SortCustom(strSelectedId);
+        }
+
+        protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        {
+            string strSelectedId = treLifestyles.SelectedNode?.Tag.ToString();
+            
+            TreeNode objParentNode = null;
+
+            if (notifyCollectionChangedEventArgs == null)
+            {
+                treLifestyles.Nodes.Clear();
+
+                if (CharacterObject.Lifestyles.Count > 0)
+                {
+                    foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
+                    {
+                        AddToTree(objLifestyle, false);
+                    }
+
+                    treLifestyles.SortCustom(strSelectedId);
+                }
+            }
+            else
+            {
+                objParentNode = treLifestyles.FindNode("Node_SelectedLifestyles", false);
+                switch (notifyCollectionChangedEventArgs.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                AddToTree(objLifestyle);
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objNode = treLifestyles.FindNode(objLifestyle.InternalId);
+                                if (objNode != null)
+                                {
+                                    TreeNode objParent = objNode.Parent;
+                                    objNode.Remove();
+                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                        objParent.Remove();
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshLifestyles(treLifestyles, cmsBasicLifestyle, cmsAdvancedLifestyle);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Lifestyle objLifestyle in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                TreeNode objOldParent = null;
+                                TreeNode objNode = treLifestyles.FindNode(objLifestyle.InternalId);
+                                if (objNode != null)
+                                {
+                                    objOldParent = objNode.Parent;
+                                    objNode.Remove();
+                                }
+                                AddToTree(objLifestyle);
+                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
+                            }
+                            break;
+                        }
+                }
+            }
+
+            void AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
+            {
+                if (objParentNode == null)
+                {
+                    objParentNode = new TreeNode()
+                    {
+                        Tag = "Node_SelectedLifestyles",
+                        Text = LanguageManager.GetString("Node_SelectedLifestyles", GlobalOptions.Language)
+                    };
+                    treLifestyles.Nodes.Add(objParentNode);
+                    objParentNode.Expand();
+                }
+                TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treLifestyles.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+            }
         }
 
         /// <summary>
@@ -1877,7 +2004,7 @@ namespace Chummer
             }
         }
 
-        private void objCharacter_CharacterNameChanged(object sender)
+        private void ForceUpdateWindowTitle(object sender)
         {
             UpdateWindowTitle(false);
         }
@@ -1918,7 +2045,7 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
             
-            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objCharacter.Options.Name + ')';
+            string strTitle = _objCharacter.CharacterName + " - " + FormMode + " (" + _objOptions.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.DoThreadSafe(() => Text = strTitle);

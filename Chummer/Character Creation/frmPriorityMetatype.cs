@@ -1109,7 +1109,7 @@ namespace Chummer
                     Quality objQuality = new Quality(_objCharacter);
                     string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                     QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                    objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                     objQuality.ContributeToLimit = false;
                     _objCharacter.Qualities.Add(objQuality);
                 }
@@ -1208,7 +1208,7 @@ namespace Chummer
                                 Quality objQuality = new Quality(_objCharacter);
                                 string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
                                 QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                                objQuality.Create(objXmlQuality, _objCharacter, objSource, lstWeapons, strForceValue);
+                                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
                                 _objCharacter.Qualities.Add(objQuality);
                             }
 
@@ -1344,7 +1344,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }
@@ -1355,7 +1355,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }
@@ -1366,7 +1366,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSkill))
                     {
                         blnCommit = true;
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, "Heritage",
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
                             type, string.Empty, intFreeLevels);
                     }
                 }
@@ -1713,7 +1713,7 @@ namespace Chummer
                 // Make sure the Category isn't in the exclusion list.
                 if (!lstRemoveCategory.Contains(strInnerText) &&
                     // Also make sure it is not already in the Category list.
-                    !_lstCategory.Any(objItem => objItem.Value == strInnerText))
+                    !_lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
                 {
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
@@ -1788,12 +1788,12 @@ namespace Chummer
         private static XmlNodeList BuildSkillList(XmlNodeList objSkillList)
         {
             XmlDocument objXmlSkillsDocument = XmlManager.Load("skills.xml");
-            StringBuilder strGroups = new StringBuilder("/chummer/skills/skill/name[. = \"");
+            StringBuilder strGroups = new StringBuilder("/chummer/skills/skill[name = \"");
             strGroups.Append(objSkillList[0].InnerText);
             strGroups.Append('\"');
             for (int i = 1; i < objSkillList.Count; i++)
             {
-                strGroups.Append(" or . = \"");
+                strGroups.Append(" or name = \"");
                 strGroups.Append(objSkillList[i].InnerText);
                 strGroups.Append('\"');
             }

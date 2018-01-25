@@ -18,6 +18,7 @@
  */
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -363,9 +364,10 @@ namespace Chummer
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlVehicle["category"]?.InnerText);
 
             // Apply the cost multiplier to the Vehicle (will be 1 unless Used Vehicle is selected)
-            if (objXmlVehicle["cost"]?.InnerText.StartsWith("Variable") == true)
+            string strCost = objXmlVehicle["cost"]?.InnerText ?? string.Empty;
+            if (strCost.StartsWith("Variable") == true)
             {
-                lblVehicleCost.Text = objXmlVehicle["cost"].InnerText;
+                lblVehicleCost.Text = strCost.TrimStart("Variable(", true).TrimEnd(')');
                 lblTest.Text = string.Empty;
             }
             else
@@ -373,7 +375,10 @@ namespace Chummer
                 decimal decCost = 0.0m;
                 if (!chkFreeItem.Checked)
                 {
-                    objXmlVehicle.TryGetDecFieldQuickly("cost", ref decCost);
+                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decTmp))
+                    {
+                        decCost = decTmp;
+                    }
 
                     // Apply the markup if applicable.
                     decCost *= decCostModifier;
@@ -390,11 +395,11 @@ namespace Chummer
             }
 
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language);
-            string strPage = objXmlVehicle["altpage"]?.InnerText ?? objXmlVehicle["page"]?.InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            string strSource = objXmlVehicle["source"].InnerText;
+            string strPage = objXmlVehicle["altpage"]?.InnerText ?? objXmlVehicle["page"].InnerText;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlVehicle["source"]?.InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
 
         private void RefreshList()
@@ -416,12 +421,8 @@ namespace Chummer
                     strFilter += " and (" + objCategoryFilter.ToString().TrimEnd(" or ") + ')';
                 }
             }
-            if (txtSearch.TextLength != 0)
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = txtSearch.Text.ToUpper();
-                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
-            }
+
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
             BuildVehicleList(_objXmlDocument.SelectNodes("/chummer/vehicles/vehicle[" + strFilter + ']'));
         }
@@ -440,7 +441,7 @@ namespace Chummer
                         string strCategory = objXmlVehicle["category"]?.InnerText;
                         if (!string.IsNullOrEmpty(strCategory))
                         {
-                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                            ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                             if (!string.IsNullOrEmpty(objFoundItem.Name))
                             {
                                 strDisplayname += " [" + objFoundItem.Name + ']';

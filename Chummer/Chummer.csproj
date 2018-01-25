@@ -595,11 +595,11 @@
     <Compile Include="Selection Forms\frmSelectMartialArt.Designer.cs">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.cs">
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtAdvantage.Designer.cs">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
     <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
@@ -1043,8 +1043,8 @@
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArt.resx">
       <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtAdvantage.resx">
-      <DependentUpon>frmSelectMartialArtAdvantage.cs</DependentUpon>
+    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
+      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectMartialArtManeuver.resx">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
@@ -1621,6 +1621,7 @@
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\German Data Changes - Exotic Weapons Use Standard Skills\amend_weapons.xml" />
     <Content Include="customdata\German Data Changes - Growth Spell Category\amend_spells.xml" />
     <Content Include="customdata\German Data Changes - Gyro-Stablisation Vehicle Mod\override_gyro-stabilization_vehicles.xml" />
     <Content Include="customdata\German Data Changes - Heightened Concentration has Levels\amend_heightenedconcentration_powers.xml">
@@ -1630,6 +1631,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Rainforest Carbine Missions Errata\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\ShadowNET Rules\amend_armor.xml">

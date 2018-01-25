@@ -5367,10 +5367,16 @@
           <rating>1</rating>
         </cyberware>
         <cyberware>
-          <name>Cyberfins</name>
+          <name>Cyberfins (Hands)</name>
         </cyberware>
         <cyberware>
-          <name>Cyberfins</name>
+          <name>Cyberfins (Hands)</name>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins (Feet)</name>
+        </cyberware>
+        <cyberware>
+          <name>Cyberfins (Feet)</name>
         </cyberware>
         <cyberware>
           <name>OXSYS Cybergill</name>

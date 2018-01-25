@@ -50,7 +50,7 @@ namespace Chummer
     /// <summary>
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
-    public class Character : INotifyPropertyChanged, IDisposable, IHasMugshots
+    public class Character : INotifyPropertyChanged, IDisposable, IHasMugshots, IHasName
     {
         private XmlNode oldSkillsBackup;
         private XmlNode oldSKillGroupBackup;
@@ -224,7 +224,7 @@ namespace Chummer
         private List<Weapon> _lstWeapons = new List<Weapon>();
         private ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly List<LifestyleQuality> _lstLifestyleQualities = new List<LifestyleQuality>();
-        private List<Lifestyle> _lstLifestyles = new List<Lifestyle>();
+        private ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private List<Gear> _lstGear = new List<Gear>();
         private List<Vehicle> _lstVehicles = new List<Vehicle>();
         private List<Metamagic> _lstMetamagics = new List<Metamagic>();
@@ -281,7 +281,7 @@ namespace Chummer
 			AttributeSection.Reset();
 			SkillsSection = new SkillsSection(this);
 			SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
+            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 
 	    public AttributeSection AttributeSection { get; set; }
@@ -1266,10 +1266,9 @@ namespace Chummer
             {
                 string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
                 
-                if ((objXmlImprovement["custom"]?.InnerText == System.Boolean.TrueString) ||
+                if (string.IsNullOrEmpty(strLoopSourceName) || !strLoopSourceName.IsGuid() || (objXmlImprovement["custom"]?.InnerText == System.Boolean.TrueString) ||
                     // Hacky way to make sure we aren't loading in any orphaned improvements: SourceName ID will pop up minimum twice in the save if the improvement's source is actually present: once in the improvement and once in the parent that added it.
-                    (!string.IsNullOrEmpty(strLoopSourceName) && strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)) || 
-                    strLoopSourceName == "edgeuse" || strLoopSourceName == "Essence Loss")
+                    (strCharacterInnerXml.IndexOf(strLoopSourceName) != strCharacterInnerXml.LastIndexOf(strLoopSourceName)))
                 {
                     Improvement objImprovement = new Improvement(this);
                     try
@@ -1589,7 +1588,7 @@ namespace Chummer
             foreach (ListItem objItem in lstPowerOrder)
             {
                 Power objPower = new Power(this);
-                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value) + "]");
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value.ToString()) + "]");
                 if (objNode != null)
                 {
                     objPower.Load(objNode);
@@ -1947,7 +1946,7 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objQuality = new Quality(this);
 
-                            objQuality.Create(objXmlDwarfQuality, this, QualitySource.Metatype, lstWeapons);
+                            objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype, lstWeapons);
                             foreach (Weapon objWeapon in lstWeapons)
                                 _lstWeapons.Add(objWeapon);
                             _lstQualities.Add(objQuality);
@@ -2263,7 +2262,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strTraditionName))
             {
                 string strDrainAtt = TraditionDrain;
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
+                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint).SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
                 if (objXmlTradition != null)
                 {
@@ -2957,36 +2956,36 @@ namespace Chummer
 
             // Reset all of the Lists.
             // This kills the GC
-            _lstImprovements = new List<Improvement>();
-            _lstContacts = new List<Contact>();
-            _lstSpirits = new List<Spirit>();
-            _lstSpells = new ObservableCollection<Spell>();
-            _lstFoci = new List<Focus>();
-            _lstStackedFoci = new List<StackedFocus>();
-            _lstPowers = new BindingList<Power>();
-            _lstComplexForms = new ObservableCollection<ComplexForm>();
-            _lstAIPrograms = new ObservableCollection<AIProgram>();
-            _lstMartialArts = new List<MartialArt>();
-            _lstMartialArtManeuvers = new List<MartialArtManeuver>();
-            _lstLimitModifiers = new List<LimitModifier>();
-            _lstArmor = new List<Armor>();
-            _lstCyberware = new BindingList<Cyberware>();
-            _lstMetamagics = new List<Metamagic>();
-            _lstArts = new List<Art>();
-            _lstEnhancements = new List<Enhancement>();
-            _lstWeapons = new List<Weapon>();
-            _lstLifestyles = new List<Lifestyle>();
-            _lstGear = new List<Gear>();
-            _lstVehicles = new List<Vehicle>();
-            _lstExpenseLog = new List<ExpenseLogEntry>();
-            _lstCritterPowers = new ObservableCollection<CritterPower>();
-            _lstInitiationGrades = new List<InitiationGrade>();
-            _lstQualities = new ObservableCollection<Quality>();
-            _lstOldQualities = new List<string>();
-            _lstCalendar = new List<CalendarWeek>();
+            _lstImprovements.Clear();
+            _lstContacts.Clear();
+            _lstSpirits.Clear();
+            _lstSpells.Clear();
+            _lstFoci.Clear();
+            _lstStackedFoci.Clear();
+            _lstPowers.Clear();
+            _lstComplexForms.Clear();
+            _lstAIPrograms.Clear();
+            _lstMartialArts.Clear();
+            _lstMartialArtManeuvers.Clear();
+            _lstLimitModifiers.Clear();
+            _lstArmor.Clear();
+            _lstCyberware.Clear();
+            _lstMetamagics.Clear();
+            _lstArts.Clear();
+            _lstEnhancements.Clear();
+            _lstWeapons.Clear();
+            _lstLifestyles.Clear();
+            _lstGear.Clear();
+            _lstVehicles.Clear();
+            _lstExpenseLog.Clear();
+            _lstCritterPowers.Clear();
+            _lstInitiationGrades.Clear();
+            _lstQualities.Clear();
+            _lstOldQualities.Clear();
+            _lstCalendar.Clear();
 
             SkillsSection.Reset();
-            _lstCyberware.ListChanged += (x, y) => { _decCachedEssence = decimal.MinValue; };
+            _lstCyberware.ListChanged += (x, y) => { ResetCachedEssence(); };
         }
 #endregion
 
@@ -3257,10 +3256,10 @@ namespace Chummer
                         }
                     }
                     break;
-                case Improvement.ImprovementSource.MartialArtAdvantage:
+                case Improvement.ImprovementSource.MartialArtTechnique:
                     foreach (MartialArt objMartialArt in MartialArts)
                     {
-                        foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                        foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                         {
                             if (objAdvantage.InternalId == objImprovement.SourceName)
                             {
@@ -3328,22 +3327,15 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool ignoreBannedGrades = false)
+        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             List<Grade> lstGrades = new List<Grade>();
-            string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";
-            XmlDocument objXMlDocument = XmlManager.Load(strXmlFile);
-
-            string strBookFilter = string.Empty;
-            if (Options != null)
-                strBookFilter = "[(" + Options.BookXPath() + ")]";
-            foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
+            string strXPath = Options != null ? "/chummer/grades/grade[(" + Options.BookXPath() + ")]" : "/chummer/grades/grade";
+            foreach (XmlNode objNode in XmlManager.Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml").SelectNodes(strXPath))
             {
-
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
-                bool bannedGrade = BannedWareGrades.Any(s => objGrade.Name.Contains(s));
-                if (IgnoreRules || Created || !bannedGrade || (bannedGrade && !ignoreBannedGrades))
+                if (IgnoreRules || Created || blnIgnoreBannedGrades || !BannedWareGrades.Any(s => objGrade.Name.Contains(s)))
                     lstGrades.Add(objGrade);
             }
 
@@ -3718,12 +3710,15 @@ namespace Chummer
             // Run through all of the Spells and remove their Improvements.
             for (int i = Spells.Count - 1; i >= 0; --i)
             {
-                Spell objToRemove = Spells[i];
-                if (objToRemove.Grade == 0)
+                if (i < Spells.Count)
                 {
-                    // Remove the Improvements created by the Spell.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, objToRemove.InternalId);
-                    Spells.RemoveAt(i);
+                    Spell objToRemove = Spells[i];
+                    if (objToRemove.Grade == 0)
+                    {
+                        // Remove the Improvements created by the Spell.
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell, objToRemove.InternalId);
+                        Spells.RemoveAt(i);
+                    }
                 }
             }
 
@@ -3738,12 +3733,15 @@ namespace Chummer
             // Run through all powers and remove the ones not added by improvements or foci
             for (int i = Powers.Count - 1; i >= 0; --i)
             {
-                Power objToRemove = Powers[i];
-                if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                if (i < Powers.Count)
                 {
-                    // Remove the Improvements created by the Power.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, objToRemove.InternalId);
-                    Powers.RemoveAt(i);
+                    Power objToRemove = Powers[i];
+                    if (objToRemove.FreeLevels == 0 && objToRemove.FreePoints == 0)
+                    {
+                        // Remove the Improvements created by the Power.
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power, objToRemove.InternalId);
+                        Powers.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -3756,12 +3754,15 @@ namespace Chummer
             // Run through all of the Complex Forms and remove their Improvements.
             for (int i = ComplexForms.Count - 1; i >= 0; --i)
             {
-                ComplexForm objToRemove = ComplexForms[i];
-                if (objToRemove.Grade == 0)
+                if (i < ComplexForms.Count)
                 {
-                    // Remove the Improvements created by the Spell.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, objToRemove.InternalId);
-                    ComplexForms.RemoveAt(i);
+                    ComplexForm objToRemove = ComplexForms[i];
+                    if (objToRemove.Grade == 0)
+                    {
+                        // Remove the Improvements created by the Spell.
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm, objToRemove.InternalId);
+                        ComplexForms.RemoveAt(i);
+                    }
                 }
             }
 
@@ -3776,12 +3777,15 @@ namespace Chummer
             // Run through all advanced programs and remove the ones not added by improvements
             for (int i = AIPrograms.Count - 1; i >= 0; --i)
             {
-                AIProgram objToRemove = AIPrograms[i];
-                if (objToRemove.CanDelete)
+                if (i < AIPrograms.Count)
                 {
-                    // Remove the Improvements created by the Program.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, objToRemove.InternalId);
-                    AIPrograms.RemoveAt(i);
+                    AIProgram objToRemove = AIPrograms[i];
+                    if (objToRemove.CanDelete)
+                    {
+                        // Remove the Improvements created by the Program.
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram, objToRemove.InternalId);
+                        AIPrograms.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -3805,10 +3809,19 @@ namespace Chummer
         /// </summary>
         public void ClearCritterPowers()
         {
-            // Run through all of the Critter Powers and remove their Improvements.
-            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, string.Empty);
-
-            CritterPowers.Clear();
+            for (int i = CritterPowers.Count - 1; i >= 0; i--)
+            {
+                if (i < CritterPowers.Count)
+                {
+                    CritterPower objToRemove = CritterPowers[i];
+                    if (objToRemove.Grade >= 0)
+                    {
+                        // Remove the Improvements created by the Metamagic.
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower, objToRemove.InternalId);
+                        CritterPowers.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -3820,16 +3833,16 @@ namespace Chummer
             SubmersionGrade = 0;
             InitiationGrades.Clear();
             // Metamagics/Echoes can add addition bonus metamagics/echoes, so we cannot use foreach or RemoveAll()
-            for (int j = Metamagics.Count - 1; j >= 0; j--)
+            for (int i = Metamagics.Count - 1; i >= 0; i--)
             {
-                if (j < Metamagics.Count)
+                if (i < Metamagics.Count)
                 {
-                    Metamagic objToRemove = Metamagics[j];
+                    Metamagic objToRemove = Metamagics[i];
                     if (objToRemove.Grade >= 0)
                     {
                         // Remove the Improvements created by the Metamagic.
                         ImprovementManager.RemoveImprovements(this, objToRemove.SourceType, objToRemove.InternalId);
-                        Metamagics.Remove(objToRemove);
+                        Metamagics.RemoveAt(i);
                     }
                 }
             }
@@ -5532,6 +5545,10 @@ namespace Chummer
         }
 
         private decimal _decCachedEssence = decimal.MinValue;
+        public void ResetCachedEssence()
+        {
+            _decCachedEssence = decimal.MinValue;
+        }
         /// <summary>
         /// Character's Essence.
         /// </summary>
@@ -6520,7 +6537,7 @@ namespace Chummer
         /// <summary>
         /// Lifestyles.
         /// </summary>
-        public IList<Lifestyle> Lifestyles
+        public ObservableCollection<Lifestyle> Lifestyles
         {
             get
             {
@@ -8207,7 +8224,7 @@ namespace Chummer
 
                     // Convert the item to the new Quality class.
                     Quality objQuality = new Quality(this);
-                    objQuality.Create(objXmlQualityNode, this, QualitySource.Selected, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8244,7 +8261,7 @@ namespace Chummer
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8273,7 +8290,7 @@ namespace Chummer
                         strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                     XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                    objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                    objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                     _lstQualities.Add(objQuality);
                 }
             }
@@ -8307,7 +8324,7 @@ namespace Chummer
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
                     }
                 }
@@ -8336,7 +8353,7 @@ namespace Chummer
                             strForceValue = objXmlMetatypeQuality.Attributes["select"].InnerText;
 
                         XmlNode objXmlQuality = xmlRootQualitiesNode.SelectSingleNode("quality[name = \"" + objXmlMetatypeQuality.InnerText + "\"]");
-                        objQuality.Create(objXmlQuality, this, QualitySource.Metatype, _lstWeapons, strForceValue);
+                        objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons, strForceValue);
                         _lstQualities.Add(objQuality);
                     }
                 }
@@ -8795,7 +8812,7 @@ namespace Chummer
                     if (i == 0 && Guid.TryParse(objOldXmlQuality["guid"].InnerText, out Guid guidOld))
                         objQuality.SetGUID(guidOld);
                     QualitySource objQualitySource = Quality.ConvertToQualitySource(objOldXmlQuality["qualitysource"]?.InnerText);
-                    objQuality.Create(objXmlNewQuality, this, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
+                    objQuality.Create(objXmlNewQuality, objQualitySource, _lstWeapons, objOldXmlQuality["extra"]?.InnerText);
                     if (objOldXmlQuality["bp"] != null && int.TryParse(objOldXmlQuality["bp"].InnerText, out int intOldBP))
                         objQuality.BP = intOldBP / intRanks;
 
@@ -8948,7 +8965,6 @@ namespace Chummer
         public bool RefreshRedliner()
         {
             int intOldRedlinerBonus = RedlinerBonus;
-            const string strSeekerImprovPrefix = "SEEKER";
             List<string> lstSeekerAttributes = new List<string>();
             List<Improvement> lstSeekerImprovements = new List<Improvement>();
             //Get attributes affected by redliner/cyber singularity seeker
@@ -8960,7 +8976,7 @@ namespace Chummer
                 }
                 else if ((objLoopImprovement.ImproveType == Improvement.ImprovementType.Attribute ||
                        objLoopImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM) &&
-                      objLoopImprovement.SourceName.Contains(strSeekerImprovPrefix))
+                      objLoopImprovement.SourceName.Contains("SEEKER"))
                 {
                     lstSeekerImprovements.Add(objLoopImprovement);
                 }
@@ -8991,11 +9007,7 @@ namespace Chummer
 
             for (int i = 0; i < lstSeekerAttributes.Count; i++)
             {
-                Improvement objImprove =
-                    lstSeekerImprovements.FirstOrDefault(
-                        x =>
-                            x.SourceName == strSeekerImprovPrefix + '_' + lstSeekerAttributes[i] &&
-                            x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
+                Improvement objImprove = lstSeekerImprovements.FirstOrDefault(x => x.SourceName == "SEEKER_" + lstSeekerAttributes[i] && x.Value == (lstSeekerAttributes[i] == "BOX" ? intCount * -3 : intCount));
                 if (objImprove != null)
                 {
                     lstSeekerAttributes.RemoveAt(i);
@@ -9008,25 +9020,18 @@ namespace Chummer
             //the local
 
             // Remove which qualites have been removed or which values have changed
-            foreach (Improvement objImprovement in lstSeekerImprovements)
-            {
-                ImprovementManager.RemoveImprovements(this, objImprovement.ImproveSource, objImprovement.SourceName);
-            }
+            ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
 
             // Add new improvements or old improvements with new values
-            foreach (string attribute in lstSeekerAttributes)
+            foreach (string strAttribute in lstSeekerAttributes)
             {
-                if (attribute == "BOX")
+                if (strAttribute == "BOX")
                 {
-                    ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
-                        strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.PhysicalCM,
-                        Guid.NewGuid().ToString("D"), intCount * -3);
+                    ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_BOX", Improvement.ImprovementType.PhysicalCM, Guid.NewGuid().ToString("D"), intCount * -3);
                 }
                 else
                 {
-                    ImprovementManager.CreateImprovement(this, attribute, Improvement.ImprovementSource.Quality,
-                        strSeekerImprovPrefix + '_' + attribute, Improvement.ImprovementType.Attribute,
-                        Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
+                    ImprovementManager.CreateImprovement(this, strAttribute, Improvement.ImprovementSource.Quality, "SEEKER_" + strAttribute, Improvement.ImprovementType.Attribute, Guid.NewGuid().ToString("D"), intCount, 1, 0, 0, intCount);
                 }
             }
             ImprovementManager.Commit(this);
@@ -9165,8 +9170,8 @@ namespace Chummer
         {
             if (_lstTransaction.Any(x => AttribRelatedImprovements.Contains(x.ImproveType)))
             {
+                ResetCachedEssence();
                 AttributeImprovementEvent?.Invoke(_lstTransaction);
-                _decCachedEssence = decimal.MinValue;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CanAffordCareerPP)));
             }
             else if (_lstTransaction.Any(x => SkillRelatedImprovements.Contains(x.ImproveType)))

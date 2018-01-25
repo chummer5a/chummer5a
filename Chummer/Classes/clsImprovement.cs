@@ -315,7 +315,6 @@ namespace Chummer
             ArmorEncumbrance,
             Gear,
             Spell,
-            MartialArtAdvantage,
             Initiation,
             Submersion,
             Metamagic,
@@ -337,6 +336,7 @@ namespace Chummer
             Custom,
             Heritage,
             MartialArt,
+            MartialArtTechnique,
             AIProgram,
             SpiritFettering,
             MentorSpirit,
@@ -388,6 +388,8 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         public static ImprovementSource ConvertToImprovementSource(string strValue)
         {
+            if (strValue == "MartialArtAdvantage")
+                strValue = "MartialArtTechnique";
             return (ImprovementSource) Enum.Parse(typeof (ImprovementSource), strValue);
         }
 
@@ -1154,7 +1156,7 @@ namespace Chummer
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
         /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName)
+        public static void RemoveImprovements(Character objCharacter, Improvement.ImprovementSource objImprovementSource, string strSourceName = "")
         {
             // If there is no character object, don't try to remove any Improvements.
             if (objCharacter == null)
@@ -1165,7 +1167,9 @@ namespace Chummer
             Log.Info("objImprovementSource = " + objImprovementSource.ToString());
             Log.Info("strSourceName = " + strSourceName);
             // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
+            List<Improvement> objImprovementList = string.IsNullOrEmpty(strSourceName)
+                ? objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource).ToList()
+                : objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveSource == objImprovementSource && objImprovement.SourceName == strSourceName).ToList();
             RemoveImprovements(objCharacter, objImprovementList);
         }
 
@@ -1174,8 +1178,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter">Character from which improvements should be deleted.</param>
         /// <param name="objImprovementList">List of improvements to delete.</param>
-        /// <param name="reapplyImprovements">Whether we're reapplying Improvements.</param>
-        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool reapplyImprovements = false)
+        /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
+        /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        public static void RemoveImprovements(Character objCharacter, List<Improvement> objImprovementList, bool blnReapplyImprovements = false, bool blnAllowDuplicatesFromSameSource = false)
         {
             Log.Enter("RemoveImprovements");
 
@@ -1201,7 +1206,7 @@ namespace Chummer
             foreach (Improvement objImprovement in objImprovementList)
             {
                 // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate = objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && objLoopImprovement.SourceName != objImprovement.SourceName);
+                bool blnHasDuplicate = objCharacter.Improvements.Any(objLoopImprovement => objLoopImprovement.UniqueName == objImprovement.UniqueName && objLoopImprovement.ImprovedName == objImprovement.ImprovedName && objLoopImprovement.ImproveType == objImprovement.ImproveType && (blnAllowDuplicatesFromSameSource || objLoopImprovement.SourceName != objImprovement.SourceName));
 
                 switch (objImprovement.ImproveType)
                 {
@@ -1432,16 +1437,16 @@ namespace Chummer
                         {
                             RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             // Remove the Improvements for any Advantages for the Martial Art that is being removed.
-                            foreach (MartialArtAdvantage objAdvantage in objMartialArt.Advantages)
+                            foreach (MartialArtTechnique objAdvantage in objMartialArt.Techniques)
                             {
-                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, objAdvantage.InternalId);
+                                RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArtTechnique, objAdvantage.InternalId);
                             }
                             objCharacter.MartialArts.Remove(objMartialArt);
                         }
                         break;
                     case Improvement.ImprovementType.SpecialSkills:
                         if (!blnHasDuplicate)
-                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !reapplyImprovements);
+                            objCharacter.SkillsSection.RemoveSkills((SkillsSection.FilterOptions)Enum.Parse(typeof(SkillsSection.FilterOptions), objImprovement.ImprovedName), !blnReapplyImprovements);
                         break;
                     case Improvement.ImprovementType.SpecificQuality:
                         Quality objQuality = objCharacter.Qualities.FirstOrDefault(objLoopQuality => objLoopQuality.InternalId == objImprovement.ImprovedName);

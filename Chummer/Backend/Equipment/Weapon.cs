@@ -596,10 +596,10 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
             {
-                XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-                if (objWeaponNode?["alternaterange"] != null)
+                string strAlternateRange = GetNode()?["alternaterange"]?.InnerText;
+                if (!string.IsNullOrEmpty(strAlternateRange))
                 {
-                    _strAlternateRange = objWeaponNode["alternaterange"].InnerText;
+                    _strAlternateRange = strAlternateRange;
                 }
             }
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
@@ -1507,7 +1507,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage)?.SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("weapons.xml", strLanguage).SelectSingleNode("/chummer/weapons/weapon[id = \"" + _sourceID.ToString("D") + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -2233,10 +2233,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-                XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 string strMounts = string.Empty;
-                XmlNodeList objXmlMountList = objAccessoryNode?.SelectNodes("accessorymounts/mount");
+                XmlNodeList objXmlMountList = GetNode()?.SelectNodes("accessorymounts/mount");
 
                 if (objXmlMountList == null) return strMounts;
                 foreach (XmlNode objXmlMount in objXmlMountList)
@@ -4400,7 +4398,7 @@ namespace Chummer.Backend.Equipment
             foreach (string strNodeId in lstNodesToRemoveIds)
             {
                 // Remove the Weapons from the TreeView.
-                TreeNode objLoopNode = treWeapons.FindNode(strNodeId) ?? treVehicles.FindNode(strNodeId);
+                TreeNode objLoopNode = treWeapons?.FindNode(strNodeId) ?? treVehicles?.FindNode(strNodeId);
                 objLoopNode?.Remove();
             }
 
@@ -4579,7 +4577,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (Weapon objLoopWeapon in Children)
             {
-                if (objLoopWeapon.Installed)
+                if (objLoopWeapon.Installed && objLoopWeapon.ParentID != InternalId)
                 {
                     intReturn += objLoopWeapon.GetTotalMatrixAttribute(strAttributeName);
                 }

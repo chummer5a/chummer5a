@@ -166,10 +166,10 @@ namespace Chummer.Backend
                             }
                         case "technique":
                             {
-                                List<MartialArtAdvantage> objTempList = new List<MartialArtAdvantage>(objCharacter.MartialArts.Count);
+                                List<MartialArtTechnique> objTempList = new List<MartialArtTechnique>(objCharacter.MartialArts.Count);
                                 foreach (MartialArt objMartialArt in objCharacter.MartialArts)
                                 {
-                                    objTempList.AddRange(objMartialArt.Advantages);
+                                    objTempList.AddRange(objMartialArt.Techniques);
                                 }
                                 objListToCheck = objTempList;
                                 break;
@@ -627,11 +627,11 @@ namespace Chummer.Backend
                     {
                         foreach (MartialArt objMartialArt in objCharacter.MartialArts)
                         {
-                            MartialArtAdvantage objMartialArtAdvantage = objMartialArt.Advantages.FirstOrDefault(x => x.Name == strNodeInnerText);
-                            if (objMartialArtAdvantage != null)
+                            MartialArtTechnique objMartialArtTechnique = objMartialArt.Techniques.FirstOrDefault(x => x.Name == strNodeInnerText);
+                            if (objMartialArtTechnique != null)
                             {
                                 if (blnShowMessage)
-                                    strName = objMartialArtAdvantage.DisplayName(GlobalOptions.Language);
+                                    strName = objMartialArtTechnique.DisplayName(GlobalOptions.Language);
                                 return true;
                             }
                         }

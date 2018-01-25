@@ -230,9 +230,9 @@ namespace Chummer
                     Stages.Sort((x, y) =>
                     {
                         int yint = 0;
-                        if (int.TryParse(x.Value, out int xint))
+                        if (int.TryParse(x.Value.ToString(), out int xint))
                         {
-                            if (int.TryParse(y.Value, out yint))
+                            if (int.TryParse(y.Value.ToString(), out yint))
                             {
                                 return xint - yint;
                             }
@@ -243,7 +243,7 @@ namespace Chummer
                         }
                         else
                         {
-                            if (int.TryParse(y.Value, out yint))
+                            if (int.TryParse(y.Value.ToString(), out yint))
                             {
                                 return -1;
                             }
@@ -259,7 +259,7 @@ namespace Chummer
                     cboStage.DataSource = Stages;
                 }
 
-                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value == _intStage.ToString());
+                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString());
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
 
@@ -323,7 +323,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                working += ") and stage = \"" + _strWorkStage + '\"';
+                working += ") and (stage = \"" + _strWorkStage + '\"';
             }
             working += ")]";
 

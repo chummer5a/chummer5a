@@ -1193,14 +1193,6 @@
       <text>Niveau de pouvoir</text>
     </string>
     <string>
-      <key>Message_MartialArtAdvantageLimit</key>
-      <text>Un seul avantage est autorisé par indice de {0}.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtAdvantageLimit</key>
-      <text>Nombre d'avantages</text>
-    </string>
-    <string>
       <key>Message_MartialArtManeuverLimit</key>
       <text>Seules deux manoeuvres sont autorisées par indice d'art martial.</text>
     </string>
@@ -1209,11 +1201,11 @@
       <text>Nombre de manoeuvres</text>
     </string>
     <string>
-      <key>Message_SelectMartialArtAdvantage</key>
+      <key>Message_SelectMartialArtTechnique</key>
       <text>Vous devez d'abord sélectionner un art martial pour pouvoir lui ajouter un avantage.</text>
     </string>
     <string>
-      <key>MessageTitle_SelectMartialArtAdvantage</key>
+      <key>MessageTitle_SelectMartialArtTechnique</key>
       <text>Sélectionnez un art martial</text>
     </string>
     <string>
@@ -5805,7 +5797,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <!-- Select Martial Art Advantage Window -->
     <string>
-      <key>Title_SelectMartialArtAdvantage</key>
+      <key>Title_SelectMartialArtTechnique</key>
       <text>Sélection d'un Avantage</text>
     </string>
     <!-- Select Martial Art Maneuver Window -->

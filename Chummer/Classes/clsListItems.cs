@@ -30,16 +30,16 @@ namespace Chummer
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
-        public ListItem(string strValue, string strName)
+        public ListItem(object objValue, string strName)
         {
-            Value = strValue;
+            Value = objValue;
             Name = strName;
         }
 
         /// <summary>
         /// Value.
         /// </summary>
-        public string Value { get; }
+        public object Value { get; }
 
         /// <summary>
         /// Name.
@@ -48,7 +48,7 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            return Value.Equals(obj.ToString());
+            return Value.Equals(obj);
         }
 
         public override int GetHashCode()
@@ -58,7 +58,27 @@ namespace Chummer
 
         public override string ToString()
         {
-            return Value;
+            return Value.ToString();
+        }
+        
+        public static bool operator ==(ListItem x, object y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(ListItem x, object y)
+        {
+            return !x.Equals(y);
+        }
+
+        public static bool operator ==(object x, ListItem y)
+        {
+            return x.Equals(y);
+        }
+
+        public static bool operator !=(object x, ListItem y)
+        {
+            return !x.Equals(y);
         }
     }
 

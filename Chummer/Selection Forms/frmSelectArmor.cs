@@ -34,8 +34,10 @@ namespace Chummer
     {
         private string _strSelectedArmor = string.Empty;
 
+        private bool _blnLoading = true;
+        private bool _blnSkipUpdate;
         private bool _blnAddAgain;
-        private static string _strSelectCategory = string.Empty;
+        private static string s_StrSelectCategory = string.Empty;
         private decimal _decMarkup;
         private Armor _objSelectedArmor = null;
 
@@ -52,9 +54,6 @@ namespace Chummer
         {
             InitializeComponent();
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
             _objCharacter = objCharacter;
             MoveControls();
             // Load the Armor information.
@@ -73,11 +72,17 @@ namespace Chummer
             {
                 chkHideOverAvailLimit.Visible = false;
                 chkHideOverAvailLimit.Checked = false;
+                lblMarkupLabel.Visible = true;
+                nudMarkup.Visible = true;
+                lblMarkupPercentLabel.Visible = true;
             }
             else
             {
                 chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
+                lblMarkupLabel.Visible = false;
+                nudMarkup.Visible = false;
+                lblMarkupPercentLabel.Visible = false;
             }
 
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
@@ -111,14 +116,16 @@ namespace Chummer
             cboCategory.DataSource = _lstCategory;
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else
-                cboCategory.SelectedValue = _strSelectCategory;
+            if (!string.IsNullOrEmpty(s_StrSelectCategory))
+                cboCategory.SelectedValue = s_StrSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
+
+            _blnLoading = false;
+
+            RefreshList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -138,40 +145,51 @@ namespace Chummer
 
         private void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
+            XmlNode xmlArmor = null;
             string strSelectedId = lstArmor.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            // Get the information for the selected piece of Armor.
-            XmlNode objXmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]");
-            if (objXmlArmor == null)
-                return;
-            // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
-            Armor objArmor = new Armor(_objCharacter);
-            List<Weapon> lstWeapons = new List<Weapon>();
-            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
-
-            _objSelectedArmor = objArmor;
-
-            string strRating = objXmlArmor["rating"]?.InnerText;
-            if (!string.IsNullOrEmpty(strRating))
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]");
+            if (xmlArmor != null)
             {
-                nudRating.Maximum = Convert.ToInt32(strRating);
-                if (chkHideOverAvailLimit.Checked)
+                // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
+                Armor objArmor = new Armor(_objCharacter);
+                List<Weapon> lstWeapons = new List<Weapon>();
+                objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
+
+                _objSelectedArmor = objArmor;
+
+                string strRating = xmlArmor["rating"]?.InnerText;
+                if (!string.IsNullOrEmpty(strRating))
                 {
-                    while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                    nudRating.Maximum = Convert.ToInt32(strRating);
+                    if (chkHideOverAvailLimit.Checked)
                     {
-                        nudRating.Maximum -= 1;
+                        while (nudRating.Maximum > 1 && !Backend.SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                        {
+                            nudRating.Maximum -= 1;
+                        }
                     }
+                    lblRatingLabel.Visible = true;
+                    nudRating.Visible = true;
+                    nudRating.Enabled = true;
+                    nudRating.Minimum = 1;
+                    nudRating.Value = 1;
                 }
-                lblRatingLabel.Visible = true;
-                nudRating.Visible = true;
-                nudRating.Enabled = true;
-                nudRating.Minimum = 1;
-                nudRating.Value = 1;
+                else
+                {
+                    lblRatingLabel.Visible = false;
+                    nudRating.Visible = false;
+                    nudRating.Enabled = false;
+                    nudRating.Minimum = 0;
+                    nudRating.Value = 0;
+                }
             }
             else
             {
+                _objSelectedArmor = null;
                 lblRatingLabel.Visible = false;
                 nudRating.Visible = false;
                 nudRating.Enabled = false;
@@ -224,7 +242,7 @@ namespace Chummer
             {
                 if (lstArmor.SelectedIndex + 1 < lstArmor.Items.Count)
                 {
-                    lstArmor.SelectedIndex++;
+                    lstArmor.SelectedIndex += 1;
                 }
                 else if (lstArmor.Items.Count > 0)
                 {
@@ -235,7 +253,7 @@ namespace Chummer
             {
                 if (lstArmor.SelectedIndex - 1 >= 0)
                 {
-                    lstArmor.SelectedIndex--;
+                    lstArmor.SelectedIndex -= 1;
                 }
                 else if (lstArmor.Items.Count > 0)
                 {
@@ -304,6 +322,9 @@ namespace Chummer
         /// </summary>
         private void RefreshList()
         {
+            if (_blnLoading)
+                return;
+
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
 
             string strCategory = cboCategory.SelectedValue?.ToString();
@@ -323,15 +344,9 @@ namespace Chummer
                 }
             }
 
-            if (txtSearch.TextLength != 0)
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = txtSearch.Text.ToUpper();
-                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
-            }
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
-            XmlNodeList objXmlArmorList = _objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + ']');
-            BuildArmorList(objXmlArmorList);
+            BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + strFilter + ']'));
         }
 
         /// <summary>
@@ -411,7 +426,7 @@ namespace Chummer
                                 string strCategory = objXmlArmor["category"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strCategory))
                                 {
-                                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value == strCategory);
+                                    ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
                                         strDisplayName += " [" + objFoundItem.Name + "]";
@@ -419,15 +434,21 @@ namespace Chummer
                                 }
                             }
 
-                            lstArmors.Add(new ListItem(objXmlArmor["id"]?.InnerText, strDisplayName));
+                            lstArmors.Add(new ListItem(objXmlArmor["id"].InnerText, strDisplayName));
                         }
                     }
                     lstArmors.Sort(CompareListItems.CompareNames);
+                    _blnLoading = true;
+                    string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.DataSource = null;
                     lstArmor.ValueMember = "Value";
                     lstArmor.DisplayMember = "Name";
                     lstArmor.DataSource = lstArmors;
+                    _blnLoading = false;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        lstArmor.SelectedValue = strOldSelected;
+                    else
+                        lstArmor.SelectedIndex = -1;
                     lstArmor.EndUpdate();
                     break;
             }
@@ -437,23 +458,20 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            XmlNode objNode = null;
+            string strSelectedId = string.Empty;
             switch (tabControl.SelectedIndex)
             {
                 case 0:
-                    objNode =
-                        _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + lstArmor.SelectedValue + "\"]");
+                    strSelectedId = lstArmor.SelectedValue?.ToString();
                     break;
                 case 1:
-                    objNode =
-                        _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" +
-                                                         dgvArmor.SelectedRows[0].Cells[0].Value + "\"]");
+                    strSelectedId = dgvArmor.SelectedRows[0].Cells[0].Value?.ToString();
                     break;
             }
-            if (objNode != null)
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                _strSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
-                _strSelectedArmor = objNode["name"]?.InnerText;
+                s_StrSelectCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = \"" + strSelectedId + "\"]/category")?.InnerText;
+                _strSelectedArmor = strSelectedId;
                 _decMarkup = nudMarkup.Value;
                 _intRating = decimal.ToInt32(nudRating.Value);
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -485,34 +503,56 @@ namespace Chummer
 
         private void UpdateArmorInfo()
         {
-            chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
-            _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
-            _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
+            if (_blnLoading || _blnSkipUpdate)
+                return;
 
-            lblArmor.Text = _objSelectedArmor.DisplayName(GlobalOptions.Language);
-            string strBook = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language);
-            string strPage = _objSelectedArmor.Page(GlobalOptions.Language);
-
-            tipTooltip.SetToolTip(lblSource,
-                CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' +
-                LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
-
-            lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
-            lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;
-
-            decimal decItemCost = 0;
-            if (chkFreeItem.Checked)
+            _blnSkipUpdate = true;
+            if (_objSelectedArmor != null)
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                chkBlackMarketDiscount.Enabled = true;
+                chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
+                _objSelectedArmor.Rating = decimal.ToInt32(nudRating.Value);
+
+                lblArmor.Text = _objSelectedArmor.DisplayName(GlobalOptions.Language);
+
+                string strPage = _objSelectedArmor.Page(GlobalOptions.Language);
+                lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblSource,
+                    CommonFunctions.LanguageBookLong(_objSelectedArmor.Source, GlobalOptions.Language) + ' ' +
+                    LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+
+                lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
+                lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;
+
+                decimal decItemCost = 0;
+                if (chkFreeItem.Checked)
+                {
+                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                }
+                else
+                {
+                    lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
+                }
+
+                string strTotalAvail = _objSelectedArmor.TotalAvail(GlobalOptions.Language);
+                lblAvail.Text = strTotalAvail;
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
             }
             else
             {
-                lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
-            }
+                chkBlackMarketDiscount.Enabled = false;
+                chkBlackMarketDiscount.Checked = false;
+                lblArmor.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
 
-            string strTotalAvail = _objSelectedArmor.TotalAvail(GlobalOptions.Language);
-            lblAvail.Text = strTotalAvail;
-            lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
+                lblArmorValue.Text = string.Empty;
+                lblCapacity.Text = string.Empty;
+                lblAvail.Text = string.Empty;
+                lblTest.Text = string.Empty;
+            }
+            _blnSkipUpdate = false;
         }
         #endregion
     }

@@ -27,9 +27,9 @@ namespace Chummer
 {
     public partial class frmSelectProgram : Form
     {
-        private string _strSelectedProgram = string.Empty;
-        private string _strForceComplexForm = string.Empty;
+        private string _strSelectedComplexForm = string.Empty;
 
+        private bool _blnLoading = true;
         private bool _blnAddAgain = false;
         private readonly Character _objCharacter;
 
@@ -50,26 +50,20 @@ namespace Chummer
 
         private void frmSelectProgram_Load(object sender, EventArgs e)
         {
-            // If a value is forced, set the name of the complex form and accept the form.
-            if (!string.IsNullOrEmpty(_strForceComplexForm))
-            {
-                _strSelectedProgram = _strForceComplexForm;
-                DialogResult = DialogResult.OK;
-            }
-
             foreach (Label objLabel in Controls.OfType<Label>())
             {
                 if (objLabel.Text.StartsWith('['))
                     objLabel.Text = string.Empty;
             }
 
+            _blnLoading = false;
             BuildComplexFormList();
         }
 
         private void lstPrograms_SelectedIndexChanged(object sender, EventArgs e)
         {
             string strSelectedComplexFormId = lstPrograms.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedComplexFormId))
+            if (_blnLoading || string.IsNullOrEmpty(strSelectedComplexFormId))
             {
                 lblDuration.Text = string.Empty;
                 lblSource.Text = string.Empty;
@@ -90,30 +84,31 @@ namespace Chummer
                 lblTarget.Text = strTarget;
                 lblFV.Text = strFV;
 
-                string strBook = CommonFunctions.LanguageBookShort(objXmlProgram["source"].InnerText, GlobalOptions.Language);
+                string strSource = objXmlProgram["source"].InnerText;
                 string strPage = objXmlProgram["altpage"]?.InnerText ?? objXmlProgram["page"].InnerText;
-                lblSource.Text = strBook + ' ' + strPage;
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
                 tipTooltip.SetToolTip(lblSource,
-                    CommonFunctions.LanguageBookLong(objXmlProgram["source"].InnerText, GlobalOptions.Language) + ' ' +
+                    CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' +
                     LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
+            {
+                lblDuration.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                lblFV.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (lstPrograms.SelectedValue != null)
-            {
-                AcceptForm();
-            }
+            AcceptForm();
         }
 
         private void lstPrograms_DoubleClick(object sender, EventArgs e)
         {
-            if (lstPrograms.SelectedValue != null)
-            {
-                AcceptForm();
-            }
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -177,24 +172,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Force a particular Complex Form to be selected.
-        /// </summary>
-        public string ForceComplexFormName
-        {
-            set
-            {
-                _strForceComplexForm = value;
-            }
-        }
-
-        /// <summary>
         /// Program that was selected in the dialogue.
         /// </summary>
-        public string SelectedProgram
+        public string SelectedComplexForm
         {
             get
             {
-                return _strSelectedProgram;
+                return _strSelectedComplexForm;
             }
         }
         #endregion
@@ -202,25 +186,20 @@ namespace Chummer
         #region Methods
         private void BuildComplexFormList()
         {
-            bool blnCheckForOptional = false;
-            XmlNode objXmlCritter = null;
+            if (_blnLoading)
+                return;
+
+            XmlNodeList xmlOptionalComplexFormList = null;
             if (_objCharacter.IsCritter)
             {
-                XmlDocument objXmlCritterDocument = XmlManager.Load("critters.xml");
-                objXmlCritter = objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                if (objXmlCritter.InnerXml.Contains("<optionalcomplexforms>"))
-                    blnCheckForOptional = true;
+                xmlOptionalComplexFormList = XmlManager.Load("critters.xml").SelectNodes("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalcomplexforms/complexform");
             }
 
             string strFilter = "(" + _objCharacter.Options.BookXPath() + ')';
-            if (txtSearch.TextLength != 0)
-            {
-                // Treat everything as being uppercase so the search is case-insensitive.
-                string strSearchText = txtSearch.Text.ToUpper();
-                strFilter += " and ((contains(translate(name,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\") and not(translate)) or contains(translate(translate,'abcdefghijklmnopqrstuvwxyzàáâãäåçèéêëìíîïñòóôõöùúûüýß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝß'), \"" + strSearchText + "\"))";
-            }
 
-            // Populate the Program list.
+            strFilter += CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+
+            // Populate the Complex Form list.
             XmlNodeList objXmlNodeList = _objXmlDocument.SelectNodes("/chummer/complexforms/complexform[" + strFilter + ']');
 
             List<ListItem> lstComplexFormItems = new List<ListItem>();
@@ -228,10 +207,10 @@ namespace Chummer
             {
                 string strName = objXmlProgram["name"]?.InnerText ?? string.Empty;
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (blnCheckForOptional)
+                if (xmlOptionalComplexFormList?.Count > 0)
                 {
                     bool blnAdd = false;
-                    foreach (XmlNode objXmlForm in objXmlCritter?.SelectNodes("optionalcomplexforms/complexform"))
+                    foreach (XmlNode objXmlForm in xmlOptionalComplexFormList)
                     {
                         if (objXmlForm.InnerText == strName)
                         {
@@ -247,11 +226,17 @@ namespace Chummer
             }
 
             lstComplexFormItems.Sort(CompareListItems.CompareNames);
+            _blnLoading = true;
+            string strOldSelected = lstPrograms.SelectedValue?.ToString();
             lstPrograms.BeginUpdate();
-            lstPrograms.DataSource = null;
             lstPrograms.ValueMember = "Value";
             lstPrograms.DisplayMember = "Name";
             lstPrograms.DataSource = lstComplexFormItems;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstPrograms.SelectedValue = strOldSelected;
+            else
+                lstPrograms.SelectedIndex = -1;
             lstPrograms.EndUpdate();
         }
 
@@ -261,10 +246,11 @@ namespace Chummer
         private void AcceptForm()
         {
             string strSelectedItem = lstPrograms.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedItem))
-                return;
-            _strSelectedProgram = strSelectedItem;
-            DialogResult = DialogResult.OK;
+            if (!string.IsNullOrEmpty(strSelectedItem))
+            {
+                _strSelectedComplexForm = strSelectedItem;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void MoveControls()

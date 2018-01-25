@@ -183,11 +183,10 @@ namespace Chummer
         /// Create a Quality from an XmlNode.
         /// </summary>
         /// <param name="objXmlQuality">XmlNode to create the object from.</param>
-        /// <param name="objCharacter">Character object the Quality will be added to.</param>
         /// <param name="objQualitySource">Source of the Quality.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
-        public void Create(XmlNode objXmlQuality, Character objCharacter, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
+        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, List<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "")
         {
             _strSourceName = strSourceName;
             objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
@@ -268,7 +267,7 @@ namespace Chummer
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
                         
-                        Weapon objGearWeapon = new Weapon(objCharacter);
+                        Weapon objGearWeapon = new Weapon(_objCharacter);
                         objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
                         lstWeapons.Add(objGearWeapon);
@@ -442,7 +441,7 @@ namespace Chummer
             }
             if (!objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid))
             {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
+                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
                 if (objNewNode?.TryGetField("id", Guid.TryParse, out _qualiyGuid) == true)
                     _objCachedMyXmlNode = null;
             }
@@ -472,7 +471,7 @@ namespace Chummer
                 string strQualityType = Type.ToString();
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
-                    XmlNode objNode = XmlManager.Load("qualities.xml", strLanguageToPrint)?.SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate");
+                    XmlNode objNode = XmlManager.Load("qualities.xml", strLanguageToPrint).SelectSingleNode("/chummer/categories/category[. = \"" + strQualityType + "\"]/@translate");
                     strQualityType = objNode?.InnerText ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
@@ -775,7 +774,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage)?.SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("qualities.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + QualityId + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -1146,22 +1145,23 @@ namespace Chummer
                 //Dump skills, (optional)powers if present to output
 
                 XmlDocument objXmlPowersDocument = XmlManager.Load("spiritpowers.xml", strLanguageToPrint);
-                if (objXmlCritterNode["powers"] != null)
+                XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                if (xmlPowersNode != null)
                 {
                     //objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
                     objWriter.WriteStartElement("powers");
-                    foreach (XmlNode objXmlPowerNode in objXmlCritterNode["powers"].ChildNodes)
+                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
                         PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
                     }
                     objWriter.WriteEndElement();
                 }
-
-                if (objXmlCritterNode["optionalpowers"] != null)
+                xmlPowersNode = objXmlCritterNode["optionalpowers"];
+                if (xmlPowersNode != null)
                 {
                     //objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
                     objWriter.WriteStartElement("optionalpowers");
-                    foreach (XmlNode objXmlPowerNode in objXmlCritterNode["optionalpowers"].ChildNodes)
+                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
                         PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
                     }
@@ -1216,9 +1216,8 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
-            if (objXmlPowerNode == null)
-                objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
+            XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]") ??
+                objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
             if (objXmlPowerNode != null)
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
@@ -1409,11 +1408,12 @@ namespace Chummer
                             objUndo.CreateKarma(KarmaExpenseType.SpiritFettering, InternalId);
                             objExpense.Undo = objUndo;
                         }
-                        ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering", Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                        ImprovementManager.CreateImprovement(CharacterObject, EntityType == SpiritType.Spirit ? "MAG" : "RES", Improvement.ImprovementSource.SpiritFettering, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                        ImprovementManager.Commit(CharacterObject);
                     }
                     else
                     {
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering, "Spirit Fettering");
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
                     }
                     _blnFettered = value;
                 }
@@ -1440,7 +1440,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)?.SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage).SelectSingleNode("/chummer/spirits/spirit[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -2546,7 +2546,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage)?.SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage).SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\" and category = \"" + Category + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -2923,7 +2923,7 @@ namespace Chummer
         /// <param name="objXmlMetamagicNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
         /// <param name="objSource">Source of the Improvement.</param>
-        public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource)
+        public void Create(XmlNode objXmlMetamagicNode, Improvement.ImprovementSource objSource, string strForcedValue = "")
         {
             if (objXmlMetamagicNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -2942,9 +2942,13 @@ namespace Chummer
                 else
                     intRating = _objCharacter.InitiateGrade;
 
+                string strOldFocedValue = ImprovementManager.ForcedValue;
+                string strOldSelectedValue = ImprovementManager.SelectedValue;
+                ImprovementManager.ForcedValue = strOldFocedValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
+                    ImprovementManager.ForcedValue = strOldFocedValue;
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -2952,6 +2956,8 @@ namespace Chummer
                     _strName += " (" + ImprovementManager.SelectedValue + ')';
                     _objCachedMyXmlNode = null;
                 }
+                ImprovementManager.ForcedValue = strOldFocedValue;
+                ImprovementManager.SelectedValue = strOldSelectedValue;
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -3157,9 +3163,9 @@ namespace Chummer
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 if (_objImprovementSource == Improvement.ImprovementSource.Metamagic)
-                    _objCachedMyXmlNode = XmlManager.Load("metamagic.xml", strLanguage)?.SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
+                    _objCachedMyXmlNode = XmlManager.Load("metamagic.xml", strLanguage).SelectSingleNode("/chummer/metamagics/metamagic[name = \"" + Name + "\"]");
                 else
-                    _objCachedMyXmlNode = XmlManager.Load("echoes.xml", strLanguage)?.SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
+                    _objCachedMyXmlNode = XmlManager.Load("echoes.xml", strLanguage).SelectSingleNode("/chummer/echoes/echo[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -4190,7 +4196,7 @@ namespace Chummer
         /// </summary>
         public string DisplayRequiresProgram(string strLanguage)
         {
-            XmlNode objNode = XmlManager.Load("programs.xml", strLanguage)?.SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
+            XmlNode objNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
             return objNode?["translate"]?.InnerText ?? objNode?["name"]?.InnerText ?? LanguageManager.GetString("String_None", strLanguage);
         }
 
@@ -4284,7 +4290,7 @@ namespace Chummer
     /// <summary>
     /// A Martial Art.
     /// </summary>
-    public class MartialArt : IHasChildren<MartialArtAdvantage>, IHasName, IHasInternalId, IHasXmlNode
+    public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode
     {
         private string _strName = string.Empty;
         private string _strSource = string.Empty;
@@ -4292,7 +4298,7 @@ namespace Chummer
         private int _intKarmaCost = 7;
         private int _intRating = 1;
         private Guid _guiID;
-        private List<MartialArtAdvantage> _lstAdvantages = new List<MartialArtAdvantage>();
+        private List<MartialArtTechnique> _lstTechniques = new List<MartialArtTechnique>();
         private string _strNotes = string.Empty;
         private Character _objCharacter;
         private bool _blnIsQuality;
@@ -4348,10 +4354,10 @@ namespace Chummer
             objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("cost", _intKarmaCost.ToString(CultureInfo.InvariantCulture));
             objWriter.WriteElementString("isquality", _blnIsQuality.ToString());
-            objWriter.WriteStartElement("martialartadvantages");
-            foreach (MartialArtAdvantage objAdvantage in _lstAdvantages)
+            objWriter.WriteStartElement("martialarttechniques");
+            foreach (MartialArtTechnique objTechnique in _lstTechniques)
             {
-                objAdvantage.Save(objWriter);
+                objTechnique.Save(objWriter);
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", _strNotes);
@@ -4375,15 +4381,17 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
 
-            if (objNode.InnerXml.Contains("martialartadvantages"))
+            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialartadvantages/martialartadvantage"))
             {
-                XmlNodeList nodAdvantages = objNode.SelectNodes("martialartadvantages/martialartadvantage");
-                foreach (XmlNode nodAdvantage in nodAdvantages)
-                {
-                    MartialArtAdvantage objAdvantage = new MartialArtAdvantage(_objCharacter);
-                    objAdvantage.Load(nodAdvantage);
-                    _lstAdvantages.Add(objAdvantage);
-                }
+                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                objTechnique.Load(nodTechnique);
+                _lstTechniques.Add(objTechnique);
+            }
+            foreach (XmlNode nodTechnique in objNode.SelectNodes("martialarttechniques/martialarttechnique"))
+            {
+                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                objTechnique.Load(nodTechnique);
+                _lstTechniques.Add(objTechnique);
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -4402,8 +4410,8 @@ namespace Chummer
             objWriter.WriteElementString("page", Page(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("cost", Cost.ToString(objCulture));
-            objWriter.WriteStartElement("martialartadvantages");
-            foreach (MartialArtAdvantage objAdvantage in Advantages)
+            objWriter.WriteStartElement("martialarttechniques");
+            foreach (MartialArtTechnique objAdvantage in Techniques)
             {
                 objAdvantage.Print(objWriter, strLanguageToPrint);
             }
@@ -4504,8 +4512,8 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public IList<MartialArtAdvantage> Advantages => _lstAdvantages;
-        public IList<MartialArtAdvantage> Children => Advantages;
+        public IList<MartialArtTechnique> Techniques => _lstTechniques;
+        public IList<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
         /// Notes.
@@ -4536,7 +4544,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtAdvantage)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
         {
             TreeNode objNode = new TreeNode
             {
@@ -4555,9 +4563,9 @@ namespace Chummer
             }
             objNode.ToolTipText = Notes.WordWrap(100);
 
-            foreach (MartialArtAdvantage objAdvantage in Advantages)
+            foreach (MartialArtTechnique objAdvantage in Techniques)
             {
-                objNode.Nodes.Add(objAdvantage.CreateTreeNode(cmsMartialArtAdvantage));
+                objNode.Nodes.Add(objAdvantage.CreateTreeNode(cmsMartialArtTechnique));
                 objNode.Expand();
             }
 
@@ -4567,40 +4575,42 @@ namespace Chummer
     }
 
     /// <summary>
-    /// A Martial Arts Advantage.
+    /// A Martial Arts Technique.
     /// </summary>
-    public class MartialArtAdvantage : IHasInternalId, IHasName, IHasXmlNode
+    public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode
     {
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
+        private string _strSourceId = string.Empty;
         private Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public MartialArtAdvantage(Character objCharacter)
+        public MartialArtTechnique(Character objCharacter)
         {
-            // Create the GUID for the new Martial Art Advantage.
+            // Create the GUID for the new Martial Art Technique.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
 
-        /// Create a Martial Art Advantage from an XmlNode.
-        /// <param name="objXmlAdvantageNode">XmlNode to create the object from.</param>
+        /// Create a Martial Art Technique from an XmlNode.
+        /// <param name="xmlTechniqueDataNode">XmlNode to create the object from.</param>
         /// <param name="objCharacter">Character the Gear is being added to.</param>
-        public void Create(XmlNode objXmlAdvantageNode)
+        public void Create(XmlNode xmlTechniqueDataNode)
         {
-            if (objXmlAdvantageNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (xmlTechniqueDataNode.TryGetStringFieldQuickly("id", ref _strSourceId))
                 _objCachedMyXmlNode = null;
-            if (!objXmlAdvantageNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlAdvantageNode.TryGetStringFieldQuickly("notes", ref _strNotes);
-            objXmlAdvantageNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objXmlAdvantageNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (objXmlAdvantageNode["bonus"] != null)
+            if (xmlTechniqueDataNode["bonus"] != null)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString("D"), objXmlAdvantageNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), xmlTechniqueDataNode["bonus"], false, 1, DisplayName(GlobalOptions.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -4614,8 +4624,9 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
-            objWriter.WriteStartElement("martialartadvantage");
+            objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("sourceid", _strSourceId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", _strNotes);
             objWriter.WriteElementString("source", _strSource);
@@ -4625,15 +4636,21 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Martial Art Advantage from the XmlNode.
+        /// Load the Martial Art Technique from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 _guiID = Guid.NewGuid();
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if (objNode.TryGetStringFieldQuickly("sourceid", ref _strSourceId))
                 _objCachedMyXmlNode = null;
+            else
+            {
+                if (XmlManager.Load("martialarts.xml").SelectSingleNode("/chummer/techniques/technique[name = \"" + _strName + "\"]").TryGetStringFieldQuickly("sourceid", ref _strSourceId))
+                    _objCachedMyXmlNode = null;
+            }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -4645,7 +4662,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
-            objWriter.WriteStartElement("martialartadvantage");
+            objWriter.WriteStartElement("martialarttechnique");
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (_objCharacter.Options.PrintNotes)
@@ -4658,7 +4675,7 @@ namespace Chummer
 
         #region Properties
         /// <summary>
-        /// Internal identifier which will be used to identify this Martial Art Advantage in the Improvement system.
+        /// Internal identifier which will be used to identify this Martial Art Technique in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D");
 
@@ -4670,8 +4687,6 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
                 _strName = value;
             }
         }
@@ -4730,7 +4745,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("martialarts.xml", strLanguage).SelectSingleNode("/chummer/techniques/technique[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("martialarts.xml", strLanguage).SelectSingleNode("/chummer/techniques/technique[id = \"" + _strSourceId + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -4738,14 +4753,14 @@ namespace Chummer
         #endregion
 
         #region Methods
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtAdvantage)
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
         {
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = DisplayName(GlobalOptions.Language),
                 Tag = InternalId,
-                ContextMenuStrip = cmsMartialArtAdvantage
+                ContextMenuStrip = cmsMartialArtTechnique
             };
             if (!string.IsNullOrEmpty(Notes))
             {
@@ -4992,7 +5007,7 @@ namespace Chummer
 
             if (objXmlLimitModifierNode["bonus"] != null)
             {
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtAdvantage, _guiID.ToString("D"), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArtTechnique, _guiID.ToString("D"), objXmlLimitModifierNode["bonus"], false, 1, DisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -6494,7 +6509,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return XmlManager.Load("critterpowers.xml", strLanguage)?.SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
+            return XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = \"" + Category + "\"]/@translate")?.InnerText ?? Category;
         }
 
         /// <summary>
@@ -6689,7 +6704,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage)?.SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/powers/power[name = \"" + Name + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
@@ -7315,6 +7330,7 @@ namespace Chummer
             {
                 ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), Improvement.ImprovementType.AdeptPowerPoints, string.Empty, 1);
                 ImprovementManager.CreateImprovement(_objCharacter, string.Empty, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D"), Improvement.ImprovementType.DrainValue, string.Empty, -1);
+                ImprovementManager.Commit(_objCharacter);
             }
 
             /*
@@ -7394,7 +7410,7 @@ namespace Chummer
 
             if (!objNode.TryGetField("id", Guid.TryParse, out _sourceID))
             {
-                XmlNode objNewNode = XmlManager.Load("qualities.xml")?.SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
+                XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = \"" + Name + "\"]");
                 if (objNewNode != null)
                     objNewNode.TryGetField("id", Guid.TryParse, out _sourceID);
             }

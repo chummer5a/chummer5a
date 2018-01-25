@@ -54,6 +54,8 @@ namespace Chummer
             PopulateGlobalOptions();
             PopulateLanguageList();
             SetDefaultValueForLanguageList();
+            PopulateSheetLanguageList();
+            SetDefaultValueForSheetLanguageList();
             PopulateXsltList();
             SetDefaultValueForXsltList();
             PopulatePDFParameters();
@@ -270,10 +272,10 @@ namespace Chummer
         private void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListItem objItem = (ListItem)cboSetting.SelectedItem;
-            if (!objItem.Value.Contains(".xml"))
+            if (!objItem.Value.ToString().Contains(".xml"))
                 return;
 
-            _characterOptions.Load(objItem.Value);
+            _characterOptions.Load(objItem.Value.ToString());
             PopulateOptions();
         }
 
@@ -293,6 +295,11 @@ namespace Chummer
             }
             
             OptionsChanged(sender,e);
+        }
+
+        private void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PopulateXsltList();
         }
 
         private void cmdVerify_Click(object sender, EventArgs e)
@@ -498,7 +505,16 @@ namespace Chummer
             SetToolTips();
             PopulateSettingsList();
             PopulateGlobalOptions();
-            PopulateXsltList();
+
+            string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
+            if (strSheetLanguage != _strSelectedLanguage)
+            {
+                if (cboSheetLanguage.Items.Cast<ListItem>().Any(x => x.Value.ToString() == _strSelectedLanguage))
+                {
+                    cboSheetLanguage.SelectedValue = _strSelectedLanguage;
+                }
+            }
+            
             PopulatePDFParameters();
             MoveControls();
         }
@@ -534,7 +550,9 @@ namespace Chummer
             cboLanguage.Left = lblLanguage.Left + intWidth + 6;
             cmdVerify.Left = cboLanguage.Left + cboLanguage.Width + 6;
             cmdVerifyData.Left = cmdVerify.Left + cmdVerify.Width + 6;
-            cboXSLT.Left = lblXSLT.Left + intWidth + 6;
+            cboSheetLanguage.Left = lblXSLT.Left + intWidth + 6;
+            cboSheetLanguage.Width = cboLanguage.Width;
+            cboXSLT.Left = cmdVerify.Left;
 
             // Karma fields.
             intWidth = Math.Max(lblKarmaSpecialization.Width, lblKarmaKnowledgeSpecialization.Width);
@@ -665,12 +683,14 @@ namespace Chummer
 
             // Determine where the widest control ends so we can change the window with to accommodate it.
             intWidth = 0;
+            /* Control is anchored to all edges, so it will resize automatically anyway
             foreach (Control objControl in tabGeneral.Controls)
             {
                 int intTempWidth = objControl.Left + objControl.Width;
                 if (intTempWidth > intWidth)
                     intWidth = intTempWidth;
             }
+            */
             foreach (Control objControl in tabKarmaCosts.Controls)
             {
                 int intTempWidth = objControl.Left + objControl.Width;
@@ -1274,6 +1294,54 @@ namespace Chummer
             cboLanguage.EndUpdate();
         }
 
+        private void PopulateSheetLanguageList()
+        {
+            HashSet<string> setLanguagesWithSheets = new HashSet<string>();
+
+            // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+            foreach (XmlNode xmlSheetLanguage in XmlManager.Load("sheets.xml").SelectNodes($"/chummer/sheets/@lang"))
+            {
+                setLanguagesWithSheets.Add(xmlSheetLanguage.InnerText);
+            }
+
+            List<ListItem> lstSheetLanguages = new List<ListItem>();
+
+            string languageDirectoryPath = Path.Combine(Application.StartupPath, "lang");
+            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+
+            foreach (string filePath in languageFilePaths)
+            {
+                string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
+                if (!setLanguagesWithSheets.Contains(strLanguageName))
+                    continue;
+
+                XmlDocument xmlDocument = new XmlDocument();
+
+                try
+                {
+                    xmlDocument.Load(filePath);
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XmlNode node = xmlDocument.SelectSingleNode("/chummer/name");
+                if (node == null)
+                    continue;
+
+                lstSheetLanguages.Add(new ListItem(strLanguageName, node.InnerText));
+            }
+
+            lstSheetLanguages.Sort(CompareListItems.CompareNames);
+
+            cboSheetLanguage.BeginUpdate();
+            cboSheetLanguage.ValueMember = "Value";
+            cboSheetLanguage.DisplayMember = "Name";
+            cboSheetLanguage.DataSource = lstSheetLanguages;
+            cboSheetLanguage.EndUpdate();
+        }
+
         private void PopulateGlobalOptions()
         {
             chkAutomaticUpdate.Checked = GlobalOptions.AutomaticUpdate;
@@ -1342,10 +1410,11 @@ namespace Chummer
 
         private void PopulateXsltList()
         {
-            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(_strSelectedLanguage);
+            string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
+            List<ListItem> lstFiles = (List<ListItem>)GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
             if (GlobalOptions.OmaeEnabled)
             {
-                lstFiles.AddRange(GetXslFilesFromOmaeDirectory(_strSelectedLanguage));
+                lstFiles.AddRange(GetXslFilesFromOmaeDirectory(strSelectedSheetLanguage));
             }
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
@@ -1360,17 +1429,17 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOldSelected))
             {
-                if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
+                if (strSelectedSheetLanguage == GlobalOptions.DefaultLanguage)
                     cboXSLT.SelectedValue = strOldSelected;
                 else
-                    cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, strOldSelected);
+                    cboXSLT.SelectedValue = Path.Combine(strSelectedSheetLanguage, strOldSelected);
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
                 if (cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
                 {
-                    if (_strSelectedLanguage == GlobalOptions.DefaultLanguage)
+                    if (strSelectedSheetLanguage == GlobalOptions.DefaultLanguage)
                         cboXSLT.SelectedValue = GlobalOptions.DefaultCharacterSheetDefaultValue;
                     else
-                        cboXSLT.SelectedValue = Path.Combine(_strSelectedLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
+                        cboXSLT.SelectedValue = Path.Combine(strSelectedSheetLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue);
                     if (cboXSLT.SelectedIndex == -1)
                     {
                         cboXSLT.SelectedIndex = 0;
@@ -1396,6 +1465,27 @@ namespace Chummer
 
             if (cboLanguage.SelectedIndex == -1)
                 cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
+        }
+
+        private void SetDefaultValueForSheetLanguageList()
+        {
+            string strDefaultCharacterSheet = GlobalOptions.DefaultCharacterSheet;
+            if (string.IsNullOrEmpty(strDefaultCharacterSheet))
+                strDefaultCharacterSheet = GlobalOptions.DefaultCharacterSheetDefaultValue;
+
+            string strDefaultSheetLanguage = GlobalOptions.Language;
+            int intLastIndexDirectorySeparator = strDefaultCharacterSheet.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = strDefaultCharacterSheet.Substring(0, intLastIndexDirectorySeparator);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            cboSheetLanguage.SelectedValue = strDefaultSheetLanguage;
+
+            if (cboSheetLanguage.SelectedIndex == -1)
+                cboSheetLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
         }
 
         private void SetDefaultValueForXsltList()

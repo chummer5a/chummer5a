@@ -1026,14 +1026,6 @@
 			<text>Kraftstufe</text>
 		</string>
 		<string>
-			<key>Message_MartialArtAdvantageLimit</key>
-			<text>Sie können nur eine Gabe für jeweils eine Stufe von {0} wählen</text>
-		</string>
-		<string>
-			<key>MessageTitle_MartialArtAdvantageLimit</key>
-			<text>Maximale Anzahl an Gaben</text>
-		</string>
-		<string>
 			<key>Message_MartialArtManeuverLimit</key>
 			<text>Sie dürfen bis zu 2 Manöver pro Kampfkunstpunkt wählen</text>
 		</string>
@@ -1042,11 +1034,11 @@
 			<text>Maximale Anzahl von Manövern</text>
 		</string>
 		<string>
-			<key>Message_SelectMartialArtAdvantage</key>
+			<key>Message_SelectMartialArtTechnique</key>
 			<text>Sie müssen eine Kampfsportart wählen für die Sie eine Gabe hinzufügen wollen</text>
 		</string>
 		<string>
-			<key>MessageTitle_SelectMartialArtAdvantage</key>
+			<key>MessageTitle_SelectMartialArtTechnique</key>
 			<text>Kampfkunst auswählen</text>
 		</string>
 		<string>
@@ -2231,7 +2223,7 @@
 		</string>
 		<string>
 			<key>String_SpellForce</key>
-			<text>K</text>
+			<text>KS</text>
 		</string>
 		<string>
 			<key>String_DescActive</key>
@@ -2773,7 +2765,7 @@
 		</string>
 		<string>
 			<key>Label_BondedFoci</key>
-			<text>gebundene Foci</text>
+			<text>Gebundene Foki</text>
 		</string>
 		<string>
 			<key>Checkbox_Equipped</key>
@@ -4756,7 +4748,7 @@
 			<text>Wähle eine Kampfkunst</text>
 		</string>
 		<string>
-			<key>Title_SelectMartialArtAdvantage</key>
+			<key>Title_SelectMartialArtTechnique</key>
 			<text>Wähle eine Gabe</text>
 		</string>
 		<string>
