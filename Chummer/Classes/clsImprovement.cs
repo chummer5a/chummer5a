@@ -30,6 +30,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Classes;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Attributes;
+using System.Drawing;
 
 namespace Chummer
 {
@@ -711,6 +712,32 @@ namespace Chummer
             set { _intOrder = value; }
         }
 
+        #endregion
+
+        #region UI Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsImprovement)
+        {
+            TreeNode nodImprovement = new TreeNode
+            {
+                Tag = SourceName,
+                Text = CustomName,
+                ToolTipText = Notes.WordWrap(100),
+                ContextMenuStrip = cmsImprovement
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                if (Enabled)
+                    nodImprovement.ForeColor = Color.SaddleBrown;
+                else
+                    nodImprovement.ForeColor = Color.SandyBrown;
+            }
+            else if (Enabled)
+                nodImprovement.ForeColor = SystemColors.WindowText;
+            else
+                nodImprovement.ForeColor = SystemColors.GrayText;
+
+            return nodImprovement;
+        }
         #endregion
     }
 

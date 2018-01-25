@@ -516,6 +516,7 @@ namespace Chummer
             mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+            RefreshCustomImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
 
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -677,7 +678,8 @@ namespace Chummer
             CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
             CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
-            CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+            CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+            CharacterObject.Improvements.CollectionChanged += ImprovementCollectionChanged;
             BuildAttributePanel();
 
             // Hacky, but necessary
@@ -751,6 +753,11 @@ namespace Chummer
         private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
+        }
+
+        private void ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshCustomImprovements(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
         }
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -829,6 +836,7 @@ namespace Chummer
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -1271,12 +1279,6 @@ namespace Chummer
             if (CharacterObject.CyberwareDisabled)
             {
                 ClearCyberwareTab();
-                tabCharacterTabs.TabPages.Remove(tabCyberware);
-            }
-            else
-            {
-                if (!tabCharacterTabs.TabPages.Contains(tabCyberware))
-                    tabCharacterTabs.TabPages.Insert(6, tabCyberware);
             }
         }
 
@@ -7167,20 +7169,11 @@ namespace Chummer
 
                         // Change the Location for the Armor.
                         objImprovement.CustomGroup = string.Empty;
-
-                        TreeNode nodNewNode = new TreeNode
-                        {
-                            Text = objNode.Text,
-                            Tag = objNode.Tag
-                        };
-
-                        treImprovements.Nodes[0].Nodes.Add(nodNewNode);
-                        treImprovements.Nodes[0].Expand();
                     }
 
                     // Remove the Group from the character, then remove the selected node.
                     CharacterObject.ImprovementGroups.Remove(treImprovements.SelectedNode.Text);
-                    treImprovements.SelectedNode.Remove();
+                    RefreshCustomImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
                     return;
                 }
                 if (treImprovements.SelectedNode.Level > 0)
@@ -7327,7 +7320,7 @@ namespace Chummer
             // Enable all of the Improvements in the Improvement Group.
             if (treImprovements.SelectedNode != null && treImprovements.Nodes.Count > 0)
             {
-                bool blnSelectedTop = treImprovements.SelectedNode == treImprovements.Nodes[0];
+                bool blnSelectedTop = treImprovements.SelectedNode?.Tag.ToString() == "Node_SelectedImprovements";
                 List<Improvement> lstImprovementsEnabled = new List<Improvement>();
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
@@ -7352,7 +7345,7 @@ namespace Chummer
             // Disable all of the Improvements in the Improvement Group.
             if (treImprovements.SelectedNode != null && treImprovements.Nodes.Count > 0)
             {
-                bool blnSelectedTop = treImprovements.SelectedNode == treImprovements.Nodes[0];
+                bool blnSelectedTop = treImprovements.SelectedNode?.Tag.ToString() == "Node_SelectedImprovements";
                 List<Improvement> lstImprovementsDisabled = new List<Improvement>();
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
@@ -16460,10 +16453,14 @@ namespace Chummer
             {
                 intNewIndex = nodDestination.Index;
             }
-            else if (treImprovements.Nodes.Count > 0)
+            else
             {
-                intNewIndex = treImprovements.Nodes[treImprovements.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treImprovements.Nodes[treImprovements.Nodes.Count - 1];
+                int intNodeCount = treImprovements.Nodes.Count;
+                if (intNodeCount > 0)
+                {
+                    intNewIndex = treImprovements.Nodes[intNodeCount - 1].Nodes.Count;
+                    nodDestination = treImprovements.Nodes[intNodeCount - 1];
+                }
             }
 
             if (treImprovements.SelectedNode.Level == 1)
@@ -16880,7 +16877,9 @@ namespace Chummer
         /// </summary>
         private void ClearCyberwareTab()
         {
-            CharacterObject.ClearCyberwareTab(treCyberware, treWeapons, treVehicles);
+            CharacterObject.ClearCyberwareTab(treWeapons, treVehicles);
+
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
 
             IsDirty = true;
             IsCharacterUpdateRequested = true;
@@ -17964,10 +17963,10 @@ namespace Chummer
                 Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
 
             cmdQuickenSpell.Visible = CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.QuickeningMetamagic && objImprovement.Enabled);
-            cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
-            cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
+            cmdAddBioware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
+            cmdAddCyberware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             RefreshLimitModifiers(treLimit, cmsLimitModifier);
-            RefreshImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
+            RefreshCustomImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
             UpdateReputation();
             RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);
             UpdateInitiationCost();

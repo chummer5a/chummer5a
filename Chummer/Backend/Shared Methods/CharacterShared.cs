@@ -1668,94 +1668,157 @@ namespace Chummer
         /// <summary>
         /// Refresh the list of Improvements.
         /// </summary>
-        protected void RefreshImprovements(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement)
+        protected void RefreshCustomImprovements(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             string strSelectedId = treImprovements.SelectedNode?.Tag.ToString();
+            
+            TreeNode objRoot = null;
 
-            treImprovements.Nodes.Clear();
-
-            TreeNode objRoot = new TreeNode
+            if (notifyCollectionChangedEventArgs == null)
             {
-                Tag = "Node_SelectedImprovements",
-                Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
-            };
-            treImprovements.Nodes.Add(objRoot);
+                treImprovements.Nodes.Clear();
 
-            // Populate the Locations.
-            foreach (string strGroup in CharacterObject.ImprovementGroups)
-            {
-                TreeNode objGroup = new TreeNode
+                objRoot = new TreeNode
                 {
-                    Tag = strGroup,
-                    Text = strGroup,
-                    ContextMenuStrip = cmsImprovementLocation
+                    Tag = "Node_SelectedImprovements",
+                    Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
                 };
-                treImprovements.Nodes.Add(objGroup);
-            }
+                treImprovements.Nodes.Add(objRoot);
 
-            List<ListItem> lstImprovements = new List<ListItem>();
-            foreach (Improvement objImprovement in CharacterObject.Improvements)
-            {
-                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                // Populate the Locations.
+                foreach (string strGroup in CharacterObject.ImprovementGroups)
                 {
-                    string strName = "000000";
-                    strName = strName.Substring(0, 6 - objImprovement.SortOrder.ToString().Length) + objImprovement.SortOrder.ToString();
-                    lstImprovements.Add(new ListItem(objImprovement.SourceName, strName));
-                }
-            }
-
-            // Populate the Improvements TreeView.
-            for (int i = 0; i < lstImprovements.Count; ++i)
-            {
-                ListItem objItem = lstImprovements[i];
-                Improvement objImprovement = null;
-                foreach (Improvement objCharacterImprovement in CharacterObject.Improvements)
-                {
-                    if (objCharacterImprovement.SourceName == objItem.Value.ToString())
+                    TreeNode objGroup = new TreeNode
                     {
-                        objImprovement = objCharacterImprovement;
-                        break;
+                        Tag = strGroup,
+                        Text = strGroup,
+                        ContextMenuStrip = cmsImprovementLocation
+                    };
+                    treImprovements.Nodes.Add(objGroup);
+                }
+
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                {
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                    {
+                        AddToTree(objImprovement, false);
                     }
                 }
 
-                TreeNode nodImprovement = new TreeNode
+                // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
+                treImprovements.SortCustom(strSelectedId);
+            }
+            else
+            {
+                objRoot = treImprovements.FindNode("Node_SelectedImprovements", false);
+                switch (notifyCollectionChangedEventArgs.Action)
                 {
-                    Tag = objImprovement.SourceName,
-                    Text = objImprovement.CustomName,
-                    ToolTipText = objImprovement.Notes.WordWrap(100),
-                    ContextMenuStrip = cmsImprovement
-                };
-                if (!string.IsNullOrEmpty(objImprovement.Notes))
-                {
-                    if (objImprovement.Enabled)
-                        nodImprovement.ForeColor = Color.SaddleBrown;
-                    else
-                        nodImprovement.ForeColor = Color.SandyBrown;
+                    case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                {
+                                    AddToTree(objImprovement);
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                {
+                                    TreeNode objNode = treImprovements.FindNode(objImprovement.SourceName);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Tag.ToString() == "Node_SelectedImprovements" && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Reset:
+                        {
+                            RefreshCustomImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
+                            break;
+                        }
+                    case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                {
+                                    TreeNode objOldParent = null;
+                                    TreeNode objNode = treImprovements.FindNode(objImprovement.SourceName);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                    }
+                                    AddToTree(objImprovement);
+                                    if (objOldParent.Tag.ToString() == "Node_SelectedImprovements" && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }
+                            break;
+                        }
                 }
-                else if (objImprovement.Enabled)
-                    nodImprovement.ForeColor = SystemColors.WindowText;
-                else
-                    nodImprovement.ForeColor = SystemColors.GrayText;
+            }
 
-                TreeNode objParent = objRoot;
+            void AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objImprovement.CreateTreeNode(cmsImprovement);
+
+                TreeNode objParentNode = objRoot;
                 if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
                 {
                     foreach (TreeNode objFind in treImprovements.Nodes)
                     {
                         if (objFind.Text == objImprovement.CustomGroup)
                         {
-                            objParent = objFind;
+                            objParentNode = objFind;
                             break;
                         }
                     }
                 }
+                else
+                {
+                    if (objParentNode == null)
+                    {
+                        objParentNode = new TreeNode()
+                        {
+                            Tag = "Node_SelectedImprovements",
+                            Text = LanguageManager.GetString("Node_SelectedImprovements", GlobalOptions.Language)
+                        };
+                        treImprovements.Nodes.Add(objParentNode);
+                    }
+                }
 
-                objParent.Nodes.Add(nodImprovement);
-                objParent.Expand();
+                if (blnSingleAdd)
+                {
+                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                    int intNodesCount = lstParentNodeChildren.Count;
+                    int intTargetIndex = 0;
+                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    {
+                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        {
+                            break;
+                        }
+                    }
+                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                    treImprovements.SelectedNode = objNode;
+                }
+                else
+                    objParentNode.Nodes.Add(objNode);
+
+                objParentNode.Expand();
             }
-
-            // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-            treImprovements.SortCustom(strSelectedId);
         }
 
         protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)

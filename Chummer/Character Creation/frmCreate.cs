@@ -1125,12 +1125,6 @@ namespace Chummer
             if (CharacterObject.CyberwareDisabled)
             {
                 ClearCyberwareTab();
-                tabCharacterTabs.TabPages.Remove(tabCyberware);
-            }
-            else
-            {
-                if (!tabCharacterTabs.TabPages.Contains(tabCyberware))
-                    tabCharacterTabs.TabPages.Insert(6, tabCyberware);
             }
         }
 
@@ -11465,7 +11459,9 @@ namespace Chummer
         /// </summary>
         private void ClearCyberwareTab()
         {
-            CharacterObject.ClearCyberwareTab(treCyberware, treWeapons, treVehicles);
+            CharacterObject.ClearCyberwareTab(treWeapons, treVehicles);
+
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
 
             IsDirty = true;
             IsCharacterUpdateRequested = true;
@@ -12710,8 +12706,8 @@ namespace Chummer
             if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
                 Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
 
-            cmdAddBioware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
-            cmdAddCyberware.Enabled = !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
+            cmdAddBioware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableBioware && objImprovement.Enabled);
+            cmdAddCyberware.Enabled = !CharacterObject.CyberwareDisabled && !CharacterObject.Improvements.Any(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.DisableCyberware && objImprovement.Enabled);
             RefreshLimitModifiers(treLimit, cmsLimitModifier);
             UpdateReputation();
             RefreshInitiationGradesTree(treMetamagic, cmsMetamagic, cmsInitiationNotes);

@@ -206,7 +206,7 @@ namespace Chummer
         // Lists.
         private readonly List<string> _lstSources = new List<string>();
         private readonly List<string> _lstCustomDataDirectoryNames = new List<string>();
-        private List<Improvement> _lstImprovements = new List<Improvement>();
+        private ObservableCollection<Improvement> _lstImprovements = new ObservableCollection<Improvement>();
         private List<MentorSpirit> _lstMentorSpirits = new List<MentorSpirit>();
         private List<Contact> _lstContacts = new List<Contact>();
         private List<Spirit> _lstSpirits = new List<Spirit>();
@@ -2277,9 +2277,10 @@ namespace Chummer
 
                 if (objXmlTradition != null)
                 {
-                    if (objXmlTradition["name"] != null && objXmlTradition["name"].InnerText != "Custom")
+                    string strName = objXmlTradition["name"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strName) && strName != "Custom")
                     {
-                        strTraditionName = objXmlTradition["translate"]?.InnerText ?? objXmlTradition["name"].InnerText;
+                        strTraditionName = objXmlTradition["translate"]?.InnerText ?? strName;
                     }
                 }
                 
@@ -3017,7 +3018,6 @@ namespace Chummer
         /// <param name="objImprovement">Improvement to check.</param>
         public string GetObjectName(Improvement objImprovement, string strLanguage)
         {
-            string strReturn = string.Empty;
             switch (objImprovement.ImproveSource)
             {
                 case Improvement.ImprovementSource.Bioware:
@@ -3256,9 +3256,13 @@ namespace Chummer
                     break;
                 case Improvement.ImprovementSource.Quality:
                     if (objImprovement.SourceName == "SEEKER_WIL")
-                        return "Cyber-Singularty Seeker";
+                    {
+                        return XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")?.InnerText ?? "Cyber-Singularity Seeker";
+                    }
                     else if (objImprovement.SourceName.StartsWith("SEEKER"))
-                        return "Redliner";
+                    {
+                        return XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")?.InnerText ?? "Redliner";
+                    }
                     foreach (Quality objQuality in Qualities)
                     {
                         if (objQuality.InternalId == objImprovement.SourceName)
@@ -3289,12 +3293,19 @@ namespace Chummer
                     }
                     break;
                 default:
-                    if (objImprovement.SourceName == "Armor Encumbrance")
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
                     // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                     if (!string.IsNullOrEmpty(objImprovement.CustomName))
                         return objImprovement.CustomName;
-                    return objImprovement.SourceName;
+                    string strReturn = objImprovement.SourceName;
+                    if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
+                    {
+                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveType.ToString(), strLanguage, false);
+                        if (!string.IsNullOrEmpty(strTemp))
+                            strReturn = strTemp;
+                    }
+                    return strReturn;
             }
             return string.Empty;
         }
@@ -3804,15 +3815,20 @@ namespace Chummer
         /// <summary>
         /// Clear all Cyberware tab elements from the character.
         /// </summary>
-        public void ClearCyberwareTab(TreeView treCyberware, TreeView treWeapons, TreeView treVehicles)
+        public void ClearCyberwareTab(TreeView treWeapons, TreeView treVehicles)
         {
-            foreach (Cyberware objCyberware in Cyberware)
+            for (int i = Cyberware.Count - 1; i >= 0; i--)
             {
-                objCyberware.DeleteCyberware(treWeapons, treVehicles);
+                if (i < Cyberware.Count)
+                {
+                    Cyberware objToRemove = Cyberware[i];
+                    if (string.IsNullOrEmpty(objToRemove.ParentID))
+                    {
+                        objToRemove.DeleteCyberware(treWeapons, treVehicles);
+                        Cyberware.RemoveAt(i);
+                    }
+                }
             }
-            Cyberware.Clear();
-            
-            treCyberware.Nodes.Clear();
         }
 
         /// <summary>
@@ -6372,7 +6388,7 @@ namespace Chummer
         /// <summary>
         /// Improvements.
         /// </summary>
-        public IList<Improvement> Improvements
+        public ObservableCollection<Improvement> Improvements
         {
             get
             {
