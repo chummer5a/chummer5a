@@ -1036,7 +1036,7 @@ namespace Chummer.Backend.Equipment
                     strCost = strCost.Replace("Acceleration", Parent.Accel.ToString());
                     strCost = strCost.Replace("Handling", Parent.Handling.ToString());
                 }
-                strCost.CheapReplace("Slots", () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
+                strCost = strCost.CheapReplace("Slots", () => WeaponMountParent?.CalculatedSlots.ToString() ?? "0");
                 decimal decReturn = Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strCost), GlobalOptions.InvariantCultureInfo);
 
                 if (DiscountCost)
