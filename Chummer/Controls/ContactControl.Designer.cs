@@ -45,7 +45,6 @@ namespace Chummer
             this.chkGroup = new System.Windows.Forms.CheckBox();
             this.chkFree = new System.Windows.Forms.CheckBox();
             this.lblQuickStats = new System.Windows.Forms.Label();
-            this.lblLine = new System.Windows.Forms.Label();
             this.chkBlackmail = new System.Windows.Forms.CheckBox();
             this.chkFamily = new System.Windows.Forms.CheckBox();
             this.lblConnection = new System.Windows.Forms.Label();
@@ -125,8 +124,11 @@ namespace Chummer
             // 
             // cmdDelete
             // 
+            this.cmdDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdDelete.FlatAppearance.BorderSize = 0;
+            this.cmdDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdDelete.Location = new System.Drawing.Point(444, 2);
+            this.cmdDelete.Location = new System.Drawing.Point(488, 2);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(22, 22);
             this.cmdDelete.TabIndex = 7;
@@ -277,15 +279,6 @@ namespace Chummer
             this.lblQuickStats.Size = new System.Drawing.Size(30, 13);
             this.lblQuickStats.TabIndex = 14;
             this.lblQuickStats.Text = "(1/1)";
-            // 
-            // lblLine
-            // 
-            this.lblLine.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblLine.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.lblLine.Location = new System.Drawing.Point(0, 166);
-            this.lblLine.Name = "lblLine";
-            this.lblLine.Size = new System.Drawing.Size(516, 2);
-            this.lblLine.TabIndex = 15;
             // 
             // chkBlackmail
             // 
@@ -567,8 +560,8 @@ namespace Chummer
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.tlpStatBlock);
-            this.Controls.Add(this.lblLine);
             this.Controls.Add(this.lblQuickStats);
             this.Controls.Add(this.cmdExpand);
             this.Controls.Add(this.txtContactLocation);
@@ -613,7 +606,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkGroup;
         private System.Windows.Forms.CheckBox chkFree;
         private System.Windows.Forms.Label lblQuickStats;
-        private System.Windows.Forms.Label lblLine;
         private System.Windows.Forms.CheckBox chkBlackmail;
         private System.Windows.Forms.CheckBox chkFamily;
         private System.Windows.Forms.Label lblConnection;
