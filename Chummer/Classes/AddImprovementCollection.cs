@@ -1500,19 +1500,23 @@ namespace Chummer.Classes
         public void selectaiprogram(XmlNode bonusNode)
         {
             Log.Info("selectaiprogram");
-            // Display the Select Spell window.
-            frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
-
+            
             Log.Info("selectaiprogram = " + bonusNode.OuterXml);
 
             Log.Info("_strForcedValue = " + ForcedValue);
 
+            XmlNode xmlProgram = null;
+            XmlDocument xmlDocument = XmlManager.Load("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                frmPickProgram.SelectedProgram = ForcedValue;
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + ForcedValue + "\"]") ??
+                    xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + ForcedValue + "\"]");
             }
-            else
+
+            if (xmlProgram == null)
             {
+                // Display the Select Program window.
+                frmSelectAIProgram frmPickProgram = new frmSelectAIProgram(_objCharacter);
                 frmPickProgram.ShowDialog();
 
                 // Make sure the dialogue window was not canceled.
@@ -1520,31 +1524,22 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
+
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
             }
-
-            SelectedValue = frmPickProgram.SelectedProgram;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ')';
-
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
-
-            XmlDocument objXmlDocument = XmlManager.Load("programs.xml");
-
-            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
-
-            if (objXmlProgram != null)
+            
+            if (xmlProgram != null)
             {
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
                         Description =
                             LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                                .Replace("{0}", frmPickProgram.SelectedProgram)
+                                .Replace("{0}", xmlProgram["translate"]?.InnerText ?? xmlProgram["name"].InnerText)
                     };
                     frmPickText.ShowDialog();
                     // Make sure the dialogue window was not canceled.
@@ -1556,17 +1551,26 @@ namespace Chummer.Classes
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(xmlProgram, xmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
                 _objCharacter.AIPrograms.Add(objProgram);
+
+                SelectedValue = objProgram.DisplayNameShort(GlobalOptions.Language);
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ')';
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
 
                 Log.Info("Calling CreateImprovement");
                 CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.AIProgram,
                     _strUnique);
             }
+            else
+                throw new AbortedException();
         }
 
         // Select an AI program.
@@ -1580,11 +1584,15 @@ namespace Chummer.Classes
 
             Log.Info("_strForcedValue = " + ForcedValue);
 
+            XmlNode xmlProgram = null;
+            XmlDocument xmlDocument = XmlManager.Load("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                frmPickProgram.SelectedProgram = ForcedValue;
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + ForcedValue + "\"]") ??
+                    xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + ForcedValue + "\"]");
             }
-            else
+
+            if (xmlProgram == null)
             {
                 frmPickProgram.ShowDialog();
 
@@ -1593,31 +1601,22 @@ namespace Chummer.Classes
                 {
                     throw new AbortedException();
                 }
+
+                xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + frmPickProgram.SelectedProgram + "\"]");
             }
-
-            SelectedValue = frmPickProgram.SelectedProgram;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ')';
-
-            Log.Info("_strSelectedValue = " + SelectedValue);
-            Log.Info("SourceName = " + SourceName);
-
-            XmlDocument objXmlDocument = XmlManager.Load("programs.xml");
-
-            XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[name = \"" + frmPickProgram.SelectedProgram + "\"]");
-
-            if (objXmlProgram != null)
+            
+            if (xmlProgram != null)
             {
                 // Check for SelectText.
                 string strExtra = string.Empty;
-                XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
                     frmSelectText frmPickText = new frmSelectText
                     {
                         Description =
                             LanguageManager.GetString("String_Improvement_SelectText", GlobalOptions.Language)
-                                .Replace("{0}", frmPickProgram.SelectedProgram)
+                                .Replace("{0}", xmlProgram["translate"]?.InnerText ?? xmlProgram["name"].InnerText)
                     };
                     frmPickText.ShowDialog();
                     // Make sure the dialogue window was not canceled.
@@ -1629,9 +1628,16 @@ namespace Chummer.Classes
                 }
                 
                 AIProgram objProgram = new AIProgram(_objCharacter);
-                objProgram.Create(objXmlProgram, objXmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
+                objProgram.Create(xmlProgram, xmlProgram["category"]?.InnerText == "Advanced Programs", strExtra, false);
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
+
+                SelectedValue = objProgram.DisplayNameShort(GlobalOptions.Language);
+                if (_blnConcatSelectedValue)
+                    SourceName += " (" + SelectedValue + ')';
+
+                Log.Info("_strSelectedValue = " + SelectedValue);
+                Log.Info("SourceName = " + SourceName);
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
@@ -1640,6 +1646,8 @@ namespace Chummer.Classes
                     Improvement.ImprovementType.AIProgram,
                     _strUnique);
             }
+            else
+                throw new AbortedException();
         }
 
         // Select a Contact

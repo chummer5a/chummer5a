@@ -3327,22 +3327,15 @@ namespace Chummer
         /// Return a list of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
-        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool ignoreBannedGrades = false)
+        public IList<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             List<Grade> lstGrades = new List<Grade>();
-            string strXmlFile = objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml";
-            XmlDocument objXMlDocument = XmlManager.Load(strXmlFile);
-
-            string strBookFilter = string.Empty;
-            if (Options != null)
-                strBookFilter = "[(" + Options.BookXPath() + ")]";
-            foreach (XmlNode objNode in objXMlDocument.SelectNodes("/chummer/grades/grade" + strBookFilter))
+            string strXPath = Options != null ? "/chummer/grades/grade[(" + Options.BookXPath() + ")]" : "/chummer/grades/grade";
+            foreach (XmlNode objNode in XmlManager.Load(objSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : "cyberware.xml").SelectNodes(strXPath))
             {
-
                 Grade objGrade = new Grade(objSource);
                 objGrade.Load(objNode);
-                bool bannedGrade = BannedWareGrades.Any(s => objGrade.Name.Contains(s));
-                if (IgnoreRules || Created || !bannedGrade || (bannedGrade && !ignoreBannedGrades))
+                if (IgnoreRules || Created || blnIgnoreBannedGrades || !BannedWareGrades.Any(s => objGrade.Name.Contains(s)))
                     lstGrades.Add(objGrade);
             }
 

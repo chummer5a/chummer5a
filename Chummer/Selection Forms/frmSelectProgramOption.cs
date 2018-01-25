@@ -81,14 +81,25 @@ namespace Chummer
 
         private void lstOptions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Display the Program information.
-            XmlNode objXmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + lstOptions.SelectedValue + "\"]");
+            string strSelectedId = lstOptions.SelectedValue?.ToString();
+            XmlNode xmlOption = null;
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = \"" + strSelectedId + "\"]");
 
-            string strBook = CommonFunctions.LanguageBookShort(objXmlOption["source"].InnerText, GlobalOptions.Language);
-            string strPage = objXmlOption["altpage"]?.InnerText ?? objXmlOption["page"].InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            if (xmlOption != null)
+            {
+                string strSource = xmlOption["source"].InnerText;
+                string strPage = xmlOption["altpage"]?.InnerText ?? xmlOption["page"].InnerText;
+                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(objXmlOption["source"].InnerText, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            }
+            else
+            {
+                lblSource.Text = string.Empty;
+
+                tipTooltip.SetToolTip(lblSource, string.Empty);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -33,6 +33,7 @@ namespace Chummer
         private string _strSelectedAccessory = string.Empty;
         private decimal _decMarkup = 0;
 
+        private bool _blnLoading = true;
         private string _strAllowedMounts = string.Empty;
         private decimal _decWeaponCost = 0;
         private int _intRating = 0;
@@ -79,9 +80,11 @@ namespace Chummer
                 chkHideOverAvailLimit.Text = chkHideOverAvailLimit.Text.Replace("{0}", _objCharacter.MaximumAvailability.ToString());
                 chkHideOverAvailLimit.Checked = _objCharacter.Options.HideItemsOverAvailLimit;
             }
-            BuildAccessoryList();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+
+            _blnLoading = false;
+            BuildAccessoryList();
         }
 
         /// <summary>
@@ -176,17 +179,23 @@ namespace Chummer
 
                 if (!chkHideOverAvailLimit.Checked || Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter))
                 {
-                    string strName = objXmlAccessory["name"]?.InnerText ?? string.Empty;
-                    lstAccessories.Add(new ListItem(strName, objXmlAccessory["translate"]?.InnerText ?? strName));
+                    lstAccessories.Add(new ListItem(objXmlAccessory["id"].InnerText, objXmlAccessory["translate"]?.InnerText ?? objXmlAccessory["name"]?.InnerText ?? string.Empty));
                 }
                 NextItem:;
             }
             
             lstAccessories.Sort(CompareListItems.CompareNames);
+            string strOldSelected = lstAccessory.SelectedValue?.ToString();
+            _blnLoading = true;
             lstAccessory.BeginUpdate();
             lstAccessory.ValueMember = "Value";
             lstAccessory.DisplayMember = "Name";
             lstAccessory.DataSource = lstAccessories;
+            _blnLoading = false;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                lstAccessory.SelectedValue = strOldSelected;
+            else
+                lstAccessory.SelectedIndex = -1;
             lstAccessory.EndUpdate();
         }
 
@@ -197,8 +206,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstAccessory.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -208,13 +216,13 @@ namespace Chummer
 
         private void lstAccessory_DoubleClick(object sender, EventArgs e)
         {
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            cmdOK_Click(sender, e);
+            AcceptForm();
         }
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
@@ -418,23 +426,43 @@ namespace Chummer
 
         private void UpdateGearInfo()
         {
+            XmlNode xmlAccessory = null;
+            string strSelectedId = lstAccessory.SelectedValue?.ToString();
             // Retrieve the information for the selected Accessory.
-            XmlNode objXmlAccessory = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + lstAccessory.SelectedValue + "\"]");
-            if (objXmlAccessory == null)
+            if (!string.IsNullOrEmpty(strSelectedId))
+                xmlAccessory = _objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + strSelectedId + "\"]");
+            if (xmlAccessory == null)
+            {
+                lblRC.Visible = false;
+                lblRCLabel.Visible = false;
+                nudRating.Enabled = false;
+                nudRating.Visible = false;
+                lblRatingLabel.Visible = false;
+                cboMount.Visible = false;
+                cboMount.Items.Clear();
+                cboExtraMount.Visible = false;
+                cboExtraMount.Items.Clear();
+                lblAvail.Text = string.Empty;
+                lblCost.Text = string.Empty;
+                lblTest.Text = string.Empty;
+                lblSource.Text = string.Empty;
+                tipTooltip.SetToolTip(lblSource, string.Empty);
                 return;
+            }
 
-            if (objXmlAccessory.InnerXml.Contains("<rc>"))
+            string strRC = xmlAccessory["rc"]?.InnerText;
+            if (!string.IsNullOrEmpty(strRC))
             {
                 lblRC.Visible = true;
                 lblRCLabel.Visible = true;
-                lblRC.Text = objXmlAccessory["rc"]?.InnerText;
+                lblRC.Text = strRC;
             }
             else
             {
                 lblRC.Visible = false;
                 lblRCLabel.Visible = false;
             }
-            if (int.TryParse(objXmlAccessory["rating"]?.InnerText, out int intMaxRating) && intMaxRating > 0)
+            if (int.TryParse(xmlAccessory["rating"]?.InnerText, out int intMaxRating) && intMaxRating > 0)
             {
                 nudRating.Enabled = true;
                 nudRating.Visible = true;
@@ -442,7 +470,7 @@ namespace Chummer
                 nudRating.Maximum = intMaxRating;
                 if (chkHideOverAvailLimit.Checked)
                 {
-                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(objXmlAccessory, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
+                    while (nudRating.Maximum > nudRating.Minimum && !Backend.SelectionShared.CheckAvailRestriction(xmlAccessory, _objCharacter, decimal.ToInt32(nudRating.Maximum)))
                     {
                         nudRating.Maximum -= 1;
                     }
@@ -455,7 +483,7 @@ namespace Chummer
                 lblRatingLabel.Visible = false;
             }
             List<string> strMounts = new List<string>();
-            foreach (string strItem in objXmlAccessory["mount"]?.InnerText?.Split('/'))
+            foreach (string strItem in xmlAccessory["mount"]?.InnerText?.Split('/'))
             {
                 strMounts.Add(strItem);
             }
@@ -467,6 +495,7 @@ namespace Chummer
                 strAllowed.Add(strItem);
             }
             strAllowed.Add("None");
+            cboMount.Visible = true;
             cboMount.Items.Clear();
             foreach (string strCurrentMount in strMounts)
             {
@@ -492,15 +521,17 @@ namespace Chummer
             cboMount.SelectedIndex = 0;
 
             List<string> strExtraMounts = new List<string>();
-            if (objXmlAccessory.InnerXml.Contains("<extramount>"))
+            string strExtraMount = xmlAccessory["extramount"]?.InnerText;
+            if (!string.IsNullOrEmpty(strExtraMount))
             {
-                foreach (string strItem in objXmlAccessory["extramount"]?.InnerText?.Split('/'))
+                foreach (string strItem in strExtraMount.Split('/'))
                 {
                     strExtraMounts.Add(strItem);
                 }
             }
             strExtraMounts.Add("None");
 
+            cboExtraMount.Visible = true;
             cboExtraMount.Items.Clear();
             foreach (string strCurrentMount in strExtraMounts)
             {
@@ -530,7 +561,7 @@ namespace Chummer
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = string.Empty;
-            string strAvailExpr = objXmlAccessory["avail"]?.InnerText;
+            string strAvailExpr = xmlAccessory["avail"]?.InnerText;
             if (!string.IsNullOrWhiteSpace(strAvailExpr))
             {
                 lblAvail.Text = strAvailExpr;
@@ -558,7 +589,7 @@ namespace Chummer
             if (!chkFreeItem.Checked)
             {
                 string strCost = "0";
-                if (objXmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
+                if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
                     strCost = strCost.Replace("Weapon Cost", _decWeaponCost.ToString(GlobalOptions.InvariantCultureInfo))
                         .Replace("Rating", nudRating.Value.ToString(GlobalOptions.CultureInfo));
                 if (strCost.StartsWith("Variable("))
@@ -604,7 +635,7 @@ namespace Chummer
             }
             else
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
             /*TODO: Accessories don't use a category mapping, so this doesn't work. 
@@ -612,23 +643,26 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked =
                     _blackMarketMaps.Contains(objXmlAccessory["category"]?.InnerText);
             */
-            string strBookCode = objXmlAccessory["source"]?.InnerText;
-            string strBook = CommonFunctions.LanguageBookShort(strBookCode, GlobalOptions.Language);
-            string strPage = objXmlAccessory["altpage"]?.InnerText ?? objXmlAccessory["page"]?.InnerText;
-            lblSource.Text = strBook + ' ' + strPage;
+            string strSource = xmlAccessory["source"].InnerText;
+            string strPage = xmlAccessory["altpage"]?.InnerText ?? xmlAccessory["page"].InnerText;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
 
-            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strBookCode, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
         }
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedAccessory = lstAccessory.SelectedValue.ToString();
-            int.TryParse(nudRating.Value.ToString(GlobalOptions.CultureInfo), out _intRating);
-            _decMarkup = nudMarkup.Value;
-            _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            DialogResult = DialogResult.OK;
+            string strSelectedId = lstAccessory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                _strSelectedAccessory = strSelectedId;
+                int.TryParse(nudRating.Value.ToString(GlobalOptions.CultureInfo), out _intRating);
+                _decMarkup = nudMarkup.Value;
+                _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void MoveControls()

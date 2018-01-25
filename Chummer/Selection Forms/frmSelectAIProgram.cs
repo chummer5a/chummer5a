@@ -384,10 +384,10 @@ namespace Chummer
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XmlNode objXmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + strSelectedId + "\"]");
+                XmlNode xmlProgram = _objXmlDocument.SelectSingleNode("/chummer/programs/program[id = \"" + strSelectedId + "\"]");
 
                 // Check to make sure requirement is met
-                string strRequiresProgram = objXmlProgram["require"]?.InnerText;
+                string strRequiresProgram = xmlProgram["require"]?.InnerText;
                 if (!string.IsNullOrEmpty(strRequiresProgram))
                 {
                     bool blnRequirementsMet = false;
@@ -408,8 +408,8 @@ namespace Chummer
                     }
                 }
 
-                _strSelectedAIProgram = objXmlProgram["name"].InnerText;
-                s_StrSelectedCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objXmlProgram["category"].InnerText;
+                _strSelectedAIProgram = strSelectedId;
+                s_StrSelectedCategory = (_objCharacter.Options.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram["category"].InnerText;
 
                 DialogResult = DialogResult.OK;
             }

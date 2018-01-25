@@ -1126,9 +1126,9 @@ namespace Chummer
 
             XmlDocument objXmlDocument = XmlManager.Load("books.xml");
 
-            foreach (string strBookCode in strBooks)
+            foreach (string strBookName in strBooks)
             {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookCode + "\" and not(hide)]/code")?.ToString();
+                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = \"" + strBookName + "\" and not(hide)]/code")?.ToString();
                 if (!string.IsNullOrEmpty(strCode))
                 {
                     _lstBooks.Add(strCode);
@@ -1146,14 +1146,7 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            foreach (string strBook in _lstBooks)
-            {
-                if (strBook == strCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _lstBooks.Contains(strCode);
         }
 
         /// <summary>

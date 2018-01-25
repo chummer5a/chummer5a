@@ -93,6 +93,7 @@ Application Changes:
 - Fixed an issue where changing a 'ware's essence cost in some way would not properly reflect on the character's essence and attribute losses due to essence until a new character update is triggered. Fixes #2391.
 - Fixed an issue where changing the grade of a 'ware that has grandchildren would not properly update the grades of those grandchildren and any further descendants.
 - Fixed an issue where weapon mounts could not get properly installed or uninstalled from their vehicle.
+- Fixed an issue that prevented Chummer5a from opening PDFs for sourcebooks with translated codes.
 
 Data Changes:
 

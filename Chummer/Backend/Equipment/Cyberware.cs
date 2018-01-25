@@ -3287,6 +3287,21 @@ namespace Chummer.Backend.Equipment
                 decReturn += objLoopGear.DeleteGear(treWeapons, treVehicles);
             }
 
+            // Fix for legacy characters with old addqualities improvements.
+            XmlNodeList xmlOldAddQualitiesList = GetNode()?.SelectNodes("addqualities/addquality");
+            if (xmlOldAddQualitiesList != null)
+            {
+                foreach (XmlNode objNode in xmlOldAddQualitiesList)
+                {
+                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.InnerText);
+                    if (objQuality != null)
+                    {
+                        _objCharacter.Qualities.Remove(objQuality);
+                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                    }
+                }
+            }
+
             return decReturn;
         }
 
