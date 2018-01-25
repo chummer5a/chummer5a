@@ -1072,8 +1072,8 @@ namespace Chummer
                 Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
-                    objCharacter.Dispose();
                     OpenCharacters.Remove(objCharacter);
+                    objCharacter.Dispose();
                     return null;
                 }
 

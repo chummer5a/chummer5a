@@ -268,8 +268,6 @@ namespace Chummer
         public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
         public Action<object> CyberwareTabDisabledChanged { get; set; }
 
-        private frmViewer _frmPrintView;
-
         #region Initialization, Save, Load, Print, and Reset Methods
         /// <summary>
         /// Character.
@@ -2901,38 +2899,6 @@ namespace Chummer
 
             // </character>
             objWriter.WriteEndElement();
-        }
-
-        /// <summary>
-        /// Print this character and open the View Character window.
-        /// </summary>
-        /// <param name="blnDialog">Whether or not the window should be shown as a dialogue window.</param>
-        public void Print(bool blnDialog = true)
-        {
-            // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
-            // If a Viewer window already exists for this character, use it instead.
-            if (_frmPrintView == null)
-            {
-                List<Character> lstCharacters = new List<Character>
-                {
-                    this
-                };
-                _frmPrintView = new frmViewer
-                {
-                    Characters = lstCharacters
-                };
-                if (blnDialog)
-                    _frmPrintView.ShowDialog();
-                else
-                    _frmPrintView.Show();
-            }
-            else
-            {
-                _frmPrintView.Activate();
-            }
-            _frmPrintView.RefreshCharacters();
-            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(this) == true)
-                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
         }
 
         /// <summary>
@@ -8184,21 +8150,6 @@ namespace Chummer
 #endregion
 
 #region Application Properties
-        /// <summary>
-        /// The frmViewer window being used by the character.
-        /// </summary>
-        public frmViewer PrintWindow
-        {
-            get
-            {
-                return _frmPrintView;
-            }
-            set
-            {
-                _frmPrintView = value;
-            }
-        }
-
         private readonly List<Character> _lstLinkedCharacters = new List<Character>();
         /// <summary>
         /// Characters referenced by some member of this character (usually a contact).
@@ -9213,7 +9164,6 @@ namespace Chummer
             {
                 if (disposing)
                 {
-                    _frmPrintView?.Dispose();
                     _objOptions?.Dispose();
                 }
                 disposedValue = true;

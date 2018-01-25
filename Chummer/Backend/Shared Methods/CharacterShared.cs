@@ -41,12 +41,13 @@ namespace Chummer
     /// Contains functionality shared between frmCreate and frmCareer
     /// </summary>
     [System.ComponentModel.DesignerCategory("")]
-    public class CharacterShared : Form
+    public class CharacterShared : Form, IDisposable
     {
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty = false;
         private bool _blnRequestCharacterUpdate = false;
+        private frmViewer _frmPrintView;
 
         public CharacterShared(Character objCharacter)
         {
@@ -2200,6 +2201,46 @@ namespace Chummer
         public virtual bool ConfirmSaveCreatedCharacter() { return true; }
 
         /// <summary>
+        /// The frmViewer window being used by the character.
+        /// </summary>
+        public frmViewer PrintWindow
+        {
+            get
+            {
+                return _frmPrintView;
+            }
+            set
+            {
+                _frmPrintView = value;
+            }
+        }
+
+        public void DoPrint()
+        {
+            // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
+            // If a Viewer window already exists for this character, use it instead.
+            if (_frmPrintView == null)
+            {
+                List<Character> lstCharacters = new List<Character>
+                {
+                    CharacterObject
+                };
+                _frmPrintView = new frmViewer
+                {
+                    Characters = lstCharacters
+                };
+                _frmPrintView.Show();
+            }
+            else
+            {
+                _frmPrintView.Activate();
+            }
+            _frmPrintView.RefreshCharacters();
+            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
+                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
+        }
+
+        /// <summary>
         /// Processes the string strDrain into a calculated Drain dicepool and appropriate display attributes and labels.
         /// </summary>
         /// <param name="strDrain"></param>
@@ -2255,6 +2296,19 @@ namespace Chummer
                 valueText.Text = intDrain.ToString();
             if (tooltip != null)
                 tooltip.SetToolTip(valueText, objTip.ToString());
+        }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _frmPrintView?.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

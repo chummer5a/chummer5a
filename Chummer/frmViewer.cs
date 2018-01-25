@@ -212,11 +212,9 @@ namespace Chummer
             }
 
             // Clear the reference to the character's Print window.
-            if (_lstCharacters.Count > 0)
-            {
-                foreach (Character objCharacter in _lstCharacters)
-                    objCharacter.PrintWindow = null;
-            }
+            foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
+                if (objCharacterShared.PrintWindow == this)
+                    objCharacterShared.PrintWindow = null;
         }
         #endregion
 
