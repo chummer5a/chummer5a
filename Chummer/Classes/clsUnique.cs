@@ -1145,22 +1145,23 @@ namespace Chummer
                 //Dump skills, (optional)powers if present to output
 
                 XmlDocument objXmlPowersDocument = XmlManager.Load("spiritpowers.xml", strLanguageToPrint);
-                if (objXmlCritterNode["powers"] != null)
+                XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                if (xmlPowersNode != null)
                 {
                     //objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
                     objWriter.WriteStartElement("powers");
-                    foreach (XmlNode objXmlPowerNode in objXmlCritterNode["powers"].ChildNodes)
+                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
                         PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
                     }
                     objWriter.WriteEndElement();
                 }
-
-                if (objXmlCritterNode["optionalpowers"] != null)
+                xmlPowersNode = objXmlCritterNode["optionalpowers"];
+                if (xmlPowersNode != null)
                 {
                     //objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
                     objWriter.WriteStartElement("optionalpowers");
-                    foreach (XmlNode objXmlPowerNode in objXmlCritterNode["optionalpowers"].ChildNodes)
+                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
                         PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
                     }
@@ -1215,9 +1216,8 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name=\"" + strPowerName + "\"]");
-            if (objXmlPowerNode == null)
-                objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
+            XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]") ??
+                objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
             if (objXmlPowerNode != null)
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
@@ -2546,7 +2546,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage).SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("spells.xml", strLanguage).SelectSingleNode("/chummer/spells/spell[name = \"" + Name + "\" and category = \"" + Category + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;

@@ -247,12 +247,13 @@ namespace Chummer.Backend.Skills
 
             bool blnTemp = false;
 
+            string strName = xmlSkillNode["name"]?.InnerText ?? string.Empty;
             Skill objSkill;
             if (xmlSkillNode.TryGetBoolFieldQuickly("knowledge", ref blnTemp) && blnTemp)
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = xmlSkillNode["name"]?.InnerText,
+                    WriteableName = strName,
                     Base = intBaseRating,
                     Karma = intKarmaRating,
 
@@ -264,24 +265,19 @@ namespace Chummer.Backend.Skills
             else
             {
                 XmlDocument xmlSkillsDocument = XmlManager.Load("skills.xml");
-                XmlNode xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[id = '{suid}']");
-
-                //Some stuff apparently have a guid of 0000-000... (only exotic?)
-                if (xmlSkillDataNode == null)
-                {
-                    xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[name = '{xmlSkillNode["name"]?.InnerText}']");
-                }
+                XmlNode xmlSkillDataNode = xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[id = '{suid}']") ??
+                    //Some stuff apparently have a guid of 0000-000... (only exotic?)
+                    xmlSkillsDocument.SelectSingleNode($"/chummer/skills/skill[name = \"{strName}\"]");
 
 
                 objSkill = FromData(xmlSkillDataNode, objCharacter);
                 objSkill._intBase = intBaseRating;
                 objSkill._intKarma = intKarmaRating;
 
-                if (objSkill is ExoticSkill exoticSkill)
+                if (objSkill is ExoticSkill objExoticSkill)
                 {
-                    string name = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
                     //don't need to do more load then.
-                    exoticSkill.Specific = name;
+                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.InnerText ?? string.Empty;
                     return objSkill;
                 }
 

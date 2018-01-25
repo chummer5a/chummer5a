@@ -48,13 +48,15 @@ namespace Chummer
             MoveControls();
             _objXmlDocument = XmlManager.Load("critterpowers.xml");
             if (_objCharacter.IsCritter)
+            {
                 _objXmlCritterDocument = XmlManager.Load("critters.xml");
+                if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") == null)
+                {
+                    _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
+                }
+            }
             else
                 _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
-            if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]") == null)
-            {
-                _objXmlCritterDocument = XmlManager.Load("metatypes.xml");
-            }
         }
 
         private void frmSelectCritterPower_Load(object sender, EventArgs e)
@@ -74,8 +76,7 @@ namespace Chummer
             }
 
             // Remove Optional Powers if the Critter does not have access to them.
-            XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-            if (objXmlCritter["optionalpowers"] == null)
+            if (_objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers") == null)
             {
                 foreach (ListItem objItem in _lstCategory)
                 {
@@ -293,11 +294,13 @@ namespace Chummer
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
                     {
-                        XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                        XmlNode objXmlCritterPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]");
-                        lblPowerPoints.Text = objXmlCritterPower.Attributes["cost"].InnerText;
-                        lblPowerPoints.Visible = true;
-                        lblPowerPointsLabel.Visible = true;
+                        XmlNode xmlOptionalPowerCostNode = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]/@cost");
+                        if (xmlOptionalPowerCostNode != null)
+                        {
+                            lblPowerPoints.Text = xmlOptionalPowerCostNode.InnerText;
+                            lblPowerPoints.Visible = true;
+                            lblPowerPointsLabel.Visible = true;
+                        }
                     }
                 }
             }
@@ -445,15 +448,18 @@ namespace Chummer
 
             if (nudCritterPowerRating.Enabled)
                 _intSelectedRating = decimal.ToInt32(nudCritterPowerRating.Value);
+
+            XmlNode objXmlPower = _objXmlDocument.SelectSingleNode("/chummer/powers/power[id = \"" + strSelectedPower + "\"]");
+
             s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
             if (_objCharacter.Metatype == "Free Spirit" && !_objCharacter.IsCritter)
             {
-                XmlNode objXmlCritter = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]");
-                XmlNode objXmlPower = objXmlCritter.SelectSingleNode("optionalpowers/power[. = \"" + trePowers.SelectedNode.Tag + "\"]");
-                _decPowerPoints = Convert.ToDecimal(objXmlPower.Attributes["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
+                XmlNode objXmlOptionalPowerCost = _objXmlCritterDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + _objCharacter.Metatype + "\"]/optionalpowers/power[. = \"" + objXmlPower["name"]?.InnerText + "\"]/@cost");
+                if (objXmlOptionalPowerCost != null)
+                    _decPowerPoints = Convert.ToDecimal(objXmlOptionalPowerCost.InnerText, GlobalOptions.InvariantCultureInfo);
             }
 
             DialogResult = DialogResult.OK;

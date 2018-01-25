@@ -596,10 +596,10 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange))
             {
-                XmlNode objWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
-                if (objWeaponNode?["alternaterange"] != null)
+                string strAlternateRange = GetNode()?["alternaterange"]?.InnerText;
+                if (!string.IsNullOrEmpty(strAlternateRange))
                 {
-                    _strAlternateRange = objWeaponNode["alternaterange"].InnerText;
+                    _strAlternateRange = strAlternateRange;
                 }
             }
             objNode.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
@@ -2233,10 +2233,8 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
-                XmlNode objAccessoryNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + _strName + "\"]");
                 string strMounts = string.Empty;
-                XmlNodeList objXmlMountList = objAccessoryNode?.SelectNodes("accessorymounts/mount");
+                XmlNodeList objXmlMountList = GetNode()?.SelectNodes("accessorymounts/mount");
 
                 if (objXmlMountList == null) return strMounts;
                 foreach (XmlNode objXmlMount in objXmlMountList)
