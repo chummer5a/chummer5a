@@ -461,23 +461,28 @@ namespace Chummer
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            string strSelectedQuality = treLifestyleQualities.SelectedNode?.Tag.ToString();
+            LifestyleQuality objQuality = null;
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0)
+            if (!string.IsNullOrEmpty(strSelectedQuality))
+                objQuality = _objLifestyle.LifestyleQualities.FindById(strSelectedQuality) ?? _objLifestyle.FreeGrids.FindById(strSelectedQuality);
+            if (objQuality != null)
+            {
+                lblQualityLp.Text = objQuality.LP.ToString();
+                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                string strPage = objQuality.Page(GlobalOptions.Language);
+                lblQualitySource.Text = CommonFunctions.LanguageBookShort(objQuality.Source, GlobalOptions.Language) + ' ' + strPage;
+                tipTooltip.SetToolTip(lblQualitySource, CommonFunctions.LanguageBookLong(objQuality.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
+                cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
+            }
+            else
             {
                 lblQualityLp.Text = string.Empty;
                 lblQualityCost.Text = string.Empty;
                 lblQualitySource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblQualitySource, null);
                 cmdDeleteQuality.Enabled = false;
-                return;
             }
-            string strSelectedQuality = treLifestyleQualities.SelectedNode.Tag.ToString();
-            LifestyleQuality objQuality = _objLifestyle.LifestyleQualities.FindById(strSelectedQuality) ?? _objLifestyle.FreeGrids.FindById(strSelectedQuality);
-            lblQualityLp.Text = objQuality.LP.ToString();
-            lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            lblQualitySource.Text = $@"{objQuality.Source} {objQuality.Page(GlobalOptions.Language)}";
-            tipTooltip.SetToolTip(lblQualitySource, objQuality.SourceTooltip);
-            cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
         }
         #endregion
 

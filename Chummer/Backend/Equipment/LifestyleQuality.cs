@@ -50,7 +50,6 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodBonus;
         private readonly Character _objCharacter;
         private bool _blnFree;
-        private string _strTooltipSource;
 
         #region Helper Methods
         /// <summary>
@@ -199,7 +198,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXmlNode = null;
             if (!objNode.TryGetField("id", Guid.TryParse, out _SourceGuid))
             {
-                GetNode()?.TryGetField("id", Guid.TryParse, out _SourceGuid);
+                XmlManager.Load("lifestyles.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]")?.TryGetField("id", Guid.TryParse, out _SourceGuid);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -368,19 +367,7 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
-        public string SourceTooltip
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(_strTooltipSource)) return _strTooltipSource;
-                XmlDocument objBookDocument = XmlManager.Load("books.xml");
-                XmlNode objXmlBook = objBookDocument.SelectSingleNode("/chummer/books/book[code = \"" + _strSource + "\"]");
-                _strTooltipSource = $"{objXmlBook["name"].InnerText} {LanguageManager.GetString("String_Page", GlobalOptions.Language)} {Page(GlobalOptions.Language)}";
-                return _strTooltipSource;
-            }
-        }
-
+        
         /// <summary>
         /// Page Number.
         /// </summary>
@@ -646,7 +633,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[name = \"" + _SourceGuid.ToString("D") + "\"]");
+                _objCachedMyXmlNode = XmlManager.Load("lifestyles.xml", strLanguage).SelectSingleNode("/chummer/qualities/quality[id = \"" + SourceID + "\"]");
                 _strCachedXmlNodeLanguage = strLanguage;
             }
             return _objCachedMyXmlNode;
