@@ -386,6 +386,14 @@
       <text>週</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>月</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>月</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>時間</text>
     </string>
@@ -3146,27 +3154,15 @@
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み{0}を追加.</text>
+      <text>ライフスタイルの支払い済み{0}数を追加.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み{0}を減少.</text>
+      <text>ライフスタイルの支払い済み{0}数を減少.</text>
     </string>
     <string>
       <key>String_Roommates</key>
       <text>ルームメイト</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>月数</text>
-    </string>
-    <string>
-      <key>String_Weeks</key>
-      <text>周数</text>
-    </string>
-    <string>
-      <key>String_Days</key>
-      <text>天数</text>
     </string>
     <!-- Street Gear/Armor Tab -->
     <string>

@@ -357,6 +357,14 @@
 			<key>String_Weeks</key>
 			<text>Wochen</text>
 		</string>
+    <string>
+      <key>String_Month</key>
+      <text>Monat</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>Monate</text>
+    </string>
 		<string>
 			<key>String_Hour</key>
 			<text>Stunde</text>
@@ -2763,18 +2771,6 @@
 			<key>Tab_DecreaseLifestyleMonths</key>
 			<text>Anzahl der bezahlten {0} für diesen Lebensstil senken.</text>
 		</string>
-    <string>
-      <key>String_Months</key>
-      <text>Monate</text>
-    </string>
-    <string>
-      <key>String_Weeks</key>
-      <text>Wochen</text>
-    </string>
-    <string>
-      <key>String_Days</key>
-      <text>Tage</text>
-    </string>
 		<string>
 			<key>Label_BondedFoci</key>
 			<text>Gebundene Foki</text>

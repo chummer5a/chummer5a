@@ -753,6 +753,14 @@
       <text>semanas</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>mês</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>meses</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>hora</text>
     </string>
@@ -4193,18 +4201,6 @@
     <string>
       <key>String_Roommates</key>
       <text>colegas de quarto</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>meses</text>
-    </string>
-    <string>
-      <key>String_Weeks</key>
-      <text>semanas</text>
-    </string>
-    <string>
-      <key>String_Days</key>
-      <text>dias</text>
     </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->

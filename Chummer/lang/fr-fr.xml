@@ -380,6 +380,14 @@
       <text>semaines</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>mois</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>mois</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>heure</text>
     </string>
@@ -3138,18 +3146,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>String_Roommates</key>
       <text>Colocataires :</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>mois</text>
-    </string>
-    <string>
-      <key>String_Weeks</key>
-      <text>semaine</text>
-    </string>
-    <string>
-      <key>String_Days</key>
-      <text>jours</text>
     </string>
     <!-- Street Gear/Armor Tab -->
     <string>

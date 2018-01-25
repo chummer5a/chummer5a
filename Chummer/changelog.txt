@@ -125,6 +125,10 @@ New Strings:
 - Button_DeleteMod
 - Node_AdditionalMods
 - Title_CreateWeaponMount
+- String_Month
+- String_Months
+- Label_LifestylePermanent
+- Label_SelectLifestyle_CostPerDay
 
 Changed Strings:
 
@@ -141,6 +145,8 @@ Changed Strings:
 - Node_CritterWeaknesses
 - Node_SelectedCyberware
 - Node_SelectedBioware
+- Tab_IncreaseLifestyleMonths
+- Tab_DecreaseLifestyleMonths
 
 Removed Strings:
 
@@ -155,6 +161,7 @@ Removed Strings:
 - Message_SelectMartialArtAdvantage
 - MessageTitle_SelectMartialArtAdvantage
 - Title_SelectMartialArtAdvantage
+- Label_LifestyleMonths
 
 Build 197
 

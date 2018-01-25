@@ -784,16 +784,20 @@
       <text>weeks</text>
     </string>
     <string>
+      <key>String_Month</key>
+      <text>month</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>months</text>
+    </string>
+    <string>
       <key>String_Hour</key>
       <text>hour</text>
     </string>
     <string>
       <key>String_Hours</key>
       <text>hours</text>
-    </string>
-    <string>
-      <key>String_Month</key>
-      <text>month</text>
     </string>
     <string>
       <key>String_ArmorEncumbrance</key>
@@ -4378,18 +4382,6 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>String_Roommates</key>
       <text>roommates</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>months</text>
-    </string>
-    <string>
-      <key>String_Weeks</key>
-      <text>weeks</text>
-    </string>
-    <string>
-      <key>String_Days</key>
-      <text>days</text>
     </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
