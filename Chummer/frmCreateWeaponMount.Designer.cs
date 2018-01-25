@@ -59,6 +59,7 @@ namespace Chummer
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Location = new System.Drawing.Point(434, 223);
             this.cmdCancel.Name = "cmdCancel";
@@ -71,6 +72,7 @@ namespace Chummer
             // 
             // cmdOK
             // 
+            this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdOK.Location = new System.Drawing.Point(515, 223);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
@@ -272,6 +274,8 @@ namespace Chummer
             // 
             // treMods
             // 
+            this.treMods.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treMods.Location = new System.Drawing.Point(12, 35);
             this.treMods.Name = "treMods";
             this.treMods.Size = new System.Drawing.Size(249, 211);
@@ -362,6 +366,8 @@ namespace Chummer
             this.Controls.Add(this.cboVisibility);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
+            this.DoubleBuffered = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "frmCreateWeaponMount";
             this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
