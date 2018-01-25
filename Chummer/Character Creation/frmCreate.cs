@@ -2559,7 +2559,7 @@ namespace Chummer
                     {
                         objLifestyle.Load(objXmlNode, true);
                         // Reset the number of months back to 1 since 0 isn't valid in Create Mode.
-                        objLifestyle.Months = 1;
+                        objLifestyle.Increments = 1;
 
                         CharacterObject.Lifestyles.Add(objLifestyle);
 
@@ -9468,7 +9468,7 @@ namespace Chummer
                 if (objLifestyle.InternalId == strSelectedLifestyle)
                 {
                     strGuid = objLifestyle.InternalId;
-                    intMonths = objLifestyle.Months;
+                    intMonths = objLifestyle.Increments;
                     break;
                 }
             }
@@ -9504,7 +9504,7 @@ namespace Chummer
             }
 
             objLifestyle.SetInternalId(strGuid);
-            objLifestyle.Months = intMonths;
+            objLifestyle.Increments = intMonths;
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
 
             IsCharacterUpdateRequested = true;
@@ -9581,7 +9581,7 @@ namespace Chummer
                     if (objLifestyle == null)
                         return;
 
-                    objLifestyle.Months = decimal.ToInt32(nudLifestyleMonths.Value);
+                    objLifestyle.Increments = decimal.ToInt32(nudLifestyleMonths.Value);
 
                     _blnSkipRefresh = false;
 
@@ -11563,13 +11563,13 @@ namespace Chummer
             // Special Attributes are not subject to the 1/2 of max BP rule.
             foreach (CharacterAttrib att in attribs)
             {
-                intBP += att.TotalKarmaCost();
+                intBP += att.TotalKarmaCost;
             }
             if (extraAttribs != null)
             {
                 foreach (CharacterAttrib att in extraAttribs)
                 {
-                    intBP += att.TotalKarmaCost();
+                    intBP += att.TotalKarmaCost;
                 }
             }
             return intBP;
@@ -14471,7 +14471,9 @@ namespace Chummer
                 lblLifestyleSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblLifestyleSource, null);
                 lblLifestyleQualities.Text = string.Empty;
-                nudLifestyleMonths.Enabled = false;
+                lblLifestyleCostLabel.Text = string.Empty;
+                nudLifestyleMonths.Visible = false;
+                lblLifestyleMonthsLabel.Text = string.Empty;
                 _blnSkipRefresh = false;
                 return;
             }
@@ -14485,21 +14487,41 @@ namespace Chummer
             }
 
             cmdDeleteLifestyle.Enabled = true;
-            nudLifestyleMonths.Enabled = true;
+            nudLifestyleMonths.Visible = true;
 
             lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo);
+            nudLifestyleMonths.Value = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo);
             lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString() + "D6 x " + objLifestyle.Multiplier.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
             lblLifestyleSource.Text = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language) + ' ' + strPage;
             tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
+            string strIncrementString;
+            int intPermanentAmount;
             // Change the Cost/Month label.
-            if (objLifestyle.StyleType == LifestyleType.Safehouse)
-                lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
-            else
-                lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+            switch (objLifestyle.IncrementType)
+            {
+                case LifestyleIncrement.Day:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
+                    intPermanentAmount = 3044;
+                    break;
+                case LifestyleIncrement.Week:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
+                    intPermanentAmount = 435;
+                    break;
+                default:
+                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+                    strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
+                    intPermanentAmount = 100;
+                    break;
+            }
+            lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
+
+            lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo));
+            lblLifestyleTotalCost.Left = lblLifestyleMonthsLabel.Left + lblLifestyleMonthsLabel.Width + 6;
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
@@ -14529,8 +14551,6 @@ namespace Chummer
 
                 lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                 lblLifestyleQualities.Text += strQualities;
-
-                nudLifestyleMonths.Enabled = true;
             }
             else
             {
@@ -16520,13 +16540,13 @@ namespace Chummer
                     {
                         // This is a standard Lifestyle, so just use the Create method.
                         objLifestyle.Create(objXmlLifestyleNode);
-                        objLifestyle.Months = intMonths;
+                        objLifestyle.Increments = intMonths;
                     }
                     else
                     {
                         // This is an Advanced Lifestyle, so build it manually.
                         objLifestyle.Name = strName;
-                        objLifestyle.Months = intMonths;
+                        objLifestyle.Increments = intMonths;
                         objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"].InnerText);
                         objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"].InnerText);
                         objLifestyle.Multiplier = Convert.ToInt32(objXmlLifestyle["multiplier"].InnerText);

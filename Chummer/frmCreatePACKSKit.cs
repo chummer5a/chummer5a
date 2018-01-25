@@ -455,7 +455,7 @@ namespace Chummer
                     // <lifestyle>
                     objWriter.WriteStartElement("lifestyle");
                     objWriter.WriteElementString("name", objLifestyle.Name);
-                    objWriter.WriteElementString("months", objLifestyle.Months.ToString());
+                    objWriter.WriteElementString("months", objLifestyle.Increments.ToString());
                     if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                     {
                         // This is an Advanced Lifestyle, so write out its properties.

@@ -10211,7 +10211,7 @@ namespace Chummer
             this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
             this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
             this.lblLifestyleMonthsLabel.TabIndex = 83;
-            this.lblLifestyleMonthsLabel.Tag = "Label_LifestyleMonths";
+            this.lblLifestyleMonthsLabel.Tag = "Label_LifestylePermanent";
             this.lblLifestyleMonthsLabel.Text = "Months (100 for Permanent)";
             // 
             // tabVehicles

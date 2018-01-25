@@ -62,6 +62,8 @@
   <xsl:variable name="lang.Damage"    select="'Dégât'"/>
   <xsl:variable name="lang.Data"      select="'Donnée'"/>
   <xsl:variable name="lang.Date"      select="'Date'"/>
+  <xsl:variable name="lang.Day"      select="'Jour'"/>
+  <xsl:variable name="lang.Days"      select="'Jours'"/>
   <xsl:variable name="lang.Dead"      select="'Mort'"/>
   <xsl:variable name="lang.Defense"      select="'Défense'"/>
   <xsl:variable name="lang.DEP"  select="'DEP'"/>
@@ -240,6 +242,7 @@
   <xsl:variable name="lang.Weapon"    select="'Arme'"/>
   <xsl:variable name="lang.Weapons"    select="'Armes'"/>
   <xsl:variable name="lang.Week"      select="'Semaine'"/>
+  <xsl:variable name="lang.Weeks"      select="'Semaines'"/>
   <xsl:variable name="lang.Weight"    select="'Poids'"/>
   <xsl:variable name="lang.WIL"      select="'VOL'"/>
   <xsl:variable name="lang.Willpower"    select="'Volonté'"/>

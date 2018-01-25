@@ -2740,8 +2740,8 @@
 			<text>Bioware auswählen</text>
 		</string>
 		<string>
-			<key>Label_LifestyleMonths</key>
-			<text>Monate (100 zum Kaufen)</text>
+			<key>Label_LifestylePermanent</key>
+			<text> ({0} zum Kaufen)</text>
 		</string>
 		<string>
 			<key>Label_LifestyleQualities</key>
@@ -2757,12 +2757,24 @@
 		</string>
 		<string>
 			<key>Tab_IncreaseLifestyleMonths</key>
-			<text>Anzahl der bezahlten Monate für diesen Lebensstil erhöhen.</text>
+			<text>Anzahl der bezahlten {0} für diesen Lebensstil erhöhen.</text>
 		</string>
 		<string>
 			<key>Tab_DecreaseLifestyleMonths</key>
-			<text>Anzahl der bezahlten Monate für diesen Lebensstil senken.</text>
+			<text>Anzahl der bezahlten {0} für diesen Lebensstil senken.</text>
 		</string>
+    <string>
+      <key>String_Months</key>
+      <text>Monate</text>
+    </string>
+    <string>
+      <key>String_Weeks</key>
+      <text>Wochen</text>
+    </string>
+    <string>
+      <key>String_Days</key>
+      <text>Tage</text>
+    </string>
 		<string>
 			<key>Label_BondedFoci</key>
 			<text>Gebundene Foki</text>

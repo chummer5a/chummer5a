@@ -62,6 +62,8 @@
   <xsl:variable name="lang.Damage"    select="'伤害'"/>
   <xsl:variable name="lang.Data"      select="'数据'"/>
   <xsl:variable name="lang.Date"      select="'日期'"/>
+  <xsl:variable name="lang.Day"      select="'天'"/>
+  <xsl:variable name="lang.Days"      select="'天'"/>
   <xsl:variable name="lang.Dead"      select="'死亡'"/>
   <xsl:variable name="lang.Defense"      select="'Defense'"/>
   <xsl:variable name="lang.DEP"  select="'DEP'"/>
@@ -240,6 +242,7 @@
   <xsl:variable name="lang.Weapon"    select="'武器'"/>
   <xsl:variable name="lang.Weapons"    select="'武器'"/>
   <xsl:variable name="lang.Week"      select="'周'"/>
+  <xsl:variable name="lang.Weeks"      select="'周'"/>
   <xsl:variable name="lang.Weight"    select="'重量'"/>
   <xsl:variable name="lang.WIL"      select="'WIL'"/>
   <xsl:variable name="lang.Willpower"    select="'意志'"/>

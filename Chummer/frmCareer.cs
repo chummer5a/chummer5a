@@ -4168,7 +4168,7 @@ namespace Chummer
                 Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
                 frmPickLifestyle.Dispose();
 
-                objLifestyle.Months = 0;
+                objLifestyle.Increments = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
 
                 IsCharacterUpdateRequested = true;
@@ -5348,8 +5348,8 @@ namespace Chummer
             if (objLifestyle == null)
                 return;
 
-            objLifestyle.Months -= 1;
-            lblLifestyleMonths.Text = objLifestyle.Months.ToString();
+            objLifestyle.Increments -= 1;
+            lblLifestyleMonths.Text = objLifestyle.Increments.ToString();
 
             IsCharacterUpdateRequested = true;
 
@@ -5380,8 +5380,8 @@ namespace Chummer
             objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, objLifestyle.InternalId);
             objExpense.Undo = objUndo;
 
-            objLifestyle.Months += 1;
-            lblLifestyleMonths.Text = objLifestyle.Months.ToString();
+            objLifestyle.Increments += 1;
+            lblLifestyleMonths.Text = objLifestyle.Increments.ToString();
 
             IsCharacterUpdateRequested = true;
 
@@ -9968,7 +9968,7 @@ namespace Chummer
 
                 Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
                 frmPickLifestyle.Dispose();
-                objNewLifestyle.Months = 0;
+                objNewLifestyle.Increments = 0;
                 CharacterObject.Lifestyles.Add(objNewLifestyle);
 
                 IsCharacterUpdateRequested = true;
@@ -9999,7 +9999,8 @@ namespace Chummer
 
                 Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
                 frmPickLifestyle.Dispose();
-                objLifestyle.Months = 0;
+                objLifestyle.IncrementType = LifestyleIncrement.Week;
+                objLifestyle.Increments = 0;
                 CharacterObject.Lifestyles.Add(objLifestyle);
                 
                 IsCharacterUpdateRequested = true;
@@ -11062,7 +11063,7 @@ namespace Chummer
                         Lifestyle objLifestyle = CharacterObject.Lifestyles.FirstOrDefault(x => x.InternalId == strUndoId);
                         if (objLifestyle != null)
                         {
-                            objLifestyle.Months -= 1;
+                            objLifestyle.Increments -= 1;
                         }
                     }
                     break;
@@ -13492,7 +13493,7 @@ namespace Chummer
                 if (objLifestyle.InternalId == strSelectedLifestyle)
                 {
                     strGuid = objLifestyle.InternalId;
-                    intMonths = objLifestyle.Months;
+                    intMonths = objLifestyle.Increments;
                     break;
                 }
             }
@@ -13527,7 +13528,7 @@ namespace Chummer
                 objLifestyle = frmPickLifestyle.SelectedLifestyle;
             }
             objLifestyle.SetInternalId(strGuid);
-            objLifestyle.Months = intMonths;
+            objLifestyle.Increments = intMonths;
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
 
             IsCharacterUpdateRequested = true;
@@ -17481,7 +17482,7 @@ namespace Chummer
                     intExtraMAGAdeptBurn += Math.Min(CharacterObject.MAGAdept.Karma, intMAGAdeptMinimumReduction - intOldMAGAdeptCareerMinimumReduction);
                     CharacterObject.MAG.Karma -= intExtraMAGBurn;
                     intMAGMinimumReduction -= intExtraMAGBurn;
-                    if (CharacterObject.IsMysticAdept && CharacterObjectOptions.MysAdeptSecondMAGAttribute)
+                    if (CharacterObject.MAGAdept != CharacterObject.MAG)
                         CharacterObject.MAGAdept.Karma -= intExtraMAGAdeptBurn;
                     intMAGAdeptMinimumReduction -= intExtraMAGAdeptBurn;
                     // Create Improvements
@@ -19904,8 +19905,11 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblLifestyleSource, null);
                 lblBaseLifestyle.Text = string.Empty;
                 lblLifestyleQualities.Text = string.Empty;
-                cmdIncreaseLifestyleMonths.Enabled = false;
-                cmdDecreaseLifestyleMonths.Enabled = false;
+                cmdIncreaseLifestyleMonths.Visible = false;
+                cmdDecreaseLifestyleMonths.Visible = false;
+                lblLifestyleMonthsLabel.Text = string.Empty;
+                tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, string.Empty);
+                tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, string.Empty);
 
                 _blnSkipRefresh = false;
                 return;
@@ -19918,18 +19922,42 @@ namespace Chummer
                 if (objLifestyle == null)
                     return;
 
+                cmdIncreaseLifestyleMonths.Visible = true;
+                cmdDecreaseLifestyleMonths.Visible = true;
+
                 lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Months, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
+                lblLifestyleMonths.Text = Convert.ToDecimal(objLifestyle.Increments, GlobalOptions.InvariantCultureInfo).ToString(GlobalOptions.CultureInfo);
                 string strPage = objLifestyle.DisplayPage(GlobalOptions.Language);
                 lblLifestyleSource.Text = CommonFunctions.LanguageBookShort(objLifestyle.Source, GlobalOptions.Language) + ' ' + strPage;
                 tipTooltip.SetToolTip(lblLifestyleSource, CommonFunctions.LanguageBookLong(objLifestyle.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                 //lblLifestyleTotalCost.Text = "= " + objLifestyle.TotalCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
+                string strIncrementString;
+                int intPermanentAmount;
                 // Change the Cost/Month label.
-                if (objLifestyle.StyleType == LifestyleType.Safehouse)
-                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
-                else
-                    lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+                switch (objLifestyle.IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerDay", GlobalOptions.Language);
+                        strIncrementString = LanguageManager.GetString("String_Days", GlobalOptions.Language);
+                        intPermanentAmount = 3044;
+                        break;
+                    case LifestyleIncrement.Week:
+                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerWeek", GlobalOptions.Language);
+                        strIncrementString = LanguageManager.GetString("String_Weeks", GlobalOptions.Language);
+                        intPermanentAmount = 435;
+                        break;
+                    default:
+                        lblLifestyleCostLabel.Text = LanguageManager.GetString("Label_SelectLifestyle_CostPerMonth", GlobalOptions.Language);
+                        strIncrementString = LanguageManager.GetString("String_Months", GlobalOptions.Language);
+                        intPermanentAmount = 100;
+                        break;
+                }
+                lblLifestyleCost.Left = lblLifestyleCostLabel.Left + lblLifestyleCostLabel.Width + 6;
+
+                lblLifestyleMonthsLabel.Text = strIncrementString + LanguageManager.GetString("Label_LifestylePermanent", GlobalOptions.Language).Replace("{0}", intPermanentAmount.ToString(GlobalOptions.CultureInfo));
+                tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
+                tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language).Replace("{0}", strIncrementString));
 
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
@@ -19954,9 +19982,6 @@ namespace Chummer
 
                     lblBaseLifestyle.Text = objLifestyle.DisplayNameShort(GlobalOptions.Language);
                     lblLifestyleQualities.Text += strQualities;
-
-                    cmdIncreaseLifestyleMonths.Enabled = true;
-                    cmdDecreaseLifestyleMonths.Enabled = true;
                 }
                 else
                 {
@@ -20910,9 +20935,6 @@ namespace Chummer
             tipTooltip.SetToolTip(cmdRollDrain, LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
             // Complex Forms Tab.
             tipTooltip.SetToolTip(cmdRollFading, LanguageManager.GetString("Tip_DiceRoller", GlobalOptions.Language));
-            // Lifestyle Tab.
-            tipTooltip.SetToolTip(cmdIncreaseLifestyleMonths, LanguageManager.GetString("Tab_IncreaseLifestyleMonths", GlobalOptions.Language));
-            tipTooltip.SetToolTip(cmdDecreaseLifestyleMonths, LanguageManager.GetString("Tab_DecreaseLifestyleMonths", GlobalOptions.Language));
             // Armor Tab.
             tipTooltip.SetToolTip(chkArmorEquipped, LanguageManager.GetString("Tip_ArmorEquipped", GlobalOptions.Language));
             // tipTooltip.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));

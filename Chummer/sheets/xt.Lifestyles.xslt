@@ -6,7 +6,7 @@
   <xsl:template name="Lifestyles">
 
     <tr class="title">
-      <td width="50%">
+      <td width="40%">
         <xsl:value-of select="$lang.Lifestyle"/>
       </td>
       <td width="10%" style="text-align: center">
@@ -15,8 +15,8 @@
       <td width="10%" style="text-align: center">
         <xsl:value-of select="$lang.Cost"/>
       </td>
-      <td width="10%" style="text-align: center">
-        <xsl:value-of select="$lang.Months"/>
+      <td width="20%" style="text-align: center">
+        <xsl:value-of select="$lang.Duration"/>
       </td>
       <td width="10%"/>
       <td width="10%"/>
@@ -36,7 +36,39 @@
           <xsl:value-of select="$lang.NuyenSymbol"/>
         </td>
         <td style="text-align: center">
-          <xsl:value-of select="months"/>
+          <xsl:value-of select="months"/>&#160;
+          <xsl:choose>
+            <xsl:when test="increment = 'Day'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Day"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Days"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:when test="increment = 'Week'">
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Week"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Weeks"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:choose>
+                <xsl:when test="months = '1'">
+                  <xsl:value-of select="$lang.Month"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$lang.Months"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
         </td>
         <td/>
         <td style="text-align: center">

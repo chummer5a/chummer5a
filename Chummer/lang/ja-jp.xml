@@ -3129,8 +3129,8 @@
     </string>
     <!-- Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>月数 (100 ヶ月で永久に買う)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} ヶ月で永久に買う)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -3146,15 +3146,27 @@
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み月数を追加.</text>
+      <text>ライフスタイルの支払い済み{0}を追加.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>ライフスタイルの支払い済み月数を減少.</text>
+      <text>ライフスタイルの支払い済み{0}を減少.</text>
     </string>
     <string>
       <key>String_Roommates</key>
       <text>ルームメイト</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>月数</text>
+    </string>
+    <string>
+      <key>String_Weeks</key>
+      <text>周数</text>
+    </string>
+    <string>
+      <key>String_Days</key>
+      <text>天数</text>
     </string>
     <!-- Street Gear/Armor Tab -->
     <string>

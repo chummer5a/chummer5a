@@ -7282,7 +7282,7 @@ namespace Chummer
             // 
             // lblLifestyleQualities
             // 
-            this.lblLifestyleQualities.Location = new System.Drawing.Point(412, 144);
+            this.lblLifestyleQualities.Location = new System.Drawing.Point(480, 141);
             this.lblLifestyleQualities.Name = "lblLifestyleQualities";
             this.lblLifestyleQualities.Size = new System.Drawing.Size(323, 290);
             this.lblLifestyleQualities.TabIndex = 103;
@@ -7291,7 +7291,7 @@ namespace Chummer
             // lblLifestyleQualitiesLabel
             // 
             this.lblLifestyleQualitiesLabel.AutoSize = true;
-            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(412, 128);
+            this.lblLifestyleQualitiesLabel.Location = new System.Drawing.Point(480, 128);
             this.lblLifestyleQualitiesLabel.Name = "lblLifestyleQualitiesLabel";
             this.lblLifestyleQualitiesLabel.Size = new System.Drawing.Size(50, 13);
             this.lblLifestyleQualitiesLabel.TabIndex = 102;
@@ -7301,7 +7301,7 @@ namespace Chummer
             // lblBaseLifestyle
             // 
             this.lblBaseLifestyle.AutoSize = true;
-            this.lblBaseLifestyle.Location = new System.Drawing.Point(361, 128);
+            this.lblBaseLifestyle.Location = new System.Drawing.Point(409, 128);
             this.lblBaseLifestyle.Name = "lblBaseLifestyle";
             this.lblBaseLifestyle.Size = new System.Drawing.Size(19, 13);
             this.lblBaseLifestyle.TabIndex = 93;
@@ -7310,7 +7310,7 @@ namespace Chummer
             // lblLifestyleComfortsLabel
             // 
             this.lblLifestyleComfortsLabel.AutoSize = true;
-            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(307, 128);
+            this.lblLifestyleComfortsLabel.Location = new System.Drawing.Point(308, 128);
             this.lblLifestyleComfortsLabel.Name = "lblLifestyleComfortsLabel";
             this.lblLifestyleComfortsLabel.Size = new System.Drawing.Size(48, 13);
             this.lblLifestyleComfortsLabel.TabIndex = 92;
@@ -7358,7 +7358,7 @@ namespace Chummer
             // lblLifestyleTotalCost
             // 
             this.lblLifestyleTotalCost.AutoSize = true;
-            this.lblLifestyleTotalCost.Location = new System.Drawing.Point(498, 64);
+            this.lblLifestyleTotalCost.Location = new System.Drawing.Point(534, 64);
             this.lblLifestyleTotalCost.Name = "lblLifestyleTotalCost";
             this.lblLifestyleTotalCost.Size = new System.Drawing.Size(34, 13);
             this.lblLifestyleTotalCost.TabIndex = 86;
@@ -7423,10 +7423,9 @@ namespace Chummer
             this.lblLifestyleMonthsLabel.AutoSize = true;
             this.lblLifestyleMonthsLabel.Location = new System.Drawing.Point(354, 64);
             this.lblLifestyleMonthsLabel.Name = "lblLifestyleMonthsLabel";
-            this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(138, 13);
+            this.lblLifestyleMonthsLabel.Size = new System.Drawing.Size(174, 13);
             this.lblLifestyleMonthsLabel.TabIndex = 83;
-            this.lblLifestyleMonthsLabel.Tag = "Label_LifestyleMonths";
-            this.lblLifestyleMonthsLabel.Text = "Months (100 for Permanent)";
+            this.lblLifestyleMonthsLabel.Text = "[Intervals] ([Number] for Permanent)";
             // 
             // nudLifestyleMonths
             // 
@@ -8203,7 +8202,6 @@ namespace Chummer
             this.lblVehicleSource.Size = new System.Drawing.Size(47, 13);
             this.lblVehicleSource.TabIndex = 60;
             this.lblVehicleSource.Text = "[Source]";
-            this.lblVehicleSource.MouseClick += new System.Windows.Forms.MouseEventHandler(CommonFunctions.OpenPDFFromControl);
             // 
             // lblVehicleSourceLabel
             // 

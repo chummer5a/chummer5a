@@ -2988,8 +2988,8 @@
 		</string>
 		<!-- Street Gear/Lifestyle Tab -->
 		<string>
-			<key>Label_LifestyleMonths</key>
-			<text>月数（100即永久）</text>
+			<key>Label_LifestylePermanent</key>
+			<text>（{0}即永久）</text>
 		</string>
 		<string>
 			<key>Label_LifestyleQualities</key>
@@ -3005,16 +3005,28 @@
 		</string>
 		<string>
 			<key>Tab_IncreaseLifestyleMonths</key>
-			<text>增加预先支付的生活方式月数。</text>
+			<text>增加预先支付的生活方式{0}。</text>
 		</string>
 		<string>
 			<key>Tab_DecreaseLifestyleMonths</key>
-			<text>减少预先支付的生活方式月数。</text>
+			<text>减少预先支付的生活方式{0}。</text>
 		</string>
 		<string>
 			<key>String_Roommates</key>
 			<text>室友</text>
 		</string>
+    <string>
+      <key>String_Months</key>
+      <text>月数</text>
+    </string>
+    <string>
+      <key>String_Weeks</key>
+      <text>周数</text>
+    </string>
+    <string>
+      <key>String_Days</key>
+      <text>天数</text>
+    </string>
 		<!-- Street Gear/Armor Tab -->
 		<string>
 			<key>Checkbox_Equipped</key>

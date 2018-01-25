@@ -4352,8 +4352,8 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <!-- End Region-->
     <!-- Region Street Gear/Lifestyle Tab -->
     <string>
-      <key>Label_LifestyleMonths</key>
-      <text>Months (100 for Permanent)</text>
+      <key>Label_LifestylePermanent</key>
+      <text> ({0} for Permanent)</text>
     </string>
     <string>
       <key>Label_LifestyleQualities</key>
@@ -4369,15 +4369,27 @@ Only one attribute may be at its Maximum value during character creation.</text>
     </string>
     <string>
       <key>Tab_IncreaseLifestyleMonths</key>
-      <text>Increase the number of pre-paid months for the Lifestyle.</text>
+      <text>Increase the number of pre-paid {0} for the Lifestyle.</text>
     </string>
     <string>
       <key>Tab_DecreaseLifestyleMonths</key>
-      <text>Decrease the number of pre-paid months for the Lifestyle.</text>
+      <text>Decrease the number of pre-paid {0} for the Lifestyle.</text>
     </string>
     <string>
       <key>String_Roommates</key>
       <text>roommates</text>
+    </string>
+    <string>
+      <key>String_Months</key>
+      <text>months</text>
+    </string>
+    <string>
+      <key>String_Weeks</key>
+      <text>weeks</text>
+    </string>
+    <string>
+      <key>String_Days</key>
+      <text>days</text>
     </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
@@ -7728,6 +7740,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_SelectLifestyle_CostPerWeek</key>
       <text>Cost/Week:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_CostPerDay</key>
+      <text>Cost/Day:</text>
     </string>
     <string>
       <key>Label_SelectLifestyle_StartingNuyen</key>
