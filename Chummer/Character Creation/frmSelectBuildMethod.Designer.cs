@@ -225,6 +225,7 @@ namespace Chummer
             this.lblMaxNuyen.Size = new System.Drawing.Size(70, 29);
             this.lblMaxNuyen.TabIndex = 15;
             this.lblMaxNuyen.Text = "Nuyen Karma Max";
+            this.lblMaxNuyen.Tag = "Label_SelectBP_MaxNuyen";
             this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // frmSelectBuildMethod

@@ -1136,7 +1136,7 @@ namespace Chummer.Backend.Attributes
                 }
                 */
 
-                return Abbrev + " (" + Value.ToString() + ')' + strModifier;
+                return DisplayAbbrev + " (" + Value.ToString() + ')' + strModifier;
             }
         }
 

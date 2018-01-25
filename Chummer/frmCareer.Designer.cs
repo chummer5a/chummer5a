@@ -4938,6 +4938,7 @@ namespace Chummer
             this.tabLimits.Size = new System.Drawing.Size(861, 669);
             this.tabLimits.TabIndex = 16;
             this.tabLimits.Text = "Limits";
+            this.tabLimits.Tag = "Tab_Limits";
             // 
             // lblAstralLabel
             // 
@@ -6841,6 +6842,7 @@ namespace Chummer
             this.tabCyberwareMatrixCM.Size = new System.Drawing.Size(352, 87);
             this.tabCyberwareMatrixCM.TabIndex = 1;
             this.tabCyberwareMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabCyberwareMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabCyberwareMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkCyberwareMatrixCM1
@@ -7844,6 +7846,7 @@ namespace Chummer
             this.tabMatrixCM.Size = new System.Drawing.Size(205, 87);
             this.tabMatrixCM.TabIndex = 1;
             this.tabMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkGearMatrixCM1
@@ -9069,6 +9072,7 @@ namespace Chummer
             this.tabWeaponMatrixCMPage.Size = new System.Drawing.Size(205, 87);
             this.tabWeaponMatrixCMPage.TabIndex = 1;
             this.tabWeaponMatrixCMPage.Text = "Matrix Condition Monitor";
+            this.tabWeaponMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabWeaponMatrixCMPage.UseVisualStyleBackColor = true;
             // 
             // chkWeaponMatrixCM1
@@ -10714,6 +10718,7 @@ namespace Chummer
             this.tabVehiclePhysicalCM.Size = new System.Drawing.Size(352, 87);
             this.tabVehiclePhysicalCM.TabIndex = 0;
             this.tabVehiclePhysicalCM.Text = "Physical Condition Monitor";
+            this.tabVehiclePhysicalCM.Tag = "Tab_PhysicalConditionMonitor";
             this.tabVehiclePhysicalCM.UseVisualStyleBackColor = true;
             // 
             // chkVehiclePhysicalCM40
@@ -11244,6 +11249,7 @@ namespace Chummer
             this.tabVehicleMatrixCM.Size = new System.Drawing.Size(352, 87);
             this.tabVehicleMatrixCM.TabIndex = 1;
             this.tabVehicleMatrixCM.Text = "Matrix Condition Monitor";
+            this.tabVehicleMatrixCM.Tag = "Tab_MatrixConditionMonitor";
             this.tabVehicleMatrixCM.UseVisualStyleBackColor = true;
             // 
             // chkVehicleMatrixCM1

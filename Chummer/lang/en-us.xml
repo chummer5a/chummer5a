@@ -712,6 +712,10 @@
       <text>Metavariant:</text>
     </string>
     <string>
+      <key>Title_ChooseCharacterPriorities</key>
+      <text>Choose Character Priorities</text>
+    </string>
+    <string>
       <key>Label_PriorityHeritage</key>
       <text>Metatype:</text>
     </string>
@@ -1554,6 +1558,14 @@
     <string>
       <key>Tab_ConditionMonitor</key>
       <text>Condition Monitor</text>
+    </string>
+    <string>
+      <key>Tab_PhysicalConditionMonitor</key>
+      <text>Physical Condition Monitor</text>
+    </string>
+    <string>
+      <key>Tab_MatrixConditionMonitor</key>
+      <text>Matrix Condition Monitor</text>
     </string>
     <string>
       <key>MessageTitle_DeleteGrade</key>
@@ -7489,6 +7501,10 @@ Only one attribute may be at its Maximum value during character creation.</text>
     <string>
       <key>Label_SelectBP_SumToX</key>
       <text>Sum to Ten</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_MaxNuyen</key>
+      <text>Nuyen Karma Max</text>
     </string>
     <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>

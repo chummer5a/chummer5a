@@ -129,6 +129,10 @@ New Strings:
 - String_Months
 - Label_LifestylePermanent
 - Label_SelectLifestyle_CostPerDay
+- Title_ChooseCharacterPriorities
+- Tab_PhysicalConditionMonitor
+- Tab_MatrixConditionMonitor
+- Label_SelectBP_MaxNuyen
 
 Changed Strings:
 
