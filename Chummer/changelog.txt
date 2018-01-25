@@ -96,6 +96,7 @@ Application Changes:
 - Fixed an issue that prevented Chummer5a from opening PDFs for sourcebooks with translated codes.
 - Fixed an issue where the expense log entry for upgrading an attribute would be incorrect if the character has any bonuses that increase the base value of their attribute.
 - Added proper support for tracking of lifestyles where payments happen in increments of weeks or days.
+- Fixed an issue where names for improvements granted by initiation, submersion, a condition monitor effect, a character's priorities, armor encumbrance, Essence loss, Edge use, spirit fettering, general attribute loss, being a mutant critter, or being a cyberzombie were not translated properly in tooltips.
 
 Data Changes:
 
@@ -133,6 +134,13 @@ New Strings:
 - Tab_PhysicalConditionMonitor
 - Tab_MatrixConditionMonitor
 - Label_SelectBP_MaxNuyen
+- String_MutantCritter
+- String_Cyberzombie
+- String_EdgeUse
+- String_EssenceLoss
+- String_EssenceLossChargen
+- String_SpiritFettering
+- String_AttributeLoss
 
 Changed Strings:
 

@@ -12352,6 +12352,35 @@ namespace Chummer
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
 
+            // Populate the Grade list.
+            PopulateCyberwareGradeList();
+
+            // Select the Magician's Tradition.
+            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
+                cboTradition.SelectedValue = CharacterObject.MagicTradition;
+            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                cboTradition.SelectedIndex = 0;
+            if (!string.IsNullOrEmpty(CharacterObject.TraditionName))
+                txtTraditionName.Text = CharacterObject.TraditionName;
+
+            if (!string.IsNullOrEmpty(CharacterObject.TraditionDrain))
+                cboDrain.SelectedValue = CharacterObject.TraditionDrain;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritCombat))
+                cboSpiritCombat.SelectedValue = CharacterObject.SpiritCombat;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritDetection))
+                cboSpiritDetection.SelectedValue = CharacterObject.SpiritDetection;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritHealth))
+                cboSpiritHealth.SelectedValue = CharacterObject.SpiritHealth;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritIllusion))
+                cboSpiritIllusion.SelectedValue = CharacterObject.SpiritIllusion;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritManipulation))
+                cboSpiritManipulation.SelectedValue = CharacterObject.SpiritManipulation;
+
             IsCharacterUpdateRequested = true;
             _blnSkipUpdate = false;
             // Immediately call character update because we know it's necessary

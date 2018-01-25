@@ -542,56 +542,60 @@ namespace Chummer
             //TODO: Do we really need this?
             if (!string.IsNullOrEmpty(CharacterObject.MagicTradition) && CharacterObject.MagicTradition != "None")
             {
-                objXmlDocument = XmlManager.Load("traditions.xml");
-                XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
-                lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
-                string strDrainAtt = CharacterObject.TraditionDrain;
-                
-                StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                XmlNode objXmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
+                if (objXmlTradition != null)
                 {
-                    CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
-                }
-                string strDrain = objDrain.ToString();
-                if (string.IsNullOrEmpty(strDrain))
-                {
-                    strDrain = "0";
-                }
+                    lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
+                    string strDrainAtt = CharacterObject.TraditionDrain;
 
-                // Add any Improvements for Drain Resistance.
-                int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
-                lblDrainAttributesValue.Text = intDrain.ToString();
+                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
+                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    }
+                    string strDrain = objDrain.ToString();
+                    if (string.IsNullOrEmpty(strDrain))
+                    {
+                        strDrain = "0";
+                    }
+
+                    // Add any Improvements for Drain Resistance.
+                    int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
+                    lblDrainAttributesValue.Text = intDrain.ToString();
+                }
             }
 
-            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
+            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream) && CharacterObject.TechnomancerStream != "None")
             {
-                objXmlDocument = XmlManager.Load("streams.xml");
-                XmlNode objXmlTradition = objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.TechnomancerStream + "\"]");
-                lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
+                XmlNode objXmlTradition = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.TechnomancerStream + "\"]");
+                if (objXmlTradition != null)
+                {
+                    lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
 
-                // Update the Fading CharacterAttribute Value.
-                string strDrainAtt = CharacterObject.TechnomancerFading;
-                
-                StringBuilder objDrain = new StringBuilder(strDrainAtt);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
-                    objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    // Update the Fading CharacterAttribute Value.
+                    string strDrainAtt = CharacterObject.TechnomancerFading;
+
+                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
+                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    }
+                    string strFading = objDrain.ToString();
+                    if (string.IsNullOrEmpty(strFading))
+                    {
+                        strFading = "0";
+                    }
+                    int intFading = 0;
+                    try
+                    {
+                        intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
+                    }
+                    catch (XPathException) { }
+                    intFading += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FadingResistance);
+                    lblFadingAttributesValue.Text = intFading.ToString();
                 }
-                string strFading = objDrain.ToString();
-                if (string.IsNullOrEmpty(strFading))
-                {
-                    strFading = "0";
-                }
-                int intFading = 0;
-                try
-                {
-                    intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
-                }
-                catch (XPathException) { }
-                intFading += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FadingResistance);
-                lblFadingAttributesValue.Text = intFading.ToString();
             }
 
             _blnLoading = false;
@@ -10597,6 +10601,99 @@ namespace Chummer
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
 
+            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition) && CharacterObject.MagicTradition != "None")
+            {
+                XmlNode objXmlTradition = XmlManager.Load("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.MagicTradition + "\"]");
+                if (objXmlTradition != null)
+                {
+                    lblDrainAttributes.Text = objXmlTradition["drain"].InnerText;
+                    string strDrainAtt = CharacterObject.TraditionDrain;
+
+                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
+                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    }
+                    string strDrain = objDrain.ToString();
+                    if (string.IsNullOrEmpty(strDrain))
+                    {
+                        strDrain = "0";
+                    }
+
+                    // Add any Improvements for Drain Resistance.
+                    int intDrain = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strDrain)) + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.DrainResistance);
+                    lblDrainAttributesValue.Text = intDrain.ToString();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream) && CharacterObject.TechnomancerStream != "None")
+            {
+                XmlNode objXmlTradition = XmlManager.Load("streams.xml").SelectSingleNode("/chummer/traditions/tradition[name = \"" + CharacterObject.TechnomancerStream + "\"]");
+                if (objXmlTradition != null)
+                {
+                    lblFadingAttributes.Text = objXmlTradition["drain"].InnerText;
+
+                    // Update the Fading CharacterAttribute Value.
+                    string strDrainAtt = CharacterObject.TechnomancerFading;
+
+                    StringBuilder objDrain = new StringBuilder(strDrainAtt);
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    {
+                        CharacterAttrib objAttrib = CharacterObject.GetAttribute(strAttribute);
+                        objDrain.CheapReplace(strDrainAtt, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString());
+                    }
+                    string strFading = objDrain.ToString();
+                    if (string.IsNullOrEmpty(strFading))
+                    {
+                        strFading = "0";
+                    }
+                    int intFading = 0;
+                    try
+                    {
+                        intFading = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strFading).ToString());
+                    }
+                    catch (XPathException) { }
+                    intFading += ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FadingResistance);
+                    lblFadingAttributesValue.Text = intFading.ToString();
+                }
+            }
+
+            _blnLoading = false;
+
+            // Select the Magician's Tradition.
+            if (!string.IsNullOrEmpty(CharacterObject.MagicTradition))
+                cboTradition.SelectedValue = CharacterObject.MagicTradition;
+
+            if (!string.IsNullOrEmpty(CharacterObject.TraditionName))
+                txtTraditionName.Text = CharacterObject.TraditionName;
+
+            if (!string.IsNullOrEmpty(CharacterObject.TraditionDrain))
+                cboDrain.SelectedValue = CharacterObject.TraditionDrain;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritCombat))
+                cboSpiritCombat.SelectedValue = CharacterObject.SpiritCombat;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritDetection))
+                cboSpiritDetection.SelectedValue = CharacterObject.SpiritDetection;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritHealth))
+                cboSpiritHealth.SelectedValue = CharacterObject.SpiritHealth;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritIllusion))
+                cboSpiritIllusion.SelectedValue = CharacterObject.SpiritIllusion;
+
+            if (!string.IsNullOrEmpty(CharacterObject.SpiritManipulation))
+                cboSpiritManipulation.SelectedValue = CharacterObject.SpiritManipulation;
+
+            // Update the Fading CharacterAttribute Value.
+            if (CharacterObject.RESEnabled)
+            {
+                // Select the Technomancer's Stream.
+                if (!string.IsNullOrEmpty(CharacterObject.TechnomancerStream))
+                    cboStream.SelectedValue = CharacterObject.TechnomancerStream;
+            }
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -16596,6 +16693,13 @@ namespace Chummer
             IsDirty = true;
         }
 
+        private void txtCharacterName_TextChanged(object sender, EventArgs e)
+        {
+            CharacterObject.Name = txtCharacterName.Text;
+            IsDirty = true;
+        }
+
+
         private void nudStreetCred_ValueChanged(object sender, EventArgs e)
         {
             CharacterObject.StreetCred = decimal.ToInt32(nudStreetCred.Value);
@@ -16725,8 +16829,6 @@ namespace Chummer
 #endregion
 
 #region Splitter Resize Events
-        
-
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
             lstKarma.Width = splitKarmaNuyen.Panel1.Width;
@@ -16741,7 +16843,7 @@ namespace Chummer
                     lstKarma.Columns[2].Width = lstKarma.Width - 220;
                 }
             }
-            }
+        }
 
         private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
         {
@@ -16757,16 +16859,10 @@ namespace Chummer
                     lstNuyen.Columns[2].Width = lstNuyen.Width - 220;
                 }
             }
-            }
+        }
 #endregion
 
 #region Other Control Events
-        private void txtCharacterName_TextChanged(object sender, EventArgs e)
-        {
-            CharacterObject.Name = txtCharacterName.Text;
-            IsDirty = true;
-        }
-
         private void cmdEdgeSpent_Click(object sender, EventArgs e)
         {
             int intEdgeUsed = 0;
@@ -16911,31 +17007,26 @@ namespace Chummer
 #region Condition Monitors
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox box = (CheckBox)sender;
-            bool stun = false;
-            ProcessConditionMonitor(Convert.ToInt32(box.Tag), panPhysicalCM, CharacterObject.PhysicalCM, CharacterObject.PhysicalCMFilled, stun, out int penalty);
+            ProcessConditionMonitor(Convert.ToInt32(((CheckBox)sender).Tag), panPhysicalCM, CharacterObject.PhysicalCM, CharacterObject.PhysicalCMFilled, false);
         }
 
         private void chkStunCM_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox box = (CheckBox) sender;
-            bool stun = true;
-            ProcessConditionMonitor(Convert.ToInt32(box.Tag),panStunCM,CharacterObject.StunCM,CharacterObject.StunCMFilled, stun, out int penalty);
+            ProcessConditionMonitor(Convert.ToInt32(((CheckBox)sender).Tag), panStunCM, CharacterObject.StunCM, CharacterObject.StunCMFilled, true);
         }
 
         /// <summary>
         /// Manages the rendering of condition monitor checkboxes and associated improvements. 
         /// TODO: This method is disgusting and I hate it. Refactor into something better when we move to WPF.
         /// </summary>
-        /// <param name="boxTag">Value of the largest entry that we're activating.</param>
-        /// <param name="panel">Container panel for the condition monitor checkboxes.</param>
-        /// <param name="conditionMax">Highest value of the condition monitor type.</param>
-        /// <param name="conditionValueIn">Current value of the condition monitor type.</param>
-        /// <param name="stun">Whether or not we're working on the Stun or Physical track. Stun track == true</param>
-        /// <param name="penalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
-        private void ProcessConditionMonitor(int boxTag, Panel panel, int conditionMax, int conditionValueIn, bool stun, out int penalty, bool current = false)
+        /// <param name="intBoxTag">Value of the largest entry that we're activating.</param>
+        /// <param name="pnlConditionMonitorPanel">Container panel for the condition monitor checkboxes.</param>
+        /// <param name="intConditionMax">Highest value of the condition monitor type.</param>
+        /// <param name="intConditionValueIn">Current value of the condition monitor type.</param>
+        /// <param name="blnStun">Whether or not we're working on the Stun or Physical track. Stun track == true</param>
+        /// <param name="intPenalty">Returns the total penalty for the condition monitor type. Expected values are 0 or a negative number.</param>
+        private void ProcessConditionMonitor(int intBoxTag, Panel pnlConditionMonitorPanel, int intConditionMax, int intConditionValueIn, bool blnStun, bool blnCurrent = false)
         {
-            penalty = 0;
             if (_blnSkipRefresh)
                 return;
 
@@ -16947,22 +17038,22 @@ namespace Chummer
             _blnSkipRefresh = true;
 
             int intCurrentBoxTag = 0;
-            foreach (CheckBox cmBox in panel.Controls.OfType<CheckBox>())
+            foreach (CheckBox cmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
             {
                 intCurrentBoxTag = Convert.ToInt32(cmBox.Tag.ToString());
-                if (intCurrentBoxTag < boxTag)
+                if (intCurrentBoxTag < intBoxTag)
                 {
                     cmBox.Checked = true;
                 }
-                else if (intCurrentBoxTag > boxTag)
+                else if (intCurrentBoxTag > intBoxTag)
                 {
                     cmBox.Checked = false;
                 }
-                else if (current && intCurrentBoxTag == boxTag)
+                else if (blnCurrent && intCurrentBoxTag == intBoxTag)
                 {
                     cmBox.Checked = true;
                 }
-                if (intCurrentBoxTag <= conditionMax)
+                if (intCurrentBoxTag <= intConditionMax)
                 {
                     cmBox.Visible = true;
                     int intCMThresholdOffset = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.CMThresholdOffset);
@@ -16970,19 +17061,15 @@ namespace Chummer
                     {
                         int intModifiers = (intCurrentBoxTag - intCMThresholdOffset) / -intCMThreshold;
                         cmBox.Text = intModifiers.ToString();
-                        if (intCurrentBoxTag == boxTag)
-                        {
-                            penalty = intModifiers;
-                        }
                     }
                     else
                         cmBox.Text = string.Empty;
                 }
-                else if (!stun && intCurrentBoxTag <= conditionMax + intCMOverflow)
+                else if (!blnStun && intCurrentBoxTag <= intConditionMax + intCMOverflow)
                 {
                     cmBox.Visible = true;
                     cmBox.BackColor = SystemColors.ControlDark;
-                    if (intCurrentBoxTag == conditionMax + intCMOverflow)
+                    if (intCurrentBoxTag == intConditionMax + intCMOverflow)
                         cmBox.Text = "D";
                     else
                         cmBox.Text = string.Empty;
@@ -16995,7 +17082,7 @@ namespace Chummer
                 if (cmBox.Checked)
                     intFillCount += 1;
             }
-            if (stun)
+            if (blnStun)
             {
                 CharacterObject.StunCMFilled = intFillCount;
             }
@@ -17017,10 +17104,17 @@ namespace Chummer
 
             // Locate the selected Cyberware.
             TreeNode objCyberwareNode = treCyberware.SelectedNode;
-            while (objCyberwareNode.Level > 1)
-                objCyberwareNode = objCyberwareNode.Parent;
+            string strSelectedId = objCyberwareNode.Tag?.ToString();
 
-            Cyberware objCyberware = CharacterObject.Cyberware.DeepFindById(objCyberwareNode.Tag.ToString());
+            IHasMatrixAttributes objItem = CharacterObject.Cyberware.DeepFindById(strSelectedId);
+            if (objItem == null)
+            {
+                objItem = CharacterObject.Cyberware.FindCyberwareGear(strSelectedId);
+                if (objItem == null)
+                {
+                    return;
+                }
+            }
 
             int intFillCount = 0;
             CheckBox objCheck = (CheckBox)sender;
@@ -17040,7 +17134,7 @@ namespace Chummer
                 }
                 _blnSkipRefresh = false;
 
-                objCyberware.MatrixCMFilled = intFillCount;
+                objItem.MatrixCMFilled = intFillCount;
 
                 IsCharacterUpdateRequested = true;
 
@@ -17100,7 +17194,7 @@ namespace Chummer
 
             // Locate the selected Gear.
             TreeNode objWeaponNode = treWeapons.SelectedNode;
-            string strSelectedId = objWeaponNode.Tag.ToString();
+            string strSelectedId = objWeaponNode.Tag?.ToString();
 
             IHasMatrixAttributes objItem = CharacterObject.Weapons.FindWeaponGear(strSelectedId);
             if (objItem == null)

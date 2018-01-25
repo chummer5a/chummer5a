@@ -1300,6 +1300,10 @@
       <text>Convert to Cyberzombie</text>
     </string>
     <string>
+      <key>String_MutantCritter</key>
+      <text>Mutant Critter</text>
+    </string>
+    <string>
       <key>Menu_SpecialReduceAttribute</key>
       <text>Reduce Attribute</text>
     </string>
@@ -1606,6 +1610,10 @@
     <string>
       <key>MessageTitle_CyberzombieConfirm</key>
       <text>Convert to Cyberzombie</text>
+    </string>
+    <string>
+      <key>String_Cyberzombie</key>
+      <text>Cyberzombie</text>
     </string>
     <string>
       <key>String_CyberzombieWILText</key>
@@ -2520,6 +2528,10 @@
       <text>Cannot Regain Edge</text>
     </string>
     <string>
+      <key>String_EdgeUse</key>
+      <text>Edge Use</text>
+    </string>
+    <string>
       <key>Message_NotEnoughKarma</key>
       <text>You do not have enough Karma for this expense.</text>
     </string>
@@ -2534,6 +2546,18 @@
     <string>
       <key>MessageTitle_NotEnoughMagic</key>
       <text>Not Enough Magic</text>
+    </string>
+    <string>
+      <key>String_EssenceLoss</key>
+      <text>Essence Loss</text>
+    </string>
+    <string>
+      <key>String_EssenceLossChargen</key>
+      <text>Essence Loss (Character Generation)</text>
+    </string>
+    <string>
+      <key>String_SpiritFettering</key>
+      <text>Spirit Fettering</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpense</key>
@@ -2911,6 +2935,10 @@
     <string>
       <key>String_CyberzombieReduceAttribute</key>
       <text>Select an Attribute to reduce (both Value and Metatype Maximum).</text>
+    </string>
+    <string>
+      <key>String_AttributeLoss</key>
+      <text>Attribute Loss</text>
     </string>
     <string>
       <key>String_ExpenseDefault</key>

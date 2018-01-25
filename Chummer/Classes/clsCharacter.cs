@@ -3292,6 +3292,14 @@ namespace Chummer
                         }
                     }
                     break;
+                case Improvement.ImprovementSource.ConditionMonitor:
+                    return LanguageManager.GetString("Label_ConditionMonitor", strLanguage);
+                case Improvement.ImprovementSource.Heritage:
+                    return LanguageManager.GetString("String_Priority", strLanguage);
+                case Improvement.ImprovementSource.Initiation:
+                    return LanguageManager.GetString("Tab_Initiation", strLanguage);
+                case Improvement.ImprovementSource.Submersion:
+                    return LanguageManager.GetString("Tab_Submersion", strLanguage);
                 default:
                     if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                         return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
