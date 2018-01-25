@@ -1436,7 +1436,8 @@ namespace Chummer.Backend.Attributes
                 return;
 
             int intPrice = UpgradeKarmaCost();
-            string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {Value} 🡒 {Value + AttributeValueModifiers + 1}";
+            int intValue = Value;
+            string strUpgradetext = $"{LanguageManager.GetString("String_ExpenseAttribute", GlobalOptions.Language)} {Abbrev} {intValue} 🡒 {intValue + 1}";
 
             ExpenseLogEntry objEntry = new ExpenseLogEntry(_objCharacter);
             objEntry.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
