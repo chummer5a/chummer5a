@@ -92,6 +92,7 @@ Application Changes:
 - Fixed an issue where having a language file that fails to load causes an endless stream of identical "Cannot load" warning dialogs that would all need to be closed one-at-a-time before Chummer5 loads. Fixes #2390.
 - Fixed an issue where changing a 'ware's essence cost in some way would not properly reflect on the character's essence and attribute losses due to essence until a new character update is triggered. Fixes #2391.
 - Fixed an issue where changing the grade of a 'ware that has grandchildren would not properly update the grades of those grandchildren and any further descendants.
+- Fixed an issue where weapon mounts could not get properly installed or uninstalled from their vehicle.
 
 Data Changes:
 
