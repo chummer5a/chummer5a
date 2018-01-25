@@ -325,22 +325,22 @@ namespace Chummer
             string strLanguage = _strLanguage;
             if (LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                switch (_strLanguage)
+                switch (strLanguage)
                 {
                     case "en-us2":
-                        _strLanguage = DefaultLanguage;
+                        strLanguage = DefaultLanguage;
                         break;
                     case "de":
-                        _strLanguage = "de-de";
+                        strLanguage = "de-de";
                         break;
                     case "fr":
-                        _strLanguage = "fr-fr";
+                        strLanguage = "fr-fr";
                         break;
                     case "jp":
-                        _strLanguage = "ja-jp";
+                        strLanguage = "ja-jp";
                         break;
                     case "zh":
-                        _strLanguage = "zh-cn";
+                        strLanguage = "zh-cn";
                         break;
                 }
                 Language = strLanguage;
