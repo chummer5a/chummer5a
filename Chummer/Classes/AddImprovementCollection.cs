@@ -841,31 +841,32 @@ namespace Chummer.Classes
         public void selectlimit(XmlNode bonusNode)
         {
             Log.Info("selectlimit");
-            // Display the Select Limit window and record which Limit was selected.
-            frmSelectLimit frmPickLimit = new frmSelectLimit();
-            if (!string.IsNullOrEmpty(_strFriendlyName))
-                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language)
-                    .Replace("{0}", _strFriendlyName);
-            else
-                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language);
-
+            
             Log.Info("selectlimit = " + bonusNode.OuterXml);
 
             string strNodeInnerXml = bonusNode.InnerXml;
-            if (strNodeInnerXml.Contains("<limit>"))
+
+            List<string> strLimits = new List<string>();
+            XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit");
+            if (xmlDefinedLimits != null && xmlDefinedLimits.Count > 0)
             {
-                List<string> strValue = new List<string>();
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("limit"))
-                    strValue.Add(objXmlAttribute.InnerText);
-                frmPickLimit.LimitToList(strValue);
+                foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
+                    strLimits.Add(objXmlAttribute.InnerText);
+            }
+            else
+            {
+                strLimits.Add("Physical");
+                strLimits.Add("Mental");
+                strLimits.Add("Social");
             }
 
-            if (strNodeInnerXml.Contains("<excludelimit>"))
+            XmlNodeList xmlExcludeLimits = bonusNode.SelectNodes("excludelimit");
+            if (xmlExcludeLimits != null && xmlExcludeLimits.Count > 0)
             {
-                List<string> strValue = new List<string>();
-                foreach (XmlNode objXmlAttribute in bonusNode.SelectNodes("excludelimit"))
-                    strValue.Add(objXmlAttribute.InnerText);
-                frmPickLimit.RemoveFromList(strValue);
+                foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
+                {
+                    strLimits.Remove(objXmlAttribute.InnerText);
+                }
             }
 
             // Check to see if there is only one possible selection because of _strLimitSelection.
@@ -877,9 +878,15 @@ namespace Chummer.Classes
 
             if (!string.IsNullOrEmpty(LimitSelection))
             {
-                frmPickLimit.SingleLimit(LimitSelection);
-                frmPickLimit.Opacity = 0;
+                strLimits.RemoveAll(x => x != LimitSelection);
             }
+
+            // Display the Select Limit window and record which Limit was selected.
+            frmSelectLimit frmPickLimit = new frmSelectLimit(strLimits.ToArray());
+            if (!string.IsNullOrEmpty(_strFriendlyName))
+                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimitNamed", GlobalOptions.Language).Replace("{0}", _strFriendlyName);
+            else
+                frmPickLimit.Description = LanguageManager.GetString("String_Improvement_SelectLimit", GlobalOptions.Language);
 
             frmPickLimit.ShowDialog();
 
@@ -888,11 +895,7 @@ namespace Chummer.Classes
             {
                 throw new AbortedException();
             }
-
-            SelectedValue = frmPickLimit.SelectedLimit;
-            if (_blnConcatSelectedValue)
-                SourceName += " (" + SelectedValue + ')';
-
+            
             // Record the improvement.
             int intMin = 0;
             int intAug = 0;
@@ -908,12 +911,9 @@ namespace Chummer.Classes
                 intMax = ValueToInt(_objCharacter, bonusNode["max"].InnerXml, _intRating);
             if (strNodeInnerXml.Contains("aug"))
                 intAugMax = ValueToInt(_objCharacter, bonusNode["aug"].InnerXml, _intRating);
-
+            
             string strLimit = frmPickLimit.SelectedLimit;
-
-            if (bonusNode["affectbase"] != null)
-                strLimit += "Base";
-
+            
             Log.Info("_strSelectedValue = " + SelectedValue);
             Log.Info("SourceName = " + SourceName);
 
@@ -921,29 +921,38 @@ namespace Chummer.Classes
             // string strBonus = bonusNode["value"].InnerText;
             int intBonus = intAug;
             string strName = _strFriendlyName;
-            Improvement.ImprovementType objType = Improvement.ImprovementType.PhysicalLimit;
+            Improvement.ImprovementType eType;
 
             switch (strLimit)
             {
                 case "Mental":
                     {
-                        objType = Improvement.ImprovementType.MentalLimit;
+                        eType = Improvement.ImprovementType.MentalLimit;
                         break;
                     }
                 case "Social":
                     {
-                        objType = Improvement.ImprovementType.SocialLimit;
+                        eType = Improvement.ImprovementType.SocialLimit;
+                        break;
+                    }
+                case "Physical":
+                    {
+                        eType = Improvement.ImprovementType.SocialLimit;
                         break;
                     }
                 default:
-                    {
-                        objType = Improvement.ImprovementType.PhysicalLimit;
-                        break;
-                    }
+                    throw new AbortedException();
             }
 
+            SelectedValue = frmPickLimit.SelectedDisplayLimit;
+            if (_blnConcatSelectedValue)
+                SourceName += " (" + SelectedValue + ')';
+
+            if (bonusNode["affectbase"] != null)
+                strLimit += "Base";
+
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(strLimit, _objImprovementSource, SourceName, objType, _strFriendlyName, intBonus, 0, intMin,
+            CreateImprovement(strLimit, _objImprovementSource, SourceName, eType, _strFriendlyName, intBonus, 0, intMin,
                 intMax,
                 intAug, intAugMax);
         }

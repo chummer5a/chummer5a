@@ -238,15 +238,14 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion <= Version.Parse("5.190.0"))
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
-                XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + _SourceGuid.ToString("D") + "\"]") ??
+                XmlNode objLifestyleQualityNode = GetNode() ??
                                                   objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + _strName + "\"]");
                 if (objLifestyleQualityNode == null)
                 {
                     List<ListItem> lstQualities = new List<ListItem>();
                     foreach (XmlNode objNode in objXmlDocument.SelectNodes("/chummer/qualities/quality"))
                     {
-                        string strName = objNode["name"].InnerText;
-                        lstQualities.Add(new ListItem(strName, objNode["translate"]?.InnerText ?? strName));
+                        lstQualities.Add(new ListItem(objNode["id"].InnerText, objNode["translate"]?.InnerText ?? objNode["name"].InnerText));
                     }
                     frmSelectItem frmSelect = new frmSelectItem
                     {
@@ -257,7 +256,7 @@ namespace Chummer.Backend.Equipment
                     if (frmSelect.DialogResult == DialogResult.Cancel)
                         return;
 
-                    objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = \"" + frmSelect.SelectedItem + "\"]");
+                    objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = \"" + frmSelect.SelectedItem + "\"]");
                 }
                 int intTemp = 0;
                 string strTemp = string.Empty;
