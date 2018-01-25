@@ -22864,18 +22864,21 @@
         <name>Magician</name>
         <translate>Mago</translate>
         <altpage>69</altpage>
+        <altnameonpage>Mago</altnameonpage>
       </quality>
       <quality>
         <id>55247bdc-c313-4614-ae15-5012308096ff</id>
         <name>Adept</name>
         <translate>Adepto</translate>
         <altpage>69</altpage>
+        <altnameonpage>Adeptos</altnameonpage>
       </quality>
       <quality>
         <id>9d53e1e4-3f31-40cb-bfbe-4b94f5ba757e</id>
         <name>Mystic Adept</name>
         <translate>Adepto Místico</translate>
         <altpage>69</altpage>
+        <altnameonpage>Adeptos Místicos</altnameonpage>
       </quality>
       <quality>
         <id>c4b35412-bd91-45b4-b428-29da7edd5ff4</id>
@@ -22886,8 +22889,9 @@
       <quality>
         <id>4adeb2d4-e42e-4b7a-9a5d-3df325ae59a5</id>
         <name>Aspected Magician</name>
-        <translate>Mago de Aspecto</translate>
+        <translate>Mago Aspectado</translate>
         <altpage>69</altpage>
+        <altnameonpage>Magos Aspectados</altnameonpage>
       </quality>
       <quality>
         <id>dea0e693-05c5-422d-bd1b-f1d1eac9cd30</id>
