@@ -574,6 +574,10 @@
 			<key>Title_CreateNewCharacter</key>
 			<text>创建新角色</text>
 		</string>
+    <string>
+      <key>String_CharacterRoster</key>
+      <text>角色花名册</text>
+    </string>
 		<string>
 			<key>Title_CareerMode</key>
 			<text>职业模式</text>
@@ -985,7 +989,7 @@
 		</string>
 		<string>
 			<key>Tab_Pets</key>
-			<text>宠物和Cohorts</text>
+			<text>宠物和部属</text>
 		</string>
 		<string>
 			<key>Tab_ConditionMonitor</key>
@@ -3328,6 +3332,10 @@
 			<key>Label_Mugshot</key>
 			<text>人物肖像：</text>
 		</string>
+    <string>
+      <key>Checkbox_IsMainMugshot</key>
+      <text>作为主肖像</text>
+    </string>
 		<string>
 			<key>Label_MugshotDimensions</key>
 			<text>210 x 310像素</text>
@@ -3766,7 +3774,11 @@
 		</string>
 		<!-- Individual Form- and UserControl-specific strings below this point -->
 		<!-- Contacts/Enemies -->
-		<string>
+    <string>
+      <key>String_Relationships</key>
+      <text>关系</text>
+    </string>
+    <string>
 			<key>Label_Contact_Connection</key>
 			<text>联系：</text>
 		</string>
@@ -5176,7 +5188,7 @@
 		<!-- Select Item Window -->
 		<string>
 			<key>Title_SelectItem</key>
-			<text>选择一个物品</text>
+			<text>选择一个项目</text>
 		</string>
 		<string>
 			<key>String_SelectItemFocus</key>
@@ -7310,6 +7322,10 @@
 			<key>Label_SkillGroup_Broken</key>
 			<text>拆解</text>
 		</string>
+    <string>
+      <key>String_SpellDefense</key>
+      <text>法术防御</text>
+    </string>
 		<string>
 			<key>Label_SpellDefenceDecAttAGI</key>
 			<text>降低属性（AGI）</text>
@@ -8322,7 +8338,7 @@
 		</string>
 		<string>
 			<key>String_MetamagicSkills</key>
-			<text>{0}个{1}技能，获得{2}级。</text>
+			<text>{0}个{1}，获得{2}级</text>
 		</string>
 		<string>
 			<key>Label_Contact_PersonalLife</key>
