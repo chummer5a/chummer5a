@@ -373,13 +373,35 @@ namespace Chummer
             }
             else
             {
-                foreach (XmlNode objXmlSpirit in objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits").ChildNodes)
+                if (objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits/spirit[. = \"All\"]") != null)
                 {
-                    string strSpiritName = objXmlSpirit.InnerText;
-                    if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritName))
+                    if (lstLimitCategories.Count == 0)
                     {
-                        XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
-                        lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
+                        foreach (XmlNode objXmlCritterNode in objXmlDocument.SelectSingleNode("/chummer/spirits/spirit"))
+                        {
+                            string strSpiritName = objXmlCritterNode["name"].InnerText;
+                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode["translate"]?.InnerText ?? strSpiritName));
+                        }
+                    }
+                    else
+                    {
+                        foreach (string strSpiritName in lstLimitCategories)
+                        {
+                            XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
+                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode objXmlSpirit in objXmlDocument.SelectSingleNode("/chummer/traditions/tradition[name = \"" + strTradition + "\"]/spirits").ChildNodes)
+                    {
+                        string strSpiritName = objXmlSpirit.InnerText;
+                        if (lstLimitCategories.Count == 0 || lstLimitCategories.Contains(strSpiritName))
+                        {
+                            XmlNode objXmlCritterNode = objXmlDocument.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritName + "\"]");
+                            lstCritters.Add(new ListItem(strSpiritName, objXmlCritterNode?["translate"]?.InnerText ?? strSpiritName));
+                        }
                     }
                 }
             }

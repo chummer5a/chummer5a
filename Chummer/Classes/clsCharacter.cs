@@ -1579,18 +1579,26 @@ namespace Chummer
             List<ListItem> lstPowerOrder = new List<ListItem>();
             objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
             // Sort the Powers in alphabetical order.
-            foreach (XmlNode objXmlPower in objXmlNodeList)
+            foreach (XmlNode xmlPower in objXmlNodeList)
             {
-                lstPowerOrder.Add(new ListItem(objXmlPower["extra"]?.InnerText ?? string.Empty, objXmlPower["name"]?.InnerText ?? string.Empty));
+                string strGuid = xmlPower["guid"]?.InnerText;
+                if (!string.IsNullOrEmpty(strGuid))
+                    lstPowerOrder.Add(new ListItem(strGuid, (xmlPower["name"]?.InnerText ?? string.Empty) + (xmlPower["extra"]?.InnerText ?? string.Empty)));
+                else
+                {
+                    Power objPower = new Power(this);
+                    objPower.Load(xmlPower);
+                    _lstPowers.Add(objPower);
+                }
             }
             lstPowerOrder.Sort(CompareListItems.CompareNames);
 
             foreach (ListItem objItem in lstPowerOrder)
             {
-                Power objPower = new Power(this);
-                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[name = " + CleanXPath(objItem.Name) + " and extra = " + CleanXPath(objItem.Value.ToString()) + "]");
+                XmlNode objNode = objXmlCharacter.SelectSingleNode("powers/power[guid = \"" + objItem.Value.ToString() + "\"]");
                 if (objNode != null)
                 {
+                    Power objPower = new Power(this);
                     objPower.Load(objNode);
                     _lstPowers.Add(objPower);
                 }
@@ -2272,8 +2280,9 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strTraditionName))
             {
+                XmlDocument xmlTraditions = XmlManager.Load("traditions.xml", strLanguageToPrint);
                 string strDrainAtt = TraditionDrain;
-                XmlNode objXmlTradition = XmlManager.Load("traditions.xml", strLanguageToPrint).SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
+                XmlNode objXmlTradition = xmlTraditions.SelectSingleNode("/chummer/traditions/tradition[name = \"" + MagicTradition + "\"]");
 
                 if (objXmlTradition != null)
                 {
@@ -2306,35 +2315,50 @@ namespace Chummer
                     objWriter.WriteElementString("attr",drainAttribute);
                 }
                 objWriter.WriteEndElement();
-                if (MagicTradition == "Draconic")
+
+                string strSpiritCombat = SpiritCombat;
+                string strSpiritDetection = SpiritDetection;
+                string strSpiritHealth = SpiritHealth;
+                string strSpiritIllusion = SpiritIllusion;
+                string strSpiritManipulation = SpiritManipulation;
+                string strNone = LanguageManager.GetString("String_None", strLanguageToPrint);
+                if (MagicTradition != "Custom")
                 {
-                    objWriter.WriteElementString("spiritcombat", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritdetection", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spirithealth", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritillusion", LanguageManager.GetString("String_All", strLanguageToPrint));
-                    objWriter.WriteElementString("spiritmanipulation", LanguageManager.GetString("String_All", strLanguageToPrint));
-                }
-                else if (MagicTradition != "Custom")
-                {
-                    objWriter.WriteElementString("spiritcombat",
-                        objXmlTradition.SelectSingleNode("spirits/spiritcombat").InnerText);
-                    objWriter.WriteElementString("spiritdetection",
-                        objXmlTradition.SelectSingleNode("spirits/spiritdetection").InnerText);
-                    objWriter.WriteElementString("spirithealth",
-                        objXmlTradition.SelectSingleNode("spirits/spirithealth").InnerText);
-                    objWriter.WriteElementString("spiritillusion",
-                        objXmlTradition.SelectSingleNode("spirits/spiritillusion").InnerText);
-                    objWriter.WriteElementString("spiritmanipulation",
-                        objXmlTradition.SelectSingleNode("spirits/spiritmanipulation").InnerText);
+                    strSpiritCombat = objXmlTradition.SelectSingleNode("spirits/spiritcombat")?.InnerText ?? strNone;
+                    if (strSpiritCombat == "All")
+                        strSpiritCombat = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritDetection = objXmlTradition.SelectSingleNode("spirits/spiritdetection")?.InnerText ?? strNone;
+                    if (strSpiritDetection == "All")
+                        strSpiritDetection = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritHealth = objXmlTradition.SelectSingleNode("spirits/spirithealth")?.InnerText ?? strNone;
+                    if (strSpiritHealth == "All")
+                        strSpiritHealth = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritIllusion = objXmlTradition.SelectSingleNode("spirits/spiritillusion")?.InnerText ?? strNone;
+                    if (strSpiritIllusion == "All")
+                        strSpiritIllusion = LanguageManager.GetString("String_All", strLanguageToPrint);
+                    strSpiritManipulation = objXmlTradition.SelectSingleNode("spirits/spiritmanipulation")?.InnerText ?? strNone;
+                    if (strSpiritManipulation == "All")
+                        strSpiritManipulation = LanguageManager.GetString("String_All", strLanguageToPrint);
                 }
                 else
                 {
-                    objWriter.WriteElementString("spiritcombat", SpiritCombat);
-                    objWriter.WriteElementString("spiritdetection", SpiritDetection);
-                    objWriter.WriteElementString("spirithealth", SpiritHealth);
-                    objWriter.WriteElementString("spiritillusion", SpiritIllusion);
-                    objWriter.WriteElementString("spiritmanipulation", SpiritManipulation);
+                    if (string.IsNullOrEmpty(strSpiritCombat))
+                        strSpiritCombat = strNone;
+                    if (string.IsNullOrEmpty(strSpiritDetection))
+                        strSpiritDetection = strNone;
+                    if (string.IsNullOrEmpty(strSpiritHealth))
+                        strSpiritHealth = strNone;
+                    if (string.IsNullOrEmpty(strSpiritIllusion))
+                        strSpiritIllusion = strNone;
+                    if (string.IsNullOrEmpty(strSpiritManipulation))
+                        strSpiritManipulation = strNone;
                 }
+
+                objWriter.WriteElementString("spiritcombat", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritCombat + "\"]/translate")?.InnerText ?? strSpiritCombat);
+                objWriter.WriteElementString("spiritdetection", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritDetection + "\"]/translate")?.InnerText ?? strSpiritDetection);
+                objWriter.WriteElementString("spirithealth", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritHealth + "\"]/translate")?.InnerText ?? strSpiritHealth);
+                objWriter.WriteElementString("spiritillusion", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritIllusion + "\"]/translate")?.InnerText ?? strSpiritIllusion);
+                objWriter.WriteElementString("spiritmanipulation", xmlTraditions.SelectSingleNode("/chummer/spirits/spirit[name = \"" + strSpiritManipulation + "\"]/translate")?.InnerText ?? strSpiritManipulation);
 
                 //Spirit form, default to materialization unless field with other data persists
                 string strSpiritForm = "Materialization";
@@ -3316,41 +3340,6 @@ namespace Chummer
                     return strReturn;
             }
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Clean an XPath string.
-        /// </summary>
-        /// <param name="strSearch">String to clean.</param>
-        private static string CleanXPath(string strSearch)
-        {
-            char[] chrQuotes = { '\'', '"' };
-
-            int intQuotePos = strSearch.IndexOfAny(chrQuotes);
-            if (intQuotePos == -1)
-            {
-                return '\'' + strSearch + '\'';
-            }
-
-            StringBuilder objReturn = new StringBuilder("concat(");
-            while (intQuotePos != -1)
-            {
-                string strSubstring = strSearch.Substring(0, intQuotePos);
-                objReturn.Append('\'' + strSubstring + "', ");
-                if (strSearch[intQuotePos] == '\'')
-                {
-                    objReturn.Append("\"'\", ");
-                }
-                else
-                {
-                    //must be a double quote
-                    objReturn.Append("'\"', ");
-                }
-                strSearch = strSearch.Substring(intQuotePos + 1, strSearch.Length - intQuotePos - 1);
-                intQuotePos = strSearch.IndexOfAny(chrQuotes);
-            }
-            objReturn.Append('\'' + strSearch + "')");
-            return objReturn.ToString();
         }
 
         /// <summary>

@@ -97,6 +97,9 @@ Application Changes:
 - Fixed an issue where the expense log entry for upgrading an attribute would be incorrect if the character has any bonuses that increase the base value of their attribute.
 - Added proper support for tracking of lifestyles where payments happen in increments of weeks or days.
 - Fixed an issue where names for improvements granted by initiation, submersion, a condition monitor effect, a character's priorities, armor encumbrance, Essence loss, Edge use, spirit fettering, general attribute loss, being a mutant critter, or being a cyberzombie were not translated properly in tooltips.
+- Fixed a bug where non-English character sheets would not print a tradition's spirits in the appropriate language.
+- Unhardcoded the spirits of Draconic tradition so they can be changed by custom/house rules to not include every spirit.
+- Fixed a bug where Path of the Pariah would not print "None" under their spirit categories.
 
 Data Changes:
 
