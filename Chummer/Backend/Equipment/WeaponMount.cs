@@ -745,16 +745,18 @@ namespace Chummer.Backend.Equipment
             if (WeaponMountOptions.Count > 0)
             {
                 strReturn.Append(" (");
+                bool blnCloseParantheses = false;
                 foreach (WeaponMountOption objOption in WeaponMountOptions)
                 {
                     if (objOption.Name != "None")
                     {
+                        blnCloseParantheses = true;
                         strReturn.Append(objOption.DisplayName(strLanguage));
                         strReturn.Append(", ");
                     }
                 }
                 strReturn.Length -= 2;
-                if (strReturn.Length > 0)
+                if (blnCloseParantheses)
                     strReturn.Append(')');
             }
 
