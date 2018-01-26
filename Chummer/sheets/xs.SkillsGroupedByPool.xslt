@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Skills with a rating greater than zero listed in Rating order (descending) -->
+<!-- Skills listed in Rating order (descending) -->
 <!-- Version -500 -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
   <xsl:include href="xt.SkillCategory.xslt"/>
@@ -7,11 +7,11 @@
   <xsl:include href="xt.SkillGroups.xslt"/>
 
   <xsl:template name="skills1">
-    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]) + count(skills/skillgroup)) div 2)"/>
+    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2)"/>
     <xsl:variable name="sortedskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and total &gt; 0]">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
@@ -21,7 +21,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and total &gt; 0]">
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
             <xsl:if test="position() &lt;= $skillcut">
@@ -38,11 +38,11 @@
   </xsl:template>
   
   <xsl:template name="skills2">
-    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]) + count(skills/skillgroup)) div 2)"/>
+    <xsl:variable name="skillcut" select="round((count(skills/skill[knowledge = 'False' and total &gt; 0]) + count(skills/skillgroup)) div 2)"/>
     <xsl:variable name="sortedskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and total &gt; 0]">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
@@ -52,7 +52,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'False' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'False' and total &gt; 0]">
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
             <xsl:if test="position() &gt; $skillcut">
@@ -90,7 +90,6 @@
       </xsl:for-each>
       <xsl:if test="$PrintSkillCategoryNames">
         <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage = 'True' and rating != 0]">
-          <xsl:sort select="skillcategory"/>
           <xsl:sort select="rating" order="descending" />
           <xsl:sort select="name"/>
           <xsl:copy-of select="current()"/>
@@ -101,7 +100,7 @@
     <xsl:variable name="sortedknowledgeskills">
       <xsl:choose>
         <xsl:when test="$PrintSkillCategoryNames">
-          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and islanguage != 'True']">
             <xsl:sort select="skillcategory"/>
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
@@ -109,7 +108,7 @@
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:for-each select="skills/skill[knowledge = 'True' and rating &gt;= $MinimumRating]">
+          <xsl:for-each select="skills/skill[knowledge = 'True' and (islanguage != 'True' or rating != 0)]">
             <xsl:sort select="rating" order="descending" />
             <xsl:sort select="name"/>
             <xsl:copy-of select="current()"/>

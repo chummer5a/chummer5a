@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -66,54 +65,44 @@
       <filename>Notes</filename>
     </sheet>
     <sheet>
-      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
-      <name>Shadowrun 5 (Core)</name>
-      <filename>Shadowrun 5 (Core)</filename>
-    </sheet>
-    <sheet>
-      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
-      <name>Shadowrun 5 (Grouped Skills by Name)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
-    </sheet>
-    <sheet>
-      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
-      <name>Shadowrun 5 (Grouped Skills by Rating)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
-      <name>Shadowrun 5 (Rating > 0)</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
       <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
     <sheet>
-      <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
-      <name>Shadowrun 5 (Core, Grouped by Category)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
+      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <name>Shadowrun 5 (Core)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <name>Shadowrun 5 (Skills grouped by Rating)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <name>Shadowrun 5 (Skills grouped by Rating > 0)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
     </sheet>
     <sheet>
       <id>3fd617db-e7a2-4623-85d4-d4299f10b8b4</id>
-      <name>Shadowrun 5 (Grouped Skills by Name and Category)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+      <name>Shadowrun 5 (Base, Skills grouped by Category)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-    <sheet>
-      <id>65060a99-e5e2-4b3f-b720-96094fa3f11a</id>
-      <name>Shadowrun 5 (Grouped Skills by Rating and Category)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
-    </sheet>
-    <sheet>
-      <id>069371fc-2d43-4b2c-811c-473a3496956b</id>
-      <name>Shadowrun 5 (Rating > 0, Grouped by Category)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
+	<sheet>
+      <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
+      <name>Shadowrun 5 (Core, Skills grouped by Category)</name>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
     </sheet>
     <sheet>
       <id>d5a78a6b-53d2-4671-896d-6c0cd3976858</id>
-      <name>Shadowrun 5 (Grouped by Category)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
+      <name>Shadowrun 5 (Skills by Rating within Category)</name>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
+    </sheet>
+    <sheet>
+      <id>069371fc-2d43-4b2c-811c-473a3496956b</id>
+      <name>Shadowrun 5 (Skills grouped by Rating > 0 within Category)</name>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
     </sheet>
     <sheet>
       <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
@@ -178,19 +167,9 @@
       <filename>Fancy Blocks</filename>
     </sheet>
     <sheet>
-      <id>947b9c37-e19b-46cc-b8c0-242243d5ead9</id>
-      <name>Shadowrun 5 (Bewertet größer 0)</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
-      <id>7a80da80-317e-4ae7-bbee-26b3b1bcbb84</id>
-      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>1aef9b12-ad58-426d-b7f6-f1bcc2226376</id>
-      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Name)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
+      <id>4a612f4d-482b-4de7-9af6-7878847ae327</id>
+      <name>Shadowrun 5</name>
+      <filename>Shadowrun 5</filename>
     </sheet>
     <sheet>
       <id>63314285-26fb-4162-bbf7-015788bea04b</id>
@@ -198,34 +177,34 @@
       <filename>Shadowrun 5 (Core)</filename>
     </sheet>
     <sheet>
-      <id>4a612f4d-482b-4de7-9af6-7878847ae327</id>
-      <name>Shadowrun 5</name>
-      <filename>Shadowrun 5</filename>
+      <id>7a80da80-317e-4ae7-bbee-26b3b1bcbb84</id>
+      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
     </sheet>
     <sheet>
+      <id>947b9c37-e19b-46cc-b8c0-242243d5ead9</id>
+      <name>Shadowrun 5 (Bewertet größer 0)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>40070116-a0a7-4c23-af08-83ba313d5a5d</id>
+      <name>Shadowrun 5 (Basis, Gruppiert Fähigkeit durch Kategorie)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
+    </sheet>
+	<sheet>
       <id>aa00e72d-bddb-48ee-98b1-de860da11a16</id>
       <name>Shadowrun 5 (Kern, Gruppiert Fähigkeit durch Kategorie)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>70526d7b-b0af-4233-9280-e28b66a42483</id>
-      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Name und Kategorie)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
     </sheet>
     <sheet>
       <id>57a1a2ee-3b56-4bff-8168-2072a4b27158</id>
       <name>Shadowrun 5 (Gruppiert Fähigkeit durch Bewertet und Kategorie)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
     </sheet>
     <sheet>
       <id>f919089e-cde6-42b5-909d-c41b21734df5</id>
       <name>Shadowrun 5 (Bewertet größer 0, Gruppiert Fähigkeit durch Kategorie)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>40070116-a0a7-4c23-af08-83ba313d5a5d</id>
-      <name>Shadowrun 5 (Gruppiert Fähigkeit durch Kategorie)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
     </sheet>
     <sheet>
       <id>46467c0b-b0b8-4b6f-8f6f-9b4c1c44e9e1</id>
@@ -246,7 +225,7 @@
     </sheet>
     <sheet>
       <id>7090c91a-f1e1-4791-b373-34280e75a5d1</id>
-      <name>Commlinks (en Francais)</name>
+      <name>Commlinks</name>
       <filename>Commlinks</filename>
     </sheet>
     <sheet>
@@ -280,54 +259,44 @@
       <filename>Game Master Summary</filename>
     </sheet>
     <sheet>
-      <id>708ee7c5-c882-429f-b051-a2ff854fef82</id>
-      <name>Shadowrun 5 (Coeur)</name>
-      <filename>Shadowrun 5 (Core)</filename>
-    </sheet>
-    <sheet>
-      <id>5ae700f8-e679-4f63-80b6-04c8b20cb957</id>
-      <name>Shadowrun 5 (Groupé par nom)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
-    </sheet>
-    <sheet>
-      <id>9fe635c3-3d4e-448e-91e7-d3f87e59af2b</id>
-      <name>Shadowrun 5 (Groupé par évaluation)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>c306508d-5ffd-4b7b-acf7-13aef6bad142</id>
-      <name>Shadowrun 5 (Évaluation plus grand que zéro)</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
       <id>4aa5eff0-6ec1-44ea-9adc-e2b8e2ecbb5a</id>
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
     <sheet>
-      <id>613b6079-9ca7-4625-9147-be33b466c5fa</id>
-      <name>Shadowrun 5 (Coeur, Groupé par catégorie)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
+      <id>708ee7c5-c882-429f-b051-a2ff854fef82</id>
+      <name>Shadowrun 5 (Coeur)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>9fe635c3-3d4e-448e-91e7-d3f87e59af2b</id>
+      <name>Shadowrun 5 (Groupé par évaluation)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>c306508d-5ffd-4b7b-acf7-13aef6bad142</id>
+      <name>Shadowrun 5 (Évaluation plus grand que zéro)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
     </sheet>
     <sheet>
       <id>0aa868ce-f513-4b29-89a9-1963e16191d1</id>
-      <name>Shadowrun 5 (Groupé par nom et catégorie)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+      <name>Shadowrun 5 (Base, Groupé par catégorie)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
+    </sheet>
+	<sheet>
+      <id>613b6079-9ca7-4625-9147-be33b466c5fa</id>
+      <name>Shadowrun 5 (Coeur, Groupé par catégorie)</name>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
     </sheet>
     <sheet>
       <id>41bd5315-02d3-41d3-afe6-b206a632d419</id>
       <name>Shadowrun 5 (Groupé par évaluation et catégorie)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
     </sheet>
     <sheet>
       <id>a64405b9-c465-4b8b-9b85-462ba7765a8b</id>
       <name>Shadowrun 5 (Évaluation plus grand que zéro, Groupé par catégorie)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>de979d8d-1669-4359-a80f-3edf58d3e71e</id>
-      <name>Shadowrun 5 (Groupé par catégorie)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
     </sheet>
     <sheet>
       <id>ef153fd3-ac81-43cb-b8bb-13a8ed441ced</id>
@@ -387,54 +356,44 @@
       <filename>Notes</filename>
     </sheet>
     <sheet>
-      <id>faba0e1d-116f-4f50-afea-5c474787a3a5</id>
-      <name>Shadowrun 5 (Core)</name>
-      <filename>Shadowrun 5 (Core)</filename>
-    </sheet>
-    <sheet>
-      <id>9ebcba20-b005-4ad8-8825-917fbe6db143</id>
-      <name>Shadowrun 5 (Grouped Skills by Name)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
-    </sheet>
-    <sheet>
-      <id>588e7395-f8d3-4e6c-8bea-3cc5c8a3f573</id>
-      <name>Shadowrun 5 (Grouped Skills by Rating)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>00c26526-4813-406a-81f1-3d00bd04fd09</id>
-      <name>Shadowrun 5 (Rating > 0)</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
       <id>fe5f5885-a7d4-419d-9f7c-5d11d265e8d9</id>
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
     <sheet>
-      <id>f388b19f-4d3b-4d21-8e1e-0127d9d349a8</id>
-      <name>Shadowrun 5 (Core, Grouped by Category)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
+      <id>faba0e1d-116f-4f50-afea-5c474787a3a5</id>
+      <name>Shadowrun 5 (Core)</name>
+      <filename>Shadowrun 5 (Core)</filename>
     </sheet>
     <sheet>
-      <id>757dd31e-6809-4e12-8b81-5126cfb9260f</id>
-      <name>Shadowrun 5 (Grouped Skills by Name and Category)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+      <id>588e7395-f8d3-4e6c-8bea-3cc5c8a3f573</id>
+      <name>Shadowrun 5 (Skills grouped by Rating)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
     </sheet>
     <sheet>
-      <id>2f6806da-2712-48c8-9e43-56eed23d9d88</id>
-      <name>Shadowrun 5 (Grouped Skills by Rating and Category)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
-    </sheet>
-    <sheet>
-      <id>63ea2fe1-908d-46c6-8050-529af4d8e1c4</id>
-      <name>Shadowrun 5 (Rating > 0, Grouped by Category)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
+      <id>00c26526-4813-406a-81f1-3d00bd04fd09</id>
+      <name>Shadowrun 5 (Skills grouped by Rating > 0)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
     </sheet>
     <sheet>
       <id>7adda37d-52a9-4487-b7cc-7fa3c39023b4</id>
-      <name>Shadowrun 5 (Grouped by Category)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
+      <name>Shadowrun 5 (Base, Skills grouped by Category)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
+    </sheet>
+	<sheet>
+      <id>f388b19f-4d3b-4d21-8e1e-0127d9d349a8</id>
+      <name>Shadowrun 5 (Core, Skills grouped by Category)</name>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>2f6806da-2712-48c8-9e43-56eed23d9d88</id>
+      <name>Shadowrun 5 (Skills by Rating within Category)</name>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
+    </sheet>
+    <sheet>
+      <id>63ea2fe1-908d-46c6-8050-529af4d8e1c4</id>
+      <name>Shadowrun 5 (Skills grouped by Rating > 0 within Category)</name>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
     </sheet>
     <sheet>
       <id>93e25efe-63d5-4f6b-9ed2-dfb882a7f257</id>
@@ -444,113 +403,6 @@
     <sheet>
       <id>03a18308-f4db-4695-a3c7-f06b5232ff6e</id>
       <name>Vehicles</name>
-      <filename>Vehicles</filename>
-    </sheet>
-  </sheets>
-  <sheets lang="zh-cn">
-    <sheet>
-      <id>dbe18b2a-a657-48e7-b4ba-9378189014c9</id>
-      <name>日程表</name>
-      <filename>Calendar</filename>
-    </sheet>
-    <sheet>
-      <id>bd263301-3ceb-4e2a-8d34-e685004246e9</id>
-      <name>矩阵设备</name>
-      <filename>Commlinks</filename>
-    </sheet>
-    <sheet>
-      <id>047277ad-9c82-4b50-aecf-4289fa152278</id>
-      <name>人脉</name>
-      <filename>Contacts</filename>
-    </sheet>
-    <sheet>
-      <id>1c58e32c-b865-47b7-9419-d592c717127f</id>
-      <name>档案</name>
-      <filename>Dossier</filename>
-    </sheet>
-    <sheet>
-      <id>7fbbf00e-2c08-47f9-9f81-71de6db580f0</id>
-      <name>收支</name>
-      <filename>Expenses</filename>
-    </sheet>
-    <sheet>
-      <id>ff51f2a1-aef8-41d7-a4db-3e7264cdebd6</id>
-      <name>多彩方块</name>
-      <filename>Fancy Blocks</filename>
-    </sheet>
-    <sheet>
-      <id>e6c988a8-d324-4fb0-ae49-af2c0ba2d64b</id>
-      <name>格式仅文本</name>
-      <filename>Formatted Text-Only</filename>
-    </sheet>
-    <sheet>
-      <id>87669c92-58f9-4d03-92bc-faaae20f0685</id>
-      <name>GM简要</name>
-      <filename>Game Master Summary</filename>
-    </sheet>
-    <sheet>
-      <id>ac1c2a17-663f-46da-b67f-f3f532fb5143</id>
-      <name>备注</name>
-      <filename>Notes</filename>
-    </sheet>
-    <sheet>
-      <id>47d22500-320b-4c58-8733-2c7dc4bbd392</id>
-      <name>暗影狂奔5（核心）</name>
-      <filename>Shadowrun 5 (Core）</filename>
-    </sheet>
-    <sheet>
-      <id>e4d5de11-7cbc-4248-81ce-722695fa3883</id>
-      <name>暗影狂奔5（名称排列）</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
-    </sheet>
-    <sheet>
-      <id>71bc2cfd-fb9e-445e-a212-1ba29d04d161</id>
-      <name>暗影狂奔5（等级排列）</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>7fdc5909-20c0-4f9a-b381-362cbfdb8eeb</id>
-      <name>暗影狂奔5（技能等级＞0）</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
-      <id>62c46104-f0f8-40fe-9014-6ad6d0b7891a</id>
-      <name>暗影狂奔5</name>
-      <filename>Shadowrun 5</filename>
-    </sheet>
-    <sheet>
-      <id>b9eeb2c0-eba2-4e33-8549-46f5f281c6f9</id>
-      <name>暗影狂奔5(核心和类别排列)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>b69086bc-1caf-43b1-905b-c600e7a64350</id>
-      <name>暗影狂奔5(名称排列和类别排列)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
-    </sheet>
-    <sheet>
-      <id>dae37be8-9f5e-4bf3-b528-39a1a75b4532</id>
-      <name>暗影狂奔5(等级排列和类别排列)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
-    </sheet>
-    <sheet>
-      <id>18aaf6a7-af02-44e8-a984-d0b1f94a9e22</id>
-      <name>暗影狂奔5(技能等级＞0和类别排列)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>dad92a3f-18f2-4765-a926-3ba8e28a52dc</id>
-      <name>暗影狂奔5(类别排列)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>5f0052ef-8d8a-4220-91e1-f15e2aa4dca4</id>
-      <name>仅文本</name>
-      <filename>Text-Only</filename>
-    </sheet>
-    <sheet>
-      <id>33f93949-6e3e-46bd-af8a-333e56c1e399</id>
-      <name>载具和无人机</name>
       <filename>Vehicles</filename>
     </sheet>
   </sheets>
@@ -601,54 +453,44 @@
       <filename>Notes</filename>
     </sheet>
     <sheet>
-      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
-      <name>Shadowrun 5 (Principal)</name>
-      <filename>Shadowrun 5 (Core)</filename>
-    </sheet>
-    <sheet>
-      <id>19653431-f271-4e6b-bfcd-34525e168f3d</id>
-      <name>Shadowrun 5 (Perícias Agrupadas por Nome)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name)</filename>
-    </sheet>
-    <sheet>
-      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
-      <name>Shadowrun 5 (Perícias Agrupadas por Nível)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating)</filename>
-    </sheet>
-    <sheet>
-      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
-      <name>Shadowrun 5 (Nível > 0)</name>
-      <filename>Shadowrun 5 (Rating greater 0)</filename>
-    </sheet>
-    <sheet>
       <id>c4e73b93-8372-4d65-ac7c-b3e30218ef6f</id>
       <name>Shadowrun 5</name>
       <filename>Shadowrun 5</filename>
     </sheet>
     <sheet>
-      <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
-      <name>Shadowrun 5 (Principal, Agrupado por Categoria)</name>
-      <filename>Shadowrun 5 (Core, Grouped by Category)</filename>
+      <id>61f0a006-b710-4013-9c07-315506ef3a85</id>
+      <name>Shadowrun 5 (Principal)</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>c2a5247f-e453-4393-a178-a904796cf90c</id>
+      <name>Shadowrun 5 (Perícias Agrupadas por Nível)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>6cf47303-69fe-4e43-8ed8-24926629b3ff</id>
+      <name>Shadowrun 5 (Nível > 0)</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
     </sheet>
     <sheet>
       <id>3fd617db-e7a2-4623-85d4-d4299f10b8b4</id>
-      <name>Shadowrun 5 (Perícias Agrupadas por Nome e Categoria)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Name and Category)</filename>
+      <name>Shadowrun 5 (Perícias Agrupadas por Categoria)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
+      <name>Shadowrun 5 (Principal, Agrupado por Categoria)</name>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
     </sheet>
     <sheet>
       <id>65060a99-e5e2-4b3f-b720-96094fa3f11a</id>
       <name>Shadowrun 5 (Perícias Agrupadas por Nível e Categoria)</name>
-      <filename>Shadowrun 5 (Grouped Skills by Rating and Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
     </sheet>
     <sheet>
       <id>069371fc-2d43-4b2c-811c-473a3496956b</id>
       <name>Shadowrun 5 (Nível > 0, Agrupadas por Categoria)</name>
-      <filename>Shadowrun 5 (Rating greater 0, Grouped by Category)</filename>
-    </sheet>
-    <sheet>
-      <id>d5a78a6b-53d2-4671-896d-6c0cd3976858</id>
-      <name>Shadowrun 5 (Agrupadas por Categoria)</name>
-      <filename>Shadowrun 5 (Grouped by Category)</filename>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
     </sheet>
     <sheet>
       <id>5e4fa26c-22bc-46a8-b342-68d5ec975d35</id>
@@ -660,5 +502,102 @@
       <name>Veículos</name>
       <filename>Vehicles</filename>
     </sheet>
-</sheets>
+  </sheets>
+  <sheets lang="zh-cn">
+    <sheet>
+      <id>dbe18b2a-a657-48e7-b4ba-9378189014c9</id>
+      <name>日程表</name>
+      <filename>Calendar</filename>
+    </sheet>
+    <sheet>
+      <id>bd263301-3ceb-4e2a-8d34-e685004246e9</id>
+      <name>矩阵设备</name>
+      <filename>Commlinks</filename>
+    </sheet>
+    <sheet>
+      <id>047277ad-9c82-4b50-aecf-4289fa152278</id>
+      <name>人脉</name>
+      <filename>Contacts</filename>
+    </sheet>
+    <sheet>
+      <id>1c58e32c-b865-47b7-9419-d592c717127f</id>
+      <name>档案</name>
+      <filename>Dossier</filename>
+    </sheet>
+    <sheet>
+      <id>7fbbf00e-2c08-47f9-9f81-71de6db580f0</id>
+      <name>收支</name>
+      <filename>Expenses</filename>
+    </sheet>
+    <sheet>
+      <id>ff51f2a1-aef8-41d7-a4db-3e7264cdebd6</id>
+      <name>多彩方块</name>
+      <filename>Fancy Blocks</filename>
+    </sheet>
+    <sheet>
+      <id>e6c988a8-d324-4fb0-ae49-af2c0ba2d64b</id>
+      <name>格式仅文本</name>
+      <filename>Formatted Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>87669c92-58f9-4d03-92bc-faaae20f0685</id>
+      <name>GM简要</name>
+      <filename>Game Master Summary</filename>
+    </sheet>
+    <sheet>
+      <id>ac1c2a17-663f-46da-b67f-f3f532fb5143</id>
+      <name>备注</name>
+      <filename>Notes</filename>
+    </sheet>
+    <sheet>
+      <id>62c46104-f0f8-40fe-9014-6ad6d0b7891a</id>
+      <name>暗影狂奔5</name>
+      <filename>Shadowrun 5</filename>
+    </sheet>
+    <sheet>
+      <id>47d22500-320b-4c58-8733-2c7dc4bbd392</id>
+      <name>暗影狂奔5（核心）</name>
+      <filename>Shadowrun 5 (Core)</filename>
+    </sheet>
+    <sheet>
+      <id>71bc2cfd-fb9e-445e-a212-1ba29d04d161</id>
+      <name>暗影狂奔5（等级排列）</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating)</filename>
+    </sheet>
+    <sheet>
+      <id>7fdc5909-20c0-4f9a-b381-362cbfdb8eeb</id>
+      <name>暗影狂奔5（技能等级＞0）</name>
+      <filename>Shadowrun 5 (Skills grouped by Rating greater 0)</filename>
+    </sheet>
+    <sheet>
+      <id>b69086bc-1caf-43b1-905b-c600e7a64350</id>
+      <name>暗影狂奔5(名称排列和类别排列)</name>
+      <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
+    </sheet>
+	<sheet>
+      <id>b9eeb2c0-eba2-4e33-8549-46f5f281c6f9</id>
+      <name>暗影狂奔5(核心和类别排列)</name>
+      <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
+    </sheet>
+    <sheet>
+      <id>dae37be8-9f5e-4bf3-b528-39a1a75b4532</id>
+      <name>暗影狂奔5(等级排列和类别排列)</name>
+      <filename>Shadowrun 5 (Skills by Rating within Category)</filename>
+    </sheet>
+    <sheet>
+      <id>18aaf6a7-af02-44e8-a984-d0b1f94a9e22</id>
+      <name>暗影狂奔5(技能等级＞0和类别排列)</name>
+      <filename>Shadowrun 5 (Skills by Rating greater 0 within Category)</filename>
+    </sheet>
+    <sheet>
+      <id>5f0052ef-8d8a-4220-91e1-f15e2aa4dca4</id>
+      <name>仅文本</name>
+      <filename>Text-Only</filename>
+    </sheet>
+    <sheet>
+      <id>33f93949-6e3e-46bd-af8a-333e56c1e399</id>
+      <name>载具和无人机</name>
+      <filename>Vehicles</filename>
+    </sheet>
+  </sheets>
 </chummer>
