@@ -16,7 +16,9 @@ namespace Translator
         private static readonly TextInfo s_ObjEnUSTextInfo = (new CultureInfo("en-US", false)).TextInfo;
         private static readonly string PATH = Application.StartupPath;
         private readonly BackgroundWorker _workerDataProcessor = new BackgroundWorker();
+        private bool _blnQueueDataProcessorRun;
         private readonly BackgroundWorker _workerStringsProcessor = new BackgroundWorker();
+        private bool _blnQueueStringsProcessorRun;
         private string _strLanguageToLoad = string.Empty;
         private static readonly List<frmTranslate> s_LstOpenTranslateWindows = new List<frmTranslate>();
 
@@ -36,6 +38,20 @@ namespace Translator
             _workerStringsProcessor.WorkerSupportsCancellation = true;
             _workerStringsProcessor.DoWork += DoStringsProcessing;
             _workerStringsProcessor.RunWorkerCompleted += FinishStringsProcessing;
+        }
+
+        private void RunQueuedWorkers(object sender, EventArgs e)
+        {
+            if (_blnQueueDataProcessorRun)
+            {
+                if (!_workerDataProcessor.IsBusy)
+                    _workerDataProcessor.RunWorkerAsync();
+            }
+            if (_blnQueueStringsProcessorRun)
+            {
+                if (!_workerStringsProcessor.IsBusy)
+                    _workerStringsProcessor.RunWorkerAsync();
+            }
         }
 
         #region Control Events
@@ -241,8 +257,8 @@ namespace Translator
 
             cmdCancel.Enabled = true;
 
-            _workerDataProcessor.RunWorkerAsync(strArgs);
-            _workerStringsProcessor.RunWorkerAsync(strArgs);
+            _blnQueueStringsProcessorRun = true;
+            _blnQueueDataProcessorRun = true;
         }
 
         private void cmdEdit_Click(object sender, EventArgs e)
@@ -289,17 +305,31 @@ namespace Translator
 
             cmdCancel.Enabled = true;
 
-            _workerDataProcessor.RunWorkerAsync(strArgs);
-            _workerStringsProcessor.RunWorkerAsync(strArgs);
+            _blnQueueStringsProcessorRun = true;
+            _blnQueueDataProcessorRun = true;
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void frmTranslatorMain_Load(object sender, EventArgs e)
         {
             LoadLanguageList();
+
+            Application.Idle += RunQueuedWorkers;
+        }
+
+        private void frmTranslatorMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Idle -= RunQueuedWorkers;
+            
+            if (_workerStringsProcessor.IsBusy)
+                _workerStringsProcessor.CancelAsync();
+            if (_workerDataProcessor.IsBusy)
+                _workerDataProcessor.CancelAsync();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
+            _blnQueueStringsProcessorRun = false;
+            _blnQueueDataProcessorRun = false;
             if (_workerDataProcessor.IsBusy)
                 _workerDataProcessor.CancelAsync();
             if (_workerStringsProcessor.IsBusy)
@@ -398,6 +428,7 @@ namespace Translator
         private Tuple<XmlDocument, string> _objStringsDocWithPath = null;
         private void DoStringsProcessing(object sender, DoWorkEventArgs e)
         {
+            _blnQueueStringsProcessorRun = false;
             string[] strArgs = e.Argument as string[];
             string strFilePath = Path.Combine(PATH, "lang", strArgs[0] + ".xml");
 
@@ -500,6 +531,7 @@ namespace Translator
         private Tuple<XmlDocument, string> _objDataDocWithPath = null;
         private void DoDataProcessing(object sender, DoWorkEventArgs e)
         {
+            _blnQueueDataProcessorRun = false;
             string[] strArgs = e.Argument as string[];
             string strFilePath = Path.Combine(PATH, "lang", strArgs[0] + "_data.xml");
             XmlDocument objDataDoc = new XmlDocument();
@@ -7703,8 +7735,6 @@ namespace Translator
 
 
         #endregion Data Processing
-
-
 
         #region Properties
         public IList<frmTranslate> OpenTranslateWindows

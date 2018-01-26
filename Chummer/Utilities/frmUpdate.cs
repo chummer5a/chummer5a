@@ -348,7 +348,7 @@ namespace Chummer
             set
             {
                 _blnSilentMode = value;
-                if (value)
+                if (value && !_workerConnectionLoader.IsBusy)
                 {
                     _workerConnectionLoader.RunWorkerAsync();
                 }

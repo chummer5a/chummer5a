@@ -31,7 +31,7 @@ namespace Chummer
     public partial class frmOptions : Form
     {
         private readonly CharacterOptions _characterOptions = new CharacterOptions(null);
-        private bool _skipRefresh;
+        private bool _blnSkipRefresh;
         private bool blnDirty = false;
         private bool blnLoading = true;
         private bool blnSourcebookToggle = true;
@@ -441,10 +441,10 @@ namespace Chummer
             nudPDFOffset.Enabled = true;
             cmdPDFTest.Enabled = true;
 
-            _skipRefresh = true;
+            _blnSkipRefresh = true;
             txtPDFLocation.Text = string.Empty;
             nudPDFOffset.Value = 0;
-            _skipRefresh = false;
+            _blnSkipRefresh = false;
 
             // Find the selected item in the Sourcebook List.
             SourcebookInfo objSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == treSourcebook.SelectedNode.Tag.ToString());
@@ -458,26 +458,26 @@ namespace Chummer
 
         private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
-            if (_skipRefresh)
+            if (_blnSkipRefresh)
                 return;
 
-            int offset = decimal.ToInt32(nudPDFOffset.Value);
-            string tag = treSourcebook.SelectedNode.Tag.ToString();
-            SourcebookInfo foundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == tag);
+            int intOffset = decimal.ToInt32(nudPDFOffset.Value);
+            string strTag = treSourcebook.SelectedNode.Tag.ToString();
+            SourcebookInfo objFoundSource = GlobalOptions.SourcebookInfo.FirstOrDefault(x => x.Code == strTag);
 
-            if (foundSource != null)
+            if (objFoundSource != null)
             {
-                foundSource.Offset = offset;
+                objFoundSource.Offset = intOffset;
             }
             else
             {
                 // If the Sourcebook was not found in the options, add it.
-                SourcebookInfo newSource = new SourcebookInfo
+                SourcebookInfo objNewSource = new SourcebookInfo
                 {
-                    Code = tag,
-                    Offset = offset
+                    Code = strTag,
+                    Offset = intOffset
                 };
-                GlobalOptions.SourcebookInfo.Add(newSource);
+                GlobalOptions.SourcebookInfo.Add(objNewSource);
             }
         }
 
@@ -732,12 +732,13 @@ namespace Chummer
             {
                 if (objXmlBook["hide"] != null)
                     continue;
-                bool blnChecked = _characterOptions.Books.Contains(objXmlBook["code"].InnerText);
+                string strCode = objXmlBook["code"].InnerText;
+                bool blnChecked = _characterOptions.Books.Contains(strCode);
                 TreeNode objNode = new TreeNode
                 {
                     Text = objXmlBook["translate"]?.InnerText ?? objXmlBook["name"].InnerText,
 
-                    Tag = objXmlBook["code"].InnerText,
+                    Tag = strCode,
                     Checked = blnChecked
                 };
                 treSourcebook.Nodes.Add(objNode);
