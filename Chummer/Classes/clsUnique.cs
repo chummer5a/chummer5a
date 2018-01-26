@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -78,7 +78,7 @@ namespace Chummer
     public enum QualityFailureReason
     {
         Allowed = 0x0,
-        LimitExceeded =  0x1,
+        LimitExceeded = 0x1,
         RequiredSingle = 0x2,
         RequiredMultiple = 0x4,
         ForbiddenSingle = 0x8,
@@ -266,7 +266,7 @@ namespace Chummer
                         XmlNode objXmlWeapon = strLoopID.IsGuid()
                             ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = \"" + strLoopID + "\"]")
                             : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = \"" + strLoopID + "\"]");
-                        
+
                         Weapon objGearWeapon = new Weapon(_objCharacter);
                         objGearWeapon.Create(objXmlWeapon, lstWeapons);
                         objGearWeapon.ParentID = InternalId;
@@ -342,10 +342,25 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", _strName);
+                string strEnglishNameOnSource = _strName;
+                objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strEnglishNameOnSource);
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", strEnglishNameOnSource);
+
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", DisplayName(GlobalOptions.Language));
+                    string strTranslatedNameOnSource = DisplayName(GlobalOptions.Language);
+
+                    // don't check if again it is not translated
+                    if (strTranslatedNameOnSource != strEnglishNameOnSource)
+                    {
+                        // if we found <altnameonpage> but it contains the same english name already searched,
+                        // so we reset the variable to use DisplayName instead
+                        if (objXmlQuality.TryGetStringFieldQuickly("altnameonpage", ref strTranslatedNameOnSource)
+                            && strTranslatedNameOnSource == strEnglishNameOnSource)
+                            strTranslatedNameOnSource = DisplayName(GlobalOptions.Language);
+
+                        _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", strTranslatedNameOnSource);
+                    }
                 }
             }
         }
@@ -1116,7 +1131,7 @@ namespace Chummer
 
                 Dictionary<String, int> attributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string attribute in new String[] {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"})
+                foreach (string attribute in new String[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
                 {
                     String strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(attribute, ref strInner))
@@ -1425,7 +1440,7 @@ namespace Chummer
             get => _guiId.ToString("D");
             set => _guiId = Guid.Parse(value);
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private XmlNode _objCachedMyXmlNode = null;
@@ -2139,7 +2154,7 @@ namespace Chummer
                 {
                     intMAG = _objCharacter.Options.SpiritForceBasedOnTotalMAG ? _objCharacter.MAG.TotalValue : _objCharacter.MAG.Value;
                 }
-                
+
                 for (int i = 1; i <= intMAG * 2; i++)
                 {
                     // Calculate the Spell's Drain for the current Force.
@@ -2856,7 +2871,7 @@ namespace Chummer
         /// </summary>
         public string Name(string strLanguage)
         {
-            StringBuilder strbldReturn =  new StringBuilder();
+            StringBuilder strbldReturn = new StringBuilder();
             foreach (Gear objGear in Gear)
             {
                 strbldReturn.Append(objGear.DisplayName(strLanguage));
@@ -3238,7 +3253,7 @@ namespace Chummer
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-                _nodBonus = objXmlArtNode["bonus"];
+            _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, 1, DisplayNameShort(GlobalOptions.Language)))
@@ -3295,7 +3310,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -3504,7 +3519,7 @@ namespace Chummer
             if (!objXmlArtNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-                _nodBonus = objXmlArtNode["bonus"];
+            _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
             {
                 if (!ImprovementManager.CreateImprovements(_objCharacter, objSource, _guiID.ToString("D"), _nodBonus, true, 1, DisplayNameShort(GlobalOptions.Language)))
@@ -3564,7 +3579,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             _nodBonus = objNode["bonus"];
             if (objNode["improvementsource"] != null)
-            _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -3979,7 +3994,7 @@ namespace Chummer
             get => _strNotes;
             set => _strNotes = value;
         }
-        
+
         private XmlNode _objCachedMyXmlNode = null;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -4041,11 +4056,11 @@ namespace Chummer
 
         #region Constructor, Create, Save, Load, and Print Methods
         public AIProgram(Character objCharacter)
-            {
+        {
             // Create the GUID for the new Program.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            }
+        }
 
         /// Create a Program from an XmlNode.
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
@@ -4603,8 +4618,8 @@ namespace Chummer
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("id", ref _strSourceId))
                 _objCachedMyXmlNode = null;
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
-            if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                if (!xmlTechniqueDataNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                    xmlTechniqueDataNode.TryGetStringFieldQuickly("notes", ref _strNotes);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -5237,7 +5252,7 @@ namespace Chummer
 
         private readonly List<Image> _lstMugshots = new List<Image>();
         private int _intMainMugshotIndex = -1;
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Helper Methods
@@ -5295,7 +5310,7 @@ namespace Chummer
             objWriter.WriteElementString("free", _blnFree.ToString());
             objWriter.WriteElementString("group", _blnIsGroup.ToString());
             objWriter.WriteElementString("forceloyalty", _blnForceLoyalty.ToString());
-            objWriter.WriteElementString("family",_blnFamily.ToString());
+            objWriter.WriteElementString("family", _blnFamily.ToString());
             objWriter.WriteElementString("blackmail", _blnBlackmail.ToString());
 
             if (ReadOnly) objWriter.WriteElementString("readonly", string.Empty);
@@ -5379,7 +5394,7 @@ namespace Chummer
             if (!IsGroup)
                 objWriter.WriteElementString("connection", Connection.ToString(objCulture));
             else
-                objWriter.WriteElementString("connection", LanguageManager.GetString("String_Group", strLanguageToPrint) +  "(" + Connection.ToString(objCulture) + ')');
+                objWriter.WriteElementString("connection", LanguageManager.GetString("String_Group", strLanguageToPrint) + "(" + Connection.ToString(objCulture) + ')');
             objWriter.WriteElementString("loyalty", Loyalty.ToString(objCulture));
             objWriter.WriteElementString("metatype", DisplayMetatypeMethod(strLanguageToPrint));
             objWriter.WriteElementString("sex", DisplaySexMethod(strLanguageToPrint));
@@ -5546,7 +5561,7 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                 {
-                    string strMetatype =  LinkedCharacter.Metatype;
+                    string strMetatype = LinkedCharacter.Metatype;
 
                     if (!string.IsNullOrEmpty(LinkedCharacter.Metavariant))
                     {
@@ -6107,7 +6122,7 @@ namespace Chummer
             {
                 if (LinkedCharacter != null)
                     LinkedCharacter.MainMugshotIndex = value;
-                else if(value >= _lstMugshots.Count || value < -1)
+                else if (value >= _lstMugshots.Count || value < -1)
                     _intMainMugshotIndex = -1;
                 else
                     _intMainMugshotIndex = value;
@@ -6691,7 +6706,7 @@ namespace Chummer
             get => _intKarma;
             set => _intKarma = value;
         }
-        
+
         private XmlNode _objCachedMyXmlNode = null;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
