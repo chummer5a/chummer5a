@@ -43,7 +43,7 @@ namespace Chummer
         private bool _blnQueueRefresherRun;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
-        private readonly string strName = Guid.NewGuid() + ".htm";
+        private readonly string strName = Guid.NewGuid().ToString() + ".htm";
         #region Control Events
         public frmViewer()
         {

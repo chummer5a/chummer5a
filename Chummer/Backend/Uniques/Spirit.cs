@@ -565,11 +565,7 @@ namespace Chummer
             }
         }
 
-        public string InternalId
-        {
-            get => _guiId.ToString("D");
-            set => _guiId = Guid.Parse(value);
-        }
+        public string InternalId => _guiId.ToString("D");
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -757,30 +753,32 @@ namespace Chummer
         public void LoadMugshots(XmlNode xmlSavedNode)
         {
             xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-            XmlNodeList objXmlMugshotsList = xmlSavedNode.SelectNodes("mugshots/mugshot");
-            if (objXmlMugshotsList != null)
+            using (XmlNodeList xmlMugshotsList = xmlSavedNode.SelectNodes("mugshots/mugshot"))
             {
-                List<string> lstMugshotsBase64 = new List<string>(objXmlMugshotsList.Count);
-                foreach (XmlNode objXmlMugshot in objXmlMugshotsList)
+                if (xmlMugshotsList != null)
                 {
-                    string strMugshot = objXmlMugshot.InnerText;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+                    foreach (XmlNode objXmlMugshot in xmlMugshotsList)
                     {
-                        lstMugshotsBase64.Add(strMugshot);
+                        string strMugshot = objXmlMugshot.InnerText;
+                        if (!string.IsNullOrWhiteSpace(strMugshot))
+                        {
+                            lstMugshotsBase64.Add(strMugshot);
+                        }
                     }
-                }
-                if (lstMugshotsBase64.Count > 1)
-                {
-                    Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                    Parallel.For(0, lstMugshotsBase64.Count, i =>
+                    if (lstMugshotsBase64.Count > 1)
                     {
-                        objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                    });
-                    _lstMugshots.AddRange(objMugshotImages);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                        Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
+                        Parallel.For(0, lstMugshotsBase64.Count, i =>
+                        {
+                            objMugshotImages[i] = lstMugshotsBase64[i].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                        });
+                        _lstMugshots.AddRange(objMugshotImages);
+                    }
+                    else if (lstMugshotsBase64.Count == 1)
+                    {
+                        _lstMugshots.Add(lstMugshotsBase64[0].ToImage(System.Drawing.Imaging.PixelFormat.Format32bppPArgb));
+                    }
                 }
             }
         }

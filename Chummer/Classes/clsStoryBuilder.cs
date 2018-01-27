@@ -63,11 +63,11 @@ namespace Chummer
                     String stageName = string.Empty;
                     if (i <= 4)
                     {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1) + "\"]").InnerText;
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + (i + 1).ToString() + "\"]").InnerText;
                     }
                     else
                     {
-                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"" + 5 + "\"]").InnerText;
+                        stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = \"5\"]").InnerText;
                     }
                     int j;
                     for (j = i; j < modules.Count; j++)

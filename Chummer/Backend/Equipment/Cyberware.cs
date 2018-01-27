@@ -279,7 +279,7 @@ namespace Chummer.Backend.Equipment
                     objGearWeapon.ParentID = InternalId;
                     lstWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                 }
             }
 
@@ -301,7 +301,7 @@ namespace Chummer.Backend.Equipment
                     objVehicle.ParentID = InternalId;
                     lstVehicles.Add(objVehicle);
 
-                    _guiVehicleID = Guid.Parse(objVehicle.InternalId);
+                    Guid.TryParse(objVehicle.InternalId, out _guiVehicleID);
                 }
             }
 
@@ -747,11 +747,11 @@ namespace Chummer.Backend.Equipment
             }
             if (objNode["weaponguid"] != null)
             {
-                _guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
+                Guid.TryParse(objNode["weaponguid"].InnerText, out _guiWeaponID);
             }
             if (objNode["vehicleguid"] != null)
             {
-                _guiVehicleID = Guid.Parse(objNode["vehicleguid"].InnerText);
+                Guid.TryParse(objNode["vehicleguid"].InnerText, out _guiVehicleID);
             }
 
             if (objNode.InnerXml.Contains("<cyberware>"))
@@ -929,7 +929,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _guiWeaponID = Guid.Parse(value);
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponID = guiTemp;
             }
         }
 
@@ -944,7 +945,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _guiVehicleID = Guid.Parse(value);
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiVehicleID = guiTemp;
             }
         }
 
@@ -1079,6 +1081,8 @@ namespace Chummer.Backend.Equipment
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
         }
 
+        public static Guid EssenceHoleGUID { get; } = new Guid("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
+
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
@@ -1086,9 +1090,9 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (Rating > 0 && _sourceID != Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196"))
+            if (Rating > 0 && _sourceID != EssenceHoleGUID)
             {
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating + ')';
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
             }
 
             if (!string.IsNullOrEmpty(_strExtra))
@@ -2172,7 +2176,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_blnPrototypeTranshuman && blnReturnPrototype)
                 return 0;
-            if (SourceID == Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196")) //Essence hole
+            if (SourceID == EssenceHoleGUID) //Essence hole
             {
                 return Convert.ToDecimal(Rating, GlobalOptions.InvariantCultureInfo) / 100m;
             }

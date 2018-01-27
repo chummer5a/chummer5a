@@ -46,10 +46,10 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
             _strName = objNode["name"].InnerText;
             _intRating = Convert.ToInt32(objNode["rating"].InnerText);
-            _guiGearId = Guid.Parse(objNode["gearid"].InnerText);
+            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
         }
         #endregion
 
@@ -77,7 +77,11 @@ namespace Chummer
         public string GearId
         {
             get => _guiGearId.ToString("D");
-            set => _guiGearId = Guid.Parse(value);
+            set
+            {
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiGearId = guiTemp;
+            }
         }
 
         /// <summary>

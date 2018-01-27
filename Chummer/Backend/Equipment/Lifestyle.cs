@@ -322,10 +322,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Converts old lifestyle structures to new standards. 
         /// </summary>
-        private void LegacyShim(XmlNode n)
+        private void LegacyShim(XmlNode xmlLifestyleNode)
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property. 
-            if (_objCharacter.LastSavedVersion <= Version.Parse("5.197.0") && n["costforarea"] == null)
+            if (_objCharacter.LastSavedVersion <= new Version("5.197.0") && xmlLifestyleNode["costforarea"] == null)
             {
                 XmlDocument objXmlDocument = XmlManager.Load("lifestyles.xml");
                 XmlNode objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"" + _strBaseLifestyle + "\"]");
@@ -355,9 +355,9 @@ namespace Chummer.Backend.Equipment
                 objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
                 BaseSecurity = intMinSec;
 
-                n.TryGetInt32FieldQuickly("area", ref intMinArea);
-                n.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
-                n.TryGetInt32FieldQuickly("security", ref intMinSec);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("area", ref intMinArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
 
                 // Calculate the cost of Positive Qualities.
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
@@ -872,7 +872,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="strInternalId">InternalId to set.</param>
         public void SetInternalId(string strInternalId)
         {
-            _guiID = Guid.Parse(strInternalId);
+            if (Guid.TryParse(strInternalId, out Guid guiTemp))
+                _guiID = guiTemp;
         }
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)

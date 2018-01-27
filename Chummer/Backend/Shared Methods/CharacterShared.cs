@@ -285,26 +285,28 @@ namespace Chummer
                 MessageBox.Show(LanguageManager.GetString("Warning_NoLimitFound", GlobalOptions.Language));
                 return;
             }
-            frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier);
-            frmPickLimitModifier.ShowDialog(this);
+            using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(objLimitModifier))
+            {
+                frmPickLimitModifier.ShowDialog(this);
 
-            if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
-                return;
+                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                    return;
 
-            //Remove the old LimitModifier to ensure we don't double up.
-            _objCharacter.LimitModifiers.Remove(objLimitModifier);
-            // Create the new limit modifier.
-            objLimitModifier = new LimitModifier(_objCharacter);
-            string strLimit = treLimit.SelectedNode.Parent.Text;
-            string strCondition = frmPickLimitModifier.SelectedCondition;
-            objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
-            objLimitModifier.Guid = new Guid(strGuid);
+                //Remove the old LimitModifier to ensure we don't double up.
+                _objCharacter.LimitModifiers.Remove(objLimitModifier);
+                // Create the new limit modifier.
+                objLimitModifier = new LimitModifier(_objCharacter);
+                string strLimit = treLimit.SelectedNode.Parent.Text;
+                string strCondition = frmPickLimitModifier.SelectedCondition;
+                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, strLimit, strCondition);
+                objLimitModifier.Guid = new Guid(strGuid);
 
-            _objCharacter.LimitModifiers.Add(objLimitModifier);
+                _objCharacter.LimitModifiers.Add(objLimitModifier);
 
-            //Add the new treeview node for the LimitModifier.
-            objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
-            objSelectedNode.Remove();
+                //Add the new treeview node for the LimitModifier.
+                objSelectedNode.Parent.Nodes.Add(objLimitModifier.CreateTreeNode(cmsLimitModifier));
+                objSelectedNode.Remove();
+            }
         }
 
         /// <summary>
@@ -1410,7 +1412,7 @@ namespace Chummer
             if (objSelectedNode != null)
                 treArmor.SelectedNode = objSelectedNode;
         }
-
+        
         /// <summary>
         /// Populate the TreeView that contains all of the character's Cyberware and Bioware.
         /// </summary>
@@ -1425,10 +1427,9 @@ namespace Chummer
             TreeNode objModularRoot = null;
             TreeNode objHoleNode = null;
 
-            Guid guidHoleId = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");
             foreach (Cyberware objCyberware in CharacterObject.Cyberware)
             {
-                if (objCyberware.SourceID == guidHoleId && objHoleNode == null)
+                if (objCyberware.SourceID == Cyberware.EssenceHoleGUID && objHoleNode == null)
                 {
                     objHoleNode = objCyberware.CreateTreeNode(null, null);
                     treCyberware.Nodes.Insert(3, objHoleNode);
@@ -1940,30 +1941,31 @@ namespace Chummer
         protected bool AddMugshot()
         {
             bool blnSuccess = false;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+            using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
             {
-                openFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
-            }
-            // Prompt the user to select an image to associate with this character.
+                if (!string.IsNullOrWhiteSpace(_objOptions.RecentImageFolder) && Directory.Exists(_objOptions.RecentImageFolder))
+                {
+                    dlgOpenFileDialog.InitialDirectory = _objOptions.RecentImageFolder;
+                }
+                // Prompt the user to select an image to associate with this character.
 
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
-            openFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*",
-                string.Join("|",
-                    codecs.Select(codec => string.Format("{0} ({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
-                string.Join(";", codecs.Select(codec => codec.FilenameExtension).ToArray()));
+                ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
+                dlgOpenFileDialog.Filter = string.Format("All image files ({1})|{1}|{0}|All files|*",
+                    string.Join("|", lstCodecs.Select(codec => string.Format("{0} ({1})|{1}", codec.CodecName, codec.FilenameExtension)).ToArray()),
+                    string.Join(";", lstCodecs.Select(codec => codec.FilenameExtension).ToArray()));
 
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                blnSuccess = true;
-                // Convert the image to a string usinb Base64.
-                _objOptions.RecentImageFolder = Path.GetDirectoryName(openFileDialog.FileName);
+                if (dlgOpenFileDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    blnSuccess = true;
+                    // Convert the image to a string usinb Base64.
+                    _objOptions.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
 
-                Bitmap imgMugshot = (new Bitmap(openFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                    Bitmap imgMugshot = (new Bitmap(dlgOpenFileDialog.FileName, true)).ConvertPixelFormat(PixelFormat.Format32bppPArgb);
 
-                _objCharacter.Mugshots.Add(imgMugshot);
-                if (_objCharacter.MainMugshotIndex == -1)
-                    _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                    _objCharacter.Mugshots.Add(imgMugshot);
+                    if (_objCharacter.MainMugshotIndex == -1)
+                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                }
             }
             return blnSuccess;
         }

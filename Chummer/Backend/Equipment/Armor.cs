@@ -300,7 +300,7 @@ namespace Chummer.Backend.Equipment
                 objGearWeapon.ParentID = InternalId;
                 lstWeapons.Add(objGearWeapon);
 
-                _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
             }
         }
 
@@ -375,23 +375,20 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                if (!Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+                    _guiID = Guid.NewGuid();
                 objNode.TryGetStringFieldQuickly("location", ref _strLocation);
             }
 
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
-            if (objNode["sourceid"] == null)
+            if (objNode["sourceid"] == null || !Guid.TryParse(objNode["sourceid"].InnerText, out _sourceID))
             {
                 XmlNode objArmorNode = GetNode();
                 if (objArmorNode != null)
                 {
-                    _sourceID = Guid.Parse(objArmorNode["id"].InnerText);
+                    Guid.TryParse(objArmorNode["id"].InnerText, out _sourceID);
                 }
-            }
-            else
-            {
-                _sourceID = Guid.Parse(objNode["sourceid"].InnerText);
             }
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("armor", ref _strA);
@@ -809,7 +806,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _guiWeaponID = Guid.Parse(value);
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponID = guiTemp;
             }
         }
 

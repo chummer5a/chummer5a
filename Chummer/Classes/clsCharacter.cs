@@ -1302,7 +1302,7 @@ namespace Chummer
                         if (objQuality.GetNode()?.SelectSingleNode("bonus/addgear/name")?.InnerText == "Living Persona")
                             objLivingPersonaQuality = objQuality;
                         // Legacy shim
-                        if (LastSavedVersion <= Version.Parse("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
+                        if (LastSavedVersion <= new Version("5.195.1") && (objQuality.Name == "The Artisan's Way" ||
                             objQuality.Name == "The Artist's Way" ||
                             objQuality.Name == "The Athlete's Way" ||
                             objQuality.Name == "The Burnout's Way" ||
@@ -1465,7 +1465,7 @@ namespace Chummer
                 // Legacy shim
                 if (objCyberware.Name == "Myostatin Inhibitor")
                 {
-                    if (LastSavedVersion <= Version.Parse("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
+                    if (LastSavedVersion <= new Version("5.195.1") && !Improvements.Any(x => x.SourceName == objCyberware.InternalId && x.ImproveType == Improvement.ImprovementType.AttributeKarmaCost))
                     {
                         XmlNode objNode = objCyberware.GetNode();
                         if (objNode != null)
@@ -1698,7 +1698,7 @@ namespace Chummer
                 _lstGear.Add(objGear);
             }
             // If we have a technomancer quality but no Living Persona commlink, we re-apply its improvements immediately
-            if (objLivingPersonaQuality != null && LastSavedVersion <= Version.Parse("5.195.1"))
+            if (objLivingPersonaQuality != null && LastSavedVersion <= new Version("5.195.1"))
             {
                 ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objLivingPersonaQuality.InternalId);
 

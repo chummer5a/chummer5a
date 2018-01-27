@@ -1157,7 +1157,11 @@ namespace Chummer.Backend.Equipment
         public string AmmoLoaded
         {
             get { return GetClip(_intActiveAmmoSlot).Guid.ToString("D"); }
-            set { GetClip(_intActiveAmmoSlot).Guid = Guid.Parse(value); }
+            set
+            {
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    GetClip(_intActiveAmmoSlot).Guid = guiTemp;
+            }
         }
 
         /// <summary>
@@ -4594,13 +4598,14 @@ namespace Chummer.Backend.Equipment
 
             internal static Clip Load(XmlNode node)
             {
-                if (node != null && node["id"] != null && node["count"] != null)
+                if (node != null)
                 {
-                    try
+                    string strId = node["id"]?.InnerText;
+                    string strCount = node["count"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strId) && !string.IsNullOrEmpty(strCount) && Guid.TryParse(strId, out Guid guiClipId) && int.TryParse(strCount, out int intCount))
                     {
-                        return new Clip(Guid.Parse(node["id"].InnerText), int.Parse(node["count"].InnerText));
+                        return new Clip(guiClipId, intCount);
                     }
-                    catch (FormatException) { }
                 }
                 return null;
             }

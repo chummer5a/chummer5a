@@ -80,7 +80,8 @@ namespace Chummer
 
                 nudInit.Value = objCharacter.InitiativeDice;
                 txtName.Text = objCharacter.Name;
-                nudInitStart.Value = Int32.Parse(objCharacter.Initiative.Split(' ')[0]);
+                if (int.TryParse(objCharacter.Initiative.Split(' ')[0], out int intTemp))
+                    nudInitStart.Value = intTemp;
                 _character = objCharacter;
                 Cursor = Cursors.Default;
             }

@@ -576,7 +576,8 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
+                if (!Guid.TryParse(objNode["guid"].InnerText, out _guiID))
+                    _guiID = Guid.NewGuid();
                 bool blnIsHomeNode = false;
                 if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
                 {

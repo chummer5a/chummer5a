@@ -36,7 +36,7 @@ namespace Chummer
         /// <summary>
         /// Create a Mentor Spirit from an XmlNode.
         /// </summary>
-        /// <param name="objXmlMentor">XmlNode to create the object from.</param>
+        /// <param name="xmlMentor">XmlNode to create the object from.</param>
         /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
         /// <param name="objXmlChoice1">Bonus node from Choice 1.</param>
         /// <param name="objXmlChoice2">Bonus node from Choice 2.</param>
@@ -44,30 +44,30 @@ namespace Chummer
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
         /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="blnMentorMask">Whether the Mentor's Mask is enabled.</param>
-        public void Create(XmlNode objXmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
+        public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, XmlNode objXmlChoice1, XmlNode objXmlChoice2, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "", bool blnMentorMask = false)
         {
             _blnMentorMask = blnMentorMask;
             _eMentorType = eMentorType;
             _objCachedMyXmlNode = null;
-            objXmlMentor.TryGetStringFieldQuickly("name", ref _strName);
-            objXmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
-            objXmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
-            if (!objXmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
-            if (objXmlMentor["id"] != null)
-                _sourceID = Guid.Parse(objXmlMentor["id"].InnerText);
+            xmlMentor.TryGetStringFieldQuickly("name", ref _strName);
+            xmlMentor.TryGetStringFieldQuickly("source", ref _strSource);
+            xmlMentor.TryGetStringFieldQuickly("page", ref _strPage);
+            if (!xmlMentor.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                xmlMentor.TryGetStringFieldQuickly("notes", ref _strNotes);
+            if (xmlMentor["id"] != null && Guid.TryParse(xmlMentor["id"].InnerText, out Guid guiTemp))
+                _sourceID = guiTemp;
 
             // Build the list of advantages gained through the Mentor Spirit.
-            if (!objXmlMentor.TryGetStringFieldQuickly("altadvantage", ref _strAdvantage))
+            if (!xmlMentor.TryGetStringFieldQuickly("altadvantage", ref _strAdvantage))
             {
-                objXmlMentor.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
+                xmlMentor.TryGetStringFieldQuickly("advantage", ref _strAdvantage);
             }
-            if (!objXmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
+            if (!xmlMentor.TryGetStringFieldQuickly("altdisadvantage", ref _strDisadvantage))
             {
-                objXmlMentor.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
+                xmlMentor.TryGetStringFieldQuickly("disadvantage", ref _strDisadvantage);
             }
 
-            _nodBonus = objXmlMentor["bonus"];
+            _nodBonus = xmlMentor["bonus"];
             if (_nodBonus != null)
             {
                 string strOldForce = ImprovementManager.ForcedValue;

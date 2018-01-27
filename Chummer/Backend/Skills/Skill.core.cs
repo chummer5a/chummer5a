@@ -259,15 +259,15 @@ namespace Chummer.Backend.Skills
             return 0;
         }
 
+        private static readonly Guid s_GuiReflexRecorderId = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
         public int DefaultModifier
         {
             get
             {
                 if (CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.ReflexRecorderOptimization))
                     return -1;
-
-                Guid reflexrecorderid = Guid.Parse("17a6ba49-c21c-461b-9830-3beae8a237fc");
-                Cyberware ware = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == reflexrecorderid);
+                
+                Cyberware ware = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == s_GuiReflexRecorderId);
 
                 if (ware == null) return -1;
 

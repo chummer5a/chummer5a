@@ -51,8 +51,8 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _guiGearId = Guid.Parse(objNode["gearid"].InnerText);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
+            Guid.TryParse(objNode["gearid"].InnerText, out _guiGearId);
             _blnBonded = objNode["bonded"]?.InnerText == System.Boolean.TrueString;
             foreach (XmlNode nodGear in objNode.SelectNodes("gears/gear"))
             {
@@ -75,7 +75,11 @@ namespace Chummer
         public string GearId
         {
             get => _guiGearId.ToString("D");
-            set => _guiGearId = Guid.Parse(value);
+            set
+            {
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiGearId = guiTemp;
+            }
         }
 
         /// <summary>

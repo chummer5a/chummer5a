@@ -111,7 +111,7 @@ namespace Chummer
         public bool Create(XmlNode objNode, int intRating = 1, XmlNode objBonusNodeOverride = null, bool blnCreateImprovements = true)
         {
             Name = objNode["name"].InnerText;
-            _sourceID = Guid.Parse(objNode["id"].InnerText);
+            Guid.TryParse(objNode["id"].InnerText, out _sourceID);
             _objCachedMyXmlNode = null;
             objNode.TryGetStringFieldQuickly("points", ref _strPointsPerLevel);
             objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount);
@@ -175,12 +175,11 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
             Name = objNode["name"].InnerText;
             string strId = objNode["id"]?.InnerText;
-            if (!string.IsNullOrEmpty(strId))
+            if (!string.IsNullOrEmpty(strId) && Guid.TryParse(strId, out _sourceID))
             {
-                _sourceID = Guid.Parse(strId);
                 _objCachedMyXmlNode = null;
             }
             else
@@ -189,14 +188,13 @@ namespace Chummer
                 if (strPowerName.Contains('('))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
                 XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                if (objXmlPower != null)
+                XmlNode xmlPowerId = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/id");
+                if (xmlPowerId != null && Guid.TryParse(xmlPowerId.InnerText, out _sourceID))
                 {
-                    _sourceID = Guid.Parse(objXmlPower["id"].InnerText);
                     _objCachedMyXmlNode = null;
                 }
             }
-            Extra = objNode["extra"].InnerText ?? string.Empty;
+            Extra = objNode["extra"]?.InnerText ?? string.Empty;
             _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
             objNode.TryGetField("action", out _strAction);
             _strAdeptWayDiscount = objNode["adeptway"]?.InnerText;
@@ -205,9 +203,7 @@ namespace Chummer
                 string strPowerName = Name;
                 if (strPowerName.Contains('('))
                     strPowerName = strPowerName.Substring(0, strPowerName.IndexOf('(') - 1);
-                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]");
-                _strAdeptWayDiscount = objXmlPower?["adeptway"]?.InnerText ?? string.Empty;
+                _strAdeptWayDiscount = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"" + strPowerName + "\")]/adeptway")?.InnerText ?? string.Empty;
             }
             Rating = Convert.ToInt32(objNode["rating"]?.InnerText);
             LevelsEnabled = objNode["levels"]?.InnerText == System.Boolean.TrueString;
@@ -229,8 +225,7 @@ namespace Chummer
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes"))
             {
-                XmlDocument objXmlDocument = XmlManager.Load("powers.xml");
-                XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                XmlNode objXmlPower = XmlManager.Load("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
                     if (int.TryParse(Name.TrimStart("Improved Reflexes", true).Trim(), out int intTemp))
@@ -242,7 +237,7 @@ namespace Chummer
             }
             else
             {
-                XmlNodeList nodEnhancements = objNode["enhancements"]?.SelectNodes("enhancement");
+                XmlNodeList nodEnhancements = objNode.SelectNodes("enhancements/enhancement");
                 if (nodEnhancements != null)
                 {
                     foreach (XmlNode nodEnhancement in nodEnhancements)

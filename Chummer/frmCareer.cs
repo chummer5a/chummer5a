@@ -51,7 +51,7 @@ namespace Chummer
         private readonly bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements = false;
         private int _intDragLevel = 0;
-        private MouseButtons _objDragButton = new MouseButtons();
+        private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear = false;
         private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
         private readonly ObservableCollection<CharacterAttrib> lstSpecialAttributes = new ObservableCollection<CharacterAttrib>();
@@ -3726,9 +3726,7 @@ namespace Chummer
 
         private void IncreaseEssenceHole(int intCentiessence)
         {
-            //id of essence hole, get by id to avoid name confusions
-            Guid guiEssenceHoleId = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
-            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == guiEssenceHoleId);
+            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
 
             if (objHole == null)
             {
@@ -3760,9 +3758,7 @@ namespace Chummer
 
         private void DecreaseEssenceHole(int intCentiessence)
         {
-            //id of essence hole, get by id to avoid name confusions
-            Guid guiEssenceHoleId = Guid.Parse("b57eadaa-7c3b-4b80-8d79-cbbd922c1196");  //don't parse for every obj
-            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == guiEssenceHoleId);
+            Cyberware objHole = CharacterObject.Cyberware.FirstOrDefault(x => x.SourceID == Cyberware.EssenceHoleGUID);
 
             if (objHole != null)
             {
@@ -14112,13 +14108,13 @@ namespace Chummer
                 {
                     if (treGear.SelectedNode.Level != 1 && treGear.SelectedNode.Level != 0)
                         return;
-                    _objDragButton = MouseButtons.Left;
+                    _eDragButton = MouseButtons.Left;
                 }
                 else
                 {
                     if (treGear.SelectedNode.Level == 0)
                         return;
-                    _objDragButton = MouseButtons.Right;
+                    _eDragButton = MouseButtons.Right;
                 }
 
                 // Do not allow the root element to be moved.
@@ -14152,20 +14148,20 @@ namespace Chummer
             }
 
             // If the item was moved using the left mouse button, change the order of things.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (treGear.SelectedNode.Level == 1)
                     CommonFunctions.MoveGearNode(CharacterObject, intNewIndex, nodDestination, treGear);
                 else
                     CommonFunctions.MoveGearRoot(CharacterObject, intNewIndex, nodDestination, treGear);
             }
-            if (_objDragButton == MouseButtons.Right)
+            if (_eDragButton == MouseButtons.Right)
                 CommonFunctions.MoveGearParent(CharacterObject, nodDestination, treGear);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
 
-            _objDragButton = MouseButtons.None;
+            _eDragButton = MouseButtons.None;
 
             IsDirty = true;
         }
@@ -14179,7 +14175,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = SystemColors.ControlDark;
@@ -14838,7 +14834,7 @@ namespace Chummer
                     Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
                     if (objGear != null)
                     {
-                        _objDragButton = e.Button;
+                        _eDragButton = e.Button;
                         _blnDraggingGear = true;
                         _intDragLevel = treVehicles.SelectedNode.Level;
                         DoDragDrop(e.Item, DragDropEffects.Move);
@@ -14874,7 +14870,7 @@ namespace Chummer
             }
             else
             {
-                if (_objDragButton == MouseButtons.Left)
+                if (_eDragButton == MouseButtons.Left)
                     return;
                 else
                     CommonFunctions.MoveVehicleGearParent(CharacterObject, nodDestination, treVehicles);
@@ -14897,7 +14893,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = SystemColors.ControlDark;

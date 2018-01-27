@@ -78,7 +78,7 @@ namespace Chummer
         private XmlNode _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
-        private Guid _qualiyGuid;
+        private Guid _guiQualityId;
         private string _stage;
 
         public String Stage
@@ -180,15 +180,17 @@ namespace Chummer
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
-                        frmSelectNumber frmPickNumber = new frmSelectNumber(0);
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-                        frmPickNumber.Minimum = decMin;
-                        frmPickNumber.Maximum = decMax;
-                        frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
-                        frmPickNumber.AllowCancel = false;
-                        frmPickNumber.ShowDialog();
-                        _intBP = decimal.ToInt32(frmPickNumber.SelectedValue);
+                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(0))
+                        {
+                            if (decMax > 1000000)
+                                decMax = 1000000;
+                            frmPickNumber.Minimum = decMin;
+                            frmPickNumber.Maximum = decMax;
+                            frmPickNumber.Description = LanguageManager.GetString("String_SelectVariableCost", GlobalOptions.Language).Replace("{0}", DisplayNameShort(GlobalOptions.Language));
+                            frmPickNumber.AllowCancel = false;
+                            frmPickNumber.ShowDialog();
+                            _intBP = decimal.ToInt32(frmPickNumber.SelectedValue);
+                        }
                     }
                 }
                 else
@@ -212,9 +214,9 @@ namespace Chummer
                 objXmlQuality.TryGetStringFieldQuickly("stage", ref _stage);
             }
 
-            if (objXmlQuality["id"] != null)
+            if (objXmlQuality["id"] != null && Guid.TryParse(objXmlQuality["id"].InnerText, out Guid guiTemp))
             {
-                _qualiyGuid = Guid.Parse(objXmlQuality["id"].InnerText);
+                _guiQualityId = guiTemp;
                 _objCachedMyXmlNode = null;
             }
 
@@ -238,7 +240,7 @@ namespace Chummer
                         objGearWeapon.ParentID = InternalId;
                         lstWeapons.Add(objGearWeapon);
 
-                        _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                     }
                 }
             }
@@ -372,9 +374,9 @@ namespace Chummer
                 objWriter.WriteElementString("stage", _stage);
             }
 
-            if (!_qualiyGuid.Equals(Guid.Empty))
+            if (!_guiQualityId.Equals(Guid.Empty))
             {
-                objWriter.WriteElementString("id", _qualiyGuid.ToString("D"));
+                objWriter.WriteElementString("id", _guiQualityId.ToString("D"));
             }
 
             objWriter.WriteEndElement();
@@ -420,10 +422,10 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _stage);
             }
-            if (!objNode.TryGetField("id", Guid.TryParse, out _qualiyGuid))
+            if (!objNode.TryGetField("id", Guid.TryParse, out _guiQualityId))
             {
                 XmlNode objNewNode = XmlManager.Load("qualities.xml").SelectSingleNode("/chummer/qualities/quality[name = \"" + Name + "\"]");
-                if (objNewNode?.TryGetField("id", Guid.TryParse, out _qualiyGuid) == true)
+                if (objNewNode?.TryGetField("id", Guid.TryParse, out _guiQualityId) == true)
                     _objCachedMyXmlNode = null;
             }
             else
@@ -476,7 +478,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier for the quality type
         /// </summary>
-        public string QualityId => _qualiyGuid.Equals(Guid.Empty) ? string.Empty : _qualiyGuid.ToString("D");
+        public string QualityId => _guiQualityId.Equals(Guid.Empty) ? string.Empty : _guiQualityId.ToString("D");
 
         /// <summary>
         /// Guid of a Weapon.
@@ -484,7 +486,11 @@ namespace Chummer
         public string WeaponID
         {
             get => _guiWeaponID.ToString("D");
-            set => _guiWeaponID = Guid.Parse(value);
+            set
+            {
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponID = guiTemp;
+            }
         }
 
         /// <summary>

@@ -95,10 +95,10 @@ namespace Chummer.Classes
             //List of qualities to work with
             Guid[] all =
             {
-                Guid.Parse("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
-                Guid.Parse("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
-                Guid.Parse("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
-                Guid.Parse("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
+                new Guid("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
+                new Guid("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
+                new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
+                new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
             };
 
             //Add to list

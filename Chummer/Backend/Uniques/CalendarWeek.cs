@@ -50,7 +50,7 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
             _intYear = Convert.ToInt32(objNode["year"].InnerText);
             _intWeek = Convert.ToInt32(objNode["week"].InnerText);
             _strNotes = objNode["notes"].InnerText;

@@ -152,7 +152,7 @@ namespace Chummer
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality["doublecareer"]?.InnerText;
-                            if (string.IsNullOrEmpty(strDoubleCostCareer) || bool.Parse(strDoubleCostCareer))
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer == bool.TrueString)
                             {
                                 intBP *= 2;
                             }

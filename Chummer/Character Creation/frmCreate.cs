@@ -48,7 +48,7 @@ namespace Chummer
         private bool _blnReapplyImprovements = false;
         private bool _blnFreestyle = false;
         private int _intDragLevel = 0;
-        private MouseButtons _objDragButton = new MouseButtons();
+        private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear = false;
         private StoryBuilder _objStoryBuilder;
         private readonly ObservableCollection<CharacterAttrib> lstPrimaryAttributes = new ObservableCollection<CharacterAttrib>();
@@ -5089,13 +5089,10 @@ namespace Chummer
                     // Include the BP used by Enemies.
                     if (CharacterObjectOptions.EnemyKarmaQualityLimit)
                     {
-                        //TODO: What the hell is this string comparison for?
-                        if (lblEnemiesBP.Text.Contains(LanguageManager.GetString("String_BP", GlobalOptions.Language)))
-                            intBP += int.Parse(lblEnemiesBP.Text.Replace(
-                                LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
-                        else
-                            intBP += int.Parse(lblEnemiesBP.Text.Replace(
-                                ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
+                        // Include the BP used by Enemies.
+                        string strEnemiesBPText = lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty).NormalizeWhiteSpace();
+                        if (int.TryParse(strEnemiesBPText, out int intTemp))
+                            intBP += intTemp;
                     }
 
                     // Include the amount from Free Negative Quality BP cost Improvements.
@@ -9068,10 +9065,13 @@ namespace Chummer
                         }
 
                         // Include the BP used by Enemies.
-                        if (lblEnemiesBP.Text.Contains(LanguageManager.GetString("String_BP", GlobalOptions.Language)))
-                            intBP += int.Parse(lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
-                        else
-                            intBP += int.Parse(lblEnemiesBP.Text.Replace(' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty));
+                        if (CharacterObjectOptions.EnemyKarmaQualityLimit)
+                        {
+                            // Include the BP used by Enemies.
+                            string strEnemiesBPText = lblEnemiesBP.Text.Replace(LanguageManager.GetString("String_Karma", GlobalOptions.Language), string.Empty).NormalizeWhiteSpace();
+                            if (int.TryParse(strEnemiesBPText, out int intTemp))
+                                intBP += intTemp;
+                        }
 
                         // Include the amount from Free Negative Quality BP cost Improvements.
                         intBP -= (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeNegativeQualities) * CharacterObjectOptions.KarmaQuality);
@@ -9852,13 +9852,13 @@ namespace Chummer
             {
                 if (treGear.SelectedNode.Level > 1 || treGear.SelectedNode.Level < 0)
                     return;
-                _objDragButton = MouseButtons.Left;
+                _eDragButton = MouseButtons.Left;
             }
             else
             {
                 if (treGear.SelectedNode.Level == 0)
                     return;
-                _objDragButton = MouseButtons.Right;
+                _eDragButton = MouseButtons.Right;
             }
 
             // Do not allow the root element to be moved.
@@ -9891,20 +9891,20 @@ namespace Chummer
             }
 
             // If the item was moved using the left mouse button, change the order of things.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (treGear.SelectedNode.Level == 1)
                     CommonFunctions.MoveGearNode(CharacterObject, intNewIndex, nodDestination, treGear);
                 else
                     CommonFunctions.MoveGearRoot(CharacterObject, intNewIndex, nodDestination, treGear);
             }
-            if (_objDragButton == MouseButtons.Right)
+            if (_eDragButton == MouseButtons.Right)
                 CommonFunctions.MoveGearParent(CharacterObject, nodDestination, treGear);
 
             // Clear the background color for all Nodes.
             treGear.ClearNodeBackground(null);
 
-            _objDragButton = MouseButtons.None;
+            _eDragButton = MouseButtons.None;
 
             IsDirty = true;
         }
@@ -9918,7 +9918,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = SystemColors.ControlDark;
@@ -10256,7 +10256,7 @@ namespace Chummer
                 Gear objGear = CharacterObject.Vehicles.FindVehicleGear(treVehicles.SelectedNode.Tag.ToString());
                 if (objGear != null)
                 {
-                    _objDragButton = e.Button;
+                    _eDragButton = e.Button;
                     _blnDraggingGear = true;
                     _intDragLevel = treVehicles.SelectedNode.Level;
                     DoDragDrop(e.Item, DragDropEffects.Move);
@@ -10289,7 +10289,7 @@ namespace Chummer
                 CommonFunctions.MoveVehicleNode(CharacterObject, intNewIndex, nodDestination, treVehicles);
             else
             {
-                if (_objDragButton == MouseButtons.Left)
+                if (_eDragButton == MouseButtons.Left)
                     return;
                 else
                     CommonFunctions.MoveVehicleGearParent(CharacterObject, nodDestination, treVehicles);
@@ -10312,7 +10312,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_objDragButton == MouseButtons.Left)
+            if (_eDragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = SystemColors.ControlDark;

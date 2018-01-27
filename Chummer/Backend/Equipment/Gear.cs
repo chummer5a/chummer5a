@@ -281,7 +281,7 @@ namespace Chummer.Backend.Equipment
                         objGearWeapon.ParentID = InternalId;
                         lstWeapons.Add(objGearWeapon);
 
-                        _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                        Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                     }
                 }
             }
@@ -532,7 +532,7 @@ namespace Chummer.Backend.Equipment
             _nodBonus = objGear.Bonus;
             _nodWirelessBonus = objGear.WirelessBonus;
             _nodWeaponBonus = objGear.WeaponBonus;
-            _guiWeaponID = Guid.Parse(objGear.WeaponID);
+            Guid.TryParse(objGear.WeaponID, out _guiWeaponID);
             _strNotes = objGear.Notes;
             _strLocation = objGear.Location;
             _intChildAvailModifier = objGear.ChildAvailModifier;
@@ -648,7 +648,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
             if (objNode.TryGetStringFieldQuickly("id", ref _SourceGuid))
                 _objCachedMyXmlNode = null;
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
@@ -694,7 +694,7 @@ namespace Chummer.Backend.Equipment
             string strWeaponID = string.Empty;
             if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID))
             {
-                _guiWeaponID = Guid.Parse(strWeaponID);
+                Guid.TryParse(strWeaponID, out _guiWeaponID);
             }
             objNode.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objNode.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
@@ -966,7 +966,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _guiWeaponID = Guid.Parse(value);
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponID = guiTemp;
             }
         }
 
@@ -2363,7 +2364,7 @@ namespace Chummer.Backend.Equipment
             if (_decQty != 1.0m || Category == "Currency")
                 strReturn = _decQty.ToString(Name.StartsWith("Nuyen") ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", GlobalOptions.CultureInfo) + ' ' + strReturn;
             if (Rating > 0)
-                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating + ')';
+                strReturn += " (" + LanguageManager.GetString("String_Rating", strLanguage) + ' ' + Rating.ToString() + ')';
             if (!string.IsNullOrEmpty(_strExtra))
                 strReturn += " (" + LanguageManager.TranslateExtra(_strExtra, strLanguage) + ')';
 

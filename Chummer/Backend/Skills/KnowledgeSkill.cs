@@ -433,10 +433,10 @@ namespace Chummer.Backend.Skills
             string strTemp = Name;
             if (xmlNode.TryGetStringFieldQuickly("name", ref strTemp))
                 Name = strTemp;
-            if (xmlNode["id"] != null)
-                SkillId = Guid.Parse(xmlNode["id"].InnerText);
-            else if (xmlNode["suid"] != null)
-                SkillId = Guid.Parse(xmlNode["suid"].InnerText);
+            if (xmlNode["id"] != null && Guid.TryParse(xmlNode["id"].InnerText, out Guid guiTemp))
+                SkillId = guiTemp;
+            else if (xmlNode["suid"] != null && Guid.TryParse(xmlNode["suid"].InnerText, out Guid guiTemp2))
+                SkillId = guiTemp2;
 
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))

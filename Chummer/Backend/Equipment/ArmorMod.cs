@@ -200,7 +200,7 @@ namespace Chummer.Backend.Equipment
                     objGearWeapon.ParentID = InternalId;
                     lstWeapons.Add(objGearWeapon);
 
-                    _guiWeaponID = Guid.Parse(objGearWeapon.InternalId);
+                    Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID);
                 }
             }
         }
@@ -260,13 +260,9 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnCopy">Whether or not we are copying an existing node.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            if (blnCopy)
+            if (blnCopy || !Guid.TryParse(objNode["guid"].InnerText, out _guiID))
             {
                 _guiID = Guid.NewGuid();
-            }
-            else
-            {
-                _guiID = Guid.Parse(objNode["guid"].InnerText);
             }
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
@@ -289,7 +285,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             if (objNode["weaponguid"] != null)
             {
-                _guiWeaponID = Guid.Parse(objNode["weaponguid"].InnerText);
+                Guid.TryParse(objNode["weaponguid"].InnerText, out _guiWeaponID);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
@@ -365,7 +361,8 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                _guiWeaponID = Guid.Parse(value);
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponID = guiTemp;
             }
         }
 

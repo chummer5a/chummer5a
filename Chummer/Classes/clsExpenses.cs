@@ -366,8 +366,8 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            _guiID = Guid.Parse(objNode["guid"].InnerText);
-            _datDate = DateTime.Parse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            Guid.TryParse(objNode["guid"].InnerText, out _guiID);
+            DateTime.TryParse(objNode["date"]?.InnerText, GlobalOptions.InvariantCultureInfo, DateTimeStyles.None, out _datDate);
             objNode.TryGetDecFieldQuickly("amount", ref _decAmount);
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason.TrimEnd(" (" + LanguageManager.GetString("String_Expense_Refund", GlobalOptions.Language) + ')');
@@ -405,17 +405,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Expense Log Entry.
         /// </summary>
-        public string InternalId
-        {
-            get
-            {
-                return _guiID.ToString("D");
-            }
-            set
-            {
-                _guiID = Guid.Parse(value);
-            }
-        }
+        public string InternalId => _guiID.ToString("D");
 
         /// <summary>
         /// Date the Exense Log Entry was made.

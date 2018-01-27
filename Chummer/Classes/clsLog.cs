@@ -306,7 +306,7 @@ namespace Chummer
 
             s_TimeStamper.Clear();
             s_TimeStamper.Append(pre);
-            string[] classPath = file.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+            string[] classPath = file.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             s_TimeStamper.Append(classPath[classPath.Length - 1]);
             s_TimeStamper.Append('.');
             s_TimeStamper.Append(method);
@@ -316,9 +316,9 @@ namespace Chummer
             if (info != null)
             {
                 s_TimeStamper.Append(' ');
-                foreach (object o in info)
+                for (int i = 0; i < info.Length; ++i)
                 {
-                    s_TimeStamper.Append(o);
+                    s_TimeStamper.Append(info[i]);
                     s_TimeStamper.Append(", ");
                 }
 
