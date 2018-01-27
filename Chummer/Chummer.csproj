@@ -133,6 +133,7 @@
     <Compile Include="Backend\Datastructures\AvailabilityString.cs" />
     <Compile Include="Backend\Datastructures\NuyenString.cs" />
     <Compile Include="Backend\Datastructures\SourceString.cs" />
+    <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
@@ -174,6 +175,25 @@
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
+    <Compile Include="Backend\Uniques\AIProgram.cs" />
+    <Compile Include="Backend\Uniques\Art.cs" />
+    <Compile Include="Backend\Uniques\CalendarWeek.cs" />
+    <Compile Include="Backend\Uniques\ComplexForm.cs" />
+    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Uniques\CritterPower.cs" />
+    <Compile Include="Backend\Uniques\Enhancement.cs" />
+    <Compile Include="Backend\Uniques\Focus.cs" />
+    <Compile Include="Backend\Uniques\InitiationGrade.cs" />
+    <Compile Include="Backend\Uniques\LimitModifier.cs" />
+    <Compile Include="Backend\Uniques\MartialArt.cs" />
+    <Compile Include="Backend\Uniques\MartialArtManeuver.cs" />
+    <Compile Include="Backend\Uniques\MartialArtTechnique.cs" />
+    <Compile Include="Backend\Uniques\MentorSpirit.cs" />
+    <Compile Include="Backend\Uniques\Metamagic.cs" />
+    <Compile Include="Backend\Uniques\Quality.cs" />
+    <Compile Include="Backend\Uniques\Spell.cs" />
+    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Uniques\StackedFocus.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,7 +219,6 @@
     <Compile Include="Classes\clsParameterAttribute.cs" />
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
-    <Compile Include="Classes\clsUnique.cs" />
     <Compile Include="Classes\clsUtils.cs" />
     <Compile Include="Classes\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
