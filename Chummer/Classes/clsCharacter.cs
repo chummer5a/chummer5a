@@ -126,9 +126,9 @@ namespace Chummer
         private CharacterBuildMethod _objBuildMethod = CharacterBuildMethod.Karma;
 
         // Metatype Information.
-        private string _strMetatype = string.Empty;
+        private string _strMetatype = "Human";
         private string _strMetavariant = string.Empty;
-        private string _strMetatypeCategory = string.Empty;
+        private string _strMetatypeCategory = "Metahuman";
         private string _strMovement = string.Empty;
         private string _strWalk = string.Empty;
         private string _strRun = string.Empty;
