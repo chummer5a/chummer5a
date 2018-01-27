@@ -404,13 +404,13 @@ namespace Chummer
         {
             string strReturn = Range;
 
-            strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguage));
-            strReturn = strReturn.CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguage));
-            strReturn = strReturn.CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage));
-            strReturn = strReturn.CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage));
-            strReturn = strReturn.CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage));
-            strReturn = strReturn.CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')');
-            strReturn = strReturn.CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
+            strReturn = strReturn.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguage))
+                .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguage))
+                .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage))
+                .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
+                .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
+                .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
+                .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
 
             return strReturn;
         }

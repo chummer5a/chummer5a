@@ -149,29 +149,43 @@ namespace Chummer
             {
                 //Attributes for spirits, named differently as to not confuse <attribtue>
 
-                Dictionary<String, int> attributes = new Dictionary<string, int>();
+                Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string attribute in new String[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
+                foreach (string strAttribute in new String[] { "bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini" })
                 {
-                    String strInner = string.Empty;
-                    if (objXmlCritterNode.TryGetStringFieldQuickly(attribute, ref strInner))
+                    string strInner = string.Empty;
+                    if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                     {
-                        int value = 1;
+                        int intValue = 1;
                         try
                         {
-                            value = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString())));
+                            intValue = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString())));
                         }
                         catch (XPathException)
                         {
-                            if (!int.TryParse(strInner, out value))
+                            if (!int.TryParse(strInner, out intValue))
                             {
-                                value = _intForce; //if failed to parse, default to force
+                                intValue = _intForce; //if failed to parse, default to force
                             }
                         }
-                        value = Math.Max(value, 1); //Min value is 1
-                        objWriter.WriteElementString(attribute, value.ToString(objCulture));
+                        catch (OverflowException)
+                        {
+                            if (!int.TryParse(strInner, out intValue))
+                            {
+                                intValue = _intForce; //if failed to parse, default to force
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            if (!int.TryParse(strInner, out intValue))
+                            {
+                                intValue = _intForce; //if failed to parse, default to force
+                            }
+                        }
+                        intValue = Math.Max(intValue, 1); //Min value is 1
+                        objWriter.WriteElementString(strAttribute, intValue.ToString(objCulture));
 
-                        attributes[attribute] = value;
+                        dicAttributes[strAttribute] = intValue;
                     }
                 }
 
@@ -183,49 +197,53 @@ namespace Chummer
                 XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                 if (xmlPowersNode != null)
                 {
-                    //objWriter.WriteRaw(objXmlCritterNode["powers"].OuterXml);
                     objWriter.WriteStartElement("powers");
                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
-                        PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
+                        PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText, GlobalOptions.Language);
                     }
                     objWriter.WriteEndElement();
                 }
                 xmlPowersNode = objXmlCritterNode["optionalpowers"];
                 if (xmlPowersNode != null)
                 {
-                    //objWriter.WriteRaw(objXmlCritterNode["optionalpowers"].OuterXml);
                     objWriter.WriteStartElement("optionalpowers");
                     foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                     {
-                        PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText);
+                        PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText, GlobalOptions.Language);
                     }
                     objWriter.WriteEndElement();
                 }
 
-                if (objXmlCritterNode["skills"] != null)
+                xmlPowersNode = objXmlCritterNode["skills"];
+                if (xmlPowersNode != null)
                 {
-                    //objWriter.WriteRaw(objXmlCritterNode["skills"].OuterXml);
                     objWriter.WriteStartElement("skills");
-                    foreach (XmlNode objXmlSkillNode in objXmlCritterNode["skills"].ChildNodes)
+                    foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                     {
-                        string attrName = objXmlSkillNode.Attributes?["attr"]?.Value;
-                        if (!attributes.TryGetValue(attrName, out int attr))
-                            attr = _intForce;
-                        int dicepool = attr + _intForce;
+                        string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value;
+                        if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
+                            intAttrValue = _intForce;
+                        int intDicepool = intAttrValue + _intForce;
 
                         objWriter.WriteStartElement("skill");
-                        objWriter.WriteElementString("name", objXmlSkillNode.InnerText);
-                        objWriter.WriteElementString("attr", attrName);
-                        objWriter.WriteElementString("pool", dicepool.ToString(objCulture));
+                        objWriter.WriteElementString("name", xmlSkillNode.InnerText);
+                        objWriter.WriteElementString("attr", strAttrName);
+                        objWriter.WriteElementString("pool", intDicepool.ToString(objCulture));
                         objWriter.WriteEndElement();
                     }
                     objWriter.WriteEndElement();
                 }
 
-                if (objXmlCritterNode["weaknesses"] != null)
+                xmlPowersNode = objXmlCritterNode["weaknesses"];
+                if (xmlPowersNode != null)
                 {
-                    objWriter.WriteRaw(objXmlCritterNode["weaknesses"].OuterXml);
+                    objWriter.WriteStartElement("weaknesses");
+                    foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                    {
+                        PrintPowerInfo(objWriter, objXmlPowersDocument, objXmlPowerNode.InnerText, GlobalOptions.Language);
+                    }
+                    objWriter.WriteEndElement();
                 }
 
                 //Page in book for reference
@@ -247,22 +265,114 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private static void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName)
+        private static void PrintPowerInfo(XmlTextWriter objWriter, XmlDocument objXmlDocument, string strPowerName, string strLanguageToPrint)
         {
+            StringBuilder strExtra = new StringBuilder();
             string strSource = string.Empty;
             string strPage = string.Empty;
+            string strEnglishName = strPowerName;
+            string strEnglishCategory = string.Empty;
+            string strCategory = string.Empty;
+            string strDisplayType = string.Empty;
+            string strDisplayAction = string.Empty;
+            string strDisplayRange = string.Empty;
+            string strDisplayDuration = string.Empty;
             XmlNode objXmlPowerNode = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = \"" + strPowerName + "\"]") ??
                 objXmlDocument.SelectSingleNode("/chummer/powers/power[starts-with(\"" + strPowerName + "\", name)]");
             if (objXmlPowerNode != null)
             {
                 objXmlPowerNode.TryGetStringFieldQuickly("source", ref strSource);
-                objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
-                objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName);
+                if (!objXmlPowerNode.TryGetStringFieldQuickly("altpage", ref strPage))
+                    objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
+
+                objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
+                string[] lstExtras = strPowerName.TrimStart(strEnglishName).Trim().TrimStart('(').TrimEnd(')').Split(',');
+                foreach (string strLoopExtra in lstExtras)
+                {
+                    strExtra.Append(LanguageManager.TranslateExtra(strLoopExtra, strLanguageToPrint));
+                    strExtra.Append(", ");
+                }
+                if (strExtra.Length > 0)
+                    strExtra.Length -= 2;
+
+                if (objXmlPowerNode.TryGetStringFieldQuickly("translate", ref strPowerName))
+                    strPowerName = strEnglishName;
+
+                objXmlPowerNode.TryGetStringFieldQuickly("category", ref strEnglishCategory);
+
+                strCategory = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = \"" + strEnglishCategory + "\"]/@translate")?.InnerText ?? strEnglishCategory;
+
+                switch (objXmlPowerNode["type"]?.InnerText)
+                {
+                    case "M":
+                        strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
+                        break;
+                    case "P":
+                        strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
+                        break;
+                }
+                switch (objXmlPowerNode["action"]?.InnerText)
+                {
+                    case "Auto":
+                        strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
+                        break;
+                    case "Free":
+                        strDisplayAction = LanguageManager.GetString("String_ActionFree", strLanguageToPrint);
+                        break;
+                    case "Simple":
+                        strDisplayAction = LanguageManager.GetString("String_ActionSimple", strLanguageToPrint);
+                        break;
+                    case "Complex":
+                        strDisplayAction = LanguageManager.GetString("String_ActionComplex", strLanguageToPrint);
+                        break;
+                    case "Special":
+                        strDisplayAction = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                        break;
+                }
+                switch (objXmlPowerNode["duration"]?.InnerText)
+                {
+                    case "Instant":
+                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);
+                        break;
+                    case "Sustained":
+                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationSustained", strLanguageToPrint);
+                        break;
+                    case "Always":
+                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationAlways", strLanguageToPrint);
+                        break;
+                    case "Special":
+                        strDisplayDuration = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                        break;
+                }
+
+                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange))
+                {
+                    strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
+                        .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))
+                        .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguageToPrint))
+                        .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguageToPrint))
+                        .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguageToPrint))
+                        .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguageToPrint) + ')')
+                        .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguageToPrint));
+                }
             }
 
-            objWriter.WriteStartElement("power");
+            if (string.IsNullOrEmpty(strDisplayType))
+                strDisplayType = LanguageManager.GetString("String_None", strLanguageToPrint);
+            if (string.IsNullOrEmpty(strDisplayAction))
+                strDisplayAction = LanguageManager.GetString("String_None", strLanguageToPrint);
+
+            objWriter.WriteStartElement("critterpower");
             objWriter.WriteElementString("name", strPowerName);
-            objWriter.WriteElementString("source", strSource);
+            objWriter.WriteElementString("name_english", strEnglishName);
+            objWriter.WriteElementString("extra", strExtra.ToString());
+            objWriter.WriteElementString("category", strCategory);
+            objWriter.WriteElementString("category_english", strEnglishCategory);
+            objWriter.WriteElementString("type", strDisplayType);
+            objWriter.WriteElementString("action", strDisplayAction);
+            objWriter.WriteElementString("range", strDisplayRange);
+            objWriter.WriteElementString("duration", strDisplayDuration);
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(strSource, strLanguageToPrint));
             objWriter.WriteElementString("page", strPage);
             objWriter.WriteEndElement();
         }

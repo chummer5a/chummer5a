@@ -100,6 +100,8 @@ Application Changes:
 - Fixed a bug where non-English character sheets would not print a tradition's spirits in the appropriate language.
 - Unhardcoded the spirits of Draconic tradition so they can be changed by custom/house rules to not include every spirit.
 - Fixed a bug where Path of the Pariah would not print "None" under their spirit categories.
+- Fixed an issue where powers, optional powers, and weaknesses printed with spirits would not display any extras if a translation was loaded, and would not follow the same printing format as those of critter powers printed with a character.
+- Fixed an issue where the stun condition monitor section for spirits in the Fancy Blocks character sheet set would print the spirit's charisma instead.
 
 Data Changes:
 
