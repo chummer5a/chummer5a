@@ -145,7 +145,7 @@ namespace Chummer.Backend.Equipment
 			objWriter.WriteElementString("slots", _intSlots.ToString());
 			objWriter.WriteElementString("avail", _strAvail);
 			objWriter.WriteElementString("cost", _strCost);
-			objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
+			objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalOptions.InvariantCultureInfo));
 			objWriter.WriteElementString("extra", _strExtra);
 			objWriter.WriteElementString("source", _strSource);
 			objWriter.WriteElementString("page", _strPage);

@@ -749,14 +749,21 @@ namespace Chummer
             foreach (Improvement objImprovement in CharacterObject.Improvements.Where(objImprovement => objImprovement.ImproveSource == Improvement.ImprovementSource.Custom))
             {
                 int intTargetLimit = -1;
-                if (objImprovement.ImproveType == Improvement.ImprovementType.LimitModifier)
-                    intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
-                else if (objImprovement.ImproveType == Improvement.ImprovementType.PhysicalLimit)
-                    intTargetLimit = (int)LimitType.Physical;
-                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                    intTargetLimit = (int)LimitType.Mental;
-                else if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                    intTargetLimit = (int)LimitType.Social;
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.LimitModifier:
+                        intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                        break;
+                    case Improvement.ImprovementType.PhysicalLimit:
+                        intTargetLimit = (int)LimitType.Physical;
+                        break;
+                    case Improvement.ImprovementType.MentalLimit:
+                        intTargetLimit = (int)LimitType.Mental;
+                        break;
+                    case Improvement.ImprovementType.SocialLimit:
+                        intTargetLimit = (int)LimitType.Social;
+                        break;
+                }
                 if (intTargetLimit != -1)
                 {
                     TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
@@ -789,7 +796,6 @@ namespace Chummer
                         }
 
                         objParentNode.Nodes.Add(newNode);
-                        objParentNode.Expand();
                     }
                 }
             }

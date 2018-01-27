@@ -389,8 +389,8 @@ namespace Chummer.Backend.Skills
         {
             objWriter.WriteStartElement("newskills");
 
-            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("skillptsmax", SkillPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("skillgrpsmax", SkillGroupPointsMaximum.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteStartElement("skills");
             foreach (Skill objSkill in Skills)

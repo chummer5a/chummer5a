@@ -225,7 +225,7 @@ namespace Chummer.UI.Powers
         {
             if (_searchMode)
             {
-                _powers.Filter(skill => CultureInfo.InvariantCulture.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
+                _powers.Filter(skill => GlobalOptions.InvariantCultureInfo.CompareInfo.IndexOf(skill.DisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0, true);
             }
         }
 

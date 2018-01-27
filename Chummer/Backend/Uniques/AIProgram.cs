@@ -1,0 +1,275 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+
+namespace Chummer
+{
+    /// <summary>
+    /// An AI Program or Advanced Program.
+    /// </summary>
+    public class AIProgram : IHasInternalId, IHasName, IHasXmlNode
+    {
+        private Guid _guiID;
+        private string _strName = string.Empty;
+        private string _strRequiresProgram = string.Empty;
+        private string _strSource = string.Empty;
+        private string _strPage = string.Empty;
+        private string _strNotes = string.Empty;
+        private string _strExtra = string.Empty;
+        private bool _boolIsAdvancedProgram;
+        private bool _boolCanDelete = true;
+        private readonly Character _objCharacter;
+
+        #region Constructor, Create, Save, Load, and Print Methods
+        public AIProgram(Character objCharacter)
+        {
+            // Create the GUID for the new Program.
+            _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
+        }
+
+        /// Create a Program from an XmlNode.
+        /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
+        /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        public void Create(XmlNode objXmlProgramNode, bool boolIsAdvancedProgram, string strExtra = "", bool boolCanDelete = true)
+        {
+            if (objXmlProgramNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            _strRequiresProgram = LanguageManager.GetString("String_None", GlobalOptions.Language);
+            _boolCanDelete = boolCanDelete;
+            objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
+            objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
+            if (!objXmlProgramNode.TryGetStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlProgramNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _strExtra = strExtra;
+            _boolIsAdvancedProgram = boolIsAdvancedProgram;
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Save(XmlTextWriter objWriter)
+        {
+            objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("requiresprogram", _strRequiresProgram);
+            objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("source", _strSource);
+            objWriter.WriteElementString("page", _strPage);
+            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram.ToString());
+            objWriter.WriteEndElement();
+            _objCharacter.SourceProcess(_strSource);
+        }
+
+        /// <summary>
+        /// Load the Program from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        public void Load(XmlNode objNode)
+        {
+            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                _objCachedMyXmlNode = null;
+            objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
+            objNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            _boolIsAdvancedProgram = objNode["isadvancedprogram"]?.InnerText == bool.TrueString;
+        }
+
+        /// <summary>
+        /// Print the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        {
+            objWriter.WriteStartElement("aiprogram");
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name_english", Name);
+            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None", strLanguageToPrint))
+                objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
+            else
+                objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
+            objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("page", Page(strLanguageToPrint));
+            if (_objCharacter.Options.PrintNotes)
+                objWriter.WriteElementString("notes", Notes);
+            objWriter.WriteEndElement();
+        }
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Internal identifier which will be used to identify this AI Program in the Improvement system.
+        /// </summary>
+        public string InternalId => _guiID.ToString("D");
+
+        /// <summary>
+        /// AI Program's name.
+        /// </summary>
+        public string Name
+        {
+            get => _strName;
+            set
+            {
+                if (_strName != value)
+                    _objCachedMyXmlNode = null;
+                _strName = value;
+            }
+        }
+
+        /// <summary>
+        /// AI Program's extra info.
+        /// </summary>
+        public string Extra
+        {
+            get => _strExtra;
+            set => _strExtra = LanguageManager.ReverseTranslateExtra(value, GlobalOptions.Language);
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public string DisplayNameShort(string strLanguage)
+        {
+            string strReturn = Name;
+            // Get the translated name if applicable.
+            if (strLanguage != GlobalOptions.DefaultLanguage)
+                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                string strExtra = Extra;
+                if (strLanguage != GlobalOptions.DefaultLanguage)
+                    strExtra = LanguageManager.TranslateExtra(Extra, strLanguage);
+                strReturn += " (" + strExtra + ')';
+            }
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public string DisplayName
+        {
+            get
+            {
+                return DisplayNameShort(GlobalOptions.Language);
+            }
+        }
+
+        /// <summary>
+        /// AI Advanced Program's requirement program.
+        /// </summary>
+        public string RequiresProgram
+        {
+            get => _strRequiresProgram;
+            set => _strRequiresProgram = value;
+        }
+
+        /// <summary>
+        /// AI Advanced Program's requirement program.
+        /// </summary>
+        public string DisplayRequiresProgram(string strLanguage)
+        {
+            XmlNode objNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + RequiresProgram + "\"]");
+            return objNode?["translate"]?.InnerText ?? objNode?["name"]?.InnerText ?? LanguageManager.GetString("String_None", strLanguage);
+        }
+
+        /// <summary>
+        /// If the AI Advanced Program is added from a quality.
+        /// </summary>
+        public bool CanDelete
+        {
+            get => _boolCanDelete;
+            set => _boolCanDelete = value;
+        }
+
+        /// <summary>
+        /// AI Program's Source.
+        /// </summary>
+        public string Source
+        {
+            get => _strSource;
+            set => _strSource = value;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number.
+        /// </summary>
+        public string Page(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage == GlobalOptions.DefaultLanguage)
+                return _strPage;
+
+            return GetNode(strLanguage)?["altpage"]?.InnerText ?? _strPage;
+        }
+
+        /// <summary>
+        /// Notes.
+        /// </summary>
+        public string Notes
+        {
+            get => _strNotes;
+            set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// If the AI Program is an Advanced Program.
+        /// </summary>
+        public bool IsAdvancedProgram => _boolIsAdvancedProgram;
+
+        private XmlNode _objCachedMyXmlNode = null;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
+        public XmlNode GetNode()
+        {
+            return GetNode(GlobalOptions.Language);
+        }
+
+        public XmlNode GetNode(string strLanguage)
+        {
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            {
+                _objCachedMyXmlNode = XmlManager.Load("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = \"" + Name + "\"]");
+                _strCachedXmlNodeLanguage = strLanguage;
+            }
+            return _objCachedMyXmlNode;
+        }
+        #endregion
+
+        #region Methods
+        public TreeNode CreateTreeNode(ContextMenuStrip cmsAIProgram)
+        {
+            TreeNode objNode = new TreeNode
+            {
+                Name = InternalId,
+                Text = DisplayName,
+                Tag = InternalId,
+                ContextMenuStrip = cmsAIProgram
+            };
+            if (!string.IsNullOrEmpty(Notes))
+            {
+                objNode.ForeColor = Color.SaddleBrown;
+            }
+            else if (!CanDelete)
+            {
+                objNode.ForeColor = SystemColors.GrayText;
+            }
+            objNode.ToolTipText = Notes.WordWrap(100);
+            return objNode;
+        }
+        #endregion
+    }
+}

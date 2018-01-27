@@ -187,17 +187,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("limit", _strLimit);
             objWriter.WriteElementString("slots", _strSlots);
             objWriter.WriteElementString("capacity", _strCapacity);
-            objWriter.WriteElementString("rating", _intRating.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("response", _intResponse.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("system", _intSystem.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("firewall", _intFirewall.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("signal", _intSignal.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("pilot", _intPilot.ToString(CultureInfo.InvariantCulture));
-            objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("response", _intResponse.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("system", _intSystem.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("firewall", _intFirewall.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("signal", _intSignal.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("pilot", _intPilot.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
-            objWriter.WriteElementString("markup", _decMarkup.ToString(CultureInfo.InvariantCulture));
+            objWriter.WriteElementString("markup", _decMarkup.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
@@ -728,7 +728,7 @@ namespace Chummer.Backend.Equipment
             if (Parent != null)
             {
                 strAvailExpr = strAvailExpr.CheapReplace("Vehicle Cost",
-                    () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                    () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strAvailExpr = strAvailExpr.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strAvailExpr = strAvailExpr.Replace("Speed", Parent.Speed.ToString());
@@ -977,7 +977,7 @@ namespace Chummer.Backend.Equipment
             if (Parent != null)
             {
                 strCost = strCost.CheapReplace("Vehicle Cost",
-                    () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                    () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                 strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                 strCost = strCost.Replace("Speed", Parent.Speed.ToString());
@@ -1029,7 +1029,7 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     strCost = strCost.CheapReplace("Vehicle Cost",
-                        () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                        () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
                     // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                     strCost = strCost.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                     strCost = strCost.Replace("Speed", Parent.Speed.ToString());
@@ -1071,7 +1071,7 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     strSlots = strSlots.CheapReplace("Vehicle Cost",
-                        () => Parent.OwnCost.ToString(CultureInfo.InvariantCulture));
+                        () => Parent.OwnCost.ToString(GlobalOptions.InvariantCultureInfo));
                     // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                     strSlots = strSlots.Replace("Body", Parent.Body > 0 ? Parent.Body.ToString() : "0.5");
                     strSlots = strSlots.Replace("Speed", Parent.Speed.ToString());
