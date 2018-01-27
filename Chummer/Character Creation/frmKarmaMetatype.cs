@@ -589,7 +589,7 @@ namespace Chummer
                     objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                     objPower.CountTowardsLimit = false;
                     _objCharacter.CritterPowers.Add(objPower);
-                    ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                    ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                     ImprovementManager.Commit(_objCharacter);
                 }
 
@@ -648,7 +648,7 @@ namespace Chummer
                             objPower.Create(objXmlCritterPower, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
-                            ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                            ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(_objCharacter);
                         }
 
@@ -660,7 +660,7 @@ namespace Chummer
                             objPower.Create(objXmlCritterPower, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
-                            ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                            ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(_objCharacter);
                         }
 
@@ -670,7 +670,7 @@ namespace Chummer
                         objPower.Create(objXmlCritterPower, 0, "DV " + intForce.ToString() + "P, AP 0");
                         objPower.CountTowardsLimit = false;
                         _objCharacter.CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                        ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                         ImprovementManager.Commit(_objCharacter);
 
                         // Evanescence.
@@ -681,7 +681,7 @@ namespace Chummer
                             objPower.Create(objXmlCritterPower, 0, string.Empty);
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
-                            ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                            ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(_objCharacter);
                         }
                     }
@@ -709,7 +709,7 @@ namespace Chummer
                                 objPower.CountTowardsLimit = false;
                                 _objCharacter.CritterPowers.Add(objPower);
 
-                                ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                                ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                                 ImprovementManager.Commit(_objCharacter);
                             }
                         }
@@ -725,7 +725,7 @@ namespace Chummer
                             objPower.CountTowardsLimit = false;
                             _objCharacter.CritterPowers.Add(objPower);
 
-                            ImprovementManager.CreateImprovement(_objCharacter, objPower.Name, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                            ImprovementManager.CreateImprovement(_objCharacter, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(_objCharacter);
                         }
                     }

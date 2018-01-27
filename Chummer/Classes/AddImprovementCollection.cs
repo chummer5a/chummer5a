@@ -4779,7 +4779,7 @@ namespace Chummer.Classes
 
             objPower.Grade = -1;
             _objCharacter.CritterPowers.Add(objPower);
-            CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
+            CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
         }
 
         public void critterpowers(XmlNode bonusNode)
@@ -4800,7 +4800,7 @@ namespace Chummer.Classes
                 objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                 objPower.Grade = -1;
                 _objCharacter.CritterPowers.Add(objPower);
-                CreateImprovement(objPower.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, objPower.Extra);
+                CreateImprovement(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique);
             }
         }
 

@@ -104,6 +104,7 @@ Application Changes:
 - Fixed an issue where the stun condition monitor section for spirits in the Fancy Blocks character sheet set would print the spirit's charisma instead.
 - Fixed an issue where changing metatypes (or critter types) while using a karma-based character generation method would not remove some critter powers, complex forms, advanced programs, skill levels, and gear granted by the old metatype (or critter type).
 - Fixed some rare issues where characters would not have their old priority selection entries loaded when they wished to change priorities.
+- Fixed a bug where bonus-granted echoes and metamagics would not get properly removed when the underlying bonus' source was removed.
 
 Data Changes:
 
