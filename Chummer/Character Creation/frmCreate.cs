@@ -17171,18 +17171,7 @@ namespace Chummer
 
             if (CharacterObject.BuildMethod == CharacterBuildMethod.Priority || CharacterObject.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject)
-                {
-                    Attributes = CharacterObject.AttributesPriority[0].ToString(),
-                    Skills = CharacterObject.SkillsPriority[0].ToString(),
-                    Resources = CharacterObject.ResourcesPriority[0].ToString(),
-                    Special = CharacterObject.SpecialPriority[0].ToString(),
-                    Metatype = CharacterObject.MetatypePriority[0].ToString(),
-                    SelectedMetatype = CharacterObject.Metatype,
-                    SelectedMetavariant = CharacterObject.Metavariant,
-                    SelectedMetatypeCategory = CharacterObject.MetatypeCategory,
-                    SelectedTalent = CharacterObject.TalentPriority,
-                };
+                frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(CharacterObject);
                 frmSelectMetatype.ShowDialog(this);
                 if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                     return;

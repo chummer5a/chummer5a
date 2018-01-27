@@ -33,17 +33,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         private readonly string _strXmlFile = "metatypes.xml";
-        private string _strMetatype = string.Empty;
-        private string _strAttributes = string.Empty;
-        private string _strSpecial = string.Empty;
-        private string _strSkills = string.Empty;
-        private string _strResources = string.Empty;
-        private string _strSelectedMetatype = string.Empty;
-        private string _strSelectedMetavariant = string.Empty;
-        private string _strSelectedMetatypeCategory = string.Empty;
-        private string _strSelectedTalent = string.Empty;
         private int _intBuildMethod = 0;
-        private List<ListItem> _lstCategory = new List<ListItem>();
         private bool _blnInitializing = true;
         private readonly List<string> _lstPrioritySkills = null;
 
@@ -53,118 +43,7 @@ namespace Chummer
             // Do nothing. This is just an Event trap so an exception doesn't get thrown.
         }
         #endregion
-
-        #region Properties
-        public string Metatype
-        {
-            get
-            {
-                return _strMetatype;
-            }
-            set
-            {
-                _strMetatype = value;
-            }
-        }
-        public string Resources
-        {
-            get
-            {
-                return _strResources;
-            }
-            set
-            {
-                _strResources = value;
-            }
-        }
-        public string Skills
-        {
-            get
-            {
-                return _strSkills;
-            }
-            set
-            {
-                _strSkills = value;
-            }
-        }
-        public string Attributes
-        {
-            get
-            {
-                return _strAttributes;
-            }
-            set
-            {
-                _strAttributes = value;
-            }
-        }
-        public string Special
-        {
-            get
-            {
-                return _strSpecial;
-            }
-            set
-            {
-                _strSpecial = value;
-            }
-        }
-        public string SelectedMetatype
-        {
-            get
-            {
-                return _strSelectedMetatype;
-            }
-            set
-            {
-                _strSelectedMetatype = value;
-            }
-        }
-        public string SelectedMetatypeCategory
-        {
-            get
-            {
-                return _strSelectedMetatypeCategory;
-            }
-            set
-            {
-                _strSelectedMetatypeCategory = value;
-            }
-        }
-        public string SelectedTalent
-        {
-            get
-            {
-                return _strSelectedTalent;
-            }
-            set
-            {
-                _strSelectedTalent = value;
-            }
-        }
-        public IList<string> PriorityBonusSkillList
-        {
-            get
-            {
-                return _lstPrioritySkills;
-            }
-        }
-
-        public string SelectedMetavariant
-        {
-            get
-            {
-                return _strSelectedMetavariant;
-            }
-            set
-            {
-                _strSelectedMetavariant = value;
-            }
-        }
-
-        #endregion
-
+        
         #region Form Events
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
@@ -186,6 +65,9 @@ namespace Chummer
             _objCharacter.CritterTabEnabledChanged += DoNothing;
 
             _lstPrioritySkills = new List<string>(objCharacter?.PriorityBonusSkillList);
+
+            Height = cmdOK.Bottom + 40;
+            lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
         }
 
         private void frmPriorityMetatype_FormClosed(object sender, FormClosedEventArgs e)
@@ -279,36 +161,27 @@ namespace Chummer
             }
 
             // Set Priority defaults.
-            if (!string.IsNullOrEmpty(_strAttributes))
+            if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
             {
-                int index = 0;
                 //Attributes
-                index = cboAttributes.FindString(_strAttributes);
-                cboAttributes.SelectedIndex = index;
+                cboAttributes.SelectedIndex = cboAttributes.FindString(_objCharacter.AttributesPriority[0].ToString());
                 //Heritage (Metatype)
-                index = cboHeritage.FindString(_strMetatype);
-                cboHeritage.SelectedIndex = index;
+                cboHeritage.SelectedIndex = cboHeritage.FindString(_objCharacter.MetatypePriority[0].ToString());
                 //Resources
-                index = cboResources.FindString(_strResources);
-                cboResources.SelectedIndex = index;
+                cboResources.SelectedIndex = cboResources.FindString(_objCharacter.ResourcesPriority[0].ToString());
                 //Skills
-                index = cboSkills.FindString(_strSkills);
-                cboSkills.SelectedIndex = index;
+                cboSkills.SelectedIndex = cboSkills.FindString(_objCharacter.SkillsPriority[0].ToString());
                 //Magical/Resonance Talent
-                index = cboTalent.FindString(_strSpecial);
-                cboTalent.SelectedIndex = index;
+                cboTalent.SelectedIndex = cboTalent.FindString(_objCharacter.SpecialPriority[0].ToString());
 
                 LoadMetatypes();
-                //Selected Category of Metatype
-                cboCategory.SelectedValue = _strSelectedMetatypeCategory;
                 PopulateMetatypes();
-                //Selected Metatype
-                lstMetatypes.SelectedValue = _strSelectedMetatype;
-                //Selected Metavariant
-                cboMetavariant.SelectedValue = string.IsNullOrEmpty(_strSelectedMetavariant) ? "None" : _strSelectedMetavariant;
+                PopulateMetavariants();
 
                 //Magical/Resonance Type
-                cboTalents.SelectedValue = _strSelectedTalent;
+                cboTalents.SelectedValue = _objCharacter.TalentPriority;
+                if (cboTalents.SelectedIndex == -1 && cboTalents.Items.Count > 1)
+                    cboTalents.SelectedIndex = 0;
                 //Selected Magical Bonus Skill
                 string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                 if (!string.IsNullOrEmpty(strSkill))
@@ -340,20 +213,29 @@ namespace Chummer
                 cboSkills.SelectedIndex = 3;
                 cboResources.SelectedIndex = 4;
                 LoadMetatypes();
-                lstMetatypes.SelectedIndex = 0;
+                PopulateMetatypes();
+                PopulateMetavariants();
             }
-            _blnInitializing = false;
-            if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
+
+            if (_objCharacter.BuildMethod == CharacterBuildMethod.Priority)
+            {
+                ManagePriorityItems(cboHeritage);
+                ManagePriorityItems(cboAttributes);
+                ManagePriorityItems(cboTalent);
+                ManagePriorityItems(cboSkills);
+                ManagePriorityItems(cboResources);
+            }
+            else if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumtoTen();
             }
 
+
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             tipTooltip.SetToolTip(chkPossessionBased, LanguageManager.GetString("Tip_Metatype_PossessionTradition", GlobalOptions.Language));
             tipTooltip.SetToolTip(chkBloodSpirit, LanguageManager.GetString("Tip_Metatype_BloodSpirit", GlobalOptions.Language));
-
-            XmlDocument objXmlDocument = XmlManager.Load("critterpowers.xml");
-            XmlNode objXmlPowersNode = objXmlDocument.SelectSingleNode("/chummer/powers");
+            
+            XmlNode objXmlPowersNode = XmlManager.Load("critterpowers.xml").SelectSingleNode("/chummer/powers");
             List<ListItem> lstMethods = new List<ListItem>
             {
                 new ListItem("Possession", objXmlPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
@@ -366,115 +248,17 @@ namespace Chummer
             cboPossessionMethod.DisplayMember = "Name";
             cboPossessionMethod.DataSource = lstMethods;
             cboPossessionMethod.EndUpdate();
+
+            _blnInitializing = false;
         }
         #endregion
 
         #region Control Events
         private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-
-            // Don't attempt to do anything if nothing is selected.
-            if (!string.IsNullOrEmpty(strSelectedMetatype))
-            {
-                string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
-                // Load the Priority information.
-                XmlDocument objXmlDocumentPriority = XmlManager.Load("priorities.xml");
-                XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
-
-                XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-                XmlNode objXmlMetatypeBP = null;
-                XmlNodeList xmlBaseMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + strSelectedHeritage + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
-                foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
-                {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
-                    {
-                        objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
-                        break;
-                    }
-                }
-
-                List<ListItem> lstMetavariants = new List<ListItem>
-                {
-                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
-                };
-
-                if (objXmlMetatypeBP != null)
-                {
-                    // Retrieve the list of Metavariants for the selected Metatype.
-                    XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
-                    foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
-                    {
-                        string strName = objXmlMetavariant["name"].InnerText;
-                        lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
-                    }
-
-                    cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = "Value";
-                    cboMetavariant.DisplayMember = "Name";
-                    cboMetavariant.DataSource = lstMetavariants;
-
-                    // Select the None item.
-                    cboMetavariant.SelectedIndex = 0;
-                    cboMetavariant.Enabled = lstMetavariants.Count > 1;
-                    cboMetavariant.EndUpdate();
-
-                    // If the Metatype has Force enabled, show the Force NUD.
-                    string strEssMax = objXmlMetatype["essmax"]?.InnerText ?? string.Empty;
-                    if (objXmlMetatype["forcecreature"] != null || strEssMax.Contains("D6"))
-                    {
-                        lblForceLabel.Visible = true;
-                        nudForce.Visible = true;
-
-                        if (strEssMax.Contains("D6"))
-                        {
-                            int intPos = strEssMax.IndexOf("D6") - 1;
-                            lblForceLabel.Text = strEssMax.Substring(intPos, 3);
-                            nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
-                        }
-                        else
-                        {
-                            lblForceLabel.Text = LanguageManager.GetString("String_Force", GlobalOptions.Language);
-                            nudForce.Maximum = 100;
-                        }
-                    }
-                    else
-                    {
-                        lblForceLabel.Visible = false;
-                        nudForce.Visible = false;
-                    }
-                }
-                else
-                {
-                    cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = "Value";
-                    cboMetavariant.DisplayMember = "Name";
-                    cboMetavariant.DataSource = lstMetavariants;
-                    cboMetavariant.Enabled = false;
-                    cboMetavariant.EndUpdate();
-
-                    lblForceLabel.Visible = false;
-                    nudForce.Visible = false;
-                }
-            }
-            else
-            {
-                // Clear the Metavariant list if nothing is currently selected.
-                List<ListItem> lstMetavariants = new List<ListItem>
-                {
-                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
-                };
-
-                cboMetavariant.BeginUpdate();
-                cboMetavariant.ValueMember = "Value";
-                cboMetavariant.DisplayMember = "Name";
-                cboMetavariant.DataSource = lstMetavariants;
-                cboMetavariant.Enabled = false;
-                cboMetavariant.EndUpdate();
-
-                lblForceLabel.Visible = false;
-                nudForce.Visible = false;
-            }
+            if (_blnInitializing)
+                return;
+            PopulateMetavariants();
             PopulateTalents();
             if (_objCharacter.BuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -1612,6 +1396,118 @@ namespace Chummer
             cboTalents.EndUpdate();
         }
 
+        void PopulateMetavariants()
+        {
+            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+
+            // Don't attempt to do anything if nothing is selected.
+            if (!string.IsNullOrEmpty(strSelectedMetatype))
+            {
+                string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
+                // Load the Priority information.
+                XmlDocument objXmlDocumentPriority = XmlManager.Load("priorities.xml");
+                XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
+
+                XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+                XmlNode objXmlMetatypeBP = null;
+                XmlNodeList xmlBaseMetatypePriorityList = objXmlDocumentPriority.SelectNodes("/chummer/priorities/priority[category = \"Heritage\" and value = \"" + strSelectedHeritage + "\" and (not(gameplayoption) or gameplayoption = \"" + _objCharacter.GameplayOption + "\")]");
+                foreach (XmlNode xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                {
+                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority["gameplayoption"] != null)
+                    {
+                        objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = \"" + strSelectedMetatype + "\"]");
+                        break;
+                    }
+                }
+
+                List<ListItem> lstMetavariants = new List<ListItem>
+                {
+                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
+                };
+
+                if (objXmlMetatypeBP != null)
+                {
+                    // Retrieve the list of Metavariants for the selected Metatype.
+                    XmlNodeList objXmlMetavariantList = objXmlMetatype.SelectNodes("metavariants/metavariant[" + _objCharacter.Options.BookXPath() + "]");
+                    foreach (XmlNode objXmlMetavariant in objXmlMetavariantList)
+                    {
+                        string strName = objXmlMetavariant["name"].InnerText;
+                        lstMetavariants.Add(new ListItem(strName, objXmlMetavariant["translate"]?.InnerText ?? strName));
+                    }
+
+                    string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
+                    bool blnOldInitializing = _blnInitializing;
+                    _blnInitializing = true;
+                    cboMetavariant.BeginUpdate();
+                    cboMetavariant.ValueMember = "Value";
+                    cboMetavariant.DisplayMember = "Name";
+                    cboMetavariant.DataSource = lstMetavariants;
+                    cboMetavariant.Enabled = lstMetavariants.Count > 1;
+                    _blnInitializing = blnOldInitializing;
+                    if (!string.IsNullOrEmpty(strOldSelectedValue))
+                        cboMetavariant.SelectedValue = strOldSelectedValue;
+                    if (cboMetavariant.SelectedIndex == -1)
+                        cboMetavariant.SelectedIndex = 0;
+                    cboMetavariant.EndUpdate();
+
+                    // If the Metatype has Force enabled, show the Force NUD.
+                    string strEssMax = objXmlMetatype["essmax"]?.InnerText ?? string.Empty;
+                    if (objXmlMetatype["forcecreature"] != null || strEssMax.Contains("D6"))
+                    {
+                        lblForceLabel.Visible = true;
+                        nudForce.Visible = true;
+
+                        if (strEssMax.Contains("D6"))
+                        {
+                            int intPos = strEssMax.IndexOf("D6") - 1;
+                            lblForceLabel.Text = strEssMax.Substring(intPos, 3);
+                            nudForce.Maximum = Convert.ToInt32(strEssMax.Substring(intPos, 1)) * 6;
+                        }
+                        else
+                        {
+                            lblForceLabel.Text = LanguageManager.GetString("String_Force", GlobalOptions.Language);
+                            nudForce.Maximum = 100;
+                        }
+                    }
+                    else
+                    {
+                        lblForceLabel.Visible = false;
+                        nudForce.Visible = false;
+                    }
+                }
+                else
+                {
+                    cboMetavariant.BeginUpdate();
+                    cboMetavariant.ValueMember = "Value";
+                    cboMetavariant.DisplayMember = "Name";
+                    cboMetavariant.DataSource = lstMetavariants;
+                    cboMetavariant.Enabled = false;
+                    cboMetavariant.EndUpdate();
+
+                    lblForceLabel.Visible = false;
+                    nudForce.Visible = false;
+                }
+            }
+            else
+            {
+                // Clear the Metavariant list if nothing is currently selected.
+                List<ListItem> lstMetavariants = new List<ListItem>
+                {
+                    new ListItem("None", LanguageManager.GetString("String_None", GlobalOptions.Language))
+                };
+
+                cboMetavariant.BeginUpdate();
+                cboMetavariant.ValueMember = "Value";
+                cboMetavariant.DisplayMember = "Name";
+                cboMetavariant.DataSource = lstMetavariants;
+                cboMetavariant.Enabled = false;
+                cboMetavariant.EndUpdate();
+
+                lblForceLabel.Visible = false;
+                nudForce.Visible = false;
+            }
+        }
+
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
@@ -1640,21 +1536,19 @@ namespace Chummer
             }
             
             lstMetatype.Sort(CompareListItems.CompareNames);
-            int intOldSelectedIndex = lstMetatypes.SelectedIndex;
-            int intOldDataSourceSize = lstMetatypes.Items.Count;
+            string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
+            bool blnOldInitializing = _blnInitializing;
+            _blnInitializing = true;
             lstMetatypes.BeginUpdate();
-            lstMetatypes.DataSource = null;
             lstMetatypes.ValueMember = "Value";
             lstMetatypes.DisplayMember = "Name";
             lstMetatypes.DataSource = lstMetatype;
-            bool blnOldInitializing = _blnInitializing;
-            _blnInitializing = true;
-            if (intOldDataSourceSize == lstMetatypes.Items.Count)
-                lstMetatypes.SelectedIndex = intOldSelectedIndex;
-            else if (lstMetatype.Count > 0)
+            _blnInitializing = blnOldInitializing;
+            if (!string.IsNullOrEmpty(strOldSelectedValue))
+                lstMetatypes.SelectedValue = strOldSelectedValue;
+            if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
                 lstMetatypes.SelectedIndex = 0;
             lstMetatypes.EndUpdate();
-            _blnInitializing = blnOldInitializing;
 
             if (strSelectedMetatypeCategory.EndsWith("Spirits"))
             {
@@ -1674,7 +1568,7 @@ namespace Chummer
 
         private void LoadMetatypes()
         {
-            _lstCategory = new List<ListItem>();
+            List<ListItem> lstCategory = new List<ListItem>();
 
             // Load the Metatype information.
             XmlDocument objXmlDocument = XmlManager.Load(_strXmlFile);
@@ -1713,30 +1607,26 @@ namespace Chummer
                 // Make sure the Category isn't in the exclusion list.
                 if (!lstRemoveCategory.Contains(strInnerText) &&
                     // Also make sure it is not already in the Category list.
-                    !_lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
+                    !lstCategory.Any(objItem => objItem.Value.ToString() == strInnerText))
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                    lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                 }
             }
             
-            _lstCategory.Sort(CompareListItems.CompareNames);
+            lstCategory.Sort(CompareListItems.CompareNames);
+            string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
+            bool blnOldInitializing = _blnInitializing;
+            _blnInitializing = true;
             cboCategory.BeginUpdate();
             cboCategory.ValueMember = "Value";
             cboCategory.DisplayMember = "Name";
-            cboCategory.DataSource = _lstCategory;
-
-            // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
-            cboCategory.SelectedValue = "Metahuman";
-            if (cboCategory.SelectedIndex == -1 && _lstCategory.Count > 0)
-            {
+            cboCategory.DataSource = lstCategory;
+            _blnInitializing = blnOldInitializing;
+            if (!string.IsNullOrEmpty(strOldSelected))
+                cboCategory.SelectedValue = strOldSelected;
+            if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
                 cboCategory.SelectedIndex = 0;
-            }
             cboCategory.EndUpdate();
-
-            Height = cmdOK.Bottom + 40;
-            lstMetatypes.Height = cmdOK.Bottom - lstMetatypes.Top;
-
-            PopulateMetatypes();
         }
 
         private static XmlNode GetSpecificSkill(string strSkill)

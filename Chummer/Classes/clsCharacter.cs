@@ -192,11 +192,11 @@ namespace Chummer
 
         // Priority Selections.
         private string _strGameplayOption = "Standard";
-        private string _strPriorityMetatype = string.Empty;
-        private string _strPriorityAttributes = string.Empty;
-        private string _strPrioritySpecial = string.Empty;
-        private string _strPrioritySkills = string.Empty;
-        private string _strPriorityResources = string.Empty;
+        private string _strPriorityMetatype = "A,4";
+        private string _strPriorityAttributes = "B,3";
+        private string _strPrioritySpecial = "C,2";
+        private string _strPrioritySkills = "D,1";
+        private string _strPriorityResources = "E,0";
         private string _strPriorityTalent = string.Empty;
         private readonly List<string> _lstPrioritySkills = new List<string>();
         private decimal _decMaxNuyen = 0;
