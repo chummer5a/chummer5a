@@ -112,6 +112,7 @@ Application Changes:
 - Fixed a bug where arts, enhancements, and spells attached to initiation grades could not be deleted in career mode.
 - Fixed a crash that occured where attempting to delete something in the metamagic tree in create mode while nothing was selected.
 - If a language other than en-US fails to load, Chummer5a will now default to the en-US strings when translating forms (after the appropriate error message is shown).
+- Fixed an issue where multiple sources of the Prototype Transhuman bonus would override and get in the way of each other.
 
 Data Changes:
 

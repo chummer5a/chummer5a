@@ -1345,8 +1345,13 @@ namespace Chummer
                             objCharacter.ExCon = false;
                         break;
                     case Improvement.ImprovementType.PrototypeTranshuman:
-                        if (!blnHasDuplicate)
-                            objCharacter.PrototypeTranshuman = 0;
+                        string strImprovedName = objImprovement.ImprovedName;
+                        // Legacy compatibility
+                        if (string.IsNullOrEmpty(strImprovedName))
+                            if (!blnHasDuplicate)
+                                objCharacter.PrototypeTranshuman = 0;
+                        else
+                            objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName);
                         break;
                     case Improvement.ImprovementType.Erased:
                         if (!blnHasDuplicate)
