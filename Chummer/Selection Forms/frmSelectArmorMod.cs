@@ -323,7 +323,7 @@ namespace Chummer
             chkBlackMarketDiscount.Checked = _setBlackMarketMaps.Contains(objXmlMod["category"]?.InnerText);
             if (chkFreeItem.Checked)
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblTest.Text = _objCharacter.AvailTest(0, lblAvail.Text);
             }
             else

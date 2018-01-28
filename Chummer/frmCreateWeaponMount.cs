@@ -358,11 +358,11 @@ namespace Chummer
                 {
                     cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
                     lblSlots.Text = objMod.CalculatedSlots.ToString();
-                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.Language);
+                    lblAvailability.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     
                     if (chkFreeItem.Checked)
                     {
-                        lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     }
                     else
                     {
@@ -447,20 +447,13 @@ namespace Chummer
             foreach (VehicleMod objMod in _lstMods)
             {
                 intSlots += objMod.CalculatedSlots;
-                string strLoopAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
-                char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
+                AvailabilityValue objLoopAvail = objMod.TotalAvailTuple();
+                char chrLoopAvailSuffix = objLoopAvail.Suffix;
                 if (chrLoopAvailSuffix == 'F')
-                {
-                    strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
                     chrAvailSuffix = 'F';
-                }
-                else if (chrLoopAvailSuffix == 'R')
-                {
-                    strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                    if (chrAvailSuffix == ' ')
-                        chrAvailSuffix = 'R';
-                }
-                intAvail += Convert.ToInt32(strLoopAvail);
+                else if (chrAvailSuffix != 'F' &&chrLoopAvailSuffix == 'R')
+                    chrAvailSuffix = 'R';
+                intAvail += objLoopAvail.Value;
             }
             if (!chkFreeItem.Checked)
             {
@@ -589,12 +582,10 @@ namespace Chummer
                     decimal decCost = _objVehicle.TotalCost - decOriginalCost;
 
                     // Multiply the cost if applicable.
-                    string strAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted",
-                            GlobalOptions.DefaultLanguage)) && _objCharacter.Options.MultiplyRestrictedCost)
+                    char chrAvail = objMod.TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
                         decCost *= _objCharacter.Options.RestrictedCostMultiplier;
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden",
-                            GlobalOptions.DefaultLanguage)) && _objCharacter.Options.MultiplyForbiddenCost)
+                    if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
                         decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
 
                     if (decCost > _objCharacter.Nuyen)

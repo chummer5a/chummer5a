@@ -1345,7 +1345,7 @@ namespace Chummer
                     if (strAvail.StartsWith("FixedValues("))
                     {
                         string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        strAvail = strValues[Math.Min(objCyberware.Rating, strValues.Length) - 1];
+                        strAvail = strValues[Math.Max(Math.Min(objCyberware.Rating, strValues.Length) - 1, 0)];
                     }
                     if (strAvail.EndsWith('R', 'F'))
                     {
@@ -3988,10 +3988,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objWeapon.TotalAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -4313,10 +4313,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objVehicle.CalculatedAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objVehicle.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -7682,10 +7682,10 @@ namespace Chummer
                 }
 
                 // Multiply the cost if applicable.
-                string strAvail = objAccessory.TotalAvail(GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 if (!frmPickWeaponAccessory.FreeCost)
@@ -7754,10 +7754,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objArmor.TotalAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objArmor.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -7898,10 +7898,10 @@ namespace Chummer
                 }
 
                 // Multiply the cost if applicable.
-                string strAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objMod.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 if (!frmPickArmorMod.FreeCost)
@@ -8103,10 +8103,10 @@ namespace Chummer
                 decimal decCost = objVehicle.TotalCost - decOriginalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objMod.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 if (decCost > CharacterObject.Nuyen)
@@ -8231,10 +8231,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objWeapon.TotalAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             if (!frmPickWeapon.FreeCost)
@@ -8304,11 +8304,12 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    string strAvail = frmPickVehicleMod.WeaponMount.TotalAvail(GlobalOptions.DefaultLanguage);
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                    char chrAvail = frmPickVehicleMod.WeaponMount.TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                         decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                         decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+
                     if (decCost > CharacterObject.Nuyen)
                     {
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8413,10 +8414,10 @@ namespace Chummer
                 }
 
                 // Multiply the cost if applicable.
-                string strAvail = objAccessory.TotalAvail(GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 if (!frmPickWeaponAccessory.FreeCost)
@@ -8500,10 +8501,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objWeapon.TotalAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -8706,10 +8707,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -8865,10 +8866,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -9404,11 +9405,7 @@ namespace Chummer
                         if (objGear != null)
                         {
                             // Record the cost of the Armor with the ArmorMod.
-                            decimal decOriginal = 0.0m;
-                            if (objArmorMod != null)
-                                decOriginal = objArmorMod.TotalCost;
-                            else
-                                decOriginal = objArmor.TotalCost;
+                            decimal decOriginal = objArmorMod?.TotalCost ?? objArmor.TotalCost;
 
                             frmSellItem frmSell = new frmSellItem();
                             frmSell.ShowDialog(this);
@@ -10109,10 +10106,10 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objGear.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -10178,10 +10175,10 @@ namespace Chummer
             decimal decCost = objGear.TotalCost;
 
             // Multiply the cost if applicable.
-            string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objGear.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -12196,10 +12193,10 @@ namespace Chummer
                 decimal decCost = objCyberware.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objCyberware.TotalAvail(GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objCyberware.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Apply a markup if applicable.
@@ -12625,10 +12622,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -12755,10 +12752,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -12846,33 +12843,33 @@ namespace Chummer
                 // Create the new piece of Gear.
                 List<Weapon> lstWeapons = new List<Weapon>();
 
-                Gear objNewGear = new Gear(CharacterObject);
-                objNewGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
+                Gear objGear = new Gear(CharacterObject);
+                objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, true, true, frmPickGear.Aerodynamic);
 
-                if (objNewGear.InternalId.IsEmptyGuid())
+                if (objGear.InternalId.IsEmptyGuid())
                 {
                     frmPickGear.Dispose();
                     continue;
                 }
 
-                objNewGear.Quantity = frmPickGear.SelectedQty;
+                objGear.Quantity = frmPickGear.SelectedQty;
 
                 // Reduce the cost for Do It Yourself components.
                 if (frmPickGear.DoItYourself)
-                    objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.5";
+                    objGear.Cost = "(" + objGear.Cost + ") * 0.5";
                 // If the item was marked as free, change its cost.
                 if (frmPickGear.FreeCost)
                 {
-                    objNewGear.Cost = "0";
+                    objGear.Cost = "0";
                 }
 
-                decimal decCost = objNewGear.TotalCost;
+                decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objNewGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -12880,7 +12877,7 @@ namespace Chummer
                 {
                     if (decCost > CharacterObject.Nuyen)
                     {
-                        objNewGear.DeleteGear(treWeapons, treVehicles);
+                        objGear.DeleteGear(treWeapons, treVehicles);
                         MessageBox.Show(LanguageManager.GetString("Message_NotEnoughNuyen", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_NotEnoughNuyen", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         frmPickGear.Dispose();
                         continue;
@@ -12889,12 +12886,12 @@ namespace Chummer
                     {
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objNewGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+                        objExpense.Create(decCost * -1, LanguageManager.GetString("String_ExpensePurchaseWeaponGear", GlobalOptions.Language) + ' ' + objGear.DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
                         CharacterObject.ExpenseEntries.Add(objExpense);
                         CharacterObject.Nuyen -= decCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objNewGear.InternalId, 1);
+                        objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId, 1);
                         objExpense.Undo = objUndo;
                     }
                 }
@@ -12908,9 +12905,9 @@ namespace Chummer
                     treWeapons.Nodes[0].Expand();
                 }
 
-                objAccessory.Gear.Add(objNewGear);
+                objAccessory.Gear.Add(objGear);
                 
-                objSelectedNode.Nodes.Add(objNewGear.CreateTreeNode(cmsWeaponAccessoryGear));
+                objSelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
                 objSelectedNode.Expand();
                 
                 IsCharacterUpdateRequested = true;
@@ -12992,10 +12989,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -13227,10 +13224,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -13342,10 +13339,10 @@ namespace Chummer
                 decimal decCost = objGear.TotalCost;
 
                 // Multiply the cost if applicable.
-                string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                char chrAvail = objGear.TotalAvailTuple().Suffix;
+                if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                     decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                     decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
                 // Check the item's Cost and make sure the character can afford it.
@@ -18242,7 +18239,7 @@ namespace Chummer
                     tabCyberwareCM.Visible = false;
                 }
 
-                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
+                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text = objCyberware.CalculatedCapacity + " (" +
                                             objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' +
@@ -18311,7 +18308,7 @@ namespace Chummer
 
                     lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                     lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                    lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                    lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblCyberwareCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" + objGear.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) +
                                                 ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
@@ -18521,7 +18518,7 @@ namespace Chummer
                     cboWeaponAmmo.Enabled = false;
                 }
 
-                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
+                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -18572,10 +18569,10 @@ namespace Chummer
                     objWeapon = objSelectedAccessory.Parent;
                     lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                     lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
-                    lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.Language);
+                    lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                     lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
+                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString();
                     lblWeaponDamage.Text = string.Empty;
                     lblWeaponRC.Text = objSelectedAccessory.RC;
                     lblWeaponAP.Text = string.Empty;
@@ -18674,7 +18671,7 @@ namespace Chummer
                             cmdDeleteWeapon.Enabled = false;
                         lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                         lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                        lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                        lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblWeaponAccuracy.Text = objWeapon.TotalAccuracy.ToString();
                         lblWeaponConceal.Text = string.Empty;
@@ -18859,7 +18856,7 @@ namespace Chummer
                 lblArmorFirewall.Visible = false;
 
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
-                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
+                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 lblArmorRating.Text = string.Empty;
                 lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -18893,7 +18890,7 @@ namespace Chummer
                     if (objArmorMod.IncludedInArmor)
                         cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
-                    lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.Language);
+                    lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                         lblArmorCapacity.Text = "[0]";
                     else
@@ -18920,7 +18917,7 @@ namespace Chummer
                         if (objSelectedGear.IncludedInParent)
                             cmdDeleteArmor.Enabled = false;
                         lblArmorValue.Text = string.Empty;
-                        lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                        lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                         if (objArmorMod != null)
                             lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
@@ -18993,7 +18990,7 @@ namespace Chummer
                         cmdDeleteGear.Enabled = false;
                     lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                     lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                    lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                    lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     try
                     {
                         lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -19408,10 +19405,10 @@ namespace Chummer
             decimal decCost = objCyberware.TotalCost;
 
             // Multiply the cost if applicable.
-            string strAvail = objCyberware.TotalAvail(GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objCyberware.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Check the item's Cost and make sure the character can afford it.
@@ -19639,10 +19636,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objGear.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
@@ -19858,10 +19855,10 @@ namespace Chummer
             }
 
             // Multiply the cost if applicable.
-            string strAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+            char chrAvail = objGear.TotalAvailTuple().Suffix;
+            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                 decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-            if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                 decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
 
             // Do not allow the user to add new Gear if the Armor's Capacity has been reached.
@@ -20267,7 +20264,7 @@ namespace Chummer
                 lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
                 lblVehicleCategoryLabel.Visible = true;
                 lblVehicleAvailLabel.Visible = true;
-                lblVehicleAvail.Text = objVehicle.CalculatedAvail(GlobalOptions.Language);
+                lblVehicleAvail.Text = objVehicle.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCostLabel.Visible = true;
                 lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleHandling.Text = objVehicle.TotalHandling;
@@ -20355,7 +20352,7 @@ namespace Chummer
                     lblVehicleNameLabel.Visible = true;
                     lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
                     lblVehicleAvailLabel.Visible = true;
-                    lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.Language);
+                    lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblVehicleCostLabel.Visible = true;
                     lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
 
@@ -20414,7 +20411,7 @@ namespace Chummer
                         lblVehicleCategoryLabel.Visible = true;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
                         lblVehicleAvailLabel.Visible = true;
-                        lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
+                        lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleCostLabel.Visible = true;
                         lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
@@ -20461,7 +20458,7 @@ namespace Chummer
 
                             lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                            lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
+                            lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             DisplayVehicleStats(false);
                             string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
@@ -20562,7 +20559,7 @@ namespace Chummer
                                     cmdDeleteVehicle.Enabled = false;
                                 lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
                                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
-                                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.Language);
+                                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                                 DisplayVehicleWeaponStats(false);
@@ -20626,7 +20623,7 @@ namespace Chummer
 
                                     lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                                     lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
-                                    lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
+                                    lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                     lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                                     string strPage = objCyberware.Page(GlobalOptions.Language);
                                     lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objWeapon.Source, GlobalOptions.Language) + ' ' + strPage;
@@ -20670,7 +20667,7 @@ namespace Chummer
 
                                         lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                                         lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                         lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                                         lblVehicleSlotsLabel.Visible = true;
                                         lblVehicleSlots.Visible = true;

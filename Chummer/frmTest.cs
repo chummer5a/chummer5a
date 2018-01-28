@@ -140,7 +140,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.CalculatedAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {
@@ -172,7 +172,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.DefaultLanguage);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
                     }
                     catch
                     {
@@ -233,7 +233,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {
@@ -305,7 +305,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {
@@ -358,7 +358,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {
@@ -391,7 +391,7 @@ namespace Chummer
                     objTemp.Create(objXmlGear, 1, lstWeapons);
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {
@@ -524,7 +524,7 @@ namespace Chummer
                     }
                     try
                     {
-                        string objValue = objTemp.TotalAvail(GlobalOptions.Language);
+                        string objValue = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     }
                     catch
                     {

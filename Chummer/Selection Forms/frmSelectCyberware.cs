@@ -611,7 +611,6 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private static readonly char[] lstBracketChars = { '[', ']' };
         /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
@@ -653,6 +652,7 @@ namespace Chummer
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
+            int intRating = decimal.ToInt32(nudRating.Value);
             // Avail.
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvail = objXmlCyberware["avail"]?.InnerText;
@@ -662,8 +662,7 @@ namespace Chummer
                 if (strAvailExpr.StartsWith("FixedValues("))
                 {
                     string[] strValues = strAvailExpr.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (decimal.ToInt32(nudRating.Value) > 0)
-                        strAvailExpr = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
 
                 string strSuffix = string.Empty;
@@ -714,7 +713,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
@@ -724,8 +723,7 @@ namespace Chummer
                     if (strCost.StartsWith("FixedValues("))
                     {
                         string[] strValues = strCost.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        if (decimal.ToInt32(nudRating.Value) > 0)
-                            strCost = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
+                        strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                     }
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable("))
@@ -784,7 +782,7 @@ namespace Chummer
                     }
                 }
                 else
-                    lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
 
             // Test required to find the item.
@@ -819,8 +817,7 @@ namespace Chummer
                 if (strEss.StartsWith("FixedValues("))
                 {
                     string[] strValues = strEss.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (decimal.ToInt32(nudRating.Value) > 0)
-                    strEss = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 decESS = decCharacterESSModifier * Convert.ToDecimal(CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))), GlobalOptions.InvariantCultureInfo);
                 if (!_objCharacter.Options.DontRoundEssenceInternally)
@@ -843,8 +840,7 @@ namespace Chummer
                 if (strCapacity.StartsWith("FixedValues("))
                 {
                     string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    if (Convert.ToInt32(nudRating.Value, GlobalOptions.InvariantCultureInfo) > 0)
-                        strCapacity = strValues[Math.Min(Convert.ToInt32(nudRating.Value, GlobalOptions.InvariantCultureInfo), strValues.Length) - 1];
+                    strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
                 }
                 if (strCapacity == "[*]")
                     lblCapacity.Text = "*";
@@ -863,7 +859,7 @@ namespace Chummer
                         if (blnSquareBrackets)
                             lblCapacity.Text = $"[{lblCapacity.Text}]";
 
-                        strSecondHalf = strSecondHalf.Trim(lstBracketChars);
+                        strSecondHalf = strSecondHalf.Trim('[', ']');
                         strSecondHalf = '[' + CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo))).ToString() + ']';
 
                         lblCapacity.Text += '/' + strSecondHalf;
@@ -1139,7 +1135,7 @@ namespace Chummer
                 if (strCapacity.StartsWith("FixedValues("))
                 {
                     string[] strValues = strCapacity.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    strCapacity = strValues[Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1];
+                    strCapacity = strValues[Math.Max(Math.Min(decimal.ToInt32(nudRating.Value), strValues.Length) - 1, 0)];
                 }
                 decimal decCapacity = 0;
 

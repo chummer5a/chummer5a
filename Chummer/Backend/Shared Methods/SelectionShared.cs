@@ -1026,8 +1026,7 @@ namespace Chummer.Backend
             }
             return intAvail <= objCharacter.MaximumAvailability;
         }
-
-        private static readonly char[] lstBracketChars = { '[', ']' };
+        
         public static bool CheckNuyenRestriction(XmlNode objXmlGear, Character objCharacter, decimal decMaxNuyen, decimal decCostMultiplier = 1.0m)
         {
             // Cost.
@@ -1067,7 +1066,7 @@ namespace Chummer.Backend
                 if (objCostNode.InnerText.StartsWith("FixedValues("))
                 {
                     string[] strValues = objCostNode.InnerText.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                    decCost = Convert.ToDecimal(strValues[0].Trim(lstBracketChars), GlobalOptions.InvariantCultureInfo);
+                    decCost = Convert.ToDecimal(strValues[0].Trim('[', ']'), GlobalOptions.InvariantCultureInfo);
                 }
                 else if (objCostNode.InnerText.StartsWith("Variable"))
                 {

@@ -790,7 +790,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armor", TotalArmor.ToString(objCulture));
             objWriter.WriteElementString("seats", TotalSeats.ToString(objCulture));
             objWriter.WriteElementString("sensor", CalculatedSensor.ToString(objCulture));
-            objWriter.WriteElementString("avail", CalculatedAvail(strLanguageToPrint));
+            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", CommonFunctions.LanguageBookShort(Source, strLanguageToPrint));
@@ -1017,22 +1017,27 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = _intPilot;
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
                     if (!objMod.IncludedInVehicle && objMod.Installed)
                     {
+                        string strBonusPilot = objMod.Bonus?["pilot"]?.InnerText;
                         // Set the Vehicle's Pilot to the Modification's bonus.
-                        if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<pilot>"))
+                        if (!string.IsNullOrEmpty(strBonusPilot))
                         {
-                            int intTest = Convert.ToInt32(objMod.Bonus["pilot"].InnerText.Replace("Rating", objMod.Rating.ToString()));
+                            int intTest = Convert.ToInt32(strBonusPilot.Replace("Rating", objMod.Rating.ToString()));
                             if (intTest > intReturn)
                                 intReturn = intTest;
                         }
-                        else if (objMod.WirelessOn && objMod.WirelessBonus != null && objMod.WirelessBonus.InnerXml.Contains("<pilot>"))
+                        else if (objMod.WirelessOn)
                         {
-                            int intTest = Convert.ToInt32(objMod.WirelessBonus["pilot"].InnerText.Replace("Rating", objMod.Rating.ToString()));
-                            if (intTest > intReturn)
-                                intReturn = intTest;
+                            strBonusPilot = objMod.WirelessBonus?["pilot"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strBonusPilot))
+                            {
+                                int intTest = Convert.ToInt32(strBonusPilot.Replace("Rating", objMod.Rating.ToString()));
+                                if (intTest > intReturn)
+                                    intReturn = intTest;
+                            }
                         }
                     }
                 }
@@ -1290,17 +1295,94 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availablility of the Vehicle.
         /// </summary>
-        public string CalculatedAvail(string strLanguage)
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = _strAvail;
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
+        }
 
-            // Translate the Avail string.
-            if (strReturn.Contains('R'))
-                strReturn = strReturn.Replace("R", LanguageManager.GetString("String_AvailRestricted", strLanguage));
-            else if (strReturn.Contains('F'))
-                strReturn = strReturn.Replace("F", LanguageManager.GetString("String_AvailForbidden", strLanguage));
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
 
-            return strReturn;
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                strAvail = strAvail.TrimStart('+');
+
+                intAvail = Convert.ToInt32(strAvail);
+            }
+
+            foreach (VehicleMod objChild in Mods)
+            {
+                if (!objChild.IncludedInVehicle)
+                {
+                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                    if (objLoopAvail.AddToParent)
+                        intAvail += objLoopAvail.Value;
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                }
+            }
+
+            foreach (WeaponMount objChild in WeaponMounts)
+            {
+                if (!objChild.IncludedInVehicle)
+                {
+                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                    if (objLoopAvail.AddToParent)
+                        intAvail += objLoopAvail.Value;
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                }
+            }
+
+            foreach (Weapon objChild in Weapons)
+            {
+                if (objChild.ParentID != InternalId)
+                {
+                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                    if (objLoopAvail.AddToParent)
+                        intAvail += objLoopAvail.Value;
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                }
+            }
+
+            foreach (Gear objChild in Gear)
+            {
+                if (objChild.ParentID != InternalId)
+                {
+                    AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
+                    if (objLoopAvail.AddToParent)
+                        intAvail += objLoopAvail.Value;
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                }
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         /// <summary>
@@ -1326,7 +1408,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intSensor = _intSensor;
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
                     if (!objMod.IncludedInVehicle && objMod.Installed)
                     {
@@ -1345,7 +1427,7 @@ namespace Chummer.Backend.Equipment
 
                 // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
                 // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-                foreach (Gear objGear in _lstGear)
+                foreach (Gear objGear in Gear)
                 {
                     if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
                     {
@@ -1407,9 +1489,9 @@ namespace Chummer.Backend.Equipment
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(_strVehicleName))
+            if (!string.IsNullOrEmpty(VehicleName))
             {
-                strReturn += " (\"" + _strVehicleName + "\")";
+                strReturn += " (\"" + VehicleName + "\")";
             }
 
             return strReturn;
@@ -1493,7 +1575,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed).AsParallel().Sum(objMod => objMod.CalculatedSlots) + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
+                return Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed).AsParallel().Sum(objMod => objMod.CalculatedSlots) + WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed).AsParallel().Sum(wm => wm.CalculatedSlots);
             }
         }
 
@@ -1506,7 +1588,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intDroneModSlots = _intDroneModSlots;
                 bool blnDowngraded = false;
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
                     // Mods that are included with a Vehicle by default do not count toward the Slots used.
                     if (!objMod.IncludedInVehicle && objMod.Installed)
@@ -1547,7 +1629,7 @@ namespace Chummer.Backend.Equipment
                 bool blnArmor = false;
                 bool blnSensor = false;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     int intActualSlots = objMod.CalculatedSlots;
                     if (intActualSlots > 0)
@@ -1622,7 +1704,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal decCost = OwnCost;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.AsParallel())
+                foreach (VehicleMod objMod in Mods)
                 {
                     // Do not include the price of Mods that are part of the base configureation.
                     if (!objMod.IncludedInVehicle)
@@ -1637,7 +1719,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
-                decCost += _lstGear.AsParallel().Sum(objGear => objGear.TotalCost);
+                decCost += Gear.AsParallel().Sum(objGear => objGear.TotalCost);
 
                 return decCost;
             }
@@ -1650,7 +1732,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = Convert.ToDecimal(_strCost, GlobalOptions.InvariantCultureInfo);
+                decimal decCost = Convert.ToDecimal(Cost, GlobalOptions.InvariantCultureInfo);
                 if (BlackMarketDiscount)
                     decCost *= 0.9m;
 
@@ -1671,7 +1753,7 @@ namespace Chummer.Backend.Equipment
                 char chrFirstCharacter = (char)0;
                 // First check for mods that overwrite the seat value
                 int intTotalSeats = Seats;
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     XmlNode objBonusNode = null;
                     if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<seats>"))
@@ -1690,7 +1772,7 @@ namespace Chummer.Backend.Equipment
 
                 // Then check for mods that modify the seat value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusSeats = 0;
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null && objMod.Bonus.InnerXml.Contains("<seats>"))
                     {
@@ -1729,7 +1811,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalArmor = 0;
 
                 // First check for mods that overwrite the speed value or add to armor
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -1794,7 +1876,7 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the speed value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusSpeed = 0;
                 int intTotalBonusOffroadSpeed = 0;
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -1871,7 +1953,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalArmor = 0;
 
                 // First check for mods that overwrite the accel value or add to armor
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -1936,7 +2018,7 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the accel value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusAccel = 0;
                 int intTotalBonusOffroadAccel = 0;
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -2009,7 +2091,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intBody = _intBody;
                 
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
                     if (!objMod.IncludedInVehicle && objMod.Installed)
                     {
@@ -2067,7 +2149,7 @@ namespace Chummer.Backend.Equipment
                 int intTotalArmor = 0;
 
                 // First check for mods that overwrite the handling value or add to armor
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -2132,7 +2214,7 @@ namespace Chummer.Backend.Equipment
                 // Then check for mods that modify the handling value (needs separate loop in case of % modifiers on top of stat-overriding mods)
                 int intTotalBonusHandling = 0;
                 int intTotalBonusOffroadHandling = 0;
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed))
                 {
                     if (objMod.Bonus != null)
                     {
@@ -2206,7 +2288,7 @@ namespace Chummer.Backend.Equipment
                 int intModArmor = 0;
                 
                 // Add the Modification's Armor to the Vehicle's base Armor. 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => (!objMod.IncludedInVehicle && objMod.Installed)))
+                foreach (VehicleMod objMod in Mods.Where(objMod => (!objMod.IncludedInVehicle && objMod.Installed)))
                 {
                     string strArmor = objMod.Bonus?["armor"]?.InnerText;
                     if (!string.IsNullOrEmpty(strArmor))
@@ -2374,7 +2456,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intPowertrain = _intBody + _intAddPowertrainModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Powertrain"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Powertrain"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
@@ -2404,7 +2486,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intProtection = _intBody + _intAddProtectionModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.AsParallel().Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Protection"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Protection"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
@@ -2433,14 +2515,14 @@ namespace Chummer.Backend.Equipment
             {
                 int intWeaponsmod = _intBody + _intAddWeaponModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Weapons"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Weapons"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
                     if (intSlots > 0)
                         intWeaponsmod -= intSlots;
                 }
-                foreach (WeaponMount wm in WeaponMounts.AsParallel().Where(wm => !wm.IncludedInVehicle && wm.Installed))
+                foreach (WeaponMount wm in WeaponMounts.Where(wm => !wm.IncludedInVehicle && wm.Installed))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = wm.CalculatedSlots;
@@ -2470,7 +2552,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intBodymod = _intBody + _intAddBodyModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Body"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Body"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
@@ -2500,7 +2582,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intElectromagnetic = _intBody + _intAddElectromagneticModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Electromagnetic"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Electromagnetic"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
@@ -2521,7 +2603,7 @@ namespace Chummer.Backend.Equipment
             {
                 int intCosmetic = _intBody +_intAddCosmeticModSlots;
 
-                foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Cosmetic"))
+                foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == "Cosmetic"))
                 {
                     // Subtract the Modification's Slots from the Vehicle's base Body.
                     int intSlots = objMod.CalculatedSlots;
@@ -2782,19 +2864,21 @@ namespace Chummer.Backend.Equipment
                         intReturn += objGear.TotalBonusMatrixBoxes;
                     }
                 }
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
-                    if (objMod.Bonus != null)
+                    string strBonusBoxes = objMod.Bonus?["matrixcmbonus"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strBonusBoxes))
                     {
                         // Add the Modification's Device Rating to the Vehicle's base Device Rating.
-                        if (objMod.Bonus.InnerXml.Contains("<matrixcmbonus>"))
-                            intReturn += Convert.ToInt32(objMod.Bonus["matrixcmbonus"].InnerText);
+                        intReturn += Convert.ToInt32(strBonusBoxes);
                     }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
+                    if (objMod.WirelessOn)
                     {
-                        // Add the Modification's Wireless Device Rating to the Vehicle's base Device Rating if wireless is on.
-                        if (objMod.WirelessBonus.InnerXml.Contains("<matrixcmbonus>"))
-                            intReturn += Convert.ToInt32(objMod.WirelessBonus["matrixcmbonus"].InnerText);
+                        strBonusBoxes = objMod.WirelessBonus?["matrixcmbonus"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strBonusBoxes))
+                        {
+                            intReturn += Convert.ToInt32(strBonusBoxes);
+                        }
                     }
                 }
                 return intReturn;
@@ -2849,7 +2933,7 @@ namespace Chummer.Backend.Equipment
         {
             int intBase = 0;
 
-            foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == strCategory))
+            foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == strCategory))
             {
                 // Subtract the Modification's Slots from the Vehicle's base Body.
                 int intSlots = objMod.CalculatedSlots;
@@ -2887,7 +2971,7 @@ namespace Chummer.Backend.Equipment
                     intBase += _intAddCosmeticModSlots;
                     break;
             }
-            foreach (VehicleMod objMod in _lstVehicleMods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == strCategory))
+            foreach (VehicleMod objMod in Mods.Where(objMod => !objMod.IncludedInVehicle && objMod.Installed && objMod.Category == strCategory))
             {
                 int intSlots = objMod.CalculatedSlots;
                 if (intSlots < 0)
@@ -3118,7 +3202,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool HasModularElectronics()
         {
-            return _lstVehicleMods.Any(objMod => objMod.Name == "Modular Electronics");
+            return Mods.Any(objMod => objMod.Name == "Modular Electronics");
         }
 
         public int GetBaseMatrixAttribute(string strAttributeName)
@@ -3196,7 +3280,7 @@ namespace Chummer.Backend.Equipment
             }
             if (!string.IsNullOrEmpty(strAttributeNodeName))
             {
-                foreach (VehicleMod objMod in _lstVehicleMods)
+                foreach (VehicleMod objMod in Mods)
                 {
                     XmlNode objBonus = objMod.Bonus?[strAttributeNodeName];
                     if (objBonus != null)

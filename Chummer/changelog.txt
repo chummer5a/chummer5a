@@ -106,6 +106,9 @@ Application Changes:
 - Fixed some rare issues where characters would not have their old priority selection entries loaded when they wished to change priorities.
 - Fixed a bug where bonus-granted echoes and metamagics would not get properly removed when the underlying bonus' source was removed.
 - Fixed an issue where changing the notes of a pet or a contact would not mark the underlying character as "dirty". Fixes #2407.
+- Fixed an issue with cost calculations related to armor mods whose costs contained the FixedValue phrase.
+- Fixed issues where plugins that would increase the availability of the parent item sometimes would not do so.
+- Fixed an issue where plugins that would increase the availability of the parent item would not get their availability types translated properly.
 
 Data Changes:
 

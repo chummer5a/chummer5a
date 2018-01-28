@@ -366,7 +366,7 @@ namespace Chummer
                     tabArmor.Columns.Add("Capacity");
                     tabArmor.Columns["Capacity"].DataType = typeof(Decimal);
                     tabArmor.Columns.Add("Avail");
-                    tabArmor.Columns["Avail"].DataType = typeof(AvailabilityString);
+                    tabArmor.Columns["Avail"].DataType = typeof(AvailabilityValue);
                     tabArmor.Columns.Add("Special");
                     tabArmor.Columns.Add("Source");
                     tabArmor.Columns["Source"].DataType = typeof(SourceString);
@@ -386,7 +386,7 @@ namespace Chummer
                             string strArmorName = objArmor.DisplayName(GlobalOptions.Language);
                             int intArmor = objArmor.TotalArmor;
                             decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalOptions.CultureInfo);
-                            AvailabilityString strAvail = new AvailabilityString(objArmor.TotalAvail(GlobalOptions.Language));
+                            AvailabilityValue objAvail = objArmor.TotalAvailTuple();
                             StringBuilder strAccessories = new StringBuilder();
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
@@ -403,7 +403,7 @@ namespace Chummer
                             SourceString strSource = new SourceString(objArmor.Source, objArmor.Page(GlobalOptions.Language));
                             NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal decDummy, false));
 
-                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, strAvail, strAccessories.ToString(), strSource, strCost);
+                            tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail, strAccessories.ToString(), strSource, strCost);
                         }
                     }
 
@@ -535,7 +535,7 @@ namespace Chummer
                     lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
                 }
 
-                string strTotalAvail = _objSelectedArmor.TotalAvail(GlobalOptions.Language);
+                string strTotalAvail = _objSelectedArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblAvail.Text = strTotalAvail;
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
             }

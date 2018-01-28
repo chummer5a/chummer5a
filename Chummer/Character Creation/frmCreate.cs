@@ -1211,7 +1211,7 @@ namespace Chummer
                     if (strAvail.StartsWith("FixedValues("))
                     {
                         string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        strAvail = strValues[Math.Min(objCyberware.Rating, strValues.Length) - 1];
+                        strAvail = strValues[Math.Max(Math.Min(objCyberware.Rating, strValues.Length) - 1, 0)];
                     }
                     if (strAvail.EndsWith('R', 'F'))
                     {
@@ -6166,10 +6166,10 @@ namespace Chummer
                     // Multiply the cost if applicable.
                     decimal decOldCost = objMod.TotalCost;
                     decimal decCost = decOldCost;
-                    string strAvail = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyRestrictedCost)
+                    char chrAvail = objMod.TotalAvailTuple().Suffix;
+                    if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
                         decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                    if (strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)) && CharacterObjectOptions.MultiplyForbiddenCost)
+                    if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
                         decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
                     decCost -= decOldCost;
                     objMod.Markup = decCost;
@@ -12972,7 +12972,7 @@ namespace Chummer
 
                 chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
 
-                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
+                lblCyberwareAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblCyberwareCapacity.Text =
                     $"{objCyberware.CalculatedCapacity} ({objCyberware.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo)} {LanguageManager.GetString("String_Remaining", GlobalOptions.Language)})";
@@ -12991,7 +12991,7 @@ namespace Chummer
                         cmdDeleteCyberware.Enabled = false;
                     lblCyberwareName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                     lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                    lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                    lblCyberwareAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblCyberwareCost.Text =
                         objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     lblCyberwareCapacity.Text = objGear.CalculatedCapacity + " (" +
@@ -13163,7 +13163,7 @@ namespace Chummer
                 chkIncludedInWeapon.Enabled = false;
                 chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
-                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
+                lblWeaponAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblWeaponConceal.Text = objWeapon.CalculatedConcealability(GlobalOptions.CultureInfo);
                 lblWeaponDamage.Text = objWeapon.CalculatedDamage(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -13225,9 +13225,9 @@ namespace Chummer
                     objWeapon = objSelectedAccessory.Parent;
                     lblWeaponName.Text = objSelectedAccessory.DisplayNameShort(GlobalOptions.Language);
                     lblWeaponCategory.Text = LanguageManager.GetString("String_WeaponAccessory", GlobalOptions.Language);
-                    lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.Language);
+                    lblWeaponAvail.Text = objSelectedAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                    lblWeaponConceal.Text = objSelectedAccessory.Concealability.ToString();
+                    lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString();
                     lblWeaponDamage.Text = string.Empty;
                     lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString();
                     lblWeaponRC.Text = objSelectedAccessory.RC;
@@ -13303,7 +13303,7 @@ namespace Chummer
 
                         lblWeaponName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                         lblWeaponCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                        lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                        lblWeaponAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                         lblWeaponConceal.Text = string.Empty;
                         lblWeaponDamage.Text = string.Empty;
@@ -13465,7 +13465,7 @@ namespace Chummer
                 lblArmorFirewall.Visible = false;
 
                 lblArmorValue.Text = objArmor.DisplayArmorValue;
-                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.Language);
+                lblArmorAvail.Text = objArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblArmorCapacity.Text = objArmor.CalculatedCapacity + " (" + objArmor.CapacityRemaining.ToString("#,0.##", GlobalOptions.CultureInfo) + ' ' + LanguageManager.GetString("String_Remaining", GlobalOptions.Language) + ')';
                 if (objArmor.MaxRating == 0)
                 {
@@ -13506,7 +13506,7 @@ namespace Chummer
                     if (objArmorMod.IncludedInArmor)
                         cmdDeleteArmor.Enabled = false;
                     lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0");
-                    lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.Language);
+                    lblArmorAvail.Text = objArmorMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
                         lblArmorCapacity.Text = "[0]";
                     else
@@ -13544,7 +13544,7 @@ namespace Chummer
                         if (objSelectedGear.IncludedInParent)
                             cmdDeleteArmor.Enabled = false;
                         lblArmorValue.Text = string.Empty;
-                        lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                        lblArmorAvail.Text = objSelectedGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
                         if (objArmorMod != null)
                             lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
@@ -13732,7 +13732,7 @@ namespace Chummer
                     cmdDeleteGear.Enabled = false;
                 lblGearName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                 lblGearCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                lblGearAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 nudGearQty.Enabled = !objGear.IncludedInParent;
                 nudGearQty.Increment = objGear.CostFor;
                 try
@@ -14772,7 +14772,7 @@ namespace Chummer
                 lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalOptions.Language);
                 lblVehicleCategoryLabel.Visible = true;
                 lblVehicleAvailLabel.Visible = true;
-                lblVehicleAvail.Text = objVehicle.CalculatedAvail(GlobalOptions.Language);
+                lblVehicleAvail.Text = objVehicle.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                 lblVehicleCostLabel.Visible = true;
                 lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 lblVehicleHandling.Text = objVehicle.TotalHandling;
@@ -14866,7 +14866,7 @@ namespace Chummer
                     lblVehicleNameLabel.Visible = true;
                     lblVehicleName.Text = objWeaponMount.DisplayNameShort(GlobalOptions.Language);
                     lblVehicleAvailLabel.Visible = true;
-                    lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.Language);
+                    lblVehicleAvail.Text = objWeaponMount.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                     lblVehicleCostLabel.Visible = true;
                     lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo);
                     
@@ -14946,7 +14946,7 @@ namespace Chummer
                         lblVehicleCategoryLabel.Visible = true;
                         lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
                         lblVehicleAvailLabel.Visible = true;
-                        lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.DefaultLanguage);
+                        lblVehicleAvail.Text = objMod.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                         lblVehicleCostLabel.Visible = true;
                         lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
@@ -14996,7 +14996,7 @@ namespace Chummer
 
                             lblVehicleName.Text = objWeapon.DisplayNameShort(GlobalOptions.Language);
                             lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeapon", GlobalOptions.Language);
-                            lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.Language);
+                            lblVehicleAvail.Text = objWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                             lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                             DisplayVehicleStats(false);
                             string strPage = objWeapon.DisplayPage(GlobalOptions.Language);
@@ -15033,7 +15033,7 @@ namespace Chummer
                                     cmdDeleteVehicle.Enabled = false;
                                 lblVehicleName.Text = objAccessory.DisplayNameShort(GlobalOptions.Language);
                                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleWeaponAccessory", GlobalOptions.Language);
-                                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.Language);
+                                lblVehicleAvail.Text = objAccessory.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                 lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
 
                                 DisplayVehicleWeaponStats(false);
@@ -15097,7 +15097,7 @@ namespace Chummer
 
                                     lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalOptions.Language);
                                     lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification", GlobalOptions.Language);
-                                    lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.Language);
+                                    lblVehicleAvail.Text = objCyberware.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                     lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                                     string strPage = objCyberware.Page(GlobalOptions.Language);
                                     lblVehicleSource.Text = CommonFunctions.LanguageBookShort(objCyberware.Source, GlobalOptions.Language) + ' ' + strPage;
@@ -15179,7 +15179,7 @@ namespace Chummer
 
                                         lblVehicleName.Text = objGear.DisplayNameShort(GlobalOptions.Language);
                                         lblVehicleCategory.Text = objGear.DisplayCategory(GlobalOptions.Language);
-                                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
+                                        lblVehicleAvail.Text = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
                                         lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                                         lblVehicleSlotsLabel.Visible = true;
                                         lblVehicleSlots.Visible = true;
@@ -15591,10 +15591,10 @@ namespace Chummer
                 if (CharacterObject.BannedWareGrades.Any(s => objCyberware.Grade.Name.Contains(s)))
                     strCyberwareGrade += "\n\t\t" + objCyberware.DisplayNameShort(GlobalOptions.Language);
 
-                string strTotalAvail = objCyberware.TotalAvail(GlobalOptions.Language);
-                if (!strTotalAvail.StartsWith('+'))
+                AvailabilityValue objTotalAvail = objCyberware.TotalAvailTuple();
+                if (!objTotalAvail.AddToParent)
                 {
-                    int intAvailInt = GetAvailInt(strTotalAvail);
+                    int intAvailInt = objTotalAvail.Value;
                     if (intAvailInt > CharacterObject.MaximumAvailability)
                     {
                         if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15634,7 +15634,7 @@ namespace Chummer
             // Armor Availability.
             foreach (Armor objArmor in CharacterObject.Armor)
             {
-                int intAvailInt = GetAvailInt(objArmor.TotalAvail(GlobalOptions.Language));
+                int intAvailInt = objArmor.TotalAvailTuple().Value;
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
                     if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15651,10 +15651,10 @@ namespace Chummer
 
                 foreach (ArmorMod objMod in objArmor.ArmorMods.Where(objMod => !objMod.IncludedInArmor))
                 {
-                    string strTotalAvail = objMod.TotalAvail(GlobalOptions.Language);
-                    if (!strTotalAvail.StartsWith('+'))
+                    AvailabilityValue objTotalAvail = objMod.TotalAvailTuple();
+                    if (!objTotalAvail.AddToParent)
                     {
-                        int intModAvailInt = GetAvailInt(strTotalAvail);
+                        int intModAvailInt = objTotalAvail.Value;
                         if (intModAvailInt > CharacterObject.MaximumAvailability)
                         {
                             if (intModAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15684,26 +15684,30 @@ namespace Chummer
             // Weapon Availability.
             foreach (Weapon objWeapon in CharacterObject.Weapons.GetAllDescendants(x => x.Children))
             {
-                int intAvailInt = GetAvailInt(objWeapon.TotalAvail(GlobalOptions.Language));
-                if (intAvailInt > CharacterObject.MaximumAvailability)
+                AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
+                if (!objWeaponAvail.AddToParent)
                 {
-                    if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                    int intAvailInt = objWeaponAvail.Value;
+                    if (intAvailInt > CharacterObject.MaximumAvailability)
                     {
-                        blnRestrictedGearUsed = true;
-                        strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                    }
-                    else
-                    {
-                        intRestrictedCount++;
-                        strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
+                        if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                        {
+                            blnRestrictedGearUsed = true;
+                            strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
+                        }
+                        else
+                        {
+                            intRestrictedCount++;
+                            strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
+                        }
                     }
                 }
                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon))
                 {
-                    string strAccessoryAvail = objAccessory.TotalAvail(GlobalOptions.Language);
-                    if (!strAccessoryAvail.StartsWith('+'))
+                    AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
+                    if (!objAccessoryAvail.AddToParent)
                     {
-                        int intAccessoryAvailInt = GetAvailInt(strAccessoryAvail);
+                        int intAccessoryAvailInt = objAccessoryAvail.Value;
                         if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
                         {
                             if (intAccessoryAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15729,7 +15733,7 @@ namespace Chummer
             // Vehicle Availability.
             foreach (Vehicle objVehicle in CharacterObject.Vehicles)
             {
-                int intAvailInt = GetAvailInt(objVehicle.CalculatedAvail(GlobalOptions.Language));
+                int intAvailInt = objVehicle.TotalAvailTuple().Value;
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
                     if (intAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15745,10 +15749,10 @@ namespace Chummer
                 }
                 foreach (VehicleMod objVehicleMod in objVehicle.Mods.Where((objVehicleMod => !objVehicleMod.IncludedInVehicle)))
                 {
-                    string strModAvail = objVehicleMod.TotalAvail(GlobalOptions.Language);
-                    if (!strModAvail.StartsWith('+'))
+                    AvailabilityValue objModAvail = objVehicleMod.TotalAvailTuple();
+                    if (!objModAvail.AddToParent)
                     {
-                        int intModAvailInt = GetAvailInt(strModAvail);
+                        int intModAvailInt = objModAvail.Value;
                         if (intModAvailInt > CharacterObject.MaximumAvailability)
                         {
                             if (intModAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -15764,26 +15768,30 @@ namespace Chummer
                         }
                         foreach (Weapon objWeapon in objVehicleMod.Weapons.GetAllDescendants(x => x.Children))
                         {
-                            int intWeaponAvailInt = GetAvailInt(objWeapon.TotalAvail(GlobalOptions.Language));
-                            if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
+                            AvailabilityValue objWeaponAvail = objWeapon.TotalAvailTuple();
+                            if (!objWeaponAvail.AddToParent)
                             {
-                                if (intWeaponAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                                int intWeaponAvailInt = objWeaponAvail.Value;
+                                if (intWeaponAvailInt > CharacterObject.MaximumAvailability)
                                 {
-                                    blnRestrictedGearUsed = true;
-                                    strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
-                                }
-                                else
-                                {
-                                    intRestrictedCount++;
-                                    strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
+                                    if (intWeaponAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
+                                    {
+                                        blnRestrictedGearUsed = true;
+                                        strRestrictedItem = objWeapon.DisplayName(GlobalOptions.Language);
+                                    }
+                                    else
+                                    {
+                                        intRestrictedCount++;
+                                        strAvailItems += "\n\t\t" + objWeapon.DisplayNameShort(GlobalOptions.Language);
+                                    }
                                 }
                             }
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.Where((objAccessory => !objAccessory.IncludedInWeapon)))
                             {
-                                string strAccessoryAvail = objAccessory.TotalAvail(GlobalOptions.Language);
-                                if (!strAccessoryAvail.StartsWith('+'))
+                                AvailabilityValue objAccessoryAvail = objAccessory.TotalAvailTuple();
+                                if (!objAccessoryAvail.AddToParent)
                                 {
-                                    int intAccessoryAvailInt = GetAvailInt(strAccessoryAvail);
+                                    int intAccessoryAvailInt = objAccessoryAvail.Value;
                                     if (intAccessoryAvailInt > CharacterObject.MaximumAvailability)
                                     {
                                         if (intAccessoryAvailInt <= 24 && CharacterObject.RestrictedGear && !blnRestrictedGearUsed)
@@ -16073,10 +16081,10 @@ namespace Chummer
         /// <param name="strOutAvailItems"></param>
         private void CheckRestrictedGear(Gear objGear, bool blnRestrictedGearUsed, int intRestrictedCount, string strAvailItems, string strRestrictedItem, out bool blnOutRestrictedGearUsed, out int intoutRestrictedCount, out string strOutAvailItems, out string strOutRestrictedItem)
         {
-            string strTotalAvail = objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true);
-            if (!strTotalAvail.StartsWith('+'))
+            AvailabilityValue objTotalAvail = objGear.TotalAvailTuple();
+            if (!objTotalAvail.AddToParent)
             {
-                int intAvailInt = GetAvailInt(objGear.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language, true));
+                int intAvailInt = objTotalAvail.Value;
                 //TODO: Make this dynamically update without having to validate the character.
                 if (intAvailInt > CharacterObject.MaximumAvailability)
                 {
@@ -17225,19 +17233,6 @@ namespace Chummer
                                    LanguageManager.GetString("Label_SelectMetamagic_Disadvantage", GlobalOptions.Language) + ' ' +
                                    objMentor.Disadvantage;
             }
-        }
-
-        /// <summary>
-        /// Determine the integer portion of an item's Availability.
-        /// </summary>
-        /// <param name="strAvail">Availability string to parse.</param>
-        private static int GetAvailInt(string strAvail)
-        {
-            string strReturn = strAvail.TrimStart('+');
-            strReturn = strReturn.TrimEnd(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language));
-            strReturn = strReturn.TrimEnd(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language));
-
-            return Convert.ToInt32(strReturn);
         }
 
         /// <summary>

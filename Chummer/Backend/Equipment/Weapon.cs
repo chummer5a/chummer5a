@@ -48,7 +48,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmo = string.Empty;
         private string _strAmmoCategory = string.Empty;
         private int _intConceal = 0;
-        private List<Clip> _ammo = new List<Clip>();
+        private List<Clip> _lstAmmo = new List<Clip>();
         //private int _intAmmoRemaining = 0;
         //private int _intAmmoRemaining2 = 0;
         //private int _intAmmoRemaining3 = 0;
@@ -145,16 +145,18 @@ namespace Chummer.Backend.Equipment
             if (objXmlWeapon["accessorymounts"] != null)
             {
                 XmlNodeList objXmlMountList = objXmlWeapon.SelectNodes("accessorymounts/mount");
-                string strMounts = string.Empty;
-                foreach (XmlNode objXmlMount in objXmlMountList)
+                if (objXmlMountList?.Count > 0)
                 {
-                    strMounts += objXmlMount.InnerText + "/";
+                    StringBuilder strMounts = new StringBuilder();
+                    foreach (XmlNode objXmlMount in objXmlMountList)
+                    {
+                        strMounts.Append(objXmlMount.InnerText);
+                        strMounts.Append('/');
+                    }
+                    if (strMounts.Length > 0)
+                        strMounts.Length -= 1;
+                    _strWeaponSlots = strMounts.ToString();
                 }
-                if (strMounts.EndsWith('/'))
-                {
-                    strMounts = strMounts.Substring(0, strMounts.Length - 1);
-                }
-                _strWeaponSlots = strMounts;
             }
             if (!objXmlWeapon.TryGetStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlWeapon.TryGetStringFieldQuickly("notes", ref _strNotes);
@@ -415,7 +417,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
             objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
             objWriter.WriteStartElement("clips");
-            foreach (Clip clip in _ammo)
+            foreach (Clip clip in _lstAmmo)
             {
                 if (string.IsNullOrWhiteSpace(clip.AmmoName))
                 {
@@ -495,13 +497,13 @@ namespace Chummer.Backend.Equipment
             if (blnCopy)
             {
                 _guiID = Guid.NewGuid();
-                _ammo = new List<Clip>();
+                _lstAmmo = new List<Clip>();
                 _intActiveAmmoSlot = 1;
             }
             else
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-                _ammo.Clear();
+                _lstAmmo.Clear();
                 if (objNode["clips"] != null)
                 {
                     XmlNode clipNode = objNode["clips"];
@@ -513,7 +515,7 @@ namespace Chummer.Backend.Equipment
                         {
                             LoopClip.AmmoName = GetAmmoName(LoopClip.Guid, GlobalOptions.DefaultLanguage);
                         }
-                        _ammo.Add(LoopClip);
+                        _lstAmmo.Add(LoopClip);
                     }
                 }
                 else //Load old clips
@@ -527,7 +529,7 @@ namespace Chummer.Backend.Equipment
                             objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out guid) &&
                             ammo > 0 && guid != Guid.Empty)
                         {
-                            _ammo.Add(new Clip(guid, ammo));
+                            _lstAmmo.Add(new Clip(guid, ammo));
                         }
                     }
                 }
@@ -763,13 +765,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
             if (objGear != null)
             {
-                objWriter.WriteElementString("avail", objGear.TotalAvail(GlobalOptions.CultureInfo, strLanguageToPrint, true));
+                objWriter.WriteElementString("avail", objGear.TotalAvail(GlobalOptions.CultureInfo, strLanguageToPrint));
                 objWriter.WriteElementString("cost", objGear.TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
             else
             {
-                objWriter.WriteElementString("avail", TotalAvail(strLanguageToPrint));
+                objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
@@ -818,7 +820,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
             objWriter.WriteStartElement("clips");
-            foreach (Clip objClip in _ammo)
+            foreach (Clip objClip in _lstAmmo)
             {
                 if (string.IsNullOrWhiteSpace(objClip.AmmoName))
                 {
@@ -1138,7 +1140,7 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(_strAmmoCategory))
                     return _strAmmoCategory;
 
-                return _strCategory;
+                return Category;
             }
         }
 
@@ -1186,7 +1188,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return 1 + _lstAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
+                return 1 + WeaponAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
             }
         }
 
@@ -1403,7 +1405,7 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _objWeaponMount = value;
-                _objMountedVehicle = _objWeaponMount.Parent;
+                ParentVehicle = _objWeaponMount.Parent;
                 foreach (Weapon objChild in Children)
                     objChild.ParentMount = value;
             }
@@ -1524,12 +1526,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedConcealability(CultureInfo objCulture)
         {
-            int intReturn = _intConceal;
+            int intReturn = Concealability;
 
-            foreach (WeaponAccessory objAccessory in _lstAccessories)
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
                 if (objAccessory.Installed)
-                    intReturn += objAccessory.Concealability;
+                    intReturn += objAccessory.TotalConcealability;
             }
 
             /* Commented out because there's no reference to this in RAW
@@ -1561,10 +1563,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = _strDamage;
-
             // If the cost is determined by the Rating, evaluate the expression.
-            string strDamage = _strDamage;
+            string strDamage = Damage;
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
 
@@ -1639,7 +1639,7 @@ namespace Chummer.Backend.Equipment
                         intUseAGI = _objCharacter.AGI.TotalValue;
                 }
 
-                if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
             }
             
@@ -1745,7 +1745,7 @@ namespace Chummer.Backend.Equipment
 
             // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
             // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
-            if (_strName == "Unarmed Attack")
+            if (Name == "Unarmed Attack")
             {
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
@@ -1757,14 +1757,14 @@ namespace Chummer.Backend.Equipment
             }
 
             // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-            else if (Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
+            else if (Skill?.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
             {
                 intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
             }
             bool blnDamageReplaced = false;
 
             // Add in the DV bonus from any Weapon Mods.
-            foreach (WeaponAccessory objAccessory in _lstAccessories)
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
             {
                 if (objAccessory.Installed)
                 {
@@ -1807,7 +1807,7 @@ namespace Chummer.Backend.Equipment
                     if (objGear.WeaponBonus != null)
                     {
                         // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-                        if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+                        if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && Damage.Contains("(f)")))
                         {
                             if (objGear.WeaponBonus["damagetype"] != null)
                             {
@@ -1831,7 +1831,7 @@ namespace Chummer.Backend.Equipment
                         if (objChild.WeaponBonus != null)
                         {
                             // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-                            if (!(objChild.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+                            if (!(objChild.WeaponBonus.InnerXml.Contains("(f)") && Damage.Contains("(f)")))
                             {
                                 if (objChild.WeaponBonus["damagetype"] != null)
                                 {
@@ -1853,12 +1853,13 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            string strReturn;
             if (!blnDamageReplaced)
             {
                 try
                 {
                     int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
-                    if (_strName == "Unarmed Attack (Smashing Blow)")
+                    if (Name == "Unarmed Attack (Smashing Blow)")
                         intDamage *= 2;
                     strDamage = intDamage.ToString(objCulture);
                 }
@@ -1903,7 +1904,7 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     int intDamage = Convert.ToInt32(Math.Ceiling((double)CommonFunctions.EvaluateInvariantXPath(strDamage))) + intBonus;
-                    if (_strName == "Unarmed Attack (Smashing Blow)")
+                    if (Name == "Unarmed Attack (Smashing Blow)")
                         intDamage *= 2;
                     strDamage = intDamage.ToString(objCulture);
                 }
@@ -1915,7 +1916,7 @@ namespace Chummer.Backend.Equipment
 
             // If the string couldn't be parsed (resulting in NaN which will happen if it is a special string like "Grenade", "Chemical", etc.), return the Weapon's Damage string.
             if (strReturn.StartsWith("NaN"))
-                strReturn = _strDamage;
+                strReturn = Damage;
 
             // Translate the Damage Code.
             if (strLanguage != GlobalOptions.DefaultLanguage)
@@ -1946,21 +1947,25 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            string[] strAmmos = _strAmmo.Split(' ');
+            string[] strAmmos = Ammo.Split(' ');
             string strReturn = string.Empty;
             int intAmmoBonus = 0;
 
-            int extendedMax = _lstAccessories.Count != 0 ? _lstAccessories.Max(x => (x.Name.Contains("Extended Clip") ? 1 : 0) * x.Rating) : 0;
-
-            foreach (WeaponAccessory objAccessory in _lstAccessories)
+            int intExtendedMax = 0;
+            if (WeaponAccessories.Count != 0)
             {
-                // Replace the Ammo value.
-                if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                intExtendedMax =  WeaponAccessories.Max(x => (x.Name.Contains("Extended Clip") ? 1 : 0) * x.Rating);
+
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
-                    strAmmos = new string[] { objAccessory.AmmoReplace };
-                    break;
+                    // Replace the Ammo value.
+                    if (!string.IsNullOrEmpty(objAccessory.AmmoReplace))
+                    {
+                        strAmmos = new string[] { objAccessory.AmmoReplace };
+                        break;
+                    }
+                    intAmmoBonus += objAccessory.AmmoBonus;
                 }
-                intAmmoBonus += objAccessory.AmmoBonus;
             }
             if (ParentMount != null)
             {
@@ -1988,7 +1993,7 @@ namespace Chummer.Backend.Equipment
                         strPrepend = strThisAmmo.Substring(0, strThisAmmo.IndexOf('x') + 1);
                         strThisAmmo = strThisAmmo.Substring(strThisAmmo.IndexOf('x') + 1, strThisAmmo.Length - (strThisAmmo.IndexOf('x') + 1));
                     }
-                    strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => _strAmmo);
+                    strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => Ammo);
                     // If this is an Underbarrel Weapons that has been added, cut the Ammo capacity in half.
                     try
                     {
@@ -2001,10 +2006,10 @@ namespace Chummer.Backend.Equipment
 
                     intAmmo += (intAmmo * intAmmoBonus + 99) / 100;
 
-                    if (extendedMax > 0 && strAmmo.Contains("(c)"))
+                    if (intExtendedMax > 0 && strAmmo.Contains("(c)"))
                     {
                         //Multiply by 2-4 and divide by 2 to get 1, 1.5 or 2 times orginal result
-                        intAmmo = (intAmmo*(2 + extendedMax))/2;
+                        intAmmo = (intAmmo*(2 + intExtendedMax))/2;
                     }
 
                     strAmmoString = intAmmo.ToString(objCulture);
@@ -2138,7 +2143,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any accessories/modifications.
-                    foreach (WeaponAccessory objAccessory in _lstAccessories)
+                    foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
                         if (!string.IsNullOrEmpty(objAccessory.FireMode))
                         {
@@ -2176,7 +2181,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in _lstAccessories.Where(x => !string.IsNullOrEmpty(x.AddMode)))
+            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(x => !string.IsNullOrEmpty(x.AddMode)))
             {
                 lstModes.Add(objAccessory.AddMode);
             }
@@ -2220,7 +2225,7 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Run through the list of Weapon Mods.
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (!objAccessory.IncludedInWeapon)
                     {
@@ -2237,23 +2242,26 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strMounts = string.Empty;
                 XmlNodeList objXmlMountList = GetNode()?.SelectNodes("accessorymounts/mount");
 
-                if (objXmlMountList == null) return strMounts;
-                foreach (XmlNode objXmlMount in objXmlMountList)
+                if (objXmlMountList == null)
+                    return string.Empty;
+
+                StringBuilder strMounts = new StringBuilder();
+                foreach (XmlNode xmlMount in objXmlMountList)
                 {
-                    bool blnFound = _lstAccessories.Any(objAccessory => objAccessory.Mount == objXmlMount.InnerText || objAccessory.ExtraMount == objXmlMount.InnerText) || UnderbarrelWeapons.Any(weapon => weapon.Mount == objXmlMount.InnerText || weapon.ExtraMount == objXmlMount.InnerText);
-                    if (!blnFound)
+                    if (WeaponAccessories.All(objAccessory => objAccessory.Mount != xmlMount.InnerText && objAccessory.ExtraMount != xmlMount.InnerText) && UnderbarrelWeapons.All(weapon => weapon.Mount != xmlMount.InnerText && weapon.ExtraMount != xmlMount.InnerText))
                     {
-                        strMounts += objXmlMount.InnerText + "/";
+                        strMounts.Append(xmlMount.InnerText);
+                        strMounts.Append('/');
                     }
                 }
 
                 // Remove the trailing /
-                if (!string.IsNullOrEmpty(strMounts) && strMounts.Contains('/'))
-                    strMounts = strMounts.Substring(0, strMounts.Length - 1);
-                return strMounts;
+                if (strMounts.Length > 0)
+                    strMounts.Length -= 1;
+
+                return strMounts.ToString();
             }
         }
 
@@ -2267,12 +2275,12 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += _lstAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon).AsParallel().Sum(objAccessory => objAccessory.TotalCost);
+                decReturn += WeaponAccessories.Where(objAccessory => !objAccessory.IncludedInWeapon).AsParallel().Sum(objAccessory => objAccessory.TotalCost);
 
                 // Include the cost of any Underbarrel Weapon.
-                if (_lstUnderbarrel.Count > 0)
+                if (Children.Count > 0)
                 {
-                    decReturn += _lstUnderbarrel.AsParallel().Sum(objUnderbarrel => objUnderbarrel.TotalCost);
+                    decReturn += Children.AsParallel().Sum(objUnderbarrel => objUnderbarrel.TotalCost);
                 }
 
                 return decReturn;
@@ -2287,7 +2295,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
-                if (_blnCyberware || _strCategory == "Gear" || !string.IsNullOrEmpty(ParentID))
+                if (Cyberware || Category == "Gear" || !string.IsNullOrEmpty(ParentID))
                     return 0;
                 else
                 {
@@ -2304,7 +2312,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(string strLanguage)
         {
-            string strAP = _strAP;
+            string strAP = AP;
 
             int intAP = 0;
             int bonusAP = 0;
@@ -2320,11 +2328,11 @@ namespace Chummer.Backend.Equipment
                 if (objGear?.WeaponBonus != null)
                 {
                     // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-                    if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && _strDamage.Contains("(f)")))
+                    if (!(objGear.WeaponBonus.InnerXml.Contains("(f)") && Damage.Contains("(f)")))
                     {
                         // Armor-Piercing Flechettes (and any other that might come along that does not explicitly add +5 AP) should instead reduce
                         // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
-                        if (_strDamage.Contains("(f)") && objGear.Name.Contains("Flechette"))
+                        if (Damage.Contains("(f)") && objGear.Name.Contains("Flechette"))
                         {
                             bonusAP -= 5;
                         }
@@ -2345,21 +2353,21 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter != null)
                 {
                     // Add any UnarmedAP bonus for the Unarmed Attack item.
-                    if (_strName == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
+                    if (Name == "Unarmed Attack" || Skill != null && Skill.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
                     {
                         bonusAP += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP);
                     }
                 }
             }
 
-            foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => objAccessory.Installed))
+            foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => objAccessory.Installed))
             {
                 // Change the Weapon's Damage Type. (flechette rounds cannot affect weapons that have flechette included in their damage)
-                if (!(objAccessory.DamageType.Contains("(f)") && _strDamage.Contains("(f)")))
+                if (!(objAccessory.DamageType.Contains("(f)") && Damage.Contains("(f)")))
                 {
                     // Armor-Piercing Flechettes (and any other that might come along that does not explicitly add +5 AP) should instead reduce
                     // the AP for Flechette-only Weapons which have the standard Flechette +5 AP built into their stats.
-                    if (_strDamage.Contains("(f)") && objAccessory.Name.Contains("Flechette"))
+                    if (Damage.Contains("(f)") && objAccessory.Name.Contains("Flechette"))
                     {
                         bonusAP -= 5;
                     }
@@ -2475,7 +2483,7 @@ namespace Chummer.Backend.Equipment
                         intUseAGI = _objCharacter.AGI.TotalValue;
                 }
 
-                if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
             }
 
@@ -2494,8 +2502,8 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objAP.CheapReplace(_strAccuracy, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
-                    objAP.CheapReplace(_strAccuracy, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
+                    objAP.CheapReplace(strAP, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
+                    objAP.CheapReplace(strAP, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
                 }
             }
 
@@ -2531,8 +2539,7 @@ namespace Chummer.Backend.Equipment
             else
                 return intAP.ToString();
         }
-
-        private static readonly char[] lstParenthesesChars = "()".ToCharArray();
+        
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
@@ -2542,7 +2549,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strRCBase = "0";
                 string strRCFull = "0";
-                string strRC = string.Empty;
+                string strRC = RC;
                 string strRCTip = string.Empty;
                 int intRCBase = 0;
                 int intRCFull = 0;
@@ -2551,26 +2558,26 @@ namespace Chummer.Backend.Equipment
                 List<Tuple<string, int>> lstRCGroups = new List<Tuple<string, int>>(5);
                 List<Tuple<string, int>> lstRCDeployGroups = new List<Tuple<string, int>>(5);
 
-                int intPos = _strRC.IndexOf('(');
+                int intPos = strRC.IndexOf('(');
                 if (intPos != -1)
                 {
                     if (intPos == 0)
                     {
                         // The string contains only RC from pieces that can be removed - "(x)" only.
-                        strRCFull = _strRC;
+                        strRCFull = strRC;
                     }
                     // The string contains a mix of both fixed and removable RC. "x(y)".
                     else
                     {
-                        strRCBase = _strRC.Substring(0, intPos);
-                        strRCFull = _strRC.Substring(intPos, _strRC.Length - intPos);
+                        strRCBase = strRC.Substring(0, intPos);
+                        strRCFull = strRC.Substring(intPos, strRC.Length - intPos);
                     }
                 }
                 else
                 {
                     // The string contains only RC from fixed pieces - "x" only.
-                    strRCBase = _strRC;
-                    strRCFull = _strRC;
+                    strRCBase = strRC;
+                    strRCFull = strRC;
                 }
 
                 strRCTip = "1 ";
@@ -2580,7 +2587,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 intRCBase = Convert.ToInt32(strRCBase);
-                intRCFull = Convert.ToInt32(strRCFull.Trim(lstParenthesesChars));
+                intRCFull = Convert.ToInt32(strRCFull.Trim('(', ')'));
 
                 if (intRCBase < 0)
                 {
@@ -2610,7 +2617,7 @@ namespace Chummer.Backend.Equipment
 
                 // Now that we know the Weapon's RC values, run through all of the Accessories and add theirs to the mix.
                 // Only add in the values for items that do not come with the weapon.
-                foreach (WeaponAccessory objAccessory in _lstAccessories.Where(objAccessory => !string.IsNullOrEmpty(objAccessory.RC) && objAccessory.Installed))
+                foreach (WeaponAccessory objAccessory in WeaponAccessories.Where(objAccessory => !string.IsNullOrEmpty(objAccessory.RC) && objAccessory.Installed))
                 {
                     if (_objCharacter.Options.RestrictRecoil && objAccessory.RCGroup != 0)
                     {
@@ -2718,7 +2725,7 @@ namespace Chummer.Backend.Equipment
                         intUseSTR = _objCharacter.STR.TotalValue;
                 }
 
-                if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
 
                 int intStrRC = ((intUseSTR - 1)/3) + 1;
@@ -2751,14 +2758,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intReach = _intReach;
+                int intReach = Reach;
 
-                if (_strType == "Melee")
+                if (WeaponType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.
                     intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Reach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
-                if (_strName == "Unarmed Attack")
+                if (Name == "Unarmed Attack")
                 {
                     intReach += _objCharacter.Improvements.Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.UnarmedReach && objImprovement.Enabled).Sum(objImprovement => objImprovement.Value);
                 }
@@ -2774,14 +2781,15 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                StringBuilder objAccuracy = new StringBuilder(_strAccuracy);
+                string strAccuracy = Accuracy;
+                StringBuilder objAccuracy = new StringBuilder(strAccuracy);
                 int intAccuracy = 0;
 
                 int intUseSTR = 0;
                 int intUseAGI = 0;
                 int intUseSTRBase = 0;
                 int intUseAGIBase = 0;
-                if (_strAccuracy.Contains("{STR") || _strAccuracy.Contains("{AGI"))
+                if (strAccuracy.Contains("{STR") || strAccuracy.Contains("{AGI"))
                 {
                     if (Cyberware)
                     {
@@ -2872,7 +2880,7 @@ namespace Chummer.Backend.Equipment
                             intUseAGI = _objCharacter.AGI.TotalValue;
                     }
 
-                    if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
+                    if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                         intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
                 }
 
@@ -2888,8 +2896,8 @@ namespace Chummer.Backend.Equipment
                         return strHandling;
                     };
                 }
-                objAccuracy.CheapReplace(_strAccuracy, "Physical", funcPhysicalLimitString);
-                objAccuracy.CheapReplace(_strAccuracy, "Missile", funcPhysicalLimitString);
+                objAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString);
+                objAccuracy.CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
                 foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
                     CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAttribute);
@@ -2905,8 +2913,8 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        objAccuracy.CheapReplace(_strAccuracy, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
-                        objAccuracy.CheapReplace(_strAccuracy, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
+                        objAccuracy.CheapReplace(strAccuracy, "{" + strAttribute + "}", () => objLoopAttribute.TotalValue.ToString());
+                        objAccuracy.CheapReplace(strAccuracy, "{" + strAttribute + "Base}", () => objLoopAttribute.TotalBase.ToString());
                     }
                 }
                 
@@ -2924,22 +2932,16 @@ namespace Chummer.Backend.Equipment
                 {
                 }
 
-                foreach (WeaponAccessory wa in _lstAccessories)
+                foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
                 {
-                    if (wa.Name == "Laser Sight" || wa.Name == "Holographic Sight")
+                    if (objWeaponAccessory.Name == "Laser Sight" || objWeaponAccessory.Name == "Holographic Sight")
                     {
                         // Skip it if there is a smartgun on this weapon
-                        bool blnFound = false;
-                        foreach (WeaponAccessory wal in _lstAccessories)
-                        {
-                            if (wal.Name.StartsWith("Smartgun"))
-                                blnFound = true;
-                        }
-                        if (!blnFound)
-                            intAccuracy += wa.Accuracy;
+                        if (WeaponAccessories.All(x => !x.Name.StartsWith("Smartgun")))
+                            intAccuracy += objWeaponAccessory.Accuracy;
                     }
                     else
-                        intAccuracy += wa.Accuracy;
+                        intAccuracy += objWeaponAccessory.Accuracy;
                 }
                 string s = Name.ToLower();
                 intAccuracy += _objCharacter.Improvements
@@ -2956,7 +2958,7 @@ namespace Chummer.Backend.Equipment
                         string strSkill = string.Empty;
                         string strSpec = string.Empty;
                         // Exotic Skills require a matching Specialization.
-                        switch (_strCategory)
+                        switch (Category)
                         {
                             case "Bows":
                             case "Crossbows":
@@ -3125,15 +3127,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="strFindRange">Range node to use.</param>
         private int GetRange(string strFindRange, bool blnUseAlternateRange)
         {
-            string strRangeCategory = _strCategory;
+            string strRangeCategory = Category;
             if (blnUseAlternateRange)
             {
-                strRangeCategory = _strAlternateRange;
+                strRangeCategory = AlternateRange;
                 if (string.IsNullOrWhiteSpace(strRangeCategory))
                     return -1;
             }
-            else if (!string.IsNullOrEmpty(_strRange))
-                strRangeCategory = _strRange;
+            else if (!string.IsNullOrEmpty(Range))
+                strRangeCategory = Range;
 
 
             XmlDocument objXmlDocument = XmlManager.Load("ranges.xml");
@@ -3216,7 +3218,7 @@ namespace Chummer.Backend.Equipment
                         intUseAGI = _objCharacter.AGI.TotalValue;
                 }
 
-                if (_strCategory == "Throwing Weapons" || _strUseSkill == "Throwing Weapons")
+                if (Category == "Throwing Weapons" || UseSkill == "Throwing Weapons")
                     intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR);
             }
 
@@ -3233,7 +3235,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    objRange.CheapReplace(_strAccuracy, strAttribute, () => objLoopAttribute.TotalValue.ToString());
+                    objRange.CheapReplace(strRange, strAttribute, () => objLoopAttribute.TotalValue.ToString());
                 }
             }
             
@@ -3256,7 +3258,7 @@ namespace Chummer.Backend.Equipment
                 int intRangeBonus = 0;
 
                 // Weapon Mods.
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     intRangeBonus += objAccessory.RangeBonus;
 
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
@@ -3343,7 +3345,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = _intFullBurst;
 
                 // Check to see if any of the Mods replace this value.
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (objAccessory.FullBurst > intReturn)
                         intReturn = objAccessory.FullBurst;
@@ -3363,7 +3365,7 @@ namespace Chummer.Backend.Equipment
                 int intReturn = _intSuppressive;
 
                 // Check to see if any of the Mods replace this value.
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (objAccessory.Suppressive > intReturn)
                         intReturn = objAccessory.Suppressive;
@@ -3381,7 +3383,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (objAccessory.AccessoryCostMultiplier != 1)
                         intReturn += objAccessory.AccessoryCostMultiplier;
@@ -3401,7 +3403,7 @@ namespace Chummer.Backend.Equipment
         {
             string strExtra = string.Empty;
             int intDicePool = 0;
-            int intDicePoolModifier = _lstAccessories.Where(a => a.Installed).Sum(a => a.DicePool);
+            int intDicePoolModifier = WeaponAccessories.Where(a => a.Installed).Sum(a => a.DicePool);
             switch (FireMode)
             {
                 //TODO: Gunnery specialisations (Dear god why is Ballistic a specialisation)
@@ -3479,7 +3481,7 @@ namespace Chummer.Backend.Equipment
                             // If the character has a Specialization, include it in the Dice Pool string.
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                             {
-                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
+                                if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
                                     strExtra = " (" + (intDicePool + intDicePoolModifier + 2).ToString(objCulture) + ')';
                             }
                         }
@@ -3506,14 +3508,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCategory = _strCategory;
+                string strCategory = Category;
                 string strSkill = string.Empty;
                 string strSpec = string.Empty;
                 string strReturn = string.Empty;
 
                 // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
-                if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(_strRange))
-                    strCategory = _strRange;
+                if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
+                    strCategory = Range;
 
                 // Exotic Skills require a matching Specialization.
                 strSkill = GetSkillName(strCategory, ref strSpec);
@@ -3539,7 +3541,7 @@ namespace Chummer.Backend.Equipment
                             objSkill = objCharacterSkill;
                             break;
                         }
-                        if (string.IsNullOrEmpty(_strSpec2) || objCharacterSkill.HasSpecialization(_strSpec2))
+                        if (string.IsNullOrEmpty(Spec2) || objCharacterSkill.HasSpecialization(Spec2))
                         {
                             objSkill = objCharacterSkill;
                             break;
@@ -3621,14 +3623,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCategory = _strCategory;
+                string strCategory = Category;
                 string strSkill = string.Empty;
                 string strSpec = string.Empty;
                 string strReturn = string.Empty;
 
                 // If this is a Special Weapon, use the Range to determine the required Active Skill (if present).
-                if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(_strRange))
-                    strCategory = _strRange;
+                if (strCategory == "Special Weapons" && !string.IsNullOrEmpty(Range))
+                    strCategory = Range;
 
                 // Exotic Skills require a matching Specialization.
                 switch (strCategory)
@@ -3691,8 +3693,8 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Use the Skill defined by the Weapon if one is present.
-                if (!string.IsNullOrEmpty(_strUseSkill))
-                    strSkill = _strUseSkill;
+                if (!string.IsNullOrEmpty(UseSkill))
+                    strSkill = UseSkill;
 
                 // Locate the Active Skill to be used.
                 string strKey = strSkill;
@@ -3709,7 +3711,7 @@ namespace Chummer.Backend.Equipment
 
                 if (objSkill != null && (!string.IsNullOrEmpty(objSkill.Specialization) && !objSkill.IsExoticSkill))
                 {
-                    if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(_strCategory) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(_strSpec) || objSkill.HasSpecialization(_strSpec2))))
+                    if (objSkill.HasSpecialization(DisplayNameShort(GlobalOptions.Language)) || objSkill.HasSpecialization(Name) || objSkill.HasSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) || objSkill.HasSpecialization(Category) || (!string.IsNullOrEmpty(objSkill.Specialization) && (objSkill.HasSpecialization(Spec) || objSkill.HasSpecialization(Spec2))))
                         strReturn += " + " + LanguageManager.GetString("String_ExpenseSpecialization", GlobalOptions.Language) + " (2)";
                 }
 
@@ -3720,91 +3722,102 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability.
         /// </summary>
-        public string TotalAvail(string strLanguage)
+        public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
-            Tuple<int, string> objAvailPair = TotalAvailPair;
-            string strAvail = objAvailPair.Item2;
-            // Translate the Avail string.
-            if (strAvail == "F")
-                strAvail = LanguageManager.GetString("String_AvailForbidden", strLanguage);
-            else if (strAvail == "R")
-                strAvail = LanguageManager.GetString("String_AvailRestricted", strLanguage);
-
-            return objAvailPair.Item1.ToString() + strAvail;
+            return TotalAvailTuple().ToString(objCulture, strLanguage);
         }
 
         /// <summary>
-        /// Total Availability as a pair: first item is availability magnitude, second is untranslated Restricted/Forbidden state (empty of neither).
+        /// Total Availability as a triple.
         /// </summary>
-        public Tuple<int, string> TotalAvailPair
+        public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
         {
-            get
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            bool blnCheckUnderbarrels = blnCheckChildren;
+            if (strAvail.Length > 0)
             {
-                if (_strAvail.Length == 0)
-                    return new Tuple<int, string>(0, string.Empty);
-                string strAvail = string.Empty;
-                string strAvailExpr = _strAvail;
-                int intAvail = 0;
-
-                if (strAvailExpr.Substring(_strAvail.Length - 1, 1) == "F" || strAvailExpr.Substring(_strAvail.Length - 1, 1) == "R")
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
                 {
-                    strAvail = strAvailExpr.Substring(_strAvail.Length - 1, 1);
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, _strAvail.Length - 1);
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
                 }
-                if (strAvailExpr.Contains("{Children Avail}"))
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                strAvail = strAvail.TrimStart('+');
+
+                if (blnCheckUnderbarrels && strAvail.Contains("{Children Avail}"))
                 {
+                    blnCheckUnderbarrels = false;
                     int intMaxChildAvail = 0;
                     foreach (Weapon objUnderbarrel in UnderbarrelWeapons)
                     {
-                        Tuple<int, string> objLoopAvail = objUnderbarrel.TotalAvailPair;
-                        if (objLoopAvail.Item1 > intMaxChildAvail)
-                            intMaxChildAvail = objLoopAvail.Item1;
-                        if (objLoopAvail.Item2.EndsWith('F'))
-                            strAvail = "F";
-                        else if (strAvail != "F" && objLoopAvail.Item2.EndsWith('R'))
-                            strAvail = "R";
+                        if (objUnderbarrel.ParentID != InternalId)
+                        {
+                            AvailabilityValue objLoopAvail = objUnderbarrel.TotalAvailTuple();
+                            if (!objLoopAvail.AddToParent)
+                                intAvail += objLoopAvail.Value;
+                            else if (objLoopAvail.Value > intMaxChildAvail)
+                                intMaxChildAvail = objLoopAvail.Value;
+                            if (objLoopAvail.Suffix == 'F')
+                                chrLastAvailChar = 'F';
+                            else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                                chrLastAvailChar = 'R';
+                        }
                     }
-                    strAvailExpr = strAvailExpr.Replace("{Children Avail}", intMaxChildAvail.ToString());
+                    strAvail = strAvail.Replace("{Children Avail}", intMaxChildAvail.ToString());
                 }
+
                 try
                 {
-                    intAvail = Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvailExpr));
+                    intAvail += Convert.ToInt32(CommonFunctions.EvaluateInvariantXPath(strAvail));
                 }
                 catch (XPathException)
                 {
                 }
+            }
 
-                // Run through the Accessories and add in their availability.
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+            if (blnCheckUnderbarrels)
+            {
+                foreach (Weapon objUnderbarrel in UnderbarrelWeapons)
                 {
-                    string strAccAvail = objAccessory.Avail;
-                    int intAccAvail = 0;
-
-                    if (!objAccessory.IncludedInWeapon)
+                    if (objUnderbarrel.ParentID != InternalId)
                     {
-                        if (strAccAvail.StartsWith('+', '-'))
-                        {
-                            strAccAvail = objAccessory.TotalAvail(GlobalOptions.DefaultLanguage);
-                            if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.DefaultLanguage)))
-                            {
-                                strAvail = "F";
-                                strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
-                            }
-                            else if (strAccAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.DefaultLanguage)))
-                            {
-                                if (string.IsNullOrEmpty(strAvail))
-                                    strAvail = "R";
-                                strAccAvail = strAccAvail.Substring(0, strAccAvail.Length - 1);
-                            }
-                                    
-                            intAccAvail = Convert.ToInt32(strAccAvail);
-                            intAvail += intAccAvail;
-                        }
+                        AvailabilityValue objLoopAvail = objUnderbarrel.TotalAvailTuple();
+                        if (objLoopAvail.AddToParent)
+                            intAvail += objLoopAvail.Value;
+                        if (objLoopAvail.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                            chrLastAvailChar = 'R';
                     }
                 }
-                return new Tuple<int,string>(intAvail, strAvail);
             }
+
+            if (blnCheckChildren)
+            {
+                // Run through the Accessories and add in their availability.
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
+                {
+                    if (!objAccessory.IncludedInWeapon)
+                    {
+                        AvailabilityValue objLoopAvail = objAccessory.TotalAvailTuple();
+                        if (objLoopAvail.AddToParent)
+                            intAvail += objLoopAvail.Value;
+                        if (objLoopAvail.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                }
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         // Run through the Weapon Mods and see if anything changes the cost multiplier (Vintage mod).
@@ -3813,7 +3826,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 1;
-                foreach (WeaponAccessory objAccessory in _lstAccessories)
+                foreach (WeaponAccessory objAccessory in WeaponAccessories)
                 {
                     if (objAccessory.AccessoryCostMultiplier > 1)
                         intReturn = objAccessory.AccessoryCostMultiplier;
@@ -4455,13 +4468,13 @@ namespace Chummer.Backend.Equipment
             //1 indexed due legacy
             clip--;
 
-            for (int i = _ammo.Count; i <= clip; i++)
+            for (int i = _lstAmmo.Count; i <= clip; i++)
             {
-                _ammo.Add(new Clip(Guid.Empty, 0));
+                _lstAmmo.Add(new Clip(Guid.Empty, 0));
             }
 
 
-            return _ammo[clip];
+            return _lstAmmo[clip];
         }
 
         IHasMatrixAttributes GetMatrixAttributesOverride

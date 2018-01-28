@@ -292,18 +292,18 @@ namespace Chummer
         /// <summary>
         /// Rating of the Accessory.
         /// </summary>
-        public string SelectedRating
+        public decimal SelectedRating
         {
             get
             {
                 if (nudRating.Enabled)
                 {
-                    return nudRating.Value.ToString(GlobalOptions.CultureInfo);
+                    return nudRating.Value;
                 }
                 else
                 {
                     // Display Rating for items without one as 0
-                    return 0.ToString(GlobalOptions.CultureInfo);
+                    return 0;
                 }
             }
         }

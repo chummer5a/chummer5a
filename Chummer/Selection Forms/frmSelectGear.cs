@@ -715,7 +715,7 @@ namespace Chummer
             decimal decItemCost = 0.0m;
             if (chkFreeItem.Checked)
             {
-                lblCost.Text = 0.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = (0.0m).ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
             }
             else
             {
