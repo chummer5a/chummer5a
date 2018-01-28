@@ -109,6 +109,8 @@ Application Changes:
 - Fixed an issue with cost calculations related to armor mods whose costs contained the FixedValue phrase.
 - Fixed issues where plugins that would increase the availability of the parent item sometimes would not do so.
 - Fixed an issue where plugins that would increase the availability of the parent item would not get their availability types translated properly.
+- Fixed a bug where arts, enhancements, and spells attached to initiation grades could not be deleted in career mode.
+- Fixed a crash that occured where attempting to delete something in the metamagic tree in create mode while nothing was selected.
 
 Data Changes:
 

@@ -5113,33 +5113,83 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode != null)
+            string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                if (treMetamagic.SelectedNode.Level == 0)
+                // We're deleting a single bonus attached to a grade
+                Art objArt = CharacterObject.Arts.FindById(strSelectedId);
+                if (objArt != null)
                 {
-                    // Locate the selected Metamagic.
-                    Metamagic objMetamagic = CharacterObject.Metamagics.FindById(treMetamagic.SelectedNode.Tag.ToString());
-                    if (objMetamagic.Grade < 0)
+                    if (objArt.Grade <= 0)
                         return;
-
-                    string strMessage = string.Empty;
-                    if (CharacterObject.MAGEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
-                    else if (CharacterObject.RESEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                    string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
                     if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
-                    // Remove the Improvements created by the Metamagic.
-                    ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-
-                    // Remove the Metamagic from the character.
-                    CharacterObject.Metamagics.Remove(objMetamagic);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
+                    CharacterObject.Arts.Remove(objArt);
                 }
+                else
+                {
+                    Metamagic objMetamagic = CharacterObject.Metamagics.FindById(strSelectedId);
+                    if (objMetamagic != null)
+                    {
+                        if (objMetamagic.Grade <= 0)
+                            return;
+                        string strMessage = string.Empty;
+                        if (CharacterObject.MAGEnabled)
+                            strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+                        else if (CharacterObject.RESEnabled)
+                            strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                        else
+                            return;
+                        if (!CharacterObject.ConfirmDelete(strMessage))
+                            return;
+
+                        CharacterObject.Metamagics.Remove(objMetamagic);
+                        ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
+                    }
+                    else
+                    {
+                        Enhancement objEnhancement = CharacterObject.FindEnhancement(strSelectedId);
+                        if (objEnhancement != null)
+                        {
+                            if (objEnhancement.Grade <= 0)
+                                return;
+                            string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
+                            if (!CharacterObject.ConfirmDelete(strMessage))
+                                return;
+
+                            CharacterObject.Enhancements.Remove(objEnhancement);
+                            foreach (Power objPower in CharacterObject.Powers)
+                            {
+                                if (objPower.Enhancements.Contains(objEnhancement))
+                                    objPower.Enhancements.Remove(objEnhancement);
+                            }
+                        }
+                        else
+                        {
+                            Spell objSpell = CharacterObject.Spells.FindById(strSelectedId);
+                            if (objSpell != null)
+                            {
+                                if (objSpell.Grade <= 0)
+                                    return;
+                                string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
+                                if (!CharacterObject.ConfirmDelete(strMessage))
+                                    return;
+
+                                CharacterObject.Spells.Remove(objSpell);
+
+                                treSpells.FindNode(objSpell.InternalId)?.Remove();
+                            }
+                            else
+                                return;
+                        }
+                    }
+                }
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 

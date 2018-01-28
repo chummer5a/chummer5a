@@ -4657,186 +4657,195 @@ namespace Chummer
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode.Level == 0)
+            string strSelectedId = treMetamagic.SelectedNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
-                // Locate the selected Grade.
-                InitiationGrade objGrade = CharacterObject.InitiationGrades.FindById(treMetamagic.SelectedNode.Tag.ToString());
-                if (objGrade == null)
-                    return;
-
-                // Stop if this isn't the highest grade
-
-                if (CharacterObject.MAGEnabled)
-                {
-                    if (objGrade.Grade != CharacterObject.InitiateGrade)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-                else if (CharacterObject.RESEnabled)
-                {
-                    if (objGrade.Grade != CharacterObject.SubmersionGrade)
-                    {
-                        MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-
                 // We're deleting an entire grade
-                string strMessage = string.Empty;
-                if (CharacterObject.MAGEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language);
-                else if (CharacterObject.RESEnabled)
-                    strMessage = LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language);
-                if (!CharacterObject.ConfirmDelete(strMessage))
-                    return;
-
-                // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                // Arts
-                List<Art> lstRemoveArts = new List<Art>();
-                foreach (Art objArt in CharacterObject.Arts)
-                {
-                    if (objArt.Grade == objGrade.Grade)
-                    {
-                        lstRemoveArts.Add(objArt);
-                    }
-                }
-                foreach (Art objArt in lstRemoveArts)
-                    CharacterObject.Arts.Remove(objArt);
-
-                // Metamagics
-                List<Metamagic> lstRemoveMetamagics = new List<Metamagic>();
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                {
-                    if (objMetamagic.Grade == objGrade.Grade)
-                    {
-                        lstRemoveMetamagics.Add(objMetamagic);
-                    }
-                }
-                foreach (Metamagic objMetamagic in lstRemoveMetamagics)
-                {
-                    CharacterObject.Metamagics.Remove(objMetamagic);
-                    ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-                }
-
-                // Enhancements
-                List<Enhancement> lstRemoveEnhancements = new List<Enhancement>();
-                foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
-                {
-                    if (objEnhancement.Grade == objGrade.Grade)
-                    {
-                        lstRemoveEnhancements.Add(objEnhancement);
-                    }
-                }
-                foreach (Enhancement objEnhancement in lstRemoveEnhancements)
-                    CharacterObject.Enhancements.Remove(objEnhancement);
-
-                // Spells
-                List<Spell> lstRemoveSpells = new List<Spell>();
-                foreach (Spell objSpell in CharacterObject.Spells)
-                {
-                    if (objSpell.Grade == objGrade.Grade)
-                    {
-                        lstRemoveSpells.Add(objSpell);
-                    }
-                }
-                foreach (Spell objSpell in lstRemoveSpells)
-                    CharacterObject.Spells.Remove(objSpell);
-
-                // Grade
-                CharacterObject.InitiationGrades.Remove(objGrade);
-
-                if (CharacterObject.MAGEnabled)
-                {
-                    CharacterObject.InitiateGrade = objGrade.Grade - 1;
-                    // Remove any existing Initiation Improvements.
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-
-                    // Create the replacement Improvement.
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                    ImprovementManager.Commit(CharacterObject);
-                }
-                else if (CharacterObject.RESEnabled)
-                {
-                    CharacterObject.SubmersionGrade = objGrade.Grade - 1;
-
-                    // Remove any existing Initiation Improvements.
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-
-                    // Create the replacement Improvement.
-                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                    ImprovementManager.Commit(CharacterObject);
-                }
-            }
-            else
-            {
-                // We're deleting a single bonus attached to a grade
-                string strItemId = treMetamagic.SelectedNode.Tag.ToString();
-                Art objArt = CharacterObject.Arts.FindById(strItemId);
-                if (objArt != null)
+                InitiationGrade objGrade = CharacterObject.InitiationGrades.FindById(strSelectedId);
+                if (objGrade != null)
                 {
                     string strMessage = string.Empty;
-                    strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Arts.Remove(objArt);
-                    return;
-                }
-
-                Metamagic objMetamagic = CharacterObject.Metamagics.FindById(strItemId);
-                if (objMetamagic != null)
-                {
-                    string strMessage = string.Empty;
+                    // Stop if this isn't the highest grade
                     if (CharacterObject.MAGEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
-                    else if (CharacterObject.RESEnabled)
-                        strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Metamagics.Remove(objMetamagic);
-                    ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-                    return;
-                }
-
-                Enhancement objEnhancement = CharacterObject.FindEnhancement(strItemId);
-                if (objEnhancement != null)
-                {
-                    string strMessage = string.Empty;
-                    strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
-                    if (!CharacterObject.ConfirmDelete(strMessage))
-                        return;
-
-                    CharacterObject.Enhancements.Remove(objEnhancement);
-                    foreach (Power objPower in CharacterObject.Powers)
                     {
-                        if (objPower.Enhancements.Contains(objEnhancement))
-                            objPower.Enhancements.Remove(objEnhancement);
+                        if (objGrade.Grade != CharacterObject.InitiateGrade)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        strMessage = LanguageManager.GetString("Message_DeleteInitiateGrade", GlobalOptions.Language);
                     }
-                    return;
-                }
-
-                Spell objSpell = CharacterObject.Spells.FindById(strItemId);
-                if (objSpell != null)
-                {
-                    string strMessage = string.Empty;
-                    strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
+                    else if (CharacterObject.RESEnabled)
+                    {
+                        if (objGrade.Grade != CharacterObject.SubmersionGrade)
+                        {
+                            MessageBox.Show(LanguageManager.GetString("Message_DeleteGrade", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_DeleteGrade", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        strMessage = LanguageManager.GetString("Message_DeleteSubmersionGrade", GlobalOptions.Language);
+                    }
+                    else
+                        return;
+                    
                     if (!CharacterObject.ConfirmDelete(strMessage))
                         return;
 
-                    CharacterObject.Spells.Remove(objSpell);
+                    // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+                    // Arts
+                    List<Art> lstRemoveArts = new List<Art>();
+                    foreach (Art objArt in CharacterObject.Arts)
+                    {
+                        if (objArt.Grade == objGrade.Grade)
+                        {
+                            lstRemoveArts.Add(objArt);
+                        }
+                    }
+                    foreach (Art objArt in lstRemoveArts)
+                        CharacterObject.Arts.Remove(objArt);
 
-                    treSpells.FindNode(objSpell.InternalId)?.Remove();
-                    return;
+                    // Metamagics
+                    List<Metamagic> lstRemoveMetamagics = new List<Metamagic>();
+                    foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
+                    {
+                        if (objMetamagic.Grade == objGrade.Grade)
+                        {
+                            lstRemoveMetamagics.Add(objMetamagic);
+                        }
+                    }
+                    foreach (Metamagic objMetamagic in lstRemoveMetamagics)
+                    {
+                        CharacterObject.Metamagics.Remove(objMetamagic);
+                        ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
+                    }
+
+                    // Enhancements
+                    List<Enhancement> lstRemoveEnhancements = new List<Enhancement>();
+                    foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
+                    {
+                        if (objEnhancement.Grade == objGrade.Grade)
+                        {
+                            lstRemoveEnhancements.Add(objEnhancement);
+                        }
+                    }
+                    foreach (Enhancement objEnhancement in lstRemoveEnhancements)
+                        CharacterObject.Enhancements.Remove(objEnhancement);
+
+                    // Spells
+                    List<Spell> lstRemoveSpells = new List<Spell>();
+                    foreach (Spell objSpell in CharacterObject.Spells)
+                    {
+                        if (objSpell.Grade == objGrade.Grade)
+                        {
+                            lstRemoveSpells.Add(objSpell);
+                        }
+                    }
+                    foreach (Spell objSpell in lstRemoveSpells)
+                        CharacterObject.Spells.Remove(objSpell);
+
+                    // Grade
+                    CharacterObject.InitiationGrades.Remove(objGrade);
+
+                    if (CharacterObject.MAGEnabled)
+                    {
+                        CharacterObject.InitiateGrade = objGrade.Grade - 1;
+                        // Remove any existing Initiation Improvements.
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
+
+                        // Create the replacement Improvement.
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                        ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
+                        ImprovementManager.Commit(CharacterObject);
+                    }
+                    else if (CharacterObject.RESEnabled)
+                    {
+                        CharacterObject.SubmersionGrade = objGrade.Grade - 1;
+
+                        // Remove any existing Initiation Improvements.
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
+
+                        // Create the replacement Improvement.
+                        ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
+                        ImprovementManager.Commit(CharacterObject);
+                    }
                 }
+                else
+                {
+                    // We're deleting a single bonus attached to a grade
+                    Art objArt = CharacterObject.Arts.FindById(strSelectedId);
+                    if (objArt != null)
+                    {
+                        if (objArt.Grade <= 0)
+                            return;
+                        string strMessage = LanguageManager.GetString("Message_DeleteArt", GlobalOptions.Language);
+                        if (!CharacterObject.ConfirmDelete(strMessage))
+                            return;
+
+                        CharacterObject.Arts.Remove(objArt);
+                    }
+                    else
+                    {
+                        Metamagic objMetamagic = CharacterObject.Metamagics.FindById(strSelectedId);
+                        if (objMetamagic != null)
+                        {
+                            if (objMetamagic.Grade <= 0)
+                                return;
+                            string strMessage = string.Empty;
+                            if (CharacterObject.MAGEnabled)
+                                strMessage = LanguageManager.GetString("Message_DeleteMetamagic", GlobalOptions.Language);
+                            else if (CharacterObject.RESEnabled)
+                                strMessage = LanguageManager.GetString("Message_DeleteEcho", GlobalOptions.Language);
+                            else
+                                return;
+                            if (!CharacterObject.ConfirmDelete(strMessage))
+                                return;
+
+                            CharacterObject.Metamagics.Remove(objMetamagic);
+                            ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
+                        }
+                        else
+                        {
+                            Enhancement objEnhancement = CharacterObject.FindEnhancement(strSelectedId);
+                            if (objEnhancement != null)
+                            {
+                                if (objEnhancement.Grade <= 0)
+                                    return;
+                                string strMessage = LanguageManager.GetString("Message_DeleteEnhancement", GlobalOptions.Language);
+                                if (!CharacterObject.ConfirmDelete(strMessage))
+                                    return;
+
+                                CharacterObject.Enhancements.Remove(objEnhancement);
+                                foreach (Power objPower in CharacterObject.Powers)
+                                {
+                                    if (objPower.Enhancements.Contains(objEnhancement))
+                                        objPower.Enhancements.Remove(objEnhancement);
+                                }
+                            }
+                            else
+                            {
+                                Spell objSpell = CharacterObject.Spells.FindById(strSelectedId);
+                                if (objSpell != null)
+                                {
+                                    if (objSpell.Grade <= 0)
+                                        return;
+                                    string strMessage = LanguageManager.GetString("Message_DeleteSpell", GlobalOptions.Language);
+                                    if (!CharacterObject.ConfirmDelete(strMessage))
+                                        return;
+
+                                    CharacterObject.Spells.Remove(objSpell);
+
+                                    treSpells.FindNode(objSpell.InternalId)?.Remove();
+                                }
+                                else
+                                    return;
+                            }
+                        }
+                    }
+                }
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdAddCritterPower_Click(object sender, EventArgs e)
