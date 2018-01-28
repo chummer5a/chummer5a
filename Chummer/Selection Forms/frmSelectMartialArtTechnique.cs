@@ -48,12 +48,6 @@ namespace Chummer
 
         private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-            
             HashSet<string> setAllowedTechniques = null;
             // Populate the Martial Art Tecnnique list.
             XmlNode xmlMartialArtNode = _objMartialArt.GetNode();

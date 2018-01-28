@@ -8083,36 +8083,63 @@ namespace Chummer
         /// <param name="strAvail">Item's Availability.</param>
         public string AvailTest(decimal decCost, string strAvail)
         {
-            string strReturn;
-            int.TryParse(strAvail.TrimEnd(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)).TrimEnd(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language)), out int intAvail);
-
-            if (intAvail != 0 && (strAvail.EndsWith(LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language)) || strAvail.EndsWith(LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language))))
+            bool blnShowTest = false;
+            string strTestSuffix = LanguageManager.GetString("String_AvailRestricted", GlobalOptions.Language);
+            if (strAvail.EndsWith(strTestSuffix))
             {
-                string strInterval;
-                int intTest = 0;
-                // Determine the interval based on the item's price.
-                if (decCost <= 100.0m)
-                    strInterval = "6 " + LanguageManager.GetString("String_Hours", GlobalOptions.Language);
-                else if (decCost <= 1000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Day", GlobalOptions.Language);
-                else if (decCost <= 10000.0m)
-                    strInterval = "2 " + LanguageManager.GetString("String_Days", GlobalOptions.Language);
-                else if (decCost <= 100000.0m)
-                    strInterval = "1 " + LanguageManager.GetString("String_Week", GlobalOptions.Language);
-                else
-                    strInterval = "1 " + LanguageManager.GetString("String_Month", GlobalOptions.Language);
-
-                // Find the character's Negotiation total.
-                Skill objSkill = SkillsSection.GetActiveSkill("Negotiation");
-                if (objSkill != null)
-                    intTest = objSkill.Pool;
-
-                strReturn = intTest.ToString() + " (" + intAvail.ToString() + ", " + strInterval + ')';
+                blnShowTest = true;
+                strAvail = strAvail.TrimEnd(strTestSuffix, true);
             }
             else
-                strReturn = LanguageManager.GetString("String_None", GlobalOptions.Language);
+            {
+                strTestSuffix = LanguageManager.GetString("String_AvailForbidden", GlobalOptions.Language);
+                if (strAvail.EndsWith(strTestSuffix))
+                {
+                    blnShowTest = true;
+                    strAvail = strAvail.TrimEnd(strTestSuffix, true);
+                }
+            }
+            if (int.TryParse(strAvail, out int intAvail) && (intAvail != 0 || blnShowTest))
+            {
+                return GetAvailTestString(decCost, intAvail);
+            }
 
-            return strReturn;
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
+        }
+
+        /// <summary>
+        /// Extended Availability Test information for an item based on the character's Negotiate Skill.
+        /// </summary>
+        /// <param name="intCost">Item's cost.</param>
+        /// <param name="strAvail">Item's Availability.</param>
+        public string AvailTest(decimal decCost, AvailabilityValue objAvailability)
+        {
+            if (objAvailability.Value != 0 || objAvailability.Suffix == 'R' || objAvailability.Suffix == 'F')
+            {
+                return GetAvailTestString(decCost, objAvailability.Value);
+            }
+
+            return LanguageManager.GetString("String_None", GlobalOptions.Language);
+        }
+
+        private string GetAvailTestString(decimal decCost, int intAvailValue)
+        {
+            string strInterval;
+            // Find the character's Negotiation total.
+            int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
+            // Determine the interval based on the item's price.
+            if (decCost <= 100.0m)
+                strInterval = "6 " + LanguageManager.GetString("String_Hours", GlobalOptions.Language);
+            else if (decCost <= 1000.0m)
+                strInterval = "1 " + LanguageManager.GetString("String_Day", GlobalOptions.Language);
+            else if (decCost <= 10000.0m)
+                strInterval = "2 " + LanguageManager.GetString("String_Days", GlobalOptions.Language);
+            else if (decCost <= 100000.0m)
+                strInterval = "1 " + LanguageManager.GetString("String_Week", GlobalOptions.Language);
+            else
+                strInterval = "1 " + LanguageManager.GetString("String_Month", GlobalOptions.Language);
+
+            return intPool.ToString(GlobalOptions.CultureInfo) + " (" + intAvailValue.ToString(GlobalOptions.CultureInfo) + ", " + strInterval + ')';
         }
 
         /// <summary>

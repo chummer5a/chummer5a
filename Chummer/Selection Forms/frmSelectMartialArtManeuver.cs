@@ -45,12 +45,6 @@ namespace Chummer
 
         private void frmSelectMartialArtManeuver_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             List<ListItem> lstManeuver = new List<ListItem>();
 
             // Populate the Martial Art Maneuver list.

@@ -73,11 +73,7 @@ namespace Chummer
             };
             dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewNuyenCellStyle;
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-
-            foreach (Label objLabel in Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith('[')))
-            {
-                objLabel.Text = string.Empty;
-            }
+            
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -191,9 +187,9 @@ namespace Chummer
                     lblWeaponCost.Text = _objSelectedWeapon.DisplayCost(out decItemCost, nudMarkup.Value / 100.0m);
                 }
 
-                string strTotalAvail = _objSelectedWeapon.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblWeaponAvail.Text = strTotalAvail;
-                lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
+                AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
+                lblWeaponAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
 
                 string strPage = _objSelectedWeapon.DisplayPage(GlobalOptions.Language);
                 lblSource.Text = CommonFunctions.LanguageBookShort(_objSelectedWeapon.Source, GlobalOptions.Language) + ' ' + strPage;

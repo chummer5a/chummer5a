@@ -183,6 +183,8 @@ namespace Chummer
         {
             if (LoadLanguage(strIntoLanguage))
                 UpdateControls(objObject, strIntoLanguage);
+            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+                UpdateControls(objObject, GlobalOptions.DefaultLanguage);
         }
 
         private static bool LoadLanguage(string strLanguage)
@@ -224,6 +226,8 @@ namespace Chummer
                 string strControlTag = frmForm.Tag?.ToString();
                 if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
                     frmForm.Text = GetString(strControlTag, strIntoLanguage);
+                else if (frmForm.Text.StartsWith('['))
+                    frmForm.Text = string.Empty;
 
                 // update any menu strip items that have tags
                 if (frmForm.MainMenuStrip != null)
@@ -239,6 +243,8 @@ namespace Chummer
                     string strControlTag = objChild.Tag?.ToString();
                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
                         objChild.Text = GetString(strControlTag, strIntoLanguage);
+                    else if (objChild.Text.StartsWith('['))
+                        objChild.Text = string.Empty;
                 }
                 else if (objChild is ToolStrip tssStrip)
                 {
@@ -254,6 +260,8 @@ namespace Chummer
                         string strControlTag = objHeader.Tag?.ToString();
                         if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
                             objHeader.Text = GetString(strControlTag, strIntoLanguage);
+                        else if (objHeader.Text.StartsWith('['))
+                            objHeader.Text = string.Empty;
                     }
                 }
                 else if (objChild is TabControl objTabControl)
@@ -263,6 +271,8 @@ namespace Chummer
                         string strControlTag = tabPage.Tag?.ToString();
                         if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
                             tabPage.Text = GetString(strControlTag, strIntoLanguage);
+                        else if (tabPage.Text.StartsWith('['))
+                            tabPage.Text = string.Empty;
 
                         UpdateControls(tabPage, strIntoLanguage);
                     }
@@ -283,14 +293,15 @@ namespace Chummer
                         if (objNode.Level == 0)
                         {
                             string strControlTag = objNode.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag))
+                            if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_"))
                             {
-                                if (strControlTag.StartsWith("Node_"))
-                                {
-                                    objNode.Text = GetString(strControlTag, strIntoLanguage);
-                                }
+                                objNode.Text = GetString(strControlTag, strIntoLanguage);
                             }
+                            else if (objNode.Text.StartsWith('['))
+                                objNode.Text = string.Empty;
                         }
+                        else if (objNode.Text.StartsWith('['))
+                            objNode.Text = string.Empty;
                     }
                 }
             }
@@ -305,6 +316,8 @@ namespace Chummer
             string strControlTag = tssItem.Tag?.ToString();
             if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int intDummy) && !strControlTag.IsGuid())
                 tssItem.Text = GetString(strControlTag, strIntoLanguage);
+            else if (tssItem.Text.StartsWith('['))
+                tssItem.Text = string.Empty;
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)

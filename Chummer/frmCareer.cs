@@ -929,91 +929,6 @@ namespace Chummer
 
         private void frmCareer_Shown(object sender, EventArgs e)
         {
-            // Clear all of the placeholder Labels.
-            foreach (Label objLabel in tabCommon.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabMartialArts.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabMagician.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabTechnomancer.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabAdvancedPrograms.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabCyberware.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabLifestyle.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabArmor.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabWeapons.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabGear.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabVehicles.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabInitiation.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabCritter.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
-            foreach (Label objLabel in tabImprovements.Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             frmCareer_Resize(sender, e);
         }
 
@@ -1341,13 +1256,8 @@ namespace Chummer
                     strExConString = " (" + strExConString + ')';
                 foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, funcExConIneligibleWare))
                 {
-                    string strAvail = objCyberware.Avail;
-                    if (strAvail.StartsWith("FixedValues("))
-                    {
-                        string[] strValues = strAvail.TrimStart("FixedValues(", true).TrimEnd(')').Split(',');
-                        strAvail = strValues[Math.Max(Math.Min(objCyberware.Rating, strValues.Length) - 1, 0)];
-                    }
-                    if (strAvail.EndsWith('R', 'F'))
+                    char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
+                    if (chrAvail == 'R' || chrAvail == 'F')
                     {
                         objCyberware.DeleteCyberware(treWeapons, treVehicles);
 

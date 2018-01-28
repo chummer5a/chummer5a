@@ -49,7 +49,7 @@ namespace Chummer
         private bool _blnLockGrade;
         private bool _blnLoading = true;
 
-        private Mode _objMode = Mode.Cyberware;
+        private readonly Mode _objMode = Mode.Cyberware;
         private string _strNodeXPath = "/chummer/cyberwares/cyberware";
         private static string _sStrSelectCategory = string.Empty;
         private static string _sStrSelectGrade = string.Empty;
@@ -72,47 +72,39 @@ namespace Chummer
         public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, XmlNode objParentNode = null)
         {
             InitializeComponent();
-            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             lblMarkupLabel.Visible = objCharacter.Created;
             nudMarkup.Visible = objCharacter.Created;
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             chkHideBannedGrades.Visible = !objCharacter.Created;
             _objCharacter = objCharacter;
             _objParentNode = objParentNode;
-            MoveControls();
 
-            // Load the Cyberware information.
-            if (objWareSource == Improvement.ImprovementSource.Bioware)
-                WindowMode = Mode.Bioware;
-            else
-                WindowMode = Mode.Cyberware;
-            switch (WindowMode)
+            switch (objWareSource)
             {
-                case Mode.Cyberware:
+                case Improvement.ImprovementSource.Cyberware:
+                    _objMode = Mode.Cyberware;
                     _objXmlDocument = XmlManager.Load("cyberware.xml");
+                    _strNodeXPath = "/chummer/cyberwares/cyberware";
+                    Tag = "Title_SelectCyberware";
                     break;
-                case Mode.Bioware:
+                case Improvement.ImprovementSource.Bioware:
+                    _objMode = Mode.Bioware;
                     _objXmlDocument = XmlManager.Load("bioware.xml");
+                    _strNodeXPath = "/chummer/biowares/bioware";
+                    Tag = "Title_SelectCyberware_Bioware";
                     break;
             }
 
-            _objGradeList = (List<Grade>)_objCharacter.GetGradeList(_objMode == Mode.Bioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
+            LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
+            MoveControls();
+
+            _objGradeList = (List<Grade>)_objCharacter.GetGradeList(objWareSource);
             _strNoneGradeId = _objGradeList.FirstOrDefault(x => x.Name == "None").SourceId.ToString("D");
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objXmlDocument);
         }
 
         private void frmSelectCyberware_Load(object sender, EventArgs e)
         {
-            // Update the window title if needed.
-            if (_objMode == Mode.Bioware)
-                Text = LanguageManager.GetString("Title_SelectCyberware_Bioware", GlobalOptions.Language);
-
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
@@ -485,19 +477,6 @@ namespace Chummer
             get
             {
                 return _objMode;
-            }
-            set
-            {
-                _objMode = value;
-                switch (_objMode)
-                {
-                    case Mode.Cyberware:
-                        _strNodeXPath = "/chummer/cyberwares/cyberware";
-                        break;
-                    case Mode.Bioware:
-                        _strNodeXPath = "/chummer/biowares/bioware";
-                        break;
-                }
             }
         }
 

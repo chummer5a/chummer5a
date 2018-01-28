@@ -52,6 +52,7 @@ namespace Chummer
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
 
+            string strType = string.Empty;
             _objMode = objMode;
             // Load the Metamagic information.
             switch (_objMode)
@@ -59,27 +60,21 @@ namespace Chummer
                 case Mode.Metamagic:
                     _strRootXPath = "/chummer/metamagics/metamagic";
                     _objXmlDocument = XmlManager.Load("metamagic.xml");
+                    strType = LanguageManager.GetString("String_Metamagic", GlobalOptions.Language);
                     break;
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
                     _objXmlDocument = XmlManager.Load("echoes.xml");
+                    strType = LanguageManager.GetString("String_Echo", GlobalOptions.Language);
                     break;
             }
+
+            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", strType);
+            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", strType);
         }
 
         private void frmSelectMetamagic_Load(object sender, EventArgs e)
         {
-            // Update the window title if needed.
-            string strType = LanguageManager.GetString(_objMode == Mode.Echo ? "String_Echo" : "String_Metamagic", GlobalOptions.Language);
-            Text = LanguageManager.GetString("Title_SelectGeneric", GlobalOptions.Language).Replace("{0}", strType);
-            chkLimitList.Text = LanguageManager.GetString("Checkbox_SelectGeneric_LimitList", GlobalOptions.Language).Replace("{0}", strType);
-
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             BuildMetamagicList();
         }
 

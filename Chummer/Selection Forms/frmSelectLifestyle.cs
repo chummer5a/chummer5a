@@ -37,7 +37,7 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument = null;
 
-        private bool _blnSkipRefresh = false;
+        private bool _blnSkipRefresh = true;
 
         #region Control Events
         public frmSelectLifestyle(Character objCharacter)
@@ -53,14 +53,6 @@ namespace Chummer
 
         private void frmSelectLifestyle_Load(object sender, EventArgs e)
         {
-            _blnSkipRefresh = true;
-
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             string strSelectedId = string.Empty;
             // Populate the Lifestyle ComboBoxes.
             List<ListItem> lstLifestyle = new List<ListItem>();

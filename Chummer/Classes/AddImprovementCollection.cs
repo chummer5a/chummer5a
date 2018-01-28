@@ -3195,9 +3195,9 @@ namespace Chummer.Classes
         {
             Log.Info("selectparagon");
             Log.Info("selectparagon = " + bonusNode.OuterXml);
-            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter)
+            frmSelectMentorSpirit frmPickMentorSpirit = new frmSelectMentorSpirit(_objCharacter, "paragons.xml")
             {
-                XmlFile = "paragons.xml"
+                ForcedMentor = ForcedValue
             };
             frmPickMentorSpirit.ShowDialog();
 

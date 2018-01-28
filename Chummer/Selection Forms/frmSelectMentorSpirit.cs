@@ -30,35 +30,31 @@ namespace Chummer
         private XmlNode _nodBonus;
         private XmlNode _nodChoice1Bonus;
         private XmlNode _nodChoice2Bonus;
-        private string _strXmlFile = "mentors.xml";
         private string _strForceMentor = string.Empty;
 
-        private XmlDocument _objXmlDocument = null;
+        private readonly string _strXmlFile = "mentors.xml";
+        private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
-        public frmSelectMentorSpirit(Character objCharacter)
+        public frmSelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
         {
             InitializeComponent();
+
+            // Load the Mentor information.
+            _strXmlFile = strXmlFile;
+            _objXmlDocument = XmlManager.Load(strXmlFile);
+            if (strXmlFile == "paragons.xml")
+                Tag = "Title_SelectMentorSpirit_Paragon";
+
             LanguageManager.TranslateWinForm(GlobalOptions.Language, this);
             _objCharacter = objCharacter;
         }
 
         private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
         {
-            // Load the Mentor information.
-            _objXmlDocument = XmlManager.Load(_strXmlFile);
-            if (_strXmlFile == "paragons.xml")
-                Text = LanguageManager.GetString("Title_SelectMentorSpirit_Paragon", GlobalOptions.Language);
-
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             string strForceId = string.Empty;
             List<string> lstMentorNames = new List<string>();
             List<ListItem> lstMentors = new List<ListItem>();
@@ -201,17 +197,6 @@ namespace Chummer
         #endregion
 
         #region Properties
-        /// <summary>
-        /// XML file to read from. Default mentors.xml.
-        /// </summary>
-        public string XmlFile
-        {
-            set
-            {
-                _strXmlFile = value;
-            }
-        }
-
         /// <summary>
         /// Forced selection for mentor spirit
         /// </summary>

@@ -49,12 +49,6 @@ namespace Chummer
 
         private void frmSelectMartialArt_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             XmlNodeList objArtList = null;
             // Populate the Martial Arts list.
             if (!string.IsNullOrEmpty(_strForcedValue))
