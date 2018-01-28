@@ -530,9 +530,9 @@ namespace Chummer
                     lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
                 }
 
-                string strTotalAvail = _objSelectedArmor.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
-                lblAvail.Text = strTotalAvail;
-                lblTest.Text = _objCharacter.AvailTest(decItemCost, strTotalAvail);
+                AvailabilityValue objTotalAvail = _objSelectedArmor.TotalAvailTuple();
+                lblAvail.Text = objTotalAvail.ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+                lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
             }
             else
             {
