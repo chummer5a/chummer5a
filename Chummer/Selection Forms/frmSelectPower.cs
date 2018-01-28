@@ -49,12 +49,6 @@ namespace Chummer
 
         private void frmSelectPower_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             _blnLoading = false;
 
             BuildPowerList();

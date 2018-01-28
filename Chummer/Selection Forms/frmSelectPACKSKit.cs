@@ -50,12 +50,6 @@ namespace Chummer
 
         private void frmSelectPACKSKit_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             // Populate the PACKS Category list.
             XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category[not(hide)]");
             foreach (XmlNode objXmlCategory in objXmlCategoryList)

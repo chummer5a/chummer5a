@@ -61,8 +61,7 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -72,18 +71,11 @@ namespace Chummer
 
         private void lstCyberware_DoubleClick(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lstCyberware.Text))
-                AcceptForm();
+            AcceptForm();
         }
 
         private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
         {
-            foreach (Label objLabel in Controls.OfType<Label>())
-            {
-                if (objLabel.Text.StartsWith('['))
-                    objLabel.Text = string.Empty;
-            }
-
             if (_objCharacter.DEPEnabled)
                 return;
 
@@ -176,8 +168,12 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            _strSelectedSuite = lstCyberware.Text;
-            DialogResult = DialogResult.OK;
+            string strSelectedId = lstCyberware.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId))
+            {
+                _strSelectedSuite = lstCyberware.Text;
+                DialogResult = DialogResult.OK;
+            }
         }
 
         /// <summary>

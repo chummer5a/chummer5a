@@ -1509,7 +1509,7 @@ namespace Chummer
                             break;
                     }
                 }
-                return strResultContent;
+                return strResultContent.NormalizeWhiteSpace();
             }
             return string.Empty;
         }

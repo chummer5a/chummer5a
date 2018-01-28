@@ -73,11 +73,7 @@ namespace Chummer
             };
             dataGridViewTextBoxColumn13.DefaultCellStyle = dataGridViewNuyenCellStyle;
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-
-            foreach (Label objLabel in Controls.OfType<Label>().Where(objLabel => objLabel.Text.StartsWith('[')))
-            {
-                objLabel.Text = string.Empty;
-            }
+            
             if (_objCharacter.Created)
             {
                 chkHideOverAvailLimit.Visible = false;
