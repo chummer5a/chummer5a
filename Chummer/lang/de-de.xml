@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -357,14 +357,14 @@
 			<key>String_Weeks</key>
 			<text>Wochen</text>
 		</string>
-    <string>
-      <key>String_Month</key>
-      <text>Monat</text>
-    </string>
-    <string>
-      <key>String_Months</key>
-      <text>Monate</text>
-    </string>
+		<string>
+			<key>String_Month</key>
+			<text>Monat</text>
+		</string>
+		<string>
+			<key>String_Months</key>
+			<text>Monate</text>
+		</string>
 		<string>
 			<key>String_Hour</key>
 			<text>Stunde</text>
@@ -1163,7 +1163,7 @@
 		</string>
 		<string>
 			<key>MessageTitle_AdditionalMetamagic</key>
-			<text>Metamagie Hinzufügen</text>
+			<text>Metamagie hinzufügen</text>
 		</string>
 		<string>
 			<key>Message_AdditionalEcho</key>
@@ -2391,11 +2391,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedPositiveQualities</key>
-			<text>Gabe auswählen</text>
+			<text>Vorteile</text>
 		</string>
 		<string>
 			<key>Node_SelectedNegativeQualities</key>
-			<text>Handicap auswählen</text>
+			<text>Nachteile</text>
 		</string>
 		<string>
 			<key>Tip_CommonAttributes</key>
@@ -2573,23 +2573,23 @@
 		</string>
 		<string>
 			<key>Node_SelectedCombatSpells</key>
-			<text>Ausgewählte Kampfzauber</text>
+			<text>Kampfzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedDetectionSpells</key>
-			<text>Ausgewählte Wahrnehmungszauber</text>
+			<text>Wahrnehmungszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedHealthSpells</key>
-			<text>Ausgewählte Heilzauber</text>
+			<text>Heilzauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedIllusionSpells</key>
-			<text>Ausgewählte Illusionszauber</text>
+			<text>Illusionszauber</text>
 		</string>
 		<string>
 			<key>Node_SelectedManipulationSpells</key>
-			<text>Ausgewählte Manipulationszauber</text>
+			<text>Manipulationszauber</text>
 		</string>
 		<string>
 			<key>Tip_SpellsSelectedSpells</key>
@@ -2673,11 +2673,11 @@
 		</string>
 		<string>
 			<key>Node_CritterPowers</key>
-			<text>AusgewählteCritter-Kraft</text>
+			<text>Critter-Kräfte</text>
 		</string>
 		<string>
 			<key>Node_CritterWeaknesses</key>
-			<text>Ausgewählte Schwäche</text>
+			<text>Schwächen</text>
 		</string>
 		<string>
 			<key>Label_InitiationGrade</key>
@@ -2725,7 +2725,7 @@
 		</string>
 		<string>
 			<key>Button_AddMetamagic</key>
-			<text>Metamagie Hinzufügen</text>
+			<text>Metamagie hinzufügen</text>
 		</string>
 		<string>
 			<key>Button_AddEcho</key>
@@ -2741,11 +2741,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedCyberware</key>
-			<text>Cyberware auswählen</text>
+			<text>Cyberware</text>
 		</string>
 		<string>
 			<key>Node_SelectedBioware</key>
-			<text>Bioware auswählen</text>
+			<text>Bioware</text>
 		</string>
 		<string>
 			<key>Label_LifestylePermanent</key>
@@ -2761,7 +2761,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedLifestyles</key>
-			<text>Lebensstil auswählen</text>
+			<text>Ausgewählte Lebensstile</text>
 		</string>
 		<string>
 			<key>Tab_IncreaseLifestyleMonths</key>
@@ -2785,7 +2785,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedArmor</key>
-			<text>Panzerung auswählen</text>
+			<text>Ausgewählte Panzerung</text>
 		</string>
 		<string>
 			<key>Tip_ArmorEquipped</key>
@@ -2925,7 +2925,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGear</key>
-			<text>Ausrüstung wählen.</text>
+			<text>Ausgewählte Ausrüstung</text>
 		</string>
 		<string>
 			<key>Tip_IncreaseGearQty</key>
@@ -2969,7 +2969,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedVehicles</key>
-			<text>Fahrzeug auswählen</text>
+			<text>Ausgewählte Fahrzeuge</text>
 		</string>
 		<string>
 			<key>Tip_TransferToInventory</key>
@@ -5421,27 +5421,27 @@
 		</string>
 		<string>
 			<key>Node_SelectedAdvancedComplexForms</key>
-			<text>Erweiterte komplexe Form wählen</text>
+			<text>Ausgewählte Erweiterte komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedAREComplexForms</key>
-			<text>ARE-Komplexe Form wählen</text>
+			<text>Ausgewählte ARE-Komplexe Form</text>
 		</string>
 		<string>
 			<key>Node_SelectedAutosoftComplexForms</key>
-			<text>Autosoft-Komplexe Form wählen</text>
+			<text>Ausgewählte Autosoft-Komplexe Form</text>
 		</string>
 		<string>
 			<key>Node_SelectedCommonUseComplexForms</key>
-			<text>Gewöhnliche-Nutzung-Komplexe Form wählen</text>
+			<text>Ausgewählte Gewöhnliche-Nutzung-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedHackingComplexForms</key>
-			<text>Hacking-Komplexe Form wählen</text>
+			<text>Ausgewählte Hacking-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedMalwareComplexForms</key>
-			<text>Schadsoftware-Komplexe Form wählen</text>
+			<text>Ausgewählte Schadsoftware-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedSensorComplexForms</key>
@@ -5449,11 +5449,11 @@
 		</string>
 		<string>
 			<key>Node_SelectedSkillsoftsComplexForms</key>
-			<text>Talentsoft-Komplexe Form wählen</text>
+			<text>Ausgewählte Talentsoft-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Node_SelectedTacticalARComplexForms</key>
-			<text>Taktische AR-Komplexe Form wählen</text>
+			<text>Ausgewählte Taktische AR-Komplexe Formen</text>
 		</string>
 		<string>
 			<key>Tab_Options_BPCosts</key>
@@ -5913,7 +5913,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedImprovements</key>
-			<text>Verbesserung auswählen</text>
+			<text>Ausgewählte Verbesserungen</text>
 		</string>
 		<string>
 			<key>Button_EditImprovement</key>
@@ -6529,7 +6529,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedGeomancyRituals</key>
-			<text>Ausgewählte Rituale</text>
+			<text>Rituale</text>
 		</string>
 		<!-- Version 439 -->
 		<string>
@@ -7070,7 +7070,7 @@
 		</string>
 		<string>
 			<key>Node_SelectedEnchantments</key>
-			<text>Ausgewählte Verzauberungen</text>
+			<text>Verzauberungen</text>
 		</string>
 		<string>
 			<key>Tab_Limits</key>
@@ -8257,6 +8257,94 @@
 		<string>
 			<key>Checkbox_Spirit_Fettered</key>
 			<text>Gefesselt</text>
+		</string>
+		<string>
+			<key>Button_AddCustomDirectory</key>
+			<text>Verzeichnis hinzufügen</text>
+		</string>
+		<string>
+			<key>Button_AddMod</key>
+			<text>Mod hinzufügen</text>
+		</string>
+		<string>
+			<key>String_Ambidextrous</key>
+			<text>Beidhändig</text>
+		</string>
+		<string>
+			<key>Button_RemoveCustomDirectory</key>
+			<text>Verzeichnis entfernen</text>
+		</string>
+		<string>
+			<key>Checkbox_PrototypeTranshuman</key>
+			<text>Prototyp des Transhumanismus</text>
+		</string>
+		<string>
+			<key>Label_Control</key>
+			<text>Bedienung:</text>
+		</string>
+		<string>
+			<key>Label_Visibility</key>
+			<text>Sichtbarkeit:</text>
+		</string>
+		<string>
+			<key>Label_Flexibility</key>
+			<text>Montage:</text>
+		</string>
+		<string>
+			<key>Label_Size</key>
+			<text>Größe:</text>
+		</string>
+		<string>
+			<key>Button_DeleteMod</key>
+			<text>Mod entfernen</text>
+		</string>
+		<string>
+			<key>Label_SelectLifestyle_CostPerDay</key>
+			<text>Kosten/Tag:</text>
+		</string>
+		<string>
+			<key>Menu_AddFromFile</key>
+			<text>Aus Datei &amp;hinzufügen</text>
+		</string>
+		<string>
+			<key>Menu_SpecialChangeOptions</key>
+			<text>Ändere &amp;Einstellungsdatei</text>
+		</string>
+		<string>
+			<key>Node_AdditionalMods</key>
+			<text>Zusätzliche Mods</text>
+		</string>
+		<string>
+			<key>String_EssenceLoss</key>
+			<text>Essenzverlust</text>
+		</string>
+		<string>
+			<key>String_EssenceLossChargen</key>
+			<text>Essenzverlust (Charaktererstellung)</text>
+		</string>
+		<string>
+			<key>String_Power</key>
+			<text>Kraft</text>
+		</string>
+		<string>
+			<key>Title_CreateWeaponMount</key>
+			<text>Waffenhalterung erstellung</text>
+		</string>
+		<string>
+			<key>Title_SelectGeneric</key>
+			<text>Wähle {0}</text>
+		</string>
+		<string>
+			<key>Title_ChooseCharacterPriorities</key>
+			<text>Charakterprioritäten auswählen</text>
+		</string>
+		<string>
+			<key>Tab_MatrixConditionMonitor</key>
+			<text>Matrix Zustandsmonitor</text>
+		</string>
+		<string>
+			<key>Tab_PhysicalConditionMonitor</key>
+			<text>Körperlicher Zustandsmonitor</text>
 		</string>
 	</strings>
 </chummer>

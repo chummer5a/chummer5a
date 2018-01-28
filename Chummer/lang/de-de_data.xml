@@ -652,7 +652,6 @@
 				<translate>Evo Armadillo Gepanzerter Raumanzug</translate>
 				<altpage>82</altpage>
 			</armor>
-			<!-- 2050 SR5 Clothing and Armor -->
 			<armor>
 				<id>134e6912-d3b8-47cc-8804-fc02e66a0ee6</id>
 				<name>Form Fitting, Shirt (2050)</name>
@@ -1716,7 +1715,6 @@
 				<translate>Luftröhrenfilter</translate>
 				<altpage>465</altpage>
 			</bioware>
-			<!-- 2050 SR5 Bioware -->
 			<bioware>
 				<id>9343f6b7-6d02-4706-aa7d-6c357b22c947</id>
 				<name>Adrenaline Pump (2050)</name>
@@ -3069,7 +3067,7 @@
 	</chummer>
 	<chummer file="critterpowers.xml">
 		<categories>
-			<category translate="">Allowed Optional Powers</category>
+			<category translate="Erlaubte zusätzliche Kräfte" translated="True">Allowed Optional Powers</category>
 			<category translate="Drake-Kräfte">Drake</category>
 			<category translate="Emergent" translated="True">Emergent</category>
 			<category translate="Freier Geist">Free Spirit</category>
@@ -4392,8 +4390,8 @@
 			<power>
 				<id>a94dba2a-7699-4eb4-80a8-862f07beb6f6</id>
 				<name>Shift (Metahuman Form)</name>
-				<translate>Shift (Metahuman Form)</translate>
-				<altpage>102</altpage>
+				<translate>Gestaltwandel (Metamenschliche Gestalt)</translate>
+				<altpage>82</altpage>
 			</power>
 			<power>
 				<id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
@@ -7568,8 +7566,8 @@
 			<metatype>
 				<id>3ac65435-45f1-4d78-ad90-42fbd36b1a85</id>
 				<name>Baboon</name>
-				<page>67</page>
 				<translate>Oz-Pavian</translate>
+				<altpage>67</altpage>
 			</metatype>
 			<metatype translated="True">
 				<id>3a07d615-c6d3-414f-83f9-98dbe8b5686e</id>
@@ -7589,12 +7587,6 @@
 				<translate>Todesspiralenfalter</translate>
 				<altpage>73</altpage>
 			</metatype>
-			<!--<metatype>
-				<id>00506308-3ec9-469b-8aee-9c0b26f99988</id>
-				<name>Spider Beast</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</metatype>-->
 			<metatype>
 				<id>f96a3ea0-27be-45a3-b0ed-4cc06241fe96</id>
 				<name>Blood Monkey</name>
@@ -8373,7 +8365,6 @@
 				<translate>Talentbuchse</translate>
 				<altpage>457</altpage>
 			</cyberware>
-			<!-- 2050 SR5 Cyberware -->
 			<cyberware>
 				<id>13ade3a3-1811-4ca6-9937-61dc6cfaccfb</id>
 				<name>Datajack (2050)</name>
@@ -8686,7 +8677,6 @@
 				<translate>Cyber Schrotflinte</translate>
 				<altpage>204</altpage>
 			</cyberware>
-			<!-- Cyberware end -->
 			<cyberware>
 				<id>b57eadaa-7c3b-4b80-8d79-cbbd922c1196</id>
 				<name>Essence Hole</name>
@@ -10049,12 +10039,6 @@
 				<translate>Mathemagie</translate>
 				<altpage>67</altpage>
 			</echo>
-			<!--<echo>
-				<id>262dd3e2-5433-4b9a-b637-c5f5a3af5510</id>
-				<name>MMRI</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</echo>-->
 			<echo>
 				<id>032d5d7f-41b9-47f5-8bd0-b7e2cf2c3adf</id>
 				<name>Quiet</name>
@@ -10602,7 +10586,6 @@
 				<translate>Linguasoft</translate>
 				<altpage>446</altpage>
 			</gear>
-			<!-- Region Cyberdeck Modules -->
 			<gear>
 				<id>b9b50b8f-de23-4953-b25d-45aaa6a9952f</id>
 				<name>Hardening</name>
@@ -10645,7 +10628,6 @@
 				<translate>Gerichteter Signalfilter</translate>
 				<altpage>73</altpage>
 			</gear>
-			<!-- End Region -->
 			<gear>
 				<id>c56554d1-4102-446f-8d3e-acd0c7404c3a</id>
 				<name>Certified Credstick, Standard</name>
@@ -14030,12 +14012,6 @@
 				<translate>Pfeil: Sucherschaft</translate>
 				<altpage>179</altpage>
 			</gear>
-			<!--<gear>
-				<id>39042c0a-4b22-4762-8d56-623033860178</id>
-				<name>Arrow: Monotip Head</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</gear> Ares Monopfeil???-->
 			<gear>
 				<id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
 				<name>Ammo: Depleted Uranium</name>
@@ -14125,12 +14101,6 @@
 				<name>TNT</name>
 				<translate>TNT</translate>
 				<altpage>194</altpage>
-			</gear>
-			<gear>
-				<id>2c98be77-22d7-4116-90fc-e8489944578d</id>
-				<name>Detonator Cap</name>
-				<page>439</page>
-				<translate>Sprengkapsel</translate>
 			</gear>
 			<gear>
 				<id>adea2313-b20b-4ad1-bf7a-f101f67de800</id>
@@ -14306,7 +14276,7 @@
 				<translate>Zielerfassung [Waffe] Autosoft</translate>
 				<altpage>267</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>7c0eb818-def2-479f-a270-a6fcbe6454fd</id>
 				<name>Smartsoft</name>
 				<translate>Smartsoft</translate>
@@ -14318,16 +14288,16 @@
 				<translate>Gruppierung Autosoft</translate>
 				<altpage>134</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>87d24cff-e63b-4f73-a115-7aa5e29ea467</id>
 				<name>Skill Autosoft</name>
-				<translate>Fertigkeitsautosoft</translate>
+				<translate>Fertigkeit Autosoft</translate>
 				<altpage>134</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>a3137d6f-6b02-4dd5-912f-554d07f4adee</id>
 				<name>Skill Autosoft (Restricted)</name>
-				<translate>Fertigkeitsautosoft (Eingeschränkt)</translate>
+				<translate>Fertigkeit Autosoft (Eingeschränkt)</translate>
 				<altpage>134</altpage>
 			</gear>
 			<gear>
@@ -14366,35 +14336,23 @@
 				<translate>Mikro-Mikrofon</translate>
 				<altpage>449</altpage>
 			</gear>
-			<!--<gear>
-				<id>3ccd4f6c-f3a4-4432-9f5e-c95225dbbb9c</id>
-				<name>Sound Link</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</gear>-->
 			<gear>
 				<id>fd1aac8c-3b55-4577-b2d6-20ec886eae0c</id>
 				<name>Fab Sensor</name>
 				<translate>FAB-Sensor</translate>
 				<altpage>189</altpage>
 			</gear>
-			<!--<gear>
-				<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
-				<name>X-Ray</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</gear>-->
 			<gear>
 				<id>ffc069af-d3ec-4201-887c-0178dcdfeef9</id>
 				<name>Camera</name>
-				<page>450</page>
 				<translate>Kamera</translate>
+				<altpage>447</altpage>
 			</gear>
 			<gear>
 				<id>c68da753-6ee3-4e14-8234-26676b7735f6</id>
 				<name>Vision Magnification</name>
-				<page>448</page>
 				<translate>Sichtvergrößerung</translate>
+				<altpage>448</altpage>
 			</gear>
 			<gear translated="True">
 				<id>0b5e77ce-7fa8-4458-89de-ee9bb61eafd7</id>
@@ -14435,8 +14393,8 @@
 			<gear>
 				<id>b380cbde-7569-44d9-ba06-fe74278a12cd</id>
 				<name>Biometric Reader</name>
-				<page>451</page>
 				<translate>Biometrischer Scanner</translate>
+				<altpage>451</altpage>
 			</gear>
 			<gear>
 				<id>f27ca349-5003-42de-97a9-3ae4f69d1aa7</id>
@@ -14588,18 +14546,6 @@
 				<translate>Alchemistenhandschuhe</translate>
 				<altpage>179</altpage>
 			</gear>
-			<!--<gear>
-				<id>76e908e1-9f0b-4846-bf9e-d9a3b7fe0e7c</id>
-				<name>Refined Reagents</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</gear>
-			<gear>
-				<id>377cfe85-9280-46f9-a0c6-570b862fea70</id>
-				<name>Radical Reagents</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</gear>-->
 			<gear>
 				<id>a1c4884b-b9b2-471e-99fd-6fb31a62ad52</id>
 				<name>Orichalum</name>
@@ -14648,11 +14594,11 @@
 				<translate>Tetrodotoxin</translate>
 				<altpage>187</altpage>
 			</gear>
-			<gear>
+			<gear translated="True">
 				<id>875bf273-1a0d-4a42-80ab-6547d7a1235a</id>
 				<name>Narcoject</name>
-				<page>412</page>
 				<translate>Narcoject</translate>
+				<altpage>412</altpage>
 			</gear>
 			<gear>
 				<id>ee90d254-cb65-4a03-92e5-abe7037ff5e3</id>
@@ -15003,8 +14949,8 @@
 			<gear>
 				<id>f77fc093-d5cf-4be6-bfeb-311653ecd64e</id>
 				<name>Micro Flare Launcher</name>
-				<page>453</page>
 				<translate>Mini-Signalraketenkanone</translate>
+				<altpage>453</altpage>
 			</gear>
 			<gear>
 				<id>d66c8cfa-2d00-4f5f-ac7a-eed5f5f7dde7</id>
@@ -16455,19 +16401,67 @@
 			<gear>
 				<id>b1f2dcee-7304-4e5e-b022-f3393009a78c</id>
 				<name>Commlink Functionality</name>
-				<translate>Commlink Functionality</translate>
-				<altpage>438</altpage>
+				<translate>Kommlink-Funktionalität</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>9cd0bf83-3cfa-4c61-bfb0-ae6c01ac8f8d</id>
+				<name>Music Player</name>
+				<translate>Musikspieler</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>5db9c4b8-4d7a-4728-aff0-617102c57fc5</id>
+				<name>Micro Trid-Projector</name>
+				<translate>Mikro-Trideoprojektor</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>b19f022c-c854-4a3f-8b7a-d2a2532a2680</id>
+				<name>Touchscreen Display</name>
+				<translate>Touchscreen-Display</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>5146abd2-6ab2-4aee-b523-a63d5c5ab93b</id>
+				<name>RFID Tag Scanner</name>
+				<translate>RFID-Scanner</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>82946de2-876c-46d8-a6ec-744a38257668</id>
+				<name>GPS Guidance System</name>
+				<translate>GPS-System</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>f9995732-7d00-496c-8407-a3dc0e1a82ff</id>
+				<name>Chip Player</name>
+				<translate>Chipspieler</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>1d6f985e-5cf0-463d-a445-fafdd387f301</id>
+				<name>Credstick Reader</name>
+				<translate>Credstickleser</translate>
+				<altpage>442</altpage>
+			</gear>
+			<gear>
+				<id>786682fb-cbd5-4ee8-969a-233484004df7</id>
+				<name>Shock- and Water-Resistant Case</name>
+				<translate>Stoß- und Wasserresistentes Gehäuse</translate>
+				<altpage>442</altpage>
 			</gear>
 			<gear>
 				<id>73b55822-dfb8-48f5-8ff8-37ef498ab9ef</id>
 				<name>Living Persona</name>
-				<translate>Living Persona</translate>
-				<altpage>251</altpage>
+				<translate>Lebende Persona</translate>
+				<altpage>249</altpage>
 			</gear>
 			<gear>
 				<id>d63eb841-7b15-4539-9026-b90a4924aeeb</id>
 				<name>Custom Commlink</name>
-				<translate>Custom Commlink</translate>
+				<translate>Eigenes Kommlink</translate>
 				<altpage>438</altpage>
 			</gear>
 			<gear>
@@ -16629,7 +16623,7 @@
 			<gear>
 				<id>a14a00c5-439f-45d1-9703-55bf5525e7f8</id>
 				<name>SmartSafety Bracelet</name>
-				<translate>SmartSafety Bracelet</translate>
+				<translate>SmartSafety-Armband</translate>
 				<altpage>133</altpage>
 			</gear>
 			<gear translated="True">
@@ -16725,13 +16719,13 @@
 			<gear>
 				<id>3ccd4f6c-f3a4-4432-9f5e-c95225dbbb9c</id>
 				<name>Sound Link</name>
-				<translate>Sound Link</translate>
+				<translate>Audioverbindung</translate>
 				<altpage>229</altpage>
 			</gear>
 			<gear>
 				<id>ce63e6c6-409a-49dd-bdcc-f8efb2f9dadf</id>
 				<name>X-Ray</name>
-				<translate>X-Ray</translate>
+				<translate>Röntgen</translate>
 				<altpage>138</altpage>
 			</gear>
 			<gear>
@@ -16911,7 +16905,7 @@
 			<gear>
 				<id>d8960057-bd49-4ed0-8dc9-75cb7262c158</id>
 				<name>Cyberdeck Form Factor, Hackpack</name>
-				<translate>Cyberdeck Form Factor, Hackpack</translate>
+				<translate>Cyberdeck-Bauform, Hackpack</translate>
 				<altpage>227</altpage>
 			</gear>
 			<gear>
@@ -23199,54 +23193,6 @@
 				<translate>Gebieterischer Ton</translate>
 			</power>
 			<!--<power>
-				<id>89f8d4a8-a769-4a3c-9009-f0371e42daf8</id>
-				<name>Demara</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>57e7de72-6155-486b-9269-caebedfb34fe</id>
-				<name>Eidetic Sense Memory</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>51755f26-c5d4-461d-bd59-496a45b03e6b</id>
-				<name>Enthralling Performance</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id>
-				<name>Heightened Concern</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>d75638f3-be99-4f65-b61f-ea8b4b249f92</id>
-				<name>Indomitable Will</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>bde8c111-b429-4283-87ca-9d3a2afc0215</id>
-				<name>Iron Gut</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>bee8413d-ad32-4c0b-998e-b38f2728d417</id>
-				<name>Iron Lungs</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>ad169692-909f-4945-a3b8-fc0d19e2ed28</id>
-				<name>Iron Will</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
 				<id>489a28c7-c4a2-4071-9f5a-35c0e333f589</id>
 				<name>Keratin Control</name>
 				<page>TODO</page>
@@ -23255,42 +23201,6 @@
 			<power>
 				<id>57d6a5ba-44f0-458a-8db5-40acf479065c</id>
 				<name>Living Focus</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>29761d0e-072e-48a9-afc6-6154af8b2262</id>
-				<name>Maintain Warmth</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>35a76113-84fb-4f9d-b47d-f7fb491e6285</id>
-				<name>Memory Displacement</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>57cea4cd-754b-4fcd-8711-75721b1edc15</id>
-				<name>Piercing Senses</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>0fd4d5ac-3254-458b-9323-e0b441060dc9</id>
-				<name>Power Swimming</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>79eda3bf-f81b-4db7-9cb9-d22255c99e12</id>
-				<name>Rooting</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</power>
-			<power>
-				<id>300edbf6-1943-4f4e-87eb-7379ccef8ed5</id>
-				<name>Supernatural Toughness</name>
 				<page>TODO</page>
 				<translate>TODO</translate>
 			</power>-->
@@ -23697,7 +23607,6 @@
 				<translate>Agent</translate>
 				<altpage>243</altpage>
 			</program>
-			<!-- Region AI Advanced Programs -->
 			<program>
 				<id>bed1f6eb-ead9-49aa-bb24-266c21d7aeb4</id>
 				<name>Abduction</name>
@@ -23794,8 +23703,6 @@
 				<translate>Natürlicher Gang</translate>
 				<altpage>168</altpage>
 			</program>
-			<!-- End Region -->
-			<!-- Region Autosofts -->
 			<program translated="True">
 				<id>012d2de2-79cb-4f3b-9571-47c8b550a505</id>
 				<name>Clearsight Autosoft</name>
@@ -23832,7 +23739,7 @@
 				<translate>Zielerfassung [Waffe] Autosoft</translate>
 				<altpage>267</altpage>
 			</program>
-			<program>
+			<program translated="True">
 				<id>0cc0ac2e-542d-4762-bd8c-70e734d96be1</id>
 				<name>Smartsoft</name>
 				<translate>Smartsoft</translate>
@@ -23862,7 +23769,6 @@
 				<translate>[Waffe] Nahkampf Autosoft</translate>
 				<altpage>134</altpage>
 			</program>
-			<!-- End Region -->
 			<program translated="True">
 				<id>60b9ec51-8f80-4f1e-81e6-0747ecaf78c9</id>
 				<name>Bootstrap</name>
@@ -26627,7 +26533,7 @@
 				<altpage>114</altpage>
 			</quality>
 			<quality>
-				<id>0a3f2c4f-efdc-422f-91bf-07baf2229bc6</id>
+				<id>6556d48f-2cbd-4bc6-a2c8-e9fe3f99ac7e</id>
 				<name>Infected: Dzoo-Noo-Qua</name>
 				<source>RF</source>
 				<translate>Infiziert: Dzoo-Noo-Qua</translate>
@@ -31340,7 +31246,6 @@
 					<spec translate="[Küche, Wein]">[Cuisine, Wine]</spec>
 				</specs>
 			</skill>
-			<!-- TODO: Specs -->
 			<skill>
 				<id>d9c2e7c4-b9c6-4904-b4a4-56ecca7c9530</id>
 				<name>Corporation: Ares Macrotechnology</name>
@@ -33874,226 +33779,6 @@
 				<translate>Convince</translate>
 				<altpage>189</altpage>
 			</spell>
-			<!--<spell>
-				<name>Chill</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Frigid</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Flame Burst</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Magebolt</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>[Element] Grenade</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Sunbeam</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Passenger</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Recorded Room</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Secret Handshake</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Broadcast</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Sending</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>[Sense] Link</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Convert Blood to Ichor</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Decontamination</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Dehydrate</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Ghoulish Strength</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Healthy Glow</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Hydrate</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Inflict Disease</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Nauseate</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Alleviate Nausea</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Personal Warmth</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Rot</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Vampiric Speed</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>False Impression</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Manascape</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Vampiric Stealth</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Air Filter</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Alter Memory</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Alter Temperature</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Astral Armor</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Control Emotions</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Mob Mood</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Evaporate</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Looking Glass</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Insulate</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Napalm Wall</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Petrify</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Pulse</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Radiation Shield</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Radiation Barrier</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Decrystalize</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Mana Flow</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>
-			<spell>
-				<name>Mana Ebb</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</spell>-->
 			<spell>
 				<id>38c206bb-9ab5-48ad-b736-0a8a464f1f1e</id>
 				<name>Catch</name>
@@ -35315,22 +35000,23 @@
 			<category translate="Schiffe">Boats</category>
 			<category translate="U-Boot">Submarines</category>
 			<category translate="Starrflügler">Fixed-Wing Aircraft</category>
-			<category translate="Municipal/Construction">Municipal/Construction</category>
-			<category translate="Corpsec/Police/Military">Corpsec/Police/Military</category>
-			<category translate="LTAV">LTAV</category>
-			<category translate="Drones: Anthro">Drones: Anthro</category>
-			<category translate="Drones: Huge">Drones: Huge</category>
-			<category translate="Drones: Missile">Drones: Missile</category>
-			<category translate="Body">Body</category>
-			<category translate="Cosmetic">Cosmetic</category>
-			<category translate="Electromagnetic">Electromagnetic</category>
-			<category translate="Model-Specific">Model-Specific</category>
-			<category translate="Powertrain">Powertrain</category>
-			<category translate="Protection">Protection</category>
-			<category translate="Vehicle Weapon Mount">Vehicle Weapon Mount</category>
-			<category translate="Weapons">Weapons</category>
+			<category translate="Nutzfahrzeuge">Municipal/Construction</category>
+			<category translate="Sicherheit/Polizei/Militär">Corpsec/Police/Military</category>
+			<category translate="Luftschiffe">LTAV</category>
+			<category translate="Anthropomorphe Drohnen">Drones: Anthro</category>
+			<category translate="Riesige Drohnen">Drones: Huge</category>
+			<category translate="Raketendrohnen">Drones: Missile</category>
 		</categories>
-		<modcategories></modcategories>
+		<modcategories>
+			<category translate="Rumpf">Body</category>
+			<category translate="Kosmetik">Cosmetic</category>
+			<category translate="Elektronik">Electromagnetic</category>
+			<category translate="Modellspezifisch" translated="True">Model-Specific</category>
+			<category translate="Antrieb">Powertrain</category>
+			<category translate="Schutz">Protection</category>
+			<category translate="Waffenhalterung">Vehicle Weapon Mount</category>
+			<category translate="Waffen">Weapons</category>
+		</modcategories>
 		<vehicles>
 			<vehicle>
 				<id>c0d3e7fd-d5fd-48c4-b49d-0c7dea26895d</id>
@@ -35692,7 +35378,6 @@
 				<translate>Horizon Flying Eye mit Flashpack und Rauchgranate</translate>
 				<altpage>472</altpage>
 			</vehicle>
-			<!-- 2050 SR5 Vehicle -->
 			<vehicle>
 				<id>baac8c9e-5604-4329-9757-f82de25a5d3c</id>
 				<name>Dodge Scoot (2050)</name>
@@ -35885,211 +35570,211 @@
 				<translate>Patroullienfahrzeugdrohne</translate>
 				<altpage>212</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d43b2b6a-d6e6-460a-ab75-ca445db06dde</id>
 				<name>Daihatsu-Caterpillar Horseman</name>
 				<translate>Daihatsu-Caterpillar Horseman</translate>
 				<altpage>43</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>be4aa3ae-6725-4082-a5d2-8fa8d1e91640</id>
 				<name>Ares-Segway Terrier</name>
 				<translate>Ares-Segway Terrier</translate>
 				<altpage>43</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ce6e90f6-2be6-42f4-a1e7-b633b40604c2</id>
 				<name>Horizon-Doble Revolution</name>
 				<translate>Horizon-Doble Revolution</translate>
 				<altpage>44</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>cfafdbac-509e-49f3-a62a-5cfa8e987e0f</id>
 				<name>Evo Falcon-EX</name>
 				<translate>Evo Falcon-EX</translate>
 				<altpage>47</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e812194e-9e7b-4769-bf77-8034a3b306de</id>
 				<name>Entertainment Systems Cyclops</name>
 				<translate>Entertainment Systems Cyclops</translate>
 				<altpage>44</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>87435f01-f4e3-424f-a252-2415b9b988cd</id>
 				<name>Echo Motors Zip</name>
 				<translate>Echo Motors Zip</translate>
 				<altpage>44</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
 				<name>Yamaha Kaburaya</name>
 				<translate>Yamaha Kaburaya</translate>
 				<altpage>49</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>16c2885f-ef4a-4f06-92c8-754694790ccb</id>
 				<name>Buell Spartan</name>
 				<translate>Buell Spartan</translate>
 				<altpage>47</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>f0b4963e-d709-47a2-a290-5528c79d2cd8</id>
 				<name>Harley-Davidson Nightmare</name>
 				<translate>Harley-Davidson Nightmare</translate>
 				<altpage>45</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>801800de-858c-4e98-949d-0b429884e755</id>
 				<name>Yamaha Nodachi</name>
 				<translate>Yamaha Nodachi</translate>
 				<altpage>46</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e61ac395-78d2-44d8-a3bd-6ac74b1d76f5</id>
 				<name>Thundercloud Mustang</name>
 				<translate>Thundercloud Mustang</translate>
 				<altpage>47</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>69c76fc9-43e0-44b4-9ff9-4ea9f700ee81</id>
 				<name>Renault-Fiat Funone</name>
-				<translate>Renault-Fiat Funone</translate>
+				<translate>Renault-Fiat FunOne</translate>
 				<altpage>52</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>df7fa024-4b0d-429b-931e-ac3057d507a9</id>
 				<name>Dodge Xenon</name>
 				<translate>Dodge Xenon</translate>
 				<altpage>49</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>63609689-d809-49f7-8d41-16a23319f049</id>
 				<name>Echo Motors Metaway</name>
 				<translate>Echo Motors Metaway</translate>
 				<altpage>54</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>6a094997-cd2b-4094-90ff-d5648b8889fb</id>
 				<name>GMC 442 Chameleon</name>
 				<translate>GMC 442 Chameleon</translate>
 				<altpage>50</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7f8cbe18-eec0-4e06-8c7b-ba3f87bfb15b</id>
 				<name>Mercury Comet</name>
 				<translate>Mercury Comet</translate>
 				<altpage>50</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>605d4098-01c4-481b-b6ac-f2e39c528cb4</id>
 				<name>SAAB Gladius 998 TI</name>
-				<translate>SAAB Gladius 998 TI</translate>
+				<translate>SAAB Gladius 998 ti</translate>
 				<altpage>56</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>04b31d4c-55f1-43c8-a2ea-ce3002c6f577</id>
 				<name>SAAB Dynamit</name>
 				<translate>SAAB Dynamit</translate>
 				<altpage>56</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>6243f89d-710f-4cc7-b168-eed3723395a8</id>
 				<name>GMC Phoenix</name>
 				<translate>GMC Phoenix</translate>
 				<altpage>55</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>c8dd9bbc-532b-46c2-9a72-05c3ae4bf05f</id>
 				<name>Hyundai Equus</name>
 				<translate>Hyundai Equus</translate>
 				<altpage>50</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ebe75238-fb29-4913-8dc2-745bbde42db6</id>
 				<name>Chevrolet Longboard</name>
 				<translate>Chevrolet Longboard</translate>
 				<altpage>49</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>8776075a-0ef3-4aa1-8811-6fb87e96ece6</id>
 				<name>Rolls-Royce Phaeton</name>
 				<translate>Rolls-Royce Phaeton</translate>
 				<altpage>52</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b25cc2b2-f67f-4361-be28-e9451d2928fd</id>
 				<name>Thundercloud Morgan</name>
 				<translate>Thundercloud Morgan</translate>
 				<altpage>60</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ed0eb004-0d3b-44da-916a-e767e0e72ac8</id>
 				<name>Tata Hotspur</name>
 				<translate>Tata Hotspur</translate>
 				<altpage>60</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e8816947-a26e-4d98-939b-e6551356c913</id>
 				<name>GMC Armadillo</name>
 				<translate>GMC Armadillo</translate>
 				<altpage>58</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>50f40623-7ca6-4499-a64f-22d54e2bef4c</id>
 				<name>Ford Percheron</name>
 				<translate>Ford Percheron</translate>
 				<altpage>63</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>a80bd3e7-abc4-412f-b6c0-eaa5c7585936</id>
 				<name>Jeep Trailblazer</name>
 				<translate>Jeep Trailblazer</translate>
 				<altpage>59</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>48ebf4fc-bd56-4e14-a433-6d92f18251dc</id>
 				<name>Toyota Talon</name>
 				<translate>Toyota Talon</translate>
 				<altpage>61</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>abc43924-23f0-407d-b3d5-e96f03b9f808</id>
 				<name>Nissan Hauler</name>
 				<translate>Nissan Hauler</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7190fec0-2c0e-4df8-8916-0e870fddf43c</id>
 				<name>Eurocar Northstar</name>
 				<translate>Eurocar Northstar</translate>
 				<altpage>57</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>45549db3-db43-42d2-bc45-8f7db70a1b19</id>
 				<name>GMC Escalade</name>
 				<translate>GMC Escalade</translate>
 				<altpage>58</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b1bfc86a-120e-45fd-b8e5-9486d43d7956</id>
 				<name>Ford Econovan</name>
 				<translate>Ford Econovan</translate>
 				<altpage>63</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>6756cbb6-02db-4450-adf8-acce13598a17</id>
 				<name>Dodge Caravaner</name>
 				<translate>Dodge Caravaner</translate>
 				<altpage>62</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>3ff3b5a3-4755-4390-9782-23a9cc34cf72</id>
 				<name>GMC Universe</name>
 				<translate>GMC Universe</translate>
 				<altpage>63</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>aa27ed63-313e-4cb3-98b9-920bb9b319b6</id>
 				<name>Ares Chuck Wagon</name>
 				<translate>Ares Chuck Wagon</translate>
@@ -36102,12 +35787,6 @@
 				<translate>BMW M8</translate>
 				<altpage>53</altpage>
 			</vehicle>
-			<!--<vehicle>
-				<id>8b7dd760-4528-413f-a577-a51fe8a705c9</id>
-				<name>Mercury Comet Cruiser</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>-->
 			<vehicle>
 				<id>2f46305b-6196-43d1-b748-2266c5f1dc08</id>
 				<name>Chrysler-Nissan Bobcat</name>
@@ -36133,42 +35812,12 @@
 				<translate>Dodge Hurricane Security Modell</translate>
 				<altpage>57</altpage>
 			</vehicle>
-			<!--<vehicle>
-				<id>baf9cd37-06b2-45d7-b355-7da492a82220</id>
-				<name>Mercedes-Benz Tornado</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>
-			<vehicle>
-				<id>3748c902-c5f0-4173-bc4e-d5fab28418bc</id>
-				<name>Mercedes-Benz Tornado Crew Modell</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>
-			<vehicle>
-				<id>d823558b-3d98-47eb-924a-3f3db1565eb1</id>
-				<name>Mercedes-Benz Tornado Security Modell</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>
-			<vehicle>
-				<id>5159292e-897c-40aa-84ad-a1b374d95370</id>
-				<name>BMW X Infinity</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>-->
 			<vehicle>
 				<id>c90e2ec7-f351-4bb5-a145-bf33c9062ff9</id>
 				<name>Volkswagen MultyCity</name>
 				<translate>Volkswagen MultyCity</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<!--<vehicle>
-				<id>2a548234-f76f-4359-bfa0-f3d26a749426</id>
-				<name>Volkswagen Urban Allrounder</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</vehicle>-->
 			<vehicle>
 				<id>453d90d0-8ec0-4d0a-9478-1dde666c0b24</id>
 				<name>Mercedes-Benz CityMog / Dodge City Basis Modell</name>
@@ -36197,31 +35846,31 @@
 				<translate>Mercedes-Benz CityMog / Dodge City CM Elite</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>4b64e3b8-bc1f-4dea-8d53-d90cf35f4315</id>
 				<name>Airstream Traveller Chinook</name>
 				<translate>Airstream Traveller Chinook</translate>
 				<altpage>66</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>cb970581-0a0d-47a3-b334-9d3feea05b7d</id>
 				<name>Airstream Traveller Preserve</name>
 				<translate>Airstream Traveller Preserve</translate>
 				<altpage>66</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>732a042d-631c-485a-b8c4-ce010de0b8af</id>
 				<name>Airstream Traveller Outback</name>
-				<translate>66</translate>
+				<translate>Airstream Traveller Outback</translate>
 				<altpage>66</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7eb192ce-abcb-46ff-b29e-c39d2c0978cb</id>
 				<name>Mack Hellhound</name>
 				<translate>Mack Hellhound</translate>
 				<altpage>67</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b0b13ff4-1820-4168-834e-bec224c81bb1</id>
 				<name>Omni Motors Omnibus</name>
 				<translate>Omni Motors Omnibus</translate>
@@ -36251,25 +35900,25 @@
 				<translate>GMC Commercial D-Reihe DD</translate>
 				<altpage>67</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>8cb508c2-462b-4499-9c00-ac244b9c72b6</id>
 				<name>Saeder-Krupp Konstructors</name>
 				<translate>Saeder-Krupp Konstructors</translate>
 				<altpage>70</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>5ef3b170-5e8b-4d27-90db-f82c6f7c25b7</id>
 				<name>Mostrans KVP-28</name>
 				<translate>Mostrans KVP-28</translate>
 				<altpage>70</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>aab15689-b3e6-4c2c-9399-cf5987af96fe</id>
 				<name>Mostrans Minsk</name>
 				<translate>Mostrans Minsk</translate>
 				<altpage>70</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b243cb7f-3944-46a8-afef-6a4ba80e25e0</id>
 				<name>Universal Hovercraft Minnesota</name>
 				<translate>Universal Hovercraft Minnesota</translate>
@@ -36287,19 +35936,19 @@
 				<translate>BMW R12 Waffenrad</translate>
 				<altpage>74</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>3a9eeaaa-56c2-4020-ba9f-e0f7c6f9e0eb</id>
 				<name>Dodge Charger</name>
 				<translate>Dodge Charger</translate>
 				<altpage>78</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>45abd151-b3d1-4367-9133-3ff458532172</id>
 				<name>BMW I8 Interceptor</name>
-				<translate>BMW I8 Interceptor</translate>
+				<translate>BMW i8 Interceptor</translate>
 				<altpage>72</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d1f39621-5c37-4b02-ad25-7e36dcd6a9d4</id>
 				<name>Dodge Goliath</name>
 				<translate>Dodge Goliath</translate>
@@ -36311,20 +35960,20 @@
 				<translate>BMW Teufelskatze</translate>
 				<altpage>77</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>afb9137b-c488-48cd-b9b2-c846540526d8</id>
 				<name>Dodge Stallion</name>
 				<translate>Dodge Stallion</translate>
 				<altpage>81</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>7c804214-420e-48e4-8a44-f836b7fa4135</id>
 				<name>Dodge Minotaur</name>
 				<avail>12F</avail>
-				<translate>Ares Minotaur</translate>
+				<translate>Dodge Minotaurus</translate>
 				<altpage>81</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>34d93e94-55af-463b-bec3-ed719dbd9d91</id>
 				<name>BMW Luxus</name>
 				<translate>BMW Luxus</translate>
@@ -36348,91 +35997,91 @@
 				<translate>BMW Sturmwagen</translate>
 				<altpage>75</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>945d3c12-d119-4441-a6f5-d69c6317aff2</id>
 				<name>Dodge Rhino</name>
 				<translate>Dodge Rhino</translate>
 				<altpage>81</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>90234226-413e-4fac-89ce-ffce9db69b12</id>
 				<name>Ruhrmetal Wolf II</name>
 				<translate>Ruhrmetal Wolf II</translate>
 				<altpage>82</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>757fa739-7255-4ce3-bb61-ad478e4e4a99</id>
 				<name>Evo Waterking</name>
 				<translate>Evo Waterking</translate>
 				<altpage>88</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>193a6429-b4ba-4e68-a89e-5cd9a7965e50</id>
 				<name>Sea Ray Cottonmouth</name>
 				<translate>Sea Ray Cottonmouth</translate>
 				<altpage>91</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>8a3971d6-25d4-4797-add2-fad2f6a7ef09</id>
 				<name>Kawasaki Stingray</name>
 				<translate>Kawasaki Stingray</translate>
 				<altpage>90</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d44323ef-f8f3-4b1f-b5d1-9ae4888cd6b9</id>
 				<name>Kawasaki Manta Ray</name>
 				<translate>Kawasaki Manta Ray</translate>
 				<altpage>90</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>399b9c5f-31c0-475e-a987-caa3e60ea0eb</id>
 				<name>Aztechnology Nightrunner</name>
-				<translate>Aztechnology Nightrunner</translate>
+				<translate>Aztech Nightrunner</translate>
 				<altpage>85</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>199f5570-e313-4f2a-9762-63e73f230732</id>
 				<name>Zodiac Scorpio</name>
 				<translate>Zodiac Scorpio</translate>
 				<altpage>93</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>4fda117c-38a0-440f-899e-27b39735747b</id>
 				<name>Mitsubishi Waterbug</name>
 				<translate>Mitsubishi Waterbug</translate>
 				<altpage>90</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d7a2bfe7-f43d-420d-9ef0-164e644529be</id>
 				<name>Mitsubishi Waveskipper</name>
 				<translate>Mitsubishi Waveskipper</translate>
 				<altpage>90</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>3a01a97e-9df8-4516-9f41-4ff92b465d3b</id>
 				<name>Evo Water Strider</name>
 				<translate>Evo Water Strider</translate>
 				<altpage>87</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>9dfc2603-8289-474c-842b-dd74ac406fb7</id>
 				<name>Corsair Elysium</name>
 				<translate>Corsair Elysium</translate>
 				<altpage>93</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>c7d3a2bb-bad0-49a3-964f-b48911b37dcc</id>
 				<name>Corsair Panther</name>
 				<translate>Corsair Panther</translate>
 				<altpage>94</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>db3526df-3370-4b28-84cd-e113ad69ee5a</id>
 				<name>Corsair Trident</name>
 				<translate>Corsair Trident</translate>
 				<altpage>95</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>cb6f7e79-1756-41ad-9907-09bf5b1e4039</id>
 				<name>Corsair Triton</name>
 				<translate>Corsair Triton</translate>
@@ -36450,118 +36099,118 @@
 				<translate>Lürssen Möbius</translate>
 				<altpage>97</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b3586f7a-f291-40b3-8ea7-ee5d82ca5586</id>
 				<name>Sun Tracker Lake King</name>
 				<translate>Sun Tracker Lake King</translate>
 				<altpage>92</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1312f26a-4cac-45a9-a8f2-f74b2a80a468</id>
 				<name>Evo Aquavida 1</name>
 				<translate>Evo Aquavida 1</translate>
 				<altpage>86</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ea80540c-83e1-4ff3-b411-a990e19fdc33</id>
 				<name>Evo Aquavida 2</name>
 				<translate>Evo Aquavida 2</translate>
 				<altpage>86</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ef0f8108-e057-4caf-afb0-4cc11264ccec</id>
 				<name>Ultramarine Kingfisher</name>
 				<translate>Ultramarine Kingfisher</translate>
 				<altpage>98</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>119963e1-cdca-439d-b1d5-fd9e0ab85985</id>
 				<name>American Airboat AirRanger</name>
 				<translate>American Airboat AirRanger</translate>
 				<altpage>85</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ce233f26-f8ab-4f59-96fe-d57892e18cb3</id>
 				<name>American Airboat AirRanger Heavy</name>
 				<translate>American Airboat AirRanger Heavy</translate>
 				<altpage>85</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>5a77445f-c676-4f07-805e-3aac7c3f9830</id>
 				<name>GMC Riverine Security</name>
 				<translate>GMC Riverine Security</translate>
 				<altpage>89</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d72817d0-2fa7-4c97-a8ef-bc2912549d27</id>
 				<name>GMC Riverine Police</name>
 				<translate>GMC Riverine Police</translate>
 				<altpage>89</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>386a33be-d016-4bae-ba7a-7b0f618e92d6</id>
 				<name>GMC Riverine Military</name>
 				<translate>GMC Riverine Military</translate>
 				<altpage>89</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>13441e68-867a-42cd-88a6-f28e4fade20a</id>
 				<name>Hughes Stallion WK-4</name>
 				<translate>Hughes Stallion WK-4</translate>
 				<altpage>104</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>9911d59b-8db1-4517-b554-49ab5d3f478d</id>
 				<name>Aztechnology Agular GX-2</name>
 				<translate>Aztechnology Agular GX-2</translate>
 				<altpage>102</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>319d9e3b-a0c4-4a8b-87c9-ff50eb4c3f85</id>
 				<name>Aztechnology Agular GX-3AT</name>
 				<translate>Aztechnology Agular GX-3AT</translate>
 				<altpage>102</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>cfb98885-315b-4f6f-8291-470ce43c8df1</id>
 				<name>S-K Aerospace SKA-008</name>
 				<translate>S-K Aerospace SKA-008</translate>
 				<altpage>105</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d3184353-13b2-4f02-b74e-55ac1e0246de</id>
 				<name>Dassault Sea Sprite</name>
 				<translate>Dassault Sea Sprite</translate>
 				<altpage>108</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>6f75f984-b5bd-4fd7-b4a2-c59a9c4f9ce6</id>
 				<name>Federated-Boeing PBY-70 Catalina II</name>
 				<translate>Federated-Boeing PBY-70 Catalina II</translate>
 				<altpage>107</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b4e88420-eae5-4c35-8ef2-a067012b2bf2</id>
 				<name>Airbus Lift Ticket ALS-699</name>
-				<translate>Airbus Lift Ticket ALS-699</translate>
+				<translate>Airbus ALS-699 Lift-Ticket</translate>
 				<altpage>101</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>4bb96843-2759-4263-b5cd-56b7f5f0178f</id>
 				<name>GMC Gryphon</name>
 				<translate>GMC Gryphon</translate>
 				<altpage>111</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e7891e8c-3c27-4fd1-97cf-cf1384ecb829</id>
 				<name>Evo-Krime Krime Wing</name>
 				<translate>Evo-Krime Krime Wing</translate>
 				<altpage>109</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>9486c47c-7093-4897-bde9-14a522cd8394</id>
 				<name>Luftshiffbau Personal Zeppelin LZP-2070</name>
-				<translate>Luftschiffbau Personal Zeppelin LZP-2070</translate>
+				<translate>Luftschiffbau LZP-2070</translate>
 				<altpage>112</altpage>
 			</vehicle>
 			<vehicle>
@@ -36579,31 +36228,31 @@
 			<vehicle>
 				<id>8b1aff5b-a9a3-4fdc-a10c-de56d88e4b91</id>
 				<name>Sony Goldfish (Microdrone)</name>
-				<translate>Sony Goldfish (Microdrone)</translate>
+				<translate>Sony Goldfish</translate>
 				<altpage>136</altpage>
 			</vehicle>
 			<vehicle>
 				<id>3defffd7-c7ee-4c54-8d51-1df731842823</id>
 				<name>Aerodesign Systems Condor LDSD-23 (Minidrone)</name>
-				<translate>Aerodesign Systems Condor LDSD-23 (Minidrone)</translate>
+				<translate>Aerodesign Systems Condor LDSD-23</translate>
 				<altpage>136</altpage>
 			</vehicle>
 			<vehicle>
 				<id>cf1383e9-5604-46eb-8323-522acaeada2e</id>
 				<name>Aztechnology Hedgehog (Minidrone)</name>
-				<translate>Aztechnology Hedgehog (Minidrone)</translate>
+				<translate>Aztechnology Hedgehog</translate>
 				<altpage>136</altpage>
 			</vehicle>
 			<vehicle>
 				<id>cdf8a11b-c74a-4754-89b0-cb1a4bec17cd</id>
 				<name>Cyberspace Designs Dragonfly (Minidrone)</name>
-				<translate>Cyberspace Designs Dragonfly (Minidrone)</translate>
+				<translate>Cyberspace Designs Dragonfly</translate>
 				<altpage>136</altpage>
 			</vehicle>
 			<vehicle>
 				<id>b5ef225a-9a22-4dfd-bf4e-2832cbe8e064</id>
 				<name>Festo Pigeon 2.0 (Minidrone)</name>
-				<translate>Festo Pigeon 2.0 (Minidrone)</translate>
+				<translate>Festo Pigeon 2.0</translate>
 				<altpage>136</altpage>
 			</vehicle>
 			<vehicle>
@@ -36621,115 +36270,115 @@
 			<vehicle>
 				<id>94a53ea0-c8de-4f2f-9098-55180205d8fa</id>
 				<name>Renraku Gerbil (Minidrone)</name>
-				<translate>Renraku Gerbil (Minidrone)</translate>
+				<translate>Renraku Gerbil</translate>
 				<altpage>137</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a38e5f21-eb84-4f01-81cc-ee214d88ed96</id>
 				<name>Ares Arms Sentry V (Small)</name>
-				<translate>Ares Arms Sentry V (Small)</translate>
+				<translate>Ares Arms Sentry V</translate>
 				<altpage>138</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d1289d4c-2b32-450f-bbc1-489dafe39c19</id>
 				<name>Citron-Brouillard Smoke Generator (Small)</name>
-				<translate>Citrën-Brouillard Smoke Generator</translate>
+				<translate>Citroën-Brouillard Smoke Generator</translate>
 				<altpage>138</altpage>
 			</vehicle>
 			<vehicle>
 				<id>fcbe7bb4-6137-4939-8d4b-10b011b33ac6</id>
 				<name>Cyberspace Designs Wolfhound (Small)</name>
-				<translate>Cyberspace Designs Wolfhound (Small)</translate>
+				<translate>Cyberspace Designs Wolfhound</translate>
 				<altpage>138</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d9157390-2003-4238-8738-6a24efc770f0</id>
 				<name>Evo Proletarian (Small)</name>
-				<translate>Evo Proletarian (Small)</translate>
+				<translate>Evo Proletarian</translate>
 				<altpage>138</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6b0c07b2-6e3d-4174-a748-859fd46c090c</id>
 				<name>Ferret RPD-1X (Small)</name>
-				<translate>Ferret RPD-1X (Small)</translate>
+				<translate>Ferret RPD-1X</translate>
 				<altpage>139</altpage>
 			</vehicle>
 			<vehicle>
 				<id>2e70a156-4201-48c8-935f-7223c16a1e82</id>
 				<name>Festo Sewer Snake (Small)</name>
-				<translate>Festo Sewer Snake (Small)</translate>
+				<translate>Festo Sewer Snake</translate>
 				<altpage>139</altpage>
 			</vehicle>
 			<vehicle>
 				<id>89392969-1d03-4322-9aa8-c0160ba3ee76</id>
 				<name>Horizon Mini-Zep (Small)</name>
-				<translate>Horizon Mini-Zep (Small)</translate>
+				<translate>Horizon Mini-Zep</translate>
 				<altpage>140</altpage>
 			</vehicle>
 			<vehicle>
 				<id>68f2fddf-c530-4093-855a-f08e3924b68c</id>
 				<name>Knight Errant P5 (Small)</name>
-				<translate>Knight Errant P5 (Small)</translate>
+				<translate>Knight Errant P5</translate>
 				<altpage>140</altpage>
 			</vehicle>
 			<vehicle>
 				<id>28abf230-3bd7-4edb-bcba-f6ae28d62d3a</id>
 				<name>Lone Star Castle Guard (Small)</name>
-				<translate>Lone Star Castle Guard (Small)</translate>
+				<translate>Lone Star Castle Guard</translate>
 				<altpage>140</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a836d6d5-56f3-416c-a53f-2249af400580</id>
 				<name>MCT Gun Turret (Small)</name>
-				<translate>MCT Gun Turret (Small)</translate>
+				<translate>MCT Gun Turret</translate>
 				<altpage>140</altpage>
 			</vehicle>
 			<vehicle>
 				<id>68b2cf81-7fa0-4451-8096-96d9bd25c128</id>
 				<name>MCT Seven (Wheelie) (Small)</name>
-				<translate>MCT Seven (Wheelie) (Small)</translate>
+				<translate>MCT Seven (Wheelie)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>84bc59dd-cd8f-4148-b5fa-53c3e0fe384f</id>
 				<name>MCT Seven (Treads) (Small)</name>
-				<translate>MCT Seven (Treads) (Small)</translate>
+				<translate>MCT Seven (Treads)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>67bfc8e7-e8dd-4e3f-9e31-d5aa4990e4f5</id>
 				<name>MCT Seven (Dirty) (Small)</name>
-				<translate>MCT Seven (Dirty) (Small)</translate>
+				<translate>MCT Seven (Dirty)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>7cc3856f-eaaa-47a6-83f5-a5efa36efbcd</id>
 				<name>MCT Seven (Quad) (Small)</name>
-				<translate>MCT Seven (Quad) (Small)</translate>
+				<translate>MCT Seven (Quad)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>4c2952dd-b400-4560-816b-1a857e3f24dd</id>
 				<name>MCT Seven (Swims) (Small)</name>
-				<translate>MCT Seven (Swims) (Small)</translate>
+				<translate>MCT Seven (Swims)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>2227d4bb-9a97-460a-b90c-cf9fd4d98636</id>
 				<name>MCT Seven (Hovers) (Small)</name>
-				<translate>MCT Seven (Hovers) (Small)</translate>
+				<translate>MCT Seven (Hovers)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>6918401c-ae18-45cc-90e2-72a029240eed</id>
 				<name>MCT Seven (Soars) (Small)</name>
-				<translate>MCT Seven (Soars) (Small)</translate>
+				<translate>MCT Seven (Soars)</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0ff86ef9-e35d-4f8f-bc64-0303f81f11c7</id>
 				<name>Neonet Prarie Dog (Small)</name>
-				<translate>Neonet Prarie Dog (Small)</translate>
+				<translate>NeoNET Prarie Dog</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
@@ -36741,13 +36390,13 @@
 			<vehicle>
 				<id>6cef9ce0-b7b0-4d3c-933a-ef1da1580388</id>
 				<name>Proteus Krake (Small)</name>
-				<translate>Proteus Krake (Small)</translate>
+				<translate>Proteus Krake</translate>
 				<altpage>141</altpage>
 			</vehicle>
 			<vehicle>
 				<id>75b5192e-6d57-4ca3-b288-c733c1272cef</id>
 				<name>Saab-Thyssen Bloodhound (Small)</name>
-				<translate>Saab-Thyssen Bloodhound (Small)</translate>
+				<translate>Saab-Thyssen Bloodhound</translate>
 				<altpage>144</altpage>
 			</vehicle>
 			<vehicle>
@@ -36759,79 +36408,79 @@
 			<vehicle>
 				<id>2f1519ae-8c34-48cb-a5ba-47eac74fff82</id>
 				<name>Renraku Jardinero (Small)</name>
-				<translate>Renraku Jardinero (Small)</translate>
+				<translate>Renraku Jardinero</translate>
 				<altpage>143</altpage>
 			</vehicle>
 			<vehicle>
 				<id>744987eb-0503-4d1f-b49e-fb3a543b08e0</id>
 				<name>Renraku Job-A-Mat (Small)</name>
-				<translate>Renraku Job-A-Mat (Small)</translate>
+				<translate>Renraku Job-a-Mat</translate>
 				<altpage>143</altpage>
 			</vehicle>
 			<vehicle>
 				<id>d8654096-dcd5-42ce-af43-cda1c0caeb3f</id>
 				<name>Renraku Pelican (Small)</name>
-				<translate>Renraku Pelican (Small)</translate>
+				<translate>Renraku Pelican</translate>
 				<altpage>143</altpage>
 			</vehicle>
 			<vehicle>
 				<id>50d4bce4-79f1-48d4-8b38-68969802dec0</id>
 				<name>Telestrian Shamus</name>
-				<translate>Telestrian Shamus</translate>
+				<translate>Telestrian Industries Shamus</translate>
 				<altpage>144</altpage>
 			</vehicle>
 			<vehicle>
 				<id>2c2ab919-9432-4e0a-9f30-a8cc9d51f7fb</id>
 				<name>Ares Cheetah (Medium)</name>
-				<translate>Ares Cheetah (Medium)</translate>
+				<translate>Ares Cheetah</translate>
 				<altpage>146</altpage>
 			</vehicle>
 			<vehicle>
 				<id>671e4bc0-bd06-4158-9515-2e353f2f6123</id>
 				<name>Evo Krokodil (Medium)</name>
-				<translate>Evo Krokodil (Medium)</translate>
+				<translate>Evo Krokodil</translate>
 				<altpage>146</altpage>
 			</vehicle>
 			<vehicle>
 				<id>62431445-834e-424b-b4e4-ff41f36b184c</id>
 				<name>Federated-Boeing Kull (Medium)</name>
-				<translate>Federated-Boeing Kull (Medium)</translate>
+				<translate>Federated-Boeing Kull</translate>
 				<altpage>146</altpage>
 			</vehicle>
 			<vehicle>
 				<id>dd68326a-254b-44e7-b787-67a539f19e06</id>
 				<name>MCT Tunneler (Medium)</name>
-				<translate>MCT Tunneler (Medium)</translate>
+				<translate>MCT Tunneler</translate>
 				<altpage>147</altpage>
 			</vehicle>
 			<vehicle>
 				<id>4ca97d26-0d55-4b9e-afcb-4f10b5eea4a6</id>
 				<name>Renraku LEBD-2 (Medium)</name>
-				<translate>Renraku LEBD-2 (Medium)</translate>
+				<translate>Renraku LEBD-2</translate>
 				<altpage>147</altpage>
 			</vehicle>
 			<vehicle>
 				<id>39f2681c-6a20-4799-bd9a-f81636a00dbd</id>
 				<name>Transys Steed (Medium)</name>
-				<translate>Transys Steed (Medium)</translate>
+				<translate>Transys Steed</translate>
 				<altpage>148</altpage>
 			</vehicle>
 			<vehicle>
 				<id>9bb6d665-a59c-4146-ad2f-2ce4ef2e52c9</id>
 				<name>Ares Matilda (Large)</name>
-				<translate>Ares Matilda (Large)</translate>
+				<translate>Ares Matilda</translate>
 				<altpage>148</altpage>
 			</vehicle>
 			<vehicle>
 				<id>4ea566f2-a5c0-4021-80b1-60d85dab1b27</id>
 				<name>Ares Mule (Large)</name>
-				<translate>Ares Mule (Large)</translate>
+				<translate>Ares Mule</translate>
 				<altpage>149</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a5700d79-5748-4c6d-a28b-8c282827a05a</id>
 				<name>Ares Paladin (Large)</name>
-				<translate>Ares Paladin (Large)</translate>
+				<translate>Ares Paladin</translate>
 				<altpage>149</altpage>
 			</vehicle>
 			<vehicle>
@@ -36843,7 +36492,7 @@
 			<vehicle>
 				<id>4037bd7f-917a-4478-a52a-e4b73635a5c1</id>
 				<name>GTS Tower (Large)</name>
-				<translate>GTS Tower (Large)</translate>
+				<translate>GTS Tower</translate>
 				<altpage>150</altpage>
 			</vehicle>
 			<vehicle>
@@ -36861,31 +36510,31 @@
 			<vehicle>
 				<id>70916e91-a7ee-477f-a4b0-14bc125c1034</id>
 				<name>Ares KN-Y2: Deimos (Huge)</name>
-				<translate>Ares KN-Y2: Deimos (Huge)</translate>
+				<translate>Ares KN-Y2 (Deimos)</translate>
 				<altpage>151</altpage>
 			</vehicle>
 			<vehicle>
 				<id>e4f82e1e-1bcb-4857-a693-80cea860150e</id>
 				<name>Ares KN-Y1: Phobos (Huge)</name>
-				<translate>Ares KN-Y1: Phobos (Huge)</translate>
+				<translate>Ares KN-Y1 (Phobos)</translate>
 				<altpage>151</altpage>
 			</vehicle>
 			<vehicle>
 				<id>83dae489-5d31-4d39-b6fa-aefc83b3ff20</id>
 				<name>Ares KN-Y4: Eris (Huge)</name>
-				<translate>Ares KN-Y4: Eris (Huge)</translate>
+				<translate>Ares KN-Y4 (Eris)</translate>
 				<altpage>151</altpage>
 			</vehicle>
 			<vehicle>
 				<id>0f1b635b-59d8-4b43-b809-76eae7f0048c</id>
 				<name>Mesametric Kodiak (Huge)</name>
-				<translate>Mesametric Kodiak (Huge)</translate>
+				<translate>Mesametric Kodiak</translate>
 				<altpage>152</altpage>
 			</vehicle>
 			<vehicle>
 				<id>a88f58ad-f4e0-448a-ba5c-00cbdd0076f6</id>
 				<name>NeoNet Avenging Angel (Huge)</name>
-				<translate>NeoNet Avenging Angel (Huge)</translate>
+				<translate>NeoNET Avenging Angel</translate>
 				<altpage>153</altpage>
 			</vehicle>
 			<vehicle>
@@ -36894,10 +36543,10 @@
 				<translate>Okulardrohne</translate>
 				<altpage>458</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>4fbe5cd2-b7b9-11e6-80f5-76304dec7eb7</id>
 				<name>MCT-Nissan Roto-drone (Medium) (German)</name>
-				<translate>MCT-Nissan Roto-Drohne (Medium) (Asphaltkrieger)</translate>
+				<translate>MCT-Nissan Roto-Drohne (Asphaltkrieger)</translate>
 				<altpage>147</altpage>
 			</vehicle>
 			<vehicle>
@@ -36912,7 +36561,7 @@
 				<translate>Camellos</translate>
 				<altpage>134</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>53079aac-250a-4ec5-9f0d-b8fbc6368e46</id>
 				<name>Ares Garuda</name>
 				<translate>Ares Garuda</translate>
@@ -36984,41 +36633,41 @@
 				<translate>Volkswagen Urban Allrounder</translate>
 				<altpage>42</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>472a0869-4759-41cf-b529-a42b0f308f69</id>
 				<name>Criado Juan</name>
-				<translate>Criado Juan</translate>
-				<altpage>146</altpage>
+				<translate>Aztech Criado Juan</translate>
+				<altpage>153</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>ad77dfa1-36ae-4e66-a319-24de903652aa</id>
 				<name>Horizon Little Buddy</name>
 				<translate>Horizon Little Buddy</translate>
-				<altpage>146</altpage>
+				<altpage>154</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>54f7d700-d407-49bf-a231-83777419cbe3</id>
 				<name>MCT Kenchiku-Kikai</name>
 				<translate>MCT Kenchiku-Kikai</translate>
-				<altpage>147</altpage>
+				<altpage>154</altpage>
 			</vehicle>
 			<vehicle>
 				<id>b448855b-57e7-435a-b523-174adb276674</id>
 				<name>NeoNet Juggernaut</name>
-				<translate>NeoNet Juggernaut</translate>
-				<altpage>147</altpage>
+				<translate>NeoNET Juggernaught</translate>
+				<altpage>154</altpage>
 			</vehicle>
 			<vehicle>
 				<id>ca18775c-3535-40e1-be69-a07905add421</id>
 				<name>Saeder-Krupp Direktionssekretar</name>
-				<translate>Saeder-Krupp Direktionssekretar</translate>
-				<altpage>148</altpage>
+				<translate>Saeder-Krupp Executive Secretary</translate>
+				<altpage>155</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>17d1e41b-6650-45e2-b898-d047c3b8702a</id>
 				<name>Shiawase I-Doll</name>
-				<translate>Shiawase I-Doll</translate>
-				<altpage>148</altpage>
+				<translate>Shiawase i-Doll</translate>
+				<altpage>156</altpage>
 			</vehicle>
 			<vehicle>
 				<id>73b7729b-89c1-44fb-950c-f8391376a6b8</id>
@@ -37254,71 +36903,95 @@
 				<translate>Ford Titan</translate>
 				<altpage>184</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
 				<name>Mercury Cruiser</name>
 				<translate>Mercury Cruiser</translate>
 				<altpage>51</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
 				<name>Mercedes-Benz CityMog</name>
 				<translate>Mercedes-Benz CityMog</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>122a3919-dc05-4d8d-89b3-fa0ac9e1d669</id>
 				<name>Mercedes-Benz CityMog CM-X (Pickup)</name>
-				<translate>Mercedes-Benz CityMog CM-X (Pickup)</translate>
+				<translate>Mercedes-Benz CityMog CM-X (Pritsche)</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
 				<name>Mercedes-Benz CityMog Traveller</name>
 				<translate>Mercedes-Benz CityMog Traveller</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
 				<name>Mercedes-Benz CityMog Elite</name>
 				<translate>Mercedes-Benz CityMog Elite</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>b52811c6-03d4-4dee-8a2e-04ea043b79e8</id>
 				<name>Volkswagen Multicity</name>
 				<translate>Volkswagen Multicity</translate>
 				<altpage>64</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>8abe349d-d687-45a0-a1c9-d6189e4eac39</id>
 				<name>Volkswagen Urban Explorer</name>
 				<translate>Volkswagen Urban Explorer</translate>
 				<altpage>65</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>9b5cf9b8-c3ce-4853-91c7-215a73ad4ed2</id>
 				<name>Volkswagen Urban Transporter</name>
 				<translate>Volkswagen Urban Transporter</translate>
 				<altpage>65</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>61c57dad-8683-464e-92e1-3ad57776365e</id>
 				<name>Volkswagen Urban Traveller</name>
 				<translate>Volkswagen Urban Traveller</translate>
 				<altpage>65</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>1581a0b7-d198-46ba-bf68-88871554fcf1</id>
 				<name>Volkswagen Urban Watcher</name>
 				<translate>Volkswagen Urban Watcher</translate>
 				<altpage>65</altpage>
 			</vehicle>
-			<vehicle>
+			<vehicle translated="True">
 				<id>d0bdf891-9faa-4128-8439-ae4964a425f7</id>
 				<name>Ares Minotaurus</name>
 				<translate>Ares Minotaurus</translate>
 				<altpage>81</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>98dc1868-0c72-468a-bf82-a87dbbcd0002</id>
+				<name>Dodge Hurricane</name>
+				<translate>Dodge Hurricane</translate>
+				<altpage>57</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
+				<name>Dodge Hurricane Crew Modell</name>
+				<translate>Dodge Hurricane Crew-Modell</translate>
+				<altpage>57</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
+				<name>Dodge Hurricane Security Modell</name>
+				<translate>Dodge Hurricane Security-Modell</translate>
+				<altpage>57</altpage>
+			</vehicle>
+			<vehicle translated="True">
+				<id>349e9cdf-fa51-4da1-87ee-2ecd535fd019</id>
+				<name>BMW X Infinity</name>
+				<translate>BMW X Infinity</translate>
+				<altpage>57</altpage>
 			</vehicle>
 			<vehicle>
 				<id>c659ace5-1dfb-4eeb-b49d-5867b3153649</id>
@@ -37388,7 +37061,6 @@
 				<translate>Smuggling Compartment (Troll)</translate>
 				<altpage>177</altpage>
 			</mod>
-			<!-- 2050 SR5 -->
 			<mod>
 				<id>f62c6ac8-66cf-4606-893c-76386afd0f9b</id>
 				<name>Rigger Adaptation (2050)</name>
@@ -37407,17 +37079,17 @@
 				<translate>Kettenantrieb</translate>
 				<altpage>?</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>7f616742-0460-46fb-bd98-b73ff6123ed4</id>
 				<name>Signature Dampening</name>
 				<translate>Signaturmaskierung</translate>
-				<altpage>?</altpage>
+				<altpage>175</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>b2e3b364-ff22-4dd7-b5ea-2990ce2e8353</id>
 				<name>Enviroseal</name>
 				<translate>Lebenserhaltungssystem</translate>
-				<altpage>?</altpage>
+				<altpage>170</altpage>
 			</mod>
 			<mod>
 				<id>87713603-78f3-46d5-8e3c-b6fecc41203f</id>
@@ -37431,23 +37103,17 @@
 				<translate>Gyrostabilisator</translate>
 				<altpage>?</altpage>
 			</mod>
-			<!--<mod>
-				<id>bdfd51e8-ac56-42b3-8b3e-a067608a21b3</id>
-				<name>Dustoff Armored Valkyrie Module</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</mod>-->
 			<mod>
 				<id>75d9f461-f30a-4d50-8700-6e9fa87da8bb</id>
 				<name>Reloading Drone Forbidden Weapon Reloading Autosoft</name>
 				<translate>Nachlade-Autosoft</translate>
 				<altpage>182</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>6ac249ee-84c0-498f-9377-149ccbc2f959</id>
 				<name>Acceleration Enhancement</name>
-				<translate>Verbesserte Bschleunigung</translate>
-				<altpage>164</altpage>
+				<translate>Verbesserte Beschleunigung</translate>
+				<altpage>165</altpage>
 			</mod>
 			<mod>
 				<id>06940788-ad0b-453c-bc8a-e54e6221c185</id>
@@ -37791,10 +37457,10 @@
 				<translate>Waffenhalterung Bedienung (Manuell)</translate>
 				<altpage>170</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>8d988a80-45df-4656-80a6-98579ce44e43</id>
 				<name>Weapon Mount Control (Armored Manual)</name>
-				<translate>Waffenhalterung Bedienung (Manuell, gepanzert)</translate>
+				<translate>Waffenhalterung Bedienung (Manuell gepanzert)</translate>
 				<altpage>170</altpage>
 			</mod>
 			<mod>
@@ -37806,8 +37472,8 @@
 			<mod>
 				<id>90ef81fc-39d7-48b1-bf2a-de6e6b11ff90</id>
 				<name>Chameleon Coating</name>
-				<page>170</page>
 				<translate>Chamäleonfarbe</translate>
+				<altpage>170</altpage>
 			</mod>
 			<mod>
 				<id>635a129a-954f-4037-a256-30aa4be06756</id>
@@ -37833,10 +37499,10 @@
 				<translate>Lebenserhaltungssystem</translate>
 				<altpage>170</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>4f15cb92-3416-44ec-b920-03cc7033d8bd</id>
 				<name>Mechanical Arm (Basic)</name>
-				<translate>Mechanischer Arm</translate>
+				<translate>Mechanischer Arm (Einfach)</translate>
 				<altpage>170</altpage>
 			</mod>
 			<mod>
@@ -37845,10 +37511,10 @@
 				<translate>Mechanischer Arm (Gliederarm)</translate>
 				<altpage>170</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>74756635-ad88-437a-8123-599019aafa6c</id>
 				<name>Nanomaintenance System</name>
-				<translate>Nanowartungssystem</translate>
+				<translate>Nano-Wartungssystem</translate>
 				<altpage>171</altpage>
 			</mod>
 			<mod>
@@ -37857,16 +37523,16 @@
 				<translate>Realistisches Aussehen</translate>
 				<altpage>171</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>b03829bf-1e15-4afe-aafc-9cda2c159fcd</id>
 				<name>Smuggling Compartment</name>
-				<translate>Schmugglerfrachtraum</translate>
+				<translate>Schmuggelfrachtraum</translate>
 				<altpage>171</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>de5bd5c7-53cd-4ffd-9e13-ec04636d50ce</id>
 				<name>Smuggling Compartment Shielding</name>
-				<translate>Schmugglerfrachtraum Abschirmung</translate>
+				<translate>Schmuggelfrachtraum Abschirmung</translate>
 				<altpage>171</altpage>
 			</mod>
 			<mod>
@@ -37899,13 +37565,13 @@
 				<translate>Elektromagnetische Abschirmung</translate>
 				<altpage>173</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>518a5fdc-3b2c-42a6-a3fb-3cb88918fe72</id>
 				<name>ECM</name>
-				<translate>ECM (Elektromagnetische Abschirmung)</translate>
+				<translate>ECM</translate>
 				<altpage>173</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>831a60c3-f57b-40c7-9b4d-92906897ee90</id>
 				<name>GridLink</name>
 				<translate>GridLink</translate>
@@ -37959,16 +37625,16 @@
 				<translate>Tastsensoren</translate>
 				<altpage>175</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>cd063735-b801-4587-9d67-a8c35c2e3e3e</id>
 				<name>Amenities (Squatter)</name>
-				<translate>Innenausstattung (Squatter)</translate>
+				<translate>Innenausstattung (minimal)</translate>
 				<altpage>176</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>8a90457a-ab4d-454e-ba9f-4e3aa5ba0a0b</id>
 				<name>Amenities (Low)</name>
-				<translate>Innenausstattung (Minimal)</translate>
+				<translate>Innenausstattung (spartanisch)</translate>
 				<altpage>176</altpage>
 			</mod>
 			<mod>
@@ -38010,8 +37676,8 @@
 			<mod>
 				<id>354bd92f-dafc-42a4-979c-e3631be6cf45</id>
 				<name>Rigger Interface</name>
-				<page>177</page>
 				<translate>Riggerinterface</translate>
+				<altpage>467</altpage>
 			</mod>
 			<mod>
 				<id>0eab79a6-b552-4c17-8fac-a6c0e07f76e4</id>
@@ -38049,7 +37715,7 @@
 				<translate>Waffenhalterung Drohne (Mini)</translate>
 				<altpage>132</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>1a626185-b826-466c-aa73-32c02bae4bef</id>
 				<name>Gecko Grips (Drone)</name>
 				<translate>Geckofüße (Drohne)</translate>
@@ -38151,10 +37817,10 @@
 				<translate>Stationär (Drohne)</translate>
 				<altpage>131</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>64414de4-2d0e-43b6-855f-469cbd878f6b</id>
 				<name>SkyGuide (Drone)</name>
-				<translate>Skyguide (Drohne)</translate>
+				<translate>SkyGuide (Drohne)</translate>
 				<altpage>131</altpage>
 			</mod>
 			<mod>
@@ -38184,8 +37850,8 @@
 			<mod>
 				<id>99f438a6-7543-4bb0-a1dc-4cef3112f003</id>
 				<name>Spoof Chips</name>
-				<page>160</page>
-				<translate>Schleicherchip</translate>
+				<translate>Schleierchip</translate>
+				<altpage>160</altpage>
 			</mod>
 			<mod>
 				<id>3ffae49d-1b3d-4214-95da-96a25f8a65f2</id>
@@ -38199,24 +37865,12 @@
 				<translate>Einzelner Sensor (Drohne)</translate>
 				<altpage>130</altpage>
 			</mod>
-			<!--<mod>
-				<id>ee2db19d-06e9-4443-9495-ec736b524c04</id>
-				<name>Paraplegic Modification</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</mod>-->
 			<mod>
 				<id>9ab00bed-d955-4ade-b875-b6964517c137</id>
 				<name>Daihatsu-Caterpillar Horseman Passenger Pod</name>
 				<translate>Daihatsu-Caterpillar Horseman Passagiermodul</translate>
 				<altpage>44</altpage>
 			</mod>
-			<!--<mod>
-				<id>5bb7fb2d-e657-4fb8-9f26-cf1f15854fbc</id>
-				<name>Daihatsu-Caterpillar Horseman Cargo Pod</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</mod>-->
 			<mod>
 				<id>e6e9ff78-b7f4-4fe4-969b-af1cb77c5c1b</id>
 				<name>Daihatsu-Caterpillar Horseman Advanced Cargo Pod</name>
@@ -38229,17 +37883,17 @@
 				<translate>Daihatsu-Caterpillar Horseman Drohnenmodul</translate>
 				<altpage>44</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>0be26038-6118-41d0-9f62-6fb831568e52</id>
 				<name>Daihatsu-Caterpillar Horseman Security Pod</name>
-				<translate>Sicherheitsmodul</translate>
+				<translate>Daihatsu-Caterpillar Horseman Sicherheitsmodul</translate>
 				<altpage>44</altpage>
 			</mod>
 			<mod>
 				<id>b02bf28a-1012-452c-ac88-cb98181eded4</id>
 				<name>Morphing License Plate</name>
-				<page>160</page>
 				<translate>Smartschild</translate>
+				<altpage>160</altpage>
 			</mod>
 			<mod>
 				<id>7eb3fa91-2774-490d-8ce2-8472daa4ae91</id>
@@ -38253,10 +37907,10 @@
 				<translate>Schockersperrband</translate>
 				<altpage>161</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>8cc0dcc0-e5d0-46a4-8b61-a9e0ee1fe3f6</id>
 				<name>Tracking Strip</name>
-				<translate>Verfolgersperrband</translate>
+				<translate>Verfolgungssperrband</translate>
 				<altpage>161</altpage>
 			</mod>
 			<mod>
@@ -38278,15 +37932,51 @@
 				<altpage>160</altpage>
 			</mod>
 			<mod>
+				<id>f1c813e5-98d7-4d9f-b8ad-7a38cb262e52</id>
+				<name>Extended Roof</name>
+				<translate>Hohes Dach</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
+				<id>8eb24baa-aca2-48da-8787-1e7bf60f9135</id>
+				<name>Bathroom</name>
+				<translate>Nasszelle</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
+				<id>fadeb383-eb11-4aa4-aac9-729e83b8a50a</id>
+				<name>Holding Cell</name>
+				<translate>Arrestzelle</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
+				<id>221b7867-e12c-48b1-a7d3-1862a5d3ef29</id>
+				<name>Sleeping Quarters</name>
+				<translate>Schlafgelegenheit</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
+				<id>8733f3a5-7551-4a9e-b97e-2c70cfbbd66c</id>
+				<name>Advanced Lightbar</name>
+				<translate>Verbesserter Lichtbalken</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
+				<id>0a9f13ff-61da-455d-95f3-6bcca4c722ec</id>
+				<name>Open Box Storage</name>
+				<translate>Open Box Storage</translate>
+				<altpage>?</altpage>
+			</mod>
+			<mod>
 				<id>17da9812-5264-4ac6-a31c-3e8b7ddb6212</id>
 				<name>Handling (Drone)</name>
 				<translate>Handling (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>4ee2420c-1fad-415a-83e3-7f9e72b5df11</id>
 				<name>Speed (Drone)</name>
-				<translate>Geschwindingkeit (Drohne)</translate>
+				<translate>Geschwindigkeit (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
 			<mod>
@@ -38313,34 +38003,34 @@
 				<translate>Handling-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>16aed61a-a163-4927-9b5d-7949c763abe3</id>
 				<name>Speed Downgrade (Drone)</name>
-				<translate>Geschwindigkeitsdowngrade (Drohne)</translate>
+				<translate>Geschwindigkeit-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>57a3c9c6-76ec-4f65-9747-001ca3f7515b</id>
 				<name>Acceleration Downgrade (Drone)</name>
-				<translate>Beschleunigungsdowngrade (Drohne)</translate>
+				<translate>Beschleunigung-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>e6de30bf-310e-4a3d-b44a-9d98f4618964</id>
 				<name>Body Downgrade (Drone)</name>
-				<translate>Rumpfdowngrade (Drohne)</translate>
+				<translate>Rumpf-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>616bad95-cc17-47b2-b85b-14fdd0bcb27f</id>
 				<name>Armor Downgrade (Drone)</name>
-				<translate>Panzerungsdowngrade (Drohne)</translate>
+				<translate>Panzerung-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>df14f2ec-c85c-4b5f-9765-98bbc7c8b7d5</id>
 				<name>Sensor Downgrade (Drone)</name>
-				<translate>Sensorendowngrade (Drohne)</translate>
+				<translate>Sensor-Downgrade (Drohne)</translate>
 				<altpage>129</altpage>
 			</mod>
 			<mod>
@@ -38349,7 +38039,7 @@
 				<translate>Manuelle Bedienung</translate>
 				<altpage>467</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>a850f813-afd4-40ce-a418-8790fe39cfa5</id>
 				<name>FlashTech</name>
 				<translate>FlashTech</translate>
@@ -38358,7 +38048,7 @@
 			<mod>
 				<id>349772a1-1ba6-4cc7-a607-20b02a31d5d1</id>
 				<name>Smart Tire</name>
-				<translate>Smart Tire</translate>
+				<translate>Smartreifen</translate>
 				<altpage>?</altpage>
 			</mod>
 			<mod>
@@ -38376,14 +38066,14 @@
 			<mod>
 				<id>cec8abb4-15a0-4c74-b9f9-350969a0fce3</id>
 				<name>Ruhrmetall Wolf II Troop Transport Module</name>
-				<translate>Ruhrmetall Wolf II Troop Transport Module</translate>
-				<altpage>77</altpage>
+				<translate>Ruhrmetall Wolf II Truppentransporter</translate>
+				<altpage>82</altpage>
 			</mod>
-			<mod>
+			<mod translated="True">
 				<id>60481326-e91c-4ace-863e-93799ba96064</id>
 				<name>Special Equipment</name>
-				<translate>Special Equipment</translate>
-				<altpage>165</altpage>
+				<translate>Spezialausrüstung</translate>
+				<altpage>?</altpage>
 			</mod>
 			<mod>
 				<id>140ade78-b25c-44fd-9775-a0ebf256d90c</id>
@@ -38394,14 +38084,14 @@
 			<mod>
 				<id>ee2db19d-06e9-4443-9495-ec736b524c04</id>
 				<name>Paraplegic Modification</name>
-				<translate>Paraplegic Modification</translate>
-				<altpage>157</altpage>
+				<translate>Querschnittsgelähmt-Modifikation</translate>
+				<altpage>135</altpage>
 			</mod>
 			<mod>
 				<id>5bb7fb2d-e657-4fb8-9f26-cf1f15854fbc</id>
 				<name>Daihatsu-Caterpillar Horseman Cargo Pod</name>
-				<translate>Daihatsu-Caterpillar Horseman Cargo Pod</translate>
-				<altpage>42</altpage>
+				<translate>Daihatsu-Caterpillar Horseman Frachtmodul</translate>
+				<altpage>43</altpage>
 			</mod>
 			<mod>
 				<id>6a8805ee-2e3b-4010-8671-c196a1c44b51</id>
@@ -38426,124 +38116,174 @@
 			<weaponmount>
 				<id>1b44540c-b463-47ed-b288-cf4a8e130eab</id>
 				<name>Light</name>
-				<translate>Light</translate>
-				<altpage>163</altpage>
+				<translate>Leicht</translate>
+				<altpage>168</altpage>
 			</weaponmount>
-			<weaponmount>
+			<weaponmount translated="True">
 				<id>4e9da56b-622c-439f-9718-98ac3a792351</id>
 				<name>Standard</name>
 				<translate>Standard</translate>
-				<altpage>163</altpage>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
 				<name>Heavy</name>
-				<translate>Heavy</translate>
-				<altpage>163</altpage>
+				<translate>Schwer</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
 				<name>External</name>
-				<translate>External</translate>
-				<altpage>163</altpage>
+				<translate>Extern</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>4d90a1e3-8602-488e-b837-f155b4549084</id>
 				<name>Internal</name>
-				<translate>Internal</translate>
-				<altpage>163</altpage>
+				<translate>Intern</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>ad732625-c8bc-4e24-bc84-90c8449e82d5</id>
 				<name>Concealed</name>
-				<translate>Concealed</translate>
-				<altpage>163</altpage>
+				<translate>Getarnt</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
 				<name>Fixed</name>
-				<translate>Fixed</translate>
-				<altpage>163</altpage>
+				<translate>Fest</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>8a0be4c4-5717-4a82-a1cd-35cd0315d180</id>
 				<name>Flexible</name>
-				<translate>Flexible</translate>
-				<altpage>163</altpage>
+				<translate>Drehbar</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>12342330-446f-4e2f-ad9b-6ccdc4d89a9b</id>
 				<name>Turret</name>
-				<translate>Turret</translate>
-				<altpage>163</altpage>
+				<translate>Turm</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>df720a43-31aa-4053-9f2e-30ec4923cfe8</id>
 				<name>Remote</name>
-				<translate>Remote</translate>
-				<altpage>163</altpage>
+				<translate>Ferngesteuert</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>0c05f936-4826-418f-b798-848dafa4b4a0</id>
 				<name>Manual</name>
-				<translate>Manual</translate>
-				<altpage>163</altpage>
+				<translate>Manuell</translate>
+				<altpage>168</altpage>
 			</weaponmount>
-			<weaponmount>
+			<weaponmount translated="True">
 				<id>05995261-b645-48b5-9a54-9f26becc9d5d</id>
 				<name>Armored Manual</name>
-				<translate>Armored Manual</translate>
-				<altpage>163</altpage>
+				<translate>Manuell gepanzert</translate>
+				<altpage>168</altpage>
+			</weaponmount>
+			<weaponmount translated="True">
+				<id>741bb6e2-0c6b-4af2-82b0-0c4b14c60367</id>
+				<name>Manual [SR5]</name>
+				<translate>Manuell [SR5]</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>4fdb0fb3-c987-41a0-b11e-d82fe6ac85b1</id>
 				<name>Micro (Drone)</name>
-				<translate>Micro (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Mikro</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>94d06312-0487-4f3c-a8e9-e02ac2d04a2e</id>
 				<name>Mini (Drone)</name>
-				<translate>Mini (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Mini</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>9ee5e112-8ced-4266-9141-02ef18e33f43</id>
 				<name>Small (Drone)</name>
-				<translate>Small (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Klein</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>0ec991be-a888-4547-8ca2-ad43d7c7399e</id>
 				<name>Standard (Drone)</name>
-				<translate>Standard (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Standard</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>2ab20ea4-441c-482d-977e-a5e90f37cb51</id>
 				<name>Large (Drone)</name>
-				<translate>Large (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Groß</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>30099989-d8ca-4f9c-adf0-1de36b6f8ab6</id>
 				<name>Huge (Drone)</name>
-				<translate>Huge (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Riesig</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>52973ba7-3dbb-49fe-9a4c-8105eb6ab4bc</id>
 				<name>Heavy (Drone)</name>
-				<translate>Heavy (Drone)</translate>
-				<altpage>124</altpage>
+				<translate>Schwer</translate>
+				<altpage>132</altpage>
 			</weaponmount>
 			<weaponmount>
 				<id>be56fb91-88d3-4bfb-8e42-d12929b44fe5</id>
 				<name>None</name>
-				<translate>None</translate>
-				<altpage>163</altpage>
+				<translate>Keine</translate>
+				<altpage>168</altpage>
+			</weaponmount>
+			<weaponmount>
+				<id>c6939caa-e94d-4db3-94f6-a46fbcc4df07</id>
+				<name>None</name>
+				<translate>Keine</translate>
+				<altpage>168</altpage>
+			</weaponmount>
+			<weaponmount>
+				<id>b7333366-24bf-4f47-bb68-b1cfe8f450fd</id>
+				<name>None</name>
+				<translate>Keine</translate>
+				<altpage>168</altpage>
 			</weaponmount>
 		</weaponmounts>
+		<weaponmountmods>
+			<mod>
+				<id>45d84d77-5461-4441-a529-527aba347334</id>
+				<name>Blow-Away Panel Weapon Mount Add-on (Drone)</name>
+				<translate>Ausfahrbare Waffenhalterung (Einweg-Abdeckung)</translate>
+				<altpage>132</altpage>
+			</mod>
+			<mod>
+				<id>dd03dc64-64e1-49a7-8836-d932cd4cb95b</id>
+				<name>Pop-Out Weapon Mount Add-on (Drone)</name>
+				<translate>Ausfahrbare Waffenhalterung (Ausfahrbar)</translate>
+				<altpage>132</altpage>
+			</mod>
+			<mod>
+				<id>c3f9f5a4-b8d4-11e6-80f5-76304dec7eb7</id>
+				<name>Expanded Ammunition Bay (Second Bin) Weapon Mount Add-on (Drone)</name>
+				<translate>Größerer Munitionsvorrat (Zweiter Behälter)</translate>
+				<altpage>132</altpage>
+			</mod>
+			<mod>
+				<id>c3f9fa86-b8d4-11e6-80f5-76304dec7eb7</id>
+				<name>Expanded Ammunition Bay (Belt-Feed) Weapon Mount Add-on (Drone)</name>
+				<translate>Größerer Munitionsvorrat (Gurtzufuhr)</translate>
+				<altpage>132</altpage>
+			</mod>
+			<mod>
+				<id>6741d080-0e40-4941-a7b5-85ab3e1a9cb2</id>
+				<name>Ammo Bin</name>
+				<translate>Munitionsbehälter</translate>
+				<altpage>167</altpage>
+			</mod>
+		</weaponmountmods>
 	</chummer>
 	<chummer file="weapons.xml">
 		<categories>
@@ -38576,7 +38316,7 @@
 			<category translate="Biowaffen">Bio-Weapon</category>
 			<category translate="Cyberwaffen">Cyberweapon</category>
 			<category translate="Unterlaufwaffen">Underbarrel Weapons</category>
-			<category translate="Micro-Drone Weapons">Micro-Drone Weapons</category>
+			<category translate="Mikrodrohnenwaffen">Micro-Drone Weapons</category>
 		</categories>
 		<weapons>
 			<weapon>
@@ -40481,7 +40221,6 @@
 				<translate>Wasserwerfer</translate>
 				<altpage>212</altpage>
 			</weapon>
-			<!-- Weapon end -->
 			<weapon>
 				<id>9c960f46-ba6c-4674-8141-26dad10508d9</id>
 				<name>Stun Dongle</name>
@@ -40836,48 +40575,6 @@
 				<translate>Repetierlaser</translate>
 				<altpage>250</altpage>
 			</weapon>
-			<!--<weapon>
-				<id>bb650f05-87ea-45de-bce4-ba1c4f9e98ed</id>
-				<name>Mannlicher Marpingen Pro D (Shotgun Barrels)</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>026343e0-f47d-4c5a-905d-bbbc2411b5da</id>
-				<name>Mannlicher Marpingen Pro D</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>5c04009f-7858-4c9a-bc9e-d21880e420cf</id>
-				<name>HK MP75</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>e8324402-ac55-49c8-8286-40486a5ec8b6</id>
-				<name>Mannlicher Dirmingen SX BD: Shotgun Barrel</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>4dee0b90-b3d0-41a8-a784-8c3342a69719</id>
-				<name>Mannlicher Dirmingen SX BD</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>deaf5a3d-7428-4a58-be14-c8447716b0f8</id>
-				<name>Mannlicher Dirmingen SX BD: Small Caliber</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>
-			<weapon>
-				<id>581ed592-9caa-41ea-aaf2-55cee20c94e7e</id>
-				<name>Walther PP110</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</weapon>-->
 			<weapon>
 				<id>028d08a4-456a-4a4d-9aef-c74ff4a2c97e</id>
 				<name>Steyr AUG-CSL III (Assault Rifle)</name>
@@ -41684,7 +41381,6 @@
 				<translate>Personalized Grip</translate>
 				<altpage>182</altpage>
 			</accessory>
-			<!-- 2050 SR5 -->
 			<accessory>
 				<id>0c2e21a0-4f1d-409d-a33e-cb3d5f0b0897</id>
 				<name>Tripod (2050)</name>
@@ -42431,90 +42127,6 @@
 				<translate>Ignoriere Zustandsmonitor-Abzüge, Körperlich</translate>
 				<altpage>Reduces the characters Physical Condition Monitor Penalty to 0 while the Improvement is active.</altpage>
 			</improvement>
-			<!--<improvement>
-				<id>enableattribute</id>
-				<name>Enable Special Attribute</name>
-				<page>Unlocks the controls for an attribute, allowing the values to be increased. Expected values are MAG, RES or DEP for Magic, Resonance and Depth respectively.</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>replaceattribute</id>
-				<name>Replace Attribute</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>enablemagiciantab</id>
-				<name>Enable Spells and Spirits Tab</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>enabletechnomancertab</id>
-				<name>Enable Technomancer Tab</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>enableinitiationtab</id>
-				<name>Enable Initiation/Submersion Tab</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>enablemagiciantab</id>
-				<name>Enable Spells and Spirits Tab</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>enablecrittertab</id>
-				<name>Enable Critter Tab</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>cyberseeker</id>
-				<name>Cyber-Singularity Seeker/Redliner (Attribute)</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>cyberseeker</id>
-				<name>Cyber-Singularity Seeker/Redliner (Condition Monitor)</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>blockskillgroupdefaulting</id>
-				<name>Block Skillgroup Defaulting</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>attributelevel</id>
-				<name>Attribute Level</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>skilllevel</id>
-				<name>Skill Level</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>knowsoft</id>
-				<name>KnowSoft</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>
-			<improvement>
-				<id>specificpower</id>
-				<name>Adept Power</name>
-				<page>TODO</page>
-				<translate>TODO</translate>
-			</improvement>-->
 			<improvement>
 				<id>enableattribute</id>
 				<name>Enable Special Attribute</name>
