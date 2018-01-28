@@ -16,20 +16,20 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
- using System.Text;
- using System.Windows.Forms;
- using System.Drawing;
- using System.IO;
- using System.Linq;
- using Chummer.Backend.Equipment;
+using System.Text;
+using System.Windows.Forms;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
- using iTextSharp.text.pdf;
- using iTextSharp.text.pdf.parser;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 
 namespace Chummer
 {
@@ -322,7 +322,7 @@ namespace Chummer
             outMount = null;
             return null;
         }
-        
+
         /// <summary>
         /// Locate a Weapon Accessory within the character's Vehicles.
         /// </summary>
@@ -360,7 +360,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             return null;
         }
 
@@ -413,7 +413,7 @@ namespace Chummer
         {
             return lstArmors.FindArmorGear(strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod);
         }
-        
+
         /// <summary>
         /// Locate a piece of Gear within the character's Armors.
         /// </summary>
@@ -512,7 +512,7 @@ namespace Chummer
             objFoundCyberware = null;
             return null;
         }
-        
+
         /// <summary>
         /// Locate a WeaponAccessory within the character's Weapons.
         /// </summary>
@@ -533,7 +533,7 @@ namespace Chummer
                     }
                 }
             }
-            
+
             return null;
         }
 
@@ -733,7 +733,7 @@ namespace Chummer
             TreeNode objNewParent = objDestination;
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
-            
+
             // Change the Location on the Gear item.
             if (objNewParent.Tag.ToString() == "Node_SelectedGear")
                 objGear.Location = string.Empty;
@@ -860,7 +860,7 @@ namespace Chummer
                 objCharacter.ArmorLocations.Add(strLocation);
             else
                 objCharacter.ArmorLocations.Insert(intNewIndex - 1, strLocation);
-            
+
             treArmor.Nodes.Remove(nodOldNode);
             treArmor.Nodes.Insert(intNewIndex, nodOldNode);
         }
@@ -922,7 +922,7 @@ namespace Chummer
                 objCharacter.WeaponLocations.Add(strLocation);
             else
                 objCharacter.WeaponLocations.Insert(intNewIndex - 1, strLocation);
-            
+
             treWeapons.Nodes.Remove(nodOldNode);
             treWeapons.Nodes.Insert(intNewIndex, nodOldNode);
         }
@@ -1329,107 +1329,189 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return string.Empty;
-            
+
             Uri uriPath = new Uri(objBookInfo.Path);
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;
             intPage += objBookInfo.Offset;
-            
-            List<string> lstTextsToSearch = new List<string>();
-            foreach (string strLoopText in strText.Split(':'))
-            {
-                string strLoopTextTrimmed = strLoopText.Trim();
-                lstTextsToSearch.Add(strLoopTextTrimmed.ToUpperInvariant());
-                lstTextsToSearch.Add($"{strLoopTextTrimmed}:");
-                string strTextWithoutNumerals = strLoopTextTrimmed.TrimEnd(" I", " II", " III", " IV");
-                if (strTextWithoutNumerals != strLoopTextTrimmed)
-                {
-                    lstTextsToSearch.Add(strTextWithoutNumerals.ToUpperInvariant());
-                    lstTextsToSearch.Add($"{strTextWithoutNumerals}:");
-                }
-            }
 
-            StringBuilder strbldReturn = new StringBuilder();
+            // due to the tag <nameonpage> for the qualities those variants are no longer needed,
+            // as such the code would run at most half of the comparisons with the variants
+            // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
+            // PS: does any qualities have numbers on them? Or is that a chummer thing?
+            string strTextToSearch = strText.Split(':')[0].Trim().TrimEnd(" I", " II", " III", " IV");
+
             PdfReader reader = objBookInfo.CachedPdfReader;
-            ITextExtractionStrategy its = new SimpleTextExtractionStrategy();
-            string strOldPageText = string.Empty;
+            List<string> lstStringFromPDF = new List<string>();
+            int intTitleIndex = -1;
+            int intBlockEndIndex = -1;
+            int intExtraAllCapsInfo = 0;
+            bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
+            int intMaxPagesToRead = 3;  // parse at most 3 pages of content
             // Loop through each page, starting at the listed page + offset.
             for (; intPage <= reader.NumberOfPages; ++intPage)
             {
-                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, its);
+                // failsafe if something goes wrong, I guess no descrition takes more than two full pages?
+                if (intMaxPagesToRead-- == 0)
+                    break;
 
-                strPageText = Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(strPageText))).TrimStart(strOldPageText);
+                int intProcessedStrings = lstStringFromPDF.Count;
+                // each page should have its own text extraction strategy for it to work properly
+                // this way we don't need to check for previous page appearing in the current page
+                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+                string strPageText = PdfTextExtractor.GetTextFromPage(reader, intPage, new SimpleTextExtractionStrategy());
 
-                strOldPageText = strPageText;
+                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                lstStringFromPDF.AddRange(strPageText.Split('\n').Select(s => s.Trim()).Where(s=>!string.IsNullOrEmpty(s)));
 
-                // Sometimes names are split across multiple lines. This shimmer removes the newline characters between words that are written in all caps.
-                for (int intNewlineIndex = strPageText.IndexOf('\n'); intNewlineIndex != -1; intNewlineIndex = intNewlineIndex + 1 < strPageText.Length ? strPageText.IndexOf('\n', intNewlineIndex + 1) : -1)
+                for (int i = intProcessedStrings; i < lstStringFromPDF.Count; i++)
                 {
-                    string strFirstHalf = strPageText.Substring(0, intNewlineIndex).TrimEnd();
-                    int intLastWhitespace = Math.Max(strFirstHalf.LastIndexOf(' '), strFirstHalf.LastIndexOf('\n'));
-                    string strFirstHalfLastWord = strFirstHalf.Substring(intLastWhitespace + 1);
-                    if (strFirstHalfLastWord == strFirstHalfLastWord.ToUpperInvariant())
+                    // failsafe for languages that doesn't have case distincion (chinese, japanese, etc)
+                    // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                    if (intExtraAllCapsInfo > 10)
+                        break;
+
+                    string strCurrentLine = lstStringFromPDF[i];
+                    // we still haven't found anything
+                    if (intTitleIndex == -1)
                     {
-                        string strSecondHalf = intNewlineIndex < strPageText.Length ? strPageText.Substring(intNewlineIndex + 1).TrimStart() : string.Empty;
-                        intLastWhitespace = Math.Min(strSecondHalf.IndexOf(' '), strSecondHalf.IndexOf('\n'));
-                        string strSecondHalfFirstWord = intLastWhitespace == -1 ? strSecondHalf : strSecondHalf.Substring(0, intLastWhitespace);
-                        if (!strSecondHalfFirstWord.StartsWith("BONUS") && strSecondHalfFirstWord == strSecondHalfFirstWord.ToUpperInvariant())
+                        int intTextToSearchLenght = strTextToSearch.Length;
+                        int intLineBiggerThanText = lstStringFromPDF[i].Length - intTextToSearchLenght;
+                        int intTitleExtraLines = 0;
+                        if (strCurrentLine.Length < intTextToSearchLenght)
                         {
-                            strPageText = strFirstHalf + ' ' + strSecondHalf;
+                            // if the line is smaller first check if it contains the start of the text, before parsing the rest
+                            if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
+                            {
+                                // now just add more lines to it until it is enough
+                                while (strCurrentLine.Length < intTextToSearchLenght && (i + intTitleExtraLines + 1) < lstStringFromPDF.Count)
+                                {
+                                    intTitleExtraLines++;
+                                    // add the content plus a space
+                                    strCurrentLine += ' ' + lstStringFromPDF[i + intTitleExtraLines];
+                                }
+                            }
+                            else
+                            {
+                                // just go to the next line
+                                continue;
+                            }
+                        }
+                        // now either we have enough text to search or the page doesn't have anymore stuff and must give up
+                        if (strCurrentLine.Length < intTextToSearchLenght)
+                            break;
+
+                        if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // WE FOUND SOMETHING! lets check what kind block we have
+                            // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
+                            if (strCurrentLine.Length > intTextToSearchLenght)
+                            {
+                                if (strCurrentLine[intTextToSearchLenght] == ':')
+                                {
+                                    intTitleIndex = i;
+                                    blnTitleWithColon = true;
+                                }
+                            }
+                            else // if it is not bigger it is the same lenght
+                            {
+                                // this must be an upper case title
+                                if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                                {
+                                    intTitleIndex = i;
+                                    blnTitleWithColon = false;
+                                }
+                            }
+                            // if we found the tile lets finish some things before finding the text block
+                            if (intTitleIndex != -1)
+                            {
+                                // if we had to concatenate stuff lets fix the list of strings before continuing
+                                if (intTitleExtraLines > 0)
+                                {
+                                    lstStringFromPDF[i] = strCurrentLine;
+                                    lstStringFromPDF.RemoveRange(i + 1, intTitleExtraLines);
+                                }
+                            }
+
+                        }
+                    }
+                    else // we already found our title, just go to the end of the block
+                    {
+                        // it is something in all caps we need to verify what it is
+                        if (strCurrentLine.ToUpperInvariant() == strCurrentLine)
+                        {
+                            // if it is header or footer information just remove it
+                            // do we also include lines with just numbers as probably page numbers??
+                            if (strCurrentLine.All(c => char.IsDigit(c)) || strCurrentLine.Contains(">>") || strCurrentLine.Contains("<<"))
+                            {
+                                lstStringFromPDF.RemoveAt(i);
+                                // rewind and go again
+                                i--;
+                                continue;
+                            }
+                            // if it is a line in all caps following the all caps title just skip it
+                            if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
+                            {
+                                intExtraAllCapsInfo++;
+                                continue;
+                            }
+                            // if we are here it is the end of the block we found our end, mark it and be done
+                            intBlockEndIndex = i;
+                            break;
+                        }
+                        // if it is a title with colon we stop in the next line that has a colon
+                        // this is not perfect, if we had bold information we could do more about that
+                        if (blnTitleWithColon && strCurrentLine.Contains(':'))
+                        {
+                            intBlockEndIndex = i;
+                            break;
                         }
                     }
                 }
-                
-                // If our string builder is empty, look for our text to know where to start, otherwise we're continuing our textblock from a previous page
-                if (strbldReturn.Length == 0)
-                {
-                    int intTextLocation = -1;
-                    foreach (string strNeedle in lstTextsToSearch)
-                    {
-                        intTextLocation = strPageText.IndexOf(strNeedle, StringComparison.Ordinal);
-                        if (intTextLocation != -1)
-                            break;
-                    }
-                    // Listed start page didn't contain the text we're looking for and we're not looking at a second page. Fail out (relatively) early.
-                    if (intTextLocation == -1)
-                    {
-                        goto EndPdfReading;
-                    }
-                    // Found the relevant string, so trim everything before it. 
-                    strPageText = strPageText.Substring(intTextLocation).TrimStart(lstTextsToSearch.ToArray());
-                }
-
-                string[] astrOut = strPageText.Split('\n');
-                string strStack = string.Empty;
-                for (int i = 0; i < astrOut.Length; i++)
-                {
-                    string strLoop = astrOut[i];
-                    if (string.IsNullOrWhiteSpace(strLoop))
-                        continue;
-                    bool blnIsBonusLine = strLoop.StartsWith("BONUS") || strLoop.StartsWith("COST");
-                    // We found an ALLCAPS string element that isn't the title. We've found our full textblock.
-                    if (!blnIsBonusLine && strLoop == strLoop.ToUpperInvariant())
-                    {
-                        // The ALLCAPS element is actually a table or the bottom of the page, so continue fetching text from the next page instead of terminating
-                        if (strLoop.Contains("TABLE") || strLoop.Contains(">>"))
-                            break;
-                        else
-                            goto EndPdfReading;
-                    }
-
-                    // Add to the existing string. TODO: Something to preserve newlines that we actually want?
-                    strbldReturn.Append(strLoop);
-                    if (strLoop.EndsWith('-'))
-                        strbldReturn.Length -= 1;
-                    else if (blnIsBonusLine)
-                        strbldReturn.Append('\n');
-                    else
-                        strbldReturn.Append(' ');
-                }
+                // we scanned the first page and found nothing, just give up
+                if (intTitleIndex == -1)
+                    return string.Empty;
+                // already have our end, quit searching here
+                if (intBlockEndIndex != -1)
+                    break;
             }
-            EndPdfReading:
-            return strbldReturn.ToString().NormalizeWhiteSpace();
+
+            // we have our textblock, lets format it and be done with it
+            if (intBlockEndIndex != -1)
+            {
+                string[] strArray = lstStringFromPDF.ToArray();
+                // if it is a "paragraph title" just concatenate everything
+                if (blnTitleWithColon)
+                    return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
+                // add the title
+                string strResultContent = strArray[intTitleIndex] + '\n';
+                // if we have extra info add it keeping the line breaks
+                if (intExtraAllCapsInfo > 0)
+                    strResultContent += string.Join("\n", strArray, intTitleIndex + 1, intExtraAllCapsInfo) + '\n';
+                int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
+                // this is the best we can do for now, it will still mangle spell blocks a bit
+                for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
+                {
+                    string strContentString = strArray[i];
+                    switch (strContentString.Last())
+                    {
+                        case '-':
+                            strResultContent += strContentString.Substring(0, strContentString.Length - 1);
+                            break;
+                        case '.':
+                        case '!':
+                        case '?':
+                            strResultContent += strContentString + '\n';
+                            break;
+                        default:
+                            strResultContent += strContentString + ' ';
+                            break;
+                    }
+                }
+                return strResultContent;
+            }
+            return string.Empty;
         }
         #endregion
     }

@@ -85,7 +85,7 @@ namespace Chummer
                     }
                 }
                 achrNewChars[intCurrent++] = chrLoop;
-                SkipChar:;
+            SkipChar:;
             }
             // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
             return new string(achrNewChars, 0, intCurrent);
@@ -181,6 +181,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStart(this string strInput, params string[] astrStringToTrim)
         {
+            // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
+            int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
             {
                 int intLength = astrStringToTrim.Length;
@@ -188,14 +190,13 @@ namespace Chummer
                 {
                     string strStringToTrim = astrStringToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strInput.StartsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim))
                     {
-                        int intTrimLength = strStringToTrim.Length;
-                        return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                        intHowMuchToTrim = strStringToTrim.Length;
                     }
                 }
             }
-            return strInput;
+            return strInput.Substring(intHowMuchToTrim);
         }
 
         /// <summary>
@@ -207,6 +208,8 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimEnd(this string strInput, params string[] astrStringToTrim)
         {
+            // without that we could trim a smaller string just because it was found first, this makes sure we found the largest one
+            int intHowMuchToTrim = 0;
             if (!string.IsNullOrEmpty(strInput))
             {
                 int intLength = astrStringToTrim.Length;
@@ -214,13 +217,13 @@ namespace Chummer
                 {
                     string strStringToTrim = astrStringToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strInput.EndsWith(strStringToTrim))
+                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim))
                     {
-                        return strInput.Substring(0, strInput.Length - strStringToTrim.Length);
+                        intHowMuchToTrim = strStringToTrim.Length;
                     }
                 }
             }
-            return strInput;
+            return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
         }
 
         /// <summary>
