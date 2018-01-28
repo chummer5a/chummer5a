@@ -1104,10 +1104,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_strRC == "0")
-                    return "-";
-                else
-                    return _strRC;
+                return _strRC;
             }
             set
             {
