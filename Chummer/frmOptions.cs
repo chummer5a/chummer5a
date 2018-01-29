@@ -95,10 +95,7 @@ namespace Chummer
             _characterOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
             _characterOptions.DontUseCyberlimbCalculation = chkDontUseCyberlimbCalculation.Checked;
             _characterOptions.AllowSkillRegrouping = chkAllowSkillRegrouping.Checked;
-            _characterOptions.AutomaticCopyProtection = chkAutomaticCopyProtection.Checked;
-            _characterOptions.AutomaticRegistration = chkAutomaticRegistration.Checked;
             _characterOptions.CalculateCommlinkResponse = chkCalculateCommlinkResponse.Checked;
-            _characterOptions.CapSkillRating = chkCapSkillRating.Checked;
             _characterOptions.ConfirmDelete = chkConfirmDelete.Checked;
             _characterOptions.ConfirmKarmaExpense = chkConfirmKarmaExpense.Checked;
             _characterOptions.CreateBackupOnCareer = chkCreateBackupOnCareer.Checked;
@@ -108,8 +105,6 @@ namespace Chummer
             _characterOptions.DontDoubleQualityPurchases = chkDontDoubleQualityPurchases.Checked;
             _characterOptions.DontDoubleQualityRefunds = chkDontDoubleQualityRefunds.Checked;
             _characterOptions.EnforceCapacity = chkEnforceCapacity.Checked;
-            _characterOptions.EnforceMaximumSkillRatingModifier = chkEnforceSkillMaximumModifiedRating.Checked;
-            _characterOptions.ErgonomicProgramLimit = chkErgonomicProgramLimit.Checked;
             _characterOptions.EssenceDecimals = decimal.ToInt32(nudEssenceDecimals.Value);
             _characterOptions.DontRoundEssenceInternally = chkDontRoundEssenceInternally.Checked;
             _characterOptions.ESSLossReducesMaximumOnly = chkESSLossReducesMaximumOnly.Checked;
@@ -151,7 +146,7 @@ namespace Chummer
             _characterOptions.AllowPointBuySpecializationsOnKarmaSkills = chkAllowPointBuySpecializationsOnKarmaSkills.Checked;
             _characterOptions.AlternateMetatypeAttributeKarma = chkAlternateMetatypeAttributeKarma.Checked;
             _characterOptions.CompensateSkillGroupKarmaDifference = chkCompensateSkillGroupKarmaDifference.Checked;
-            _characterOptions.MysaddPPCareer = chkMysAdPp.Checked;
+            _characterOptions.MysAdeptAllowPPCareer = chkMysAdPp.Checked;
             _characterOptions.MysAdeptSecondMAGAttribute = chkMysAdeptSecondMAGAttribute.Checked;
             _characterOptions.FreeMartialArtSpecialization = chkFreeMartialArtSpecialization.Checked;
             _characterOptions.PrioritySpellsAsAdeptPowers = chkPrioritySpellsAsAdeptPowers.Checked;
@@ -793,10 +788,7 @@ namespace Chummer
             chkAllowSkillDiceRolling.Checked = _characterOptions.AllowSkillDiceRolling;
             chkDontUseCyberlimbCalculation.Checked = _characterOptions.DontUseCyberlimbCalculation;
             chkAllowSkillRegrouping.Checked = _characterOptions.AllowSkillRegrouping;
-            chkAutomaticCopyProtection.Checked = _characterOptions.AutomaticCopyProtection;
-            chkAutomaticRegistration.Checked = _characterOptions.AutomaticRegistration;
             chkCalculateCommlinkResponse.Checked = _characterOptions.CalculateCommlinkResponse;
-            chkCapSkillRating.Checked = _characterOptions.CapSkillRating;
             chkConfirmDelete.Checked = _characterOptions.ConfirmDelete;
             chkConfirmKarmaExpense.Checked = _characterOptions.ConfirmKarmaExpense;
             chkUseTotalValueForFreeContacts.Checked = _characterOptions.UseTotalValueForFreeContacts;
@@ -805,7 +797,7 @@ namespace Chummer
             chkDroneArmorMultiplier.Checked = _characterOptions.DroneArmorMultiplierEnabled;
             chkCreateBackupOnCareer.Checked = _characterOptions.CreateBackupOnCareer;
             chkCyberlegMovement.Checked = _characterOptions.CyberlegMovement;
-            chkMysAdPp.Checked = _characterOptions.MysaddPPCareer;
+            chkMysAdPp.Checked = _characterOptions.MysAdeptAllowPPCareer;
             chkMysAdeptSecondMAGAttribute.Checked = _characterOptions.MysAdeptSecondMAGAttribute;
             chkHideItemsOverAvail.Checked = _characterOptions.HideItemsOverAvailLimit;
             chkFreeMartialArtSpecialization.Checked = _characterOptions.FreeMartialArtSpecialization;
@@ -813,8 +805,6 @@ namespace Chummer
             chkDontDoubleQualityPurchases.Checked = _characterOptions.DontDoubleQualityPurchases;
             chkDontDoubleQualityRefunds.Checked = _characterOptions.DontDoubleQualityRefunds;
             chkEnforceCapacity.Checked = _characterOptions.EnforceCapacity;
-            chkEnforceSkillMaximumModifiedRating.Checked = _characterOptions.EnforceMaximumSkillRatingModifier;
-            chkErgonomicProgramLimit.Checked = _characterOptions.ErgonomicProgramLimit;
             chkESSLossReducesMaximumOnly.Checked = _characterOptions.ESSLossReducesMaximumOnly;
             chkExceedNegativeQualities.Checked = _characterOptions.ExceedNegativeQualities;
             chkExceedNegativeQualitiesLimit.Checked = _characterOptions.ExceedNegativeQualitiesLimit;

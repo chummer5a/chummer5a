@@ -337,50 +337,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Vehicle has the Modular Electronics Vehicle Mod.
-        /// </summary>
-        /*
-        public bool HasModularElectronics
-        {
-            set
-            {
-                _blnModularElectronics = value;
-
-                if (_blnModularElectronics)
-                {
-                    _intMaxResponse = 10;
-                    _intMaxSystem = 10;
-                    _intMaxFirewall = 10;
-                    _intMaxSignal = 10;
-                }
-            }
-        }*/
-
-        /// <summary>
-        /// Vehicle's Device Rating.
-        /// </summary>
-        /*
-        public int DeviceRating
-        {
-            set
-            {
-                _intMaxResponse = value + 2;
-                _intMaxSystem = value;
-                _intMaxFirewall = value;
-                _intMaxSignal = value + 2;
-                _intDeviceRating = value;
-
-                if (_blnModularElectronics)
-                {
-                    _intMaxResponse = 10;
-                    _intMaxSystem = 10;
-                    _intMaxFirewall = 10;
-                    _intMaxSignal = 10;
-                }
-            }
-        }*/
-
-        /// <summary>
         /// Markup percentage.
         /// </summary>
         public int Markup

@@ -217,7 +217,9 @@ namespace Chummer
         private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
         private List<MartialArt> _lstMartialArts = new List<MartialArt>();
+        #if LEGACY
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
+        #endif
         private List<LimitModifier> _lstLimitModifiers = new List<LimitModifier>();
         private List<Armor> _lstArmor = new List<Armor>();
         private BindingList<Cyberware> _lstCyberware = new BindingList<Cyberware>();
@@ -268,7 +270,7 @@ namespace Chummer
         public Action<object> AdvancedProgramsTabEnabledChanged { get; set; }
         public Action<object> CyberwareTabDisabledChanged { get; set; }
 
-        #region Initialization, Save, Load, Print, and Reset Methods
+#region Initialization, Save, Load, Print, and Reset Methods
         /// <summary>
         /// Character.
         /// </summary>
@@ -680,6 +682,7 @@ namespace Chummer
             // </martialarts>
             objWriter.WriteEndElement();
 
+            #if LEGACY
             // <martialartmaneuvers>
             objWriter.WriteStartElement("martialartmaneuvers");
             foreach (MartialArtManeuver objManeuver in _lstMartialArtManeuvers)
@@ -688,6 +691,7 @@ namespace Chummer
             }
             // </martialartmaneuvers>
             objWriter.WriteEndElement();
+            #endif
 
             // <limitmodifiers>
             objWriter.WriteStartElement("limitmodifiers");
@@ -1651,6 +1655,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_marts");
+            #if LEGACY
             Timekeeper.Start("load_char_mam");
 
             // Martial Art Maneuvers.
@@ -1663,6 +1668,7 @@ namespace Chummer
             }
 
             Timekeeper.Finish("load_char_mam");
+            #endif
             Timekeeper.Start("load_char_mod");
 
             // Limit Modifiers.
@@ -2749,6 +2755,7 @@ namespace Chummer
             // </martialarts>
             objWriter.WriteEndElement();
 
+            #if LEGACY
             // <martialartmaneuvers>
             objWriter.WriteStartElement("martialartmaneuvers");
             foreach (MartialArtManeuver objManeuver in MartialArtManeuvers)
@@ -2757,6 +2764,7 @@ namespace Chummer
             }
             // </martialartmaneuvers>
             objWriter.WriteEndElement();
+            #endif
 
             // <armors>
             objWriter.WriteStartElement("armors");
@@ -2968,7 +2976,9 @@ namespace Chummer
             _lstComplexForms.Clear();
             _lstAIPrograms.Clear();
             _lstMartialArts.Clear();
+#if LEGACY
             _lstMartialArtManeuvers.Clear();
+#endif
             _lstLimitModifiers.Clear();
             _lstArmor.Clear();
             _lstCyberware.Clear();
@@ -2991,7 +3001,7 @@ namespace Chummer
         }
 #endregion
 
-        #region Helper Methods
+#region Helper Methods
         /// <summary>
         /// Collate and save the character's used sourcebooks. This list is cleared after loading a character to ensure that only the current items are stored.
         /// </summary>
@@ -3659,9 +3669,9 @@ namespace Chummer
             }
             return setBlackMarketMaps;
         }
-        #endregion
+#endregion
 
-        #region UI Methods
+#region UI Methods
 
         /// <summary>
         /// Verify that the user wants to delete an item.
@@ -3685,7 +3695,7 @@ namespace Chummer
                 return true;
         }
 
-        #region Tab clearing
+#region Tab clearing
         /// <summary>
         /// Clear all Spell tab elements from the character.
         /// </summary>
@@ -3837,11 +3847,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region Basic Properties
+#region Basic Properties
         /// <summary>
         /// Character Options object.
         /// </summary>
@@ -5010,9 +5020,9 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Attributes
+#region Attributes
         /// <summary>
         /// Get an CharacterAttribute by its name.
         /// </summary>
@@ -5656,8 +5666,8 @@ namespace Chummer
             }
         }
 
-        #region Initiative
-        #region Physical
+#region Initiative
+#region Physical
         /// <summary>
         /// Physical Initiative.
         /// </summary>
@@ -6196,9 +6206,9 @@ namespace Chummer
                 return intReturn;
             }
         }
-        #endregion
+#endregion
 
-        #region Reputation
+#region Reputation
         /// <summary>
         /// Amount of Street Cred the character has earned through standard means.
         /// </summary>
@@ -6469,6 +6479,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         /// <summary>
         /// Martial Arts Maneuvers.
         /// </summary>
@@ -6479,6 +6490,7 @@ namespace Chummer
                 return _lstMartialArtManeuvers;
             }
         }
+#endif
 
         /// <summary>
         /// Limit Modifiers.
@@ -6728,9 +6740,9 @@ namespace Chummer
                 return _lstInternalIdsNeedingReapplyImprovements;
             }
         }
-        #endregion
+#endregion
 
-        #region Armor Properties
+#region Armor Properties
         /// <summary>
         /// The Character's highest Armor Rating.
         /// </summary>
@@ -9060,7 +9072,7 @@ namespace Chummer
         {
             get
             {
-                return Options.MysaddPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
+                return Options.MysAdeptAllowPPCareer && Karma >= 5 && MAG.TotalValue > MysticAdeptPowerPoints;
             }
         }
 
@@ -9182,7 +9194,7 @@ namespace Chummer
             }
         }
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -9202,7 +9214,7 @@ namespace Chummer
         {
             Dispose(true);
         }
-        #endregion
+#endregion
 
     }
 }

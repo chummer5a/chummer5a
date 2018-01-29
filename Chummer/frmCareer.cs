@@ -123,7 +123,6 @@ namespace Chummer
                 cmsLifestyle,
                 cmsLifestyleNotes,
                 cmsLimitModifier,
-                cmsMartialArtManeuver,
                 cmsMartialArts,
                 cmsMetamagic,
                 cmsQuality,
@@ -444,7 +443,7 @@ namespace Chummer
 
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysaddPPCareer;
+                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
             }
             else
                 cmdIncreasePowerPoints.Visible = false;
@@ -1103,7 +1102,7 @@ namespace Chummer
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysaddPPCareer;
+                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
             }
             else
             {
@@ -1143,7 +1142,7 @@ namespace Chummer
             {
                 lblMysticAdeptAssignment.Visible = true;
                 lblMysticAdeptMAGAdept.Visible = true;
-                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysaddPPCareer;
+                cmdIncreasePowerPoints.Visible = CharacterObjectOptions.MysAdeptAllowPPCareer;
             }
             else
             {
@@ -3273,6 +3272,7 @@ namespace Chummer
                     }
                     else
                     {
+                        #if LEGACY
                         // Display the Maneuver information.
                         MartialArtManeuver objManeuver = CharacterObject.MartialArtManeuvers.FindById(strSelectedId);
                         if (objManeuver != null)
@@ -3283,6 +3283,7 @@ namespace Chummer
                             tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objManeuver.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         }
                         else
+                        #endif
                         {
                             cmdDeleteMartialArt.Enabled = false;
                             lblMartialArtSource.Text = string.Empty;
@@ -3299,9 +3300,9 @@ namespace Chummer
             }
             _blnSkipRefresh = false;
         }
-        #endregion
+#endregion
 
-        #region Button Events
+#region Button Events
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -4701,6 +4702,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         private void cmdAddManeuver_Click(object sender, EventArgs e)
         {
             // Characters may only have 2 Maneuvers per Martial Art Rating.
@@ -4759,6 +4761,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+#endif
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
@@ -7461,7 +7464,7 @@ namespace Chummer
 
             IsDirty = true;
         }
-        #endregion
+#endregion
 
 #region ContextMenu Events
         private void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
@@ -10051,6 +10054,12 @@ namespace Chummer
             while (blnAddAgain);
         }
 
+        private void tsGearButtonAddAccessory_Click(object sender, EventArgs e)
+        {
+            tsGearAddAsPlugin_Click(sender, e);
+        }
+
+        #if LEGACY
         private void tsGearAddNexus_Click(object sender, EventArgs e)
         {
             treGear.SelectedNode = treGear.Nodes[0];
@@ -10102,11 +10111,6 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-        }
-
-        private void tsGearButtonAddAccessory_Click(object sender, EventArgs e)
-        {
-            tsGearAddAsPlugin_Click(sender, e);
         }
 
         private void tsVehicleAddNexus_Click(object sender, EventArgs e)
@@ -10172,6 +10176,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+        #endif
 
         private void tsUndoKarmaExpense_Click(object sender, EventArgs e)
         {
@@ -10428,7 +10433,8 @@ namespace Chummer
                         }
                         break;
                     }
-                case KarmaExpenseType.AddMartialArtManeuver:
+#if LEGACY
+                    case KarmaExpenseType.AddMartialArtManeuver:
                     {
                         // Locate the Martial Art Maneuver that was affected.
                         foreach (MartialArtManeuver objManeuver in CharacterObject.MartialArtManeuvers.Where(x => x.InternalId == objEntry.Undo.ObjectId).ToList())
@@ -10441,6 +10447,7 @@ namespace Chummer
                         }
                     }
                     break;
+#endif
                 case KarmaExpenseType.AddComplexForm:
                     {
                         // Locate the Complex Form that was affected.
@@ -11637,6 +11644,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         private void tsMartialArtManeuverNotes_Click(object sender, EventArgs e)
         {
             MartialArtManeuver objMartialArtManeuver = CharacterObject.MartialArtManeuvers.FindById(treMartialArts.SelectedNode?.Tag.ToString());
@@ -11666,6 +11674,7 @@ namespace Chummer
                 }
             }
         }
+#endif
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
@@ -13372,9 +13381,9 @@ namespace Chummer
                 lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectOptions.KarmaQuality).ToString() + ' ' + LanguageManager.GetString("String_Karma", GlobalOptions.Language);
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Cyberware Tab Control Events
+#region Additional Cyberware Tab Control Events
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
@@ -16289,8 +16298,8 @@ namespace Chummer
         {
             cmdEditWeek_Click(sender, e);
         }
-        #endregion
-        #region Additional Relationships Tab Control Events
+#endregion
+#region Additional Relationships Tab Control Events
 
         private void tsAddFromFile_Click(object sender, EventArgs e)
         {
@@ -16343,9 +16352,9 @@ namespace Chummer
             }
         }
 
-        #endregion
+#endregion
 
-        #region Additional Improvements Tab Control Events
+#region Additional Improvements Tab Control Events
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
         {
             lblImprovementType.Text = string.Empty;
@@ -17248,9 +17257,9 @@ namespace Chummer
 
             IsDirty = true;
         }
-        #endregion
+#endregion
 
-        #region Custom Methods
+#region Custom Methods
         /// <summary>
         /// Refresh the fields related to the character's metatype.
         /// </summary>
@@ -19069,11 +19078,9 @@ namespace Chummer
                         // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                         if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
                         {
-                            Gear objParent = objGear?.Parent;
-                            if (!string.IsNullOrEmpty(objParent.Category))
+                            if (objGear.Parent?.IsCommlink == true)
                             {
-                                if (objParent.Category == "Commlink" || objParent.Category == "Nexus")
-                                    chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
+                                chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                             }
                         }
                     }

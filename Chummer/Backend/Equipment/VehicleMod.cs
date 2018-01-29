@@ -50,11 +50,6 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;
         private bool _blnInstalled = true;
-        private int _intResponse;
-        private int _intSystem;
-        private int _intFirewall;
-        private int _intSignal;
-        private int _intPilot;
         private int _intConditionMonitor;
         private readonly List<Weapon> _lstVehicleWeapons = new List<Weapon>();
         private string _strNotes = string.Empty;
@@ -106,11 +101,6 @@ namespace Chummer.Backend.Equipment
                 objXmlMod.TryGetStringFieldQuickly("notes", ref _strNotes);
             objXmlMod.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objXmlMod.TryGetStringFieldQuickly("rating", ref _strMaxRating);
-            objXmlMod.TryGetInt32FieldQuickly("response", ref _intResponse);
-            objXmlMod.TryGetInt32FieldQuickly("system", ref _intSystem);
-            objXmlMod.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
-            objXmlMod.TryGetInt32FieldQuickly("signal", ref _intSignal);
-            objXmlMod.TryGetInt32FieldQuickly("pilot", ref _intPilot);
             objXmlMod.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
             objXmlMod.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
             objXmlMod.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
@@ -189,11 +179,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("maxrating", _strMaxRating);
-            objWriter.WriteElementString("response", _intResponse.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("system", _intSystem.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("firewall", _intFirewall.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("signal", _intSignal.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("pilot", _intPilot.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("conditionmonitor", _intConditionMonitor.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
@@ -253,11 +238,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
             objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
             objNode.TryGetStringFieldQuickly("weaponmountcategories", ref _strWeaponMountCategories);
-            objNode.TryGetInt32FieldQuickly("response", ref _intResponse);
-            objNode.TryGetInt32FieldQuickly("system", ref _intSystem);
-            objNode.TryGetInt32FieldQuickly("firewall", ref _intFirewall);
-            objNode.TryGetInt32FieldQuickly("signal", ref _intSignal);
-            objNode.TryGetInt32FieldQuickly("pilot", ref _intPilot);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetInt32FieldQuickly("conditionmonitor", ref _intConditionMonitor);
@@ -464,51 +444,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _strMaxRating;
             set => _strMaxRating = value;
-        }
-
-        /// <summary>
-        /// Response.
-        /// </summary>
-        public int Response
-        {
-            get => _intResponse;
-            set => _intResponse = value;
-        }
-
-        /// <summary>
-        /// System.
-        /// </summary>
-        public int System
-        {
-            get => _intSystem;
-            set => _intSystem = value;
-        }
-
-        /// <summary>
-        /// Firewall.
-        /// </summary>
-        public int Firewall
-        {
-            get => _intFirewall;
-            set => _intFirewall = value;
-        }
-
-        /// <summary>
-        /// Signal.
-        /// </summary>
-        public int Signal
-        {
-            get => _intSignal;
-            set => _intSignal = value;
-        }
-
-        /// <summary>
-        /// Pilot.
-        /// </summary>
-        public int Pilot
-        {
-            get => _intPilot;
-            set => _intPilot = value;
         }
 
         /// <summary>

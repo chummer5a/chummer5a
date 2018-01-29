@@ -620,12 +620,12 @@
     <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.cs">
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectMartialArtManeuver.Designer.cs">
       <DependentUpon>frmSelectMartialArtManeuver.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -638,12 +638,12 @@
     <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
       <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.cs">
+    <None Include="Selection Forms\frmSelectNexus.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Selection Forms\frmSelectNexus.Designer.cs">
+    </None>
+    <None Include="Selection Forms\frmSelectNexus.Designer.cs">
       <DependentUpon>frmSelectNexus.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="Selection Forms\frmSelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>

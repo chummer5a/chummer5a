@@ -3060,6 +3060,7 @@ namespace Chummer
                     }
                     else
                     {
+                        #if LEGACY
                         // Display the Maneuver information.
                         MartialArtManeuver objManeuver = CharacterObject.MartialArtManeuvers.FindById(strSelectedId);
                         if (objManeuver != null)
@@ -3070,6 +3071,7 @@ namespace Chummer
                             tipTooltip.SetToolTip(lblMartialArtSource, CommonFunctions.LanguageBookLong(objManeuver.Source, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
                         }
                         else
+                        #endif
                         {
                             cmdDeleteMartialArt.Enabled = false;
                             lblMartialArtSource.Text = string.Empty;
@@ -3086,9 +3088,9 @@ namespace Chummer
             }
             _blnSkipRefresh = false;
         }
-        #endregion
+#endregion
 
-        #region Button Events
+#region Button Events
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -4360,6 +4362,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         private void cmdAddManeuver_Click(object sender, EventArgs e)
         {
             // Characters may only have 2 Maneuvers per Martial Art Rating.
@@ -4398,6 +4401,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+#endif
 
         private void cmdAddMugshot_Click(object sender, EventArgs e)
         {
@@ -5724,9 +5728,9 @@ namespace Chummer
 
             IsDirty = true;
         }
-        #endregion
+#endregion
 
-        #region ContextMenu Events
+#region ContextMenu Events
         private void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCyberware.SelectedNode;
@@ -6845,26 +6849,6 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tsGearAddNexus_Click(object sender, EventArgs e)
-        {
-            treGear.SelectedNode = treGear.Nodes[0];
-
-            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
-            frmPickNexus.ShowDialog(this);
-
-            if (frmPickNexus.DialogResult == DialogResult.Cancel)
-                return;
-
-            Gear objGear = frmPickNexus.SelectedNexus;
-
-            treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
-            treGear.Nodes[0].Expand();
-
-            CharacterObject.Gear.Add(objGear);
-
-            IsCharacterUpdateRequested = true;
-        }
-
         private void tsGearButtonAddAccessory_Click(object sender, EventArgs e)
         {
             tsGearAddAsPlugin_Click(sender, e);
@@ -6883,6 +6867,27 @@ namespace Chummer
             objGear.Extra = frmPickText.SelectedValue;
             treGear.SelectedNode.Text = objGear.DisplayName(GlobalOptions.Language);
             IsDirty = true;
+        }
+
+        #if LEGACY
+        private void tsGearAddNexus_Click(object sender, EventArgs e)
+        {
+            treGear.SelectedNode = treGear.Nodes[0];
+
+            frmSelectNexus frmPickNexus = new frmSelectNexus(CharacterObject);
+            frmPickNexus.ShowDialog(this);
+
+            if (frmPickNexus.DialogResult == DialogResult.Cancel)
+                return;
+
+            Gear objGear = frmPickNexus.SelectedNexus;
+
+            treGear.Nodes[0].Nodes.Add(objGear.CreateTreeNode(cmsGear));
+            treGear.Nodes[0].Expand();
+
+            CharacterObject.Gear.Add(objGear);
+
+            IsCharacterUpdateRequested = true;
         }
 
         private void tsVehicleAddNexus_Click(object sender, EventArgs e)
@@ -6922,6 +6927,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+        #endif
 
         private void tsArmorLocationAddArmor_Click(object sender, EventArgs e)
         {
@@ -7319,6 +7325,7 @@ namespace Chummer
             }
         }
 
+#if LEGACY
         private void tsMartialArtManeuverNotes_Click(object sender, EventArgs e)
         {
             if (treMartialArts.SelectedNode == null)
@@ -7350,6 +7357,7 @@ namespace Chummer
                 }
             }
         }
+#endif
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
@@ -8890,9 +8898,9 @@ namespace Chummer
             }
             while (blnAddAgain);
         }
-        #endregion
+#endregion
 
-        #region Additional Common Tab Control Events
+#region Additional Common Tab Control Events
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the selected Quality.
@@ -9103,9 +9111,9 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Cyberware Tab Control Events
+#region Additional Cyberware Tab Control Events
         private void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedCyberware();
@@ -9233,9 +9241,9 @@ namespace Chummer
                 IsDirty = true;
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Street Gear Tab Control Events
+#region Additional Street Gear Tab Control Events
         private void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedWeapon();
@@ -10164,9 +10172,9 @@ namespace Chummer
 
             _blnLoading = false;
         }
-        #endregion
+#endregion
 
-        #region Additional Vehicle Tab Control Events
+#region Additional Vehicle Tab Control Events
         private void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             RefreshSelectedVehicle();
@@ -10372,9 +10380,9 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Spells and Spirits Tab Control Events
+#region Additional Spells and Spirits Tab Control Events
         private void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
             _blnSkipRefresh = true;
@@ -10862,9 +10870,9 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
-        #endregion
+#endregion
 
-        #region Additional Sprites and Complex Forms Tab Control Events
+#region Additional Sprites and Complex Forms Tab Control Events
         private void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (_blnSkipRefresh)
@@ -10902,9 +10910,9 @@ namespace Chummer
                 cmdDeleteComplexForm_Click(sender, e);
             }
         }
-        #endregion
+#endregion
 
-        #region Additional AI Advanced Programs Tab Control Events
+#region Additional AI Advanced Programs Tab Control Events
         private void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Locate the Program that is selected in the tree.
@@ -10933,9 +10941,9 @@ namespace Chummer
                 cmdDeleteAIProgram_Click(sender, e);
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Initiation Tab Control Events
+#region Additional Initiation Tab Control Events
         private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
         {
             IsCharacterUpdateRequested = true;
@@ -11008,9 +11016,9 @@ namespace Chummer
                 tipTooltip.SetToolTip(lblMetamagicSource, string.Empty);
             }
         }
-        #endregion
+#endregion
 
-        #region Additional Critter Powers Tab Control Events
+#region Additional Critter Powers Tab Control Events
         private void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
             // Look for the selected Critter Power.
@@ -11072,8 +11080,8 @@ namespace Chummer
                 IsDirty = true;
             }
         }
-        #endregion
-        #region Additional Relationships Tab Control Events
+#endregion
+#region Additional Relationships Tab Control Events
         private void tsAddFromFile_Click(object sender, EventArgs e)
         {
             // Displays an OpenFileDialog so the user can select the XML to read.  
@@ -11124,8 +11132,8 @@ namespace Chummer
                 }
             }
         }
-        #endregion
-        #region Character Info Tab Event
+#endregion
+#region Character Info Tab Event
         private void txtSex_TextChanged(object sender, EventArgs e)
         {
             CharacterObject.Sex = txtSex.Text;
@@ -11203,9 +11211,9 @@ namespace Chummer
             CharacterObject.Alias = txtAlias.Text;
             IsDirty = true;
         }
-        #endregion
+#endregion
 
-        #region Tree KeyDown Events
+#region Tree KeyDown Events
         private void treQualities_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -11293,9 +11301,9 @@ namespace Chummer
                 cmdDeleteMetamagic_Click(sender, e);
             }
         }
-        #endregion
+#endregion
 
-        #region Other Control Events
+#region Other Control Events
         private void nudNuyen_ValueChanged(object sender, EventArgs e)
         {
             if (_blnLoading) return;
@@ -11322,9 +11330,9 @@ namespace Chummer
         {
             RefreshPasteStatus();
         }
-        #endregion
+#endregion
 
-        #region Clear Tab Contents
+#region Clear Tab Contents
         /// <summary>
         /// Clear the contents of the Spells and Spirits Tab.
         /// </summary>
@@ -11413,9 +11421,9 @@ namespace Chummer
             IsDirty = true;
             IsCharacterUpdateRequested = true;
         }
-        #endregion
+#endregion
 
-        #region Sourcebook Label Events
+#region Sourcebook Label Events
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.A)
@@ -11425,9 +11433,9 @@ namespace Chummer
                     ((TextBox)sender).SelectAll();
             }
         }
-        #endregion
+#endregion
 
-        #region Custom Methods
+#region Custom Methods
         /// <summary>
         /// Refresh the fields related to the character's metatype.
         /// </summary>
@@ -12060,12 +12068,14 @@ namespace Chummer
             intKarmaPointsRemain -= intKarmaCost;
             intFreestyleBP += intAIAdvancedProgramPointsUsed + intAINormalProgramPointsUsed + intNumAdvancedProgramPointsAsNormalPrograms;
 
+#if LEGACY
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Martial Art Maneuvers.
             // Each Maneuver costs KarmaManeuver.
             int intManeuverPointsUsed = CharacterObject.MartialArtManeuvers.Count * CharacterObjectOptions.KarmaManeuver;
             intFreestyleBP += intManeuverPointsUsed;
             intKarmaPointsRemain -= intManeuverPointsUsed;
+#endif
 
             // ------------------------------------------------------------------------------
             // Calculate the BP used by Initiation.
@@ -12164,8 +12174,6 @@ namespace Chummer
 
                 lblAINormalProgramsBP.Text = string.Format("{0} " + strPoints, ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString());
                 lblAIAdvancedProgramsBP.Text = string.Format("{0} " + strPoints, ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString());
-
-                lblManeuversBP.Text = string.Format("{0} " + strPoints, intManeuverPointsUsed.ToString());
 
                 lblInitiationBP.Text = string.Format("{0} " + strPoints, intInitiationPoints.ToString());
                 // ------------------------------------------------------------------------------
@@ -12580,30 +12588,7 @@ namespace Chummer
             if (intINTAttributeModifiers > 0 || intREAAttributeModifiers > 0)
                 strInit += $"{strModifiers} ({intREAAttributeModifiers + intINTAttributeModifiers})";
             tipTooltip.SetToolTip(lblRiggingINI, strInitText.Replace("{0}", strInit).Replace("{1}", CharacterObject.InitiativeDice.ToString()));
-
-            //// Matrix Initiative.
-            //int intCommlinkResponse = 0;
-
-            //// Retrieve the highest Response in case the Character has more than 1 Commlink.
-            //foreach (Commlink objCommlink in _objCharacter.Gear.OfType<Commlink>())
-            //{
-            //    if (objCommlink.TotalResponse > intCommlinkResponse)
-            //        intCommlinkResponse = objCommlink.TotalResponse;
-            //}
-
-            //lblMatrixINI.Text = _objCharacter.MatrixInitiative;
-            //if (!_objCharacter.TechnomancerEnabled)
-            //{
-            //    tipTooltip.SetToolTip(lblMatrixINI, "INT (" + dicAttributeTotalValues["INT"].ToString() + ") + " + LanguageManager.GetString("Tip_CommlinkResponse") + " (" + intCommlinkResponse.ToString() + ')');
-            //}
-            //else
-            //{
-            //    strInit = "INT x 2 (" + dicAttributeTotalValues["INT"].ToString() + ") + 1";
-            //    if (ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LivingPersonaResponse) > 0)
-            //        strInit += " + " + LanguageManager.GetString("Tip_Modifiers") + " (" + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LivingPersonaResponse).ToString() + ')';
-            //    tipTooltip.SetToolTip(lblMatrixINI, strInit);
-            //}
-
+            
             // Calculate the number of Build Points remaining.
             CalculateBP();
             CalculateNuyen();
@@ -13763,11 +13748,9 @@ namespace Chummer
                     // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
                     if (objGear.IsProgram && CharacterObjectOptions.CalculateCommlinkResponse)
                     {
-                        Gear objParent = objGear.Parent;
-                        if (!string.IsNullOrEmpty(objParent?.Category))
+                        if (objGear.Parent?.IsCommlink == true)
                         {
-                            if (objParent.Category == "Commlinks" || objParent.Category == "Cyberdecks" || objParent.Category == "Nexus")
-                                chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
+                            chkGearEquipped.Text = LanguageManager.GetString("Checkbox_SoftwareRunning", GlobalOptions.Language);
                         }
                     }
                 }
@@ -18136,7 +18119,7 @@ namespace Chummer
 
             return objCyberware;
         }
-        #endregion
+#endregion
 
         private void tabVehicles_Click(object sender, EventArgs e)
         {

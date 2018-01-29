@@ -313,8 +313,10 @@ namespace Chummer
                     // </martialart>
                     objWriter.WriteEndElement();
                 }
+                #if LEGACY
                 foreach (MartialArtManeuver objManeuver in _objCharacter.MartialArtManeuvers)
                     objWriter.WriteElementString("maneuver", objManeuver.Name);
+                #endif
                 // </martialarts>
                 objWriter.WriteEndElement();
             }
@@ -707,9 +709,9 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+#endregion
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
@@ -754,6 +756,6 @@ namespace Chummer
             txtFileName.Left = lblFileNameLabel.Left + intWidth + 6;
             txtFileName.Width = Width - txtFileName.Left - 19;
         }
-        #endregion
+#endregion
     }
 }

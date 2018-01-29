@@ -254,9 +254,6 @@
         <xs:element name="optionaldrone" minOccurs="0" maxOccurs="1" />
         <xs:element name="pilot" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element ref="required" minOccurs="0" maxOccurs="1" />
-        <xs:element name="response" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="signal" type="xs:integer" minOccurs="0" maxOccurs="1" />
-        <xs:element name="system" type="xs:integer" minOccurs="0" maxOccurs="1" />
         <xs:element name="subsystems" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>

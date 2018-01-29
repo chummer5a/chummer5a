@@ -92,7 +92,6 @@ namespace Chummer
             this.chkAutomaticUpdate = new System.Windows.Forms.CheckBox();
             this.lblNuyenPerBP = new System.Windows.Forms.Label();
             this.nudNuyenPerBP = new System.Windows.Forms.NumericUpDown();
-            this.chkEnforceSkillMaximumModifiedRating = new System.Windows.Forms.CheckBox();
             this.chkConfirmKarmaExpense = new System.Windows.Forms.CheckBox();
             this.chkPrintExpenses = new System.Windows.Forms.CheckBox();
             this.chkUnarmedSkillImprovements = new System.Windows.Forms.CheckBox();
@@ -158,12 +157,9 @@ namespace Chummer
             this.chkHideItemsOverAvail = new System.Windows.Forms.CheckBox();
             this.chkLicenseEachRestrictedItem = new System.Windows.Forms.CheckBox();
             this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
-            this.chkErgonomicProgramLimit = new System.Windows.Forms.CheckBox();
             this.chkCalculateCommlinkResponse = new System.Windows.Forms.CheckBox();
             this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
-            this.chkAutomaticRegistration = new System.Windows.Forms.CheckBox();
             this.chkRestrictRecoil = new System.Windows.Forms.CheckBox();
-            this.chkAutomaticCopyProtection = new System.Windows.Forms.CheckBox();
             this.chkEnforceCapacity = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
@@ -248,7 +244,6 @@ namespace Chummer
             this.nudMetatypeCostsKarmaMultiplier = new System.Windows.Forms.NumericUpDown();
             this.chkMetatypeCostsKarma = new System.Windows.Forms.CheckBox();
             this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
-            this.chkCapSkillRating = new System.Windows.Forms.CheckBox();
             this.chkNoSingleArmorEncumbrance = new System.Windows.Forms.CheckBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
@@ -980,18 +975,6 @@ namespace Chummer
             0});
             this.nudNuyenPerBP.Visible = false;
             this.nudNuyenPerBP.ValueChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkEnforceSkillMaximumModifiedRating
-            // 
-            this.chkEnforceSkillMaximumModifiedRating.AutoSize = true;
-            this.chkEnforceSkillMaximumModifiedRating.Location = new System.Drawing.Point(6, 137);
-            this.chkEnforceSkillMaximumModifiedRating.Name = "chkEnforceSkillMaximumModifiedRating";
-            this.chkEnforceSkillMaximumModifiedRating.Size = new System.Drawing.Size(207, 17);
-            this.chkEnforceSkillMaximumModifiedRating.TabIndex = 5;
-            this.chkEnforceSkillMaximumModifiedRating.Tag = "Checkbox_Options_EnforceSkillRating";
-            this.chkEnforceSkillMaximumModifiedRating.Text = "Enforce maximum Skill modified Rating";
-            this.chkEnforceSkillMaximumModifiedRating.UseVisualStyleBackColor = true;
-            this.chkEnforceSkillMaximumModifiedRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkConfirmKarmaExpense
             // 
@@ -1736,16 +1719,12 @@ namespace Chummer
             this.tabPage1.Controls.Add(this.chkHideItemsOverAvail);
             this.tabPage1.Controls.Add(this.chkLicenseEachRestrictedItem);
             this.tabPage1.Controls.Add(this.chkSpecialKarmaCost);
-            this.tabPage1.Controls.Add(this.chkErgonomicProgramLimit);
             this.tabPage1.Controls.Add(this.chkConfirmDelete);
             this.tabPage1.Controls.Add(this.chkCalculateCommlinkResponse);
             this.tabPage1.Controls.Add(this.chkCreateBackupOnCareer);
             this.tabPage1.Controls.Add(this.chkConfirmKarmaExpense);
-            this.tabPage1.Controls.Add(this.chkAutomaticRegistration);
             this.tabPage1.Controls.Add(this.chkRestrictRecoil);
-            this.tabPage1.Controls.Add(this.chkAutomaticCopyProtection);
             this.tabPage1.Controls.Add(this.chkEnforceCapacity);
-            this.tabPage1.Controls.Add(this.chkEnforceSkillMaximumModifiedRating);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(553, 544);
@@ -1819,19 +1798,6 @@ namespace Chummer
             this.chkSpecialKarmaCost.UseVisualStyleBackColor = true;
             this.chkSpecialKarmaCost.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkErgonomicProgramLimit
-            // 
-            this.chkErgonomicProgramLimit.AutoSize = true;
-            this.chkErgonomicProgramLimit.Location = new System.Drawing.Point(6, 288);
-            this.chkErgonomicProgramLimit.Name = "chkErgonomicProgramLimit";
-            this.chkErgonomicProgramLimit.Size = new System.Drawing.Size(391, 17);
-            this.chkErgonomicProgramLimit.TabIndex = 16;
-            this.chkErgonomicProgramLimit.Tag = "Checkbox_Options_ErgonomicProgramLimit";
-            this.chkErgonomicProgramLimit.Text = "Ergonomic Programs do not affect a Commlink\'s effective Response (UN 114)";
-            this.chkErgonomicProgramLimit.UseVisualStyleBackColor = true;
-            this.chkErgonomicProgramLimit.Visible = false;
-            this.chkErgonomicProgramLimit.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkCalculateCommlinkResponse
             // 
             this.chkCalculateCommlinkResponse.AutoSize = true;
@@ -1857,19 +1823,6 @@ namespace Chummer
             this.chkCreateBackupOnCareer.UseVisualStyleBackColor = true;
             this.chkCreateBackupOnCareer.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
-            // chkAutomaticRegistration
-            // 
-            this.chkAutomaticRegistration.AutoSize = true;
-            this.chkAutomaticRegistration.Location = new System.Drawing.Point(6, 242);
-            this.chkAutomaticRegistration.Name = "chkAutomaticRegistration";
-            this.chkAutomaticRegistration.Size = new System.Drawing.Size(377, 17);
-            this.chkAutomaticRegistration.TabIndex = 7;
-            this.chkAutomaticRegistration.Tag = "Checkbox_Options_AutomaticRegistration";
-            this.chkAutomaticRegistration.Text = "Automatically add Registration plugin to Matrix Programs (requires Unwired)";
-            this.chkAutomaticRegistration.UseVisualStyleBackColor = true;
-            this.chkAutomaticRegistration.Visible = false;
-            this.chkAutomaticRegistration.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // chkRestrictRecoil
             // 
             this.chkRestrictRecoil.AutoSize = true;
@@ -1881,19 +1834,6 @@ namespace Chummer
             this.chkRestrictRecoil.Text = "Use Restrictions to Recoil Compensation (RG 53)";
             this.chkRestrictRecoil.UseVisualStyleBackColor = true;
             this.chkRestrictRecoil.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkAutomaticCopyProtection
-            // 
-            this.chkAutomaticCopyProtection.AutoSize = true;
-            this.chkAutomaticCopyProtection.Location = new System.Drawing.Point(6, 219);
-            this.chkAutomaticCopyProtection.Name = "chkAutomaticCopyProtection";
-            this.chkAutomaticCopyProtection.Size = new System.Drawing.Size(396, 17);
-            this.chkAutomaticCopyProtection.TabIndex = 6;
-            this.chkAutomaticCopyProtection.Tag = "Checkbox_Options_AutomaticCopyProtection";
-            this.chkAutomaticCopyProtection.Text = "Automatically add Copy Protection plugin to Matrix Programs (requires Unwired)";
-            this.chkAutomaticCopyProtection.UseVisualStyleBackColor = true;
-            this.chkAutomaticCopyProtection.Visible = false;
-            this.chkAutomaticCopyProtection.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkEnforceCapacity
             // 
@@ -2674,7 +2614,6 @@ namespace Chummer
             this.tabOptionalRules.Controls.Add(this.nudMetatypeCostsKarmaMultiplier);
             this.tabOptionalRules.Controls.Add(this.chkMetatypeCostsKarma);
             this.tabOptionalRules.Controls.Add(this.chkAllowSkillRegrouping);
-            this.tabOptionalRules.Controls.Add(this.chkCapSkillRating);
             this.tabOptionalRules.Controls.Add(this.chkNoSingleArmorEncumbrance);
             this.tabOptionalRules.Controls.Add(this.chkMoreLethalGameplay);
             this.tabOptionalRules.Location = new System.Drawing.Point(4, 22);
@@ -2872,20 +2811,6 @@ namespace Chummer
             this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
             this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
             this.chkAllowSkillRegrouping.CheckedChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // chkCapSkillRating
-            // 
-            this.chkCapSkillRating.AutoSize = true;
-            this.chkCapSkillRating.Location = new System.Drawing.Point(366, 6);
-            this.chkCapSkillRating.Name = "chkCapSkillRating";
-            this.chkCapSkillRating.Size = new System.Drawing.Size(400, 17);
-            this.chkCapSkillRating.TabIndex = 2;
-            this.chkCapSkillRating.Tag = "Checkbox_Options_LimitSkills";
-            this.chkCapSkillRating.Text = "Limit Skills to 20 dice or 2 x (Natural Attribute + Skill Rating), whichever is h" +
-    "igher";
-            this.chkCapSkillRating.UseVisualStyleBackColor = true;
-            this.chkCapSkillRating.Visible = false;
-            this.chkCapSkillRating.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkNoSingleArmorEncumbrance
             // 
@@ -3596,7 +3521,6 @@ namespace Chummer
         private System.Windows.Forms.CheckBox chkAutomaticUpdate;
         private System.Windows.Forms.Label lblNuyenPerBP;
         private System.Windows.Forms.NumericUpDown nudNuyenPerBP;
-        private System.Windows.Forms.CheckBox chkEnforceSkillMaximumModifiedRating;
         private System.Windows.Forms.CheckBox chkConfirmKarmaExpense;
         private System.Windows.Forms.NumericUpDown nudKarmaMetamagic;
         private System.Windows.Forms.Label lblKarmaMetamagic;
@@ -3612,7 +3536,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabHouseRules;
         private System.Windows.Forms.CheckBox chkNoSingleArmorEncumbrance;
         private System.Windows.Forms.TreeView treSourcebook;
-        private System.Windows.Forms.CheckBox chkCapSkillRating;
         private System.Windows.Forms.CheckBox chkAllowSkillRegrouping;
         private System.Windows.Forms.Label label36;
         private ElasticComboBox cboBuildMethod;
@@ -3637,8 +3560,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblLimbCount;
         private System.Windows.Forms.Button cmdVerifyData;
         private System.Windows.Forms.CheckBox chkMaximumArmorModifications;
-        private System.Windows.Forms.CheckBox chkAutomaticRegistration;
-        private System.Windows.Forms.CheckBox chkAutomaticCopyProtection;
         private System.Windows.Forms.CheckBox chkStartupFullscreen;
         private System.Windows.Forms.CheckBox chkEnforceCapacity;
         private System.Windows.Forms.CheckBox chkRestrictRecoil;
@@ -3696,7 +3617,6 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.CheckBox chkPrintNotes;
-        private System.Windows.Forms.CheckBox chkErgonomicProgramLimit;
         private System.Windows.Forms.NumericUpDown nudEssenceDecimals;
         private System.Windows.Forms.Label lblEssenceDecimals;
         private System.Windows.Forms.Label lblXSLT;
