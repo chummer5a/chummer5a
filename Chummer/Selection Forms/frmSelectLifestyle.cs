@@ -260,7 +260,7 @@ namespace Chummer
                 _objLifestyle.Source = objXmlLifestyle["source"].InnerText;
                 _objLifestyle.Page = objXmlLifestyle["page"].InnerText;
                 _objLifestyle.Name = txtLifestyleName.Text;
-                _objLifestyle.BaseLifestyle = objXmlLifestyle["name"].InnerText.ToString();
+                _objLifestyle.BaseLifestyle = objXmlLifestyle["name"].InnerText;
                 _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"].InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : decimal.ToInt32(nudRoommates.Value);
                 _objLifestyle.Percentage = nudPercentage.Value;
