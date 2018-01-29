@@ -310,24 +310,27 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(_strNotes))
             {
-                string strEnglishNameOnSource = _strName;
-                objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strEnglishNameOnSource);
-                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", strEnglishNameOnSource);
+                string strEnglishNameOnPage = _strName;
+                string strNameOnPage = string.Empty;
+                // make sure we have something and not just an empty tag
+                if (objXmlQuality.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) && !string.IsNullOrEmpty(strNameOnPage))
+                    strEnglishNameOnPage = strNameOnPage;
+
+                _strNotes = CommonFunctions.GetTextFromPDF($"{_strSource} {_strPage}", strEnglishNameOnPage);
 
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    string strTranslatedNameOnSource = DisplayName(GlobalOptions.Language);
+                    string strTranslatedNameOnPage = DisplayName(GlobalOptions.Language);
 
-                    // don't check if again it is not translated
-                    if (strTranslatedNameOnSource != strEnglishNameOnSource)
+                    // don't check again it is not translated
+                    if (strTranslatedNameOnPage != _strName)
                     {
-                        // if we found <altnameonpage> but it contains the same english name already searched,
-                        // so we reset the variable to use DisplayName instead
-                        if (objXmlQuality.TryGetStringFieldQuickly("altnameonpage", ref strTranslatedNameOnSource)
-                            && strTranslatedNameOnSource == strEnglishNameOnSource)
-                            strTranslatedNameOnSource = DisplayName(GlobalOptions.Language);
+                        // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                        if (objXmlQuality.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                            && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                            strTranslatedNameOnPage = strNameOnPage;
 
-                        _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", strTranslatedNameOnSource);
+                        _strNotes = CommonFunctions.GetTextFromPDF($"{Source} {Page(GlobalOptions.Language)}", strTranslatedNameOnPage);
                     }
                 }
             }
