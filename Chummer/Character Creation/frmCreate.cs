@@ -559,6 +559,7 @@ namespace Chummer
             CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
             CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+            CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
             CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
 
@@ -638,6 +639,7 @@ namespace Chummer
                 CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
                 CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
+                CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
@@ -1915,8 +1917,12 @@ namespace Chummer
             if (blnDEPEnabled != CharacterObject.DEPEnabled)
                 objCharacter_DEPEnabledChanged(this);
 
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
 
             IsCharacterUpdateRequested = true;
             // Immediately call character update because it re-applies essence loss improvements
@@ -3014,13 +3020,22 @@ namespace Chummer
         }
         private void cmdAddCyberware_Click(object sender, EventArgs e)
         {
-            treCyberware.SelectedNode = null;
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickCyberware(Improvement.ImprovementSource.Cyberware);
+                blnAddAgain = PickCyberware(null, Improvement.ImprovementSource.Cyberware);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void cmdDeleteCyberware_Click(object sender, EventArgs e)
@@ -3088,7 +3103,12 @@ namespace Chummer
                 }
             }
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
 
             IsCharacterUpdateRequested = true;
 
@@ -3281,13 +3301,22 @@ namespace Chummer
 
         private void cmdAddBioware_Click(object sender, EventArgs e)
         {
-            treCyberware.SelectedNode = null;
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickCyberware(Improvement.ImprovementSource.Bioware);
+                blnAddAgain = PickCyberware(null, Improvement.ImprovementSource.Bioware);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void cmdAddWeapon_Click(object sender, EventArgs e)
@@ -3295,12 +3324,22 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = AddWeapon(treWeapons.Nodes[0]);
+                blnAddAgain = AddWeapon(null);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
-        private bool AddWeapon(TreeNode objParentNode)
+        private bool AddWeapon(TreeNode nodParentNode)
         {
             frmSelectWeapon frmPickWeapon = new frmSelectWeapon(CharacterObject);
             frmPickWeapon.ShowDialog(this);
@@ -3318,6 +3357,7 @@ namespace Chummer
             Weapon objWeapon = new Weapon(CharacterObject);
             objWeapon.Create(objXmlWeapon, lstWeapons);
             objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+            objWeapon.Location = nodParentNode?.Tag.ToString() ?? string.Empty;
 
             if (frmPickWeapon.FreeCost)
             {
@@ -3325,16 +3365,10 @@ namespace Chummer
             }
             CharacterObject.Weapons.Add(objWeapon);
 
-            TreeNode objNode = objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            objParentNode.Nodes.Add(objNode);
-
             foreach (Weapon objExtraWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objExtraWeapon);
-                objParentNode.Nodes.Add(objExtraWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
             }
-            objParentNode.Expand();
-            treWeapons.SelectedNode = objNode;
 
             IsCharacterUpdateRequested = true;
 
@@ -3364,20 +3398,9 @@ namespace Chummer
                     if (objWeapon != null)
                         objWeapon.Location = string.Empty;
                 }
-
-                List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in treWeapons.SelectedNode.Nodes)
-                    lstMoveNodes.Add(objNode);
-
-                foreach (TreeNode objNode in lstMoveNodes)
-                {
-                    treWeapons.SelectedNode.Nodes.Remove(objNode);
-                    treWeapons.Nodes[0].Nodes.Add(objNode);
-                }
-
+                
                 // Remove the Weapon Location from the character, then remove the selected node.
                 CharacterObject.WeaponLocations.Remove(treWeapons.SelectedNode.Text);
-                treWeapons.SelectedNode.Remove();
             }
             else if (treWeapons.SelectedNode.Level > 0)
             {
@@ -3412,7 +3435,6 @@ namespace Chummer
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else
                         CharacterObject.Weapons.Remove(objWeapon);
-                    treWeapons.SelectedNode.Remove();
                 }
                 else
                 {
@@ -3423,7 +3445,6 @@ namespace Chummer
                         foreach (Gear objGear in objAccessory.Gear)
                             objGear.DeleteGear(treWeapons, treVehicles);
                         objAccessory.Parent.WeaponAccessories.Remove(objAccessory);
-                        treWeapons.SelectedNode.Remove();
                     }
                     else
                     {
@@ -3439,11 +3460,20 @@ namespace Chummer
                                 objGear.Parent.Children.Remove(objGear);
                                 objGear.Parent.RefreshMatrixAttributeArray();
                             }
-                            treWeapons.SelectedNode.Remove();
                         }
+                        else
+                            return;
                     }
                 }
             }
+
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -3502,14 +3532,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                // Select the root Gear node then open the Select Gear window.
-                treGear.SelectedNode = treGear.Nodes[0];
-                blnAddAgain = PickGear(treGear.SelectedNode);
+                blnAddAgain = PickGear(treGear.Nodes[0]);
             }
             while (blnAddAgain);
 
             if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
                 PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
@@ -3534,19 +3569,8 @@ namespace Chummer
                         objGear.Location = string.Empty;
                 }
 
-                List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                foreach (TreeNode objNode in treGear.SelectedNode.Nodes)
-                    lstMoveNodes.Add(objNode);
-
-                foreach (TreeNode objNode in lstMoveNodes)
-                {
-                    treGear.SelectedNode.Nodes.Remove(objNode);
-                    treGear.Nodes[0].Nodes.Add(objNode);
-                }
-
                 // Remove the Location from the character, then remove the selected node.
                 CharacterObject.GearLocations.Remove(treGear.SelectedNode.Text);
-                treGear.SelectedNode.Remove();
             }
             else if (treGear.SelectedNode.Level > 0)
             {
@@ -3561,7 +3585,6 @@ namespace Chummer
                     objGear.DeleteGear(treWeapons, treVehicles);
 
                     CharacterObject.Gear.Remove(objGear);
-                    treGear.SelectedNode.Remove();
 
                     // If the Parent is populated, remove the item from its Parent.
                     if (objParent != null)
@@ -3570,8 +3593,15 @@ namespace Chummer
                         objParent.RefreshMatrixAttributeArray();
                     }
                 }
+                else
+                    return;
             }
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
 
             IsCharacterUpdateRequested = true;
@@ -3579,7 +3609,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private bool AddVehicle(TreeNode objParentNode)
+        private bool AddVehicle(TreeNode nodParentNode)
         {
             frmSelectVehicle frmPickVehicle = new frmSelectVehicle(CharacterObject);
             frmPickVehicle.ShowDialog(this);
@@ -3606,12 +3636,10 @@ namespace Chummer
             {
                 objVehicle.Cost = "0";
             }
-            CharacterObject.Vehicles.Add(objVehicle);
 
-            TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
-            objParentNode.Nodes.Add(objNode);
-            objParentNode.Expand();
-            treVehicles.SelectedNode = objNode;
+            objVehicle.Location = nodParentNode?.Tag.ToString() ?? string.Empty;
+
+            CharacterObject.Vehicles.Add(objVehicle);
 
             IsCharacterUpdateRequested = true;
 
@@ -3625,9 +3653,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = AddVehicle(treVehicles.Nodes[0]);
+                blnAddAgain = AddVehicle(null);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void cmdDeleteVehicle_Click(object sender, EventArgs e)
@@ -3655,28 +3693,14 @@ namespace Chummer
                     if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleLocationBase", GlobalOptions.Language)))
                         return;
 
-                    List<TreeNode> lstMoveNodes = new List<TreeNode>();
-                    foreach (TreeNode objNode in objSelectedNode.Nodes)
+                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                     {
-                        string strId = objNode.Tag.ToString();
-                        Vehicle objLoopVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == strId);
-
-                        // Change the Location for the Vehicle.
-                        objLoopVehicle.Location = string.Empty;
-                        // Move all of the child nodes in the current parent to the Selected Vehicle parent node.
-                        lstMoveNodes.Add(objNode);
-                    }
-
-                    TreeNode objSelectedVehiclesNode = treVehicles.Nodes[0];
-                    foreach (TreeNode objNode in lstMoveNodes)
-                    {
-                        objNode.Remove();
-                        objSelectedVehiclesNode.Nodes.Add(objNode);
+                        if (objVehicle.Location == strSelectedId)
+                            objVehicle.Location = string.Empty;
                     }
 
                     // Remove the Location from the character, then remove the selected node.
                     CharacterObject.VehicleLocations.Remove(objSelectedNode.Text);
-                    objSelectedNode.Remove();
                 }
                 else
                 {
@@ -3949,6 +3973,13 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
             }
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
+
             IsDirty = true;
         }
 
@@ -3968,13 +3999,7 @@ namespace Chummer
             MartialArt objMartialArt = new MartialArt(CharacterObject);
             objMartialArt.Create(objXmlArt);
             CharacterObject.MartialArts.Add(objMartialArt);
-
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
-            TreeNode objSelectedNode = treMartialArts.FindNode(objMartialArt.InternalId);
-            if (objSelectedNode != null)
-                treMartialArts.SelectedNode = objSelectedNode;
-
+            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -4024,9 +4049,7 @@ namespace Chummer
                     }
 
                     CharacterObject.MartialArts.Remove(objMartialArt);
-
-                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
+                    
                     IsCharacterUpdateRequested = true;
 
                     IsDirty = true;
@@ -4043,9 +4066,7 @@ namespace Chummer
                         ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objSelectedAdvantage.InternalId);
 
                         objMartialArt.Techniques.Remove(objSelectedAdvantage);
-
-                        RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
+                        
                         IsCharacterUpdateRequested = true;
 
                         IsDirty = true;
@@ -4082,8 +4103,6 @@ namespace Chummer
             MartialArtManeuver objManeuver = new MartialArtManeuver(CharacterObject);
             objManeuver.Create(objXmlManeuver);
             CharacterObject.MartialArtManeuvers.Add(objManeuver);
-
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
 
             TreeNode objSelectedNode = treMartialArts.FindNode(objManeuver.InternalId);
             if (objSelectedNode != null)
@@ -4624,8 +4643,6 @@ namespace Chummer
                     foreach (Weapon objWeapon in lstWeapons)
                     {
                         CharacterObject.Weapons.Add(objWeapon);
-                        treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        treWeapons.Nodes[0].Expand();
                     }
                 }
                 else
@@ -4643,6 +4660,16 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void cmdAddQuality_Click(object sender, EventArgs e)
@@ -4773,8 +4800,6 @@ namespace Chummer
                     foreach (Weapon objWeapon in lstWeapons)
                     {
                         CharacterObject.Weapons.Add(objWeapon);
-                        treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                        treWeapons.Nodes[0].Expand();
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -4793,9 +4818,12 @@ namespace Chummer
 
             if (IsCharacterUpdateRequested)
             {
-                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
                 PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                 PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
             }
         }
 
@@ -4827,8 +4855,6 @@ namespace Chummer
                 foreach (Weapon objWeapon in objAddWeapons)
                 {
                     _objCharacter.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 return objAddQuality;
@@ -4975,9 +5001,15 @@ namespace Chummer
                 // Only refresh if at least one quality was removed
                 if (!blnFirstRemoval)
                 {
-                    IsCharacterUpdateRequested = true;
-                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                    PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                    PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                    PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                    PopulateFocusList(treFoci, cmsGear);
+
+                    IsCharacterUpdateRequested = true;
+
                     IsDirty = true;
                 }
             }
@@ -5155,7 +5187,6 @@ namespace Chummer
             {
                 decCost += objGear.TotalCost;
                 CharacterObject.Gear.Remove(objGear);
-                treGear.FindNode(objGear.InternalId)?.Remove();
             }
 
             Gear objStackItem = new Gear(CharacterObject)
@@ -5170,12 +5201,15 @@ namespace Chummer
                 Avail = "0"
             };
 
-            treGear.Nodes[0].Nodes.Add(objStackItem.CreateTreeNode(cmsGear));
-
             CharacterObject.Gear.Add(objStackItem);
 
             objStack.GearId = objStackItem.InternalId;
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
 
             IsCharacterUpdateRequested = true;
@@ -5188,12 +5222,22 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = AddArmor(treArmor.Nodes[0]);
+                blnAddAgain = AddArmor(null);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
-        private bool AddArmor(TreeNode objParentNode)
+        private bool AddArmor(TreeNode nodParentNode)
         {
             frmSelectArmor frmPickArmor = new frmSelectArmor(CharacterObject);
             frmPickArmor.ShowDialog(this);
@@ -5214,23 +5258,17 @@ namespace Chummer
             objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
             if (objArmor.InternalId.IsEmptyGuid())
                 return frmPickArmor.AddAgain;
-
+            objArmor.Location = nodParentNode?.Tag.ToString() ?? string.Empty;
             if (frmPickArmor.FreeCost)
             {
                 objArmor.Cost = "0";
             }
 
             CharacterObject.Armor.Add(objArmor);
-            TreeNode objNode = objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear);
-            objParentNode.Nodes.Add(objNode);
-            objParentNode.Expand();
-            treArmor.SelectedNode = objNode;
 
             foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
             }
 
             IsCharacterUpdateRequested = true;
@@ -5408,11 +5446,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickCyberware(objSelectedNode.GetTopParent()?.Tag.ToString() == "Node_SelectedBioware" ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
-                if (blnAddAgain)
-                    treCyberware.SelectedNode = objSelectedNode;
+                blnAddAgain = PickCyberware(objSelectedNode, objSelectedNode.GetTopParent()?.Tag.ToString() == "Node_SelectedBioware" ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsWeaponAddAccessory_Click(object sender, EventArgs e)
@@ -5574,7 +5620,6 @@ namespace Chummer
 
                 ArmorMod objMod = new ArmorMod(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>();
-                List<TreeNode> lstWeaponNodes = new List<TreeNode>();
                 int intRating = 0;
                 if (Convert.ToInt32(objXmlArmor["maxrating"].InnerText) > 1)
                     intRating = frmPickArmorMod.SelectedRating;
@@ -5588,17 +5633,11 @@ namespace Chummer
                 }
 
                 objArmor.ArmorMods.Add(objMod);
-                TreeNode objNode = objMod.CreateTreeNode(cmsArmorMod, cmsArmorGear);
-                objSelectedNode.Nodes.Add(objNode);
-                objSelectedNode.Expand();
-                treArmor.SelectedNode = objNode;
 
                 // Add any Weapons created by the Mod.
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -5608,6 +5647,16 @@ namespace Chummer
                 frmPickArmorMod.Dispose();
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -5623,11 +5672,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickGear(treGear.SelectedNode);
-                if (blnAddAgain)
-                    treGear.SelectedNode = objSelectedNode;
+                blnAddAgain = PickGear(objSelectedNode);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
@@ -6066,14 +6123,9 @@ namespace Chummer
                 return;
 
             objMartialArt.Techniques.Add(objAdvantage);
-
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
-            TreeNode objSelectedNode = treMartialArts.FindNode(objAdvantage.InternalId);
-            if (objSelectedNode != null)
-                treMartialArts.SelectedNode = objSelectedNode;
-
+            
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
         }
 
@@ -6618,11 +6670,19 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = PickArmorGear(true);
-                if (blnAddAgain)
-                    treArmor.SelectedNode = objSelectedNode;
+                blnAddAgain = PickArmorGear(objSelectedNode, true);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -6651,11 +6711,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                blnAddAgain = PickArmorGear(objMod != null);
-                if (blnAddAgain)
-                    treArmor.SelectedNode = objSelectedNode;
+                blnAddAgain = PickArmorGear(objSelectedNode, objMod != null);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsArmorNotes_Click(object sender, EventArgs e)
@@ -7565,25 +7633,19 @@ namespace Chummer
                     objCyberware.Cost = "0";
                 objCyberware.PrototypeTranshuman = frmPickCyberware.PrototypeTranshuman;
                 objCyberware.DiscountCost = frmPickCyberware.BlackMarketDiscount;
-
-                objSelectedNode.Nodes.Add(objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear));
-                objSelectedNode.Expand();
+                
                 objMod.Cyberware.Add(objCyberware);
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     objWeapon.ParentVehicle = objVehicle;
                     objMod.Weapons.Add(objWeapon);
-                    objSelectedNode.Parent.Nodes.Add(objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear));
-                    objSelectedNode.Parent.Expand();
                 }
 
                 // Create the Weapon Node if one exists.
                 foreach (Vehicle objLoopVehicle in lstVehicles)
                 {
                     CharacterObject.Vehicles.Add(objLoopVehicle);
-                    treVehicles.Nodes[0].Nodes.Add(objLoopVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                    treVehicles.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -7593,6 +7655,16 @@ namespace Chummer
                 frmPickCyberware.Dispose();
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsArmorName_Click(object sender, EventArgs e)
@@ -7879,20 +7951,25 @@ namespace Chummer
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 objCyberware.Gear.Add(objNewGear);
-
-                objSelectedNode.Nodes.Add(objNewGear.CreateTreeNode(cmsCyberwareGear));
-                objSelectedNode.Expand();
 
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsCyberwareGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -7973,9 +8050,6 @@ namespace Chummer
                 }
                 frmPickGear.Dispose();
 
-                objSelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsCyberwareGear));
-                objSelectedNode.Expand();
-
                 objGear.Parent = objSensor;
                 objSensor.Children.Add(objGear);
                 objSensor.RefreshMatrixAttributeArray();
@@ -7983,8 +8057,6 @@ namespace Chummer
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -7992,6 +8064,16 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -8072,9 +8154,6 @@ namespace Chummer
                 }
                 frmPickGear.Dispose();
 
-                objSelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsCyberwareGear));
-                objSelectedNode.Expand();
-
                 objGear.Parent = objSensor;
                 objSensor.Children.Add(objGear);
                 objSensor.RefreshMatrixAttributeArray();
@@ -8082,8 +8161,6 @@ namespace Chummer
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -8091,6 +8168,16 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsCyberwarePluginGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -8164,15 +8251,10 @@ namespace Chummer
 
                 objAccessory.Gear.Add(objGear);
 
-                objSelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                objSelectedNode.Expand();
-
                 // Create any Weapons that came with this Gear.
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -8180,6 +8262,16 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -8253,10 +8345,7 @@ namespace Chummer
                     objGear.Cost = "0";
                 }
                 frmPickGear.Dispose();
-
-                objSelectedNode.Nodes.Add(objGear.CreateTreeNode(cmsWeaponAccessoryGear));
-                objSelectedNode.Expand();
-
+                
                 objGear.Parent = objSensor;
                 objSensor.Children.Add(objGear);
                 objSensor.RefreshMatrixAttributeArray();
@@ -8265,8 +8354,6 @@ namespace Chummer
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                    treWeapons.Nodes[0].Expand();
                 }
 
                 IsCharacterUpdateRequested = true;
@@ -8274,6 +8361,16 @@ namespace Chummer
                 IsDirty = true;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsVehicleRenameLocation_Click(object sender, EventArgs e)
@@ -8353,10 +8450,17 @@ namespace Chummer
 
             Weapon objWeapon = frmCreateNaturalWeapon.SelectedWeapon;
             CharacterObject.Weapons.Add(objWeapon);
-            treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
+
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
+            
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void tsVehicleWeaponAccessoryNotes_Click(object sender, EventArgs e)
@@ -8733,8 +8837,6 @@ namespace Chummer
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objWeapon);
-                            treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                            treWeapons.Nodes[0].Expand();
                         }
                     }
                     else
@@ -8767,9 +8869,15 @@ namespace Chummer
 
                 if (blnRequireUpdate)
                 {
-                    IsCharacterUpdateRequested = true;
-                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                    PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                    PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
                     PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                    PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                    PopulateFocusList(treFoci, cmsGear);
+
+                    IsCharacterUpdateRequested = true;
+
                     IsDirty = true;
                 }
             }
@@ -9221,8 +9329,13 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, false, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
                     }
 
+                    PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                    PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                    PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                    PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
                 }
-
+                
                 PopulateFocusList(treFoci, cmsGear);
 
                 IsCharacterUpdateRequested = true;
@@ -10227,6 +10340,12 @@ namespace Chummer
                                 return;
                             }
                         }
+
+                        PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                        PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                        PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                        PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                        PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
                     }
                 }
                 CharacterObject.Foci.Add(objFocus);
@@ -11006,7 +11125,12 @@ namespace Chummer
         {
             CharacterObject.ClearCyberwareTab(treWeapons, treVehicles);
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
 
             IsDirty = true;
             IsCharacterUpdateRequested = true;
@@ -11887,12 +12011,10 @@ namespace Chummer
             RefreshMetatypeFields();
 
             // Update various lists
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
-            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
             PopulateFocusList(treFoci, cmsGear);
 
@@ -13449,13 +13571,13 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        private bool PickCyberware(Improvement.ImprovementSource objSource)
+        private bool PickCyberware(TreeNode nodParentNode, Improvement.ImprovementSource objSource)
         {
             Cyberware objSelectedCyberware = null;
 
             // Attempt to locate the selected piece of Cyberware.
-            string strSelectedId = treCyberware.SelectedNode?.Tag.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId) && treCyberware.SelectedNode.Level > 0)
+            string strSelectedId = nodParentNode?.Tag.ToString();
+            if (!string.IsNullOrEmpty(strSelectedId) && nodParentNode.Level > 0)
                 objSelectedCyberware = CharacterObject.Cyberware.DeepFindById(strSelectedId);
 
             frmSelectCyberware frmPickCyberware = new frmSelectCyberware(CharacterObject, objSource, objSelectedCyberware?.GetNode());
@@ -13657,49 +13779,21 @@ namespace Chummer
             {
                 CharacterObject.Cyberware.Add(objCyberware);
             }
-
-            foreach (Weapon objWeapon in lstWeapons)
-            {
-                CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
-            }
-
-            foreach (Vehicle objVehicle in lstVehicles)
-            {
-                CharacterObject.Vehicles.Add(objVehicle);
-                treVehicles.Nodes[0].Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                treVehicles.Nodes[0].Expand();
-            }
-
-            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
-            _blnSkipRefresh = true;
-            PopulateCyberwareGradeList();
-            _blnSkipRefresh = false;
-
-            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-
+            
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
-
-            if (!frmPickCyberware.AddAgain)
-            {
-                TreeNode objSelectedNode = treCyberware.FindNode(objCyberware.InternalId);
-                if (objSelectedNode != null)
-                    treCyberware.SelectedNode = objSelectedNode;
-            }
-
+            
             return frmPickCyberware.AddAgain;
         }
 
         /// <summary>
         /// Select a piece of Gear to be added to the character.
         /// </summary>
-        private bool PickGear(TreeNode objParentNode)
+        private bool PickGear(TreeNode nodParentNode)
         {
             bool blnNullParent = false;
-            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(objParentNode?.Tag.ToString());
+            Gear objSelectedGear = CharacterObject.Gear.DeepFindById(nodParentNode?.Tag.ToString());
             if (objSelectedGear == null)
             {
                 objSelectedGear = new Gear(CharacterObject);
@@ -13711,7 +13805,7 @@ namespace Chummer
 
             Cursor = Cursors.WaitCursor;
             frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, objSelectedGear.ChildAvailModifier, objSelectedGear.ChildCostMultiplier, objXmlGear);
-            if (objParentNode.Level > 0)
+            if (nodParentNode.Level > 0)
             {
                 if (objXmlGear != null && objXmlGear.InnerXml.Contains("<addoncategory>"))
                 {
@@ -13773,25 +13867,19 @@ namespace Chummer
             foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
             }
 
             objGear.Parent = objSelectedGear;
             if (blnNullParent)
                 objGear.Parent = null;
 
-            if (objParentNode.Level > 0 && !blnNullParent)
+            if (!blnNullParent)
             {
-                objParentNode.Nodes.Add(objGear.CreateTreeNode(objGear.AllowRename ? cmsGearAllowRename : cmsGear));
-                objParentNode.Expand();
                 objSelectedGear.Children.Add(objGear);
                 objSelectedGear.RefreshMatrixAttributeArray();
             }
             else
             {
-                objParentNode.Nodes.Add(objGear.CreateTreeNode(objGear.AllowRename ? cmsGearAllowRename : cmsGear));
-                objParentNode.Expand();
                 CharacterObject.Gear.Add(objGear);
             }
 
@@ -13806,17 +13894,17 @@ namespace Chummer
         /// Select a piece of Gear and add it to a piece of Armor.
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
-        private bool PickArmorGear(bool blnShowArmorCapacityOnly = false)
+        private bool PickArmorGear(TreeNode nodParentNode, bool blnShowArmorCapacityOnly = false)
         {
+            string strSelectedId = nodParentNode?.Tag.ToString();
             Gear objSelectedGear = null;
-            Armor objSelectedArmor = CharacterObject.Armor.FindById(treArmor.SelectedNode.Tag.ToString());
             ArmorMod objSelectedMod = null;
-
-            if (treArmor.SelectedNode.Level > 1)
+            Armor objSelectedArmor = CharacterObject.Armor.FindById(strSelectedId);
+            if (objSelectedArmor == null)
             {
-                objSelectedGear = CharacterObject.Armor.FindArmorGear(treArmor.SelectedNode.Tag.ToString(), out objSelectedArmor, out objSelectedMod);
+                objSelectedGear = CharacterObject.Armor.FindArmorGear(strSelectedId, out objSelectedArmor, out objSelectedMod);
                 if (objSelectedGear == null)
-                    objSelectedMod = CharacterObject.Armor.FindArmorMod(treArmor.SelectedNode.Tag.ToString());
+                    objSelectedMod = CharacterObject.Armor.FindArmorMod(strSelectedId);
             }
 
             // Open the Gear XML file and locate the selected Gear.
@@ -13839,7 +13927,7 @@ namespace Chummer
                 frmPickGear.CapacityDisplayStyle = CapacityStyle.Standard;
             else
                 frmPickGear.CapacityDisplayStyle = objSelectedArmor.CapacityDisplayStyle;
-            if (treArmor.SelectedNode != null)
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
                 if (objXmlParent?.InnerXml.Contains("<addoncategory>") == true)
                 {
@@ -13897,8 +13985,6 @@ namespace Chummer
             foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
             }
 
             bool blnMatchFound = false;
@@ -13912,17 +13998,6 @@ namespace Chummer
                         // A match was found, so increase the quantity instead.
                         objCharacterGear.Quantity += objGear.Quantity;
                         blnMatchFound = true;
-
-                        foreach (TreeNode objGearNode in treGear.Nodes[0].Nodes)
-                        {
-                            if (objCharacterGear.InternalId == objGearNode.Tag.ToString())
-                            {
-                                objGearNode.Text = objCharacterGear.DisplayName(GlobalOptions.Language);
-                                treGear.SelectedNode = objGearNode;
-                                break;
-                            }
-                        }
-
                         break;
                     }
                 }
@@ -13931,9 +14006,6 @@ namespace Chummer
             // Add the Gear.
             if (!blnMatchFound)
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsArmorGear);
-                treArmor.SelectedNode.Nodes.Add(objNode);
-                treArmor.SelectedNode.Expand();
                 if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                 {
                     objSelectedGear.Children.Add(objGear);
@@ -13947,9 +14019,6 @@ namespace Chummer
                 {
                     objSelectedArmor.Gear.Add(objGear);
                 }
-
-                // Select the node that was just added.
-                treGear.SelectedNode = objNode;
             }
 
             IsCharacterUpdateRequested = true;
@@ -15755,15 +15824,11 @@ namespace Chummer
             foreach (Weapon objWeapon in lstWeapons)
             {
                 CharacterObject.Weapons.Add(objWeapon);
-                treWeapons.Nodes[0].Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                treWeapons.Nodes[0].Expand();
             }
 
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 CharacterObject.Vehicles.Add(objVehicle);
-                treVehicles.Nodes[0].Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-                treVehicles.Nodes[0].Expand();
             }
 
             string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
@@ -15799,9 +15864,6 @@ namespace Chummer
             //if (frmPickPACKSKit.SelectedCategory == "Custom")
             //blnCreateChildren = false;
 
-            TreeNode objWeaponTreeNodes = treWeapons.Nodes[0];
-            TreeNode objVehicleTreeNodes = treVehicles.Nodes[0];
-
             XmlNode objXmlKit = objXmlDocument.SelectSingleNode("/chummer/packs/pack[name = \"" + frmPickPACKSKit.SelectedKit + "\" and category = \"" + frmSelectPACKSKit.SelectedCategory + "\"]");
             // Update Qualities.
             XmlNode xmlQualities = objXmlKit["qualities"];
@@ -15828,8 +15890,6 @@ namespace Chummer
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objWeapon);
-                            objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                            objWeaponTreeNodes.Expand();
                         }
                     }
                 }
@@ -15852,8 +15912,6 @@ namespace Chummer
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objWeapon);
-                            objWeaponTreeNodes.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                            objWeaponTreeNodes.Expand();
                         }
                     }
                 }
@@ -15916,10 +15974,7 @@ namespace Chummer
                     }
                 }
             }
-
-            if (xmlMartialArts != null || xmlSelectMartialArt != null)
-                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-
+            
             // Update Adept Powers.
             if (objXmlKit["powers"] != null)
             {
@@ -16098,7 +16153,6 @@ namespace Chummer
             if (xmlArmors != null)
             {
                 XmlDocument objXmlArmorDocument = XmlManager.Load("armor.xml");
-                TreeNode objArmorsNode = treArmor.Nodes[0];
                 foreach (XmlNode objXmlArmor in xmlArmors.SelectNodes("armor"))
                 {
                     XmlNode objXmlArmorNode = objXmlArmorDocument.SelectSingleNode("/chummer/armors/armor[(" + CharacterObjectOptions.BookXPath() + ") and name = \"" + objXmlArmor["name"].InnerText + "\"]");
@@ -16133,31 +16187,12 @@ namespace Chummer
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objWeapon);
-                            TreeNode objParent = objWeaponTreeNodes;
-                            // If this is not an Underbarrel Weapon and it has a Location, find the Location Node that this should be attached to instead.
-                            if (!objWeapon.IsUnderbarrelWeapon && !string.IsNullOrEmpty(objWeapon.Location))
-                            {
-                                foreach (TreeNode objLocationNode in treWeapons.Nodes)
-                                {
-                                    if (objLocationNode.Text == objWeapon.Location)
-                                    {
-                                        objParent = objLocationNode;
-                                        break;
-                                    }
-                                }
-                            }
-                            objParent.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
-                            objParent.Expand();
                         }
 
                         foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
                             AddPACKSGear(objXmlGearDocument, objXmlGear, objArmor, blnCreateChildren);
-
-                        objArmorsNode.Nodes.Add(objArmor.CreateTreeNode(cmsArmor, cmsArmorMod, cmsArmorGear));
                     }
                 }
-
-                objArmorsNode.Expand();
             }
 
             // Update Weapons.
@@ -16248,10 +16283,8 @@ namespace Chummer
                         foreach (Weapon objLoopWeapon in lstWeapons)
                         {
                             CharacterObject.Weapons.Add(objLoopWeapon);
-                            objWeaponTreeNodes.Nodes.Add(objLoopWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                         }
                     }
-                    objWeaponTreeNodes.Expand();
 
                     Application.DoEvents();
                 }
@@ -16280,8 +16313,6 @@ namespace Chummer
 
                     Application.DoEvents();
                 }
-
-                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             }
 
             // Update Bioware.
@@ -16304,8 +16335,6 @@ namespace Chummer
 
                     Application.DoEvents();
                 }
-
-                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             }
 
             // Update Gear.
@@ -16481,19 +16510,23 @@ namespace Chummer
                                 }
                             }
                         }
-
-                        objVehicleTreeNodes.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
-
+                        
                         Application.DoEvents();
                     }
                 }
-                objVehicleTreeNodes.Expand();
             }
 
             pgbProgress.Visible = false;
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
+
             IsCharacterUpdateRequested = true;
+
             IsDirty = true;
 
             return frmPickPACKSKit.AddAgain;
@@ -17547,7 +17580,12 @@ namespace Chummer
                 CharacterObject.Cyberware.Add(objCyberware);
             }
 
+            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
             PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+            PopulateFocusList(treFoci, cmsGear);
 
             IsCharacterUpdateRequested = true;
 
@@ -17613,13 +17651,10 @@ namespace Chummer
             // Add any Weapons created by the Gear.
             if (lstWeapons.Count > 0)
             {
-                TreeNode objWeaponsNode = treWeapons.Nodes[0];
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    objWeaponsNode.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                 }
-                objWeaponsNode.Expand();
             }
 
             return objNewGear;
@@ -17663,24 +17698,18 @@ namespace Chummer
 
             if (lstWeapons.Count > 0)
             {
-                TreeNode objWeaponsNode = treWeapons.Nodes[0];
                 foreach (Weapon objWeapon in lstWeapons)
                 {
                     CharacterObject.Weapons.Add(objWeapon);
-                    objWeaponsNode.Nodes.Add(objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear));
                 }
-                objWeaponsNode.Expand();
             }
 
             if (lstVehicles.Count > 0)
             {
-                TreeNode objVehiclesNode = treVehicles.Nodes[0];
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
                     CharacterObject.Vehicles.Add(objVehicle);
-                    objVehiclesNode.Nodes.Add(objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear));
                 }
-                objVehiclesNode.Expand();
             }
 
             return objCyberware;
@@ -18195,6 +18224,11 @@ namespace Chummer
             RefreshQualities(treQualities, cmsQuality, notifyCollectionChangedEventArgs);
         }
 
+        private void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
+        }
+
         private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
@@ -18416,10 +18450,18 @@ namespace Chummer
             do
             {
                 blnAddAgain = AddWeapon(objSelectedNode);
-                if (blnAddAgain)
-                    treWeapons.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsGearLocationAddGear_Click(object sender, EventArgs e)
@@ -18428,15 +18470,19 @@ namespace Chummer
             bool blnAddAgain = false;
             do
             {
-                // Select the root Gear node then open the Select Gear window.
                 blnAddAgain = PickGear(objSelectedNode);
-                if (blnAddAgain)
-                    treGear.SelectedNode = objSelectedNode;
             }
             while (blnAddAgain);
 
             if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
                 PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsVehicleLocationAddVehicle_Click(object sender, EventArgs e)
@@ -18448,6 +18494,16 @@ namespace Chummer
                 blnAddAgain = AddVehicle(objSelectedNode);
             }
             while (blnAddAgain);
+
+            if (IsCharacterUpdateRequested)
+            {
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+            }
         }
 
         private void tsEditWeaponMount_Click(object sender, EventArgs e)

@@ -216,7 +216,7 @@ namespace Chummer
         private BindingList<Power> _lstPowers = new BindingList<Power>();
         private ObservableCollection<ComplexForm> _lstComplexForms = new ObservableCollection<ComplexForm>();
         private ObservableCollection<AIProgram> _lstAIPrograms = new ObservableCollection<AIProgram>();
-        private List<MartialArt> _lstMartialArts = new List<MartialArt>();
+        private ObservableCollection<MartialArt> _lstMartialArts = new ObservableCollection<MartialArt>();
         #if LEGACY
         private List<MartialArtManeuver> _lstMartialArtManeuvers = new List<MartialArtManeuver>();
         #endif
@@ -6471,7 +6471,7 @@ namespace Chummer
         /// <summary>
         /// Martial Arts.
         /// </summary>
-        public IList<MartialArt> MartialArts
+        public ObservableCollection<MartialArt> MartialArts
         {
             get
             {

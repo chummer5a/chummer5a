@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Chummer
         private int _intKarmaCost = 7;
         private int _intRating = 1;
         private Guid _guiID;
-        private List<MartialArtTechnique> _lstTechniques = new List<MartialArtTechnique>();
+        private ObservableCollection<MartialArtTechnique> _lstTechniques = new ObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
         private Character _objCharacter;
         private bool _blnIsQuality;
@@ -235,7 +236,7 @@ namespace Chummer
         /// <summary>
         /// Selected Martial Arts Advantages.
         /// </summary>
-        public IList<MartialArtTechnique> Techniques => _lstTechniques;
+        public ObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
         public IList<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
