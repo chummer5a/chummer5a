@@ -86,7 +86,6 @@ namespace Chummer
             CharacterObject.CyberwareTabDisabledChanged += objCharacter_CyberwareTabDisabledChanged;
             CharacterObject.InitiationTabEnabledChanged += objCharacter_InitiationTabEnabledChanged;
             CharacterObject.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
-            CharacterObject.BlackMarketEnabledChanged += objCharacter_BlackMarketDiscountChanged;
             CharacterObject.ExConChanged += objCharacter_ExConChanged;
             CharacterObject.RestrictedGearChanged += objCharacter_RestrictedGearChanged;
             CharacterObject.MadeManChanged += objCharacter_MadeManChanged;
@@ -650,7 +649,6 @@ namespace Chummer
                 CharacterObject.CyberwareTabDisabledChanged -= objCharacter_CyberwareTabDisabledChanged;
                 CharacterObject.InitiationTabEnabledChanged -= objCharacter_InitiationTabEnabledChanged;
                 CharacterObject.CritterTabEnabledChanged -= objCharacter_CritterTabEnabledChanged;
-                CharacterObject.BlackMarketEnabledChanged -= objCharacter_BlackMarketDiscountChanged;
                 CharacterObject.ExConChanged -= objCharacter_ExConChanged;
                 CharacterObject.RestrictedGearChanged -= objCharacter_RestrictedGearChanged;
                 CharacterObject.MadeManChanged -= objCharacter_MadeManChanged;
@@ -794,8 +792,10 @@ namespace Chummer
             }
             else
             {
-                ClearInitiationTab();
+                CharacterObject.ClearInitiations();
+                
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
+
                 if (SpecialAttributes.Contains(CharacterObject.MAG))
                 {
                     SpecialAttributes.Remove(CharacterObject.MAG);
@@ -804,6 +804,10 @@ namespace Chummer
                 {
                     SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
+                
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -841,12 +845,18 @@ namespace Chummer
             }
             else
             {
-                ClearInitiationTab();
+                CharacterObject.ClearInitiations();
+
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
+
                 if (SpecialAttributes.Contains(CharacterObject.RES))
                 {
                     SpecialAttributes.Remove(CharacterObject.RES);
                 }
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -854,6 +864,7 @@ namespace Chummer
         {
             if (_blnReapplyImprovements)
                 return;
+
             if (CharacterObject.DEPEnabled)
             {
                 if (!SpecialAttributes.Contains(CharacterObject.DEP))
@@ -887,12 +898,18 @@ namespace Chummer
             }
             else
             {
-                ClearAdeptTab();
+                CharacterObject.ClearAdeptPowers();
+                
                 tabCharacterTabs.TabPages.Remove(tabAdept);
+
                 if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
                     SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
             lblMysticAdeptAssignment.Visible = !CharacterObjectOptions.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept;
@@ -950,12 +967,18 @@ namespace Chummer
             }
             else
             {
-                ClearSpellTab();
+                CharacterObject.ClearMagic();
+
                 tabCharacterTabs.TabPages.Remove(tabMagician);
+
                 if (SpecialAttributes.Contains(CharacterObject.MAGAdept))
                 {
                     SpecialAttributes.Remove(CharacterObject.MAGAdept);
                 }
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
 
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
@@ -976,8 +999,13 @@ namespace Chummer
             }
             else
             {
-                ClearTechnomancerTab();
+                CharacterObject.ClearResonance();
+
                 tabCharacterTabs.TabPages.Remove(tabTechnomancer);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -994,8 +1022,13 @@ namespace Chummer
             }
             else
             {
-                ClearAdvancedProgramsTab();
+                CharacterObject.ClearAdvancedPrograms();
+
                 tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -1007,7 +1040,18 @@ namespace Chummer
             // Change to the status of Advanced Programs being enabled.
             if (CharacterObject.CyberwareDisabled)
             {
-                ClearCyberwareTab();
+                CharacterObject.ClearCyberwareTab(treWeapons, treVehicles);
+
+                PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
+                PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
+                PopulateFocusList(treFoci, cmsGear);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -1028,8 +1072,13 @@ namespace Chummer
             }
             else
             {
-                ClearInitiationTab();
+                CharacterObject.ClearInitiations();
+
                 tabCharacterTabs.TabPages.Remove(tabInitiation);
+
+                IsCharacterUpdateRequested = true;
+
+                IsDirty = true;
             }
         }
 
@@ -1047,23 +1096,13 @@ namespace Chummer
             else
             {
                 // Remove all Critter Powers.
-                ClearCritterTab();
+                CharacterObject.ClearCritterPowers();
+
                 tabCharacterTabs.TabPages.Remove(tabCritter);
-            }
-        }
 
-        private void objCharacter_BlackMarketDiscountChanged(object sender)
-        {
-            if (_blnReapplyImprovements)
-                return;
+                IsCharacterUpdateRequested = true;
 
-            if (CharacterObject.BlackMarketDiscount)
-            {
-
-            }
-            else
-            {
-
+                IsDirty = true;
             }
         }
 
@@ -1157,8 +1196,6 @@ namespace Chummer
             {
                 nudNuyen.Maximum -= 30;
             }
-
-
         }
 
         /*
@@ -10927,10 +10964,12 @@ namespace Chummer
 #region Other Control Events
         private void nudNuyen_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnLoading) return;
+            if (_blnLoading)
+                return;
 
             // Calculate the amount of Nuyen for the selected BP cost.
             CharacterObject.NuyenBP = nudNuyen.Value;
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -10950,98 +10989,6 @@ namespace Chummer
         private void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             RefreshPasteStatus();
-        }
-#endregion
-
-#region Clear Tab Contents
-        /// <summary>
-        /// Clear the contents of the Spells and Spirits Tab.
-        /// </summary>
-        private void ClearSpellTab()
-        {
-            CharacterObject.ClearMagic();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        /// <summary>
-        /// Clear the contents of the Adept Powers Tab.
-        /// </summary>
-        private void ClearAdeptTab()
-        {
-            CharacterObject.ClearAdeptPowers();
-
-            // Remove all of the Adept Powers from the panel.
-            // TODO: Remove adept powers.
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        /// <summary>
-        /// Clear the contents of the Sprites and Complex Forms Tab.
-        /// </summary>
-        private void ClearTechnomancerTab()
-        {
-            CharacterObject.ClearResonance();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        /// <summary>
-        /// Clear the contents of the Advanced Programs Tab.
-        /// </summary>
-        private void ClearAdvancedProgramsTab()
-        {
-            CharacterObject.ClearAdvancedPrograms();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-
-        /// <summary>
-        /// Clear the contents of the Cyberware Tab.
-        /// </summary>
-        private void ClearCyberwareTab()
-        {
-            CharacterObject.ClearCyberwareTab(treWeapons, treVehicles);
-
-            PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-            PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
-            PopulateCyberwareList(treCyberware, cmsCyberware, cmsCyberwareGear);
-            PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-            PopulateVehicleList(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsCyberware, cmsCyberwareGear);
-            PopulateFocusList(treFoci, cmsGear);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
-        }
-
-        /// <summary>
-        /// Clear the conents of the Critter Powers Tab.
-        /// </summary>
-        private void ClearCritterTab()
-        {
-            CharacterObject.ClearCritterPowers();
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
-        }
-
-        /// <summary>
-        /// Clear the content of the Initiation Tab.
-        /// </summary>
-        private void ClearInitiationTab()
-        {
-            CharacterObject.ClearInitiations();
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 #endregion
 

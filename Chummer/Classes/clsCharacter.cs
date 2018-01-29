@@ -249,7 +249,6 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.Replace("0.0.", string.Empty);
         Version _verSavedVersion = new Version();
         // Events.
-        public Action<object> HomeNodeChanged { get; set; }
         public Action<object> AdeptTabEnabledChanged { get; set; }
         public Action<object> AmbidextrousChanged { get; set; }
         public Action<object> CritterTabEnabledChanged { get; set; }
@@ -257,12 +256,9 @@ namespace Chummer
         public Action<object> BornRichChanged { get; set; }
         public Action<object> CharacterNameChanged { get; set; }
         public Action<object> ExConChanged { get; set; }
-        public Action<object> BlackMarketEnabledChanged { get; set; }
-        public Action<object> FameChanged { get; set; }
         public Action<object> InitiationTabEnabledChanged { get; set; }
         public Action<object> MadeManChanged { get; set; }
         public Action<object> MagicianTabEnabledChanged { get; set; }
-        public Action<object> PrototypeTranshumanChanged { get; set; }
         public Action<object> RESEnabledChanged { get; set; }
         public Action<object> DEPEnabledChanged { get; set; }
         public Action<object> RestrictedGearChanged { get; set; }
@@ -7913,11 +7909,7 @@ namespace Chummer
             }
             set
             {
-                if (_blnBlackMarketDiscount != value)
-                {
-                    _blnBlackMarketDiscount = value;
-                    BlackMarketEnabledChanged?.Invoke(this);
-                }
+                _blnBlackMarketDiscount = value;
             }
         }
 
@@ -7932,11 +7924,7 @@ namespace Chummer
             }
             set
             {
-                if (_decPrototypeTranshuman != value)
-                {
-                    _decPrototypeTranshuman = value;
-                    PrototypeTranshumanChanged?.Invoke(this);
-                }
+                _decPrototypeTranshuman = value;
             }
         }
 
@@ -8049,11 +8037,7 @@ namespace Chummer
             }
             set
             {
-                if (_blnFame != value)
-                {
-                    _blnFame = value;
-                    FameChanged?.Invoke(this);
-                }
+                _blnFame = value;
             }
         }
         /// <summary>
