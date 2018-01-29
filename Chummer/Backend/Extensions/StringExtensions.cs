@@ -96,8 +96,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">Input textblock</param>
         /// <param name="chrWhiteSpace">Whitespace character to use</param>
+        /// <param name="keepLineBreaks">Keep line breaks or consider them whitespace</param>
         /// <returns>New string with any excess whitespace removed</returns>
-        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ')
+        public static string NormalizeWhiteSpace(this string strInput, char chrWhiteSpace = ' ', bool keepLineBreaks = false)
         {
             int intLength = strInput?.Length ?? 0;
             if (intLength == 0)
@@ -111,7 +112,7 @@ namespace Chummer
             {
                 char chrLoop = strInput[i];
                 // If we encounter a block of whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                if (char.IsWhiteSpace(chrLoop))
+                if (char.IsWhiteSpace(chrLoop) && !(keepLineBreaks && chrLoop=='\n'))
                 {
                     if (!blnLastCharWasWhiteSpace)
                         achrNewChars[intCurrent++] = chrWhiteSpace;
