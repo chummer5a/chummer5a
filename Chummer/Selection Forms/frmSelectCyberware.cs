@@ -261,11 +261,6 @@ namespace Chummer
                     }
                 }
                 nudRating.Value = nudRating.Minimum;
-
-                string strSource = xmlCyberware["source"].InnerText;
-                string strPage = xmlCyberware["altpage"]?.InnerText ?? xmlCyberware["page"].InnerText;
-                lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
-                tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
             }
             else
             {
@@ -275,7 +270,7 @@ namespace Chummer
                 lblSource.Text = string.Empty;
                 tipTooltip.SetToolTip(lblSource, string.Empty);
             }
-            
+
             string strForceGrade = xmlCyberware?["forcegrade"]?.InnerText;
             Grade objForcedGrade = null;
             if (!string.IsNullOrEmpty(strForceGrade))
@@ -611,6 +606,11 @@ namespace Chummer
                 lblCapacity.Text = string.Empty;
                 return;
             }
+
+            string strSource = objXmlCyberware["source"].InnerText;
+            string strPage = objXmlCyberware["altpage"]?.InnerText ?? objXmlCyberware["page"].InnerText;
+            lblSource.Text = CommonFunctions.LanguageBookShort(strSource, GlobalOptions.Language) + ' ' + strPage;
+            tipTooltip.SetToolTip(lblSource, CommonFunctions.LanguageBookLong(strSource, GlobalOptions.Language) + ' ' + LanguageManager.GetString("String_Page", GlobalOptions.Language) + ' ' + strPage);
 
             string strSelectCategory = objXmlCyberware["category"].InnerText;
             bool blnForceNoESSModifier = objXmlCyberware["forcegrade"]?.InnerText == "None";
