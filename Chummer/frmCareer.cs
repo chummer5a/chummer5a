@@ -86,8 +86,8 @@ namespace Chummer
             CharacterObject.CritterTabEnabledChanged += objCharacter_CritterTabEnabledChanged;
             CharacterObject.ExConChanged += objCharacter_ExConChanged;
 
-            tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
-            tabSkillsUc.ChildPropertyChanged += SkillPropertyChanged;
+            tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
 
             GlobalOptions.MRUChanged += DoNothing;
             Program.MainForm.OpenCharacterForms.Add(this);
@@ -516,6 +516,7 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
             RefreshCustomImprovements(treImprovements, cmsImprovementLocation, cmsImprovement);
+            RefreshCalendar(lstCalendar);
 
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
             PopulateWeaponList(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -668,8 +669,6 @@ namespace Chummer
             cmdArmorDecrease.Visible = CharacterObjectOptions.ArmorDegradation;
             cmdArmorIncrease.Visible = CharacterObjectOptions.ArmorDegradation;
             
-            PopulateCalendar();
-
             IsCharacterUpdateRequested = true;
             // Directly calling here so that we can properly unset the dirty flag after the update
             UpdateCharacterInfo();
@@ -683,6 +682,7 @@ namespace Chummer
             CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
             CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
             CharacterObject.Improvements.CollectionChanged += ImprovementCollectionChanged;
+            CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
             BuildAttributePanel();
 
             // Hacky, but necessary
@@ -763,6 +763,11 @@ namespace Chummer
             RefreshCustomImprovements(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, notifyCollectionChangedEventArgs);
         }
 
+        private void CalendarWeekListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
+        {
+            RefreshCalendar(lstCalendar, listChangedEventArgs);
+        }
+
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
@@ -840,6 +845,7 @@ namespace Chummer
                 CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
                 CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
                 CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
+                CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
                 CharacterObject.MAGEnabledChanged -= objCharacter_MAGEnabledChanged;
                 CharacterObject.RESEnabledChanged -= objCharacter_RESEnabledChanged;
                 CharacterObject.DEPEnabledChanged -= objCharacter_DEPEnabledChanged;
@@ -1285,6 +1291,7 @@ namespace Chummer
             }
         }
 
+        /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
         private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1304,14 +1311,12 @@ namespace Chummer
             //So, skills tell if anything maybe intresting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
             if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
             SkillPropertyChanged_StopWatch.Restart();
-
-            lblCareerKarma.Text = CharacterObject.CareerKarma.ToString();
-            //UpdateSkillInfo();
-            PopulateCalendar();
+            
             IsCharacterUpdateRequested = true;
             
             IsDirty = true;
         }
+        */
         #endregion
 
         #region Menu Events
@@ -6823,9 +6828,7 @@ namespace Chummer
             }
 
             CharacterObject.Calendar.Add(objWeek);
-
-            PopulateCalendar();
-
+            
             IsDirty = true;
         }
 
@@ -6842,21 +6845,15 @@ namespace Chummer
                 return;
             }
 
-            CalendarWeek objWeek = new CalendarWeek();
+            CalendarWeek objCharacterWeek = CharacterObject.Calendar.FirstOrDefault(x => x.InternalId == objItem.SubItems[2].Text);
 
-            // Find the selected Calendar Week.
-            foreach (CalendarWeek objCharacterWeek in CharacterObject.Calendar)
+            if (objCharacterWeek != null)
             {
-                if (objCharacterWeek.InternalId == objItem.SubItems[2].Text)
-                {
-                    objWeek = objCharacterWeek;
-                    if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCalendarWeek", GlobalOptions.Language)))
-                        return;
-                    CharacterObject.Calendar.Remove(objWeek);
-                    IsDirty = true;
-                    PopulateCalendar();
-                    break;
-                }
+                if (!CharacterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteCalendarWeek", GlobalOptions.Language)))
+                    return;
+
+                CharacterObject.Calendar.Remove(objCharacterWeek);
+                IsDirty = true;
             }
         }
 
@@ -6897,7 +6894,6 @@ namespace Chummer
                 if (objWeek.Notes != strOldValue)
                 {
                     IsDirty = true;
-                    PopulateCalendar();
                 }
             }
         }
@@ -6936,18 +6932,17 @@ namespace Chummer
                 // If the date range goes outside of 52 weeks, increase or decrease the year as necessary.
                 if (objWeek.Week < 1)
                 {
-                    objWeek.Year--;
+                    objWeek.Year -= 1;
                     objWeek.Week += 52;
                 }
                 if (objWeek.Week > 52)
                 {
-                    objWeek.Year++;
+                    objWeek.Year += 1;
                     objWeek.Week -= 52;
                 }
             }
 
             IsDirty = true;
-            PopulateCalendar();
         }
 
         private void cmdAddImprovement_Click(object sender, EventArgs e)
@@ -10552,7 +10547,6 @@ namespace Chummer
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshContacts();
-            PopulateCalendar();
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
@@ -11288,7 +11282,6 @@ namespace Chummer
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshContacts();
-            PopulateCalendar();
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
@@ -17354,7 +17347,6 @@ namespace Chummer
             // Update various lists
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
             RefreshContacts();
-            PopulateCalendar();
 
             PopulateGearList(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
             PopulateArmorList(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);

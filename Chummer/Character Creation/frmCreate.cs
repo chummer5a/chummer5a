@@ -94,8 +94,8 @@ namespace Chummer
             CharacterObject.MadeManChanged += objCharacter_MadeManChanged;
             CharacterObject.BornRichChanged += objCharacter_BornRichChanged;
 
-            tabPowerUc.ChildPropertyChanged += PowerPropertyChanged;
-            tabSkillUc.ChildPropertyChanged += SkillPropertyChanged;
+            tabPowerUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
+            tabSkillUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             //TODO: Can't bind visibility to the IsMysticAdept property for some reason.
             nudMysticAdeptMAGMagician.DataBindings.Add("Maximum", this.CharacterObject.MAG, nameof(CharacterObject.MAG.TotalValue), false,
                             DataSourceUpdateMode.OnPropertyChanged);
@@ -1199,6 +1199,7 @@ namespace Chummer
 
         }
 
+        /*
         //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
         private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -1220,6 +1221,7 @@ namespace Chummer
 
             IsDirty = true;
         }
+        */
         #endregion
 
         #region Menu Events

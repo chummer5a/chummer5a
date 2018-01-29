@@ -33,7 +33,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
-        public event PropertyChangedEventHandler ChildPropertyChanged; 
+        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate; 
 
         private BindingListDisplay<Skill> _skills;
         private BindingListDisplay<SkillGroup> _groups;
@@ -152,9 +152,9 @@ namespace Chummer.UI.Skills
 
             parts.TaskEnd("_sort databind");
 
-            _skills.ChildPropertyChanged += ChildPropertyChanged;
-            _groups.ChildPropertyChanged += ChildPropertyChanged;
-            _knoSkills.ChildPropertyChanged += ChildPropertyChanged;
+            _skills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _groups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _knoSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             //Visible = true;
             //this.ResumeLayout(false);

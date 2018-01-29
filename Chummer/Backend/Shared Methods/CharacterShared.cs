@@ -34,6 +34,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using TheArtOfDev.HtmlRenderer.WinForms;
 using System.Text;
+using System.ComponentModel;
 
 namespace Chummer
 {
@@ -378,17 +379,23 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treSpells.FindNode(objSpell.InternalId);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objSpell);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
                             break;
@@ -576,17 +583,23 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treAIPrograms.FindNode(objAIProgram.InternalId);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objAIProgram);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
                             break;
@@ -679,17 +692,23 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treComplexForms.FindNode(objComplexForm.InternalId);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objComplexForm);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
                             break;
@@ -963,17 +982,23 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objOldParent = null;
                                 TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
                                 if (objNode != null)
                                 {
-                                    objOldParent = objNode.Parent;
+                                    lstOldParents.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
+                            }
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            {
                                 AddToTree(objPower);
-                                if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                     objOldParent.Remove();
                             }
                             break;
@@ -1116,30 +1141,37 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objQuality.Levels > 0)
                                     blnDoNameRefresh = true;
                                 else
                                 {
-                                    TreeNode objOldParent = null;
                                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                                     if (objNode != null)
                                     {
-                                        objOldParent = objNode.Parent;
+                                        if (objNode.Parent != null)
+                                            lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
                                     else
                                     {
                                         RefreshQualityNames(treQualities);
                                     }
-                                    if (objQuality.Levels > 1)
-                                        RefreshQualityNames(treQualities);
-                                    else
-                                        AddToTree(objQuality);
-                                    if (objOldParent != null && objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
                                 }
+                            }
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objQuality.Levels > 1)
+                                    blnDoNameRefresh = true;
+                                else
+                                    AddToTree(objQuality);
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
                             }
                             break;
                         }
@@ -1757,21 +1789,30 @@ namespace Chummer
                         }
                     case NotifyCollectionChangedAction.Replace:
                         {
+                            List<TreeNode> lstOldParents = new List<TreeNode>();
                             foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
                                 {
-                                    TreeNode objOldParent = null;
                                     TreeNode objNode = treImprovements.FindNode(objImprovement.SourceName);
                                     if (objNode != null)
                                     {
-                                        TreeNode objParent = objNode.Parent;
+                                        lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                    AddToTree(objImprovement);
-                                    if (objOldParent.Tag.ToString() == "Node_SelectedImprovements" && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
                                 }
+                            }
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom)
+                                {
+                                    AddToTree(objImprovement);
+                                }
+                            }
+                            foreach (TreeNode objOldParent in lstOldParents)
+                            {
+                                if (objOldParent.Tag.ToString() == "Node_SelectedImprovements" && objOldParent.Nodes.Count == 0)
+                                    objOldParent.Remove();
                             }
                             break;
                         }
@@ -1932,6 +1973,105 @@ namespace Chummer
                 }
                 else
                     objParentNode.Nodes.Add(objNode);
+            }
+        }
+
+        /// <summary>
+        /// Populate the Calendar List.
+        /// </summary>
+        public void RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null)
+        {
+            if (listChangedEventArgs == null)
+            {
+                lstCalendar.Items.Clear();
+                for (int i = CharacterObject.Calendar.Count - 1; i >= 0; i--)
+                {
+                    CalendarWeek objWeek = CharacterObject.Calendar[i];
+
+                    ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objWeek.Notes
+                    };
+                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                    {
+                        Text = objWeek.InternalId
+                    };
+
+                    ListViewItem objItem = new ListViewItem
+                    {
+                        Text = objWeek.DisplayName(GlobalOptions.Language)
+                    };
+                    objItem.SubItems.Add(objNoteItem);
+                    objItem.SubItems.Add(objInternalIdItem);
+
+                    lstCalendar.Items.Add(objItem);
+                }
+            }
+            else
+            {
+                switch (listChangedEventArgs.ListChangedType)
+                {
+                    case ListChangedType.Reset:
+                        {
+                            RefreshCalendar(lstCalendar);
+                        }
+                        break;
+                    case ListChangedType.ItemAdded:
+                        {
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.Notes
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId
+                            };
+
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
+
+                            lstCalendar.Items.Insert(intInsertIndex, objItem);
+                        }
+                        break;
+                    case ListChangedType.ItemDeleted:
+                        {
+                            lstCalendar.Items.RemoveAt(listChangedEventArgs.OldIndex);
+                        }
+                        break;
+                    case ListChangedType.ItemChanged:
+                    case ListChangedType.ItemMoved:
+                        {
+                            lstCalendar.Items.RemoveAt(listChangedEventArgs.NewIndex);
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.Notes
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId
+                            };
+
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.DisplayName(GlobalOptions.Language)
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
+
+                            lstCalendar.Items.Insert(intInsertIndex, objItem);
+                        }
+                        break;
+                }
             }
         }
 

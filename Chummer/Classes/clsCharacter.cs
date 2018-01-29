@@ -241,7 +241,7 @@ namespace Chummer
         private List<string> _lstVehicleLocations = new List<string>();
         private List<string> _lstWeaponLocations = new List<string>();
         private List<string> _lstImprovementGroups = new List<string>();
-        private List<CalendarWeek> _lstCalendar = new List<CalendarWeek>();
+        private BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>();
         private List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>();
 
@@ -6722,7 +6722,7 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public IList<CalendarWeek> Calendar
+        public BindingList<CalendarWeek> Calendar
         {
             get
             {
