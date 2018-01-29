@@ -7400,7 +7400,7 @@ namespace Chummer
             // 
             // nudLifestyleMonths
             // 
-            this.nudLifestyleMonths.Enabled = false;
+            this.nudLifestyleMonths.Visible = false;
             this.nudLifestyleMonths.Location = new System.Drawing.Point(310, 62);
             this.nudLifestyleMonths.Minimum = new decimal(new int[] {
             1,

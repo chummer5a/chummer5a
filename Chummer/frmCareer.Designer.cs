@@ -2084,7 +2084,7 @@ namespace Chummer
             // 
             // cmdDecreaseLifestyleMonths
             // 
-            this.cmdDecreaseLifestyleMonths.Enabled = false;
+            this.cmdDecreaseLifestyleMonths.Visible = false;
             this.cmdDecreaseLifestyleMonths.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdDecreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.delete;
             this.cmdDecreaseLifestyleMonths.Location = new System.Drawing.Point(374, 58);
@@ -2098,7 +2098,7 @@ namespace Chummer
             // 
             // cmdIncreaseLifestyleMonths
             // 
-            this.cmdIncreaseLifestyleMonths.Enabled = false;
+            this.cmdIncreaseLifestyleMonths.Visible = false;
             this.cmdIncreaseLifestyleMonths.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdIncreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.add;
             this.cmdIncreaseLifestyleMonths.Location = new System.Drawing.Point(344, 58);
